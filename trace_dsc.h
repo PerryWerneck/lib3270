@@ -32,37 +32,38 @@
  *		Global declarations for trace_ds.c.
  */
 
-#if defined(X3270_TRACE) /*[*/
+#if defined(X3270_TRACE)
 
-LIB3270_INTERNAL Boolean trace_skipping;
+	LIB3270_INTERNAL Boolean trace_skipping;
 
-const char *rcba(int baddr);
-void toggle_dsTrace(H3270 *h, struct toggle *t, LIB3270_TOGGLE_TYPE tt);
-void toggle_eventTrace(H3270 *h, struct toggle *t, LIB3270_TOGGLE_TYPE tt);
-void toggle_screenTrace(H3270 *h, struct toggle *t, LIB3270_TOGGLE_TYPE tt);
-void trace_ansi_disc(void);
-void trace_char(char c);
-void trace_ds(const char *fmt, ...) printflike(1, 2);
-void trace_ds_nb(const char *fmt, ...) printflike(1, 2);
-void trace_dsn(const char *fmt, ...) printflike(1, 2);
-void trace_event(const char *fmt, ...) printflike(1, 2);
-void trace_screen(void);
-void trace_rollover_check(void);
+	const char *rcba(int baddr);
 
-#else /*][*/
+//	void toggle_dsTrace(H3270 *h, struct toggle *t, LIB3270_TOGGLE_TYPE tt);
+//	void toggle_eventTrace(H3270 *h, struct toggle *t, LIB3270_TOGGLE_TYPE tt);
+//	void toggle_screenTrace(H3270 *h, struct toggle *t, LIB3270_TOGGLE_TYPE tt);
 
-#define rcba 0 &&
-#if defined(__GNUC__) /*[*/
-#define trace_ds(format, args...)
-#define trace_dsn(format, args...)
-#define trace_ds_nb(format, args...)
-#define trace_event(format, args...)
-#else /*][*/
-#define trace_ds 0 &&
-#define trace_ds_nb 0 &&
-#define trace_dsn 0 &&
-#define trace_event 0 &&
-#define rcba 0 &&
-#endif /*]*/
+	void trace_ansi_disc(void);
+	void trace_char(char c);
+	void trace_ds(const char *fmt, ...) printflike(1, 2);
+	void trace_ds_nb(const char *fmt, ...) printflike(1, 2);
+	void trace_dsn(const char *fmt, ...) printflike(1, 2);
+	void trace_event(const char *fmt, ...) printflike(1, 2);
+	void trace_screen(void);
+//	void trace_rollover_check(void);
 
-#endif /*]*/
+#elif defined(__GNUC__)
+
+	#define trace_ds(format, args...)
+	#define trace_dsn(format, args...)
+	#define trace_ds_nb(format, args...)
+	#define trace_event(format, args...)
+
+#else
+
+	#define trace_ds 0 &&
+	#define trace_ds_nb 0 &&
+	#define trace_dsn 0 &&
+	#define trace_event 0 &&
+	#define rcba 0 &&
+
+#endif

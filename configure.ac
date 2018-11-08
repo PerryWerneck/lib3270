@@ -74,6 +74,7 @@ dnl ---------------------------------------------------------------------------
 
 case "$host" in
 	*-mingw32)
+		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LDFLAGS="$LDFLAGS -pthread -static-libgcc -static-libstdc++"
 		DLLEXT=".dll"
@@ -84,6 +85,7 @@ case "$host" in
 		LDFLAGS="$LDFLAGS -pthread"
 		app_cv_datadir="/usr/share"
 		app_cv_confdir="/etc"
+		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		;;
 
@@ -92,6 +94,7 @@ case "$host" in
 		LDFLAGS="$LDFLAGS -pthread"
 		app_cv_datadir="/usr/share"
 		app_cv_confdir="/etc"
+		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
 		DLLPREFIX="lib"
@@ -100,6 +103,7 @@ esac
 
 AC_SUBST(DATADIR,$app_cv_datadir)
 AC_SUBST(CONFDIR,$app_cv_confdir)
+AC_SUBST(OSNAME,$app_cv_confdir)
 AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
@@ -364,7 +368,7 @@ dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(sdk/lib3270.pc)
-dnl AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.

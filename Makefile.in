@@ -24,64 +24,66 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-LIBNAME=lib@LIB3270_NAME@@DLLEXT@
+#---[ Library configuration ]------------------------------------------------------------
 
-SOURCES =	bounds.c ctlr.c util.c toggles.c screen.c selection.c kybd.c telnet.c \
-				iocalls.c connect.c \
-				host.c sf.c ansi.c resolver.c charset.c \
-				version.c session.c state.c html.c trace_ds.c see.c \
-				paste.c ssl.c actions.c \
-				ft.c ft_cut.c ft_dft.c glue.c resources.c \
-				rpq.c macros.c fallbacks.c log.c options.c
+LIBNAME=@LIB3270_NAME@
 
-#---[ Configuration values ]-------------------------------------------------------------
+SOURCES= \
+	$(wildcard src/lib3270/*.c) \
+	$(wildcard src/lib3270/@OSNAME@/*.c) \
+	$(wildcard src/lib3270/@OSNAME@/*.rc)
 
-PACKAGE_NAME=@PACKAGE_NAME@
-PACKAGE_VERSION=@PACKAGE_VERSION@
-PACKAGE_TARNAME=@PACKAGE_TARNAME@
+#---[ Tools ]----------------------------------------------------------------------------
+
+CC=@CC@
+LD=@CC@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+
+#---[ Paths ]----------------------------------------------------------------------------
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 sbindir=@sbindir@
 libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
 
 BASEDIR=@BASEDIR@
-SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)/src/lib3270
-POTDIR=$(BASEDIR)/.pot/lib3270
 
-OBJDIR=$(BASEDIR)/.obj/lib3270
+OBJDIR=$(BASEDIR)/.obj/@DLLPREFIX@$(LIBNAME)
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=$(BASEDIR)/.bin/@DLLPREFIX@$(LIBNAME)
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
-INSTALL_PROGRAM=@INSTALL_PROGRAM@
-
-LN_S=@LN_S@
-
-AMTAR=@AMTAR@
-SHELL=@SHELL@
-MKDIR=@MKDIR_P@
-XGETTEXT=@XGETTEXT@
-MSGCAT=@MSGCAT@
-VALGRIND=@VALGRIND@
-
-CC=@CC@
-HOST_CC=@HOST_CC@
-LD=@CC@
-
-CFLAGS=@CFLAGS@ @LIB3270_CFLAGS@ @LIBSSL_CFLAGS@
-LIBS=@LIBS@ @LIBSSL_LIBS@ @LIBICONV@ @INTL_LIBS@
-LDFLAGS=@LDFLAGS@
-
 #---[ Rules ]----------------------------------------------------------------------------
 
-DEPENDS=$(BASEDIR)/src/include/*.h $(BASEDIR)/src/include/lib3270/*.h *.h Makefile
+DEPENDS= \
+	Makefile \
+	src/include/*.h \
+	src/include/lib3270/*.h \
+	src/lib3270/*.h
+
+
+CFLAGS= \
+	@CFLAGS@ \
+	-g \
+	-Isrc/include
+	-DBUILD_DATE=`date +%Y%m%d` \
+	@LIBSSL_CFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@LIBSSL_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
 
 $(OBJDBG)/%.o: \
 	%.c \
@@ -89,10 +91,12 @@ $(OBJDBG)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CC) $(CFLAGS) \
-				@DBG_CFLAGS@ \
-				-DBUILD_DATE=`date +"0x%Y%m%d"`\
-				-o $@ -c $<
+	@$(CC) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check -DDEBUG=1 \
+		-o $@ -c $<
+
+#---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
 	%.c \
@@ -100,177 +104,101 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CC) $(CFLAGS) \
-				@RLS_CFLAGS@ \
-				-DBUILD_DATE=`date +"0x%Y%m%d"` \
-				-o $@ -c $<
-
-
-$(POTDIR)/%.pot: %.c
-
-	@echo $(notdir $@) ...
-	@$(MKDIR) `dirname $@`
-	@$(XGETTEXT) \
-		--default-domain=$(PACKAGE) \
-		--language=C \
-		--keyword=_ \
-		--keyword=N_ \
-		--keyword=MSG_:2 \
-		--output=$@ \
-		$<
-
-	@touch $@
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ -c $<
 
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/$(LIBNAME)
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
 
 Release: \
-	$(BINRLS)/$(LIBNAME)
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
 
-$(BASEDIR)/.pot/lib@LIB3270_NAME@.pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
+$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@: \
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
+
+$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 
 	@rm -f $@
-	@mkdir -p `dirname $@`
-	@$(MSGCAT) --sort-output $^ > $@
+	@$(LN_S) \
+		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
 
-$(BINRLS)/$(LIBNAME): \
-	$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@
-
-	@echo $(basename $@) ...
-	@$(MKDIR) `dirname $@`
-	@$(LN_S) -f $(LIBNAME).@PACKAGE_MAJOR_VERSION@ $@
-
-$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@: \
-	$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@echo $(basename $@) ...
-	@$(MKDIR) `dirname $@`
-	@$(LN_S) -f $(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ $@
-
-$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
-	@echo $(basename $@) ...
 	@$(MKDIR) `dirname $@`
-	@$(LD) -shared -Wl,-soname,$(@F) $(LDFLAGS) -o $@ $^ $(LIBS)
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(LIBS)
 
-install: \
-	$(BINRLS)/$(LIBNAME)
+#---[ Install Targets ]------------------------------------------------------------------
 
-	@$(MKDIR) $(DESTDIR)$(libdir)
-
-	@$(INSTALL_PROGRAM) \
-				$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-				$(DESTDIR)$(libdir)
-
-	@$(LN_S) -f \
-				$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-				$(DESTDIR)$(libdir)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@
-
-	@$(LN_S) -f \
-				$(LIBNAME).@PACKAGE_MAJOR_VERSION@ \
-				$(DESTDIR)$(libdir)/$(LIBNAME)
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/$(LIBNAME)
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
 
-$(BINDBG)/$(LIBNAME): \
-	$(BINDBG)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@
+$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@: \
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 
-	@echo $(basename $@) ...
-	@$(MKDIR) `dirname $@`
-	@$(LN_S) -f $(LIBNAME).@PACKAGE_MAJOR_VERSION@ $@
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
 
-$(BINDBG)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@: \
-	$(BINDBG)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 
-	@echo $(basename $@) ...
-	@$(MKDIR) `dirname $@`
-	@$(LN_S) -f $(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ $@
+	@rm -f $@
+	@$(LN_S) \
+		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
 
-$(BINDBG)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
 
-	@echo $(basename $@) ...
 	@$(MKDIR) `dirname $@`
-	@$(LD) -shared -Wl,-soname,$(@F) $(LDFLAGS) -o $@ $^ $(LIBS)
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(LIBS)
 
-#---[ Misc Targets ]---------------------------------------------------------------------
+#---[ Clean Targets ]--------------------------------------------------------------------
 
-fallbacks.c: \
-	X3270.xad \
-	mkfb.c
-
-	@echo $(basename $@) ...
-	@$(MKDIR) $(BINDIR)
-	@$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ mkfb.c
-	@$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
-
-version.c: \
-	./mkversion.sh
-
-	@echo $(basename $@) ...
-	@chmod +x ./mkversion.sh
-	@./mkversion.sh
-
-$(BINDBG)/testprogram$(EXEEXT): \
-	$(OBJDBG)/testprogram.o \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
-
-	@echo $(basename $@) ...
-	@$(MKDIR) `dirname $@`
-	@$(LD) -o $@ $^ $(LIBS)
-
-run: \
-	$(BINDBG)/testprogram$(EXEEXT)
-
-ifeq ($(VALGRIND),no)
-	@cd "$(ROOTDIR)" ; .bin/Debug/testprogram$(EXEEXT)
-else
-	@cd "$(ROOTDIR)" ; \$(VALGRIND) --leak-check=full --gen-suppressions=all $(BINDBG)/testprogram$(EXEEXT)
-endif
-
-$(SRCDIR): \
-	clean
-
-	@$(MKDIR) $@
-	@$(INSTALL_DATA) *.c *.h *.in *.cbp *.xad $@
-
-
-#---[ Clean Targets]---------------------------------------------------------------------
-
-cleanDebug:
-
-	@rm -fr	$(OBJDBG) \
-			$(BINDBG)/$(LIBNAME) \
-			$(BINDBG)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@ \
-			$(BINDBG)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f \
-		fallbacks.c \
-		version.c
-
-cleanRelease:
-
-	@rm -fr	$(OBJRLS) \
-			$(BINRLS)/$(LIBNAME) \
-			$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@ \
-			$(BINRLS)/$(LIBNAME).@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-			$(POTDIR)
-
-	@rm -f \
-		fallbacks.c \
-		version.c
 clean: \
 	cleanDebug \
 	cleanRelease
 
+cleanDebug:
 
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
 
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+
+clean: \
+	cleanDebug \
+	cleanRelease
 
 

@@ -6,10 +6,10 @@ includedir=@includedir@
 version_major=@PACKAGE_MAJOR_VERSION@
 version_minor=@PACKAGE_MINOR_VERSION@
 
-Name: lib3270
-Description: TN3270E Library calls used by @PACKAGE@
+Name: @PACKAGE_NAME@
+Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
-Libs: -L\@libdir@ -l3270
+Libs: -L\@libdir@ -l@LIB3270_NAME@
 Libs.private: @LIBSSL_LIBS@
 Cflags: -I@includedir@
 

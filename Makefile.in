@@ -44,6 +44,8 @@ MKDIR=@MKDIR_P@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -59,6 +61,8 @@ docdir=@docdir@
 sysconfdir=@sysconfdir@
 
 BASEDIR=@BASEDIR@
+
+POTDIR=$(BASEDIR)/.pot
 
 OBJDIR=$(BASEDIR)/.obj/@DLLPREFIX@$(LIBNAME)
 OBJDBG=$(OBJDIR)/Debug
@@ -117,6 +121,22 @@ $(OBJRLS)/%.o: \
 		-DDATADIR=$(datarootdir)/pw3270 \
 		-o $@ -c $<
 
+#---[ Misc Rules ]-----------------------------------------------------------------------
+
+$(POTDIR)/%.pot: \
+	%.c
+
+	@echo $(notdir $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(XGETTEXT) \
+		--language=C \
+		--keyword=_ \
+		--keyword=N_ \
+		--keyword=MSG_:2 \
+		--output=$@ \
+		$<
+	@touch $@
+
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
@@ -165,13 +185,21 @@ $(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c: \
 	$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard src/mkfb/*.c)
 	$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
 
+lib$(LIBNAME).pot: \
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
+
+	@rm -f $@
+	@mkdir -p `dirname $@`
+	@$(MSGCAT) --sort-output $^ > $@
+
+locale: \
+	lib$(LIBNAME).pot
+
+
 #---[ Install Targets ]------------------------------------------------------------------
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------
-
-x: \
-	$(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c
 
 Debug: \
 	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
@@ -222,6 +250,8 @@ cleanRelease:
 
 	@rm -fr $(OBJRLS)
 	@rm -fr $(BINRLS)
+	@rm -fr $(POTDIR)
+	@rm -f lib$(LIBNAME).pot
 
 clean: \
 	cleanDebug \

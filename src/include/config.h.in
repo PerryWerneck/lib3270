@@ -54,7 +54,7 @@
 	/* Windows Options */
 #ifdef WIN32
 	#undef HAVE_WIN_REGISTRY
-#endif WIN32
+#endif // WIN32
 
 	/* Optional parts. */
 	#undef X3270_DBCS

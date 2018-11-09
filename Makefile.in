@@ -172,6 +172,7 @@ $(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_V
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		$(LIBS)
 
 #---[ Misc Targets ]---------------------------------------------------------------------
@@ -198,6 +199,46 @@ locale: \
 
 
 #---[ Install Targets ]------------------------------------------------------------------
+
+install: \
+	install-lib \
+	install-devel
+
+install-lib: \
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
+
+	@mkdir -p $(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)
+
+	@$(LN_S) \
+		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@$(LN_S) \
+		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$(DESTDIR)$(libdir)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
+
+install-devel:
+
+	@mkdir -p $(DESTDIR)$(includedir)/lib$(LIBNAME)
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+
+	# Install includes
+	@$(INSTALL_DATA) \
+		src/include/lib3270/*.h \
+		$(DESTDIR)$(includedir)/lib$(LIBNAME)		
+
+	@$(INSTALL_DATA) \
+		src/include/lib3270.h \
+		$(DESTDIR)$(includedir)/lib$(LIBNAME).h
+
+	# Install PKG-CONFIG files
+	@$(INSTALL_DATA) \
+		sdk/lib3270.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/lib$(LIBNAME).pc
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------

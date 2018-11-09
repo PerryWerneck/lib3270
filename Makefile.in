@@ -46,6 +46,7 @@ INSTALL_DATA=@INSTALL_DATA@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 XGETTEXT=@XGETTEXT@
 MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -108,6 +109,13 @@ $(OBJDBG)/%.o: \
 		-DDEBUG=1 \
 		-o $@ -c $<
 
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
@@ -120,6 +128,13 @@ $(OBJRLS)/%.o: \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
 		-o $@ -c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
 

@@ -72,6 +72,8 @@ dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
 dnl ---------------------------------------------------------------------------
 
+DLLPREFIX="lib"
+
 case "$host" in
 	*-mingw32)
 		app_cv_osname="windows"
@@ -103,7 +105,6 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
-		DLLPREFIX="lib"
 
 esac
 

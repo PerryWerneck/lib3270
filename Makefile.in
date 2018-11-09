@@ -140,7 +140,8 @@ $(POTDIR)/%.pot: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@ \
+	lib$(LIBNAME).pot
 
 Release: \
 	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
@@ -182,8 +183,8 @@ $(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c: \
 	@$(MKDIR) `dirname $@`
 	@$(MKDIR) $(BINDIR)
 	@echo $< ...
-	$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard src/mkfb/*.c)
-	$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
+	@$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard src/mkfb/*.c)
+	@$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
 
 lib$(LIBNAME).pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)

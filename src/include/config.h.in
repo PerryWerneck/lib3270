@@ -45,12 +45,16 @@
 	#undef HAVE_ICONV
 	#undef ICONV_CONST
 
+	/* Security options */
+	#undef HAVE_LDAP
+	#undef HAVE_LIBSSL
 	#undef SSL_ALLOW_SELF_SIGNED_CERT
 	#undef SSL_ENABLE_CRL_CHECK
 
+	/* Windows Options */
 #ifdef WIN32
 	#undef HAVE_WIN_REGISTRY
-#endif // HAVE_WIN_REGISTRY
+#endif WIN32
 
 	/* Optional parts. */
 	#undef X3270_DBCS
@@ -65,7 +69,6 @@
 
 	#undef HAVE_PRINTER
 	#undef HAVE_MALLOC_H
-	#undef HAVE_OOREXXAPI_H
 	#undef HAVE_STRTOK_R
 
 #endif /* LIB3270_CONFIG_INCLUDED */

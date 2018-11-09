@@ -373,13 +373,53 @@ if test "$app_cv_inet_ntop" == "yes"; then
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl Check for Libraries
+dnl Check for SSL
 dnl ---------------------------------------------------------------------------
 
 PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL), AC_MSG_NOTICE([libssl not present.]) )
 
 AC_SUBST(LIBSSL_LIBS)
 AC_SUBST(LIBSSL_CFLAGS)
+
+dnl ---------------------------------------------------------------------------
+dnl Check for LDAP
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_ENABLE([ldap],
+        AS_HELP_STRING([--disable-ldap],[Disable optional LDAP support]),
+                [case "${enableval}" in
+                        yes) have_ldap=yes ;;
+                        no) have_ldap=no ;;
+                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-ldap);;
+                esac],
+                [have_ldap=auto])
+
+
+if test "x${have_ldap}" != xno ; then
+        AC_CHECK_HEADERS(
+                [ldap.h],
+                [have_ldap=yes],
+                [if test "x$have_ldap" = xyes ; then
+                        AC_MSG_ERROR([LDAP headers not found.])
+                fi])
+
+        if test "x$have_ldap" = xyes ; then
+
+                LDAP_LIBS="-lldap -llber"
+             	AC_DEFINE(HAVE_LDAP,1,[LDAP is available])
+                M4_DEFINES="$M4_DEFINES -DHAVE_LDAP"
+
+        else
+
+                have_ldap=no
+
+        fi
+
+else
+        LDAP_LIBS=
+fi
+
+AC_SUBST(LDAP_LIBS)
 
 dnl ---------------------------------------------------------------------------
 dnl Output config

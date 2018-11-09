@@ -146,6 +146,19 @@ AC_SUBST(PACKAGE_RELEASE,$app_cv_release)
 AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
 AC_SUBST(PACKAGE_MINOR_RELEASE,$app_rls_minor)
 
+rpq_build_date=`LANG=C date`
+rpq_timestamp=`date +%Y%m%d%H%M%S`
+rpq_revision=`date +"%Y%m%d"`
+sccs_date=`date +%Y/%m/%d`
+sccs_user=$USER
+
+AC_SUBST(RPQ_BUILD_DATE,$rpq_build_date)
+AC_SUBST(RPQ_TIMESTAMP,$rpq_timestamp)
+AC_SUBST(RPQ_REVISION,$rpq_revision)
+
+AC_SUBST(SCCS_USER,$USER)
+AC_SUBST(SCCS_DATE,$sccs_date)
+
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl
 dnl ---------------------------------------------------------------------------
@@ -368,6 +381,7 @@ dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(sdk/lib3270.pc)
+AC_CONFIG_FILES(src/lib3270/version.c)
 AC_CONFIG_FILES(Makefile)
 
 dnl ---------------------------------------------------------------------------

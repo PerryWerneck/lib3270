@@ -39,6 +39,9 @@ CC=@CC@
 LD=@CC@
 LN_S=@LN_S@
 MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -148,6 +151,15 @@ $(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_V
 		$(LDFLAGS) \
 		$(LIBS)
 
+#---[ Misc Targets ]---------------------------------------------------------------------
+
+src/lib3270/version.c: \
+	Makefile
+
+	@echo $(basename $@) ...
+	@chmod +x src/lib3270/mkversion.sh
+	@./src/lib3270/mkversion.sh
+
 #---[ Install Targets ]------------------------------------------------------------------
 
 
@@ -182,6 +194,7 @@ $(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_V
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 		$(LIBS)
 
 #---[ Clean Targets ]--------------------------------------------------------------------

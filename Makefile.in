@@ -90,7 +90,9 @@ CFLAGS= \
 
 LIBS= \
 	@LIBS@ \
-	@LIBSSL_LIBS@
+	@LIBSSL_LIBS@ \
+	@LIBICONV@ \
+	@INTL_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
@@ -104,7 +106,6 @@ $(OBJDBG)/%.o: \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
-		-DDATADIR=$(BASEDIR) \
 		-o $@ -c $<
 
 #---[ Release Rules ]--------------------------------------------------------------------
@@ -118,7 +119,6 @@ $(OBJRLS)/%.o: \
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
-		-DDATADIR=$(datarootdir)/pw3270 \
 		-o $@ -c $<
 
 #---[ Misc Rules ]-----------------------------------------------------------------------

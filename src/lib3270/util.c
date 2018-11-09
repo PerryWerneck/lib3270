@@ -208,7 +208,7 @@ LIB3270_EXPORT const char * lib3270_win32_local_charset(void)
 	// Reference:
 	// http://msdn.microsoft.com/en-us/library/windows/desktop/dd318070(v=vs.85).aspx
 
-	#warning TODO: Use GetACP() to identify the correct code page
+	/// TODO: Use GetACP() to identify the correct code page
 
 	trace("Windows CHARSET is %u",GetACP());
 

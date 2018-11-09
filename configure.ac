@@ -76,8 +76,14 @@ case "$host" in
 	*-mingw32)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
+		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
 		LDFLAGS="$LDFLAGS -pthread -static-libgcc -static-libstdc++"
 		DLLEXT=".dll"
+
+		app_win32_revision=$(date +%y.%m.%d.%H)
+		AC_SUBST(WIN32_VERSION,$app_win32_revision)
+
+		AC_CONFIG_FILES(src/lib3270/windows/resources.rc)
 		;;
 
  	s390x-*)
@@ -103,7 +109,7 @@ esac
 
 AC_SUBST(DATADIR,$app_cv_datadir)
 AC_SUBST(CONFDIR,$app_cv_confdir)
-AC_SUBST(OSNAME,$app_cv_confdir)
+AC_SUBST(OSNAME,$app_cv_osname)
 AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)

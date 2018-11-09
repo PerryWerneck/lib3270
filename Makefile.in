@@ -93,7 +93,9 @@ $(OBJDBG)/%.o: \
 	@$(MKDIR) `dirname $@`
 	@$(CC) \
 		$(CFLAGS) \
-		-Wall -Wextra -fstack-check -DDEBUG=1 \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-DDATADIR=$(BASEDIR) \
 		-o $@ -c $<
 
 #---[ Release Rules ]--------------------------------------------------------------------
@@ -107,6 +109,7 @@ $(OBJRLS)/%.o: \
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
+		-DDATADIR=$(datarootdir)/pw3270 \
 		-o $@ -c $<
 
 #---[ Release Targets ]------------------------------------------------------------------

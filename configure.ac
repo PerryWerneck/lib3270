@@ -110,6 +110,18 @@ AC_SUBST(DLLEXT)
 AC_SUBST(DLLPREFIX)
 
 dnl ---------------------------------------------------------------------------
+dnl Check host compiler
+dnl ---------------------------------------------------------------------------
+
+if test $host != $build; then
+	AC_CHECK_PROGS(HOST_CC, gcc cc)
+else
+	HOST_CC=$CC
+fi
+
+AC_SUBST(HOST_CC)
+
+dnl ---------------------------------------------------------------------------
 dnl Check for other programs
 dnl ---------------------------------------------------------------------------
 

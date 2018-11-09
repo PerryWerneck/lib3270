@@ -31,11 +31,13 @@ LIBNAME=@LIB3270_NAME@
 SOURCES= \
 	$(wildcard src/lib3270/*.c) \
 	$(wildcard src/lib3270/@OSNAME@/*.c) \
-	$(wildcard src/lib3270/@OSNAME@/*.rc)
+	$(wildcard src/lib3270/@OSNAME@/*.rc) \
+	$(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c
 
 #---[ Tools ]----------------------------------------------------------------------------
 
 CC=@CC@
+HOST_CC=@HOST_CC@
 LD=@CC@
 LN_S=@LN_S@
 MKDIR=@MKDIR_P@
@@ -160,10 +162,22 @@ src/lib3270/version.c: \
 	@chmod +x src/lib3270/mkversion.sh
 	@./src/lib3270/mkversion.sh
 
+$(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c: \
+	X3270.xad \
+	$(wildcard src/mkfb/*.c)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard src/mkfb/*.c)
+	$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
+
 #---[ Install Targets ]------------------------------------------------------------------
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------
+
+x: \
+	$(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c
 
 Debug: \
 	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
@@ -202,6 +216,8 @@ $(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_V
 clean: \
 	cleanDebug \
 	cleanRelease
+
+	@rm -fr $(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)
 
 cleanDebug:
 

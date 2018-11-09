@@ -155,18 +155,12 @@ $(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_V
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-src/lib3270/version.c: \
-	Makefile
-
-	@echo $(basename $@) ...
-	@chmod +x src/lib3270/mkversion.sh
-	@./src/lib3270/mkversion.sh
-
 $(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c: \
 	X3270.xad \
 	$(wildcard src/mkfb/*.c)
 
 	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(BINDIR)
 	@echo $< ...
 	$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard src/mkfb/*.c)
 	$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@

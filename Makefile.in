@@ -34,6 +34,9 @@ SOURCES= \
 	$(wildcard src/lib3270/@OSNAME@/*.rc) \
 	$(BASEDIR)/.tmp/@DLLPREFIX@$(LIBNAME)/fallbacks.c
 
+TEST_SOURCES= \
+	$(wildcard src/testprogram/*.c)
+
 #---[ Tools ]----------------------------------------------------------------------------
 
 CC=@CC@
@@ -47,6 +50,7 @@ INSTALL_PROGRAM=@INSTALL_PROGRAM@
 XGETTEXT=@XGETTEXT@
 MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
+AR=@AR@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -159,7 +163,8 @@ all: \
 	lib$(LIBNAME).pot
 
 Release: \
-	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME).a
 
 $(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@: \
 	$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
@@ -189,6 +194,14 @@ $(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_V
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		$(LIBS)
+
+$(BINRLS)/@DLLPREFIX@$(LIBNAME).a: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@echo $@ ...
+	@$(MKDIR) `dirname $@`
+	@$(AR) rcs $@ $^
+
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -228,6 +241,18 @@ install-lib: \
 		$(BINRLS)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)
 
+install-devel: \
+	$(BINRLS)/@DLLPREFIX@$(LIBNAME).a
+
+	@mkdir -p $(DESTDIR)$(includedir)/lib$(LIBNAME)
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+
+	# Install static library
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/@DLLPREFIX@$(LIBNAME).a \
+		$(DESTDIR)$(libdir)
+
+	# Link libraries
 	@$(LN_S) \
 		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
@@ -235,11 +260,6 @@ install-lib: \
 	@$(LN_S) \
 		@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
-
-install-devel:
-
-	@mkdir -p $(DESTDIR)$(includedir)/lib$(LIBNAME)
-	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
 
 	# Install includes
 	@$(INSTALL_DATA) \
@@ -259,7 +279,9 @@ install-devel:
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@ \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o)
+	
 
 $(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@: \
 	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@

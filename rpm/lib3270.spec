@@ -44,7 +44,7 @@ Name:		lib3270-%{_libvrs}
 Version:	5.2
 Release:	0
 License:        GPL-2.0
-Source:		lib3270-%{version}.tar.xz
+Source:		%{name}-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 
@@ -76,7 +76,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
-Requires:	%{name}
+Requires:	%{name} = %{version}
 
 %description devel
 
@@ -89,7 +89,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup -n lib3270-%{version}
+%setup -n lib3270-%{_libvrs}
 
 NOCONFIGURE=1 ./autogen.sh
 

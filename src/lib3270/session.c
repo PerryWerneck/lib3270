@@ -185,6 +185,18 @@ static void nop_int(H3270 *session, int width)
 	return;
 }
 
+#ifdef HAVE_LIBSSL
+static void set_peer_certificate(const X509 *cert unused)
+{
+
+}
+#else
+static void set_peer_certificate)(const void *cert unused)
+{
+
+}
+#endif // HAVE_LIBSSL
+
 static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)
 {
 	int		f;
@@ -195,28 +207,29 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	lib3270_set_host_charset(hSession,charset);
 
 	// Default calls
-	hSession->cbk.write				= lib3270_sock_send;
-	hSession->cbk.disconnect		= lib3270_sock_disconnect;
-	hSession->cbk.update 			= update_char;
-	hSession->cbk.update_model		= update_model;
-	hSession->cbk.update_cursor		= update_cursor;
-	hSession->cbk.set_selection 	= nop_char;
-	hSession->cbk.ctlr_done			= nop;
-	hSession->cbk.changed			= changed;
-	hSession->cbk.erase				= screen_disp;
-	hSession->cbk.suspend			= nop;
-	hSession->cbk.resume			= screen_disp;
-	hSession->cbk.update_oia		= update_oia;
-	hSession->cbk.update_selection	= update_selection;
-	hSession->cbk.cursor 			= set_cursor;
-	hSession->cbk.message			= message;
-	hSession->cbk.update_ssl		= update_ssl;
-	hSession->cbk.display			= screen_disp;
-	hSession->cbk.set_width			= nop_int;
-	hSession->cbk.update_status		= (void (*)(H3270 *, LIB3270_MESSAGE)) nop_int;
-	hSession->cbk.autostart			= nop;
-	hSession->cbk.set_timer			= set_timer;
-	hSession->cbk.print				= print;
+	hSession->cbk.write					= lib3270_sock_send;
+	hSession->cbk.disconnect			= lib3270_sock_disconnect;
+	hSession->cbk.update 				= update_char;
+	hSession->cbk.update_model			= update_model;
+	hSession->cbk.update_cursor			= update_cursor;
+	hSession->cbk.set_selection 		= nop_char;
+	hSession->cbk.ctlr_done				= nop;
+	hSession->cbk.changed				= changed;
+	hSession->cbk.erase					= screen_disp;
+	hSession->cbk.suspend				= nop;
+	hSession->cbk.resume				= screen_disp;
+	hSession->cbk.update_oia			= update_oia;
+	hSession->cbk.update_selection		= update_selection;
+	hSession->cbk.cursor 				= set_cursor;
+	hSession->cbk.message				= message;
+	hSession->cbk.update_ssl			= update_ssl;
+	hSession->cbk.display				= screen_disp;
+	hSession->cbk.set_width				= nop_int;
+	hSession->cbk.update_status			= (void (*)(H3270 *, LIB3270_MESSAGE)) nop_int;
+	hSession->cbk.autostart				= nop;
+	hSession->cbk.set_timer				= set_timer;
+	hSession->cbk.print					= print;
+	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 
 	// Set the defaults.
 	hSession->extended  			=  1;

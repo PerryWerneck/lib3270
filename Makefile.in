@@ -279,9 +279,22 @@ install-devel: \
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@ \
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@EXEEXT@
+
+$(BINDBG)/@DLLPREFIX@$(LIBNAME)@EXEEXT@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o)
-	
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+run: \
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@EXEEXT@
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/@DLLPREFIX@$(LIBNAME)@EXEEXT@
+
 
 $(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@: \
 	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@

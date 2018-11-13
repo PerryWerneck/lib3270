@@ -66,7 +66,9 @@ BuildRequires:  pkgconfig
 
 %description
 
-TN3270 acess library for C development.
+TN3270 access library originally designed as part of the pw3270 application.
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
@@ -78,7 +80,11 @@ Requires:	%{name}
 
 %description devel
 
-Development files for %{name}
+TN3270 access library for C development files.
+
+Originally designed as part of the pw3270 application.
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -100,6 +106,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%doc AUTHORS LICENSE README.md
+
 %{_libdir}/lib3270.so.5
 %{_libdir}/lib3270.so.5.2
 
@@ -120,6 +128,10 @@ rm -rf $RPM_BUILD_ROOT
 exit 0
 
 %post
+/sbin/ldconfig
+exit 0
+
+%postun
 /sbin/ldconfig
 exit 0
 

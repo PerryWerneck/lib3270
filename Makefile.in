@@ -248,7 +248,7 @@ install-devel: \
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
 
 	# Install static library
-	@$(INSTALL_PROGRAM) \
+	@$(INSTALL_DATA) \
 		$(BINRLS)/@DLLPREFIX@$(LIBNAME).a \
 		$(DESTDIR)$(libdir)
 

@@ -33,9 +33,9 @@
 
  #define popup_an_errno(hSession, errn, fmt, ...) lib3270_popup_an_errno(hSession, errn, fmt, __VA_ARGS__)
 
- LOCAL_EXTERN void popup_an_error(H3270 *session, const char *fmt, ...) printflike(2,3);
- LOCAL_EXTERN void popup_system_error(H3270 *session, const char *title, const char *message, const char *fmt, ...) printflike(4,5);
- LOCAL_EXTERN void popup_a_sockerr(H3270 *session, char *fmt, ...) printflike(2,3);
+ LOCAL_EXTERN void popup_an_error(H3270 *session, const char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
+ LOCAL_EXTERN void popup_system_error(H3270 *session, const char *title, const char *message, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
+ LOCAL_EXTERN void popup_a_sockerr(H3270 *session, char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
 
  LOCAL_EXTERN void Error(H3270 *session, const char *fmt, ...);
  LOCAL_EXTERN void Warning(H3270 *session, const char *fmt, ...);

@@ -39,6 +39,10 @@
 		#include <sys/socket.h>
 	#endif // WIN32
 
+#ifdef HAVE_LIBSSL
+	#include <openssl/ssl.h>
+#endif // HAVE_LIBSSL
+
 	#include <lib3270/popup.h>
 
 	struct lib3270_session_callbacks
@@ -74,6 +78,12 @@
 
 		void (*message)(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text);
 
+#ifdef HAVE_LIBSSL
+		void (*set_peer_certificate)(const X509 *cert);
+#else
+		void (*set_peer_certificate)(const void *cert);
+#endif // HAVE_LIBSSL
+
 	};
 
 	/**
@@ -84,7 +94,7 @@
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	int LIB3270_EXPORT lib3270_set_session_callbacks(const struct lib3270_callbacks *cbk);
+	LIB3270_EXPORT int lib3270_set_session_callbacks(const struct lib3270_callbacks *cbk);
 
 	LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 	LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);

@@ -41,9 +41,22 @@
 
 	#if defined(__GNUC__)
 		#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
+		#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
+
+	#elif defined(_WIN32)
+
+		#define LIB3270_DEPRECATED(func) __declspec(deprecated) func
+
+	#elif defined(__LCLINT__)
+
+		#define LIB3270_DEPRECATED(func) func
+
 	#else
-		#define LIB3270_GNUC_FORMAT(s, f)
+
+		#define LIB3270_DEPRECATED(func) func
+
 	#endif
+
 
 	/**
 	 * BIND definitions.
@@ -745,7 +758,7 @@
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	int LIB3270_EXPORT lib3270_register_handlers(const struct lib3270_callbacks *cbk);
+	LIB3270_EXPORT int lib3270_register_handlers(const struct lib3270_callbacks *cbk);
 
 	/**
 	 * Register time handlers.
@@ -754,9 +767,9 @@
 	 * @param rm	Callback for removing a timeout
 	 *
 	 */
-	void LIB3270_EXPORT lib3270_register_time_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer));
+	LIB3270_EXPORT void lib3270_register_time_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer));
 
-	void LIB3270_EXPORT lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
+	LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
 
 	/**
 	 * Get program message.

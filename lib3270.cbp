@@ -64,6 +64,7 @@
 		<Unit filename="src/include/icmdc.h" />
 		<Unit filename="src/include/keypadc.h" />
 		<Unit filename="src/include/kybdc.h" />
+		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/X11keysym.h" />
 		<Unit filename="src/include/lib3270/action_table.h" />
 		<Unit filename="src/include/lib3270/actions.h" />
@@ -82,7 +83,6 @@
 		<Unit filename="src/include/popupsc.h" />
 		<Unit filename="src/include/printc.h" />
 		<Unit filename="src/include/printerc.h" />
-		<Unit filename="src/include/private.h" />
 		<Unit filename="src/include/proxyc.h" />
 		<Unit filename="src/include/resolverc.h" />
 		<Unit filename="src/include/resources.h" />
@@ -170,6 +170,7 @@
 		<Unit filename="src/lib3270/printer.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/private.h" />
 		<Unit filename="src/lib3270/resolver.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -216,6 +217,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/windows/resources.rc.in" />
+		<Unit filename="src/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -117,7 +117,7 @@ static void cut_retransmit(H3270 *hSession);
 static void cut_data(H3270 *hSession);
 
 static void cut_ack(H3270 *hSession);
-static void cut_abort(H3270 *hSession, unsigned short code, const char *fmt, ...) printflike(3,4);
+static void cut_abort(H3270 *hSession, unsigned short code, const char *fmt, ...) LIB3270_GNUC_FORMAT(3,4);
 
 static unsigned from6(unsigned char c);
 static int xlate_getc(H3270FT *ft);

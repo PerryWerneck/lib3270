@@ -1034,7 +1034,7 @@ int gettimeofday(struct timeval *tv, void *ignored)
 		{ 0x83,	LIB3270_POINTER_SELECTION_TOP_LEFT		}
 	};
 
-	int f;
+	size_t f;
 	unsigned short id = lib3270_get_selection_flags(hSession,baddr) & 0x8f;
 
 	if(!lib3270_connected(hSession) || baddr < 0)

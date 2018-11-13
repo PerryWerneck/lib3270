@@ -301,11 +301,11 @@ static void toggle_redraw(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 /*
  * No-op toggle.
  */
-static void toggle_nop(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt unused)
+static void toggle_nop(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE LIB3270_UNUSED(tt) )
 {
 }
 
-static void toggle_keepalive(H3270 *session, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused)
+static void toggle_keepalive(H3270 *session, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused )
 {
 	if(session->sock > 0)
 	{

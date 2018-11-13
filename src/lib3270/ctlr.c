@@ -394,7 +394,7 @@ static void update_formatted(H3270 *hSession)
 /*
  * Called when a host is half connected.
  */
-static void ctlr_half_connect(H3270 *hSession, int ignored unused, void *dunno)
+static void ctlr_half_connect(H3270 *hSession, int ignored unused, void *dunno unused)
 {
 	ticking_start(hSession,True);
 }
@@ -402,7 +402,7 @@ static void ctlr_half_connect(H3270 *hSession, int ignored unused, void *dunno)
 /*
  * Called when a host connects, disconnects, or changes ANSI/3270 modes.
  */
-static void ctlr_connect(H3270 *hSession, int ignored unused, void *dunno)
+static void ctlr_connect(H3270 *hSession, int ignored unused, void *dunno unused)
 {
 	ticking_stop(hSession);
 	status_untiming(hSession);

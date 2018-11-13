@@ -132,11 +132,13 @@ int ssl_negotiate(H3270 *hSession)
 	{
 	case X509_V_OK:
 		peer = SSL_get_peer_certificate(hSession->ssl_con);
+/*
 #if defined(SSL_ENABLE_CRL_CHECK)
 		trace_dsn(hSession,"TLS/SSL negotiated connection complete with CRL validation. Peer certificate %s presented.\n", peer ? "was" : "was not");
 #else
 		trace_dsn(hSession,"TLS/SSL negotiated connection complete without CRL validation. Peer certificate %s presented.\n", peer ? "was" : "was not");
 #endif // SSL_ENABLE_CRL_CHECK
+*/
 		break;
 
 	case X509_V_ERR_UNABLE_TO_GET_CRL:
@@ -207,9 +209,10 @@ int ssl_negotiate(H3270 *hSession)
 
 			free(text);
 			BIO_free(out);
-			X509_free(peer);
 
 		}
+
+		hSession->cbk.set_peer_certificate(peer);
 
 		set_ssl_state(hSession,LIB3270_SSL_SECURE);
 		X509_free(peer);

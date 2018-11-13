@@ -4,7 +4,7 @@
 #include <stdlib.h>
 // #include <pthread.h>
 
-#include "private.h"
+#include "../lib3270/private.h"
 #include <lib3270/macros.h>
 
 #define MAX_ARGS 10

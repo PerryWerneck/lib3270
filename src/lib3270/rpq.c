@@ -72,7 +72,7 @@ static int get_rpq_user(H3270 *hSession, unsigned char buf[], const int buflen);
 #if !defined(_WIN32) /*[*/
 static int get_rpq_address(H3270 *hSession, unsigned char buf[], const int buflen);
 #endif /*]*/
-static void rpq_warning(H3270 *hSession, const char *fmt, ...) printflike(2,3);
+static void rpq_warning(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
 static void rpq_dump_warnings(H3270 *hSession);
 
 

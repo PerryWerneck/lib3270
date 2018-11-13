@@ -40,9 +40,9 @@
 
 	void trace_ansi_disc(H3270 *hSession);
 	void trace_char(H3270 *hSession, char c);
-	void trace_ds(H3270 *hSession, const char *fmt, ...) printflike(2, 3);
-	void trace_ds_nb(H3270 *hSession, const char *fmt, ...) printflike(2, 3);
-	void trace_dsn(H3270 *hSession, const char *fmt, ...) printflike(2, 3);
+	void trace_ds(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+	void trace_ds_nb(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+	void trace_dsn(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
 	void trace_screen(H3270 *session);
 
 //	#define trace_event(...)	lib3270_trace_event(&h3270,__VA_ARGS__)

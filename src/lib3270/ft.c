@@ -59,7 +59,7 @@
 #include "trace_dsc.h"
 
 static void ft_connected(H3270 *session, int ignored, void *unused);
-static void ft_in3270(H3270 *session, int ignored unused, void *unused);
+static void ft_in3270(H3270 *session, int ignored, void *unused);
 
 /* Macros. */
 #define eos(s)	strchr((s), '\0')

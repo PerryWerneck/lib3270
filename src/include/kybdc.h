@@ -73,7 +73,7 @@
 	LIB3270_INTERNAL int	run_ta(H3270 *hSession);
 //	LIB3270_INTERNAL int state_from_keymap(char keymap[32]);
 	LIB3270_INTERNAL void kybd_connect(H3270 *session, int connected, void *dunno);
-	LIB3270_INTERNAL void kybd_in3270(H3270 *session, int in3270 unused, void *dunno);
+	LIB3270_INTERNAL void kybd_in3270(H3270 *session, int in3270, void *dunno);
 
 
 #endif /* KYBDC_H_INCLUDED */

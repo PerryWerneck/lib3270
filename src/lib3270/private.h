@@ -6,7 +6,7 @@
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
  * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+ * os termos da GPL v.2 - Licença Pública Geral  ',  conforme  publicado  pela
  * Free Software Foundation.
  *
  * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
@@ -87,14 +87,12 @@
  */
 
 /* 'unused' explicitly flags an unused parameter */
-#if defined(__GNUC__) /*[*/
+#if defined(__GNUC__)
 	#define unused __attribute__((__unused__))
-	#define printflike(s,f) __attribute__ ((__format__ (__printf__, s, f)))
-#else /*][*/
-	#define unused /* nothing */
-	#define printflike(s, f) /* nothing */
-#endif /*]*/
-
+#else
+	#define unused
+	#define printflike(s, f)
+#endif
 
 
 /*

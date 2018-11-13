@@ -48,7 +48,7 @@ Source:		lib3270-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 
-Group:          System/X11/Terminals
+Group:		Development/Libraries/C and C++
 BuildRoot:	/var/tmp/%{name}-%{version}
 
 Provides:	lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}

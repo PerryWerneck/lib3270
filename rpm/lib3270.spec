@@ -89,7 +89,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup -n lib3270-%{_libvrs}
+%setup
 
 NOCONFIGURE=1 ./autogen.sh
 

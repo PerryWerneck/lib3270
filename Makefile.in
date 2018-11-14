@@ -156,6 +156,13 @@ $(POTDIR)/%.pot: \
 		$<
 	@touch $@
 
+$(POTDIR)/%.pot: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@touch $@
+
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \

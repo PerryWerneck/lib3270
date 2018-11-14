@@ -1,7 +1,7 @@
 #
-# spec file for package lib3270
+# spec file for package mingw32-lib3279
 #
-# Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2014 SUSE LINUX Products GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
 #
 # All modifications and additions to the file contributed by third parties
@@ -16,34 +16,27 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-#---[ Versions ]------------------------------------------------------------------------------------------------------
-
 %define MAJOR_VERSION 5
 %define MINOR_VERSION 2
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-%define libname		lib32705_2
-%define documentroot	/srv/www/htdocs/mentor
-
-#Compat macro for new _fillupdir macro introduced in Nov 2017
-%if ! %{defined _fillupdir}
-  %define _fillupdir /var/adm/fillup-templates
-%endif
-
-#---[ Macros ]--------------------------------------------------------------------------------------------------------
-
-%if ! %{defined _release}
-  %define _release suse%{suse_version}
-%endif
+%define __strip %{_mingw32_strip}
+%define __objdump %{_mingw32_objdump}
+%define _use_internal_dependency_generator 0
+%define __find_requires %{_mingw32_findrequires}
+%define __find_provides %{_mingw32_findprovides}
+%define __os_install_post %{_mingw32_debug_install_post} \
+                          %{_mingw32_install_post}
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:	TN3270 Access library
-Name:		lib3270-%{_libvrs}
-Version:	5.2
-Release:	0
+Name:           mingw32-lib3270-%{_libvrs}
+Version:        5.2
+Release:        0
 License:        GPL-2.0
+
 Source:		%{name}-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/
@@ -51,24 +44,18 @@ Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 Group:		Development/Libraries/C and C++
 BuildRoot:	/var/tmp/%{name}-%{version}
 
-Provides:	lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:	otherproviders(lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
+Provides:	mingw32-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
+Conflicts:	otherproviders(mingw32-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
-BuildRequires:  pkgconfig(openssl)
-BuildRequires:  autoconf >= 2.61
-BuildRequires:  automake
-BuildRequires:  binutils
-BuildRequires:  coreutils
-BuildRequires:  gcc-c++
-BuildRequires:  gettext-devel
-BuildRequires:  m4
-BuildRequires:  pkgconfig
+BuildRequires:	mingw32-cross-binutils
+BuildRequires:	mingw32-cross-gcc
+BuildRequires:	mingw32-cross-gcc-c++
+BuildRequires:	mingw32-cross-pkg-config
+BuildRequires:	mingw32-filesystem
+BuildRequires:	mingw32-libopenssl-devel
+BuildRequires:	mingw32-zlib-devel
 
-%description
-
-TN3270 access library originally designed as part of the pw3270 application.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
+#BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
@@ -91,52 +78,42 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
-%prep
 %setup
 
 NOCONFIGURE=1 ./autogen.sh
 
-%configure \
+%{_mingw32_configure} \
 	--with-sdk-version=%{version}
 
 %build
 make clean
 make all
 
-%install
-rm -rf $RPM_BUILD_ROOT
+%{_mingw32_strip} --strip-all .bin/Release/*.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%makeinstall
+%install
+%{_mingw32_makeinstall}
+
+%clean
+rm -rf %{buildroot}
+
+#---[ Files ]---------------------------------------------------------------------------------------------------------
 
 %files
 %defattr(-,root,root)
 %doc AUTHORS LICENSE README.md
 
-%{_libdir}/lib3270.so.5
-%{_libdir}/lib3270.so.5.2
+%{_mingw32_libdir}/lib3270.dll
+%{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}
+%{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %files devel
 %defattr(-,root,root)
+%{_mingw32_includedir}/lib3270
+%{_mingw32_includedir}/lib3270.h
+%{_mingw32_libdir}/pkgconfig/lib3270.pc
 
-%{_libdir}/lib3270.so
-%{_libdir}/pkgconfig/lib3270.pc
-
-%{_includedir}/lib3270.h
-%{_includedir}/lib3270
-
-%{_libdir}/lib3270.so
-%{_libdir}/lib3270.a
-
-%pre
-/sbin/ldconfig
-exit 0
-
-%post
-/sbin/ldconfig
-exit 0
-
-%postun
-/sbin/ldconfig
-exit 0
+%{_mingw32_libdir}/lib3270.a
 
 %changelog
+

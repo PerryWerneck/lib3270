@@ -96,7 +96,8 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 NOCONFIGURE=1 ./autogen.sh
 
-%configure
+%configure \
+	--with-sdk-version=%{version}
 
 %build
 make clean

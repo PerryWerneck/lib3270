@@ -349,6 +349,11 @@ AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])],
 AC_DEFINE(LIB3270_NAME,$app_cv_libname)
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
+AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library version for SDK])], [ app_cv_sdkversion="$withval" ],[ app_cv_sdkversion=$VERSION ])
+
+AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion)
+AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
+
 dnl ---------------------------------------------------------------------------
 dnl Check for headers
 dnl ---------------------------------------------------------------------------

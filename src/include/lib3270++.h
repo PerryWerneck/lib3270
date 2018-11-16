@@ -81,7 +81,7 @@
 
 			MESSAGE_X				= LIB3270_MESSAGE_X,				///< @brief --
 			MESSAGE_RESOLVING		= LIB3270_MESSAGE_RESOLVING,		///< @brief Resolving hostname (running DNS query)
-			MESSAGE_CONNECTING,		= LIB3270_MESSAGE_CONNECTING		///< @brief Connecting to host
+//	MESSAGE_CONNECTING,		= LIB3270_MESSAGE_CONNECTING		///< @brief Connecting to host
 
 		};
 
@@ -124,7 +124,11 @@
 
 		/// @brief Actions keys
 		enum Action : uint8_t {
-			ENTER		///< Enter key
+			ENTER,		///< Enter key
+			ERASE,
+			ERASE_EOF,
+			ERASE_EOL,
+			ERASE_INPUT
 		};
 
 		/// @brief TN3270 Session.
@@ -143,12 +147,13 @@
 			virtual void connect(const char *url) = 0;
 			virtual void disconnect();
 
+			// Wait for session state.
+			virtual void waitForReady(time_t timeout = 5) throw() = 0;
+
 			// Gets
+			virtual std::string toString() const = 0;
 			virtual std::string	toString(int baddr = 0, size_t len = -1, bool lf = false) = 0;
 			virtual std::string	toString(int row, int col, size_t sz, bool lf = false) = 0;
-
-			/// @brief Get field at current position, update to next one.
-			virtual Session & pop(std::string &value) = 0;
 
 			inline operator std::string() const {
 				return toString();
@@ -164,7 +169,7 @@
 				return getConnectionState();
 			}
 
-			// Sets
+			// Set contents.
 
 			/// @brief Set field at current posicion, jumps to next writable field.
 			virtual Session & push(const char *text) = 0;
@@ -177,6 +182,11 @@
 			virtual Session & push(const PFKey key) = 0;
 			virtual Session & push(const PAKey key) = 0;
 			virtual Session & push(const Action action) = 0;
+
+			// Get contents.
+			virtual Session & pop(int baddr, std::string &text) = 0;
+			virtual Session & pop(int row, int col, std::string &text) = 0;
+			virtual Session & pop(std::string &text) = 0;
 
 		};
 
@@ -199,6 +209,10 @@
 			Host(const char *id = nullptr, const char *url = nullptr);
 			~Host();
 
+			inline void connect(const char *url) {
+				this->session->connect(url);
+			}
+
 			inline ProgramMessage getProgramMessage() const {
 				return session->getProgramMessage();
 			}
@@ -215,8 +229,7 @@
 				return getConnectionState();
 			}
 
-
-			// Sets
+			// Set contents.
 
 			/// @brief Set field at current posicion, jumps to next writable field.
 			inline Host & push(const char *text) {
@@ -225,7 +238,7 @@
 			};
 
 			inline Host & push(const std::string &text) {
-				session->push(text));
+				session->push(text);
 				return *this;
 
 			}
@@ -255,6 +268,23 @@
 				return *this;
 			}
 
+			// Get contents.
+
+			inline Host & pop(int baddr, std::string &text) {
+				session->pop(baddr, text);
+				return *this;
+			}
+
+			inline Host & pop(int row, int col, std::string &text) {
+				session->pop(row,col,text);
+				return *this;
+			}
+
+			inline Host & pop(std::string &text) {
+				session->pop(text);
+				return *this;
+			}
+
 		};
 
 	}
@@ -279,7 +309,7 @@
 
 	template <typename T>
 	inline TN3270_PUBLIC TN3270::Host & operator>>(TN3270::Host& host, const T value) {
-		return Host.pop(value);
+		return host.pop(value);
 	}
 
 #endif

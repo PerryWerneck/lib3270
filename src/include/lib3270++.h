@@ -33,6 +33,7 @@
 
 	#define LIB3270_HPP_INCLUDED 1
 
+	#include <iostream>
 	#include <lib3270.h>
 
 	#if defined(_WIN32)
@@ -61,6 +62,8 @@
 	#include <string>
 
 	namespace TN3270 {
+
+		class Host;
 
 		enum ProgramMessage : uint8_t {
 			MESSAGE_NONE			= LIB3270_MESSAGE_NONE,				///< @brief No message
@@ -138,7 +141,7 @@
 
 			// Connect/disconnect
 			virtual void connect(const char *url) = 0;
-			virtual void disconnect(const char *url);
+			virtual void disconnect();
 
 			// Gets
 			virtual std::string	toString(int baddr = 0, size_t len = -1, bool lf = false) = 0;
@@ -169,11 +172,88 @@
 				return push(text.c_str());
 			}
 
-			virtual Session & push(int baddr = 0, const std::string &text) = 0;
+			virtual Session & push(int baddr, const std::string &text) = 0;
 			virtual Session & push(int row, int col, const std::string &text) = 0;
 			virtual Session & push(const PFKey key) = 0;
 			virtual Session & push(const PAKey key) = 0;
 			virtual Session & push(const Action action) = 0;
+
+		};
+
+		/// @brief TN3270 Host
+		class TN3270_PUBLIC Host : public std::basic_streambuf<char, std::char_traits<char> > {
+		private:
+
+			/// @brief Connection with the host
+			Session *session;
+
+		protected:
+
+			/// @brief Writes characters to the associated file from the put area
+			int sync() override;
+
+			/// @brief Writes characters to the associated output sequence from the put area.
+			int overflow(int c) override;
+
+		public:
+			Host(const char *id = nullptr, const char *url = nullptr);
+			~Host();
+
+			inline ProgramMessage getProgramMessage() const {
+				return session->getProgramMessage();
+			}
+
+			inline operator ProgramMessage() const {
+				return getProgramMessage();
+			}
+
+			inline ConnectionState getConnectionState() const {
+				return session->getConnectionState();
+			}
+
+			inline operator ConnectionState() const {
+				return getConnectionState();
+			}
+
+
+			// Sets
+
+			/// @brief Set field at current posicion, jumps to next writable field.
+			inline Host & push(const char *text) {
+				session->push(text);
+				return *this;
+			};
+
+			inline Host & push(const std::string &text) {
+				session->push(text));
+				return *this;
+
+			}
+
+			inline Host & push(int baddr, const std::string &text) {
+				session->push(baddr,text);
+				return *this;
+			}
+
+			inline Host & push(int row, int col, const std::string &text) {
+				session->push(row,col,text);
+				return *this;
+			}
+
+			inline Host & push(const PFKey key) {
+				session->push(key);
+				return *this;
+			}
+
+			inline Host & push(const PAKey key) {
+				session->push(key);
+				return *this;
+			}
+
+			inline Host & push(const Action action) {
+				session->push(action);
+				return *this;
+			}
 
 		};
 
@@ -190,6 +270,16 @@
 	template <typename T>
 	inline TN3270_PUBLIC TN3270::Session & operator>>(TN3270::Session& session, const T value) {
 		return session.pop(value);
+	}
+
+		template <typename T>
+	inline TN3270_PUBLIC TN3270::Host & operator<<(TN3270::Host& host, const T value) {
+		return host.push(value);
+	}
+
+	template <typename T>
+	inline TN3270_PUBLIC TN3270::Host & operator>>(TN3270::Host& host, const T value) {
+		return Host.pop(value);
 	}
 
 #endif

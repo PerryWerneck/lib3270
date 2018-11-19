@@ -72,8 +72,11 @@
 					/// @brief Convert string from local codepage to host codepage.
 					iconv_t	host;
 
-				} iconv;
+				} converter;
 #endif
+
+				/// @brief Converte charset.
+				static std::string convertCharset(iconv_t &converter, const char *str);
 
 			protected:
 
@@ -85,6 +88,12 @@
 
 				/// @brief Setup charsets
 				void setCharSet(const char *remote, const char *local = SYSTEM_CHARSET);
+
+				/// @brief Converte string recebida do host para o charset atual.
+				std::string convertFromHost(const char *str) const;
+
+				/// @brief Converte string do charset atual para o charset do host.
+				std::string convertToHost(const char *str) const;
 
 			};
 

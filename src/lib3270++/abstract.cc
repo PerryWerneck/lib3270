@@ -47,8 +47,8 @@
 	Abstract::Session::Session() {
 
 #ifdef HAVE_ICONV
-		this->iconv.local	= (iconv_t) (-1);
-		this->iconv.host	= (iconv_t) (-1);
+		this->converter.local	= (iconv_t) (-1);
+		this->converter.host	= (iconv_t) (-1);
 #endif
 
 		this->baddr = 0;
@@ -59,11 +59,11 @@
 
 #ifdef HAVE_ICONV
 
-		if(this->iconv.local != (iconv_t) (-1))
-			iconv_close(this->iconv.local);
+		if(this->converter.local != (iconv_t) (-1))
+			iconv_close(this->converter.local);
 
-		if(this->iconv.host != (iconv_t) (-1))
-			iconv_close(this->iconv.host);
+		if(this->converter.host != (iconv_t) (-1))
+			iconv_close(this->converter.host);
 
 #endif
 
@@ -74,21 +74,21 @@
 
 #ifdef HAVE_ICONV
 
-		if(this->iconv.local != (iconv_t) (-1))
-			iconv_close(iconv.local);
+		if(this->converter.local != (iconv_t) (-1))
+			iconv_close(converter.local);
 
-		if(this->iconv.host != (iconv_t) (-1))
-			iconv_close(iconv.host);
+		if(this->converter.host != (iconv_t) (-1))
+			iconv_close(converter.host);
 
 		if(strcmp(local,remote)) {
 
 			// Local and remote charsets aren't the same, setup conversion
-			iconv.local	= iconv_open(local, remote);
-			iconv.host	= iconv_open(remote,local);
+			converter.local	= iconv_open(local, remote);
+			converter.host	= iconv_open(remote,local);
 
 		} else {
 			// Same charset, doesn't convert
-			iconv.local = iconv.host = (iconv_t)(-1);
+			converter.local = converter.host = (iconv_t)(-1);
 		}
 
 #else
@@ -98,6 +98,51 @@
 #endif
 
 
+	}
+
+	/// @brief Converte charset.
+	std::string Abstract::Session::convertCharset(iconv_t &converter, const char *str) {
+
+		std::string rc;
+
+#ifdef HAVE_ICONV
+		size_t in = strlen(str);
+
+		if(in && converter != (iconv_t)(-1)) {
+
+			size_t	  out 		= (in << 1);
+			char	* ptr;
+			char	* outBuffer = (char *) malloc(out);
+			char	* inBuffer	= (char	*) str;
+
+			memset(ptr=outBuffer,0,out);
+
+			iconv(converter,NULL,NULL,NULL,NULL);	// Reset state
+
+			if(iconv(converter,&inBuffer,&in,&ptr,&out) != ((size_t) -1))
+				rc.assign(outBuffer);
+
+			free(outBuffer);
+
+		}
+
+#else
+
+		rc = str;
+
+#endif // HAVE_ICONV
+
+		return rc;
+	}
+
+	/// @brief Converte string recebida do host para o charset atual.
+	std::string Abstract::Session::convertFromHost(const char *str) const {
+		return convertCharset(const_cast<Abstract::Session *>(this)->converter.local,str);
+	}
+
+	/// @brief Converte string do charset atual para o charset do host.
+	std::string Abstract::Session::convertToHost(const char *str) const {
+		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,str);
 	}
 
 

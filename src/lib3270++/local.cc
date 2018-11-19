@@ -30,13 +30,14 @@
 /**
  * @file src/lib3270++/local.cc
  *
- * @brief
+ * @brief Implement lib3270 direct access layout (NO IPC).
  *
  * @author perry.werneck@gmail.com
  *
  */
 
  #include "private.h"
+ #include <lib3270/actions.h>
 
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -44,25 +45,37 @@
  namespace TN3270 {
 
 	LocalSession::LocalSession() : Abstract::Session() {
+
+		std::lock_guard<std::mutex> lock(sync);
+
 		this->hSession = lib3270_session_new("");
 		lib3270_set_user_data(this->hSession,(void *) this);
+		setCharSet(lib3270_get_display_charset(this->hSession));
+
 	}
 
 	LocalSession::~LocalSession() {
+
+		std::lock_guard<std::mutex> lock(sync);
+
 		lib3270_session_free(this->hSession);
 		this->hSession = nullptr;
 	}
 
 	void LocalSession::connect(const char *url) {
+		std::lock_guard<std::mutex> lock(sync);
 		lib3270_connect_url(hSession,url,0);
 	}
 
 	void LocalSession::disconnect() {
+		std::lock_guard<std::mutex> lock(sync);
 		lib3270_disconnect(hSession);
 	}
 
 	// Wait for session state.
 	void LocalSession::waitForReady(time_t timeout) throw() {
+
+		std::lock_guard<std::mutex> lock(sync);
 
 		int rc = lib3270_wait_for_ready(this->hSession, timeout);
 
@@ -74,56 +87,72 @@
 
 	// Gets
 	std::string LocalSession::toString() const {
+		std::lock_guard<std::mutex> lock(const_cast<LocalSession *>(this)->sync);
 	}
 
 	std::string	LocalSession::toString(int baddr, size_t len, bool lf) {
+		std::lock_guard<std::mutex> lock(sync);
 	}
 
 	std::string	LocalSession::toString(int row, int col, size_t sz, bool lf) {
+		std::lock_guard<std::mutex> lock(sync);
 	}
 
 	ProgramMessage LocalSession::getProgramMessage() const {
+		std::lock_guard<std::mutex> lock(const_cast<LocalSession *>(this)->sync);
 		return (ProgramMessage) lib3270_get_program_message(this->hSession);
 	}
 
 	ConnectionState LocalSession::getConnectionState() const {
+		std::lock_guard<std::mutex> lock(const_cast<LocalSession *>(this)->sync);
 		return (ConnectionState) lib3270_get_connection_state(this->hSession);
 	}
 
 	/// @brief Set field at current posicion, jumps to next writable field.
 	TN3270::Session & LocalSession::push(const char *text) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::push(int baddr, const std::string &text) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::push(int row, int col, const std::string &text) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::push(const PFKey key) {
+		std::lock_guard<std::mutex> lock(sync);
+		lib3270_pfkey(hSession,(int) key);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::push(const PAKey key) {
+		std::lock_guard<std::mutex> lock(sync);
+		lib3270_pakey(hSession,(int) key);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::push(const Action action) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::pop(int baddr, std::string &text) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::pop(int row, int col, std::string &text) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 
 	TN3270::Session & LocalSession::pop(std::string &text) {
+		std::lock_guard<std::mutex> lock(sync);
 		return *this;
 	}
 

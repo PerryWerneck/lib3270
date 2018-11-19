@@ -41,6 +41,7 @@
 	#define PRIVATE_H_INCLUDED
 
 	#include <config.h>
+	#include <mutex>
 	#include <lib3270++.h>
 	#include <system_error>
 
@@ -48,6 +49,12 @@
 #ifdef HAVE_ICONV
 	#include <iconv.h>
 #endif // HAVE_ICONV
+
+#ifdef WIN32
+	#define SYSTEM_CHARSET "CP1252"
+#else
+	#define SYSTEM_CHARSET "UTF-8"
+#endif // WIN32
 
 	namespace TN3270 {
 
@@ -76,6 +83,9 @@
 				Session();
 				virtual ~Session();
 
+				/// @brief Setup charsets
+				void setCharSet(const char *remote, const char *local = SYSTEM_CHARSET);
+
 			};
 
 		}
@@ -85,6 +95,9 @@
 
 			/// @brief Handle of the related instance of lib3270
 			H3270 * hSession;
+
+			/// @brief Mutex to serialize access to lib3270
+			std::mutex sync;
 
 		public:
 			LocalSession();

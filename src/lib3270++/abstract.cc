@@ -37,6 +37,7 @@
  */
 
  #include "private.h"
+ #include <cstring>
 
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -67,6 +68,38 @@
 #endif
 
 	}
+
+	/// @brief Setup charsets
+	void Abstract::Session::setCharSet(const char *remote, const char *local) {
+
+#ifdef HAVE_ICONV
+
+		if(this->iconv.local != (iconv_t) (-1))
+			iconv_close(iconv.local);
+
+		if(this->iconv.host != (iconv_t) (-1))
+			iconv_close(iconv.host);
+
+		if(strcmp(local,remote)) {
+
+			// Local and remote charsets aren't the same, setup conversion
+			iconv.local	= iconv_open(local, remote);
+			iconv.host	= iconv_open(remote,local);
+
+		} else {
+			// Same charset, doesn't convert
+			iconv.local = iconv.host = (iconv_t)(-1);
+		}
+
+#else
+
+		#error No ICONV Support
+
+#endif
+
+
+	}
+
 
  }
 

@@ -46,7 +46,8 @@
 		<Unit filename="abstract.cc" />
 		<Unit filename="events.cc" />
 		<Unit filename="host.cc" />
-		<Unit filename="local.cc" />
+		<Unit filename="local/events.cc" />
+		<Unit filename="local/session.cc" />
 		<Unit filename="private.h" />
 		<Unit filename="session.cc" />
 		<Unit filename="testprogram/testprogram.cc" />

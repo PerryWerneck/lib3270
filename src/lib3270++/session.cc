@@ -47,7 +47,7 @@
 	Session * Session::create(const char *id) {
 
 		if(!id) {
-			return new LocalSession();
+			return new Local::Session();
 		}
 
 		throw std::system_error(EINVAL, std::system_category());

@@ -100,56 +100,64 @@
 
 		}
 
-		class TN3270_PRIVATE LocalSession : public Abstract::Session {
-		private:
+		/// @brief lib3270 direct access objects (no IPC);
+		namespace Local {
 
-			/// @brief Handle of the related instance of lib3270
-			H3270 * hSession;
+			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
+			private:
 
-			/// @brief Mutex to serialize access to lib3270
-			std::mutex sync;
+				/// @brief Handle of the related instance of lib3270
+				H3270 * hSession;
 
-			/// @brief Popup Handler.
-			static int popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
+				/// @brief Mutex to serialize access to lib3270
+				std::mutex sync;
 
-			/// @brief Wait for network events
-			void wait(time_t timeout = 5);
+				/// @brief Popup Handler.
+				static int popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
 
-		public:
-			LocalSession();
-			virtual ~LocalSession();
+				/// @brief Connect Handler.
+				static void connectHandler(H3270 *session, unsigned char connected);
 
-			// Connect/disconnect
-			void connect(const char *url) override;
-			void disconnect() override;
+				/// @brief Wait for network events
+				void wait(time_t timeout = 5);
 
-			// Wait for session state.
-			void waitForReady(time_t timeout = 5)  throw() override;
+			public:
+				Session();
+				virtual ~Session();
 
-			// Gets
-			std::string toString() const override;
-			std::string	toString(int baddr = 0, size_t len = -1, bool lf = false) override;
-			std::string	toString(int row, int col, size_t sz, bool lf = false) override;
+				// Connect/disconnect
+				void connect(const char *url) override;
+				void disconnect() override;
 
-			ProgramMessage getProgramMessage() const override;
+				// Wait for session state.
+				void waitForReady(time_t timeout = 5)  throw() override;
 
-			ConnectionState getConnectionState() const override;
+				// Gets
+				std::string toString() const override;
+				std::string	toString(int baddr = 0, size_t len = -1, bool lf = false) override;
+				std::string	toString(int row, int col, size_t sz, bool lf = false) override;
 
-			/// @brief Set field at current posicion, jumps to next writable field.
-			TN3270::Session & push(const char *text) override;
+				ProgramMessage getProgramMessage() const override;
 
-			TN3270::Session & push(int baddr, const std::string &text) override;
-			TN3270::Session & push(int row, int col, const std::string &text) override;
-			TN3270::Session & push(const PFKey key) override;
-			TN3270::Session & push(const PAKey key) override;
-			TN3270::Session & push(const Action action) override;
+				ConnectionState getConnectionState() const override;
 
-			// Get contents.
-			TN3270::Session & pop(int baddr, std::string &text) override;
-			TN3270::Session & pop(int row, int col, std::string &text) override;
-			TN3270::Session & pop(std::string &text) override;
+				/// @brief Set field at current posicion, jumps to next writable field.
+				TN3270::Session & push(const char *text) override;
 
-		};
+				TN3270::Session & push(int baddr, const std::string &text) override;
+				TN3270::Session & push(int row, int col, const std::string &text) override;
+				TN3270::Session & push(const PFKey key) override;
+				TN3270::Session & push(const PAKey key) override;
+				TN3270::Session & push(const Action action) override;
+
+				// Get contents.
+				TN3270::Session & pop(int baddr, std::string &text) override;
+				TN3270::Session & pop(int row, int col, std::string &text) override;
+				TN3270::Session & pop(std::string &text) override;
+
+			};
+
+		}
 
 	}
 

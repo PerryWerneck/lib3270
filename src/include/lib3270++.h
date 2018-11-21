@@ -74,6 +74,7 @@
 				Popup,			///< @brief Popup message.
 				Trace,			///< @brief Trace message.
 				Message,		///< @brief Generic message.
+				Connection		///< @brief Connect/Disconnect event.
 			};
 
 		private:
@@ -220,6 +221,10 @@
 				return getConnectionState();
 			}
 
+			inline bool operator==(ConnectionState state) const noexcept {
+				return this->getConnectionState() == state;
+			}
+
 			// Set contents.
 
 			/// @brief Set field at current posicion, jumps to next writable field.
@@ -271,6 +276,10 @@
 		public:
 			Host(const char *id = nullptr, const char *url = nullptr);
 			~Host();
+
+			inline bool operator==(ConnectionState state) const noexcept {
+				return session->getConnectionState() == state;
+			}
 
 			inline void connect(const char *url) {
 				this->session->connect(url);

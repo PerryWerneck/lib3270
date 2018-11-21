@@ -24,8 +24,6 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
 
@@ -34,6 +32,7 @@
 	#define LIB3270_HPP_INCLUDED 1
 
 	#include <iostream>
+	#include <cstdarg>
 	#include <lib3270.h>
 
 	#if defined(_WIN32)
@@ -136,6 +135,15 @@
 		protected:
 			Session();
 
+			/// @brief Write information to log file.
+			void info(const char *fmt, ...) const;
+
+			/// @brief Write warning to log file.
+			void warning(const char *fmt, ...) const;
+
+			/// @brief Write error to log file.
+			void error(const char *fmt, ...) const;
+
 		public:
 
 			/// @brief Create a tn3270 session.
@@ -145,7 +153,7 @@
 
 			// Connect/disconnect
 			virtual void connect(const char *url) = 0;
-			virtual void disconnect();
+			virtual void disconnect() = 0;
 
 			// Wait for session state.
 			virtual void waitForReady(time_t timeout = 5) throw() = 0;
@@ -204,6 +212,15 @@
 
 			/// @brief Writes characters to the associated output sequence from the put area.
 			int overflow(int c) override;
+
+			/// @brief Write information to log file.
+			void info(const char *fmt, ...) const;
+
+			/// @brief Write warning to log file.
+			void warning(const char *fmt, ...) const;
+
+			/// @brief Write error to log file.
+			void error(const char *fmt, ...) const;
 
 		public:
 			Host(const char *id = nullptr, const char *url = nullptr);

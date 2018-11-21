@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/lib3270++/session.cc
+ * @file src/lib3270++/testprogram/testprogram.cc
  *
  * @brief
  *
@@ -36,34 +36,17 @@
  *
  */
 
- #include "private.h"
-
+ #include <lib3270++.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- namespace TN3270 {
+ int main(int argc, const char *argv[]) {
 
-	/// @brief Create a tn3270 session.
-	Session * Session::create(const char *id) {
+	TN3270::Host host;
 
-		if(!id) {
-			return new LocalSession();
-		}
+	host.connect(nullptr);
 
-		throw std::system_error(EINVAL, std::system_category());
-
-	}
-
-
-	Session::Session() {
-
-	}
-
-	Session::~Session() {
-
-	}
-
+	return 0;
  }
-
 
 

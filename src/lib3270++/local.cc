@@ -64,7 +64,12 @@
 
 	void LocalSession::connect(const char *url) {
 		std::lock_guard<std::mutex> lock(sync);
-		lib3270_connect_url(hSession,url,0);
+		int rc = lib3270_connect_url(hSession,url,0);
+
+		if(!rc) {
+            throw std::system_error(rc, std::system_category());
+		}
+
 	}
 
 	void LocalSession::disconnect() {

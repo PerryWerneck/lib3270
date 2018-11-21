@@ -41,11 +41,13 @@
 		</Linker>
 		<Unit filename="../include/lib3270++.h" />
 		<Unit filename="../include/lib3270.h" />
+		<Unit filename="../include/lib3270/session.h" />
 		<Unit filename="abstract.cc" />
 		<Unit filename="host.cc" />
 		<Unit filename="local.cc" />
 		<Unit filename="private.h" />
 		<Unit filename="session.cc" />
+		<Unit filename="testprogram/testprogram.cc" />
 		<Extensions>
 			<code_completion />
 			<envvars />

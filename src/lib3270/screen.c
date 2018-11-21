@@ -24,8 +24,6 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
 
@@ -74,15 +72,8 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static int logpopup(H3270 *session, void *widget, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
-
-static int (*popup_handler)(H3270 *, void *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list) = logpopup;
-
-// enum ts { TS_AUTO, TS_ON, TS_OFF };
-
 static void status_connect(H3270 *session, int ignored, void *dunno);
 static void status_3270_mode(H3270 *session, int ignored, void *dunno);
-// static void status_printer(H3270 *session, int on, void *dunno);
 static unsigned short color_from_fa(H3270 *hSession, unsigned char fa);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -667,6 +658,7 @@ void status_untiming(H3270 *session)
 		session->cbk.set_timer(session,0);
 }
 
+/*
 static int logpopup(H3270 *session, void *widget, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg)
 {
 #ifdef ANDROID
@@ -680,6 +672,7 @@ static int logpopup(H3270 *session, void *widget, LIB3270_NOTIFY type, const cha
 #endif // ANDROID
 	return 0;
 }
+*/
 
 void Error(H3270 *session, const char *fmt, ...)
 {
@@ -691,7 +684,7 @@ void Error(H3270 *session, const char *fmt, ...)
 
 	va_start(arg_ptr, fmt);
 
-	popup_handler(session,session->user_data,LIB3270_NOTIFY_ERROR, _( "3270 Error" ),NULL,fmt,arg_ptr);
+	session->cbk.popup(session,LIB3270_NOTIFY_ERROR, _( "3270 Error" ),NULL,fmt,arg_ptr);
 
 	va_end(arg_ptr);
 
@@ -706,7 +699,7 @@ void Warning(H3270 *session, const char *fmt, ...)
 	trace("%s: title=%s fmt=%s",__FUNCTION__,"3270 Warning",fmt);
 
 	va_start(arg_ptr, fmt);
-	popup_handler(session,session->user_data,LIB3270_NOTIFY_WARNING, _( "3270 Warning" ),NULL,fmt,arg_ptr);
+	session->cbk.popup(session,LIB3270_NOTIFY_WARNING, _( "3270 Warning" ),NULL,fmt,arg_ptr);
 	va_end(arg_ptr);
 
 }
@@ -721,7 +714,7 @@ void popup_an_error(H3270 *session, const char *fmt, ...)
 	trace("%s: title=%s fmt=%s",__FUNCTION__,"3270 Error",fmt);
 
 	va_start(args, fmt);
-	popup_handler(session,session->user_data,LIB3270_NOTIFY_ERROR,_( "3270 Error" ),NULL,fmt,args);
+	session->cbk.popup(session,LIB3270_NOTIFY_ERROR,_( "3270 Error" ),NULL,fmt,args);
 	va_end(args);
 
 }
@@ -735,7 +728,7 @@ void popup_system_error(H3270 *session, const char *title, const char *message, 
 	trace("%s: title=%s msg=%s",__FUNCTION__,"3270 Error",message);
 
 	va_start(args, fmt);
-	popup_handler(session,session->user_data,LIB3270_NOTIFY_ERROR,title ? title : _( "3270 Error" ), message,fmt,args);
+	session->cbk.popup(session,LIB3270_NOTIFY_ERROR,title ? title : _( "3270 Error" ), message,fmt,args);
 	va_end(args);
 }
 
@@ -845,11 +838,6 @@ LIB3270_ACTION( testpattern )
 	return 0;
 }
 
-LIB3270_EXPORT void lib3270_set_popup_handler(int (*handler)(H3270 *, void *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list))
-{
-	popup_handler = handler ? handler : logpopup;
-}
-
 LIB3270_EXPORT void lib3270_popup_dialog(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, ...)
 {
 	va_list	args;
@@ -860,12 +848,8 @@ LIB3270_EXPORT void lib3270_popup_dialog(H3270 *session, LIB3270_NOTIFY id , con
 
 LIB3270_EXPORT void lib3270_popup_va(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, va_list args)
 {
-
 	CHECK_SESSION_HANDLE(session);
-
-	trace("%s: title=%s msg=%s",__FUNCTION__,"3270 Error",message);
-
-	popup_handler(session,session->user_data,id,title ? title : _( "3270 Error" ), message,fmt,args);
+	session->cbk.popup(session,id,title ? title : _( "3270 Error" ), message,fmt,args);
 }
 
 LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)

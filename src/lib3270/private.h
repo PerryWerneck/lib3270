@@ -295,7 +295,7 @@ typedef struct input
  */
 struct _h3270
 {
-	struct lib3270_session_callbacks	  cbk;		// Callback table - Always the first one.
+	struct lib3270_session_callbacks	  cbk;					// Callback table - Always the first one.
 
 //	unsigned short 		  	  sz;								/**< Struct size */
 

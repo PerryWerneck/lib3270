@@ -156,9 +156,6 @@
 		<Unit filename="src/lib3270/macros.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/mkfb.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/lib3270/options.c">
 			<Option compilerVar="CC" />
 		</Unit>

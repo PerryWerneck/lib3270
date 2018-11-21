@@ -34,7 +34,6 @@
 #endif // !ANDROID
 
 #include "private.h"
-// #include "charsetc.h"
 #include "kybdc.h"
 #include "ansic.h"
 #include "togglesc.h"
@@ -44,9 +43,7 @@
 #include "ftc.h"
 #include "kybdc.h"
 #include "3270ds.h"
-// #include "tablesc.h"
 #include "popupsc.h"
-//#include "charset.h"
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -166,6 +163,20 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 #endif // ANDROID
 }
 
+static int popup(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg)
+{
+#ifdef ANDROID
+	char *mask = xs_buffer("%s\n",fmt);
+	__android_log_vprint(ANDROID_LOG_VERBOSE, PACKAGE_NAME, mask, arg);
+	lib3270_free(mask);
+#else
+	lib3270_write_log(session,"popup","%s",title);
+	lib3270_write_log(session,"popup","%s",msg);
+	lib3270_write_va_log(session,"popup",fmt,arg);
+#endif // ANDROID
+	return 0;
+}
+
 static void update_ssl(H3270 *session, LIB3270_SSL_STATE state)
 {
 }
@@ -222,6 +233,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->cbk.update_selection		= update_selection;
 	hSession->cbk.cursor 				= set_cursor;
 	hSession->cbk.message				= message;
+	hSession->cbk.popup					= popup;
 	hSession->cbk.update_ssl			= update_ssl;
 	hSession->cbk.display				= screen_disp;
 	hSession->cbk.set_width				= nop_int;

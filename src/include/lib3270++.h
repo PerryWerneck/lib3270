@@ -33,6 +33,8 @@
 
 	#include <iostream>
 	#include <cstdarg>
+	#include <vector>
+	#include <functional>
 	#include <lib3270.h>
 
 	#if defined(_WIN32)
@@ -63,8 +65,9 @@
 	namespace TN3270 {
 
 		class Host;
+		class Controller;
 
-		class Event {
+		class TN3270_PUBLIC Event {
 		public:
 			enum Type : uint8_t {
 				All,			///< @brief All events (undefined).
@@ -77,9 +80,7 @@
 			Type type;
 
 		protected:
-			Event(enum Type type) {
-				this->type = type;
-			}
+			Event(enum Type type);
 
 		public:
 			virtual ~Event();
@@ -87,6 +88,15 @@
 			/// @brief Check event type
 			inline bool is(Event::Type type) const noexcept {
 				return this->type == type;
+			}
+
+			/// @brief Check event type
+			inline bool operator==(Event::Type type) const noexcept {
+				return this->type == type;
+			}
+
+			inline operator Event::Type() const noexcept {
+				return this->type;
 			}
 
 			/// @brief Get event description.
@@ -174,6 +184,7 @@
 			/// @brief Write error to log file.
 			void error(const char *fmt, ...) const;
 
+			/// @brief Fire event.
 			void fire(const Event &event);
 
 		public:
@@ -227,6 +238,9 @@
 			virtual Session & pop(int baddr, std::string &text) = 0;
 			virtual Session & pop(int row, int col, std::string &text) = 0;
 			virtual Session & pop(std::string &text) = 0;
+
+			/// @brief Insert event listener.
+			void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
 		};
 
@@ -333,6 +347,13 @@
 				session->pop(text);
 				return *this;
 			}
+
+			// Event listeners
+			inline Host & insert(Event::Type type, std::function <void(const Event &event)> listener) noexcept {
+				session->insert(type, listener);
+				return *this;
+			}
+
 
 		};
 

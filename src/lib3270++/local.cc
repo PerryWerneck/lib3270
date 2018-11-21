@@ -86,6 +86,13 @@
 					free(buffer);
 				}
 
+#ifdef DEBUG
+				std::cerr	<< "Popup:"				<< std::endl
+							<<	"\t" << title		<< std::endl
+							<<	"\t" << msg			<< std::endl
+							<<	"\t" <<	description	<< std::endl;
+#endif // DEBUG
+
 			}
 
 			virtual ~PopupEvent() {
@@ -113,13 +120,25 @@
 		this->hSession = nullptr;
 	}
 
+	void LocalSession::wait(time_t timeout) {
+
+		int rc = lib3270_wait_for_ready(this->hSession, timeout);
+
+		if(rc) {
+			throw std::system_error(rc, std::system_category());
+		}
+
+	}
+
 	void LocalSession::connect(const char *url) {
 		std::lock_guard<std::mutex> lock(sync);
 		int rc = lib3270_connect_url(hSession,url,0);
 
-		if(!rc) {
+		if(rc) {
             throw std::system_error(rc, std::system_category());
 		}
+
+		wait();
 
 	}
 
@@ -132,12 +151,7 @@
 	void LocalSession::waitForReady(time_t timeout) throw() {
 
 		std::lock_guard<std::mutex> lock(sync);
-
-		int rc = lib3270_wait_for_ready(this->hSession, timeout);
-
-		if(rc) {
-            throw std::system_error(rc, std::system_category());
-		}
+		wait(timeout);
 
 	}
 

@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/lib3270++/session.cc
+ * @file src/lib3270++/events.cc
  *
  * @brief
  *
@@ -43,33 +43,11 @@
 
  namespace TN3270 {
 
-	/// @brief Create a tn3270 session.
-	Session * Session::create(const char *id) {
-
-		if(!id) {
-			return new LocalSession();
-		}
-
-		throw std::system_error(EINVAL, std::system_category());
-
+	Event::Event(enum Event::Type type) {
+		this->type = type;
 	}
 
-
-	Session::Session() {
-
-	}
-
-	Session::~Session() {
-
-	}
-
-	void Session::insert(Event::Type type, std::function <void(const Event &event)> listener) {
-	}
-
-	/// @brief Fire event.
-	void Session::fire(const Event &event) {
-
-
+	Event::~Event() {
 	}
 
  }

@@ -36,6 +36,7 @@
  *
  */
 
+ #include <cstdlib>
  #include <lib3270++.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -44,7 +45,7 @@
 
 	TN3270::Host host;
 
-	host.connect(nullptr);
+	host.connect(getenv("TN3270URL"));
 
 	return 0;
  }

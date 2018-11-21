@@ -44,6 +44,7 @@
 		<Unit filename="../include/lib3270/popup.h" />
 		<Unit filename="../include/lib3270/session.h" />
 		<Unit filename="abstract.cc" />
+		<Unit filename="events.cc" />
 		<Unit filename="host.cc" />
 		<Unit filename="local.cc" />
 		<Unit filename="private.h" />

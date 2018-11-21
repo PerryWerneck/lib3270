@@ -112,6 +112,9 @@
 			/// @brief Popup Handler.
 			static int popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
 
+			/// @brief Wait for network events
+			void wait(time_t timeout = 5);
+
 		public:
 			LocalSession();
 			virtual ~LocalSession();

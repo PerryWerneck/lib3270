@@ -286,7 +286,7 @@ install-devel: \
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@EXEEXT@
+	$(BINDBG)/@DLLPREFIX@$(LIBNAME)@DLLEXT@
 
 $(BINDBG)/@DLLPREFIX@$(LIBNAME)@EXEEXT@: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \

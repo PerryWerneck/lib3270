@@ -51,6 +51,8 @@
 		LIB3270_NOTIFY_USER			/**< Reserved, always the last one */
 	} LIB3270_NOTIFY;
 
+	LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, int (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list));
+
 	/**
 	 * Pop up an error dialog, based on an error number.
 	 *

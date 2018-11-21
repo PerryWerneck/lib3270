@@ -69,18 +69,10 @@
 #define MAX_HEADER_SIZE		(10*1024)
 
 
+#undef trace
+
 /* Statics */
-static void __vwtrace(H3270 *session, const char *fmt, va_list args);
 static void	wtrace(H3270 *session, const char *fmt, ...);
-static void (*vwtrace)(H3270 *session, const char *fmt, va_list args) = __vwtrace;
-
-
-LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler( LIB3270_TRACE_HANDLER handler )
-{
-	void (*ret)(H3270 *session, const char *fmt, va_list args) = vwtrace;
-	vwtrace = handler ? handler : __vwtrace;
-	return ret;
-}
 
 /* display a (row,col) */
 const char * rcba(H3270 *hSession, int baddr)
@@ -169,36 +161,25 @@ void trace_ds_nb(H3270 *hSession, const char *fmt, ...)
 }
 
 /* Conditional data stream trace, without line splitting. */
-void trace_dsn(H3270 *hSession, const char *fmt, ...)
+void trace_dsn(H3270 *session, const char *fmt, ...)
 {
 	va_list args;
 
-	if (!lib3270_get_toggle(hSession,DS_TRACE))
+	if (!lib3270_get_toggle(session,DS_TRACE))
 		return;
 
 	/* print out message */
 	va_start(args, fmt);
-	vwtrace(hSession,fmt, args);
+	session->cbk.trace(session,fmt, args);
 	va_end(args);
 }
 
-/*
- * Write to the trace file, varargs style.
- * This is the only function that actually does output to the trace file --
- * all others are wrappers around this function.
- */
-static void __vwtrace(H3270 *session, const char *fmt, va_list args)
-{
-	vfprintf(stdout,fmt,args);
-	fflush(stdout);
-}
-
 /* Write to the trace file. */
-static void wtrace(H3270 *hSession, const char *fmt, ...)
+static void wtrace(H3270 *session, const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	vwtrace(hSession,fmt, args);
+	session->cbk.trace(session,fmt, args);
 	va_end(args);
 }
 
@@ -210,7 +191,7 @@ LIB3270_EXPORT void lib3270_write_dstrace(H3270 *session, const char *fmt, ...)
 		return;
 
 	va_start(args, fmt);
-	vwtrace(session,fmt, args);
+	session->cbk.trace(session,fmt, args);
 	va_end(args);
 }
 
@@ -222,7 +203,7 @@ LIB3270_EXPORT void lib3270_write_nettrace(H3270 *session, const char *fmt, ...)
 		return;
 
 	va_start(args, fmt);
-	vwtrace(session,fmt, args);
+	session->cbk.trace(session,fmt, args);
 	va_end(args);
 }
 
@@ -235,7 +216,7 @@ LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...)
 		return;
 
 	va_start(args, fmt);
-	vwtrace(session,fmt, args);
+	session->cbk.trace(session,fmt, args);
 	va_end(args);
 }
 

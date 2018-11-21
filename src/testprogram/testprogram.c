@@ -24,7 +24,7 @@ int main(int numpar, char *param[])
 {
 	H3270		* h;
 	int			  rc	= 0;
-	const char  * url	= getenv("LIB3270HOST");
+	const char  * url	= getenv("TN3270URL");
 //	char	 	  line[4096];
 //	pthread_t	  thread;
 

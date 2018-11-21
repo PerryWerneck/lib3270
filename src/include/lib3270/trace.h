@@ -53,7 +53,7 @@
 	 *
 	 * @return Current trace handler
 	 */
-	LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler( LIB3270_TRACE_HANDLER handler);
+	LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler(H3270 *session, LIB3270_TRACE_HANDLER handler);
 
 	/**
 	 * Write on trace file.

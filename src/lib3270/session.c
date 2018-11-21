@@ -44,6 +44,8 @@
 #include "kybdc.h"
 #include "3270ds.h"
 #include "popupsc.h"
+#include <lib3270/trace.h>
+
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -163,7 +165,7 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 #endif // ANDROID
 }
 
-static int popup(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg)
+static int def_popup(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg)
 {
 #ifdef ANDROID
 	char *mask = xs_buffer("%s\n",fmt);
@@ -175,6 +177,12 @@ static int popup(H3270 *session, LIB3270_NOTIFY type, const char *title, const c
 	lib3270_write_va_log(session,"popup",fmt,arg);
 #endif // ANDROID
 	return 0;
+}
+
+static void def_trace(H3270 *session, const char *fmt, va_list args)
+{
+	vfprintf(stdout,fmt,args);
+	fflush(stdout);
 }
 
 static void update_ssl(H3270 *session, LIB3270_SSL_STATE state)
@@ -233,7 +241,8 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->cbk.update_selection		= update_selection;
 	hSession->cbk.cursor 				= set_cursor;
 	hSession->cbk.message				= message;
-	hSession->cbk.popup					= popup;
+	hSession->cbk.trace					= def_trace;
+	hSession->cbk.popup					= def_popup;
 	hSession->cbk.update_ssl			= update_ssl;
 	hSession->cbk.display				= screen_disp;
 	hSession->cbk.set_width				= nop_int;
@@ -280,6 +289,17 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 	lib3270_set_model(hSession,model);
 
+}
+
+LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler(H3270 *session, LIB3270_TRACE_HANDLER handler)
+{
+	void (*ret)(H3270 *session, const char *fmt, va_list args) = session->cbk.trace;
+	session->cbk.trace = handler ? handler : def_trace;
+	return ret;
+}
+
+LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, int (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list)) {
+	session->cbk.popup = handler ? handler : def_popup;
 }
 
 H3270 * lib3270_session_new(const char *model)

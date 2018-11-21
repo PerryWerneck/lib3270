@@ -76,8 +76,10 @@
 		void (*autostart)(H3270 *session);
 		int  (*print)(H3270 *session);
 
+
 		void (*message)(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text);
 		void (*popup)(H3270 *session, LIB3270_NOTIFY id, const char *title, const char *msg, const char *fmt, va_list);
+		void (*trace)(H3270 *session, const char *fmt, va_list args);
 
 #ifdef HAVE_LIBSSL
 		void (*set_peer_certificate)(const X509 *cert);

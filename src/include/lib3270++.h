@@ -64,6 +64,36 @@
 
 		class Host;
 
+		class Event {
+		public:
+			enum Type : uint8_t {
+				All,			///< @brief All events (undefined).
+				Popup,			///< @brief Popup message.
+				Trace,			///< @brief Trace message.
+				Message,		///< @brief Generic message.
+			};
+
+		private:
+			Type type;
+
+		protected:
+			Event(enum Type type) {
+				this->type = type;
+			}
+
+		public:
+			virtual ~Event();
+
+			/// @brief Check event type
+			inline bool is(Event::Type type) const noexcept {
+				return this->type == type;
+			}
+
+			/// @brief Get event description.
+			virtual std::string toString() const = 0;
+
+		};
+
 		enum ProgramMessage : uint8_t {
 			MESSAGE_NONE			= LIB3270_MESSAGE_NONE,				///< @brief No message
 			MESSAGE_SYSWAIT			= LIB3270_MESSAGE_SYSWAIT,			///< @brief --
@@ -143,6 +173,8 @@
 
 			/// @brief Write error to log file.
 			void error(const char *fmt, ...) const;
+
+			void fire(const Event &event);
 
 		public:
 

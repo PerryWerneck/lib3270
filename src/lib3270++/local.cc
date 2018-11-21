@@ -39,6 +39,7 @@
  #include "private.h"
  #include <lib3270/actions.h>
 
+ using std::string;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -51,6 +52,56 @@
 		this->hSession = lib3270_session_new("");
 		lib3270_set_user_data(this->hSession,(void *) this);
 		setCharSet(lib3270_get_display_charset(this->hSession));
+
+		lib3270_set_popup_handler(this->hSession, popupHandler);
+
+	}
+
+	/// @brief Popup Handler.
+	int LocalSession::popupHandler(H3270 *h3270, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg) {
+
+		LocalSession * session = (LocalSession *) lib3270_get_user_data(h3270);
+
+		if(!session) {
+			throw std::runtime_error("Invalid session handler");
+		}
+
+        class PopupEvent : public Event {
+		private:
+			LIB3270_NOTIFY type;
+			string title;
+			string msg;
+			string description;
+
+		public:
+			PopupEvent(LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg) : Event(Event::Popup) {
+
+				this->type = type;
+				this->title = title;
+				this->msg = msg;
+
+				char * buffer = NULL;
+				if(vasprintf(&buffer,fmt,arg) != -1) {
+					this->description = buffer;
+					free(buffer);
+				}
+
+			}
+
+			virtual ~PopupEvent() {
+			}
+
+			/// @brief Get event description.
+			std::string toString() const override {
+				return msg;
+			}
+
+
+        };
+
+        session->fire(PopupEvent(type,title,msg,fmt,arg));
+
+        return 0;
 
 	}
 

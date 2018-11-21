@@ -43,6 +43,7 @@
 	#include <config.h>
 	#include <mutex>
 	#include <lib3270++.h>
+	#include <lib3270/popup.h>
 	#include <system_error>
 
 
@@ -107,6 +108,9 @@
 
 			/// @brief Mutex to serialize access to lib3270
 			std::mutex sync;
+
+			/// @brief Popup Handler.
+			static int popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
 
 		public:
 			LocalSession();

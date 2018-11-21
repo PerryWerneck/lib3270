@@ -41,6 +41,7 @@
 		</Linker>
 		<Unit filename="../include/lib3270++.h" />
 		<Unit filename="../include/lib3270.h" />
+		<Unit filename="../include/lib3270/popup.h" />
 		<Unit filename="../include/lib3270/session.h" />
 		<Unit filename="abstract.cc" />
 		<Unit filename="host.cc" />

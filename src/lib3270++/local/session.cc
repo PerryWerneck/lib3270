@@ -138,7 +138,7 @@
 		return (ConnectionState) lib3270_get_connection_state(this->hSession);
 	}
 
-	/// @brief Set field at current posicion, jumps to next writable field.
+	/// @brief Set field at current position, jumps to next writable field.
 	TN3270::Session & Local::Session::push(const char *text) {
 		std::lock_guard<std::mutex> lock(sync);
 		return *this;

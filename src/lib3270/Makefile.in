@@ -1,0 +1,358 @@
+#
+# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+# aplicativos mainframe. Registro no INPI sob o nome G3270.
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+# Free Software Foundation.
+#
+# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+# obter mais detalhes.
+#
+# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA, 02111-1307, USA
+#
+# Contatos:
+#
+# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+#
+
+#---[ Library configuration ]------------------------------------------------------------
+
+LIBNAME=lib@LIB3270_NAME@
+
+SOURCES= \
+	$(wildcard *.c) \
+	$(wildcard @OSNAME@/*.c) \
+	$(wildcard @OSNAME@/*.rc) \
+	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c
+
+TEST_SOURCES= \
+	$(wildcard src/testprogram/*.c)
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CC=@CC@
+HOST_CC=@HOST_CC@
+LD=@CC@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
+AR=@AR@
+
+#---[ Paths ]----------------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
+
+BASEDIR=@BASEDIR@
+
+POTDIR=$(BASEDIR)/.pot
+
+OBJDIR=$(BASEDIR)/.obj/$(LIBNAME)
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
+
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+#---[ Rules ]----------------------------------------------------------------------------
+
+DEPENDS= \
+	Makefile \
+	../include/*.h \
+	../include/lib3270/*.h \
+	../lib3270/*.h
+
+
+CFLAGS= \
+	@CFLAGS@ \
+	-g \
+	-I../include
+	-DBUILD_DATE=`date +%Y%m%d` \
+	@LIBSSL_CFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@LIBSSL_LIBS@ \
+	@LIBICONV@ \
+	@INTL_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
+
+$(OBJDBG)/%.o: \
+	%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CC) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ -c $<
+
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Release Rules ]--------------------------------------------------------------------
+
+$(OBJRLS)/%.o: \
+	%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ -c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Misc Rules ]-----------------------------------------------------------------------
+
+$(POTDIR)/$(LIBNAME)/%.pot: \
+	%.c
+
+	@echo $(notdir $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(XGETTEXT) \
+		--language=C \
+		--keyword=_ \
+		--keyword=N_ \
+		--keyword=MSG_:2 \
+		--output=$@ \
+		$<
+	@touch $@
+
+$(POTDIR)/$(LIBNAME)/%.pot: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@touch $@
+
+#---[ Release Targets ]------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(LIBNAME).a \
+	$(POTDIR)/$(LIBNAME).pot
+
+
+Release: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(LIBNAME).a
+
+$(BINRLS)/$(LIBNAME)@DLLEXT@: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
+
+$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
+
+$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+		$(LIBS)
+
+$(BINRLS)/$(LIBNAME).a: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@echo $@ ...
+	@$(MKDIR) `dirname $@`
+	@$(AR) rcs $@ $^
+
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+install: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(LIBNAME).a
+
+	# Install library
+	@mkdir -p $(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)
+
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+	# Install static library
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).a \
+		$(DESTDIR)$(libdir)
+
+	# Install SDK
+
+	@mkdir -p $(DESTDIR)$(includedir)/$(LIBNAME)
+
+	@$(INSTALL_DATA) \
+		../include/$(LIBNAME)/*.h \
+		$(DESTDIR)$(includedir)/$(LIBNAME)		
+
+	@$(INSTALL_DATA) \
+		../include/$(LIBNAME).h \
+		$(DESTDIR)$(includedir)/$(LIBNAME).h
+
+	# Install PKG-CONFIG files
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(INSTALL_DATA) \
+		$(LIBNAME).pc \
+		$(DESTDIR)$(libdir)/pkgconfig/$(LIBNAME).pc
+
+
+#---[ Misc Targets ]---------------------------------------------------------------------
+
+$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
+	X3270.xad \
+	$(wildcard mkfb/*.c)
+
+	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(BINDIR)
+	@echo $< ...
+	@$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard mkfb/*.c)
+	@$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
+
+$(POTDIR)/$(LIBNAME).pot: \
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
+
+	@rm -f $@
+	@mkdir -p `dirname $@`
+	@$(MSGCAT) --sort-output $^ > $@
+
+locale: \
+	lib$(LIBNAME).pot
+
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@
+
+$(BINDBG)/$(LIBNAME)@EXEEXT@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+run: \
+	$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+
+$(BINDBG)/$(LIBNAME)@DLLEXT@: \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
+
+$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
+
+$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$(LIBS)
+
+#---[ Clean Targets ]--------------------------------------------------------------------
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
+	@rm -fr $(POTDIR)/$(LIBNAME)
+
+cleanDebug:
+
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+	@rm -fr $(POTDIR)
+	@rm -f lib$(LIBNAME).pot
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+

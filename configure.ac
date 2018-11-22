@@ -444,9 +444,11 @@ dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
-AC_CONFIG_FILES(sdk/lib3270.pc)
-AC_CONFIG_FILES(src/lib3270/version.c)
 AC_CONFIG_FILES(Makefile)
+
+AC_CONFIG_FILES(src/lib3270/Makefile)
+AC_CONFIG_FILES(src/lib3270/version.c)
+AC_CONFIG_FILES(src/lib3270/lib3270.pc)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.

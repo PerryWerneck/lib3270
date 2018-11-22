@@ -33,7 +33,7 @@
  *	file
  */
 
-#include "../include/config.h"
+#include "../../include/config.h"
 
 
 #if defined( WIN32 )

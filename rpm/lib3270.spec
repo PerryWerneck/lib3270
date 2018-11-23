@@ -43,7 +43,7 @@ Summary:	TN3270 Access library
 Name:		lib3270-%{_libvrs}
 Version:	5.2
 Release:	0
-License:        GPL-2.0
+License:        LGPL-3.0
 Source:		%{name}-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/

@@ -156,6 +156,9 @@
 		<Unit filename="src/lib3270/macros.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/mkfb/mkfb.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/options.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -202,6 +205,9 @@
 		<Unit filename="src/lib3270/telnet.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/toggles.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -214,10 +220,11 @@
 		<Unit filename="src/lib3270/util.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/windows/resources.rc.in" />
-		<Unit filename="src/testprogram/testprogram.c">
+		<Unit filename="src/lib3270/version.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/windows/resources.rc" />
+		<Unit filename="src/lib3270/windows/resources.rc.in" />
 		<Extensions>
 			<code_completion />
 			<envvars />

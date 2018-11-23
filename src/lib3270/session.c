@@ -105,6 +105,9 @@ void lib3270_session_free(H3270 *h)
 	release_pointer(h->charset.host);
 	release_pointer(h->charset.display);
 
+	release_pointer(h->text);
+	release_pointer(h->zero_buf);
+
 	trace("Releasing session %p",h);
 	lib3270_free(h);
 

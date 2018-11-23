@@ -51,6 +51,7 @@ XGETTEXT=@XGETTEXT@
 MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
+VALGRIND=@VALGRIND@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -297,8 +298,18 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
+ifeq ($(VALGRIND),no)
+
 	@LD_LIBRARY_PATH=$(BINDBG) \
 		$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+else
+	@touch valgrind.suppression
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
+			$(BINDBG)/$(LIBNAME)@EXEEXT@
+endif
 
 
 $(BINDBG)/$(LIBNAME)@DLLEXT@: \

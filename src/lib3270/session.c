@@ -108,6 +108,26 @@ void lib3270_session_free(H3270 *h)
 	release_pointer(h->text);
 	release_pointer(h->zero_buf);
 
+	release_pointer(h->sbbuf);
+	release_pointer(h->tabs);
+
+	// Release timeouts
+	while(h->timeouts)
+	{
+		timeout_t *t = h->timeouts;
+		h->timeouts = t->next;
+
+		lib3270_free(t);
+	}
+
+	// Release inputs;
+	while(h->inputs)
+	{
+		input_t *ip = h->inputs;
+		h->inputs = ip->next;
+		lib3270_free(ip);
+	}
+
 	trace("Releasing session %p",h);
 	lib3270_free(h);
 

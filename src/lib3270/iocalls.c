@@ -204,6 +204,8 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 	ip->userdata				= userdata;
 	ip->call					= call;
 
+	ip->next					= session->inputs;
+
 	session->inputs 			= ip;
 	session->inputs_changed 	= 1;
 
@@ -565,7 +567,7 @@ static int internal_wait(H3270 *hSession, int seconds)
 	return 0;
 }
 
-static void internal_ring_bell(H3270 *session)
+static void internal_ring_bell(H3270 *session unused)
 {
 	return;
 }

@@ -988,7 +988,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
  * @param hSession	Session handle
  *
  */
-void net_input(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *dunno)
+void net_input(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void *dunno unused)
 {
 //	register unsigned char	* cp;
 	int						  nr;
@@ -1307,9 +1307,9 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 		    case TELOPT_EOR:
 		    case TELOPT_TTYPE:
 		    case TELOPT_ECHO:
-#if defined(X3270_TN3270E) /*[*/
+#if defined(X3270_TN3270E)
 		    case TELOPT_TN3270E:
-#endif /*]*/
+#endif
 			if (c != TELOPT_TN3270E || !hSession->non_tn3270e_host) {
 				if (!hSession->hisopts[c]) {
 					hSession->hisopts[c] = 1;
@@ -1334,6 +1334,7 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 				}
 				break;
 			}
+
 		    default:
 			dont_opt[2] = c;
 			net_rawout(hSession,dont_opt, sizeof(dont_opt));
@@ -1953,7 +1954,7 @@ static int process_eor(H3270 *hSession)
  * net_exception
  *	Called when there is an exceptional condition on the socket.
  */
-void net_exception(H3270 *session, int fd, LIB3270_IO_FLAG flag, void *dunno)
+void net_exception(H3270 *session, int fd unused, LIB3270_IO_FLAG flag unused, void *dunno unused)
 {
 	CHECK_SESSION_HANDLE(session);
 

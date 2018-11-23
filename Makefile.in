@@ -136,10 +136,12 @@ clean: \
 cleanDebug:
 
 	@rm -fr $(BINDBG)
+	@$(MAKE) -C src/lib3270 $@
 
 cleanRelease:
 
 	@rm -fr $(BINRLS)
+	@$(MAKE) -C src/lib3270 $@
 
 clean: \
 	cleanDebug \

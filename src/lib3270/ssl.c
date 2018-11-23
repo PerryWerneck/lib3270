@@ -322,7 +322,7 @@ int ssl_init(H3270 *hSession)
 			"/etc/ssl/certs"
 		};
 
-		int f;
+		size_t f;
 
 		for(f = 0;f < sizeof(ssldir) / sizeof(ssldir[0]);f++)
 		{

@@ -165,7 +165,7 @@ static void update_selected_region(H3270 *session)
 
 }
 
-void toggle_rectselect(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt)
+void toggle_rectselect(H3270 *session, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused)
 {
 	if(!session->selected)
 		return;
@@ -667,7 +667,7 @@ char * cut_text(H3270 *hSession, char tok)
 		int sattr;	/* Source addr attribute */
 		char *text;
 		size_t maxlen = hSession->rows * hSession->cols;
-		int f;
+		size_t f;
 
 		get_selected_addr(hSession,&daddr,&end);
 

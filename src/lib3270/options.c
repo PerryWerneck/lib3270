@@ -35,7 +35,7 @@
 
 /*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
 
- static const const LIB3270_OPTION_ENTRY host_type[] =
+ static const LIB3270_OPTION_ENTRY host_type[] =
  {
 	{
 		LIB3270_OPTION_S390,
@@ -164,7 +164,7 @@ LIB3270_EXPORT LIB3270_OPTION lib3270_parse_host_type(const char *name)
 
 LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, const char *name)
 {
-	int f;
+	size_t f;
 
 	for(f=0;f<(sizeof(host_type)/sizeof(host_type[0]));f++)
 	{

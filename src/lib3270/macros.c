@@ -78,7 +78,7 @@
 		DECLARE_XLAT_STATE( LIB3270_CONNECTED_TN3270E	)
 	};
 
-	int f;
+	size_t f;
 
  	LIB3270_CSTATE state = lib3270_get_connection_state(h);
 

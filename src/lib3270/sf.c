@@ -700,7 +700,7 @@ static void query_reply_start(H3270 *hSession)
 
 static void do_query_reply(H3270 *hSession, unsigned char code)
 {
-	int i;
+	size_t i;
 	unsigned subindex = 0;
 	Boolean more = False;
 
@@ -758,7 +758,7 @@ static void do_qr_null(H3270 *hSession)
 
 static void do_qr_summary(H3270 *hSession)
 {
-	int i;
+	size_t i;
 	const char *comma = "";
 
 	trace_ds(hSession,"> QueryReply(Summary(");

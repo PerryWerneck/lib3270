@@ -57,7 +57,7 @@
 
 void lib3270_session_free(H3270 *h)
 {
-	int f;
+	size_t f;
 
 	if(!h)
 		return;
@@ -110,39 +110,39 @@ void lib3270_session_free(H3270 *h)
 
 }
 
-static void update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor)
+static void update_char(H3270 *session unused, int addr unused, unsigned char chr unused, unsigned short attr unused, unsigned char cursor unused)
 {
 }
 
-static void nop_char(H3270 *session, unsigned char chr)
+static void nop_char(H3270 *session unused, unsigned char chr unused)
 {
 }
 
-static void nop(H3270 *session)
+static void nop(H3270 *session unused)
 {
 }
 
-static void update_model(H3270 *session, const char *name, int model, int rows, int cols)
+static void update_model(H3270 *session unused, const char *name unused, int model unused, int rows unused, int cols unused)
 {
 }
 
-static void changed(H3270 *session, int bstart, int bend)
+static void changed(H3270 *session unused, int bstart unused, int bend unused)
 {
 }
 
-static void update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr)
+static void update_cursor(H3270 *session unused, unsigned short row unused, unsigned short col unused, unsigned char c unused, unsigned short attr unused)
 {
 }
 
-static void update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
+static void update_oia(H3270 *session unused, LIB3270_FLAG id unused, unsigned char on unused)
 {
 }
 
-static void update_selection(H3270 *session, int start, int end)
+static void update_selection(H3270 *session unused, int start unused, int end unused)
 {
 }
 
-static void set_cursor(H3270 *session, LIB3270_POINTER id)
+static void set_cursor(H3270 *session unused, LIB3270_POINTER id unused)
 {
 }
 
@@ -152,7 +152,7 @@ static int print(H3270 *session)
 	return -1;
 }
 
-static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *msg, const char *text)
+static void message(H3270 *session, LIB3270_NOTIFY id  unused, const char *title, const char *msg, const char *text)
 {
 #ifdef ANDROID
 	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",title);
@@ -165,7 +165,7 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 #endif // ANDROID
 }
 
-static int def_popup(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg)
+static void def_popup(H3270 *session, LIB3270_NOTIFY type unused, const char *title, const char *msg, const char *fmt, va_list arg)
 {
 #ifdef ANDROID
 	char *mask = xs_buffer("%s\n",fmt);
@@ -176,20 +176,19 @@ static int def_popup(H3270 *session, LIB3270_NOTIFY type, const char *title, con
 	lib3270_write_log(session,"popup","%s",msg);
 	lib3270_write_va_log(session,"popup",fmt,arg);
 #endif // ANDROID
-	return 0;
 }
 
-static void def_trace(H3270 *session, const char *fmt, va_list args)
+static void def_trace(H3270 *session unused, const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
 	fflush(stdout);
 }
 
-static void update_ssl(H3270 *session, LIB3270_SSL_STATE state)
+static void update_ssl(H3270 *session unused, LIB3270_SSL_STATE state unused)
 {
 }
 
-static void set_timer(H3270 *session, unsigned char on)
+static void set_timer(H3270 *session unused, unsigned char on unused)
 {
 }
 
@@ -199,7 +198,7 @@ static void screen_disp(H3270 *session)
 	screen_update(session,0,session->rows*session->cols);
 }
 
-static void nop_int(H3270 *session, int width)
+static void nop_int(H3270 *session unused, int width unused)
 {
 	return;
 }
@@ -298,7 +297,7 @@ LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler(H3270 *session, L
 	return ret;
 }
 
-LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, int (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list)) {
+LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list)) {
 	session->cbk.popup = handler ? handler : def_popup;
 }
 

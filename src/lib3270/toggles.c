@@ -287,13 +287,13 @@ LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE ix)
 	return (int) t->value;
 }
 
-static void toggle_altscreen(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt)
+static void toggle_altscreen(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt unused)
 {
 	if(!session->screen_alt)
 		set_viewsize(session,t->value ? 24 : session->maxROWS,80);
 }
 
-static void toggle_redraw(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt)
+static void toggle_redraw(H3270 *session, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused)
 {
 	session->cbk.display(session);
 }
@@ -301,7 +301,7 @@ static void toggle_redraw(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 /*
  * No-op toggle.
  */
-static void toggle_nop(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE LIB3270_UNUSED(tt) )
+static void toggle_nop(H3270 *session unused, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused )
 {
 }
 
@@ -357,7 +357,7 @@ void shutdown_toggles(H3270 *session)
 #if defined(X3270_TRACE)
 	static const LIB3270_TOGGLE disable_on_shutdown[] = {DS_TRACE, EVENT_TRACE, SCREEN_TRACE};
 
-	int f;
+	size_t f;
 
 	for(f=0;f< (sizeof(disable_on_shutdown)/sizeof(disable_on_shutdown[0])); f++)
 		lib3270_set_toggle(session,disable_on_shutdown[f],0);

@@ -50,6 +50,7 @@ AM_ICONV
 
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_SED
 AC_PROG_LN_S
 AC_PATH_TOOL([AR], [ar], [ar])
@@ -449,6 +450,8 @@ AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/lib3270/Makefile)
 AC_CONFIG_FILES(src/lib3270/version.c)
 AC_CONFIG_FILES(src/lib3270/lib3270.pc)
+
+AC_CONFIG_FILES(src/lib3270++/Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.

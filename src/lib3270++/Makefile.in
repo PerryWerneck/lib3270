@@ -26,22 +26,19 @@
 
 #---[ Library configuration ]------------------------------------------------------------
 
-LIBNAME=lib@LIB3270_NAME@
+LIBNAME=lib@LIB3270_NAME@++
 
 SOURCES= \
-	$(wildcard *.c) \
-	$(wildcard @OSNAME@/*.c) \
-	$(wildcard @OSNAME@/*.rc) \
-	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c
+	$(wildcard *.cc)
 
 TEST_SOURCES= \
-	$(wildcard testprogram/*.c)
+	$(wildcard testprogram/*.cc)
 
 #---[ Tools ]----------------------------------------------------------------------------
 
-CC=@CC@
+CXX=@CXX@
 HOST_CC=@HOST_CC@
-LD=@CC@
+LD=@CXX@
 LN_S=@LN_S@
 MKDIR=@MKDIR_P@
 INSTALL=@INSTALL@
@@ -91,24 +88,22 @@ CFLAGS= \
 	@CFLAGS@ \
 	-g \
 	-I../include
-	-DBUILD_DATE=`date +%Y%m%d` \
-	@LIBSSL_CFLAGS@
+	-DBUILD_DATE=`date +%Y%m%d`
 
 LIBS= \
 	@LIBS@ \
-	@LIBSSL_LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
 $(OBJDBG)/%.o: \
-	%.c \
+	%.cc \
 	$(DEPENDS)
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CC) \
+	@$(CXX) \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
@@ -124,12 +119,12 @@ $(OBJDBG)/%.o: \
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
-	%.c \
+	%.cc \
 	$(DEPENDS)
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CC) \
+	@$(CXX) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
 		-o $@ -c $<
@@ -144,7 +139,7 @@ $(OBJRLS)/%.o: \
 #---[ Misc Rules ]-----------------------------------------------------------------------
 
 $(POTDIR)/$(LIBNAME)/%.pot: \
-	%.c
+	%.cc
 
 	@echo $(notdir $@) ...
 	@$(MKDIR) `dirname $@`
@@ -293,7 +288,7 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
-	@$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@

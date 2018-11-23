@@ -35,7 +35,7 @@ SOURCES= \
 	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c
 
 TEST_SOURCES= \
-	$(wildcard src/testprogram/*.c)
+	$(wildcard testprogram/*.c)
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -284,11 +284,11 @@ locale: \
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@
+	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
 $(BINDBG)/$(LIBNAME)@EXEEXT@: \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o)
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...

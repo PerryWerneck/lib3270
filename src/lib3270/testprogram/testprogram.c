@@ -26,6 +26,9 @@ int main(int numpar, char *param[])
 
 	lib3270_wait_for_ready(h,10);
 
+	lib3270_enter(h);
+
+	lib3270_wait_for_ready(h,10);
 
 	lib3270_session_free(h);
 

@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output=".bin/Debug/C++ Bindings for lib3270" prefix_auto="1" extension_auto="1" />
+				<Option output="../../.bin/Debug/lib3270++" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -42,6 +42,8 @@
 		</Linker>
 		<Unit filename="../include/lib3270++.h" />
 		<Unit filename="../include/lib3270.h" />
+		<Unit filename="../include/lib3270/action_table.h" />
+		<Unit filename="../include/lib3270/actions.h" />
 		<Unit filename="../include/lib3270/popup.h" />
 		<Unit filename="../include/lib3270/session.h" />
 		<Unit filename="abstract.cc" />

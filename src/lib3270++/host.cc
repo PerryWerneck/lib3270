@@ -55,8 +55,15 @@
 		this->session = nullptr;
 	}
 
+    void Host::connect(const char *url) {
+        this->session->connect(url);
+        sync();
+    }
+
+
 	/// @brief Writes characters to the associated file from the put area
 	int Host::sync() {
+        this->session->waitForReady();
 		return 0;
 	}
 
@@ -72,6 +79,21 @@
 
 		return c;
 
+	}
+
+    Host & Host::push(const Action action) {
+        session->push(action);
+        sync();
+        return *this;
+    }
+
+	std::string Host::toString() const {
+
+	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
+            throw std::system_error(ENOTCONN, std::system_category());
+	    }
+
+	    return this->session->toString();
 	}
 
  }

@@ -37,6 +37,7 @@
  */
 
  #include "../private.h"
+ #include <lib3270/actions.h>
 
  extern "C" {
 	 #include <lib3270/actions.h>
@@ -82,6 +83,8 @@
 
 	void Local::Session::wait(time_t timeout) {
 
+		std::lock_guard<std::mutex> lock(sync);
+
 		int rc = lib3270_wait_for_ready(this->hSession, timeout);
 
 		if(rc) {
@@ -98,9 +101,7 @@
             throw std::system_error(rc, std::system_category());
 		}
 
-		wait();
-
-	}
+    }
 
 	void Local::Session::disconnect() {
 		std::lock_guard<std::mutex> lock(sync);
@@ -109,23 +110,42 @@
 
 	// Wait for session state.
 	void Local::Session::waitForReady(time_t timeout) throw() {
-
-		std::lock_guard<std::mutex> lock(sync);
-		wait(timeout);
-
+		this->wait(timeout);
 	}
 
-	// Gets
-	std::string Local::Session::toString() const {
+	std::string	Local::Session::toString(int baddr, size_t len, char lf) const {
+
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+        char * text = lib3270_get_text(hSession, baddr, len, lf);
+
+        if(!text) {
+            throw std::runtime_error("Can't get screen contents");
+        }
+
+        string rc = convertFromHost(text);
+
+        lib3270_free(text);
+
+		return rc;
+
 	}
 
-	std::string	Local::Session::toString(int baddr, size_t len, bool lf) {
-		std::lock_guard<std::mutex> lock(sync);
-	}
+	std::string	Local::Session::toString(int row, int col, size_t sz, char lf) const {
 
-	std::string	Local::Session::toString(int row, int col, size_t sz, bool lf) {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+        char * text = lib3270_get_text_at(hSession, row, col, sz, lf);
+
+        if(!text) {
+            throw std::runtime_error("Can't get screen contents");
+        }
+
+        string rc = convertFromHost(text);
+
+        lib3270_free(text);
+
+		return rc;
 	}
 
 	ProgramMessage Local::Session::getProgramMessage() const {
@@ -168,6 +188,30 @@
 
 	TN3270::Session & Local::Session::push(const Action action) {
 		std::lock_guard<std::mutex> lock(sync);
+
+		switch(action) {
+        case ENTER:
+            lib3270_enter(hSession);
+            break;
+
+        case ERASE:
+            lib3270_erase(hSession);
+            break;
+
+        case ERASE_EOF:
+            lib3270_eraseeof(hSession);
+            break;
+
+        case ERASE_EOL:
+            lib3270_eraseeol(hSession);
+            break;
+
+        case ERASE_INPUT:
+            lib3270_eraseinput(hSession);
+            break;
+
+		}
+
 		return *this;
 	}
 

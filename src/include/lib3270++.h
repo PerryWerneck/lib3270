@@ -203,9 +203,8 @@
 			virtual void waitForReady(time_t timeout = 5) throw() = 0;
 
 			// Gets
-			virtual std::string toString() const = 0;
-			virtual std::string	toString(int baddr = 0, size_t len = -1, bool lf = false) = 0;
-			virtual std::string	toString(int row, int col, size_t sz, bool lf = false) = 0;
+			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;
+			virtual std::string	toString(int row, int col, size_t sz, char lf = '\n') const = 0;
 
 			inline operator std::string() const {
 				return toString();
@@ -281,9 +280,7 @@
 				return session->getConnectionState() == state;
 			}
 
-			inline void connect(const char *url) {
-				this->session->connect(url);
-			}
+			void connect(const char *url);
 
 			inline ProgramMessage getProgramMessage() const {
 				return session->getProgramMessage();
@@ -335,10 +332,7 @@
 				return *this;
 			}
 
-			inline Host & push(const Action action) {
-				session->push(action);
-				return *this;
-			}
+			Host & push(const Action action);
 
 			// Get contents.
 
@@ -356,6 +350,8 @@
 				session->pop(text);
 				return *this;
 			}
+
+			std::string toString() const;
 
 			// Event listeners
 			inline Host & insert(Event::Type type, std::function <void(const Event &event)> listener) noexcept {
@@ -381,15 +377,16 @@
 		return session.pop(value);
 	}
 
-		template <typename T>
+	template <typename T>
 	inline TN3270_PUBLIC TN3270::Host & operator<<(TN3270::Host& host, const T value) {
 		return host.push(value);
 	}
 
-	template <typename T>
-	inline TN3270_PUBLIC TN3270::Host & operator>>(TN3270::Host& host, const T value) {
-		return host.pop(value);
+	inline std::ostream & operator<<(std::ostream &stream, const TN3270::Host& host) {
+        stream << host.toString();
+        return stream;
 	}
+
 
 #endif
 

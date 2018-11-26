@@ -45,6 +45,7 @@
 	#include <lib3270++.h>
 	#include <lib3270/popup.h>
 	#include <system_error>
+	#include <stdexcept>
 
 
 #ifdef HAVE_ICONV
@@ -133,9 +134,8 @@
 				void waitForReady(time_t timeout = 5)  throw() override;
 
 				// Gets
-				std::string toString() const override;
-				std::string	toString(int baddr = 0, size_t len = -1, bool lf = false) override;
-				std::string	toString(int row, int col, size_t sz, bool lf = false) override;
+				std::string	toString(int baddr, size_t len, char lf) const override;
+				std::string	toString(int row, int col, size_t sz, char lf) const override;
 
 				ProgramMessage getProgramMessage() const override;
 

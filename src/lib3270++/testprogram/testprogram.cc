@@ -39,6 +39,8 @@
  #include <cstdlib>
  #include <lib3270++.h>
 
+ using namespace std;
+
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  int main(int argc, const char *argv[]) {
@@ -46,6 +48,11 @@
 	TN3270::Host host;
 
 	host.connect(getenv("TN3270URL"));
+	cout << host << endl;
+
+	host << TN3270::ENTER;
+
+
 
 	return 0;
  }

@@ -108,6 +108,8 @@ void lib3270_session_free(H3270 *h)
 	release_pointer(h->text);
 	release_pointer(h->zero_buf);
 
+	release_pointer(h->obuf_base);
+
 	release_pointer(h->sbbuf);
 	release_pointer(h->tabs);
 

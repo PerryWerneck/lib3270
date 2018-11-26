@@ -115,8 +115,15 @@ Release: \
 #---[ Misc Targets ]---------------------------------------------------------------------
 
 locale: \
+	lib@LIB3270_NAME@.pot
+
+lib@LIB3270_NAME@.pot: \
 	$(POTDIR)/lib@LIB3270_NAME@.pot \
 	$(POTDIR)/lib@LIB3270_NAME@++.pot
+
+	@rm -f $@
+	@mkdir -p `dirname $@`
+	@$(MSGCAT) --sort-output $^ > $@
 
 #---[ Install Targets ]------------------------------------------------------------------
 

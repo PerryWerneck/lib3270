@@ -276,7 +276,7 @@ $(POTDIR)/$(LIBNAME).pot: \
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
-	lib$(LIBNAME).pot
+	$(POTDIR)/$(LIBNAME).pot
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------

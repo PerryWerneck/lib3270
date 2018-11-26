@@ -52,7 +52,7 @@
 
 	host << TN3270::ENTER;
 
-
+	cout << host << endl;
 
 	return 0;
  }

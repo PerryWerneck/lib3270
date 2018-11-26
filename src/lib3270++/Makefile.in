@@ -29,7 +29,8 @@
 LIBNAME=lib@LIB3270_NAME@++
 
 SOURCES= \
-	$(wildcard *.cc)
+	$(wildcard *.cc) \
+	$(wildcard local/*.cc) \
 
 TEST_SOURCES= \
 	$(wildcard testprogram/*.cc)
@@ -198,6 +199,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+		-L$(BINRLS) \
 		$(LIBS)
 
 $(BINRLS)/$(LIBNAME).a: \
@@ -288,7 +290,12 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
-	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+	@$(LD) \
+		-Wl,--rpath,$(BINDBG) \
+		-o $@ \
+		$^ \
+		$(LDFLAGS) \
+		$(LIBS)
 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
@@ -330,11 +337,15 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		-shared \
+		-Wl,-soname,$(@F) \
+		-Wl,--rpath,$(BINDBG) \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
-		$(LIBS)
+		-L$(BINDBG) \
+		$(LIBS) \
+		-l3270
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 

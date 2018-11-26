@@ -50,7 +50,7 @@
  namespace TN3270 {
 
 	/// @brief Popup Handler.
-	int Local::Session::popupHandler(H3270 *h3270, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg) {
+	void Local::Session::popupHandler(H3270 *h3270, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg) {
 
 		Local::Session * session = (Local::Session *) lib3270_get_user_data(h3270);
 
@@ -99,8 +99,6 @@
         };
 
         session->fire(PopupEvent(type,title,msg,fmt,arg));
-
-        return 0;
 
 	}
 

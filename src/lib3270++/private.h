@@ -113,7 +113,7 @@
 				std::mutex sync;
 
 				/// @brief Popup Handler.
-				static int popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
+				static void popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
 
 				/// @brief Connect Handler.
 				static void connectHandler(H3270 *session, unsigned char connected);

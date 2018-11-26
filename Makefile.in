@@ -91,12 +91,17 @@ $(BINRLS)/lib@LIB3270_NAME@@DLLEXT@: \
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
 
-$(POTDIR)/lib@LIB3270_NAME@.pot: \
+$(POTDIR)/lib3270.pot: \
 	src/lib3270/* \
 	$(DEPENDS)
 
 	@$(MAKE) -C src/lib3270 $@
 
+$(POTDIR)/lib3270++.pot: \
+	src/lib3270++/* \
+	$(DEPENDS)
+
+	@$(MAKE) -C src/lib3270++ $@
 
 #---[ Release Targets ]------------------------------------------------------------------
 
@@ -109,8 +114,9 @@ Release: \
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-lib@LIB3270_NAME@.pot: \
-	$(POTDIR)/lib@LIB3270_NAME@.pot
+locale: \
+	$(POTDIR)/lib@LIB3270_NAME@.pot \
+	$(POTDIR)/lib@LIB3270_NAME@++.pot
 
 #---[ Install Targets ]------------------------------------------------------------------
 

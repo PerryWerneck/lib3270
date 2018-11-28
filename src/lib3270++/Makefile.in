@@ -95,8 +95,10 @@ CFLAGS= \
 
 LIBS= \
 	@LIBS@ \
+	@LIBSSL_LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@
+
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
@@ -166,13 +168,14 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 
 all: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/$(LIBNAME).a \
+	$(BINRLS)/static/$(LIBNAME).a \
 	$(POTDIR)/$(LIBNAME).pot
 
 
 Release: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/$(LIBNAME).a
+	$(BINRLS)/static/$(LIBNAME).a
+
 
 $(BINRLS)/$(LIBNAME)@DLLEXT@: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
@@ -196,15 +199,18 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
+
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		-shared \
+		-Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		-L$(BINRLS) \
-		$(LIBS)
+		$(LIBS) \
+		-l3270
 
-$(BINRLS)/$(LIBNAME).a: \
+$(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
@@ -216,7 +222,7 @@ $(BINRLS)/$(LIBNAME).a: \
 
 install: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/$(LIBNAME).a
+	$(BINRLS)/static/$(LIBNAME).a
 
 	# Install library
 	@mkdir -p $(DESTDIR)$(libdir)
@@ -236,17 +242,10 @@ install: \
 
 	# Install static library
 	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).a \
+		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)
 
 	# Install SDK
-
-	@mkdir -p $(DESTDIR)$(includedir)/$(LIBNAME)
-
-	@$(INSTALL_DATA) \
-		../include/$(LIBNAME)/*.h \
-		$(DESTDIR)$(includedir)/$(LIBNAME)		
-
 	@$(INSTALL_DATA) \
 		../include/$(LIBNAME).h \
 		$(DESTDIR)$(includedir)/$(LIBNAME).h
@@ -361,12 +360,18 @@ clean: \
 cleanDebug:
 
 	@rm -fr $(OBJDBG)
-	@rm -fr $(BINDBG)
+	@rm -f $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+	@rm -f $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+	@rm -f $(BINDBG)/$(LIBNAME)@DLLEXT@
 
 cleanRelease:
 
 	@rm -fr $(OBJRLS)
-	@rm -fr $(BINRLS)
+
+	@rm -f $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+	@rm -f $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+	@rm -f $(BINRLS)/$(LIBNAME)@DLLEXT@
+
 	@rm -fr $(POTDIR)
 	@rm -f lib$(LIBNAME).pot
 

@@ -168,13 +168,13 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 
 all: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/$(LIBNAME).a \
+	$(BINRLS)/static/$(LIBNAME).a \
 	$(POTDIR)/$(LIBNAME).pot
 
 
 Release: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/$(LIBNAME).a
+	$(BINRLS)/static/$(LIBNAME).a
 
 $(BINRLS)/$(LIBNAME)@DLLEXT@: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
@@ -205,7 +205,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		$(LIBS)
 
-$(BINRLS)/$(LIBNAME).a: \
+$(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
@@ -217,7 +217,7 @@ $(BINRLS)/$(LIBNAME).a: \
 
 install: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/$(LIBNAME).a
+	$(BINRLS)/static/$(LIBNAME).a
 
 	# Install library
 	@mkdir -p $(DESTDIR)$(libdir)
@@ -237,7 +237,7 @@ install: \
 
 	# Install static library
 	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).a \
+		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)
 
 	# Install SDK

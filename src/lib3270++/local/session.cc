@@ -65,7 +65,7 @@
 
 		cbk = lib3270_get_session_callbacks(this->hSession,sizeof(struct lib3270_session_callbacks));
 		if(!cbk) {
-			throw std::runtime_error( "Invalid callback table, possible version mismatch in lib3270" );
+			throw std::runtime_error( _("Invalid callback table, possible version mismatch in lib3270") );
 		}
 
 		cbk->update_connect	= connectHandler;
@@ -120,7 +120,7 @@
         char * text = lib3270_get_text(hSession, baddr, len, lf);
 
         if(!text) {
-            throw std::runtime_error("Can't get screen contents");
+            throw std::runtime_error( _("Can't get screen contents") );
         }
 
         string rc = convertFromHost(text);
@@ -138,7 +138,7 @@
         char * text = lib3270_get_text_at(hSession, row, col, sz, lf);
 
         if(!text) {
-            throw std::runtime_error("Can't get screen contents");
+            throw std::runtime_error( _("Can't get screen contents") );
         }
 
         string rc = convertFromHost(text);

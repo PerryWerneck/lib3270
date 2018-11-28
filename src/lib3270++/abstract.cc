@@ -110,10 +110,10 @@
 
 		if(in && converter != (iconv_t)(-1)) {
 
-			size_t	  out 		= (in << 1);
-			char	* ptr;
-			char	* outBuffer = (char *) malloc(out);
-			char	* inBuffer	= (char	*) str;
+			size_t				  out 		= (in << 1);
+			char				* ptr;
+			char				* outBuffer = (char *) malloc(out);
+			ICONV_CONST	char	* inBuffer	= (ICONV_CONST char *) str;
 
 			memset(ptr=outBuffer,0,out);
 

@@ -37,6 +37,7 @@
  */
 
  #include "../private.h"
+ #include <stdio.h>
 
  extern "C" {
 	 #include <lib3270/actions.h>
@@ -47,6 +48,35 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+#ifndef HAVE_VASPRINTF
+	int vasprintf(char **strp, const char *fmt, va_list ap) {
+		char buf[1024];
+
+		int nc = vsnprintf(buf, sizeof(buf), fmt, args);
+
+		if(nc < 0) {
+
+			*strp = strdup(_("Error in vasprintf"));
+
+		} else if (nc < sizeof(buf)) {
+
+			*strp = malloc(nc+1);
+			strcpy(*strp, buf);
+
+		} else {
+
+			*strp = malloc(nc + 1);
+			if(vsnprintf(*strp, nc, fmt, args) < 0) {
+				free(*strp);
+				*strp = strdup(NULL,_( "Out of memory in vasprintf" ) );
+			}
+
+		}
+
+		return nc;
+	}
+#endif // !HAVE_VASPRINTF
+
  namespace TN3270 {
 
 	/// @brief Popup Handler.
@@ -55,7 +85,7 @@
 		Local::Session * session = (Local::Session *) lib3270_get_user_data(h3270);
 
 		if(!session) {
-			throw std::runtime_error("Invalid session handler");
+			throw std::runtime_error(_( "Invalid session handler" ));
 		}
 
         class PopupEvent : public TN3270::Event {
@@ -108,7 +138,7 @@
 		Local::Session * session = (Local::Session *) lib3270_get_user_data(h3270);
 
 		if(!session) {
-			throw std::runtime_error("Invalid session handler");
+			throw std::runtime_error(_("Invalid session handler"));
 		}
 
         class ConnectionEvent : public TN3270::Event {
@@ -130,7 +160,7 @@
 
 			/// @brief Get event description.
 			std::string toString() const override {
-				return this->connected ? "connected" : "disconnected";
+				return this->connected ? _("connected") : _("disconnected");
 			}
 
         };

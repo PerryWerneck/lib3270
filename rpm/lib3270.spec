@@ -76,11 +76,6 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	TN3270 Access C++ library 
 Group:		Development/Libraries/C and C++
 
-Requires:	%{name}
-
-Provides:	lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:	otherproviders(lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION})
-
 %description -n lib3270++%{_libvrs}
 
 TN3270 access library originally designed as part of the pw3270 application (C++ Version).

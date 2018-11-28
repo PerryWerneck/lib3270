@@ -81,7 +81,7 @@ Requires:	%{name} = %{version}
 Provides:	lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION}
 Conflicts:	otherproviders(lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION})
 
-%description
+%description -n lib3270++-%{_libvrs}
 
 TN3270 access library originally designed as part of the pw3270 application (C++ Version).
 

@@ -121,7 +121,7 @@
 
 			MESSAGE_X				= LIB3270_MESSAGE_X,				///< @brief --
 			MESSAGE_RESOLVING		= LIB3270_MESSAGE_RESOLVING,		///< @brief Resolving hostname (running DNS query)
-//	MESSAGE_CONNECTING,		= LIB3270_MESSAGE_CONNECTING		///< @brief Connecting to host
+			MESSAGE_CONNECTING		= LIB3270_MESSAGE_CONNECTING		///< @brief Connecting to host
 
 		};
 

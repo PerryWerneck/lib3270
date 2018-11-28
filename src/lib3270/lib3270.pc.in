@@ -11,6 +11,6 @@ Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
 Libs: -L\@libdir@ -l@LIB3270_NAME@
-Libs.private: @LIBSSL_LIBS@
+Libs.private: @LIBSSL_LIBS@ @INTL_LIBS@
 Cflags: -I@includedir@
 

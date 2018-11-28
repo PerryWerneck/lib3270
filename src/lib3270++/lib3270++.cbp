@@ -40,6 +40,7 @@
 		<Linker>
 			<Add option="`pkg-config --libs lib3270`" />
 		</Linker>
+		<Unit filename="../include/config.h.in" />
 		<Unit filename="../include/lib3270++.h" />
 		<Unit filename="../include/lib3270.h" />
 		<Unit filename="../include/lib3270/action_table.h" />

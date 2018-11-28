@@ -80,6 +80,12 @@ $(BINDBG)/lib@LIB3270_NAME@@DLLEXT@: \
 
 	@$(MAKE) -C src/lib3270 $@
 
+$(BINDBG)/lib@LIB3270_NAME@++@DLLEXT@: \
+	src/lib3270++/* \
+	$(DEPENDS)
+
+	@$(MAKE) -C src/lib3270++ $@
+
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(BINRLS)/lib@LIB3270_NAME@@DLLEXT@: \
@@ -87,6 +93,12 @@ $(BINRLS)/lib@LIB3270_NAME@@DLLEXT@: \
 	$(DEPENDS)
 
 	@$(MAKE) -C src/lib3270 $@
+
+$(BINRLS)/lib@LIB3270_NAME@++@DLLEXT@: \
+	src/lib3270/* \
+	$(DEPENDS)
+
+	@$(MAKE) -C src/lib3270++ $@
 
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
@@ -105,12 +117,13 @@ $(POTDIR)/lib3270++.pot: \
 
 #---[ Release Targets ]------------------------------------------------------------------
 
-all: \
-	$(BINRLS)/lib@LIB3270_NAME@@DLLEXT@ \
-	lib@LIB3270_NAME@.pot
+all:
+	@$(MAKE) -C src/lib3270 $@
+	@$(MAKE) -C src/lib3270++ $@
 
 Release: \
-	$(BINRLS)/lib@LIB3270_NAME@@DLLEXT@
+	$(BINRLS)/lib@LIB3270_NAME@@DLLEXT@ \
+	$(BINRLS)/lib@LIB3270_NAME@++@DLLEXT@
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -127,10 +140,10 @@ lib@LIB3270_NAME@.pot: \
 
 #---[ Install Targets ]------------------------------------------------------------------
 
-install: \
-	$(BINRLS)/lib@LIB3270_NAME@@DLLEXT@
+install:
 
-	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
+	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
+	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 
@@ -150,11 +163,13 @@ cleanDebug:
 
 	@rm -fr $(BINDBG)
 	@$(MAKE) -C src/lib3270 $@
+	@$(MAKE) -C src/lib3270++ $@
 
 cleanRelease:
 
 	@rm -fr $(BINRLS)
 	@$(MAKE) -C src/lib3270 $@
+	@$(MAKE) -C src/lib3270++ $@
 
 clean: \
 	cleanDebug \

@@ -41,12 +41,27 @@
 	#define PRIVATE_H_INCLUDED
 
 	#include <config.h>
+
+	#ifdef WIN32
+		#include <winsock2.h>
+		#include <windows.h>
+		#include <ws2tcpip.h>
+	#endif // WIN32
+
 	#include <mutex>
 	#include <lib3270++.h>
 	#include <lib3270/popup.h>
 	#include <system_error>
 	#include <stdexcept>
 
+#ifdef HAVE_LIBINTL
+        #include <libintl.h>
+        #define _( x )                  gettext(x)
+        #define N_( x )                 x
+#else
+        #define _( x )                  x
+        #define N_( x )                 x
+#endif // HAVE_LIBINTL
 
 #ifdef HAVE_ICONV
 	#include <iconv.h>

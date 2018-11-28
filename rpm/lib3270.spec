@@ -1,5 +1,5 @@
 #
-# spec file for package lib3270
+# spec file for packages lib3270 and lib3270++
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -23,7 +23,6 @@
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-%define libname		lib32705_2
 %define documentroot	/srv/www/htdocs/mentor
 
 #Compat macro for new _fillupdir macro introduced in Nov 2017
@@ -70,20 +69,40 @@ TN3270 access library originally designed as part of the pw3270 application.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
+#---[ C++ API ]-------------------------------------------------------------------------------------------------------
+
+%package -n lib3270++-%{_libvrs}
+
+Summary:	TN3270 Access C++ library 
+Group:		Development/Libraries/C and C++
+
+Requires:	%{name} = %{version}
+
+Provides:	lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION}
+Conflicts:	otherproviders(lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION})
+
+%description
+
+TN3270 access library originally designed as part of the pw3270 application (C++ Version).
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
+
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
 %package devel
 
 Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
+
 Requires:	%{name} = %{version}
+Requires:	lib3270++-%{_libvrs} = %{version}
 
 Provides:	lib3270-devel = %{version}
 Conflicts:	otherproviders(lib3270-devel)
 
 %description devel
 
-TN3270 access library for C development files.
+TN3270 access library for C/C++ development files.
 
 Originally designed as part of the pw3270 application.
 
@@ -115,6 +134,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib3270.so.5
 %{_libdir}/lib3270.so.5.2
 
+%files -n lib3270++-%{_libvrs}
+%defattr(-,root,root)
+
+%{_libdir}/lib3270++.so.5
+%{_libdir}/lib3270++.so.5.2
+
 %files devel
 %defattr(-,root,root)
 
@@ -127,6 +152,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib3270.so
 %{_libdir}/lib3270.a
 
+%{_includedir}/lib3270++.h
+
+%{_libdir}/lib3270++.so
+%{_libdir}/lib3270++.a
+
 %pre
 /sbin/ldconfig
 exit 0
@@ -136,6 +166,14 @@ exit 0
 exit 0
 
 %postun
+/sbin/ldconfig
+exit 0
+
+%post -n lib3270++-%{_libvrs}
+/sbin/ldconfig
+exit 0
+
+%postun -n lib3270++-%{_libvrs}
 /sbin/ldconfig
 exit 0
 

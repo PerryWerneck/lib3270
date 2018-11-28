@@ -31,6 +31,8 @@ LIBNAME=lib@LIB3270_NAME@++
 SOURCES= \
 	$(wildcard *.cc) \
 	$(wildcard local/*.cc) \
+        $(wildcard @OSNAME@/*.c) \
+        $(wildcard @OSNAME@/*.rc)
 
 TEST_SOURCES= \
 	$(wildcard testprogram/*.cc)

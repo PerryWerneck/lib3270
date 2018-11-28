@@ -71,17 +71,17 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ C++ API ]-------------------------------------------------------------------------------------------------------
 
-%package -n lib3270++-%{_libvrs}
+%package -n lib3270++%{_libvrs}
 
 Summary:	TN3270 Access C++ library 
 Group:		Development/Libraries/C and C++
 
-Requires:	%{name} = %{version}
+Requires:	%{name}
 
 Provides:	lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION}
 Conflicts:	otherproviders(lib3270++%{MAJOR_VERSION}_%{MINOR_VERSION})
 
-%description -n lib3270++-%{_libvrs}
+%description -n lib3270++%{_libvrs}
 
 TN3270 access library originally designed as part of the pw3270 application (C++ Version).
 
@@ -95,7 +95,7 @@ Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
 
 Requires:	%{name} = %{version}
-Requires:	lib3270++-%{_libvrs} = %{version}
+Requires:	lib3270++%{_libvrs} = %{version}
 
 Provides:	lib3270-devel = %{version}
 Conflicts:	otherproviders(lib3270-devel)
@@ -134,7 +134,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib3270.so.5
 %{_libdir}/lib3270.so.5.2
 
-%files -n lib3270++-%{_libvrs}
+%files -n lib3270++%{_libvrs}
 %defattr(-,root,root)
 
 %{_libdir}/lib3270++.so.5
@@ -170,11 +170,11 @@ exit 0
 /sbin/ldconfig
 exit 0
 
-%post -n lib3270++-%{_libvrs}
+%post -n lib3270++%{_libvrs}
 /sbin/ldconfig
 exit 0
 
-%postun -n lib3270++-%{_libvrs}
+%postun -n lib3270++%{_libvrs}
 /sbin/ldconfig
 exit 0
 

@@ -145,6 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_libdir}/lib3270.so
 %{_libdir}/pkgconfig/lib3270.pc
+%{_libdir}/pkgconfig/lib3270++.pc
 
 %{_includedir}/lib3270.h
 %{_includedir}/lib3270

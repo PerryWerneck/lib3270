@@ -16,6 +16,9 @@ git fetch origin
 git checkout master
 git merge origin/master
 
-git push github
-git push bitbucket
+for repo in $(git remote -v | grep -v origin | grep "(push)" | awk '{print $1}')
+do
+	echo "Updating ${repo} ..."
+	git push ${repo}
+done
 

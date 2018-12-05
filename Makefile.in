@@ -53,9 +53,9 @@ sysconfdir=@sysconfdir@
 
 BASEDIR=@BASEDIR@
 
-POTDIR=$(BASEDIR)/.pot
+POTDIR=$(BASEDIR)/lib@LIB3270_NAME@/.pot
 
-OBJDIR=$(BASEDIR)/.obj
+OBJDIR=$(BASEDIR)/.obj/lib@LIB3270_NAME@
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 

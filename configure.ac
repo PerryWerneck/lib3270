@@ -63,7 +63,6 @@ dnl ---------------------------------------------------------------------------
 
 DBG_CFLAGS="-g -fstack-check -DDEBUG=1"
 RLS_CFLAGS="-DNDEBUG=1"
-PLUGINS=""
 APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared"
@@ -435,12 +434,13 @@ fi
 
 AC_SUBST(LDAP_LIBS)
 
+
 dnl ---------------------------------------------------------------------------
-dnl Output config
+dnl Directory config
 dnl ---------------------------------------------------------------------------
 
-AC_SUBST(BASEDIR,$ac_pwd)
-AC_SUBST(PLUGINS)
+AC_ARG_WITH([work-dir], [AS_HELP_STRING([--with-work-dir], [Setup work path])], [ app_cv_workdir="$withval" ],[ app_cv_workdir="$ac_pwd" ])
+AC_SUBST(BASEDIR,$app_cv_workdir)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.

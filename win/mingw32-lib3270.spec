@@ -105,7 +105,7 @@ make all
 
 %{_mingw32_strip} \
 	--strip-all \
-	.bin/Release/*.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+	.bin/Release/*.dll
 
 %install
 %{_mingw32_makeinstall}

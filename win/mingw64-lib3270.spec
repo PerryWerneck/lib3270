@@ -61,8 +61,7 @@ BuildRequires:	mingw64-cross-pkg-config
 BuildRequires:	mingw64-filesystem
 BuildRequires:	mingw64-libopenssl-devel
 BuildRequires:	mingw64-zlib-devel
-
-#BuildRequires:	mingw64(pkg:gtk+-win32-3.0)
+BuildRequires:	mingw64(lib:iconv)
 
 %description
 
@@ -105,7 +104,7 @@ make all
 
 %{_mingw64_strip} \
 	--strip-all \
-    .bin/lib3270/Release/*.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+	.bin/lib3270/Release/*.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %install
 %{_mingw64_makeinstall}

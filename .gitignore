@@ -49,3 +49,5 @@ makeruntime.sh
 scripts
 vgcore.*
 doxygen/html
+doxygen/doxyfile
+

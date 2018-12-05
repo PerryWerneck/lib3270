@@ -213,6 +213,38 @@ AC_CHECK_HEADER(libintl.h, [
 AC_SUBST(INTL_LIBS)
 
 dnl ---------------------------------------------------------------------------
+dnl Check for doxygen
+dnl ---------------------------------------------------------------------------
+
+AC_PATH_TOOL([DOXYGEN], [doxygen])
+
+dnl Help line for graphviz (optionally used by doxygen)
+AC_ARG_ENABLE(graphviz,
+	AS_HELP_STRING([--disable-graphviz], [prevent doxygen from using dot]),
+	[wantgraphviz=$enableval], [wantgraphviz=yes])
+
+AC_CHECK_PROGS([GRAPHVIZDOT], [dot])
+AC_MSG_CHECKING([whether doxygen should use graphviz])
+if test "x$wantgraphviz" = "xyes" ; then
+	if test $GRAPHVIZDOT ; then
+		AC_MSG_RESULT([yes])
+		usegraphviz=yes
+	else
+		AC_MSG_RESULT([no, graphviz missing])
+		usegraphviz=no
+	fi
+else
+	AC_MSG_RESULT([no, disabled by configure])
+	usegraphviz=no
+fi
+
+AC_SUBST(HAVE_DOT,`echo $usegraphviz | tr yesno YESNO`)
+
+if test "x$DOXYGEN" != "x"; then
+	AC_CONFIG_FILES(doxygen/doxyfile)
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl Check for ELF symbol visibility support
 dnl ---------------------------------------------------------------------------
 m4_define([GLIB_CHECK_COMPILE_WARNINGS],

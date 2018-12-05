@@ -37,6 +37,7 @@ XGETTEXT=@XGETTEXT@
 MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
+DOXYGEN=@DOXYGEN@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -137,6 +138,10 @@ lib@LIB3270_NAME@.pot: \
 	@rm -f $@
 	@mkdir -p `dirname $@`
 	@$(MSGCAT) --sort-output $^ > $@
+
+doc:
+	@$(DOXYGEN) doxygen/doxyfile
+
 
 #---[ Install Targets ]------------------------------------------------------------------
 

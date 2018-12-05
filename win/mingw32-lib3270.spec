@@ -62,6 +62,7 @@ BuildRequires:	mingw32-filesystem
 BuildRequires:	mingw32-libopenssl-devel
 BuildRequires:	mingw32-zlib-devel
 BuildRequires:	mingw32(lib:iconv)
+BuildRequires:	mingw32(lib:intl)
 
 %description
 

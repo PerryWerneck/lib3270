@@ -31,24 +31,24 @@
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
-Summary:		TN3270 Access library
+Summary:	TN3270 Access library
 Name:           mingw64-lib3270-%{_libvrs}
 Version:        5.2
 Release:        0
 License:        GPL-2.0
 
-Source:			%{name}-%{version}.tar.xz
+Source:		%{name}-%{version}.tar.xz
 
-Url:			https://portal.softwarepublico.gov.br/social/pw3270/
+Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 
-Group:			Development/Libraries/C and C++
-BuildRoot:		/var/tmp/%{name}-%{version}
+Group:		Development/Libraries/C and C++
+BuildRoot:	/var/tmp/%{name}-%{version}
 
-Provides:		mingw32-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:		otherproviders(mingw32-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
+Provides:	mingw64-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
+Conflicts:	otherproviders(mingw64-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
-Provides:		mingw64(lib:3270) = %{version}
-Provides:		mingw64(lib:3270_%{MAJOR_VERSION}_%{MINOR_VERSION}) = %{version}
+Provides:	mingw64(lib:3270) = %{version}
+Provides:	mingw64(lib:3270_%{MAJOR_VERSION}_%{MINOR_VERSION}) = %{version}
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -78,8 +78,8 @@ Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
 Requires:	%{name} = %{version}
 
-Provides:	lib3270-devel = %{version}
-Conflicts:	otherproviders(lib3270-devel)
+Provides:	mingw64-lib3270-devel = %{version}
+Conflicts:	otherproviders(mingw64-lib3270-devel)
 
 %description devel
 

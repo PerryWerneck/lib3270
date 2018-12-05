@@ -78,8 +78,8 @@ Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
 Requires:	%{name} = %{version}
 
-Provides:	lib3270-devel = %{version}
-Conflicts:	otherproviders(lib3270-devel)
+Provides:	mingw32-lib3270-devel = %{version}
+Conflicts:	otherproviders(mingw32-lib3270-devel)
 
 %description devel
 

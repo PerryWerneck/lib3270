@@ -123,13 +123,18 @@ rm -rf %{buildroot}
 %{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}
 %{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
+%{_mingw32_libdir}/lib3270++.dll
+%{_mingw32_libdir}/lib3270++.dll.%{MAJOR_VERSION}
+%{_mingw32_libdir}/lib3270++.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+
 %files devel
 %defattr(-,root,root)
-%{_mingw32_includedir}/lib3270
-%{_mingw32_includedir}/lib3270.h
-%{_mingw32_libdir}/pkgconfig/lib3270.pc
 
-%{_mingw32_libdir}/lib3270.a
+%{_mingw32_includedir}/lib3270
+
+%{_mingw32_includedir}/*.h
+%{_mingw32_libdir}/pkgconfig/*.pc
+%{_mingw32_libdir}/*.a
 
 %changelog
 

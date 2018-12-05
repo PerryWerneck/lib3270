@@ -62,7 +62,7 @@ BuildRequires:	mingw64-filesystem
 BuildRequires:	mingw64-libopenssl-devel
 BuildRequires:	mingw64-zlib-devel
 BuildRequires:	mingw64(lib:iconv)
-BuildRequires:	mingw32(lib:intl)
+BuildRequires:	mingw64(lib:intl)
 
 %description
 
@@ -123,13 +123,18 @@ rm -rf %{buildroot}
 %{_mingw64_libdir}/lib3270.dll.%{MAJOR_VERSION}
 %{_mingw64_libdir}/lib3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
+%{_mingw64_libdir}/lib3270++.dll
+%{_mingw64_libdir}/lib3270++.dll.%{MAJOR_VERSION}
+%{_mingw64_libdir}/lib3270++.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+
 %files devel
 %defattr(-,root,root)
-%{_mingw64_includedir}/lib3270
-%{_mingw64_includedir}/lib3270.h
-%{_mingw64_libdir}/pkgconfig/lib3270.pc
 
-%{_mingw64_libdir}/lib3270.a
+%{_mingw64_includedir}/lib3270
+
+%{_mingw64_includedir}/*.h
+%{_mingw64_libdir}/pkgconfig/*.pc
+%{_mingw64_libdir}/*.a
 
 %changelog
 

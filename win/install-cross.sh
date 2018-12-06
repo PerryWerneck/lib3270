@@ -13,7 +13,6 @@ filesystem
 libopenssl
 libopenssl-devel
 libintl-devel
-cross-nsis
 win_iconv-devel
 zlib-devel
 winpthreads-devel
@@ -24,7 +23,8 @@ EOF
 
 # Instala apicativos e temas necessários
 sudo zypper --non-interactive in \
-	gettext-tools
+	gettext-tools \
+	automake
 
 while read FILE
 do

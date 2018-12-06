@@ -8,12 +8,11 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Installation repositories
 =========================
 
-The latest version packaged for many linux distributions can be found in SuSE Build Service (https://build.opensuse.org/project/show/home:PerryWerneck:pw3270)
+ You can find instalation repositories in SuSE Build Service:
 
-
-Requirements
-============
-
+ * Linux (Many distributions): https://build.opensuse.org/project/show/home:PerryWerneck:pw3270
+ * Windows 32 bits: https://build.opensuse.org/project/show/home:PerryWerneck:mingw32
+ * Windows 64 bits: https://build.opensuse.org/project/show/home:PerryWerneck:mingw64
 
 Building for Linux
 ==================
@@ -21,4 +20,5 @@ Building for Linux
 
 Cross-compiling for Windows
 ===========================
+
 

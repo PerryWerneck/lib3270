@@ -44,11 +44,8 @@ Url:			https://portal.softwarepublico.gov.br/social/pw3270/
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:		mingw32-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:		otherproviders(mingw32-lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
-
 Provides:		mingw32(lib:3270) = %{version}
-Provides:		mingw32(lib:3270_%{MAJOR_VERSION}_%{MINOR_VERSION}) = %{version}
+Provides:		mingw32(lib:3270-%{_libvrs}) = %{version}
 
 BuildRequires:	autoconf
 BuildRequires:	automake

@@ -95,6 +95,9 @@ Requires:	lib3270++%{_libvrs} = %{version}
 Provides:	lib3270-devel = %{version}
 Conflicts:	otherproviders(lib3270-devel)
 
+Provides:	lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
+Conflicts:	otherproviders(lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}-devel)
+
 %description devel
 
 TN3270 access library for C/C++ development files.

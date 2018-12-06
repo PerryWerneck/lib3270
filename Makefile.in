@@ -54,7 +54,7 @@ sysconfdir=@sysconfdir@
 
 BASEDIR=@BASEDIR@
 
-POTDIR=$(BASEDIR)/lib@LIB3270_NAME@/.pot
+POTDIR=$(BASEDIR)/.pot
 
 OBJDIR=$(BASEDIR)/.obj/lib@LIB3270_NAME@
 OBJDBG=$(OBJDIR)/Debug

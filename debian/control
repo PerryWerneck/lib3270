@@ -1,0 +1,33 @@
+Source: lib3270
+Section: unknown
+Priority: optional
+Maintainer: Perry Werneck <perry.werneck@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, gettext, libssl-dev, libssl-dev
+
+Package: lib3270
+Architecture: any
+Section: libs
+Depends: ${misc:Depends}
+Description: TN3270 Access library.
+ TN3270 access library originally designed as part of the pw3270 application.
+
+Package: lib3270++
+Architecture: any
+Section: libs
+Depends: ${misc:Depends}
+Description: TN3270 Access library.
+ TN3270 access library originally designed as part of the pw3270 application.
+
+Package: lib3270-dev
+Architecture: any
+Section: libdevel
+Depends: ${misc:Depends}, lib3270 (= ${binary:Version}), pkg-config, lib3270 (= ${binary:Version}), lib3270++ (= ${binary:Version})
+Description: TN3270 Access library development files.
+ TN3270 access library originally designed as part of the pw3270 application; C/C++ Development files.
+
+Package: lib3270-dbg
+Architecture: any
+Depends: lib3270 (= ${binary:Version}), lib3270++ (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for lib3270
+ This package contains the debugging symbols for lib3270.
+

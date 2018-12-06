@@ -142,7 +142,6 @@ lib@LIB3270_NAME@.pot: \
 doc:
 	@$(DOXYGEN) doxygen/doxyfile
 
-
 #---[ Install Targets ]------------------------------------------------------------------
 
 install:

@@ -55,6 +55,12 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
+/**
+ * @brief Closes a TN3270 session releasing resources.
+ *
+ * @param h handle of the session to close.
+ *
+ */
 void lib3270_session_free(H3270 *h)
 {
 	size_t f;

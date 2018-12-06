@@ -392,23 +392,19 @@
 	LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h);
 
 	/**
-	 * Start a new session (INCOMPLETE).
-	 *
-	 * Initialize session structure, opens a new session.
-	 * WARNING: Multi session ins't yet supported in lib3270, because of this
-	 * this call always return the handle of the same session.
+	 * @brief Creates an empty TN3270 session.
 	 *
 	 * @param model	Terminal model.
 	 *
-	 * @return lib3270 internal session structure.
+	 * @return Handle of the new session.
 	 *
 	 */
 	LIB3270_EXPORT H3270 * lib3270_session_new(const char *model);
 
 	/**
-	 * Destroy session, release memory.
+	 * @brief Closes a TN3270 session releasing resources.
 	 *
-	 * @param h		Session handle.
+	 * @param h handle of the session to close.
 	 *
 	 */
 	LIB3270_EXPORT void lib3270_session_free(H3270 *h);

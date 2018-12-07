@@ -243,9 +243,10 @@ install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
 
 	# Install static library
-	@$(INSTALL_DATA) \
+	mkdir -p $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) \
 		$(BINRLS)/static/$(LIBNAME).a \
-		$(DESTDIR)$(libdir)
+		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
 
 
 install-dev:

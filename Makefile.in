@@ -144,8 +144,20 @@ doc:
 
 #---[ Install Targets ]------------------------------------------------------------------
 
-install:
+install: \
+	install-shared \
+	install-static \
+	install-dev
 
+install-shared:
+	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
+	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
+
+install-static:
+	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
+	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
+
+install-dev:
 	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
 	$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
 

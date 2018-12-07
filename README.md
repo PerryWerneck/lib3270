@@ -29,7 +29,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* 32 bits: https://build.opensuse.org/project/show/windows:mingw:win32
 	* 64 bits: https://build.opensuse.org/project/show/windows:mingw:win64
 
-2. Get pw3270 sources from git
+2. Get lib3270 sources from git
 
 	* git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./lib3270
 

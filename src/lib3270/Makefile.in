@@ -216,10 +216,11 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-library \
+	install-shared \
+	install-static \
 	install-dev
 
-install-library: \
+install-shared: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 
 	# Install library
@@ -238,8 +239,7 @@ install-library: \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
-
-install-dev: \
+install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
 
 	# Install static library
@@ -247,8 +247,10 @@ install-dev: \
 		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)
 
-	# Install SDK
 
+install-dev:
+
+	# Install SDK
 	@mkdir -p $(DESTDIR)$(includedir)/$(LIBNAME)
 
 	@$(INSTALL_DATA) \

@@ -50,8 +50,8 @@ Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 Group:		Development/Libraries/C and C++
 BuildRoot:	/var/tmp/%{name}-%{version}
 
-Provides:	lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:	otherproviders(lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
+Provides:	lib3270_%{_libvrs}
+Conflicts:	otherproviders(lib3270_%{_libvrs})
 
 BuildRequires:  pkgconfig(openssl)
 BuildRequires:  autoconf >= 2.61
@@ -94,9 +94,6 @@ Requires:	lib3270++%{_libvrs} = %{version}
 
 Provides:	lib3270-devel = %{version}
 Conflicts:	otherproviders(lib3270-devel)
-
-Provides:	lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
-Conflicts:	otherproviders(lib3270_%{MAJOR_VERSION}_%{MINOR_VERSION}-devel)
 
 %description devel
 

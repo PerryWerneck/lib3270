@@ -47,6 +47,9 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 Provides:		mingw32(lib:3270) = %{version}
 Provides:		mingw32(lib:3270-%{_libvrs}) = %{version}
 
+Provides:		mingw32(lib:3270++) = %{version}
+Provides:		mingw32(lib:3270++%{_libvrs}) = %{version}
+
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gettext-tools

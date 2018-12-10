@@ -482,9 +482,12 @@ AC_CONFIG_FILES(Makefile)
 
 AC_CONFIG_FILES(src/lib3270/Makefile)
 AC_CONFIG_FILES(src/lib3270/version.c)
+
 AC_CONFIG_FILES(src/lib3270/lib3270.pc)
+AC_CONFIG_FILES(src/lib3270/lib3270-static.pc)
 
 AC_CONFIG_FILES(src/lib3270++/lib3270++.pc)
+AC_CONFIG_FILES(src/lib3270++/lib3270++static.pc)
 
 AC_CONFIG_FILES(src/lib3270++/Makefile)
 

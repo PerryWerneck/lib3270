@@ -47,7 +47,7 @@
 
 	TN3270::Host host;
 
-	host.connect(getenv("TN3270URL"));
+	host.connect(getenv("LIB3270_DEFAULT_HOST"));
 	cout << host << endl;
 
 	host << TN3270::ENTER;

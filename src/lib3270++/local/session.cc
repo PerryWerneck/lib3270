@@ -216,7 +216,19 @@
 	}
 
 	TN3270::Session & Local::Session::pop(int baddr, std::string &text) {
+
 		std::lock_guard<std::mutex> lock(sync);
+
+		char *contents = lib3270_get_field_at(hSession, baddr);
+
+		if(!contents) {
+			throw std::runtime_error("Can't get field contents");
+		}
+
+		text.assign(convertFromHost(contents).c_str());
+
+		lib3270_free(contents);
+
 		return *this;
 	}
 

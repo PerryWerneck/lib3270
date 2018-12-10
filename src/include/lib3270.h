@@ -555,6 +555,18 @@
 	LIB3270_EXPORT int lib3270_emulate_input(H3270 *session, const char *s, int len, int pasting);
 
 	/**
+	 * @brief Converts row/col in a buffer address.
+	 *
+	 * @param hSession	TN3270 Session.
+	 * @param row		Row inside the screen.
+	 * @param col		Col inside the screen.
+	 *
+	 * @return Current address or -1 if invalid (sets errno).
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int col);
+
+	/**
 	 * Set string at current cursor position.
 	 *
 	 * Returns are ignored; newlines mean "move to beginning of next line";
@@ -578,7 +590,7 @@
 	 * @param h		Session handle.
 	 * @param baddr	New cursor address.
 	 *
-	 * @return last cursor address.
+	 * @return or -1 if invalid (sets errno).
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *h, int baddr);
@@ -590,7 +602,7 @@
 	 * @param row	New cursor row.
 	 * @param col	New cursor col.
 	 *
-	 * @return last cursor address.
+	 * @return last cursor address or -1 if invalid (sets errno)..
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *h, int row, int col);

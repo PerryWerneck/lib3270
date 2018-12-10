@@ -43,7 +43,8 @@
 
  namespace TN3270 {
 
-	Host::Host(const char *id, const char *url) {
+	Host::Host(const char *id, const char *url, time_t timeout) {
+		this->timeout = timeout;
 		this->session = Session::create(id);
 		if(url) {
 			this->connect(url);
@@ -55,15 +56,17 @@
 		this->session = nullptr;
 	}
 
-    void Host::connect(const char *url) {
+    void Host::connect(const char *url, bool sync) {
         this->session->connect(url);
-        sync();
+        if(sync) {
+			this->sync();
+        }
     }
 
 
 	/// @brief Writes characters to the associated file from the put area
 	int Host::sync() {
-        this->session->waitForReady();
+        this->session->waitForReady(this->timeout);
 		return 0;
 	}
 
@@ -89,12 +92,79 @@
 
 	std::string Host::toString() const {
 
+        this->session->waitForReady(this->timeout);
+
 	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
             throw std::system_error(ENOTCONN, std::system_category());
 	    }
 
 	    return this->session->toString();
 	}
+
+	std::string Host::toString(int baddr, size_t len, char lf) const {
+
+        this->session->waitForReady(this->timeout);
+
+	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
+            throw std::system_error(ENOTCONN, std::system_category());
+	    }
+
+	    return this->session->toString(baddr,len,lf);
+
+	}
+
+	std::string Host::toString(int row, int col, size_t sz, char lf) const {
+
+        this->session->waitForReady(this->timeout);
+
+	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
+            throw std::system_error(ENOTCONN, std::system_category());
+	    }
+
+	    return this->session->toString(row,col,sz,lf);
+
+
+	}
+
+	Host & Host::pop(int baddr, std::string &text) {
+
+        this->session->waitForReady(this->timeout);
+
+	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
+            throw std::system_error(ENOTCONN, std::system_category());
+	    }
+
+		session->pop(baddr, text);
+
+		return *this;
+	}
+
+	Host & Host::pop(int row, int col, std::string &text) {
+
+        this->session->waitForReady(this->timeout);
+
+	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
+            throw std::system_error(ENOTCONN, std::system_category());
+	    }
+
+		session->pop(row,col,text);
+
+		return *this;
+	}
+
+	Host & Host::pop(std::string &text) {
+
+        this->session->waitForReady(this->timeout);
+
+	    if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
+            throw std::system_error(ENOTCONN, std::system_category());
+	    }
+
+		session->pop(text);
+
+		return *this;
+	}
+
 
  }
 

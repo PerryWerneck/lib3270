@@ -67,6 +67,8 @@
 		class Host;
 		class Controller;
 
+		#define DEFAULT_TIMEOUT 5
+
 		class TN3270_PUBLIC Event {
 		public:
 			enum Type : uint8_t {
@@ -200,7 +202,7 @@
 			virtual void disconnect() = 0;
 
 			// Wait for session state.
-			virtual void waitForReady(time_t timeout = 5) throw() = 0;
+			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) throw() = 0;
 
 			// Gets
 			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;
@@ -255,6 +257,9 @@
 			/// @brief Connection with the host
 			Session *session;
 
+			/// @brief How much seconds we wait for the terminal to be ready?
+			time_t timeout;
+
 		protected:
 
 			/// @brief Writes characters to the associated file from the put area
@@ -273,17 +278,21 @@
 			void error(const char *fmt, ...) const;
 
 		public:
-			Host(const char *id = nullptr, const char *url = nullptr);
+			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT);
 			~Host();
 
 			inline bool operator==(ConnectionState state) const noexcept {
 				return session->getConnectionState() == state;
 			}
 
-			void connect(const char *url);
+			void connect(const char *url, bool sync = true);
 
 			inline ProgramMessage getProgramMessage() const {
 				return session->getProgramMessage();
+			}
+
+			inline bool isReady() const {
+				return getProgramMessage() == MESSAGE_NONE;
 			}
 
 			inline operator ProgramMessage() const {
@@ -292,6 +301,10 @@
 
 			inline ConnectionState getConnectionState() const {
 				return session->getConnectionState();
+			}
+
+			inline bool isConnected() const {
+				return getConnectionState() == CONNECTED_TN3270E;
 			}
 
 			inline operator ConnectionState() const {
@@ -336,22 +349,13 @@
 
 			// Get contents.
 
-			inline Host & pop(int baddr, std::string &text) {
-				session->pop(baddr, text);
-				return *this;
-			}
-
-			inline Host & pop(int row, int col, std::string &text) {
-				session->pop(row,col,text);
-				return *this;
-			}
-
-			inline Host & pop(std::string &text) {
-				session->pop(text);
-				return *this;
-			}
+			Host & pop(int baddr, std::string &text);
+			Host & pop(int row, int col, std::string &text);
+			Host & pop(std::string &text);
 
 			std::string toString() const;
+			std::string toString(int baddr, size_t len = -1, char lf = '\n') const;
+			std::string toString(int row, int col, size_t sz, char lf = '\n') const;
 
 			// Event listeners
 			inline Host & insert(Event::Type type, std::function <void(const Event &event)> listener) noexcept {

@@ -382,20 +382,80 @@ LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *h)
     return h->cursor_addr;
 }
 
-LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *h, int baddr)
+/**
+ * @brief Converts row/col in a buffer address.
+ *
+ * @param hSession	TN3270 Session.
+ * @param row		Row inside the screen.
+ * @param col		Col inside the screen.
+ *
+ * @return Current address or -1 if invalid (sets errno).
+ *
+ */
+LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int col)
 {
-    CHECK_SESSION_HANDLE(h);
+	CHECK_SESSION_HANDLE(hSession);
+
+	row--;
+	col--;
+
+	if(row < 0 || col < 0 || row > hSession->rows || col > hSession->cols)
+	{
+		// Invalid coordinates
+		errno = EINVAL;
+		return -1;
+	}
+
+	return (row * hSession->cols) + col;
+}
+
+
+/**
+ * @brief Move cursor to a new position.
+ *
+ * @see lib3270_set_cursor_position
+ *
+ * @param hSession	TN3270 session.
+ * @param baddr		New cursor position.
+ *
+ * @return Old cursor address or -1 in case of error (sets errno).
+ *
+ */
+LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr)
+{
+    CHECK_SESSION_HANDLE(hSession);
 
 	trace("%s(%d)",__FUNCTION__,baddr);
 
-	if(h->selected && !lib3270_get_toggle(h,LIB3270_TOGGLE_KEEP_SELECTED))
-		lib3270_unselect(h);
+	if(baddr < 0 || baddr > (hSession->rows * hSession->cols))
+	{
+		errno = EINVAL;
+		return -1;
+	}
 
-	return cursor_move(h,baddr);
+	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
+		lib3270_unselect(hSession);
+
+	return cursor_move(hSession,baddr);
 }
 
-LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *h, int row, int col)
+/**
+ * @brief Move cursor to a new position.
+ *
+ * @see lib3270_set_cursor_position
+ *
+ * @param hSession	TN3270 session.
+ * @param row		New cursor row.
+ * @parma col		New cursor column.
+ *
+ * @return Old cursor address or -1 in case of error (sets errno).
+ *
+ */
+LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *hSession, int row, int col)
 {
+	return lib3270_set_cursor_address(hSession,lib3270_translate_to_address(hSession, row, col));
+
+	/*
     int baddr = -1;
 
     CHECK_SESSION_HANDLE(h);
@@ -418,20 +478,37 @@ LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *h, int row, int col)
 	}
 
 	return baddr;
+	*/
 }
 
-
-int cursor_move(H3270 *h, int baddr)
+/**
+ * @brief Move cursor to a new position.
+ *
+ * @see lib3270_set_cursor_address
+ *
+ * @param hSession	TN3270 session.
+ * @param baddr		New cursor position.
+ *
+ * @return Old cursor position.
+ *
+ */
+int cursor_move(H3270 *hSession, int baddr)
 {
-    int ret = h->cursor_addr;
+    int ret = hSession->cursor_addr;
 
 	if(ret == baddr)
 		return ret;
 
 	if(baddr >= 0)
 	{
-		h->cursor_addr = baddr;
-		h->cbk.update_cursor(h,(unsigned short) (baddr/h->cols),(unsigned short) (baddr%h->cols),h->text[baddr].chr,h->text[baddr].attr);
+		hSession->cursor_addr = baddr;
+		hSession->cbk.update_cursor(
+			hSession,
+			(unsigned short) (baddr/hSession->cols),
+			(unsigned short) (baddr%hSession->cols),
+			hSession->text[baddr].chr,
+			hSession->text[baddr].attr
+		);
 	}
 
     return ret;

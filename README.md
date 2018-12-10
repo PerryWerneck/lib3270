@@ -35,8 +35,14 @@ Cross-compiling on SuSE Linux (Native or WSL)
 
 3. Install cross compilers
 
-	* ./lib3270/win/install-cross.sh --32 --64
+	* ./lib3270/win/install-cross.sh --32 (for 32 bits)
+	* ./lib3270/win/install-cross.sh --64 (for 64 bits)
+	* ./lib3270/win/install-cross.sh --all (for 32 and 64 bits)
 
+3. Configure build
+
+	* ./lib3270/win/win-configure.sh --32 (for 32 bits)
+	* ./lib3270/win/win-configure.sh --64 (for 64 bits)
 
 
 

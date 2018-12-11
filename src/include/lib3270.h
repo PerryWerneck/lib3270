@@ -67,7 +67,7 @@
 	#define LIB3270_BIND_PLU_NAME_MAX		8
 
 	/**
-	 * Maximum size for LUNAME
+	 * @brief Maximum size for LUNAME
 	 *
 	 */
 	#define LIB3270_LUNAME_LENGTH			16
@@ -171,17 +171,17 @@
 
 
 	/**
-	 * OIA Status indicators.
+	 * @brief OIA Status indicators.
 	 *
 	 */
 	typedef enum _lib3270_flag
 	{
-		LIB3270_FLAG_BOXSOLID,	/**< System available */
-		LIB3270_FLAG_UNDERA,	/**< Control Unit STATUS */
+		LIB3270_FLAG_BOXSOLID,	/**< @brief System available */
+		LIB3270_FLAG_UNDERA,	/**< @brief Control Unit STATUS */
 		LIB3270_FLAG_TYPEAHEAD,
-		LIB3270_FLAG_PRINTER,	/**< Printer session status */
+		LIB3270_FLAG_PRINTER,	/**< @brief Printer session status */
 		LIB3270_FLAG_REVERSE,
-		LIB3270_FLAG_SCRIPT,	/**< Script status */
+		LIB3270_FLAG_SCRIPT,	/**< @brief Script status */
 
 		LIB3270_FLAG_COUNT
 
@@ -217,7 +217,7 @@
 
 
 	/**
-	 * Pointer modes.
+	 * @brief Pointer modes.
 	 *
 	 * Pointer modes set by library; an application can use it
 	 * as a hint to change the mouse pointer based on connection status.
@@ -225,9 +225,9 @@
 	 */
 	typedef enum _LIB3270_POINTER
 	{
-		LIB3270_POINTER_UNLOCKED,				/**< Ready for user actions */
-		LIB3270_POINTER_WAITING,				/**< Waiting for host */
-		LIB3270_POINTER_LOCKED,					/**< Locked, can't receive user actions */
+		LIB3270_POINTER_UNLOCKED,				/**< @brief Ready for user actions */
+		LIB3270_POINTER_WAITING,				/**< @brief Waiting for host */
+		LIB3270_POINTER_LOCKED,					/**< @brief Locked, can't receive user actions */
 
 		LIB3270_POINTER_PROTECTED,
 		LIB3270_POINTER_MOVE_SELECTION,
@@ -247,20 +247,20 @@
 
 
 	/**
-	 * connection state
+	 * @brief Connection state
 	 */
 	typedef enum lib3270_cstate
 	{
-		LIB3270_NOT_CONNECTED,			/**< no socket, disconnected */
-		LIB3270_RESOLVING,				/**< resolving hostname */
-		LIB3270_PENDING,				/**< connection pending */
-		LIB3270_CONNECTED_INITIAL,		/**< connected, no mode yet */
-		LIB3270_CONNECTED_ANSI,			/**< connected in NVT ANSI mode */
-		LIB3270_CONNECTED_3270,			/**< connected in old-style 3270 mode */
-		LIB3270_CONNECTED_INITIAL_E,	/**< connected in TN3270E mode, unnegotiated */
-		LIB3270_CONNECTED_NVT,			/**< connected in TN3270E mode, NVT mode */
-		LIB3270_CONNECTED_SSCP,			/**< connected in TN3270E mode, SSCP-LU mode */
-		LIB3270_CONNECTED_TN3270E		/**< connected in TN3270E mode, 3270 mode */
+		LIB3270_NOT_CONNECTED,			/**< @brief no socket, disconnected */
+		LIB3270_RESOLVING,				/**< @brief resolving hostname */
+		LIB3270_PENDING,				/**< @brief connection pending */
+		LIB3270_CONNECTED_INITIAL,		/**< @brief connected, no mode yet */
+		LIB3270_CONNECTED_ANSI,			/**< @brief connected in NVT ANSI mode */
+		LIB3270_CONNECTED_3270,			/**< @brief connected in old-style 3270 mode */
+		LIB3270_CONNECTED_INITIAL_E,	/**< @brief connected in TN3270E mode, unnegotiated */
+		LIB3270_CONNECTED_NVT,			/**< @brief connected in TN3270E mode, NVT mode */
+		LIB3270_CONNECTED_SSCP,			/**< @brief connected in TN3270E mode, SSCP-LU mode */
+		LIB3270_CONNECTED_TN3270E		/**< @brief connected in TN3270E mode, 3270 mode */
 	} LIB3270_CSTATE;
 
 
@@ -585,15 +585,16 @@
 	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str);
 
 	/**
-	 * Set cursor address.
+	 * @brief Move cursor to a new position.
 	 *
-	 * @param h		Session handle.
-	 * @param baddr	New cursor address.
+	 * @see lib3270_set_cursor_position
 	 *
-	 * @return or -1 if invalid (sets errno).
+	 * @param hSession	TN3270 session.
+	 * @param baddr		New cursor position.
 	 *
+	 * @return Old cursor address or -1 in case of error (sets errno).
 	 */
-	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *h, int baddr);
+	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr);
 
 	/**
 	 * Set cursor position.
@@ -602,7 +603,7 @@
 	 * @param row	New cursor row.
 	 * @param col	New cursor col.
 	 *
-	 * @return last cursor address or -1 if invalid (sets errno)..
+	 * @return last cursor address or -1 if invalid (sets errno).
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *h, int row, int col);
@@ -610,12 +611,12 @@
 	/**
 	 * get cursor address.
 	 *
-	 * @param h		Session handle.
+	 * @param hSession Session handle.
 	 *
-	 * @return Cursor address.
+	 * @return Cursor address or -1 if invalid (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *h);
+	LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *hSession);
 
 
 	/**
@@ -737,7 +738,8 @@
 	LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
 	LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
 
-	/** Callback table
+	/**
+	 * @brief Callback table
 	 *
 	 * Structure with GUI unblocking I/O calls, used to replace the lib3270´s internal ones.
 	 *
@@ -827,21 +829,6 @@
 	LIB3270_EXPORT LIB3270_SSL_STATE	lib3270_get_secure(H3270 *session);
 	LIB3270_EXPORT long 				lib3270_get_SSL_verify_result(H3270 *session);
 
-
-	/**
-	 * Call non gui function.
-	 *
-	 * Call informed function in a separate thread, keep gui main loop running until
-	 * the function returns.
-	 *
-	 * @param callback	Function to call.
-	 * @param h			Related session (for timer indicator)
-	 * @param parm		Parameter to be passed to the function.
-	 *
-	 */
-//	LIB3270_EXPORT int lib3270_call_thread(int(*callback)(H3270 *h, void *), H3270 *h, void *parm);
-
-
 	/**
 	 * Run main iteration.
 	 *
@@ -923,7 +910,7 @@
 	LIB3270_EXPORT int	  lib3270_has_selection(H3270 *hSession);
 
 	/**
-	 * Get all text inside the terminal.
+	 * @brief Get all text inside the terminal.
 	 *
 	 * @param h			Session Handle.
 	 * @param offset	Start position.
@@ -936,7 +923,7 @@
 	LIB3270_EXPORT char * lib3270_get_text(H3270 *h, int offset, int len, char lf);
 
 	/**
-	 * Get text at requested position
+	 * @brief Get text at requested position
 	 *
 	 * @param h			Session Handle.
 	 * @param row		Desired row.
@@ -950,7 +937,7 @@
 	LIB3270_EXPORT char * lib3270_get_text_at(H3270 *h, int row, int col, int len, char lf);
 
 	/**
-	 * Check for text at requested position
+	 * @brief Check for text at requested position
 	 *
 	 * @param h			Session Handle.
 	 * @param row		Desired row.
@@ -965,7 +952,7 @@
 
 
 	/**
-	 * Get contents of the field at position.
+	 * @brief Get contents of the field at position.
 	 *
 	 * @param h			Session Handle.
 	 * @param baddr		Reference position.
@@ -976,7 +963,7 @@
 	LIB3270_EXPORT char * lib3270_get_field_at(H3270 *h, int baddr);
 
 	/**
-	 * Find the next unprotected field.
+	 * @brief Find the next unprotected field.
 	 *
 	 * @param hSession	Session handle.
 	 * @param baddr0	Search start addr (-1 to use current cursor position).
@@ -993,7 +980,7 @@
 	LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr0);
 
 	/**
-	 * Get Check if the screen position is protected.
+	 * @brief Get Check if the screen position is protected.
 	 *
 	 * @param h			Session Handle.
 	 * @param row		Desired row.
@@ -1003,7 +990,7 @@
 	LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, int row, int col);
 
 	/**
-	 * Get address of the first blank.
+	 * @brief Get address of the first blank.
 	 *
 	 * Get address of the first blank after the last nonblank in the
 	 * field, or if the field is full, to the last character in the field.
@@ -1016,7 +1003,7 @@
 	LIB3270_EXPORT int lib3270_get_field_end(H3270 *hSession, int baddr);
 
 	/**
-	 * Find the buffer address of the field attribute for a given buffer address.
+	 * @brief Find the buffer address of the field attribute for a given buffer address.
 	 *
 	 * @param h		Session handle.
 	 * @param addr	Buffer address of the field.
@@ -1029,7 +1016,7 @@
 	LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr);
 
 	/**
-	 * Get the length of the field at given buffer address.
+	 * @brief Get the length of the field at given buffer address.
 	 *
 	 * @param h		Session handle.
 	 * @param addr	Buffer address of the field.
@@ -1041,7 +1028,7 @@
 
 
 	/**
-	 * Get a terminal character and attribute.
+	 * @brief Get a terminal character and attribute.
 	 *
 	 * @param h		Session Handle.
 	 * @param baddr	Element address ((element_row*cols)+element_col)
@@ -1083,6 +1070,8 @@
 
 	/**
 	 *
+	 * @brief Overrides the default value for the unlock delay.
+	 *
 	 * Overrides the default value for the unlock delay (the delay between the host unlocking the
 	 * keyboard and lib3270 actually performing the unlock).
 	 * The value is in milliseconds; use 0 to turn off the delay completely.
@@ -1095,7 +1084,7 @@
 
 
 	/**
-	 * Alloc/Realloc memory buffer.
+	 * @brief Alloc/Realloc memory buffer.
 	 *
 	 * Allocate/reallocate an array.
 	 *
@@ -1114,7 +1103,7 @@
 	LIB3270_EXPORT void * lib3270_strdup(const char *str);
 
 	/**
-	 * Release allocated memory.
+	 * @brief Release allocated memory.
 	 *
 	 * @param p	Memory block to release (can be NULL)
 	 *

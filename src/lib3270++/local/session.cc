@@ -233,12 +233,35 @@
 	}
 
 	TN3270::Session & Local::Session::pop(int row, int col, std::string &text) {
-		std::lock_guard<std::mutex> lock(sync);
-		return *this;
+		return this->pop(lib3270_translate_to_address(hSession,row,col),text);
 	}
 
 	TN3270::Session & Local::Session::pop(std::string &text) {
+
 		std::lock_guard<std::mutex> lock(sync);
+
+		int baddr = lib3270_get_cursor_address(hSession);
+		if(baddr < 0) {
+			throw std::system_error(errno, std::system_category());
+		}
+
+		char *contents = lib3270_get_field_at(hSession, baddr);
+
+		if(!contents) {
+			throw std::runtime_error("Can't get field contents");
+		}
+
+		text.assign(convertFromHost(contents).c_str());
+
+		lib3270_free(contents);
+
+		baddr = lib3270_get_next_unprotected(hSession,baddr);
+		if(!baddr) {
+			baddr = lib3270_get_next_unprotected(hSession,0);
+		}
+
+		lib3270_set_cursor_address(hSession,baddr);
+
 		return *this;
 	}
 

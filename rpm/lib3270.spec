@@ -139,19 +139,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %{_libdir}/lib3270.so
-%{_libdir}/pkgconfig/lib3270.pc
-%{_libdir}/pkgconfig/lib3270++.pc
 
-%{_includedir}/lib3270.h
+%{_includedir}/*.h
 %{_includedir}/lib3270
 
-%{_libdir}/lib3270.so
-%{_libdir}/lib3270.a
-
-%{_includedir}/lib3270++.h
-
-%{_libdir}/lib3270++.so
-%{_libdir}/lib3270++.a
+%{_libdir}/pkgconfig/*.pc
+%{_libdir}/*.so
+%{_libdir}/*.a
 
 %pre
 /sbin/ldconfig

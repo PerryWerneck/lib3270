@@ -562,7 +562,7 @@ LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, int row, int col, const char *t
  *
  * @return String with the field contents (release it with lib3270_free()
  */
-LIB3270_EXPORT char * lib3270_get_field_at(H3270 *session, int baddr)
+LIB3270_EXPORT char * lib3270_get_field_text_at(H3270 *session, int baddr)
 {
 	int first = lib3270_field_addr(session,baddr);
 
@@ -718,7 +718,7 @@ char * cut_text(H3270 *hSession, char tok)
         text = lib3270_realloc(text,bufpos);
 
 		// Move contents of the current field
-		while(daddr < (maxlen-1) && !hSession->ea_buf[daddr].fa)
+		while(daddr < (int) (maxlen-1) && !hSession->ea_buf[daddr].fa)
 		{
 			saddr = cut_addr(hSession,daddr,saddr,maxlen,&sattr);
 			daddr++;

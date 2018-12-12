@@ -975,10 +975,10 @@
 	 * @param h			Session Handle.
 	 * @param baddr		Reference position.
 	 *
-	 * @return Contents of the entire field, release it with lib3270_free()
+	 * @return NULL if failed, contents of the entire field if suceeds (release it with lib3270_free()).
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_get_field_at(H3270 *h, int baddr);
+	LIB3270_EXPORT char * lib3270_get_field_text_at(H3270 *h, int baddr);
 
 	/**
 	 * @brief Find the next unprotected field.

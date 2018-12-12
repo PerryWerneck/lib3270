@@ -280,7 +280,7 @@
 					}
 					else if(session->text[baddr+col+1].chr == 'F')
 					{
-						char *text = lib3270_get_field_at(session,baddr+col+1);
+						char *text = lib3270_get_field_text_at(session,baddr+col+1);
 
 						if(text)
 						{

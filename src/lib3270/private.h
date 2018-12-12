@@ -633,6 +633,11 @@ LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block
 	LIB3270_INTERNAL void check_session_handle(H3270 **hSession);
 #endif // DEBUG
 
+LIB3270_INTERNAL int check_online_session(H3270 *hSession);
+
+/// @brief Returns -1 if the session is invalid or not online (sets errno).
+#define FAIL_IF_NOT_ONLINE(x) if(check_online_session(x)) return -1;
+
 LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 #if defined(HAVE_LIBSSL) /*[*/

@@ -1035,7 +1035,7 @@
 	 * @param c		Pointer to character.
 	 * @param attr	Pointer to attribute.
 	 *
-	 * @return 0 if ok or error code.
+	 * @return 0 if ok, -1 if fails (sets errno).
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_get_element(H3270 *h, int baddr, unsigned char *c, unsigned short *attr);

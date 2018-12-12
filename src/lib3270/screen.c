@@ -98,15 +98,18 @@ static void addch(H3270 *session, int baddr, unsigned char c, unsigned short att
 	session->cbk.update(session,baddr,c,attr,baddr == session->cursor_addr);
 }
 
-LIB3270_EXPORT int lib3270_get_element(H3270 *h, int baddr, unsigned char *c, unsigned short *attr)
+LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, int baddr, unsigned char *c, unsigned short *attr)
 {
-	CHECK_SESSION_HANDLE(h);
+    FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!h->text || baddr < 0 || baddr > (h->rows*h->cols))
-		return EINVAL;
+	if(!hSession->text || baddr < 0 || baddr > (hSession->rows*hSession->cols))
+	{
+		errno = EINVAL;
+		return -1;
+	}
 
-	*c		= h->text[baddr].chr;
-	*attr	= h->text[baddr].attr;
+	*c		= hSession->text[baddr].chr;
+	*attr	= hSession->text[baddr].attr;
 
 	return 0;
 }
@@ -394,7 +397,7 @@ LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *h)
  */
 LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int col)
 {
-	CHECK_SESSION_HANDLE(hSession);
+    FAIL_IF_NOT_ONLINE(hSession);
 
 	row--;
 	col--;
@@ -423,7 +426,7 @@ LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int co
  */
 LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr)
 {
-    CHECK_SESSION_HANDLE(hSession);
+    FAIL_IF_NOT_ONLINE(hSession);
 
 	trace("%s(%d)",__FUNCTION__,baddr);
 
@@ -877,10 +880,10 @@ LIB3270_ACTION( testpattern )
 
 	static const unsigned char gr[] = { 0, GR_UNDERLINE, GR_BLINK };
 
-	int row		= 0;
+	unsigned int row		= 0;
 	int max;
 	int pos 	= 0;
-	int grpos	= 0;
+	unsigned int grpos	= 0;
 	int f;
 	int fg		= COLOR_BLUE;
 
@@ -933,10 +936,13 @@ LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
 {
 	unsigned char fa;
 
-	CHECK_SESSION_HANDLE(h);
+	FAIL_IF_NOT_ONLINE(h);
 
 	if(baddr > (h->rows * h->cols))
+	{
+		errno = EINVAL;
 		return -1;
+	}
 
 	fa = get_field_attribute(h,baddr);
 

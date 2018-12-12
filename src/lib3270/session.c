@@ -388,6 +388,25 @@ void check_session_handle(H3270 **hSession)
 #endif // ANDROID
 }
 
+LIB3270_INTERNAL int check_online_session(H3270 *hSession) {
+
+	// Is the session valid?
+	if(!hSession)
+	{
+		errno = EINVAL;
+		return -1;
+	}
+
+	// Is it connected?
+	if((int) hSession->cstate < (int)LIB3270_CONNECTED_INITIAL)
+	{
+		errno = ENOTCONN;
+		return -1;
+	}
+
+	return 0;
+}
+
 LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void)
 {
 	if(default_session)

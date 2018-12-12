@@ -32,10 +32,10 @@
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		TN3270 Access library
-Name:           mingw64-lib3270-%{_libvrs}
-Version:        5.2
-Release:        0
-License:        GPL-2.0
+Name:           	mingw64-lib3270-%{_libvrs}
+Version:        	5.2
+Release:        	0
+License:        	GPL-2.0
 
 Source:			%{name}-%{version}.tar.xz
 
@@ -46,6 +46,9 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 
 Provides:		mingw64(lib:3270) = %{version}
 Provides:		mingw64(lib:3270-%{_libvrs}) = %{version}
+
+Provides:		mingw64(lib:3270++) = %{version}
+Provides:		mingw64(lib:3270++%{_libvrs}) = %{version}
 
 BuildRequires:	autoconf
 BuildRequires:	automake

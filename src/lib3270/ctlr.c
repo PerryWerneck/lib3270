@@ -487,10 +487,13 @@ LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 {
 	int sbaddr;
 
-	CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (!hSession->formatted)
+	if(!hSession->formatted)
+	{
+		errno = ENOTCONN;
 		return -1;
+	}
 
 	sbaddr = baddr;
 	do

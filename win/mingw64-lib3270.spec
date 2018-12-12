@@ -137,4 +137,3 @@ rm -rf %{buildroot}
 %{_mingw64_libdir}/*.a
 
 %changelog
-

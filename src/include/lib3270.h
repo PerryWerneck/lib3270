@@ -299,12 +299,30 @@
 	 */
 	typedef enum lib3270_ssl_state
 	{
-		LIB3270_SSL_UNSECURE,			/**< No secure connection */
-		LIB3270_SSL_SECURE,				/**< Connection secure with CA check */
-		LIB3270_SSL_NEGOTIATED,			/**< Connection secure, no CA or self-signed */
-		LIB3270_SSL_NEGOTIATING,		/**< Negotiating SSL */
-		LIB3270_SSL_UNDEFINED			/**< Undefined */
+		LIB3270_SSL_UNSECURE,			/**< @brief No secure connection */
+		LIB3270_SSL_SECURE,				/**< @brief Connection secure with CA check */
+		LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA or self-signed */
+		LIB3270_SSL_NEGOTIATING,		/**< @brief Negotiating SSL */
+		LIB3270_SSL_UNDEFINED			/**< @brief Undefined */
 	} LIB3270_SSL_STATE;
+
+
+	/**
+	 * @brief Field information.
+	 *
+	 */
+	typedef struct _lib3270_field  {
+
+		unsigned short	baddr;		/**< @brief Address of the field. */
+		unsigned short	length;		/**< @brief Field length */
+		unsigned char	attribute;	/**< @brief Field attribute */
+
+		struct {
+			unsigned char foreground;		/**< @brief foreground color (0x00 or 0xf) */
+			unsigned char bacground;		/**< @brief background color (0x00 or 0xf) */
+		} color;
+
+	} LIB3270_FIELD;
 
 	#define LIB3270_SSL_FAILED LIB3270_SSL_UNSECURE
 

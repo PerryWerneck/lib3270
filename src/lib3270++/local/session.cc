@@ -219,10 +219,14 @@
 
 		std::lock_guard<std::mutex> lock(sync);
 
-		char *contents = lib3270_get_field_at(hSession, baddr);
+		if(!lib3270_is_connected(hSession)) {
+			throw std::system_error(ENOTCONN, std::system_category());
+		}
+
+		char *contents = lib3270_get_field_text_at(hSession, baddr);
 
 		if(!contents) {
-			throw std::runtime_error("Can't get field contents");
+			throw std::system_error(errno, std::system_category());
 		}
 
 		text.assign(convertFromHost(contents).c_str());
@@ -240,15 +244,19 @@
 
 		std::lock_guard<std::mutex> lock(sync);
 
+		if(!lib3270_is_connected(hSession)) {
+			throw std::system_error(ENOTCONN, std::system_category());
+		}
+
 		int baddr = lib3270_get_cursor_address(hSession);
 		if(baddr < 0) {
 			throw std::system_error(errno, std::system_category());
 		}
 
-		char *contents = lib3270_get_field_at(hSession, baddr);
+		char *contents = lib3270_get_field_text_at(hSession, baddr);
 
 		if(!contents) {
-			throw std::runtime_error("Can't get field contents");
+			throw std::system_error(errno, std::system_category());
 		}
 
 		text.assign(convertFromHost(contents).c_str());
@@ -264,6 +272,33 @@
 
 		return *this;
 	}
+
+	/// @brief Set cursor address.
+	///
+	/// @param addr	Cursor address.
+	void Local::Session::setCursorPosition(unsigned short addr) {
+
+		if(!lib3270_is_connected(hSession)) {
+			throw std::system_error(ENOTCONN, std::system_category());
+		}
+
+		lib3270_set_cursor_address(hSession,baddr);
+
+	}
+
+	/// @brief Set cursor position.
+	///
+	/// @param row	New cursor row.
+	/// @param col	New cursor column.
+	void Local::Session::setCursorPosition(unsigned short row, unsigned short col) {
+
+		if(!lib3270_is_connected(hSession)) {
+			throw std::system_error(ENOTCONN, std::system_category());
+		}
+
+		lib3270_set_cursor_position(hSession,row,col);
+	}
+
 
  }
 

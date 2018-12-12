@@ -234,6 +234,12 @@
 				return push(text.c_str());
 			}
 
+			/// @brief Set cursor address.
+			virtual void setCursorPosition(unsigned short addr) = 0;
+
+			/// @brief Set cursor position.
+			virtual void setCursorPosition(unsigned short row, unsigned short col) = 0;
+
 			virtual Session & push(int baddr, const std::string &text) = 0;
 			virtual Session & push(int row, int col, const std::string &text) = 0;
 			virtual Session & push(const PFKey key) = 0;
@@ -309,6 +315,16 @@
 
 			inline operator ConnectionState() const {
 				return getConnectionState();
+			}
+
+			/// @brief Set cursor address.
+			inline void setCursorPosition(unsigned short addr) {
+				session->setCursorPosition(addr);
+			}
+
+			/// @brief Set cursor position.
+			inline void setCursorPosition(unsigned short row, unsigned short col) {
+				session->setCursorPosition(row,col);
 			}
 
 			// Set contents.

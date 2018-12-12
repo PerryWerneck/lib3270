@@ -156,6 +156,9 @@
 
 				ConnectionState getConnectionState() const override;
 
+				void setCursorPosition(unsigned short addr);
+				void setCursorPosition(unsigned short row, unsigned short col);
+
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;
 

@@ -29,9 +29,17 @@
  *
  */
 
+ /**
+  * @brief TN3270 API definitions.
+  *
+  * @author perry.werneck@gmail.com
+  *
+  */
+
 #ifndef LIB3270_H_INCLUDED
 
 	#define LIB3270_H_INCLUDED 1
+
 	#include <stdarg.h>
 	#include <errno.h>
 
@@ -40,6 +48,7 @@
 	#endif // !ENOTCONN
 
 	#if defined(__GNUC__)
+
 		#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
 		#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
 
@@ -59,7 +68,7 @@
 
 
 	/**
-	 * BIND definitions.
+	 * @brief BIND definitions.
 	 */
 	#define LIB3270_BIND_RU					0x31
 	#define LIB3270_BIND_OFF_PLU_NAME_LEN	26
@@ -73,7 +82,7 @@
 	#define LIB3270_LUNAME_LENGTH			16
 
 	/**
-	 * Character attributes
+	 * @brief Character attributes.
 	 */
 	typedef enum _lib3270_attr
 	{
@@ -109,6 +118,9 @@
 
 	} LIB3270_ATTR;
 
+	/**
+	 * @brief Toogles.
+	 */
 	typedef enum _lib3270_toggle
 	{
 		LIB3270_TOGGLE_MONOCASE,
@@ -129,14 +141,14 @@
 		LIB3270_TOGGLE_SMART_PASTE,
 		LIB3270_TOGGLE_BOLD,
 		LIB3270_TOGGLE_KEEP_SELECTED,
-		LIB3270_TOGGLE_UNDERLINE,					/**< Show underline ? */
+		LIB3270_TOGGLE_UNDERLINE,					/**< @brief Show underline ? */
 		LIB3270_TOGGLE_CONNECT_ON_STARTUP,
-		LIB3270_TOGGLE_KP_ALTERNATIVE,              /**< Keypad +/- move to next/previous field */
-		LIB3270_TOGGLE_BEEP,						/**< Beep on errors */
-		LIB3270_TOGGLE_VIEW_FIELD,					/**< View Field attribute */
-		LIB3270_TOGGLE_ALTSCREEN,					/**< auto resize on altscreen */
-		LIB3270_TOGGLE_KEEP_ALIVE,					/**< Enable network keep-alive with SO_KEEPALIVE */
-		LIB3270_TOGGLE_NETWORK_TRACE,				/**< Enable network in/out trace */
+		LIB3270_TOGGLE_KP_ALTERNATIVE,              /**< @brief Keypad +/- move to next/previous field */
+		LIB3270_TOGGLE_BEEP,						/**< @brief Beep on errors */
+		LIB3270_TOGGLE_VIEW_FIELD,					/**< @brief View Field attribute */
+		LIB3270_TOGGLE_ALTSCREEN,					/**< @brief auto resize on altscreen */
+		LIB3270_TOGGLE_KEEP_ALIVE,					/**< @brief Enable network keep-alive with SO_KEEPALIVE */
+		LIB3270_TOGGLE_NETWORK_TRACE,				/**< @brief Enable network in/out trace */
 
 		LIB3270_TOGGLE_COUNT
 
@@ -313,9 +325,9 @@
 	 */
 	typedef struct _lib3270_field  {
 
-		unsigned short	baddr;		/**< @brief Address of the field. */
-		unsigned short	length;		/**< @brief Field length */
-		unsigned char	attribute;	/**< @brief Field attribute */
+		unsigned short	baddr;				/**< @brief Address of the field. */
+		unsigned short	length;				/**< @brief Field length */
+		unsigned char	attribute;			/**< @brief Field attribute */
 
 		struct {
 			unsigned char foreground;		/**< @brief foreground color (0x00 or 0xf) */
@@ -354,7 +366,10 @@
 
 	#endif
 
-	/* State change IDs. */
+	/**
+	 * @brief State change IDs.
+	 *
+	 */
 	typedef enum _lib3270_state
 	{
 		LIB3270_STATE_RESOLVING,
@@ -386,7 +401,6 @@
 	 */
 	LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, int *r, int *c);
 
-
 	/**
 	 * Get current screen width in columns.
 	 *
@@ -414,7 +428,7 @@
 	 *
 	 * @param model	Terminal model.
 	 *
-	 * @return Handle of the new session.
+	 * @return Handle of the new session (release it with lib3270_session_free to avoid memory leaks).
 	 *
 	 */
 	LIB3270_EXPORT H3270 * lib3270_session_new(const char *model);
@@ -428,7 +442,7 @@
 	LIB3270_EXPORT void lib3270_session_free(H3270 *h);
 
 	/**
-	 * Register a state change callback.
+	 * @brief Register a function interested in a state change.
 	 *
 	 * @param h		Session handle.
 	 * @param tx	State ID
@@ -440,7 +454,7 @@
 
 
 	/**
-	 * Set host id for the connect/reconnect operations.
+	 * @brief Set host id for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
 	 * @param url	URL of host to set in the format tn3270://hostname:service or tn3270s://hostname:service .
@@ -451,7 +465,7 @@
 	 LIB3270_EXPORT const char * lib3270_set_url(H3270 *h, const char *url);
 
 	/**
-	 * Get hostname for the connect/reconnect operations.
+	 * @brief Get hostname for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
 	 *
@@ -464,7 +478,7 @@
 
 
 	/**
-	 * Get service or port for the connect/reconnect operations.
+	 * @brief Get service or port for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
 	 *
@@ -478,7 +492,7 @@
 	 LIB3270_EXPORT const char * lib3270_get_url(H3270 *h, char *buffer, int len);
 
 	/**
-	 * Get session options.
+	 * @brief Get session options.
 	 *
 	 * @param h		Session handle.
 	 *
@@ -486,7 +500,7 @@
 	LIB3270_EXPORT LIB3270_OPTION lib3270_get_options(H3270 *hSession);
 
 	/**
-	 * Get URL of the hostname for the connect/reconnect operations.
+	 * @brief Get URL of the hostname for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
 	 *
@@ -497,7 +511,7 @@
 
 
 	/**
-	 * Network connect operation, keep main loop running
+	 * @brief Network connect operation, keep main loop running
 	 *
 	 * @param h		Session handle.
 	 * @param wait	Non zero to wait for connection to be ok.
@@ -508,7 +522,7 @@
 	LIB3270_EXPORT int lib3270_connect(H3270 *h,int wait);
 
 	/**
-	 * Connect to defined host, keep main loop running.
+	 * @brief Connect to defined host, keep main loop running.
 	 *
 	 * @param hSession	Session handle.
 	 * @param hostname	Host name.
@@ -534,15 +548,17 @@
 	LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int wait);
 
 	/**
-	 * Disconnect from host.
+	 * @brief Disconnect from host.
 	 *
 	 * @param h		Session handle.
+	 *
+	 * @return -1 if failed (sets errno).
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_disconnect(H3270 *h);
 
 	/**
-	 * Get connection state.
+	 * @brief Get connection state.
 	 *
 	 * @param h		Session handle.
 	 *
@@ -552,7 +568,7 @@
 	LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(H3270 *h);
 
 	/**
-	 * Pretend that a sequence of keys was entered at the keyboard.
+	 * @brief Pretend that a sequence of keys was entered at the keyboard.
 	 *
 	 * "Pasting" means that the sequence came from the clipboard.  Returns are
 	 * ignored; newlines mean "move to beginning of next line"; tabs and formfeeds
@@ -585,7 +601,7 @@
 	LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int col);
 
 	/**
-	 * Set string at current cursor position.
+	 * @brief Set string at current cursor position.
 	 *
 	 * Returns are ignored; newlines mean "move to beginning of next line";
 	 * tabs and formfeeds become spaces.  Backslashes are not special
@@ -615,7 +631,7 @@
 	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr);
 
 	/**
-	 * Set cursor position.
+	 * @brief Set cursor position.
 	 *
 	 * @param h		Session handle.
 	 * @param row	New cursor row.
@@ -627,7 +643,7 @@
 	LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *h, int row, int col);
 
 	/**
-	 * get cursor address.
+	 * @brief Get cursor address.
 	 *
 	 * @param hSession Session handle.
 	 *
@@ -638,7 +654,7 @@
 
 
 	/**
-	 * Move cursor
+	 * @brief Move cursor
 	 *
 	 * @param h		Session handle.
 	 * @param dir	Direction to move
@@ -649,7 +665,7 @@
 	 LIB3270_EXPORT int lib3270_move_cursor(H3270 *h, LIB3270_DIRECTION dir, unsigned char sel);
 
 	/**
-	 * Print page
+	 * @brief Print page
 	 *
 	 * @param h		Session Handle.
 	 *
@@ -659,7 +675,7 @@
 	LIB3270_EXPORT int lib3270_print(H3270 *h);
 
 	/**
-	 * Get buffer contents.
+	 * @brief Get buffer contents.
 	 *
 	 * @param h		Session handle.
 	 * @param first	First element to get.
@@ -671,7 +687,7 @@
 	LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr);
 
 	/**
-	 * get toggle state.
+	 * @brief get toggle state.
 	 *
 	 * @param h		Session handle.
 	 * @param ix	Toggle id.
@@ -682,7 +698,7 @@
 	LIB3270_EXPORT unsigned char lib3270_get_toggle(H3270 *h, LIB3270_TOGGLE ix);
 
 	/**
-	 * Set toggle state.
+	 * @brief Set toggle state.
 	 *
 	 * @param h		Session handle.
 	 * @param ix	Toggle id.
@@ -693,7 +709,7 @@
 	LIB3270_EXPORT int lib3270_set_toggle(H3270 *h, LIB3270_TOGGLE ix, int value);
 
 	/**
-	 * Translate a string toggle name to the corresponding value.
+	 * @brief Translate a string toggle name to the corresponding value.
 	 *
 	 * @param name	Toggle name.
 	 *
@@ -703,7 +719,7 @@
 	LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name);
 
 	/**
-	 * Get the toggle name as string.
+	 * @brief Get the toggle name as string.
 	 *
 	 * @param id	Toggle id
 	 *
@@ -713,7 +729,7 @@
 	LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE ix);
 
 	/**
-	 * Get a long description of the toggle.
+	 * @brief Get a long description of the toggle.
 	 *
 	 * @return Constant string with the toggle description.
 	 *
@@ -721,7 +737,7 @@
 	LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE ix);
 
 	/**
-	 * Get a short description of the toggle (for menus).
+	 * @brief Get a short description of the toggle (for menus).
 	 *
 	 * @return Constant string with the toggle label.
 	 *
@@ -729,7 +745,7 @@
 	LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE ix);
 
 	/**
-	 * Revert toggle status.
+	 * @brief Revert toggle status.
 	 *
 	 * @param h		Session handle.
 	 * @param ix	Toggle id.

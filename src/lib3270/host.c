@@ -72,11 +72,10 @@ static void try_reconnect(H3270 *session)
 
 LIB3270_EXPORT int lib3270_disconnect(H3270 *h)
 {
-	host_disconnect(h,0);
-	return 0;
+	return host_disconnect(h,0);
 }
 
-void host_disconnect(H3270 *hSession, int failed)
+int host_disconnect(H3270 *hSession, int failed)
 {
     CHECK_SESSION_HANDLE(hSession);
 
@@ -104,10 +103,19 @@ void host_disconnect(H3270 *hSession, int failed)
 #endif /*]*/
 
 		lib3270_set_disconnected(hSession);
+
+		return 0;
+
 	}
+
+	errno = ENOTCONN;
+	return -1;
+
 }
 
-/* The host has entered 3270 or ANSI mode, or switched between them. */
+/**
+ * @brief The host has entered 3270 or ANSI mode, or switched between them.
+ */
 void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate)
 {
 	Boolean now3270 = (new_cstate == LIB3270_CONNECTED_3270 ||
@@ -150,7 +158,9 @@ void lib3270_set_disconnected(H3270 *hSession)
 
 }
 
-/* Register a function interested in a state change. */
+/**
+ * @brief Register a function interested in a state change.
+ */
 LIB3270_EXPORT void lib3270_register_schange(H3270 *h, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data)
 {
 	struct lib3270_state_callback *st;
@@ -169,7 +179,9 @@ LIB3270_EXPORT void lib3270_register_schange(H3270 *h, LIB3270_STATE tx, void (*
 
 }
 
-/* Signal a state change. */
+/**
+ * @brief Signal a state change.
+ */
 void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 {
 #if defined(DEBUG)

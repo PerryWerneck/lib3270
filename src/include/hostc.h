@@ -29,16 +29,21 @@
  *
  */
 
-/*
- *	hostc.h
- *		Global declarations for host.c.
+/**
+ *	@file hostc.h
+ *
+ *	@brief Global declarations for host.c.
  */
 
-	#include "api.h"
+ #include "api.h"
 
-//	#define st_changed(tx,mode) lib3270_st_changed(NULL,tx,mode)
 
-	LIB3270_INTERNAL void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode);
-	LIB3270_INTERNAL void host_in3270(H3270 *session, LIB3270_CSTATE);
-	LIB3270_INTERNAL void host_disconnect(H3270 *h, int disable);
+/**
+ * @brief Signal a state change.
+ */
+ LIB3270_INTERNAL void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode);
+
+ LIB3270_INTERNAL void host_in3270(H3270 *session, LIB3270_CSTATE);
+
+ LIB3270_INTERNAL int host_disconnect(H3270 *h, int failed);
 

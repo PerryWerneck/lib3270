@@ -974,6 +974,8 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 
 LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	while(*str)
 	{
 		key_ACharacter(hSession,(unsigned char)((*str) & 0xff), KT_STD, IA_KEY, NULL);
@@ -986,7 +988,7 @@ LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *st
 }
 
 /**
- * Handle an ordinary character key, given an ASCII code.
+ * @brief Handle an ordinary character key, given an ASCII code.
  *
  */
 void key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped)

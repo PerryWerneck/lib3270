@@ -297,8 +297,8 @@
 				return session->getProgramMessage();
 			}
 
-			inline bool isReady() const {
-				return getProgramMessage() == MESSAGE_NONE;
+			inline operator bool() const {
+				return isConnected() && isReady();
 			}
 
 			inline operator ProgramMessage() const {
@@ -309,9 +309,8 @@
 				return session->getConnectionState();
 			}
 
-			inline bool isConnected() const {
-				return getConnectionState() == CONNECTED_TN3270E;
-			}
+			bool isReady() const;
+			bool isConnected() const;
 
 			inline operator ConnectionState() const {
 				return getConnectionState();

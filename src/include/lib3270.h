@@ -615,7 +615,20 @@
 	LIB3270_EXPORT int lib3270_set_string(H3270 *h, const unsigned char *str);
 
 	#define lib3270_set_text_at(h,r,c,t) lib3270_set_string_at(h,r,c,t)
-	LIB3270_EXPORT int lib3270_set_string_at(H3270 *h, int row, int col, const unsigned char *str);
+
+	/**
+	 * @brief Set string at defined position.
+	 *
+	 * @param hSession	Session handle.
+	 * @param row		Row for the first character.
+	 * @param col		Col for the first character.
+	 * @param str		String to set.
+	 *
+	 * @return Negative if error or number of processed characters.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, const unsigned char *str);
+
 	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str);
 
 	/**

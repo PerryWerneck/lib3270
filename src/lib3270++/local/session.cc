@@ -268,7 +268,9 @@
 			baddr = lib3270_get_next_unprotected(hSession,0);
 		}
 
-		lib3270_set_cursor_address(hSession,baddr);
+		if(lib3270_set_cursor_address(hSession,baddr)) {
+			throw std::system_error(errno, std::system_category());
+		}
 
 		return *this;
 	}
@@ -278,11 +280,9 @@
 	/// @param addr	Cursor address.
 	void Local::Session::setCursorPosition(unsigned short addr) {
 
-		if(!lib3270_is_connected(hSession)) {
-			throw std::system_error(ENOTCONN, std::system_category());
+		if(lib3270_set_cursor_address(hSession,addr) < 0) {
+			throw std::system_error(errno, std::system_category());
 		}
-
-		lib3270_set_cursor_address(hSession,baddr);
 
 	}
 
@@ -292,11 +292,10 @@
 	/// @param col	New cursor column.
 	void Local::Session::setCursorPosition(unsigned short row, unsigned short col) {
 
-		if(!lib3270_is_connected(hSession)) {
-			throw std::system_error(ENOTCONN, std::system_category());
+		if(lib3270_set_cursor_position(hSession,row,col)) {
+			throw std::system_error(errno, std::system_category());
 		}
 
-		lib3270_set_cursor_position(hSession,row,col);
 	}
 
 

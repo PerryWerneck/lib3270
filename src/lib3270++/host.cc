@@ -90,6 +90,16 @@
         return *this;
     }
 
+	bool Host::isReady() const {
+        this->session->waitForReady(this->timeout);
+		return getProgramMessage() == MESSAGE_NONE;
+	}
+
+	bool Host::isConnected() const {
+        this->session->waitForReady(this->timeout);
+		return getConnectionState() == CONNECTED_TN3270E;
+	}
+
 	std::string Host::toString() const {
 
         this->session->waitForReady(this->timeout);

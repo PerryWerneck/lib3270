@@ -1052,23 +1052,23 @@
 	/**
 	 * @brief Find the buffer address of the field attribute for a given buffer address.
 	 *
-	 * @param h		Session handle.
-	 * @param addr	Buffer address of the field.
+	 * @param hSession	Session handle.
+	 * @param addr		Buffer address of the field.
 	 *
-	 * @return field address or -1 if the screen isn't formatted.
+	 * @return field address or -1 if the screen isn't formatted (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_field_addr(H3270 *h, int baddr);
+	LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr);
 
 	LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr);
 
 	/**
 	 * @brief Get the length of the field at given buffer address.
 	 *
-	 * @param h		Session handle.
-	 * @param addr	Buffer address of the field.
+	 * @param hSession	Session handle.
+	 * @param addr		Buffer address of the field.
 	 *
-	 * @return field length.
+	 * @return field length or -1 if invalid or not connected (sets errno).
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_field_length(H3270 *h, int baddr);

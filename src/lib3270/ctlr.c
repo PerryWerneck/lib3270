@@ -483,6 +483,15 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 	return -1;
 }
 
+/**
+ * @brief Find the buffer address of the field attribute for a given buffer address.
+ *
+ * @param hSession	Session handle.
+ * @param addr		Buffer address of the field.
+ *
+ * @return field address or -1 if the screen isn't formatted (sets errno).
+ *
+ */
 LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 {
 	int sbaddr;
@@ -503,6 +512,7 @@ LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 		DEC_BA(baddr);
 	} while (baddr != sbaddr);
 
+	errno = EINVAL;
 	return -1;
 }
 
@@ -510,10 +520,13 @@ LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr)
 {
 	int sbaddr;
 
-	CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (!hSession->formatted)
+	if(!hSession->formatted)
+	{
+		errno = ENOTCONN;
 		return -1;
+	}
 
 	sbaddr = baddr;
 	do
@@ -523,20 +536,26 @@ LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr)
 		DEC_BA(baddr);
 	} while (baddr != sbaddr);
 
+	errno = EINVAL;
 	return -1;
+
 }
 
 
-/*
- * Get Field width
+/**
+ * @brief Get the length of the field at given buffer address.
+ *
+ * @param hSession	Session handle.
+ * @param addr		Buffer address of the field.
+ *
+ * @return field length or -1 if invalid or not connected (sets errno).
+ *
  */
 int lib3270_field_length(H3270 *hSession, int baddr)
 {
 	int saddr;
 	int addr;
 	int width = 0;
-
-	CHECK_SESSION_HANDLE(hSession);
 
 	addr = find_field_attribute(hSession,baddr);
 
@@ -553,6 +572,7 @@ int lib3270_field_length(H3270 *hSession, int baddr)
 		width++;
 	} while (addr != saddr);
 
+	errno = EINVAL;
 	return -1;
 
 }
@@ -566,11 +586,26 @@ unsigned char get_field_attribute(H3270 *hSession, int baddr)
 	return hSession->ea_buf[find_field_attribute(hSession,baddr)].fa;
 }
 
+/**
+ * @brief Find the next unprotected field.
+ *
+ * @param hSession	Session handle.
+ * @param baddr0	Search start addr (-1 to use current cursor position).
+ *
+ * @return address following the unprotected attribute byte, or 0 if no nonzero-width unprotected field can be found, -1 if not connected.
+ *
+ */
 LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 {
 	register int baddr, nbaddr;
 
-    CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	if(!hSession->formatted)
+	{
+		errno = ENOTCONN;
+		return -1;
+	}
 
 	if(baddr0 < 0)
 		baddr0 = hSession->cursor_addr;
@@ -588,13 +623,12 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 }
 
 LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, int row, int col) {
-	CHECK_SESSION_HANDLE(h);
 	return lib3270_get_is_protected(h, ((row-1) * h->cols) + (col-1));
 }
 
 LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr)
 {
-    CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
     if(baddr < 0)
 		baddr = hSession->cursor_addr;
@@ -1163,10 +1197,8 @@ void ctlr_erase_all_unprotected(H3270 *hSession)
 	ALL_CHANGED(hSession);
 }
 
-
-
-/*
- * Process a 3270 Write command.
+/**
+ * @brief Process a 3270 Write command.
  */
 enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean erase)
 {
@@ -1993,9 +2025,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 #undef ABORT_WRITEx
 #undef ABORT_WRITE
 
-/*
- * Write SSCP-LU data, which is quite a bit dumber than regular 3270
- * output.
+/**
+ * @brief Write SSCP-LU data, which is quite a bit dumber than regular 3270 output.
  */
 void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen)
 {
@@ -2095,7 +2126,9 @@ void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen)
 
 #if defined(X3270_DBCS) /*[*/
 
-/*
+/**
+ * @brief Determine the DBCS state of a buffer location strictly by looking left.
+ *
  * Determine the DBCS state of a buffer location strictly by looking left.
  * Used only to validate write operations.
  * Returns only DBCS_LEFT, DBCS_RIGHT or DBCS_NONE.
@@ -2367,7 +2400,7 @@ int ctlr_dbcs_postprocess(H3270 *hSession)
 #endif /*]*/
 
 /**
- * Process pending input.
+ * @brief Process pending input.
  *
  * @param hSession	Session handle.
  */
@@ -2464,10 +2497,8 @@ static void ctlr_blanks(H3270 *session)
 	ALL_CHANGED(session);
 }
 
-
 /**
- * Change a character in the 3270 buffer, removes any field attribute defined at that location.
- *
+ * @brief Change a character in the 3270 buffer, removes any field attribute defined at that location.
  *
  */
 void ctlr_add(H3270 *hSession, int baddr, unsigned char c, unsigned char cs)

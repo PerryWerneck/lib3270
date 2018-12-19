@@ -11,7 +11,7 @@ int main(int numpar, char *param[])
 {
 	H3270		* h;
 	int			  rc	= 0;
-	const char  * url	= getenv("TN3270URL");
+	const char  * url	= getenv("LIB3270_DEFAULT_HOST");
 
 
 	h = lib3270_session_new("");

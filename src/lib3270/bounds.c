@@ -34,16 +34,22 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *session, int baddr, int *start, int *end)
+/**
+ * Get field region
+ *
+ * @param hSession	Session handle.
+ * @param baddr		Reference position to get the field start/stop offsets.
+ * @param start		return location for start of selection, as a character offset.
+ * @param end		return location for end of selection, as a character offset.
+ *
+ * @return -1 if invalid or not connected (sets errno).
+ *
+ */
+LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *start, int *end)
 {
 	int first;
 
-	CHECK_SESSION_HANDLE(session);
-
-	if(!lib3270_connected(session))
-		return -1;
-
-	first = lib3270_field_addr(session,baddr);
+	first = lib3270_field_addr(hSession,baddr);
 
 	if(first < 0)
 		return -1;
@@ -55,8 +61,8 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *session, int baddr, int *star
 
 	if(end)
 	{
-		int maxlen = (session->rows * session->cols)-1;
-		*end	= first + lib3270_field_length(session,first);
+		int maxlen = (hSession->rows * hSession->cols)-1;
+		*end	= first + lib3270_field_length(hSession,first);
 		if(*end > maxlen)
 			*end = maxlen;
 	}

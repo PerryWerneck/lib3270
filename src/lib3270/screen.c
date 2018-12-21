@@ -27,28 +27,23 @@
  *
  */
 
-/*
- *	screen.c
- *		A callback based 3270 Terminal Emulator
- *		Screen drawing
+/**
+ *	@file screen.c
+ *
+ *	@brief A callback based 3270 Terminal Emulator Screen drawing
+ *
  */
 
 #include "private.h"
 #include <signal.h>
-//#include "appres.h"
 #include "3270ds.h"
 #include "resources.h"
-// #include "ctlr.h"
-
-//#include "actionsc.h"
 #include "ctlrc.h"
 #include "hostc.h"
 #include "kybdc.h"
 #include "screenc.h"
-// #include "tablesc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
-// #include "w3miscc.h"
 #include "widec.h"
 #include "xioc.h"
 #include "screen.h"
@@ -56,7 +51,7 @@
 #include "statusc.h"
 #include "togglesc.h"
 #include "api.h"
-// #include "charsetc.h"
+#include <lib3270/actions.h>
 
 #if defined(_WIN32)
 	#include <windows.h>
@@ -825,7 +820,7 @@ void mcursor_set(H3270 *session,LIB3270_POINTER m)
 	}
 }
 
-LIB3270_ACTION( testpattern )
+LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 {
 	static const unsigned char text_pat[] =
 	{
@@ -887,7 +882,7 @@ LIB3270_ACTION( testpattern )
 	int f;
 	int fg		= COLOR_BLUE;
 
-	CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	max = (hSession->maxROWS * hSession->maxCOLS);
 	for(f=0;f<max;f++)

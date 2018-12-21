@@ -329,12 +329,12 @@ LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
 	return 0;
 }
 
-LIB3270_ACTION(pastenext)
+LIB3270_EXPORT int lib3270_pastenext(H3270 *hSession)
 {
 	char	* ptr;
 	int		  rc;
 
-	CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!(lib3270_connected(hSession) && hSession->paste_buffer))
 	{

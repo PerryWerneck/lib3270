@@ -28,8 +28,8 @@
  */
 
  #include "private.h"
-// #include "appres.h"
  #include <lib3270.h>
+ #include <lib3270/actions.h>
  #include <lib3270/session.h>
  #include <lib3270/selection.h>
  #include "3270ds.h"
@@ -353,20 +353,18 @@ LIB3270_EXPORT int lib3270_select_field(H3270 *hSession)
 
 LIB3270_EXPORT int lib3270_select_all(H3270 * hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	do_select(hSession,0,(hSession->rows*hSession->cols)-1,0);
 
 	return 0;
 }
 
-LIB3270_ACTION( reselect )
+LIB3270_EXPORT int lib3270_reselect(H3270 *hSession)
 {
-//	int start, end;
+	FAIL_IF_NOT_ONLINE(hSession);
 
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(!lib3270_connected(hSession) || hSession->select.start == hSession->select.end || hSession->selected)
+	if(hSession->select.start == hSession->select.end || hSession->selected)
 		return 0;
 
 	do_select(hSession, hSession->select.start,hSession->select.end,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECTANGLE_SELECT));

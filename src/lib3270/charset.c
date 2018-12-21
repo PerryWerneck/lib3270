@@ -204,9 +204,9 @@ static const unsigned short asc2uc[UT_SIZE] =
 
 typedef struct _info
 {
-	const char					* name;
-	unsigned long				  cgcsgid;
-	const unsigned short const	* chr;
+	const char				* name;
+	unsigned long			  cgcsgid;
+	const unsigned short	* chr;
 } remap;
 
 static const remap charset[] =
@@ -214,7 +214,7 @@ static const remap charset[] =
 	{
 		"us",
 		LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET,
-		(const unsigned short const [])
+		(const unsigned short [])
 		{
 			0x0000,	0x0000
 		}
@@ -223,7 +223,7 @@ static const remap charset[] =
 	{
 		"bracket",
 		LIB3270_DEFAULT_CGEN|LIB3270_DEFAULT_CSET,
-		(const unsigned short const [])
+		(const unsigned short [])
 		{
 			0x00ad, '[',
 			0x00ba, XK_Yacute,
@@ -236,7 +236,7 @@ static const remap charset[] =
 	{
 		"cp500",
 		LIB3270_DEFAULT_CGEN|0x000001F4,
-		(const unsigned short const [])
+		(const unsigned short [])
 		{
 			0x004a, '[',
 			0x004f, '!',
@@ -345,7 +345,7 @@ LIB3270_EXPORT const char * lib3270_get_host_charset(H3270 *hSession)
 	return hSession->charset.host;
 }
 
-LIB3270_ACTION( charsettable )
+LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 {
 	static const char * hChars = "0123456789ABCDEF";
 	static const char * label  = "Name:";

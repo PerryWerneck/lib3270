@@ -51,31 +51,21 @@ struct ta;
 #if defined(X3270_APL) /*[*/
 #define XK_APL
 #endif /*]*/
-// #include <X11/keysym.h>
 
 #include <fcntl.h>
 #include "3270ds.h"
-// #include "appres.h"
-// #include "ctlr.h"
 #include "resources.h"
 
-//#include "actionsc.h"
 #include "ansic.h"
-//#include "aplc.h"
 #include "ctlrc.h"
 #include "ftc.h"
 #include "hostc.h"
-// #include "keypadc.h"
 #include "kybdc.h"
 #include "popupsc.h"
 // #include "printc.h"
 #include "screenc.h"
 #include "screen.h"
-// #if defined(X3270_DISPLAY) /*[*/
-// #include "selectc.h"
-// #endif /*]*/
 #include "statusc.h"
-// #include "tablesc.h"
 #include "telnetc.h"
 #include "togglesc.h"
 #include "trace_dsc.h"
@@ -84,6 +74,9 @@ struct ta;
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/
+
+#include <lib3270/actions.h>
+
 #include "api.h"
 
 
@@ -526,14 +519,15 @@ static void key_AID(H3270 *hSession, unsigned char aid_code)
 	status_ctlr_done(hSession);
 }
 
-LIB3270_FKEY_ACTION( pfkey )
+LIB3270_EXPORT int lib3270_pfkey(H3270 *hSession, int key)
 {
+	FAIL_IF_NOT_ONLINE(hSession)
 
 	if (key < 1 || key > PF_SZ)
-		return EINVAL;
+		return errno = EINVAL;
 
 	if (hSession->kybdlock & KL_OIA_MINUS)
-		return -1;
+		return errno = EPERM;
 
 	if (hSession->kybdlock)
 	{
@@ -553,15 +547,17 @@ LIB3270_FKEY_ACTION( pfkey )
 	return 0;
 }
 
-LIB3270_FKEY_ACTION( pakey )
+LIB3270_EXPORT int lib3270_pakey(H3270 *hSession, int key)
 {
+	FAIL_IF_NOT_ONLINE(hSession)
+
 	if (key < 1 || key > PA_SZ)
 	{
-		return EINVAL;
+		return errno = EINVAL;
 	}
 
 	if (hSession->kybdlock & KL_OIA_MINUS)
-		return -1;
+		return errno = EPERM;
 	else if (hSession->kybdlock)
 		enq_key(hSession,pa_xlate[key-1]);
 	else
@@ -570,23 +566,23 @@ LIB3270_FKEY_ACTION( pakey )
 	return 0;
 }
 
-LIB3270_ACTION(break)
+LIB3270_EXPORT int lib3270_break(H3270 *hSession)
 {
 	if (!IN_3270)
-		return 0;
+		return errno = ENOTCONN;
 
 	net_break(hSession);
 
 	return 0;
 }
 
-/*
- * ATTN key, per RFC 2355.  Sends IP, regardless.
+/***
+ * @brief ATTN key, per RFC 2355.  Sends IP, regardless.
  */
-LIB3270_ACTION(attn)
+LIB3270_EXPORT int lib3270_attn(H3270 *hSession)
 {
 	if (!IN_3270)
-		return 0;
+		return errno = ENOTCONN;
 
 	net_interrupt(hSession);
 
@@ -1018,10 +1014,10 @@ void key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum
 	}
 }
 
-LIB3270_ACTION( nextfield )
+LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession)
 {
 
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	if (hSession->kybdlock)
 	{
@@ -1060,16 +1056,15 @@ LIB3270_EXPORT int lib3270_clear_operator_error(H3270 *hSession)
 	return EINVAL;
 }
 
-
-/*
- * Tab backward to previous field.
+/**
+ * @brief Tab backward to previous field.
  */
-LIB3270_ACTION( previousfield )
+LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession)
 {
 	register int	baddr, nbaddr;
 	int		sbaddr;
 
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	if (hSession->kybdlock)
 	{
@@ -1187,20 +1182,20 @@ void do_reset(H3270 *hSession, Boolean explicit)
 
 }
 
-LIB3270_ACTION( kybdreset )
+LIB3270_EXPORT int lib3270_kybdreset(H3270 *hSession)
 {
 	lib3270_unselect(hSession);
 	do_reset(hSession,True);
 	return 0;
 }
 
-
-/*
- * Move to first unprotected field on screen.
+/**
+ * @brief Move to first unprotected field on screen.
  */
-LIB3270_ACTION( firstfield )
+LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession)
 {
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		ENQUEUE_ACTION(lib3270_firstfield);
@@ -1222,9 +1217,8 @@ LIB3270_ACTION( firstfield )
 	return 0;
 }
 
-
-/*
- * Cursor left 1 position.
+/**
+ * @brief Cursor left 1 position.
  */
 static void do_left(H3270 *hSession)
 {
@@ -1239,8 +1233,10 @@ static void do_left(H3270 *hSession)
 	cursor_move(hSession,baddr);
 }
 
-LIB3270_CURSOR_ACTION( left )
+LIB3270_EXPORT int lib3270_cursor_left(H3270 *hSession)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		if(KYBDLOCK_IS_OERR(hSession))
@@ -1278,9 +1274,8 @@ LIB3270_CURSOR_ACTION( left )
 	return 0;
 }
 
-
 /**
- * Delete char key.
+ * @brief Delete char key.
  *
  * @param hSession	Session handle
  *
@@ -1375,8 +1370,10 @@ static Boolean do_delete(H3270 *hSession)
 	return True;
 }
 
-LIB3270_ACTION( delete )
+LIB3270_EXPORT int lib3270_delete(H3270 *hSession)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		ENQUEUE_ACTION(lib3270_delete);
@@ -1403,12 +1400,13 @@ LIB3270_ACTION( delete )
 	return 0;
 }
 
-
-/*
- * 3270-style backspace.
+/**
+ * @brief 3270-style backspace.
  */
-LIB3270_ACTION( backspace )
+LIB3270_EXPORT int lib3270_backspace(H3270 *hSession)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		ENQUEUE_ACTION( lib3270_backspace );
@@ -1435,9 +1433,8 @@ LIB3270_ACTION( backspace )
 	return 0;
 }
 
-
-/*
- * Destructive backspace, like Unix "erase".
+/**
+ * @brief Destructive backspace, like Unix "erase".
  */
 static void do_erase(H3270 *hSession)
 {
@@ -1501,9 +1498,10 @@ static void do_erase(H3270 *hSession)
 	hSession->cbk.display(hSession);
 }
 
-LIB3270_ACTION( erase )
+int lib3270_erase(H3270 *hSession)
 {
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		ENQUEUE_ACTION(lib3270_erase);
@@ -1521,12 +1519,14 @@ LIB3270_ACTION( erase )
 }
 
 /**
- * Cursor right 1 position.
+ * @brief Cursor right 1 position.
  */
-LIB3270_CURSOR_ACTION( right )
+LIB3270_EXPORT int lib3270_cursor_right(H3270 *hSession)
 {
 	register int	baddr;
 	enum dbcs_state d;
+
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	if (hSession->kybdlock)
 	{
@@ -1563,18 +1563,18 @@ LIB3270_CURSOR_ACTION( right )
 	return 0;
 }
 
-
-/*
- * Cursor to previous word.
+/**
+ * @brief Cursor to previous word.
  */
-LIB3270_ACTION( previousword )
+LIB3270_EXPORT int lib3270_previousword(H3270 *hSession)
 {
 	register int baddr;
 	int baddr0;
 	unsigned char  c;
 	Boolean prot;
 
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock) {
 		ENQUEUE_ACTION(lib3270_previousword);
 //		enq_ta(PreviousWord_action, CN, CN);
@@ -1688,15 +1688,16 @@ static int nt_word(H3270 *hSession, int baddr)
 }
 
 
-/*
- * Cursor to next unprotected word.
+/**
+ * @brief Cursor to next unprotected word.
  */
-LIB3270_ACTION( nextword )
+LIB3270_EXPORT int lib3270_nextword(H3270 *hSession)
 {
 	register int	baddr;
 	unsigned char c;
 
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock) {
 		ENQUEUE_ACTION( lib3270_nextword );
 //		enq_ta(NextWord_action, CN, CN);
@@ -1753,19 +1754,15 @@ LIB3270_ACTION( nextword )
 	return 0;
 }
 
-
-
 /**
- * Cursor up 1 position.
- *
- * @return 0
- *
+ * @brief Cursor up 1 position.
  */
-LIB3270_CURSOR_ACTION( up )
+LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession)
 {
 	register int	baddr;
 
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		if (KYBDLOCK_IS_OERR(hSession))
@@ -1794,16 +1791,15 @@ LIB3270_CURSOR_ACTION( up )
 }
 
 /**
- * Cursor down 1 position.
- *
- * @return 0
+ * @brief Cursor down 1 position.
  *
  */
-LIB3270_CURSOR_ACTION( down )
+LIB3270_EXPORT int lib3270_cursor_down(H3270 *hSession)
 {
 	register int	baddr;
 
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		if (KYBDLOCK_IS_OERR(hSession))
@@ -1829,18 +1825,19 @@ LIB3270_CURSOR_ACTION( down )
 	return 0;
 }
 
-
 /**
- * Cursor to first field on next line or any lines after that.
+ * @brief Cursor to first field on next line or any lines after that.
  */
-LIB3270_CURSOR_ACTION( newline )
+LIB3270_EXPORT int lib3270_newline(H3270 *hSession)
 {
 	register int	baddr, faddr;
 	register unsigned char	fa;
 
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_cursor_newline);
+		ENQUEUE_ACTION(lib3270_newline);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -1862,12 +1859,13 @@ LIB3270_CURSOR_ACTION( newline )
 	return 0;
 }
 
-
-/*
- * DUP key
+/**
+ * @brief DUP key
  */
-LIB3270_ACTION( dup )
+LIB3270_EXPORT int lib3270_dup(H3270 *hSession)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		ENQUEUE_ACTION(lib3270_dup);
@@ -1886,11 +1884,13 @@ LIB3270_ACTION( dup )
 	return 0;
 }
 
-/*
- * FM key
+/**
+ * @brief FM key
  */
-LIB3270_ACTION( fieldmark )
+LIB3270_EXPORT int lib3270_fieldmark(H3270 *hSession)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (hSession->kybdlock)
 	{
 		ENQUEUE_ACTION(lib3270_fieldmark);
@@ -1906,36 +1906,50 @@ LIB3270_ACTION( fieldmark )
 }
 
 /**
- * Send an "Enter" action.
+ * @brief Send an "Enter" action.
  *
  * Called when the user press the key enter.
  *
- * @return 0 if ok, -1 if the action can't be performed.
- *
  */
-LIB3270_KEY_ACTION( enter )
+LIB3270_EXPORT int lib3270_enter(H3270 *hSession)
 {
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	trace("%s (kybdlock & KL_OIA_MINUS): %d kybdlock: %d",__FUNCTION__,(hSession->kybdlock & KL_OIA_MINUS),hSession->kybdlock);
 
 	if (hSession->kybdlock & KL_OIA_MINUS)
+	{
+		errno = EPERM;
 		return -1;
+	}
 	else if (hSession->kybdlock)
+	{
 		ENQUEUE_ACTION(lib3270_enter);
+	}
 	else
+	{
 		key_AID(hSession,AID_ENTER);
+	}
 
 	return 0;
 }
 
-LIB3270_ACTION( sysreq )
+LIB3270_EXPORT int lib3270_sysreq(H3270 *hSession)
 {
-//	reset_idle_timer();
+	FAIL_IF_NOT_ONLINE(hSession);
+
 	if (IN_ANSI)
+	{
+		errno = ENOTCONN;
 		return 0;
+	}
+
 #if defined(X3270_TN3270E) /*[*/
-	if (IN_E) {
+	if (IN_E)
+	{
 		net_abort(hSession);
-	} else
+	}
+	else
 #endif /*]*/
 	{
 		if (hSession->kybdlock & KL_OIA_MINUS)
@@ -1945,14 +1959,14 @@ LIB3270_ACTION( sysreq )
 		else
 			key_AID(hSession,AID_SYSREQ);
 	}
+
 	return 0;
 }
 
-
-/*
- * Clear AID key
+/**
+ * @brief Clear AID key
  */
-LIB3270_ACTION( clear )
+LIB3270_EXPORT int lib3270_clear(H3270 *hSession)
 {
 //	reset_idle_timer();
 	if (hSession->kybdlock & KL_OIA_MINUS)
@@ -1976,10 +1990,10 @@ LIB3270_ACTION( clear )
 }
 
 /**
- * Erase End Of Line Key.
+ * @brief Erase End Of Line Key.
  *
  */
-LIB3270_ACTION( eraseeol )
+LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession)
 {
 	register int	baddr;
 	register unsigned char	fa;
@@ -2044,10 +2058,10 @@ LIB3270_ACTION( eraseeol )
 }
 
 /**
- * Erase End Of Field Key.
+ * @brief Erase End Of Field Key.
  *
  */
-LIB3270_ACTION( eraseeof )
+LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession)
 {
 	register int	baddr;
 	register unsigned char	fa;
@@ -2100,7 +2114,7 @@ LIB3270_ACTION( eraseeof )
 	return 0;
 }
 
-LIB3270_ACTION( eraseinput )
+LIB3270_EXPORT int lib3270_eraseinput(H3270 *hSession)
 {
 	register int	baddr, sbaddr;
 	unsigned char	fa;
@@ -2157,15 +2171,16 @@ LIB3270_ACTION( eraseinput )
 }
 
 
-
-/*
- * Delete word key.  Backspaces the cursor until it hits the front of a word,
+/**
+ * @brief Delete word key.
+
+ * Backspaces the cursor until it hits the front of a word,
  * deletes characters until it hits a blank or null, and deletes all of these
  * but the last.
  *
  * Which is to say, does a ^W.
  */
-LIB3270_ACTION( deleteword )
+LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession)
 {
 	register int baddr;
 	register unsigned char	fa;
@@ -2225,14 +2240,16 @@ LIB3270_ACTION( deleteword )
 	return 0;
 }
 
-/*
- * Delete field key.  Similar to EraseEOF, but it wipes out the entire field
+/**
+ * @brief Delete field key.
+
+ * Similar to EraseEOF, but it wipes out the entire field
  * rather than just to the right of the cursor, and it leaves the cursor at
  * the front of the field.
  *
  * Which is to say, does a ^U.
  */
-LIB3270_ACTION( deletefield )
+LIB3270_EXPORT int lib3270_deletefield(H3270 *hSession)
 {
 	register int	baddr;
 	register unsigned char	fa;
@@ -2272,72 +2289,14 @@ LIB3270_ACTION( deletefield )
 }
 
 
-
-/*
- * Set insert mode key.
- */ /*
-void
-Insert_action(Widget w unused, XEvent *event, String *params, Cardinal *num_params)
-{
-//	reset_idle_timer();
-	if (kybdlock) {
-		enq_ta(Insert_action, CN, CN);
-		return;
-	}
-#if defined(X3270_ANSI)
-	if (IN_ANSI)
-		return;
-#endif
-	set_toggle(INSERT,True);
-}
-*/
-
-
-/*
- * Toggle insert mode key.
- */ /*
-void
-ToggleInsert_action(Widget w unused, XEvent *event, String *params, Cardinal *num_params)
-{
-//	reset_idle_timer();
-	if (kybdlock) {
-		enq_ta(ToggleInsert_action, CN, CN);
-		return;
-	}
-#if defined(X3270_ANSI)
-	if (IN_ANSI)
-		return;
-#endif
-
-	do_toggle(INSERT);
-}
-*/
-
-
-/*
- * Toggle reverse mode key.
- */ /*
-void
-ToggleReverse_action(Widget w unused, XEvent *event, String *params, Cardinal *num_params)
-{
-//	reset_idle_timer();
-	if (kybdlock) {
-		enq_ta(ToggleReverse_action, CN, CN);
-		return;
-	}
-#if defined(X3270_ANSI)
-	if (IN_ANSI)
-		return;
-#endif
-	reverse_mode(!reverse);
-} */
-
-
-/*
+/**
+ * @brief Move the cursor to the first blank after the last nonblank in the field.
+ *
  * Move the cursor to the first blank after the last nonblank in the
  * field, or if the field is full, to the last character in the field.
+ *
  */
-LIB3270_ACTION( fieldend )
+LIB3270_EXPORT int lib3270_fieldend(H3270 *hSession)
 {
 	int baddr;
 
@@ -2400,7 +2359,7 @@ int lib3270_get_field_end(H3270 *hSession, int baddr)
 }
 
 /**
- * PA key action for String actions
+ * @brief PA key action for String actions.
  */
 static void do_pa(H3270 *hSession, unsigned n)
 {
@@ -2415,7 +2374,7 @@ static void do_pa(H3270 *hSession, unsigned n)
 }
 
 /**
- * PF key action for String actions
+ * @brief PF key action for String actions.
  */
 static void do_pf(H3270 *hSession, unsigned n)
 {
@@ -2427,20 +2386,6 @@ static void do_pf(H3270 *hSession, unsigned n)
 
 	lib3270_pfkey(hSession,n);
 }
-
-/*
- * Set or clear the keyboard scroll lock.
- */ /*
-void
-kybd_scroll_lock(Boolean lock)
-{
-	if (!IN_3270)
-		return;
-	if (lock)
-		kybdlock_set(KL_SCROLLED, "kybd_scroll_lock");
-	else
-		kybdlock_clr(hSession, KL_SCROLLED, "kybd_scroll_lock");
-} */
 
 /*
  * Move the cursor back within the legal paste area.

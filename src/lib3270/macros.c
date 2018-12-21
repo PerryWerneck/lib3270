@@ -356,10 +356,10 @@
 	}
 	action[] =
 	{
-		#define DECLARE_LIB3270_ACTION( name )  				{ #name, lib3270_ ## name			},
-		#define DECLARE_LIB3270_KEY_ACTION( name )				{ #name, lib3270_ ## name			},
-		#define DECLARE_LIB3270_CURSOR_ACTION( name )			{ #name, lib3270_cursor_ ## name	},
-		#define DECLARE_LIB3270_FKEY_ACTION( name )				/* */
+		#define DECLARE_LIB3270_ACTION( name, description )  				{ #name, lib3270_ ## name			},
+		#define DECLARE_LIB3270_KEY_ACTION( name, description )				{ #name, lib3270_ ## name			},
+		#define DECLARE_LIB3270_CURSOR_ACTION( name, description )			{ #name, lib3270_cursor_ ## name	},
+		#define DECLARE_LIB3270_FKEY_ACTION( name, description )			/* */
 
 		#include <lib3270/action_table.h>
 

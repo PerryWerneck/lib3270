@@ -163,6 +163,9 @@
 		<Unit filename="src/lib3270/macros.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/mkactions/mkactions.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/mkfb/mkfb.c">
 			<Option compilerVar="CC" />
 		</Unit>

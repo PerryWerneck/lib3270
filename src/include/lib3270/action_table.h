@@ -39,53 +39,55 @@
 	 */
 
 	/* Keyboard actions */
-	DECLARE_LIB3270_KEY_ACTION( enter )
+	DECLARE_LIB3270_KEY_ACTION( enter, "Send an \"Enter\" action." )
 
-	DECLARE_LIB3270_FKEY_ACTION( pfkey )
-	DECLARE_LIB3270_FKEY_ACTION( pakey )
+	DECLARE_LIB3270_FKEY_ACTION( pfkey, "" )
+	DECLARE_LIB3270_FKEY_ACTION( pakey, "" )
 
 	/* Cursor movement */
-	DECLARE_LIB3270_CURSOR_ACTION( up )
-	DECLARE_LIB3270_CURSOR_ACTION( down )
-	DECLARE_LIB3270_CURSOR_ACTION( left )
-	DECLARE_LIB3270_CURSOR_ACTION( right )
-	DECLARE_LIB3270_CURSOR_ACTION( newline )
+	DECLARE_LIB3270_CURSOR_ACTION( up, "Cursor up 1 position." )
+	DECLARE_LIB3270_CURSOR_ACTION( down, "Cursor down 1 position." )
+	DECLARE_LIB3270_CURSOR_ACTION( left, "Cursor left 1 position." )
+	DECLARE_LIB3270_CURSOR_ACTION( right, "Cursor right 1 position." )
+
+	DECLARE_LIB3270_ACTION( newline, "Cursor to first field on next line or any lines after that." )
 
 	/* Misc actions */
-	DECLARE_LIB3270_ACTION( kybdreset )
-	DECLARE_LIB3270_ACTION( clear )
-	DECLARE_LIB3270_ACTION( eraseinput )
+	DECLARE_LIB3270_ACTION( kybdreset, "" )
+	DECLARE_LIB3270_ACTION( clear, "Clear AID key" )
+	DECLARE_LIB3270_ACTION( eraseinput, "" )
 
-	DECLARE_LIB3270_ACTION( select_field )
-	DECLARE_LIB3270_ACTION( select_all )
-	DECLARE_LIB3270_ACTION( unselect )
-	DECLARE_LIB3270_ACTION( reselect )
+	DECLARE_LIB3270_ACTION( select_field, "" )
+	DECLARE_LIB3270_ACTION( select_all, "" )
+	DECLARE_LIB3270_ACTION( unselect, "" )
+	DECLARE_LIB3270_ACTION( reselect, "" )
 
-	DECLARE_LIB3270_ACTION( firstfield )
-	DECLARE_LIB3270_ACTION( eraseeof )
-	DECLARE_LIB3270_ACTION( eraseeol )
-	DECLARE_LIB3270_ACTION( erase )
-	DECLARE_LIB3270_ACTION( delete )
-	DECLARE_LIB3270_ACTION( dup )
-	DECLARE_LIB3270_ACTION( fieldmark )
+	DECLARE_LIB3270_ACTION( eraseeof, "Erase End Of Field Key." )
+	DECLARE_LIB3270_ACTION( eraseeol, "Erase End Of Line Key." )
+	DECLARE_LIB3270_ACTION( erase, "" )
+	DECLARE_LIB3270_ACTION( delete, "" )
+	DECLARE_LIB3270_ACTION( dup, "DUP key" )
+	DECLARE_LIB3270_ACTION( fieldmark, "FM key" )
 
-	DECLARE_LIB3270_ACTION( backspace )
-	DECLARE_LIB3270_ACTION( previousword )
-	DECLARE_LIB3270_ACTION( nextword )
-	DECLARE_LIB3270_ACTION( fieldend )
+	DECLARE_LIB3270_ACTION( backspace, "3270-style backspace." )
 
-	DECLARE_LIB3270_ACTION( nextfield )
-	DECLARE_LIB3270_ACTION( previousfield )
+	DECLARE_LIB3270_ACTION( previousword, "Cursor to previous word." )
+	DECLARE_LIB3270_ACTION( nextword, "Cursor to next unprotected word." )
+	DECLARE_LIB3270_ACTION( fieldend, "Move the cursor to the first blank after the last nonblank in the field." )
 
-	DECLARE_LIB3270_ACTION( attn )
-	DECLARE_LIB3270_ACTION( break )
-	DECLARE_LIB3270_ACTION( pastenext )
+	DECLARE_LIB3270_ACTION( firstfield, "Move to first unprotected field on screen." )
+	DECLARE_LIB3270_ACTION( nextfield, "" )
+	DECLARE_LIB3270_ACTION( previousfield, "Tab backward to previous field." )
 
-	DECLARE_LIB3270_ACTION( deleteword )
-	DECLARE_LIB3270_ACTION( deletefield )
-	DECLARE_LIB3270_ACTION( sysreq )
+	DECLARE_LIB3270_ACTION( attn, "ATTN key, per RFC 2355.  Sends IP, regardless." )
+	DECLARE_LIB3270_ACTION( break, "" )
+	DECLARE_LIB3270_ACTION( pastenext, "" )
 
-	DECLARE_LIB3270_ACTION( testpattern )
-	DECLARE_LIB3270_ACTION( charsettable )
+	DECLARE_LIB3270_ACTION( deleteword, "Backspaces the cursor until it hits the front of a word (does a ^W)." )
+	DECLARE_LIB3270_ACTION( deletefield, "Delete field key (does a ^U)." )
+	DECLARE_LIB3270_ACTION( sysreq, "" )
+
+	DECLARE_LIB3270_ACTION( testpattern, "" )
+	DECLARE_LIB3270_ACTION( charsettable, "" )
 
 

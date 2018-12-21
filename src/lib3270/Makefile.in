@@ -84,8 +84,8 @@ DEPENDS= \
 	Makefile \
 	../include/*.h \
 	../include/lib3270/*.h \
-	../lib3270/*.h
-
+	../lib3270/*.h \
+	$(BASEDIR)/src/include/lib3270/actions.h
 
 CFLAGS= \
 	@CFLAGS@ \
@@ -286,6 +286,21 @@ $(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 	@$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard mkfb/*.c)
 	@$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
 
+$(BASEDIR)/src/include/lib3270/actions.h: \
+	../include/lib3270/action_table.h \
+	$(wildcard mkactions/*.c)
+
+	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(BINDIR)
+	@echo $< ...
+	@$(HOST_CC) \
+		-g \
+		-I../include \
+		-DBUILD_DATE=`date +%Y%m%d` \
+		-o $(BINDIR)/mkactions@EXEEXT@ \
+		$(wildcard mkactions/*.c)
+	@$(BINDIR)/mkactions@EXEEXT@ -o $@
+
 $(POTDIR)/$(LIBNAME).pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 
@@ -369,6 +384,7 @@ cleanDebug:
 
 	@rm -fr $(OBJDBG)
 	@rm -fr $(BINDBG)
+	@rm -fr $(BASEDIR)/src/include/lib3270/actions.h
 
 cleanRelease:
 
@@ -376,6 +392,7 @@ cleanRelease:
 	@rm -fr $(BINRLS)
 	@rm -fr $(POTDIR)
 	@rm -f lib$(LIBNAME).pot
+	@rm -fr $(BASEDIR)/src/include/lib3270/actions.h
 
 clean: \
 	cleanDebug \

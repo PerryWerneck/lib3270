@@ -140,6 +140,10 @@ int main(int argc, char *argv[]) {
 		" * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)\n"
 		" *\n"
 		" */\n\n"
+		"#ifndef LIB3270_ACTIONS_H_INCLUDED\n"
+		"\n"
+		"\n #define LIB3270_ACTIONS_H_INCLUDED 1\n"
+		"\n"
 	);
 
 	if(format == FORMAT_HEADER)
@@ -194,6 +198,7 @@ int main(int argc, char *argv[]) {
 			" *\n"
 			" */\n"
 			" LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);\n"
+			"\n\n#endif // LIB3270_ACTIONS_H_INCLUDED"
 		);
 	}
 

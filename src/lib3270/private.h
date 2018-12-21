@@ -299,19 +299,22 @@ struct _h3270
 
 //	unsigned short 		  	  sz;								/**< Struct size */
 
+	// Session info
+	char					  id;								///< @brief Session Identifier.
+
 	// Connection info
-	int						  sock;								/**< Network socket */
-	LIB3270_CSTATE			  cstate;							/**< Connection state */
+	int						  sock;								///< @brief Network socket.
+	LIB3270_CSTATE			  cstate;							///< @brief Connection state.
 
 	// flags
-	LIB3270_OPTION			  options;							/**< Session options */
+	LIB3270_OPTION			  options;							///< @brief Session options.
 
-	int						  bgthread					: 1;	/**< Running on a background thread ? */
-	int					  	  selected					: 1;	/**< Has selected region? */
-	int						  rectsel					: 1;	/**< Selected region is a rectangle ? */
-	int						  vcontrol					: 1;	/**< Visible control ? */
+//	int						  bgthread					: 1;	///< @brief Running on a background thread ?.
+	int					  	  selected					: 1;	///< @brief Has selected region?
+	int						  rectsel					: 1;	///< @brief Selected region is a rectangle ?
+	int						  vcontrol					: 1;	///< @brief Visible control ?
 	int						  modified_sel				: 1;
-	int						  mono						: 1;	/**< Forces monochrome display */
+	int						  mono						: 1;	///< @brief Forces monochrome display
 	int						  m3279						: 1;
 	int 					  extended					: 1;
 	int						  typeahead					: 1;
@@ -358,13 +361,13 @@ struct _h3270
 
 	struct
 	{
-		char				* current;		/**< The hostname part, stripped of qualifiers, luname and port number */
-		char 	   	    	* full;			/**< The entire string, for use in reconnecting */
-		char				* srvc;			/**< The service name */
+		char				* current;			/**< The hostname part, stripped of qualifiers, luname and port number */
+		char 	   	    	* full;				/**< The entire string, for use in reconnecting */
+		char				* srvc;				/**< The service name */
 		char	   	    	* qualified;
 	} host;
 
-	char					* proxy;				/**< Proxy server (type:host[:port]) */
+	char					* proxy;			/**< Proxy server (type:host[:port]) */
 	char					* termname;
 
 	struct lib3270_charset	  charset;
@@ -598,7 +601,7 @@ struct _h3270
 	void 					* ns_write_id;
 	void 					* ns_exception_id;
 
-	// SSL Data (Always defined to mantain the same structure size)
+	// SSL Data (Always defined to maintain the structure size)
 	unsigned long 			  ssl_error;
 	SSL 					* ssl_con;
 

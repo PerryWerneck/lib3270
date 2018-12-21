@@ -339,6 +339,7 @@ H3270 * lib3270_session_new(const char *model)
 	trace("%s - configured=%s",__FUNCTION__,default_session ? "Yes" : "No");
 
 	hSession = lib3270_malloc(sizeof(H3270));
+	hSession->id = 0;
 
 	if(!default_session)
 		default_session = hSession;
@@ -425,6 +426,18 @@ LIB3270_EXPORT void * lib3270_get_user_data(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
 	return h->user_data;
+}
+
+LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id)
+{
+	CHECK_SESSION_HANDLE(hSession);
+	hSession->id = id;
+}
+
+LIB3270_EXPORT void lib3270_get_session_id(H3270 *hSession)
+{
+	CHECK_SESSION_HANDLE(hSession);
+	return hSession->id;
 }
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *session, unsigned short sz)

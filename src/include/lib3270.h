@@ -770,7 +770,7 @@
 	LIB3270_EXPORT int lib3270_toggle(H3270 *h, LIB3270_TOGGLE ix);
 
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
-	LIB3270_EXPORT void lib3270_get_session_id(H3270 *hSession);
+	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);
 
 	/**
 	 * @brief IO flags.

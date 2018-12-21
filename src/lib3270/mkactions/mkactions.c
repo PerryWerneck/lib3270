@@ -169,6 +169,22 @@ int main(int argc, char *argv[]) {
 		}
 
 		fprintf(out,
+			"\n"
+			"\n typedef struct _lib3270_action_entry"
+			"\n {"
+			"\n     const char *name;"
+			"\n     const char *description;"
+			"\n     int (*call)(H3270 *hSession);"
+			"\n } LIB3270_ACTION_ENTRY;"
+			"\n\n"
+			"/**\n"
+			" *\n"
+			" * @brief Get lib3270 action table.\n"
+			" *\n"
+			" * @return Array with all the supported actions.\n"
+			" */\n"
+			" LIB3270_EXPORT const LIB3270_ACTION_ENTRY * lib3270_get_action_table();\n"
+			"\n"
 			"/**\n"
 			" *\n"
 			" * @brief Call lib3270 action by name.\n"

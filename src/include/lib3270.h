@@ -513,13 +513,15 @@
 	/**
 	 * @brief Network connect operation, keep main loop running
 	 *
-	 * @param h		Session handle.
-	 * @param wait	Non zero to wait for connection to be ok.
+	 * @param h			Session handle.
+	 * @param seconds	Seconds to wait for connection .
 	 *
 	 * @return 0 for success, EAGAIN if auto-reconnect is in progress, EBUSY if connected, ENOTCONN if connection has failed, -1 on unexpected failure.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_connect(H3270 *h,int wait);
+	LIB3270_EXPORT int lib3270_connect(H3270 *h,int seconds);
+
+	LIB3270_EXPORT int lib3270_set_connected(H3270 *h,int state);
 
 	/**
 	 * @brief Connect to defined host, keep main loop running.
@@ -926,7 +928,6 @@
 	 *
 	 */
 	 LIB3270_EXPORT void lib3270_ring_bell(H3270 *session);
-
 
 	/**
 	 * Get lib3270's charset.

@@ -320,7 +320,7 @@ LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
 		return 0;
 	}
 
-	if(strlen((char *) str) > sz)
+	if((int) strlen((char *) str) > sz)
 	{
 		h->paste_buffer = strdup((char *) (str+sz));
 		return 1;

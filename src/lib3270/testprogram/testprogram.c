@@ -20,7 +20,7 @@ int main(int numpar, char *param[])
 //	lib3270_set_toggle(session,LIB3270_TOGGLE_DS_TRACE,1);
 
 	lib3270_set_url(h,url ? url : "tn3270://fandezhi.efglobe.com");
-	rc = lib3270_connect(h,1);
+	rc = lib3270_connect(h,120);
 
 	printf("\nConnect exits with rc=%d\n",rc);
 

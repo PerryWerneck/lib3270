@@ -29,9 +29,8 @@
  *
  */
 
-/*
- *	kybd.c
- *		This module handles the keyboard for the 3270 emulator.
+/**
+ *	@brief This module handles the keyboard for the 3270 emulator.
  */
 
 struct ta;

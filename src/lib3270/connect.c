@@ -137,9 +137,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 #endif
 
 	lib3270_setup_session(hSession);
-
-
-	lib3270_set_connected(hSession);
+	lib3270_set_connected_initial(hSession);
 
 }
 
@@ -239,7 +237,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 
  }
 
- int lib3270_connect(H3270 *hSession, int wait)
+ int lib3270_connect(H3270 *hSession, int seconds)
  {
  	int					  s;
 	int					  optval;
@@ -252,10 +250,10 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 	lib3270_main_iterate(hSession,0);
 
 	if(hSession->auto_reconnect_inprogress)
-		return EAGAIN;
+		return errno = EAGAIN;
 
 	if(hSession->sock > 0)
-		return EBUSY;
+		return errno = EBUSY;
 
 #if defined(_WIN32)
 	sockstart(hSession);
@@ -325,7 +323,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 
 
 		lib3270_set_disconnected(hSession);
-		return ENOENT;
+		return errno = ENOENT;
 	}
 
 
@@ -350,7 +348,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 								_( "This version of %s was built without support for secure sockets layer (SSL)." ),
 								PACKAGE_NAME);
 
-		return EINVAL;
+		return errno = EINVAL;
 #endif // HAVE_LIBSSL
 	}
 
@@ -507,7 +505,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 	if(hSession->sock < 0)
 	{
 		lib3270_set_disconnected(hSession);
-		return ENOTCONN;
+		return errno = ENOTCONN;
 	}
 
 	// Connecting, set callbacks, wait for connection
@@ -519,9 +517,9 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 
 	trace("%s: Connection in progress",__FUNCTION__);
 
-	if(wait)
+	if(seconds)
 	{
-		time_t end = time(0)+120;
+		time_t end = time(0)+seconds;
 
 		while(time(0) < end)
 		{
@@ -539,7 +537,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 				break;
 
 			case LIB3270_NOT_CONNECTED:
-				return ENOTCONN;
+				return errno = ENOTCONN;
 
 			case LIB3270_CONNECTED_TN3270E:
 				return 0;
@@ -553,7 +551,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 
 		lib3270_disconnect(hSession);
 		lib3270_write_log(hSession,"connect", "%s",__FUNCTION__,strerror(ETIMEDOUT));
-		return ETIMEDOUT;
+		return errno = ETIMEDOUT;
 	}
 
 	return 0;

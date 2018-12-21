@@ -127,7 +127,7 @@ void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate)
 	lib3270_st_changed(hSession, LIB3270_STATE_3270_MODE, now3270);
 }
 
-void lib3270_set_connected(H3270 *hSession)
+void lib3270_set_connected_initial(H3270 *hSession)
 {
 	hSession->cstate	= LIB3270_CONNECTED_INITIAL;
 	hSession->starting	= 1;	// Enable autostart

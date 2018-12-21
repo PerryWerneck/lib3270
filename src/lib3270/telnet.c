@@ -889,7 +889,7 @@ static void connection_complete(H3270 *session)
 		host_disconnect(session,True);
 		return;
 	}
-	lib3270_set_connected(session);
+	lib3270_set_connected_initial(session);
 	net_connected(session);
 }
 
@@ -1082,7 +1082,7 @@ void net_input(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void
 				host_disconnect(hSession,True);
 				return;
 			}
-			lib3270_set_connected(hSession);
+			lib3270_set_connected_initial(hSession);
 			if(net_connected(hSession))
 				return;
 		}

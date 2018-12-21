@@ -106,53 +106,6 @@
 		#endif
 */
 
-		/** 3270 connection handle */
-//		#define LUNAME_SIZE				16
-//		#define FULL_MODEL_NAME_SIZE	13
-
-//		#define ST_RESOLVING			LIB3270_STATE_RESOLVING
-//		#define ST_HALF_CONNECT			LIB3270_STATE_HALF_CONNECT
-//		#define ST_CONNECT				LIB3270_STATE_CONNECT
-//		#define ST_3270_MODE			LIB3270_STATE_3270_MODE
-//		#define ST_LINE_MODE			LIB3270_STATE_LINE_MODE
-//		#define ST_REMODEL				LIB3270_STATE_REMODEL
-//		#define ST_PRINTER				LIB3270_STATE_PRINTER
-//		#define ST_EXITING				LIB3270_STATE_EXITING
-//		#define ST_CHARSET				LIB3270_STATE_CHARSET
-//		#define N_ST					LIB3270_STATE_USER
-//		#define LIB3270_STATE_CHANGE	LIB3270_STATE
-
-		/** connection state */
-//		#define cstate LIB3270_CSTATE
-//		#define NOT_CONNECTED	LIB3270_NOT_CONNECTED
-//		#define RESOLVING	LIB3270_RESOLVING
-//		#define PENDING	LIB3270_PENDING
-//		#define CONNECTED_INITIAL	LIB3270_CONNECTED_INITIAL
-//		#define CONNECTED_ANSI	LIB3270_CONNECTED_ANSI
-//		#define CONNECTED_3270	LIB3270_CONNECTED_3270
-//		#define CONNECTED_INITIAL_E	LIB3270_CONNECTED_INITIAL_E
-//		#define CONNECTED_NVT	LIB3270_CONNECTED_NVT
-//		#define CONNECTED_SSCP	LIB3270_CONNECTED_SSCP
-//		#define CONNECTED_TN3270E	LIB3270_CONNECTED_TN3270E
-
-//		#define LIB3270_STATUS					LIB3270_MESSAGE
-//		#define LIB3270_STATUS_BLANK			LIB3270_MESSAGE_NONE
-//		#define LIB3270_STATUS_SYSWAIT			LIB3270_MESSAGE_SYSWAIT
-//		#define LIB3270_STATUS_TWAIT			LIB3270_MESSAGE_TWAIT
-//		#define LIB3270_STATUS_CONNECTED		LIB3270_MESSAGE_CONNECTED
-//		#define LIB3270_STATUS_DISCONNECTED		LIB3270_MESSAGE_DISCONNECTED
-//		#define LIB3270_STATUS_AWAITING_FIRST	LIB3270_MESSAGE_AWAITING_FIRST
-//		#define LIB3270_MESSAGE_MINUS			LIB3270_MESSAGE_MINUS
-//		#define LIB3270_STATUS_PROTECTED		LIB3270_MESSAGE_PROTECTED
-//		#define LIB3270_STATUS_NUMERIC			LIB3270_MESSAGE_NUMERIC
-//		#define LIB3270_STATUS_OVERFLOW			LIB3270_MESSAGE_OVERFLOW
-//		#define LIB3270_STATUS_INHIBIT			LIB3270_MESSAGE_INHIBIT
-//		#define LIB3270_STATUS_KYBDLOCK			LIB3270_MESSAGE_KYBDLOCK
-//		#define LIB3270_STATUS_X				LIB3270_MESSAGE_X
-//		#define LIB3270_MESSAGE_RESOLVING		LIB3270_MESSAGE_RESOLVING
-//		#define LIB3270_STATUS_CONNECTING		LIB3270_MESSAGE_CONNECTING
-//		#define LIB3270_STATUS_USER				LIB3270_MESSAGE_USER
-
 		#define OIA_FLAG_BOXSOLID	LIB3270_FLAG_BOXSOLID
 		#define OIA_FLAG_UNDERA		LIB3270_FLAG_UNDERA
 		#define OIA_FLAG_TYPEAHEAD	LIB3270_FLAG_TYPEAHEAD
@@ -190,16 +143,6 @@
 		#define CS_DBCS			0x03	/**< DBCS character set (X'F8') */
 		#define CS_GE			0x04	/**< cs flag for Graphic Escape */
 
-		/**
-		 * Return a "malloced" copy of the device buffer, set number of elements
-		 */
-//		LOCAL_EXTERN struct ea * copy_device_buffer(int *el);
-
-		/**
-		 * Set the contents of the device buffer for debugging purposes
-		 */
-//		LOCAL_EXTERN int  set_device_buffer(struct ea *src, int el);
-
 		/* File transfer */
 
 		#define FT_RECORD_FORMAT_FIXED			LIB3270_FT_RECORD_FORMAT_FIXED
@@ -218,25 +161,7 @@
 		#define FT_ABORT_WAIT					LIB3270_FT_STATE_ABORT_WAIT
 		#define FT_ABORT_SENT					LIB3270_FT_STATE_ABORT_SENT
 
-//		LOCAL_EXTERN int 				BeginFileTransfer(unsigned short flags, const char *local, const char *remote, int lrecl, int blksize, int primspace, int secspace, int dft);
 		LOCAL_EXTERN int 				CancelFileTransfer(int force);
-//		LOCAL_EXTERN enum ft_state	GetFileTransferState(void);
-
-/*
-		struct filetransfer_callbacks
-		{
-			unsigned short sz;
-
-			void (*begin)(unsigned short flags, const char *local, const char *remote);
-			void (*complete)(const char *errmsg,unsigned long length,double kbytes_sec,const char *mode);
-			void (*update)(unsigned long length,unsigned long total,double kbytes_sec);
-			void (*running)(int is_cut);
-			void (*aborting)(void);
-
-		};
-
-		LOCAL_EXTERN int RegisterFTCallbacks(const struct filetransfer_callbacks *cbk);
-*/
 
 		#define PCONNECTED		lib3270_pconnected(hSession)
 		#define HALF_CONNECTED	lib3270_half_connected(hSession)
@@ -249,18 +174,7 @@
 		#define IN_TN3270E		lib3270_in_tn3270e(hSession)
 		#define IN_E			lib3270_in_e(hSession)
 
-		#ifndef LIB3270
-
-//			LOCAL_EXTERN enum ft_state	QueryFTstate(void);
-
-		#endif
-
-
 		/* Screen processing */
-
-//		#define CURSOR_MODE_NORMAL		LIB3270_CURSOR_EDITABLE
-//		#define CURSOR_MODE_WAITING		LIB3270_CURSOR_WAITING
-//		#define CURSOR_MODE_LOCKED		LIB3270_CURSOR_LOCKED
 
 		typedef enum _SCRIPT_STATE
 		{
@@ -287,7 +201,6 @@
 		#define COLOR_ATTR_NONE			0x0000
 		#define COLOR_ATTR_FIELD		LIB3270_ATTR_FIELD
 		#define COLOR_ATTR_BLINK		LIB3270_ATTR_BLINK
-//		#define COLOR_ATTR_UNDERLINE	LIB3270_ATTR_UNDERLINE
 		#define COLOR_ATTR_INTENSIFY	LIB3270_ATTR_INTENSIFY
 
 		#define CHAR_ATTR_UNCONVERTED	LIB3270_ATTR_CG
@@ -298,26 +211,18 @@
 		#define find_field_length(s,a) find_field_length(s,a)
 
 		LOCAL_EXTERN unsigned char get_field_attribute(H3270 *session, int baddr);
-//		LOCAL_EXTERN int screen_read(char *dest, int baddr, int count);
 		LOCAL_EXTERN void Input_String(const unsigned char *str);
 		LOCAL_EXTERN void screen_size(int *rows, int *cols);
 
-//		#define query_secure_connection(h) lib3270_get_ssl_state(h)
 		#define lib3270_paste_string(str) lib3270_set_string(NULL,str)
 		#define get_3270_terminal_size(h,r,c) lib3270_get_screen_size(h,r,c)
 
 		/* Keyboard */
 		LOCAL_EXTERN int			  emulate_input(char *s, int len, int pasting);
 
-		/* Network related calls */
-//		LOCAL_EXTERN int 			  Get3270Socket(void);
-
         /* Misc calls */
 
 		#define query_3270_terminal_status(void) lib3270_get_program_message(NULL)
-
-//		#define set_3270_model(h,m)	lib3270_set_model(h,m)
-//		#define get_3270_model(h) lib3270_get_model(h)
 
 		/* Get connection info */
 		#define get_connected_lu(h) lib3270_get_luname(h)
@@ -325,10 +230,6 @@
 		LOCAL_EXTERN SCRIPT_STATE status_script(SCRIPT_STATE state);
 
 		#include <lib3270/actions.h>
-
-		// #define host_connect(n,wait) lib3270_connect(NULL,n,wait)
-		// #define host_reconnect(w) lib3270_reconnect(NULL,w)
-
 
 #ifdef __cplusplus
 	}

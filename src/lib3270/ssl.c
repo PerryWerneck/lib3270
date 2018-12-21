@@ -220,7 +220,7 @@ int ssl_negotiate(H3270 *hSession)
 
 
 	/* Tell the world that we are (still) connected, now in secure mode. */
-	lib3270_set_connected(hSession);
+	lib3270_set_connected_initial(hSession);
 	non_blocking(hSession,True);
 
 	return 0;

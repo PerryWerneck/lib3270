@@ -2533,7 +2533,7 @@ LIB3270_EXPORT int lib3270_emulate_input(H3270 *hSession, const char *s, int len
 				if (pasting)
 				{
 					if (!skipped)
-						lib3270_cursor_newline(hSession);
+						lib3270_newline(hSession);
 					skipped = False;
 				}
 				else
@@ -2635,7 +2635,7 @@ LIB3270_EXPORT int lib3270_emulate_input(H3270 *hSession, const char *s, int len
 					break;
 
 				case 'r':
-					lib3270_cursor_newline(hSession);
+					lib3270_newline(hSession);
 					skipped = False;
 					state = BASE;
 					break;

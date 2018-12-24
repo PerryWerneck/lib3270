@@ -49,5 +49,6 @@ makeruntime.sh
 scripts
 vgcore.*
 doxygen/html
+src/include/lib3270/actions.h
 doxygen/doxyfile
 

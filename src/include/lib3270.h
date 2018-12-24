@@ -459,10 +459,10 @@
 	 * @param h		Session handle.
 	 * @param url	URL of host to set in the format tn3270://hostname:service or tn3270s://hostname:service .
 	 *
-	 * @return Processed host url
+	 * @return 0
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_set_url(H3270 *h, const char *url);
+	 LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *url);
 
 	/**
 	 * @brief Get hostname for the connect/reconnect operations.
@@ -489,7 +489,13 @@
 
 	 LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc);
 
-	 LIB3270_EXPORT const char * lib3270_get_url(H3270 *h, char *buffer, int len);
+	/**
+	 * @brief Get HOST URL.
+	 *
+	 * @return TN3270 Connection URL.
+	 *
+	 */
+	 LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession);
 
 	/**
 	 * @brief Get session options.

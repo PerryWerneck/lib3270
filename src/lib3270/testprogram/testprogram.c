@@ -22,7 +22,7 @@ int main(int numpar, char *param[])
 	lib3270_set_url(h,url ? url : "tn3270://fandezhi.efglobe.com");
 	rc = lib3270_connect(h,120);
 
-	printf("\nConnect exits with rc=%d\n",rc);
+	printf("\nConnect %s exits with rc=%d\n",lib3270_get_url(h),rc);
 
 	lib3270_wait_for_ready(h,10);
 

@@ -169,6 +169,7 @@ LIB3270_EXPORT void lib3270_register_schange(H3270 *h, LIB3270_STATE tx, void (*
 
 	st 			= (struct lib3270_state_callback *) lib3270_malloc(sizeof(struct lib3270_state_callback));
 	st->func	= func;
+	st->data	= data;
 
 	if (h->st_last[tx])
 		h->st_last[tx]->next = st;
@@ -231,20 +232,13 @@ static void update_host(H3270 *h)
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_url(H3270 *h, char *buffer, int len)
+LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(h);
-
-	snprintf(buffer,len,"%s://%s:%s",
-			((h->options & LIB3270_OPTION_SSL) == 0) ? "tn3270" : "tn3270s",
-			h->host.current,
-			h->host.srvc
-	);
-
-	return buffer;
+	CHECK_SESSION_HANDLE(hSession);
+	return hSession->host.full;
 }
 
-LIB3270_EXPORT const char * lib3270_set_url(H3270 *h, const char *n)
+LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 {
     CHECK_SESSION_HANDLE(h);
 
@@ -289,7 +283,7 @@ LIB3270_EXPORT const char * lib3270_set_url(H3270 *h, const char *n)
 		}
 
 		if(!*hostname)
-			return h->host.current;
+			return 0;
 
 		ptr = strchr(hostname,':');
 		if(ptr)
@@ -353,7 +347,7 @@ LIB3270_EXPORT const char * lib3270_set_url(H3270 *h, const char *n)
 		free(str);
 	}
 
-	return h->host.current;
+	return 0;
 }
 
 LIB3270_EXPORT const char * lib3270_get_hostname(H3270 *h)

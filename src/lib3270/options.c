@@ -94,18 +94,18 @@ LIB3270_EXPORT void lib3270_set_options(H3270 *hSession, LIB3270_OPTION opt)
 
 }
 
-LIB3270_EXPORT unsigned short lib3270_get_color_type(H3270 *hSession)
+LIB3270_EXPORT int lib3270_get_color_type(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
-	return hSession->mono ? 2 : hSession->colors;
+	return (int) (hSession->mono ? 2 : hSession->colors);
 }
 
-LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned short colortype)
+LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype)
 {
 	CHECK_SESSION_HANDLE(hSession);
 
 	if(hSession->cstate != LIB3270_NOT_CONNECTED)
-		return EBUSY;
+		return errno = EBUSY;
 
 	switch(colortype)
 	{
@@ -129,7 +129,7 @@ LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned short colort
 		break;
 
 	default:
-		return EINVAL;
+		return errno = EINVAL;
 	}
 
 

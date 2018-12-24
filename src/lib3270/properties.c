@@ -40,95 +40,123 @@
  static const LIB3270_INT_PROPERTY properties[] = {
 
  	{
-		"ready",				///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_is_ready,		///<  Get value.
-		NULL					///<  Set value.
+		"ready",											//  Property name.
+		N_( "" ),											//  Property description.
+		lib3270_is_ready,									//  Get value.
+		NULL												//  Set value.
  	},
 
  	{
-		"connected",			///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_is_connected,	///<  Get value.
-		lib3270_set_connected	///<  Set value.
+		"connected",										//  Property name.
+		N_( "" ),											//  Property description.
+		lib3270_is_connected,								//  Get value.
+		lib3270_set_connected								//  Set value.
  	},
 
  	{
-		"secure",				///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_is_secure,		///<  Get value.
-		NULL					///<  Set value.
+		"secure",											//  Property name.
+		N_( "" ),											//  Property description.
+		lib3270_is_secure,									//  Get value.
+		NULL												//  Set value.
  	},
 
  	{
-		"tso",												///<  Property name.
-		N_( "Non zero if the host is TSO." ),				///<  Property description.
-		lib3270_is_tso,										///<  Get value.
-		NULL												///<  Set value.
+		"tso",												//  Property name.
+		N_( "Non zero if the host is TSO." ),				//  Property description.
+		lib3270_is_tso,										//  Get value.
+		NULL												//  Set value.
  	},
 
  	{
-		"pconnected",			///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_pconnected,		///<  Get value.
-		NULL					///<  Set value.
+		"pconnected",										//  Property name.
+		N_( "" ),											//  Property description.
+		lib3270_pconnected,									//  Get value.
+		NULL												//  Set value.
  	},
 
  	{
-		"half_connected",		///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_half_connected,	///<  Get value.
-		NULL					///<  Set value.
+		"half_connected",		//  Property name.
+		N_( "" ),				//  Property description.
+		lib3270_half_connected,	//  Get value.
+		NULL					//  Set value.
  	},
 
  	{
-		"neither",				///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_in_neither,		///<  Get value.
-		NULL					///<  Set value.
+		"neither",						//  Property name.
+		N_( "" ),						//  Property description.
+		lib3270_in_neither,				//  Get value.
+		NULL							//  Set value.
  	},
 
  	{
-		"ansi",					///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_in_ansi,		///<  Get value.
-		NULL					///<  Set value.
+		"ansi",							//  Property name.
+		N_( "" ),						//  Property description.
+		lib3270_in_ansi,				//  Get value.
+		NULL							//  Set value.
  	},
 
  	{
-		"3270",					///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_in_3270,		///<  Get value.
-		NULL					///<  Set value.
+		"3270",							//  Property name.
+		N_( "" ),						//  Property description.
+		lib3270_in_3270,				//  Get value.
+		NULL							//  Set value.
  	},
 
  	{
-		"sscp",					///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_in_sscp,		///<  Get value.
-		NULL					///<  Set value.
+		"sscp",							//  Property name.
+		N_( "" ),						//  Property description.
+		lib3270_in_sscp,				//  Get value.
+		NULL							//  Set value.
  	},
 
  	{
-		"tn3270e",				///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_in_tn3270e,		///<  Get value.
-		NULL					///<  Set value.
+		"tn3270e",						//  Property name.
+		N_( "" ),						//  Property description.
+		lib3270_in_tn3270e,				//  Get value.
+		NULL							//  Set value.
  	},
 
  	{
-		"e",					///<  Property name.
-		N_( "" ),				///<  Property description.
-		lib3270_in_e,			///<  Get value.
-		NULL					///<  Set value.
+		"e",							//  Property name.
+		N_( "" ),						//  Property description.
+		lib3270_in_e,					//  Get value.
+		NULL							//  Set value.
+ 	},
+
+ 	{
+		"cursor_address",				//  Property name.
+		N_( "Cursor address" ),			//  Property description.
+		lib3270_get_cursor_address,		//  Get value.
+		lib3270_set_cursor_address		//  Set value.
+ 	},
+
+ 	{
+		"has_selection",				//  Property name.
+		N_( "Has selected aread" ),		//  Property description.
+		lib3270_has_selection,			//  Get value.
+		NULL							//  Set value.
+ 	},
+
+ 	{
+		"model_number",					//  Property name.
+		N_( "The model number" ),		//  Property description.
+		lib3270_get_model_number,		//  Get value.
+		NULL							//  Set value.
+ 	},
+
+ 	{
+		"color_type",					//  Property name.
+		N_( "The color type" ),			//  Property description.
+		lib3270_get_color_type,			//  Get value.
+		lib3270_set_color_type			//  Set value.
  	},
 
 	/*
  	{
-		"",						///<  Property name.
-		N_( "" ),				///<  Property description.
-		NULL,					///<  Get value.
-		NULL					///<  Set value.
+		"",						//  Property name.
+		N_( "" ),				//  Property description.
+		NULL,					//  Get value.
+		NULL					//  Set value.
  	},
  	*/
 

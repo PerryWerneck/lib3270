@@ -1211,8 +1211,8 @@
 
 	LIB3270_EXPORT void lib3270_set_options(H3270 *hSession, LIB3270_OPTION opt);
 
-	LIB3270_EXPORT int	lib3270_set_color_type(H3270 *hSession, unsigned short colortype);
-	LIB3270_EXPORT unsigned short lib3270_get_color_type(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype);
+	LIB3270_EXPORT int lib3270_get_color_type(H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, const char *name);
 	LIB3270_EXPORT LIB3270_OPTION lib3270_parse_host_type(const char *name);

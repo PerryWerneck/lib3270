@@ -38,42 +38,50 @@
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
 /**
- * @brief Launch an action by name.
+ * @brief Get LIB3270 action table;
  *
  */
-LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
-{
+ LIB3270_EXPORT const LIB3270_ACTION_ENTRY * lib3270_get_action_table()
+ {
 	#undef DECLARE_LIB3270_ACTION
 	#undef DECLARE_LIB3270_CLEAR_SELECTION_ACTION
 	#undef DECLARE_LIB3270_KEY_ACTION
 	#undef DECLARE_LIB3270_CURSOR_ACTION
 	#undef DECLARE_LIB3270_FKEY_ACTION
 
-	#define DECLARE_LIB3270_ACTION( name, description )						{ #name, lib3270_ ## name			},
-	#define DECLARE_LIB3270_CLEAR_SELECTION_ACTION( name, description )		{ #name, lib3270_ ## name			},
-	#define DECLARE_LIB3270_KEY_ACTION( name, description )					{ #name, lib3270_ ## name			},
-	#define DECLARE_LIB3270_CURSOR_ACTION( name, description )				{ #name, lib3270_cursor_ ## name	},
+	#define DECLARE_LIB3270_ACTION( name, description )						{ #name, description, lib3270_ ## name			},
+	#define DECLARE_LIB3270_CLEAR_SELECTION_ACTION( name, description )		{ #name, description, lib3270_ ## name			},
+	#define DECLARE_LIB3270_KEY_ACTION( name, description )					{ #name, description, lib3270_ ## name			},
+	#define DECLARE_LIB3270_CURSOR_ACTION( name, description )				{ #name, description, lib3270_cursor_ ## name	},
 	#define DECLARE_LIB3270_FKEY_ACTION( name, description )				// name
 
-	static const struct _action
-	{
-		const char	* name;
-		int			  (*call)(H3270 *h);
-	} action[] =
+	static const LIB3270_ACTION_ENTRY actions[] =
 	{
 		#include <lib3270/action_table.h>
+		{ NULL, NULL, NULL }
 	};
 
+	return actions;
+ }
+
+
+/**
+ * @brief Launch an action by name.
+ *
+ */
+LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
+{
+	const LIB3270_ACTION_ENTRY *actions = lib3270_get_action_table();
 	size_t f;
 
 	CHECK_SESSION_HANDLE(hSession);
 
-	for(f=0; f< (sizeof(action)/sizeof(action[0])); f++)
+	for(f=0; actions[f].name; f++)
 	{
-		if(!strcasecmp(name,action[f].name))
+		if(!strcasecmp(name,actions[f].name))
 		{
-			lib3270_trace_event(hSession,"Action %s activated\n",name);
-			return action[f].call(hSession);
+			lib3270_trace_event(hSession,"Action: %s\n",actions[f].name);
+			return actions[f].call(hSession);
 		}
 
 	}

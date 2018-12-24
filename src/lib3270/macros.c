@@ -343,30 +343,6 @@
 		{NULL, NULL}
 	};
 
-	#undef DECLARE_LIB3270_ACTION
-	#undef DECLARE_LIB3270_CLEAR_SELECTION_ACTION
-	#undef DECLARE_LIB3270_KEY_ACTION
-	#undef DECLARE_LIB3270_CURSOR_ACTION
-	#undef DECLARE_LIB3270_FKEY_ACTION
-
-	static const struct _action
-	{
-		const char *name;
-		int (*exec)(H3270 *session);
-	}
-	action[] =
-	{
-		#define DECLARE_LIB3270_ACTION( name, description )  				{ #name, lib3270_ ## name			},
-		#define DECLARE_LIB3270_KEY_ACTION( name, description )				{ #name, lib3270_ ## name			},
-		#define DECLARE_LIB3270_CURSOR_ACTION( name, description )			{ #name, lib3270_cursor_ ## name	},
-		#define DECLARE_LIB3270_FKEY_ACTION( name, description )			/* */
-
-		#include <lib3270/action_table.h>
-
-		{NULL, NULL}
-	};
-
-
  	int argc;
  	int f;
 
@@ -387,11 +363,13 @@
 	if(argc == 1)
 	{
 		// Search for action
-		for(f=0;action[f].name;f++)
+		const LIB3270_ACTION_ENTRY *actions = lib3270_get_action_table();
+
+		for(f=0;actions[f].name;f++)
 		{
-			if(!strcasecmp(action[f].name,argv[0]))
+			if(!strcasecmp(actions[f].name,argv[0]))
 			{
-				int rc = action[f].exec(session);
+				int rc = actions[f].call(session);
 				return xs_buffer("%d",rc);
 			}
 		}

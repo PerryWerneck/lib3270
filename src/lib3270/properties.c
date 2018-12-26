@@ -142,6 +142,22 @@
 			NULL							//  Set value.
 		},
 
+		/*
+		{
+			"",						//  Property name.
+			N_( "" ),				//  Property description.
+			NULL,					//  Get value.
+			NULL					//  Set value.
+		},
+		*/
+
+		{
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		}
+
 	};
 
 	return properties;

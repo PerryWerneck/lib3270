@@ -421,7 +421,7 @@
 	 */
 	LIB3270_EXPORT int lib3270_get_height(H3270 *h);
 
-	LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h);
+	LIB3270_EXPORT int lib3270_get_length(H3270 *h);
 
 	/**
 	 * @brief Creates an empty TN3270 session.

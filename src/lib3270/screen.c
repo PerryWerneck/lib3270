@@ -217,7 +217,7 @@ static unsigned short calc_attrs(H3270 *session, int baddr, int fa_addr, int fa)
 	return a;
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h)
+LIB3270_EXPORT int lib3270_get_length(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
 	return h->rows * h->cols;

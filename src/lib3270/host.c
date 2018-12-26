@@ -238,9 +238,16 @@ LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
 	return hSession->host.full;
 }
 
+LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
+{
+    FAIL_IF_ONLINE(hSession);
+	strncpy(hSession->luname,luname,LIB3270_LUNAME_LENGTH);
+	return 0;
+}
+
 LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 {
-    CHECK_SESSION_HANDLE(h);
+    FAIL_IF_ONLINE(h);
 
 	if(n && n != h->host.full)
 	{
@@ -326,13 +333,13 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 
 					if(!(strcasecmp(var,"lu") && strcasecmp(var,"luname")))
 					{
-						strncpy(h->luname,val,LIB3270_LUNAME_LENGTH);
+						lib3270_set_luname(h, val);
+						// strncpy(h->luname,val,LIB3270_LUNAME_LENGTH);
 					}
 					else
 					{
 						lib3270_write_log(h,"","Ignoring invalid URL attribute \"%s\"",var);
 					}
-
 
 				}
 

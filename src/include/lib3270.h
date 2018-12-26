@@ -862,7 +862,9 @@
 	 * @return conected LU name or NULL if not connected.
 	 *
 	 */
-	LIB3270_EXPORT const char		* lib3270_get_luname(H3270 *h);
+	LIB3270_EXPORT const char		* lib3270_get_luname(H3270 *hSession);
+
+	LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname);
 
 	LIB3270_EXPORT int lib3270_has_active_script(H3270 *h);
 	LIB3270_EXPORT int lib3270_get_typeahead(H3270 *h);

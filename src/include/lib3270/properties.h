@@ -60,6 +60,13 @@
 
 	} LIB3270_STRING_PROPERTY;
 
+	/**
+	 * @brief Get lib3270 integer properties table.
+	 *
+	 * @return The properties table.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void);
 
 	/**
 	 * @brief Get lib3270 integer properties table.

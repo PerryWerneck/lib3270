@@ -51,6 +51,16 @@
 
 	} LIB3270_INT_PROPERTY;
 
+	typedef struct _lib3270_string_property
+	{
+		const char		* name;								///< @brief Property name.
+		const char		* description;						///< @brief Property description.
+		const char * (*get)(H3270 *hSession);				///< @brief Get value.
+		int (*set)(H3270 *hSession, const char * value);	///< @brief Set value.
+
+	} LIB3270_STRING_PROPERTY;
+
+
 	/**
 	 * @brief Get lib3270 integer properties table.
 	 *
@@ -60,7 +70,16 @@
 	LIB3270_EXPORT const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void);
 
 	/**
-	 * @brief Get lib3270 property by name.
+	 * @brief Get lib3270 string properties table.
+	 *
+	 * @return The properties table.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void);
+
+
+	/**
+	 * @brief Get lib3270 integer property by name.
 	 *
 	 * @param name		Nome of the property.
 	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
@@ -68,10 +87,10 @@
 	 * @return Property value or -1 in case of error (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_property(H3270 * hSession, const char *name, int seconds);
+	LIB3270_EXPORT int lib3270_get_int_property(H3270 * hSession, const char *name, int seconds);
 
 	/**
-	 * @brief Set lib3270 property by name.
+	 * @brief Set lib3270 integer property by name.
 	 *
 	 * @param name		Nome of the property.
 	 * @param value		New property value.
@@ -80,7 +99,19 @@
 	 * @return 0 if ok, -1 in case of error (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_property(H3270 * hSession, const char *name, int value, int seconds);
+	LIB3270_EXPORT int lib3270_set_int_property(H3270 * hSession, const char *name, int value, int seconds);
+
+	/**
+	 * @brief Set lib3270 integer property by name.
+	 *
+	 * @param name		Nome of the property.
+	 * @param value		New property value.
+	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
+	 *
+	 * @return 0 if ok, -1 in case of error (sets errno).
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_string_property(H3270 * hSession, const char *name, const char * value, int seconds);
 
 #ifdef __cplusplus
 	}

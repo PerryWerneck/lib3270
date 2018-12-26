@@ -331,6 +331,12 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 				{
 					*(val++) = 0;
 
+					if(lib3270_set_string_property(h, var, val, 0))
+					{
+						continue;
+					}
+
+					/*
 					if(!(strcasecmp(var,"lu") && strcasecmp(var,"luname")))
 					{
 						lib3270_set_luname(h, val);
@@ -340,6 +346,9 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 					{
 						lib3270_write_log(h,"","Ignoring invalid URL attribute \"%s\"",var);
 					}
+					*/
+
+					lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
 
 				}
 

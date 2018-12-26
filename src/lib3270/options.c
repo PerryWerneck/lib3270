@@ -176,6 +176,22 @@ LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, const char *name)
 		}
 	}
 
-	return EINVAL;
+	return errno = EINVAL;
 }
 
+LIB3270_EXPORT const char * lib3270_get_host_type(H3270 *hSession)
+{
+	size_t f;
+
+	for(f=0;f<(sizeof(host_type)/sizeof(host_type[0]));f++)
+	{
+		if(hSession->options & host_type[f].option)
+		{
+			return host_type[f].name;
+		}
+	}
+
+	errno = EINVAL;
+	return "";
+
+}

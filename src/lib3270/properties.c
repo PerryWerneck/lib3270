@@ -108,10 +108,10 @@
 		},
 
 		{
-			"3270",							//  Property name.
-			N_( "" ),						//  Property description.
-			lib3270_in_3270,				//  Get value.
-			NULL							//  Set value.
+			"tn3270",									//  Property name.
+			N_( "State is 3270, TN3270e or SSCP" ),		//  Property description.
+			lib3270_in_3270,							//  Get value.
+			NULL										//  Set value.
 		},
 
 		{

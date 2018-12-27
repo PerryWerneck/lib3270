@@ -617,7 +617,7 @@
 	 * @param h		Session handle.
 	 * @param s		String to input.
 	 *
-	 * @return Negative if error or number of processed characters.
+	 * @return -1 if error (sets errno) or number of processed characters.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_string(H3270 *h, const unsigned char *str);
@@ -625,7 +625,7 @@
 	#define lib3270_set_text_at(h,r,c,t) lib3270_set_string_at(h,r,c,t)
 
 	/**
-	 * @brief Set string at defined position.
+	 * @brief Set string at defined row/column.
 	 *
 	 * @param hSession	Session handle.
 	 * @param row		Row for the first character.
@@ -636,6 +636,18 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, const unsigned char *str);
+
+	/**
+	 * @brief Set string at defined adress.
+	 *
+	 * @param hSession	Session handle.
+	 * @param baddr		Adress for the first character.
+	 * @param str		String to set.
+	 *
+	 * @return Negative if error or number of processed characters.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str);
 
 	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str);
 
@@ -979,7 +991,7 @@
 	 * @return Contents at position if available, or NULL. Release it with lib3270_free()
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_get_text(H3270 *h, int offset, int len, char lf);
+	LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf);
 
 	/**
 	 * @brief Get text at requested position
@@ -993,7 +1005,7 @@
 	 * @return Contents at position if available, or NULL. Release it with lib3270_free()
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_get_text_at(H3270 *h, int row, int col, int len, char lf);
+	LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, int row, int col, int len, char lf);
 
 	/**
 	 * @brief Check for text at requested position

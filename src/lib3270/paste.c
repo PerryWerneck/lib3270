@@ -266,24 +266,51 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, cons
 	return rc;
 }
 
+LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str)
+{
+	int rc = -1;
+
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	if(hSession->kybdlock)
+	{
+		errno = EPERM;
+		return -1;
+	}
+
+	if(lib3270_set_cursor_address(hSession,baddr) < 0)
+		return -1;
+
+	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
+		lib3270_unselect(hSession);
+
+	hSession->cbk.suspend(hSession);
+	rc = set_string(hSession, str);
+	hSession->cbk.resume(hSession);
+
+	return rc;
+}
 
 /**
- * Set string at cursor position.
+ * @brief Set string at cursor position.
  *
  * @param hSession		Session handle.
  * @param str			String to set
  *
- * @return Number of characters inserted; <0 in case of error.
+ * @return -1 if error (sets errno) or number of processed characters.
  *
  */
 LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str)
 {
 	int rc;
 
-	CHECK_SESSION_HANDLE(hSession);
+	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(hSession->kybdlock)
-		return -EINVAL;
+	{
+		errno = EPERM;
+		return -1;
+	}
 
 	hSession->cbk.suspend(hSession);
 	rc = set_string(hSession, str);

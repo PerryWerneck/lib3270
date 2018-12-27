@@ -1151,8 +1151,9 @@
 	 * @param			Delay in milliseconds.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_set_unlock_delay(H3270 *session, unsigned short delay);
+	LIB3270_EXPORT void lib3270_set_unlock_delay(H3270 *session, int delay);
 
+	LIB3270_EXPORT int lib3270_get_unlock_delay(H3270 *session);
 
 	/**
 	 * @brief Alloc/Realloc memory buffer.

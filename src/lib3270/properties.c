@@ -129,10 +129,10 @@
 		},
 
 		{
-			"e",							//  Property name.
-			N_( "" ),						//  Property description.
-			lib3270_in_e,					//  Get value.
-			NULL							//  Set value.
+			"e",																				//  Property name.
+			N_( "Is terminal in the INITIAL_E state?" ),										//  Property description.
+			lib3270_in_e,																		//  Get value.
+			NULL																				//  Set value.
 		},
 
 		{
@@ -224,6 +224,12 @@
 			NULL										//  Set value.
 		},
 
+		{
+			"unlock_delay",																			//  Property name.
+			N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
+			lib3270_get_unlock_delay,																//  Get value.
+			lib3270_set_unlock_delay																//  Set value.
+		},
 
 		/*
 		{

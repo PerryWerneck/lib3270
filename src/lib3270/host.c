@@ -54,6 +54,7 @@
 
 #include <errno.h>
 #include <lib3270/internals.h>
+#include <lib3270/properties.h>
 
 #define RECONNECT_MS		2000	/* 2 sec before reconnecting to host */
 #define RECONNECT_ERR_MS	5000	/* 5 sec before reconnecting to host */
@@ -331,7 +332,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 				{
 					*(val++) = 0;
 
-					if(lib3270_set_string_property(h, var, val, 0))
+					if(lib3270_set_string_property(h, var, val, 0) == 0)
 					{
 						continue;
 					}

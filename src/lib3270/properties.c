@@ -277,6 +277,20 @@
 			lib3270_set_host_type						//  Set value.
 		},
 
+		{
+			"host_charset",								//  Property name.
+			N_( "" ),									//  Property description.
+			lib3270_get_host_charset,					//  Get value.
+			lib3270_set_host_charset					//  Set value.
+		},
+
+		{
+			"display_charset",							//  Property name.
+			N_( "" ),									//  Property description.
+			lib3270_get_display_charset,				//  Get value.
+			NULL										//  Set value.
+		},
+
 		/*
 		{
 			"",											//  Property name.

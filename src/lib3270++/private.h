@@ -240,8 +240,16 @@
 
 #endif // _WIN32
 
+				Request(Session &session);
+
 			public:
+
+				/// @brief Create a method call.
 				Request(Session &session, const char *method);
+
+				/// @brief Create a get/set property call.
+				Request(Session &session, const char *method, const char *property);
+
 				~Request();
 
 				Request & call();

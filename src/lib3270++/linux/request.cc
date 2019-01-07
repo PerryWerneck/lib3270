@@ -44,20 +44,56 @@
 
  namespace TN3270 {
 
-	IPC::Request::Request(Session &session, const char *method) {
-
+	IPC::Request::Request(Session &session) {
 		this->conn = session.conn;
 		this->msg.in = nullptr;
+		this->msg.out = nullptr;
+	}
 
-		this->msg.out = dbus_message_new_method_call(	session.name.c_str(),		// Destination
-														session.path.c_str(),		// Path
-														session.interface.c_str(),	// Interface
-														method						// method
-													);
+	IPC::Request::Request(Session &session, const char *method) : Request(session) {
+
+		this->msg.out = dbus_message_new_method_call(
+							session.name.c_str(),					// Destination
+							session.path.c_str(),					// Path
+							session.interface.c_str(),				// Interface
+							method									// Method
+						);
 
 		if(!msg.out) {
 			throw std::runtime_error("Can't create D-Bus Method Call");
 		}
+
+	}
+
+	IPC::Request::Request(Session &session, const char *method, const char *property) : Request(session) {
+
+		this->msg.out = dbus_message_new_method_call(
+							session.name.c_str(),					// Destination
+							session.path.c_str(),					// Path
+							"org.freedesktop.DBus.Properties",		// Interface
+							method									// Method
+						);
+
+		if(!msg.out) {
+			throw std::runtime_error("Can't create D-Bus Property Call");
+		}
+
+		//
+		// https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces-properties
+		// org.freedesktop.DBus.Properties.Get (in STRING interface_name,
+		// 								   in STRING property_name,
+		// 								   out VARIANT value);
+		// org.freedesktop.DBus.Properties.Set (in STRING interface_name,
+		// 								   in STRING property_name,
+		//
+		const char *interface_name = session.interface.c_str();
+
+		dbus_message_append_args(
+				this->msg.out,
+					DBUS_TYPE_STRING,&interface_name,
+					DBUS_TYPE_STRING,&method,
+					DBUS_TYPE_INVALID
+				);
 
 	}
 

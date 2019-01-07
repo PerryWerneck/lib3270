@@ -46,8 +46,11 @@
 		#include <winsock2.h>
 		#include <windows.h>
 		#include <ws2tcpip.h>
+	#else
+		#include <dbus/dbus.h>
 	#endif // WIN32
 
+	#include <iostream>
 	#include <mutex>
 	#include <lib3270++.h>
 	#include <lib3270/popup.h>
@@ -72,6 +75,31 @@
 #else
 	#define SYSTEM_CHARSET "UTF-8"
 #endif // WIN32
+
+#ifdef DEBUG
+
+	inline void console(std::ostream &out) {
+		out << std::endl;
+	}
+
+	template<typename T, typename... Targs>
+	void console(std::ostream &out, T value, Targs... Fargs) {
+		out << value;
+		console(out, Fargs...);
+	}
+
+	template<typename T, typename... Targs>
+	void log(T value, Targs... Fargs) {
+		console(std::clog,value,Fargs...);
+	}
+
+	#define debug(...) log(__FILE__, "(", __LINE__, ") ", __VA_ARGS__);
+
+#else
+
+	#define debug(...) /* __VA_ARGS__ */
+
+#endif
 
 	namespace TN3270 {
 
@@ -180,6 +208,8 @@
 		/// @brief IPC Based acess (Access and active instance of pw3270 or pw3270d)
 		namespace IPC {
 
+			class Session;
+
 			/// @brief PW3270 IPC Request/Response.
 			class Request {
 			private:
@@ -203,21 +233,36 @@
 				static DWORD pack(std::vector<DataBlock *> &args, uint8_t * outBuffer, size_t szBuffer);
 #else
 
+				DBusMessage		* msg;
+				DBusConnection	* conn;
+
 #endif // _WIN32
 
 			public:
-				Request(const char *name);
+				Request(Session &session, const char *method);
+
+				Request & call();
+				Request & push(const char *arg);
 
 			};
 
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:
+
+				friend class Request;
+
 #ifdef _WIN32
 				/// @brief Pipe Handle.
 				HANDLE hPipe;
 #else
 
+				DBusConnection	* conn;
+				std::string		  name;	///< @brief D-Bus Object name.
+				std::string		  path;	///< @brief D-Bus Object path.
+
 #endif // _WIN32
+
+				void call(Request &request);
 
 			public:
 
@@ -255,7 +300,8 @@
 				TN3270::Session & pop(int baddr, std::string &text) override;
 				TN3270::Session & pop(int row, int col, std::string &text) override;
 				TN3270::Session & pop(std::string &text) override;
-			}
+
+			};
 
 		}
 

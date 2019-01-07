@@ -50,6 +50,7 @@
 		<Unit filename="abstract.cc" />
 		<Unit filename="events.cc" />
 		<Unit filename="host.cc" />
+		<Unit filename="ipc/session.cc" />
 		<Unit filename="local/events.cc" />
 		<Unit filename="local/session.cc" />
 		<Unit filename="private.h" />

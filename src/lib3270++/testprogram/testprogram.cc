@@ -45,14 +45,16 @@
 
  int main(int argc, const char *argv[]) {
 
-	TN3270::Host host;
+	TN3270::Host host("pw3270:a");
 
+	/*
 	host.connect(getenv("LIB3270_DEFAULT_HOST"));
 	cout << host << endl;
 
 	host << TN3270::ENTER;
 
 	cout << host << endl;
+	*/
 
 	return 0;
  }

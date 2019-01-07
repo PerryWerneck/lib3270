@@ -177,6 +177,88 @@
 
 		}
 
+		/// @brief IPC Based acess (Access and active instance of pw3270 or pw3270d)
+		namespace IPC {
+
+			/// @brief PW3270 IPC Request/Response.
+			class Request {
+			private:
+
+#ifdef _WIN32
+				#pragma pack(1)
+				struct DataBlock {
+					uint8_t	  type;
+					size_t	  sz;
+				};
+				#pragma pack()
+
+				std::vector<DataBlock *> input;
+
+				std::vector<DataBlock *> output;
+
+				/// @brief Descompacta argumentos recebidos.
+				static void unpack(std::vector<DataBlock *> &args, const uint8_t * buffer, size_t szBuffer);
+
+				/// @brief Compacta array de argumentos em um bloco de dados.
+				static DWORD pack(std::vector<DataBlock *> &args, uint8_t * outBuffer, size_t szBuffer);
+#else
+
+#endif // _WIN32
+
+			public:
+				Request(const char *name);
+
+			};
+
+			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
+			private:
+#ifdef _WIN32
+				/// @brief Pipe Handle.
+				HANDLE hPipe;
+#else
+
+#endif // _WIN32
+
+			public:
+
+				Session(const char *id);
+				virtual ~Session();
+
+				// Connect/disconnect
+				void connect(const char *url) override;
+				void disconnect() override;
+
+				// Wait for session state.
+				void waitForReady(time_t timeout = 5)  throw() override;
+
+				// Gets
+				std::string	toString(int baddr, size_t len, char lf) const override;
+				std::string	toString(int row, int col, size_t sz, char lf) const override;
+
+				ProgramMessage getProgramMessage() const override;
+
+				ConnectionState getConnectionState() const override;
+
+				void setCursorPosition(unsigned short addr);
+				void setCursorPosition(unsigned short row, unsigned short col);
+
+				/// @brief Set field at current posicion, jumps to next writable field.
+				TN3270::Session & push(const char *text) override;
+
+				TN3270::Session & push(int baddr, const std::string &text) override;
+				TN3270::Session & push(int row, int col, const std::string &text) override;
+				TN3270::Session & push(const PFKey key) override;
+				TN3270::Session & push(const PAKey key) override;
+				TN3270::Session & push(const Action action) override;
+
+				// Get contents.
+				TN3270::Session & pop(int baddr, std::string &text) override;
+				TN3270::Session & pop(int row, int col, std::string &text) override;
+				TN3270::Session & pop(std::string &text) override;
+			}
+
+		}
+
 	}
 
 #endif // PRIVATE_H_INCLUDED

@@ -89,6 +89,7 @@
 		this->name += ".";
 		this->name += (sep+1);
 		this->path = "/br/com/bb/tn3270/session";
+		this->interface = "br.com.bb.tn3270.session";
 
 		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
 

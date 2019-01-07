@@ -232,14 +232,17 @@
 				/// @brief Compacta array de argumentos em um bloco de dados.
 				static DWORD pack(std::vector<DataBlock *> &args, uint8_t * outBuffer, size_t szBuffer);
 #else
-
-				DBusMessage		* msg;
+				struct {
+					DBusMessage	* in;
+					DBusMessage	* out;
+				} msg;
 				DBusConnection	* conn;
 
 #endif // _WIN32
 
 			public:
 				Request(Session &session, const char *method);
+				~Request();
 
 				Request & call();
 				Request & push(const char *arg);
@@ -257,8 +260,9 @@
 #else
 
 				DBusConnection	* conn;
-				std::string		  name;	///< @brief D-Bus Object name.
-				std::string		  path;	///< @brief D-Bus Object path.
+				std::string		  name;			///< @brief D-Bus Object name.
+				std::string		  path;			///< @brief D-Bus Object path.
+				std::string		  interface;	///< @brief D-Bus interface.
 
 #endif // _WIN32
 

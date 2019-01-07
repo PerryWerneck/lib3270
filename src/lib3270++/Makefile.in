@@ -32,7 +32,7 @@ SOURCES= \
 	$(wildcard *.cc) \
 	$(wildcard local/*.cc) \
 	$(wildcard ipc/*.cc) \
-        $(wildcard @OSNAME@/*.c) \
+        $(wildcard @OSNAME@/*.cc) \
         $(wildcard @OSNAME@/*.rc)
 
 TEST_SOURCES= \

@@ -45,7 +45,7 @@
 
  int main(int argc, const char *argv[]) {
 
-	TN3270::Host host{"pw3270:a"};
+	TN3270::Host host; //{"pw3270:a"};
 
 	cout
 		<< "Version: " << host.getVersion()

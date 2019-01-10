@@ -38,9 +38,10 @@
 
  #include "../private.h"
  #include <lib3270/actions.h>
+ #include <lib3270/properties.h>
+ #include <cstring>
 
  extern "C" {
-	 #include <lib3270/actions.h>
 	 #include <lib3270/session.h>
  }
 
@@ -149,11 +150,68 @@
 	}
 
 	void Local::Session::getProperty(const char *name, int &value) const {
-		throw std::system_error(ENOTSUP, std::system_category());
+
+		const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
+		for(size_t ix = 0; intprop[ix].name; ix++) {
+
+			if(!strcasecmp(name,intprop[ix].name)) {
+
+				std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+				value = intprop[ix].get(hSession);
+
+				if(value < 0 && errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+
+			}
+
+		}
+
+		throw std::system_error(ENOENT, std::system_category());
+
 	}
 
 	void Local::Session::getProperty(const char *name, std::string &value) const {
-		throw std::system_error(ENOTSUP, std::system_category());
+
+		const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
+
+		for(size_t ix = 0; strprop[ix].name; ix++) {
+
+			if(!strcasecmp(name,strprop[ix].name)) {
+
+				std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+				// Found it!
+				const char * str = strprop[ix].get(hSession);
+
+				if(str) {
+					value.assign(str);
+					return;
+				}
+
+				throw std::system_error(errno, std::system_category());
+
+			}
+
+		}
+
+		throw std::system_error(ENOENT, std::system_category());
+	}
+
+	void Local::Session::getProperty(const char *name, bool &value) const {
+
+		LIB3270_TOGGLE toggle = lib3270_get_toggle_id(name);
+		if(toggle != (LIB3270_TOGGLE) -1) {
+
+			// Is a Tn3270 toggle, get it!
+			std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+			value = lib3270_get_toggle(hSession,toggle);
+
+		}
+
+		throw std::system_error(ENOENT, std::system_category());
 	}
 
 	ProgramMessage Local::Session::getProgramMessage() const {

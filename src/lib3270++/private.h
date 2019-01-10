@@ -179,6 +179,7 @@
 				// Get properties.
 				void getProperty(const char *name, int &value) const override;
 				void getProperty(const char *name, std::string &value) const override;
+				void getProperty(const char *name, bool &value) const override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;
@@ -312,6 +313,7 @@
 				// Get properties.
 				void getProperty(const char *name, int &value) const override;
 				void getProperty(const char *name, std::string &value) const override;
+				void getProperty(const char *name, bool &value) const override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;

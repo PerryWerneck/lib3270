@@ -297,6 +297,20 @@
 			NULL										//  Set value.
 		},
 
+		{
+			"version",									//  Property name.
+			N_( "lib3270 version" ),					//  Property description.
+			lib3270_get_version,						//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
+			"revision",									//  Property name.
+			N_( "lib3270 revision" ),					//  Property description.
+			lib3270_get_revision,						//  Get value.
+			NULL										//  Set value.
+		},
+
 		/*
 		{
 			"",											//  Property name.

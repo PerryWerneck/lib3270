@@ -235,6 +235,10 @@
 
 	}
 
+	void IPC::Session::getProperty(const char *name, bool &value) const {
+		throw std::system_error(ENOENT, std::system_category());
+	}
+
 	/// @brief Get lib3270 version.
 	std::string IPC::Session::getVersion() const {
 

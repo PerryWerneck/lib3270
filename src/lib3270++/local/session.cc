@@ -298,6 +298,15 @@
 
 	}
 
+	// Get properties.
+	std::string Local::Session::getVersion() const {
+		return lib3270_get_version();
+	}
+
+	std::string Local::Session::getRevision() const {
+		return lib3270_get_revision();
+	}
+
 
  }
 

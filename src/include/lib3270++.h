@@ -212,6 +212,10 @@
 				return toString();
 			}
 
+			// Get properties.
+			virtual std::string getVersion() const = 0;
+			virtual std::string getRevision() const = 0;
+
 			virtual ProgramMessage getProgramMessage() const = 0;
 			inline operator ProgramMessage() const {
 				return getProgramMessage();
@@ -324,6 +328,18 @@
 			/// @brief Set cursor position.
 			inline void setCursorPosition(unsigned short row, unsigned short col) {
 				session->setCursorPosition(row,col);
+			}
+
+			// Get properties
+
+			/// @brief Get lib3270 version.
+			inline std::string getVersion() const {
+				return session->getVersion();
+			}
+
+			/// @brief Get lib3270 revision.
+			std::string getRevision() const {
+				return session->getRevision();
 			}
 
 			// Set contents.

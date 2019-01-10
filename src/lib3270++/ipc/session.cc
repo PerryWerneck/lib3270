@@ -120,8 +120,7 @@
     }
 
 	void IPC::Session::disconnect() {
-		Request request(*this,"disconnect");
-		request.call();
+		Request(*this,"disconnect").call();
 	}
 
 	// Wait for session state.
@@ -210,6 +209,23 @@
 	void IPC::Session::setCursorPosition(unsigned short row, unsigned short col) {
 
 
+	}
+
+	/// @brief Get lib3270 version.
+	std::string IPC::Session::getVersion() const {
+
+		string rc;
+
+		Request request{*this,false,"version"};
+		request.call().pop(rc);
+
+		return rc;
+	}
+
+	/// @brief Get lib3270 revision.
+	std::string IPC::Session::getRevision() const {
+		throw std::system_error(ENOTSUP, std::system_category());
+		return "";
 	}
 
  }

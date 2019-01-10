@@ -176,6 +176,10 @@
 				// Wait for session state.
 				void waitForReady(time_t timeout = 5)  throw() override;
 
+				// Get properties.
+				std::string getVersion() const override;
+				std::string getRevision() const override;
+
 				// Gets
 				std::string	toString(int baddr, size_t len, char lf) const override;
 				std::string	toString(int row, int col, size_t sz, char lf) const override;
@@ -233,27 +237,41 @@
 				static DWORD pack(std::vector<DataBlock *> &args, uint8_t * outBuffer, size_t szBuffer);
 #else
 				struct {
-					DBusMessage	* in;
-					DBusMessage	* out;
+					DBusMessage		* in;
+					DBusMessage		* out;
+					DBusMessageIter	  iter;
+
 				} msg;
 				DBusConnection	* conn;
 
 #endif // _WIN32
 
-				Request(Session &session);
+				Request(const Session &session);
 
 			public:
 
 				/// @brief Create a method call.
-				Request(Session &session, const char *method);
+				Request(const Session &session, const char *method);
 
 				/// @brief Create a get/set property call.
-				Request(Session &session, const char *method, const char *property);
+				///
+				/// @param session	Session object.
+				/// @param isSet	true if this is a setProperty call.
+				/// @param property	Property name.
+				//
+				Request(const Session &session, bool isSet, const char *property);
 
 				~Request();
 
 				Request & call();
+
+				// Push values
+
 				Request & push(const char *arg);
+
+				// Pop values
+
+				Request & pop(std::string &value);
 
 			};
 
@@ -287,6 +305,10 @@
 
 				// Wait for session state.
 				void waitForReady(time_t timeout = 5)  throw() override;
+
+				// Get properties.
+				std::string getVersion() const override;
+				std::string getRevision() const override;
 
 				// Gets
 				std::string	toString(int baddr, size_t len, char lf) const override;

@@ -44,13 +44,13 @@
 
  namespace TN3270 {
 
-	IPC::Request::Request(Session &session) {
+	IPC::Request::Request(const Session &session) {
 		this->conn = session.conn;
 		this->msg.in = nullptr;
 		this->msg.out = nullptr;
 	}
 
-	IPC::Request::Request(Session &session, const char *method) : Request(session) {
+	IPC::Request::Request(const Session &session, const char *method) : Request(session) {
 
 		this->msg.out = dbus_message_new_method_call(
 							session.name.c_str(),					// Destination
@@ -65,13 +65,23 @@
 
 	}
 
-	IPC::Request::Request(Session &session, const char *method, const char *property) : Request(session) {
+	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session) {
 
+/*
+		dbus-send \
+			--session \
+			--dest=br.com.bb.pw3270.a\
+			--print-reply \
+			"/br/com/bb/tn3270/session" \
+			"org.freedesktop.DBus.Properties.Get" \
+			string:br.com.bb.tn3270.session \
+			string:${1}
+*/
 		this->msg.out = dbus_message_new_method_call(
 							session.name.c_str(),					// Destination
 							session.path.c_str(),					// Path
 							"org.freedesktop.DBus.Properties",		// Interface
-							method									// Method
+							(isSet ? "Set" : "Get")
 						);
 
 		if(!msg.out) {
@@ -91,7 +101,7 @@
 		dbus_message_append_args(
 				this->msg.out,
 					DBUS_TYPE_STRING,&interface_name,
-					DBUS_TYPE_STRING,&method,
+					DBUS_TYPE_STRING,&property,
 					DBUS_TYPE_INVALID
 				);
 
@@ -123,6 +133,10 @@
 			throw std::runtime_error(message.c_str());
 		}
 
+		dbus_message_iter_init(msg.in, &msg.iter);
+
+		debug(__FUNCTION__," got a valid response");
+
 		return *this;
 
 	}
@@ -131,6 +145,45 @@
 		dbus_message_append_args(this->msg.out,DBUS_TYPE_STRING,&arg,DBUS_TYPE_INVALID);
 		return *this;
 	}
+
+	IPC::Request & IPC::Request::pop(std::string &value) {
+
+		const char * str = "";
+
+		if(dbus_message_iter_get_arg_type(&msg.iter) == DBUS_TYPE_STRING) {
+
+			dbus_message_iter_get_basic(&msg.iter, &str);
+
+		} else if(dbus_message_iter_get_arg_type(&msg.iter) == DBUS_TYPE_VARIANT) {
+
+			DBusMessageIter sub;
+			int current_type;
+
+			dbus_message_iter_recurse(&msg.iter, &sub);
+
+            while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
+
+                if (current_type == DBUS_TYPE_STRING) {
+                    dbus_message_iter_get_basic(&sub, &str);
+                    break;
+                }
+                dbus_message_iter_next(&sub);
+            }
+
+		} else {
+
+			debug("Argument type is ", ((char) dbus_message_iter_get_arg_type(&msg.iter)) );
+			throw std::runtime_error("Expected an string data type");
+
+		}
+
+		value.assign(str);
+
+		debug(__FUNCTION__,"= \"",str,"\"");
+
+		return *this;
+	}
+
 
  }
 

@@ -332,18 +332,6 @@ if test "$app_cv_self_signed_certs" == "yes"; then
 	AC_DEFINE(SSL_ALLOW_SELF_SIGNED_CERT)
 fi
 
-dnl AC_ARG_WITH([ssl-crl-check],
-dnl 	[AS_HELP_STRING([--with-ssl-crl-check], [enable validation of the certificate revogation list in TN3270S connections])],
-dnl [
-dnl 	app_cv_enable_crl_check="$withval"
-dnl ],[
-dnl 	app_cv_enable_crl_check="no"
-dnl ])
-dnl 
-dnl if test "$app_cv_enable_crl_check" == "yes"; then
-dnl 	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
-dnl fi
-
 dnl ---------------------------------------------------------------------------
 dnl Check for pic
 dnl ---------------------------------------------------------------------------

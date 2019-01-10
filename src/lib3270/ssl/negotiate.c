@@ -47,21 +47,88 @@
 
 #endif
 
-#include "private.h"
+#include "../private.h"
 #include <errno.h>
 #include <lib3270.h>
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>
 #include "trace_dsc.h"
 
-#if defined(HAVE_LIBSSL)
-
-static int ssl_3270_ex_index = -1;	/**< Index of h3270 handle in SSL session */
-#endif // HAVE_LIBSSL
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 #if defined(HAVE_LIBSSL)
+
+ /**
+  * @brief Index of h3270 handle in SSL session.
+  *
+  */
+ int ssl_3270_ex_index = -1;
+
+/**
+ * @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
+ *
+ */
+ SSL_CTX * ssl_ctx = NULL;
+
+/**
+ * @brief Initialize openssl session.
+ *
+ * @param hSession lib3270 session handle.
+ *
+ * @return 0 if ok, non zero if fails.
+ *
+ */
+int ssl_init(H3270 *hSession)
+{
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+	hSession->ssl.error = 0;
+	hSession->ssl.host = False;
+
+	if(ssl_ctx_init()) {
+
+		hSession->ssl.error = ERR_get_error();
+
+		lib3270_popup_dialog(
+				hSession,
+				LIB3270_NOTIFY_ERROR,
+				N_( "Security error" ),
+				N_( "SSL initialization has failed" ),
+				"%s",ERR_reason_error_string(hSession->ssl.error)
+			);
+
+		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+
+		hSession->ssl.host = False;
+		return -1;
+	}
+
+	if(hSession->ssl.con)
+		SSL_free(hSession->ssl.con);
+
+	hSession->ssl.con = SSL_new(ssl_ctx);
+	if(hSession->ssl.con == NULL)
+	{
+		hSession->ssl.error = ERR_get_error();
+
+		lib3270_popup_dialog(
+				hSession,
+				LIB3270_NOTIFY_ERROR,
+				N_( "Security error" ),
+				N_( "Cant create a new SSL structure for current connection." ),
+				N_( "%s" ),ERR_lib_error_string(hSession->ssl.error)
+		);
+
+		return -1;
+	}
+
+	SSL_set_ex_data(hSession->ssl.con,ssl_3270_ex_index,(char *) hSession);
+
+//	SSL_set_verify(session->ssl_con, SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
+	SSL_set_verify(hSession->ssl.con, 0, NULL);
+
+	return 0;
+}
+
 int ssl_negotiate(H3270 *hSession)
 {
 	int rv;
@@ -80,7 +147,7 @@ int ssl_negotiate(H3270 *hSession)
 	}
 
 	/* Set up the TLS/SSL connection. */
-	if(SSL_set_fd(hSession->ssl_con, hSession->sock) != 1)
+	if(SSL_set_fd(hSession->ssl.con, hSession->sock) != 1)
 	{
 		trace_dsn(hSession,"%s","SSL_set_fd failed!\n");
 
@@ -97,20 +164,20 @@ int ssl_negotiate(H3270 *hSession)
 	}
 
 	trace("%s: Running SSL_connect",__FUNCTION__);
-	rv = SSL_connect(hSession->ssl_con);
+	rv = SSL_connect(hSession->ssl.con);
 	trace("%s: SSL_connect exits with rc=%d",__FUNCTION__,rv);
 
 	if (rv != 1)
 	{
-		int 		  ssl_error =  SSL_get_error(hSession->ssl_con,rv);
+		int 		  ssl_error =  SSL_get_error(hSession->ssl.con,rv);
 		const char	* msg 		= "";
 
-		if(ssl_error == SSL_ERROR_SYSCALL && hSession->ssl_error)
-			ssl_error = hSession->ssl_error;
+		if(ssl_error == SSL_ERROR_SYSCALL && hSession->ssl.error)
+			ssl_error = hSession->ssl.error;
 
 		msg = ERR_lib_error_string(ssl_error);
 
-		trace_dsn(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl_error));
+		trace_dsn(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
 		lib3270_popup_dialog(
 				hSession,
@@ -126,19 +193,13 @@ int ssl_negotiate(H3270 *hSession)
 
 	/* Success. */
 	X509 * peer = NULL;
-	rv = SSL_get_verify_result(hSession->ssl_con);
+	rv = SSL_get_verify_result(hSession->ssl.con);
 
 	switch(rv)
 	{
 	case X509_V_OK:
-		peer = SSL_get_peer_certificate(hSession->ssl_con);
-/*
-#if defined(SSL_ENABLE_CRL_CHECK)
-		trace_dsn(hSession,"TLS/SSL negotiated connection complete with CRL validation. Peer certificate %s presented.\n", peer ? "was" : "was not");
-#else
-		trace_dsn(hSession,"TLS/SSL negotiated connection complete without CRL validation. Peer certificate %s presented.\n", peer ? "was" : "was not");
-#endif // SSL_ENABLE_CRL_CHECK
-*/
+		peer = SSL_get_peer_certificate(hSession->ssl.con);
+		trace_dsn(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
 		break;
 
 	case X509_V_ERR_UNABLE_TO_GET_CRL:
@@ -153,7 +214,7 @@ int ssl_negotiate(H3270 *hSession)
 		return -1;
 
 	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
-		peer = SSL_get_peer_certificate(hSession->ssl_con);
+		peer = SSL_get_peer_certificate(hSession->ssl.con);
 		trace_dsn(hSession,"%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n" );
 
 #ifdef SSL_ALLOW_SELF_SIGNED_CERT
@@ -178,7 +239,7 @@ int ssl_negotiate(H3270 *hSession)
 	{
 		char				  buffer[4096];
 		int 				  alg_bits		= 0;
-		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(hSession->ssl_con);
+		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(hSession->ssl.con);
 
 		trace_dsn(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
 		SSL_CIPHER_get_bits(cipher, &alg_bits);
@@ -225,169 +286,6 @@ int ssl_negotiate(H3270 *hSession)
 
 	return 0;
 }
-#endif // HAVE_LIBSSL
-
-#if defined(HAVE_LIBSSL) /*[*/
-
-/**
- * Initializa openssl library.
- *
- * @param hSession lib3270 session handle.
- *
- * @return 0 if ok, non zero if fails.
- *
- */
-int ssl_init(H3270 *hSession)
-{
-	static SSL_CTX *ssl_ctx = NULL;
-
-	hSession->ssl_error = 0;
-	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-
-	if(ssl_ctx == NULL)
-	{
-		lib3270_write_log(hSession,"SSL","%s","Initializing SSL context");
-
-		SSL_load_error_strings();
-		SSL_library_init();
-
-		ssl_ctx = SSL_CTX_new(SSLv23_method());
-		if(ssl_ctx == NULL)
-		{
-			int ssl_error = ERR_get_error();
-
-			lib3270_popup_dialog(
-					hSession,
-					LIB3270_NOTIFY_ERROR,
-					N_( "Security error" ),
-					N_( "SSL_CTX_new() has failed" ),
-					"%s",ERR_reason_error_string(ssl_error)
-				);
-
-			set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-
-			hSession->ssl_host = False;
-			return -1;
-		}
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
-		SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
-		SSL_CTX_set_default_verify_paths(ssl_ctx);
-
-#if defined(_WIN32)
-		{
-			HKEY hKey = 0;
-
-			if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\" PACKAGE_NAME,0,KEY_QUERY_VALUE,&hKey) == ERROR_SUCCESS)
-			{
-				char			data[4096];
-				unsigned long	datalen	= sizeof(data);		// data field length(in), data returned length(out)
-				unsigned long	datatype;					// #defined in winnt.h (predefined types 0-11)
-
-				if(RegQueryValueExA(hKey,"datadir",NULL,&datatype,(LPBYTE) data,&datalen) == ERROR_SUCCESS)
-				{
-					strncat(data,"\\certs",4095);
-
-					trace("Loading certs from \"%s\"",data);
-					if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
-					{
-						char buffer[4096];
-						int ssl_error = ERR_get_error();
-
-						snprintf(buffer,4095,_("Cant set default locations for trusted CA certificates to\n%s"),data);
-
-						lib3270_popup_dialog(
-								hSession,
-								LIB3270_NOTIFY_ERROR,
-								N_( "Security error" ),
-								buffer,
-								N_( "%s" ),ERR_lib_error_string(ssl_error)
-										);
-					}
-				}
-				RegCloseKey(hKey);
-			}
-
-
-		}
-#else
-		static const char * ssldir[] =
-		{
-#ifdef DATAROOTDIR
-			DATAROOTDIR "/" PACKAGE_NAME "/certs",
-#endif // DATAROOTDIR
-#ifdef SYSCONFDIR
-			SYSCONFDIR "/ssl/certs",
-			SYSCONFDIR "/certs",
-#endif
-			"/etc/ssl/certs"
-		};
-
-		size_t f;
-
-		for(f = 0;f < sizeof(ssldir) / sizeof(ssldir[0]);f++)
-		{
-			if(!access(ssldir[f],R_OK) && SSL_CTX_load_verify_locations(ssl_ctx,NULL,ssldir[f]))
-			{
-				trace_dsn(hSession,"Checking %s for trusted CA certificates.\n",ssldir[f]);
-				break;
-			}
-		}
-
-#endif // _WIN32
-
-#if defined(SSL_ENABLE_CRL_CHECK)
-		// Set up CRL validation
-		// https://stackoverflow.com/questions/4389954/does-openssl-automatically-handle-crls-certificate-revocation-lists-now
-		X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-
-		// Enable CRL checking
-		X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-		X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
-		X509_STORE_set1_param(store, param);
-		X509_VERIFY_PARAM_free(param);
-
-		// X509_STORE_free(store);
-
-		trace_dsn(hSession,"CRL CHECK is enabled.\n");
-
-#else
-
-		trace_dsn(hSession,"CRL CHECK is disabled.\n");
-
-#endif // SSL_ENABLE_CRL_CHECK
-
-		ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
-
-
-	}
-
-	if(hSession->ssl_con)
-		SSL_free(hSession->ssl_con);
-
-	hSession->ssl_con = SSL_new(ssl_ctx);
-	if(hSession->ssl_con == NULL)
-	{
-		int ssl_error = ERR_get_error();
-
-		lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_ERROR,
-				N_( "Security error" ),
-				N_( "Cant create a new SSL structure for current connection." ),
-				N_( "%s" ),ERR_lib_error_string(ssl_error)
-		);
-
-		hSession->ssl_host = False;
-		return -1;
-	}
-
-	SSL_set_ex_data(hSession->ssl_con,ssl_3270_ex_index,(char *) hSession);
-
-//	SSL_set_verify(session->ssl_con, SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
-	SSL_set_verify(hSession->ssl_con, 0, NULL);
-
-	return 0;
-}
 
 /* Callback for tracing protocol negotiation. */
 void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
@@ -423,7 +321,7 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 
 			if(e != 0)
 			{
-				hSession->ssl_error = e;
+				hSession->ssl.error = e;
 				(void) ERR_error_string_n(e, err_buf, 1023);
 			}
 #if defined(_WIN32)
@@ -478,37 +376,3 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 
 #endif /*]*/
 
-LIB3270_EXPORT int lib3270_is_secure(H3270 *hSession)
-{
-	return lib3270_get_secure(hSession) == LIB3270_SSL_SECURE;
-}
-
-LIB3270_EXPORT long lib3270_get_SSL_verify_result(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl_con)
-		return SSL_get_verify_result(hSession->ssl_con);
-#endif // HAVE_LIBSSL
-	return -1;
-}
-
-LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_secure(H3270 *session)
-{
-	CHECK_SESSION_HANDLE(session);
-
-	return session->secure;
-}
-
-void set_ssl_state(H3270 *session, LIB3270_SSL_STATE state)
-{
-	CHECK_SESSION_HANDLE(session);
-
-	if(state == session->secure)
-		return;
-
-	session->secure = state;
-	trace_dsn(session,"SSL state changes to %d\n",(int) state);
-
-	session->cbk.update_ssl(session,session->secure);
-}

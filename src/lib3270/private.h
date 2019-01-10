@@ -38,6 +38,10 @@
 #include <lib3270/charset.h>
 #include "api.h"
 
+#if defined(HAVE_LIBSSL)
+	#include <openssl/ssl.h>
+#endif // HAVE_LIBSSL
+
 #if defined(X3270_TN3270E) && !defined(X3270_ANSI) /*[*/
 		#define X3270_ANSI	1	/* RFC2355 requires NVT mode */
 #endif /*]*/
@@ -341,8 +345,6 @@ struct _h3270
 
 	char					* oversize;
 
-	LIB3270_SSL_STATE		  secure;
-
 	struct lib3270_toggle
 	{
 		char value;																/**< toggle value */
@@ -406,7 +408,6 @@ struct _h3270
 	char 					  no_login_host;
 	char 					  non_tn3270e_host;
 	char 					  passthru_host;
-	char 					  ssl_host;
 	char 					  ever_3270;
 
 	// ctlr.c
@@ -602,8 +603,13 @@ struct _h3270
 	void 					* ns_exception_id;
 
 	// SSL Data (Always defined to maintain the structure size)
-	unsigned long 			  ssl_error;
-	SSL 					* ssl_con;
+	struct
+	{
+		char				  host;
+		LIB3270_SSL_STATE	  state;
+		unsigned long 		  error;
+		SSL 				* con;
+	} ssl;
 
 	timeout_t				* timeouts;
 	input_t 				* inputs;
@@ -649,6 +655,7 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 #if defined(HAVE_LIBSSL) /*[*/
 
+	LIB3270_INTERNAL int	ssl_ctx_init(void);
 	LIB3270_INTERNAL int	ssl_init(H3270 *session);
 	LIB3270_INTERNAL int	ssl_negotiate(H3270 *hSession);
 	LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
@@ -661,6 +668,18 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	#endif /*]*/
 
 	LIB3270_INTERNAL void ssl_info_callback(INFO_CONST SSL *s, int where, int ret);
+
+	/**
+	 * @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
+	 *
+	 */
+	LIB3270_INTERNAL SSL_CTX * ssl_ctx;
+
+	/**
+	 * @brief Index of h3270 handle in SSL session.
+	 *
+	 */
+	LIB3270_INTERNAL int ssl_3270_ex_index;
 
 #endif /*]*/
 

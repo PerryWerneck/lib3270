@@ -144,7 +144,7 @@ void lib3270_set_disconnected(H3270 *hSession)
 
 	hSession->cstate	= LIB3270_NOT_CONNECTED;
 	hSession->starting	= 0;
-	hSession->secure	= LIB3270_SSL_UNDEFINED;
+	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;
 
 	set_status(hSession,OIA_FLAG_UNDERA,False);
 
@@ -155,7 +155,7 @@ void lib3270_set_disconnected(H3270 *hSession)
 	if(hSession->cbk.update_connect)
 		hSession->cbk.update_connect(hSession,0);
 
-	hSession->cbk.update_ssl(hSession,hSession->secure);
+	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 
 }
 

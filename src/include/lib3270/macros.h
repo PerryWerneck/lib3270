@@ -30,7 +30,10 @@
  *
  */
 
- #define LIB3270_MACRO( name )  						LIB3270_EXPORT char * lib3270_macro_ ## name (H3270 *hSession, int argc, const char **argv)
+ #error Deprecated
 
- LIB3270_EXPORT char * lib3270_run_macro(H3270 *session, const char **argv);
+
+ // #define LIB3270_MACRO( name )  						LIB3270_EXPORT char * lib3270_macro_ ## name (H3270 *hSession, int argc, const char **argv)
+
+// LIB3270_EXPORT char * lib3270_run_macro(H3270 *session, const char **argv);
 

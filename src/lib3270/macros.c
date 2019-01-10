@@ -30,6 +30,7 @@
  *
  */
 
+/*
 #ifdef WIN32
 	#include <winsock2.h>
 	#include <windows.h>
@@ -46,17 +47,21 @@
  #include "private.h"
  #include "utilc.h"
  #include "api.h"
+ */
 
 /*--[ Structs & Defines ]----------------------------------------------------------------------------*/
 
+/*
  struct macro_list
  {
  	const char *name;
  	char *(*exec)(H3270 *session, int argc, const char **argv);
  };
+*/
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+/*
  static const char * get_state(H3270 *h)
  {
  	#define DECLARE_XLAT_STATE(x) { x, #x }
@@ -106,33 +111,6 @@
 		buffer = lib3270_get_string_at_address(hSession,0,-1,'\n');
 		break;
 
-/*
-	case 2:	// Just size, get current cursor position
-		start	= 0;
-		qtd 	= atoi(argv[1]);
-		break;
-
-	case 3:	// Use start position
-		start	= atoi(argv[1]);
-		qtd 	= atoi(argv[2]);
-		break;
-
-	case 4:	// Get start position from row/col
-		lib3270_get_screen_size(hSession,&rows,&cols);
-
-		row = atoi(argv[1])-1;
-		col = atoi(argv[2])-1;
-
-		if(row < 0 || row > rows || col < 0 || col > cols)
-		{
-			errno = EINVAL;
-			return NULL;
-		}
-
-		start 	= (row * cols) + col;
-		qtd 	= atoi(argv[3]);
-		break;
-*/
 	default:
 		errno = EINVAL;
 	}
@@ -317,9 +295,11 @@
 	return strdup(ret);
 
  }
+*/
 
 /*--[ Macro entry point ]----------------------------------------------------------------------------*/
 
+/*
  LIB3270_EXPORT char * lib3270_run_macro(H3270 *session, const char **argv)
  {
 	#define LIB3270_MACRO_ENTRY( name )  { #name, lib3270_macro_ ## name }
@@ -379,4 +359,4 @@
 	// Not found, return NULL
 	return NULL;
  }
-
+*/

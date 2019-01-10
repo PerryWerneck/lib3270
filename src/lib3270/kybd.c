@@ -399,7 +399,7 @@ void kybd_inhibit(H3270 *session, Boolean inhibit)
 /*
  * Called when a host connects or disconnects.
  */
-void kybd_connect(H3270 *session, int connected, void *dunno)
+void kybd_connect(H3270 *session, int connected, void *dunno unused)
 {
 	if (session->kybdlock & KL_DEFERRED_UNLOCK)
 		RemoveTimeOut(session, session->unlock_id);
@@ -421,7 +421,7 @@ void kybd_connect(H3270 *session, int connected, void *dunno)
 /*
  * Called when we switch between 3270 and ANSI modes.
  */
-void kybd_in3270(H3270 *hSession, int in3270 unused, void *dunno)
+void kybd_in3270(H3270 *hSession, int in3270 unused, void *dunno unused)
 {
 	if (hSession->kybdlock & KL_DEFERRED_UNLOCK)
 		RemoveTimeOut(hSession, hSession->unlock_id);
@@ -694,7 +694,7 @@ static Boolean ins_prep(H3270 *hSession, int faddr, int baddr, int count)
 #define GE_WFLAG	0x100
 #define PASTE_WFLAG	0x200
 
-static void key_Character_wrapper(H3270 *hSession, const char *param1, const char *param2)
+static void key_Character_wrapper(H3270 *hSession, const char *param1, const char *param2 unused)
 {
 	int code;
 	Boolean with_ge = False;

@@ -129,7 +129,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 	hSession->ns_read_id		= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_READ,net_input,0);
 
 #if defined(HAVE_LIBSSL)
-	if(hSession->ssl_con && hSession->secure == LIB3270_SSL_UNDEFINED)
+	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
 	{
 		if(ssl_negotiate(hSession))
 			return;
@@ -333,12 +333,12 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 #endif
 
 	hSession->ever_3270 = False;
-	hSession->ssl_host  = 0;
+	hSession->ssl.host  = 0;
 
 	if(hSession->options&LIB3270_OPTION_SSL)
 	{
 #if defined(HAVE_LIBSSL)
-		hSession->ssl_host = 1;
+		hSession->ssl.host = 1;
 		ssl_init(hSession);
 #else
 		lib3270_popup_dialog(	hSession,

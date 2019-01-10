@@ -806,11 +806,11 @@ static int net_connected(H3270 *hSession)
 	}
 	*/
 
-	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl_host? " using SSL": "");
+	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host? " using SSL": "");
 
 #if defined(HAVE_LIBSSL)
 	/* Set up SSL. */
-	if(hSession->ssl_con && hSession->secure == LIB3270_SSL_UNDEFINED)
+	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
 	{
 		if(ssl_negotiate(hSession))
 			return -1;
@@ -899,11 +899,12 @@ LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
 	trace("%s",__FUNCTION__);
 
 #if defined(HAVE_LIBSSL)
-	if(hSession->ssl_con != NULL)
+	if(hSession->ssl.con != NULL)
 	{
-		SSL_shutdown(hSession->ssl_con);
-		SSL_free(hSession->ssl_con);
-		hSession->ssl_con = NULL;
+		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+		SSL_shutdown(hSession->ssl.con);
+		SSL_free(hSession->ssl.con);
+		hSession->ssl.con = NULL;
 	}
 #endif
 
@@ -1010,8 +1011,8 @@ void net_input(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void
 #endif
 
 #if defined(HAVE_LIBSSL)
-		if (hSession->ssl_con != NULL)
-			nr = SSL_read(hSession->ssl_con, (char *) buffer, BUFSZ);
+		if (hSession->ssl.con != NULL)
+			nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
 		else
 			nr = recv(hSession->sock, (char *) buffer, BUFSZ, 0);
 #else
@@ -1024,7 +1025,7 @@ void net_input(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void
 				return;
 
 #if defined(HAVE_LIBSSL) /*[*/
-			if(hSession->ssl_con != NULL)
+			if(hSession->ssl.con != NULL)
 			{
 				unsigned long e;
 				char err_buf[120];
@@ -1991,8 +1992,8 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	int rc;
 
 #if defined(HAVE_LIBSSL)
-	if(hSession->ssl_con != NULL)
-		rc = SSL_write(hSession->ssl_con, (const char *) buf, len);
+	if(hSession->ssl.con != NULL)
+		rc = SSL_write(hSession->ssl.con, (const char *) buf, len);
 	else
 		rc = send(hSession->sock, (const char *) buf, len, 0);
 #else
@@ -2005,7 +2006,7 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	// Recv error, notify
 
 #if defined(HAVE_LIBSSL)
-	if(hSession->ssl_con != NULL)
+	if(hSession->ssl.con != NULL)
 	{
 		unsigned long e;
 		char err_buf[120];

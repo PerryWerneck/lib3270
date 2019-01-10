@@ -212,6 +212,15 @@
 		<Unit filename="src/lib3270/ssl.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/ssl/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/ssl/negotiate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/ssl/state.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/state.c">
 			<Option compilerVar="CC" />
 		</Unit>

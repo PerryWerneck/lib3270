@@ -213,6 +213,9 @@
 			}
 
 			// Get properties.
+			virtual void getProperty(const char *name, int &value) const = 0;
+			virtual void getProperty(const char *name, std::string &value) const = 0;
+
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
 

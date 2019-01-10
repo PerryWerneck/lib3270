@@ -177,6 +177,9 @@
 				void waitForReady(time_t timeout = 5)  throw() override;
 
 				// Get properties.
+				void getProperty(const char *name, int &value) const override;
+				void getProperty(const char *name, std::string &value) const override;
+
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 
@@ -270,8 +273,8 @@
 				Request & push(const char *arg);
 
 				// Pop values
-
 				Request & pop(std::string &value);
+				Request & pop(int &value);
 
 			};
 
@@ -307,6 +310,9 @@
 				void waitForReady(time_t timeout = 5)  throw() override;
 
 				// Get properties.
+				void getProperty(const char *name, int &value) const override;
+				void getProperty(const char *name, std::string &value) const override;
+
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 

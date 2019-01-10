@@ -49,7 +49,12 @@
 
 	cout
 		<< "Version: " << host.getVersion()
-//		<< " Revision: " << host.getRevision()
+		<< "\tRevision: " << host.getRevision()
+		<< std::endl;
+
+	cout
+		<< "Connection state is " << host.getConnectionState()
+		<< "\tProgram message is " << host.getProgramMessage()
 		<< std::endl;
 
 	// host.connect(getenv("LIB3270_DEFAULT_HOST"));

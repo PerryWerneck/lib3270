@@ -148,6 +148,14 @@
 		return rc;
 	}
 
+	void Local::Session::getProperty(const char *name, int &value) const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	void Local::Session::getProperty(const char *name, std::string &value) const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
 	ProgramMessage Local::Session::getProgramMessage() const {
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (ProgramMessage) lib3270_get_program_message(this->hSession);

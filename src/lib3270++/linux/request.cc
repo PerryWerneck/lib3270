@@ -177,6 +177,8 @@
 
 		}
 
+		dbus_message_iter_next(&msg.iter);
+
 		value.assign(str);
 
 		debug(__FUNCTION__,"= \"",str,"\"");
@@ -184,6 +186,60 @@
 		return *this;
 	}
 
+	static int getIntValue(DBusMessageIter &iter) {
+
+		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32) {
+
+			dbus_int32_t rc = 0;
+			dbus_message_iter_get_basic(&iter, &rc);
+			return (int) rc;
+
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT16) {
+
+			dbus_int16_t rc = 0;
+			dbus_message_iter_get_basic(&iter, &rc);
+			return (int) rc;
+
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
+
+			DBusMessageIter sub;
+			int current_type;
+
+			dbus_message_iter_recurse(&iter, &sub);
+
+			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
+
+				if (current_type == DBUS_TYPE_INT32) {
+
+					dbus_int32_t rc = 0;
+					dbus_message_iter_get_basic(&sub, &rc);
+					return (int) rc;
+
+				} else if (current_type == DBUS_TYPE_INT16) {
+					dbus_int16_t rc = 0;
+					dbus_message_iter_get_basic(&sub, &rc);
+					return (int) rc;
+
+				}
+				dbus_message_iter_next(&sub);
+			}
+
+		}
+
+		debug("Argument type is ", ((char) dbus_message_iter_get_arg_type(&iter)) );
+		throw std::runtime_error("Expected an integer data type");
+
+	}
+
+	IPC::Request & IPC::Request::Request::pop(int &value) {
+
+		value = getIntValue(msg.iter);
+		dbus_message_iter_next(&msg.iter);
+		debug(__FUNCTION__,"= \"",value,"\"");
+
+		return *this;
+
+	}
 
  }
 

@@ -137,11 +137,19 @@
 	}
 
 	ProgramMessage IPC::Session::getProgramMessage() const {
-		throw std::system_error(EINVAL, std::system_category());
+
+		int program_message;
+		getProperty("program_message",program_message);
+		return (ProgramMessage) program_message;
+
 	}
 
 	ConnectionState IPC::Session::getConnectionState() const {
-		throw std::system_error(EINVAL, std::system_category());
+
+		int cstate;
+		getProperty("cstate",cstate);
+		return (ConnectionState) cstate;
+
 	}
 
 	/// @brief Set field at current position, jumps to next writable field.
@@ -211,21 +219,38 @@
 
 	}
 
+	void IPC::Session::getProperty(const char *name, int &value) const {
+
+		Request(*this,false,name)
+			.call()
+			.pop(value);
+
+	}
+
+	void IPC::Session::getProperty(const char *name, std::string &value) const {
+
+		Request(*this,false,name)
+			.call()
+			.pop(value);
+
+	}
+
 	/// @brief Get lib3270 version.
 	std::string IPC::Session::getVersion() const {
 
 		string rc;
-
-		Request request{*this,false,"version"};
-		request.call().pop(rc);
-
+		getProperty("version",rc);
 		return rc;
+
 	}
 
 	/// @brief Get lib3270 revision.
 	std::string IPC::Session::getRevision() const {
-		throw std::system_error(ENOTSUP, std::system_category());
-		return "";
+
+		string rc;
+		getProperty("revision",rc);
+		return rc;
+
 	}
 
  }

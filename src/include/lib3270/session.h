@@ -97,7 +97,7 @@
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_session_callbacks(const struct lib3270_callbacks *cbk);
+	LIB3270_EXPORT int lib3270_set_session_io_handler(const LIB3270_IO_CONTROLLER *cbk);
 
 	LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 	LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);

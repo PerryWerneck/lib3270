@@ -251,6 +251,16 @@
 	 return properties;
  }
 
+ static const char * get_version(H3270 *hSession unused)
+ {
+	return lib3270_get_version();
+ }
+
+ static const char * get_revision(H3270 *hSession unused)
+ {
+	return lib3270_get_revision();
+ }
+
  LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void)
  {
 	 static const LIB3270_STRING_PROPERTY properties[] = {
@@ -300,14 +310,14 @@
 		{
 			"version",									//  Property name.
 			N_( "lib3270 version" ),					//  Property description.
-			lib3270_get_version,						//  Get value.
+			get_version,								//  Get value.
 			NULL										//  Set value.
 		},
 
 		{
 			"revision",									//  Property name.
 			N_( "lib3270 revision" ),					//  Property description.
-			lib3270_get_revision,						//  Get value.
+			get_revision,								//  Get value.
 			NULL										//  Set value.
 		},
 
@@ -360,7 +370,7 @@ int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
 
 	// Check for boolean properties
 	properties = lib3270_get_boolean_properties_list();
-	for(ix = 0; ix < (sizeof(properties)/sizeof(properties[0])); ix++)
+	for(ix = 0; properties[ix].name; ix++)
 	{
 		if(!strcasecmp(name,properties[ix].name))
 		{
@@ -380,7 +390,7 @@ int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
 
 	// Check for int properties
 	properties = lib3270_get_int_properties_list();
-	for(ix = 0; ix < (sizeof(properties)/sizeof(properties[0])); ix++)
+	for(ix = 0; properties[ix].name; ix++)
 	{
 		if(!strcasecmp(name,properties[ix].name))
 		{

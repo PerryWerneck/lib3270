@@ -809,12 +809,12 @@
 	LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
 
 	/**
-	 * @brief Callback table
+	 * @brief I/O Controller.
 	 *
-	 * Structure with GUI unblocking I/O calls, used to replace the lib3270´s internal ones.
+	 * GUI unblocking I/O calls, used to replace the lib3270´s internal ones.
 	 *
 	 */
-	struct lib3270_callbacks
+	typedef struct lib3270_io_controller
 	{
 		unsigned short sz;
 
@@ -827,8 +827,9 @@
 		int		  (*Wait)(H3270 *hSession, int seconds);
 		int		  (*event_dispatcher)(H3270 *session, int wait);
 		void	  (*ring_bell)(H3270 *session);
+		int		  (*run_task)(int(*callback)(H3270 *, void *), H3270 *session, void *parm);
 
-	};
+	} LIB3270_IO_CONTROLLER;
 
 	/**
 	 * Register application Handlers.
@@ -838,7 +839,7 @@
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_register_handlers(const struct lib3270_callbacks *cbk);
+	LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk);
 
 	/**
 	 * Register time handlers.
@@ -1151,8 +1152,7 @@
 	 * @param			Delay in milliseconds.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_set_unlock_delay(H3270 *session, int delay);
-
+	LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *session, int delay);
 	LIB3270_EXPORT int lib3270_get_unlock_delay(H3270 *session);
 
 	/**
@@ -1237,6 +1237,19 @@
 	LIB3270_EXPORT const LIB3270_OPTION_ENTRY * lib3270_get_option_list(void);
 
 	LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr);
+
+	/**
+	 * @brief Run background task.
+	 *
+	 * Call task in a separate thread, keep gui main loop running until
+	 * the function returns.
+	 *
+	 * @param hSession	TN3270 session.
+	 * @param callback	Function to call.
+	 * @param parm		Parameter to callback function.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm);
 
 	/**
 	 * The host is TSO?

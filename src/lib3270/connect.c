@@ -79,7 +79,7 @@
 
 
 //static void net_connected(H3270 *hSession)
-static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *dunno)
+static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void *dunno unused)
 {
 	int 		err;
 	socklen_t	len		= sizeof(err);
@@ -550,7 +550,7 @@ static void net_connected(H3270 *hSession, int fd, LIB3270_IO_FLAG flag, void *d
 		}
 
 		lib3270_disconnect(hSession);
-		lib3270_write_log(hSession,"connect", "%s",__FUNCTION__,strerror(ETIMEDOUT));
+		lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 		return errno = ETIMEDOUT;
 	}
 

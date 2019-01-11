@@ -45,15 +45,17 @@
 /*---[ Standard calls ]-------------------------------------------------------------------------------------*/
 
 // Timeout calls
-static void       internal_remove_timeout(H3270 *session, void *timer);
-static void		* internal_add_timeout(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session));
+ static void       internal_remove_timeout(H3270 *session, void *timer);
+ static void	* internal_add_timeout(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session));
 
-static void		* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-static void		  internal_remove_poll(H3270 *session, void *id);
+ static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+ static void	  internal_remove_poll(H3270 *session, void *id);
 
-static int		  internal_wait(H3270 *session, int seconds);
+ static int		  internal_wait(H3270 *session, int seconds);
 
-static void		  internal_ring_bell(H3270 *session);
+ static void	  internal_ring_bell(H3270 *session);
+
+ static int		  internal_run_task(int(*callback)(H3270 *, void *), H3270 *session, void *parm);
 
 /*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
 
@@ -77,6 +79,9 @@ static void		  internal_ring_bell(H3270 *session);
 
  static void	  (*ring_bell)(H3270 *)
 					= internal_ring_bell;
+
+ static int		  (*run_task)(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm)
+					= internal_run_task;
 
 /*---[ Typedefs ]-------------------------------------------------------------------------------------------*/
 
@@ -205,7 +210,7 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 	ip->userdata				= userdata;
 	ip->call					= call;
 
-	ip->next					= session->inputs;
+	ip->next					= (input_t *) session->inputs;
 
 	session->inputs 			= ip;
 	session->inputs_changed 	= 1;
@@ -218,7 +223,7 @@ static void internal_remove_poll(H3270 *session, void *id)
 	input_t *ip;
 	input_t *prev = (input_t *)NULL;
 
-	for (ip = session->inputs; ip != (input_t *)NULL; ip = ip->next)
+	for (ip = session->inputs; ip != (input_t *) NULL; ip = (input_t *) ip->next)
 	{
 		if (ip == (input_t *)id)
 			break;
@@ -235,7 +240,7 @@ static void internal_remove_poll(H3270 *session, void *id)
 	if (prev != (input_t *)NULL)
 		prev->next = ip->next;
 	else
-		session->inputs = ip->next;
+		session->inputs = (input_t *) ip->next;
 
 	lib3270_free(ip);
 	session->inputs_changed = 1;
@@ -379,13 +384,10 @@ LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, i
 		remove_poll = rm;
 }
 
-LIB3270_EXPORT int lib3270_register_handlers(const struct lib3270_callbacks *cbk)
+LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk)
 {
-	if(!cbk)
-		return EINVAL;
-
-	if(cbk->sz != sizeof(struct lib3270_callbacks))
-		return EINVAL;
+	if(!cbk || cbk->sz != sizeof(LIB3270_IO_CONTROLLER))
+		return errno = EINVAL;
 
 	lib3270_register_time_handlers(cbk->AddTimeOut,cbk->RemoveTimeOut);
 	lib3270_register_fd_handlers(cbk->add_poll,cbk->remove_poll);
@@ -446,6 +448,36 @@ LIB3270_EXPORT void lib3270_ring_bell(H3270 *session)
 	if(lib3270_get_toggle(session,LIB3270_TOGGLE_BEEP))
 		ring_bell(session);
 }
+
+int internal_run_task(int(*callback)(H3270 *, void *), H3270 *session, void *parm) {
+	return callback(session,parm);
+}
+
+/**
+ * @brief Run background task.
+ *
+ * Call task in a separate thread, keep gui main loop running until
+ * the function returns.
+ *
+ * @param hSession	TN3270 session.
+ * @param callback	Function to call.
+ * @param parm		Parameter to callback function.
+ *
+ */
+LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm)
+{
+        int rc;
+
+        CHECK_SESSION_HANDLE(hSession);
+
+		hSession->cbk.set_timer(hSession,1);
+		rc = run_task(callback,hSession,parm);
+		hSession->cbk.set_timer(hSession,0);
+
+        return rc;
+
+}
+
 
 
 

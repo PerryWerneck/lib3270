@@ -132,7 +132,7 @@ void lib3270_session_free(H3270 *h)
 	while(h->inputs)
 	{
 		input_t *ip = h->inputs;
-		h->inputs = ip->next;
+		h->inputs = (input_t *) ip->next;
 		lib3270_free(ip);
 	}
 

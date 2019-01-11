@@ -159,7 +159,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	return 0;
  }
 
- static void def_complete(H3270 *hSession, unsigned long length,double kbytes_sec,const char *msg, void *userdata)
+ static void def_complete(H3270 *hSession, unsigned long length unused, double kbytes_sec unused, const char *msg, void *userdata unused)
  {
  	hSession->ft->cbk.message(hSession,msg,hSession->ft->user_data);
  }
@@ -169,27 +169,27 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
  	hSession->ft->cbk.complete(hSession,length,kbytes_sec,msg,userdata);
  }
 
- static void def_message(H3270 *hSession, const char *msg, void *userdata)
+ static void def_message(H3270 *hSession, const char *msg, void *userdata unused)
  {
 	lib3270_write_log(hSession,"ft","%s",msg);
  }
 
- static void def_update(H3270 *hSession, unsigned long current, unsigned long length, double kbytes_sec, void *userdata)
+ static void def_update(H3270 *hSession unused, unsigned long current unused, unsigned long length unused, double kbytes_sec unused, void *userdata unused)
  {
 
  }
 
- static void def_running(H3270 *hSession, int is_cut, void *userdata)
+ static void def_running(H3270 *hSession unused, int is_cut unused, void *userdata unused)
  {
 
  }
 
- static void def_aborting(H3270 *hSession, void *userdata)
+ static void def_aborting(H3270 *hSession unused, void *userdata unused)
  {
 
  }
 
- static void def_state_changed(H3270 *hSession, LIB3270_FT_STATE state, const char *text, void *userdata)
+ static void def_state_changed(H3270 *hSession unused, LIB3270_FT_STATE state unused, const char *text unused, void *userdata unused)
  {
 
  }
@@ -662,14 +662,14 @@ void ft_aborting(H3270FT *h)
 }
 
 /* Process a disconnect abort. */
-static void ft_connected(H3270 *hSession, int ignored, void *dunno)
+static void ft_connected(H3270 *hSession, int ignored unused, void *dunno unused)
 {
 	if (!CONNECTED && lib3270_get_ft_state(hSession) != LIB3270_FT_STATE_NONE)
 		ft_failed(get_ft_handle(hSession),_("Host disconnected, transfer cancelled"));
 }
 
 /* Process an abort from no longer being in 3270 mode. */
-static void ft_in3270(H3270 *hSession, int ignored, void *dunno)
+static void ft_in3270(H3270 *hSession, int ignored unused, void *dunno unused)
 {
 	if (!IN_3270 && lib3270_get_ft_state(hSession) != LIB3270_FT_STATE_NONE)
 		ft_failed(get_ft_handle(hSession),_("Not in 3270 mode, transfer cancelled"));

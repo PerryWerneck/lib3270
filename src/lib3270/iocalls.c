@@ -55,7 +55,7 @@
 
  static void	  internal_ring_bell(H3270 *session);
 
- static int		  internal_run_task(int(*callback)(H3270 *, void *), H3270 *session, void *parm);
+ static int		  internal_run_task(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
 
 /*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
 
@@ -210,7 +210,7 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 	ip->userdata				= userdata;
 	ip->call					= call;
 
-	ip->next					= (input_t *) session->inputs;
+	ip->next					= session->inputs;
 
 	session->inputs 			= ip;
 	session->inputs_changed 	= 1;
@@ -449,8 +449,8 @@ LIB3270_EXPORT void lib3270_ring_bell(H3270 *session)
 		ring_bell(session);
 }
 
-int internal_run_task(int(*callback)(H3270 *, void *), H3270 *session, void *parm) {
-	return callback(session,parm);
+int internal_run_task(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm) {
+	return callback(hSession,parm);
 }
 
 /**
@@ -471,7 +471,7 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, vo
         CHECK_SESSION_HANDLE(hSession);
 
 		hSession->cbk.set_timer(hSession,1);
-		rc = run_task(callback,hSession,parm);
+		rc = run_task(hSession,callback,parm);
 		hSession->cbk.set_timer(hSession,0);
 
         return rc;

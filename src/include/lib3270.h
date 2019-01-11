@@ -827,7 +827,7 @@
 		int		  (*Wait)(H3270 *hSession, int seconds);
 		int		  (*event_dispatcher)(H3270 *session, int wait);
 		void	  (*ring_bell)(H3270 *session);
-		int		  (*run_task)(int(*callback)(H3270 *, void *), H3270 *session, void *parm);
+		int		  (*run_task)(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
 
 	} LIB3270_IO_CONTROLLER;
 

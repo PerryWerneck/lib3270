@@ -2,7 +2,7 @@
 
 	<!-- https://github.com/openSUSE/obs-service-tar_scm/blob/master/tar_scm.py -->
 	<service name="tar_scm">
-        <!-- param name="changesgenerate">enable</param -->
+        <param name="changesgenerate">enable</param>
 		<param name="sslverify">disable</param>
 		<param name="versionformat">%ct</param>
         <!-- param name="version">5.2</param -->

@@ -62,6 +62,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig
+BuildRequires:  pkgconfig(dbus-1)
 
 %description
 

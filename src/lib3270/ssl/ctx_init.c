@@ -69,79 +69,90 @@ int ssl_ctx_init(H3270 *hSession)
 {
 	debug("%s ssl_ctx=%p",__FUNCTION__,ssl_ctx);
 
-	if(ssl_ctx != NULL)
-		return 0;
+	if(!ssl_ctx)
+	{
+		trace_dsn(hSession,"Initializing SSL context.\n");
 
-	SSL_load_error_strings();
-	SSL_library_init();
+		SSL_load_error_strings();
+		SSL_library_init();
 
-	ssl_ctx = SSL_CTX_new(SSLv23_method());
-	if(ssl_ctx == NULL)
-		return -1;
+		ssl_ctx = SSL_CTX_new(SSLv23_method());
+		if(ssl_ctx == NULL)
+			return -1;
 
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
-	SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
-	SSL_CTX_set_default_verify_paths(ssl_ctx);
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
+		SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
+		SSL_CTX_set_default_verify_paths(ssl_ctx);
 
 #if defined(_WIN32)
-	{
-		HKEY hKey = 0;
-
-		if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\" PACKAGE_NAME,0,KEY_QUERY_VALUE,&hKey) == ERROR_SUCCESS)
 		{
-			char			data[4096];
-			unsigned long	datalen	= sizeof(data);		// data field length(in), data returned length(out)
-			unsigned long	datatype;					// #defined in winnt.h (predefined types 0-11)
+			HKEY hKey = 0;
 
-			if(RegQueryValueExA(hKey,"datadir",NULL,&datatype,(LPBYTE) data,&datalen) == ERROR_SUCCESS)
+			if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\" PACKAGE_NAME,0,KEY_QUERY_VALUE,&hKey) == ERROR_SUCCESS)
 			{
-				strncat(data,"\\certs",4095);
+				char			data[4096];
+				unsigned long	datalen	= sizeof(data);		// data field length(in), data returned length(out)
+				unsigned long	datatype;					// #defined in winnt.h (predefined types 0-11)
 
-				trace("Loading certs from \"%s\"",data);
-				if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
+				if(RegQueryValueExA(hKey,"datadir",NULL,&datatype,(LPBYTE) data,&datalen) == ERROR_SUCCESS)
 				{
-					hSession->ssl.error = ERR_get_error();
+					strncat(data,"\\certs",4095);
 
-					lib3270_write_log(
-						hSession,
-						"ssl",
-						"Cant set default locations for trusted CA certificates to %s\n%s",
+					if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
+					{
+						hSession->ssl.error = ERR_get_error();
+
+						trace_dsn(
+							hSession,
+							"Cant set default locations for trusted CA certificates to %s\n%s\m"
 								data,
 								ERR_lib_error_string(hSession->ssl.error)
-					);
+						);
 
+						lib3270_write_log(
+							hSession,
+							"ssl",
+							"Cant set default locations for trusted CA certificates to %s\n%s",
+									data,
+									ERR_lib_error_string(hSession->ssl.error)
+						);
+
+					}
 				}
+				RegCloseKey(hKey);
 			}
-			RegCloseKey(hKey);
+
+
 		}
-
-
-	}
 #else
-	static const char * ssldir[] =
-	{
+
+		static const char * ssldir[] =
+		{
 #ifdef DATAROOTDIR
-		DATAROOTDIR "/" PACKAGE_NAME "/certs",
+			DATAROOTDIR "/" PACKAGE_NAME "/certs",
 #endif // DATAROOTDIR
 #ifdef SYSCONFDIR
-		SYSCONFDIR "/ssl/certs",
-		SYSCONFDIR "/certs",
+			SYSCONFDIR "/ssl/certs",
+			SYSCONFDIR "/certs",
 #endif
-		"/etc/ssl/certs"
-	};
+			"/etc/ssl/certs"
+		};
 
-	size_t f;
+		size_t f;
 
-	for(f = 0;f < sizeof(ssldir) / sizeof(ssldir[0]);f++)
-	{
-		SSL_CTX_load_verify_locations(ssl_ctx,NULL,ssldir[f]);
+		for(f = 0;f < sizeof(ssldir) / sizeof(ssldir[0]);f++)
+		{
+			SSL_CTX_load_verify_locations(ssl_ctx,NULL,ssldir[f]);
+		}
+
+	#endif // _WIN32
+
+		//
+		// Initialize CUSTOM CRL CHECK
+		//
+
 	}
 
-#endif // _WIN32
-
-	//
-	// Initialize CUSTOM CRL CHECK
-	//
 
 
 /*

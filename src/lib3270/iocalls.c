@@ -36,6 +36,19 @@
 #include "telnetc.h"
 #include "utilc.h"
 
+#if defined(_WIN32)
+	#include <ws2tcpip.h>
+#else
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <sys/ioctl.h>
+	#include <netinet/in.h>
+	#include <netdb.h>
+	#include <unistd.h>
+	#include <fcntl.h>
+#endif
+
+
 #define MILLION			1000000L
 //
 //#if defined(_WIN32)
@@ -50,6 +63,8 @@
 
  static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
  static void	  internal_remove_poll(H3270 *session, void *id);
+
+ static void	  internal_set_poll_state(H3270 *session, void *id, int enabled);
 
  static int		  internal_wait(H3270 *session, int seconds);
 
@@ -70,6 +85,9 @@
 
  static void	  (*remove_poll)(H3270 *session, void *id)
 					= internal_remove_poll;
+
+ static void	  (*set_poll_state)(H3270 *session, void *id, int enabled)
+					= internal_set_poll_state;
 
  static int	  	  (*wait)(H3270 *session, int seconds)
 					= internal_wait;
@@ -246,9 +264,35 @@ static void internal_remove_poll(H3270 *session, void *id)
 	session->inputs_changed = 1;
 }
 
-LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id) {
-	debug("%s %p",__FUNCTION__,id);
+ static void internal_set_poll_state(H3270 *session, void *id, int enabled)
+ {
+	input_t *ip;
+	input_t *prev = (input_t *)NULL;
+
+	for (ip = session->inputs; ip != (input_t *) NULL; ip = (input_t *) ip->next)
+	{
+		if (ip == (input_t *)id)
+		{
+			ip->enabled = enabled ? 1 : 0;
+			break;
+		}
+
+		prev = ip;
+	}
+
+ }
+
+
+LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id)
+{
+	debug("%s(%d,%p)",__FUNCTION__,session->sock,id);
 	remove_poll(session, id);
+}
+
+LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled)
+{
+	debug("%s(%d,%p,%d)",__FUNCTION__,session->sock,id,enabled);
+	set_poll_state(session, id, enabled);
 }
 
 LIB3270_EXPORT void	 lib3270_remove_poll_fd(H3270 *session, int fd)
@@ -288,6 +332,7 @@ LIB3270_EXPORT void	 lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_F
 }
 
 LIB3270_EXPORT void	 * lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
+	debug("%s(%d)",__FUNCTION__,session->sock);
 	return add_poll(session,fd,flag,call,userdata);
 }
 
@@ -330,39 +375,39 @@ void RemoveTimeOut(H3270 *session, void * timer)
 
 void x_except_on(H3270 *h)
 {
-	int reading = (h->ns_read_id != NULL);
+	int reading = (h->xio.read != NULL);
 
 	debug("%s",__FUNCTION__);
-	if(h->ns_exception_id)
+	if(h->xio.except)
 		return;
 
 	if(reading)
-		lib3270_remove_poll(h,h->ns_read_id);
+		lib3270_remove_poll(h,h->xio.read);
 
-	h->ns_exception_id = lib3270_add_poll_fd(h,h->sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	h->xio.except = lib3270_add_poll_fd(h,h->sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 
 	if(reading)
-		h->ns_read_id = lib3270_add_poll_fd(h,h->sock,LIB3270_IO_FLAG_READ,net_input,0);
+		h->xio.read = lib3270_add_poll_fd(h,h->sock,LIB3270_IO_FLAG_READ,net_input,0);
 	debug("%s",__FUNCTION__);
 
 }
 
 void remove_input_calls(H3270 *session)
 {
-	if(session->ns_read_id)
+	if(session->xio.read)
 	{
-		lib3270_remove_poll(session,session->ns_read_id);
-		session->ns_read_id	= NULL;
+		lib3270_remove_poll(session,session->xio.read);
+		session->xio.read = NULL;
 	}
-	if(session->ns_exception_id)
+	if(session->xio.except)
 	{
-		lib3270_remove_poll(session,session->ns_exception_id);
-		session->ns_exception_id = NULL;
+		lib3270_remove_poll(session,session->xio.except);
+		session->xio.except = NULL;
 	}
-	if(session->ns_write_id)
+	if(session->xio.write)
 	{
-		lib3270_remove_poll(session,session->ns_write_id);
-		session->ns_write_id = NULL;
+		lib3270_remove_poll(session,session->xio.write);
+		session->xio.write = NULL;
 	}
 }
 
@@ -478,6 +523,65 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, vo
 
 }
 
+int non_blocking(H3270 *hSession, Boolean on)
+{
+
+	if(hSession->sock < 0)
+		return 0;
+
+#ifdef WIN32
+
+		WSASetLastError(0);
+		u_long iMode= on ? 1 : 0;
+
+		if(ioctlsocket(hSession->sock,FIONBIO,&iMode))
+		{
+			lib3270_popup_dialog(	hSession,
+									LIB3270_NOTIFY_ERROR,
+									_( "Connection error" ),
+									_( "ioctlsocket(FIONBIO) failed." ),
+									"%s", lib3270_win32_strerror(GetLastError()));
+			return -1;
+		}
+
+#else
+
+	int f;
+
+	if ((f = fcntl(hSession->sock, F_GETFL, 0)) == -1)
+	{
+		lib3270_popup_dialog(	hSession,
+								LIB3270_NOTIFY_ERROR,
+								_( "Socket error" ),
+								_( "fcntl() error when getting socket state." ),
+								_( "%s" ), strerror(errno)
+							);
+
+		return -1;
+	}
+
+	if (on)
+		f |= O_NDELAY;
+	else
+		f &= ~O_NDELAY;
+
+	if (fcntl(hSession->sock, F_SETFL, f) < 0)
+	{
+		lib3270_popup_dialog(	hSession,
+								LIB3270_NOTIFY_ERROR,
+								_( "Socket error" ),
+								on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
+								_( "%s" ), strerror(errno)
+							);
+		return -1;
+	}
+
+#endif
+
+	trace("Socket %d is %s",hSession->sock, on ? "non-blocking" : "blocking");
+
+	return 0;
+}
 
 
 

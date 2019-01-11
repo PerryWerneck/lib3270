@@ -804,6 +804,7 @@
 
 	LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 	LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
+	LIB3270_EXPORT void		  lib3270_set_poll_state(H3270 *session, void *id, int enabled);
 
 	LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
 	LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
@@ -823,6 +824,7 @@
 
 		void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
 		void	  (*remove_poll)(H3270 *session, void *id);
+		void	  (*set_poll_state)(H3270 *session, void *id, int enabled);
 
 		int		  (*Wait)(H3270 *hSession, int seconds);
 		int		  (*event_dispatcher)(H3270 *session, int wait);

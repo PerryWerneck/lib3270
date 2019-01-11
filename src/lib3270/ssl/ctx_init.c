@@ -100,18 +100,16 @@ int ssl_ctx_init(H3270 *hSession)
 				trace("Loading certs from \"%s\"",data);
 				if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
 				{
-					char buffer[4096];
-					int ssl_error = ERR_get_error();
+					hSession->ssl.error = ERR_get_error();
 
-					snprintf(buffer,4095,_("Cant set default locations for trusted CA certificates to\n%s"),data);
+					lib3270_write_log(
+						hSession,
+						"ssl",
+						"Cant set default locations for trusted CA certificates to %s\n%s",
+								data,
+								ERR_lib_error_string(hSession->ssl.error)
+					);
 
-					lib3270_popup_dialog(
-							hSession,
-							LIB3270_NOTIFY_ERROR,
-							N_( "Security error" ),
-							buffer,
-							N_( "%s" ),ERR_lib_error_string(ssl_error)
-									);
 				}
 			}
 			RegCloseKey(hKey);

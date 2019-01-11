@@ -84,10 +84,10 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	int 		err;
 	socklen_t	len		= sizeof(err);
 
-	if(hSession->ns_write_id) {
-		trace("%s write=%p",__FUNCTION__,hSession->ns_write_id);
-		lib3270_remove_poll(hSession, hSession->ns_write_id);
-		hSession->ns_write_id = NULL;
+	if(hSession->xio.write) {
+		trace("%s write=%p",__FUNCTION__,hSession->xio.write);
+		lib3270_remove_poll(hSession, hSession->xio.write);
+		hSession->xio.write = NULL;
 	}
 
 	if(getsockopt(hSession->sock, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
@@ -125,8 +125,8 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 		return;
 	}
 
-	hSession->ns_exception_id	= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
-	hSession->ns_read_id		= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_READ,net_input,0);
+	hSession->xio.except	= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	hSession->xio.read		= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_READ,net_input,0);
 
 #if defined(HAVE_LIBSSL)
 	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
@@ -512,7 +512,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	hSession->cstate = LIB3270_PENDING;
 	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
-	hSession->ns_write_id = lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_WRITE,net_connected,0);
+	hSession->xio.write = lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_WRITE,net_connected,0);
 	// hSession->ns_write_id = AddOutput(hSession->sock, hSession, net_connected);
 
 	trace("%s: Connection in progress",__FUNCTION__);
@@ -557,58 +557,4 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	return 0;
 
  }
-
-int non_blocking(H3270 *hSession, Boolean on)
-{
-#ifdef WIN32
-		WSASetLastError(0);
-		u_long iMode= on ? 1 : 0;
-
-		if(ioctlsocket(hSession->sock,FIONBIO,&iMode))
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "ioctlsocket(FIONBIO) failed." ),
-									"%s", lib3270_win32_strerror(GetLastError()));
-			return -1;
-		}
-#else
-
-	int f;
-
-	if ((f = fcntl(hSession->sock, F_GETFL, 0)) == -1)
-	{
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								_( "fcntl() error when getting socket state." ),
-								_( "%s" ), strerror(errno)
-							);
-
-		return -1;
-	}
-
-	if (on)
-		f |= O_NDELAY;
-	else
-		f &= ~O_NDELAY;
-
-	if (fcntl(hSession->sock, F_SETFL, f) < 0)
-	{
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
-								_( "%s" ), strerror(errno)
-							);
-		return -1;
-	}
-
-#endif
-
-	trace("Socket %d is %s",hSession->sock, on ? "non-blocking" : "blocking");
-
-	return 0;
-}
 

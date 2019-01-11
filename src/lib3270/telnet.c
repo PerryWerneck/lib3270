@@ -908,10 +908,10 @@ LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
 	}
 #endif
 
-	if(hSession->ns_write_id)
+	if(hSession->xio.write)
 	{
-		lib3270_remove_poll(hSession, hSession->ns_write_id);
-		hSession->ns_write_id = 0;
+		lib3270_remove_poll(hSession, hSession->xio.write);
+		hSession->xio.write = 0;
 	}
 
 	if(hSession->sock >= 0)
@@ -1964,10 +1964,10 @@ void net_exception(H3270 *session, int fd unused, LIB3270_IO_FLAG flag unused, v
 	{
 		session->syncing = 1;
 
-		if(session->ns_exception_id)
+		if(session->xio.except)
 		{
-			lib3270_remove_poll(session, session->ns_exception_id);
-			session->ns_exception_id = NULL;
+			lib3270_remove_poll(session, session->xio.except);
+			session->xio.except = NULL;
 		}
 	}
 }

@@ -212,7 +212,7 @@
 		<Unit filename="src/lib3270/sf.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/ssl/init.c">
+		<Unit filename="src/lib3270/ssl/ctx_init.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/ssl/negotiate.c">
@@ -250,6 +250,9 @@
 		</Unit>
 		<Unit filename="src/lib3270/windows/resources.rc" />
 		<Unit filename="src/lib3270/windows/resources.rc.in" />
+		<Unit filename="src/lib3270/windows/util.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

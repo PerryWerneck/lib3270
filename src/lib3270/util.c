@@ -35,21 +35,9 @@
 #define _GNU_SOURCE
 
 #include "private.h"
-// #include <pwd.h>
-
-//#ifdef HAVE_ICONV
-//	#include <iconv.h>
-//#endif // HAVE_ICONV
-
-//#include <stdarg.h>
-// #include "resources.h"
-
 #include "utilc.h"
-//#include "popupsc.h"
-//#include "api.h"
-
-//#include <lib3270/session.h>
-//#include <lib3270/selection.h>
+#include "popupsc.h"
+#include <lib3270/selection.h>
 
 #define my_isspace(c)	isspace((unsigned char)c)
 

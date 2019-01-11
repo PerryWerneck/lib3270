@@ -70,6 +70,15 @@
  */
  SSL_CTX * ssl_ctx = NULL;
 
+struct ssl_error_message
+{
+	int			  error;
+	const char	* title;
+	const char	* text;
+	const char	* description;
+};
+
+
 /**
  * @brief Initialize openssl session.
  *
@@ -78,7 +87,8 @@
  * @return 0 if ok, non zero if fails.
  *
  */
-int ssl_init(H3270 *hSession)
+
+static int background_ssl_init(H3270 *hSession, void *message)
 {
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 	hSession->ssl.error = 0;
@@ -86,21 +96,13 @@ int ssl_init(H3270 *hSession)
 
 	if(ssl_ctx_init(hSession)) {
 
-		hSession->ssl.error = ERR_get_error();
-
-		/*
-		lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_ERROR,
-				N_( "Security error" ),
-				N_( "SSL initialization has failed" ),
-				"%s",ERR_reason_error_string(hSession->ssl.error)
-			);
-		*/
+		((struct ssl_error_message *) message)->error = hSession->ssl.error = ERR_get_error();
+		((struct ssl_error_message *) message)->title = N_( "Security error" );
+		((struct ssl_error_message *) message)->text = N_( "SSL context initialization has failed" );
 
 		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-
 		hSession->ssl.host = False;
+
 		return -1;
 	}
 
@@ -110,43 +112,28 @@ int ssl_init(H3270 *hSession)
 	hSession->ssl.con = SSL_new(ssl_ctx);
 	if(hSession->ssl.con == NULL)
 	{
-		hSession->ssl.error = ERR_get_error();
-
-		/*
-		lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_ERROR,
-				N_( "Security error" ),
-				N_( "Cant create a new SSL structure for current connection." ),
-				N_( "%s" ),ERR_lib_error_string(hSession->ssl.error)
-		);
-		*/
-
+		((struct ssl_error_message *) message)->error = hSession->ssl.error = ERR_get_error();
+		((struct ssl_error_message *) message)->title = N_( "Security error" );
+		((struct ssl_error_message *) message)->text = N_( "Cant create a new SSL structure for current connection." );
 		return -1;
 	}
 
 	SSL_set_ex_data(hSession->ssl.con,ssl_3270_ex_index,(char *) hSession);
-
 //	SSL_set_verify(session->ssl_con, SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
 	SSL_set_verify(hSession->ssl.con, 0, NULL);
 
 	return 0;
 }
 
-int ssl_negotiate(H3270 *hSession)
+static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
 	int rv;
 
 	trace("%s",__FUNCTION__);
 
-	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
-	non_blocking(hSession,False);
-
 	/* Initialize the SSL library. */
-	if(ssl_init(hSession))
+	if(background_ssl_init(hSession,message))
 	{
-		/* Failed. */
-		lib3270_disconnect(hSession);
 		return -1;
 	}
 
@@ -155,15 +142,10 @@ int ssl_negotiate(H3270 *hSession)
 	{
 		trace_dsn(hSession,"%s","SSL_set_fd failed!\n");
 
-		lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_ERROR,
-				N_( "Security error" ),
-				N_( "SSL negotiation failed" ),
-				"%s",_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." )
-			);
+		((struct ssl_error_message *) message)->title = N_( "Security error" );
+		((struct ssl_error_message *) message)->text = N_( "SSL negotiation failed" );
+		((struct ssl_error_message *) message)->description = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." );
 
-		lib3270_disconnect(hSession);
 		return -1;
 	}
 
@@ -173,29 +155,24 @@ int ssl_negotiate(H3270 *hSession)
 
 	if (rv != 1)
 	{
-		int 		  ssl_error =  SSL_get_error(hSession->ssl.con,rv);
 		const char	* msg 		= "";
 
-		if(ssl_error == SSL_ERROR_SYSCALL && hSession->ssl.error)
-			ssl_error = hSession->ssl.error;
+		((struct ssl_error_message *) message)->error = SSL_get_error(hSession->ssl.con,rv);
+		if(((struct ssl_error_message *) message)->error == SSL_ERROR_SYSCALL && hSession->ssl.error)
+			((struct ssl_error_message *) message)->error = hSession->ssl.error;
 
-		msg = ERR_lib_error_string(ssl_error);
+		msg = ERR_lib_error_string(((struct ssl_error_message *) message)->error);
 
 		trace_dsn(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
-		lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_ERROR,
-				N_( "Security error" ),
-				N_( "SSL Connect failed" ),
-				"%s",msg ? msg : ""
-						);
-
+		((struct ssl_error_message *) message)->title = N_( "Security error" );
+		((struct ssl_error_message *) message)->text = N_( "SSL Connect failed" );
 		lib3270_disconnect(hSession);
 		return -1;
+
 	}
 
-	/* Success. */
+	// Success.
 	X509 * peer = NULL;
 	rv = SSL_get_verify_result(hSession->ssl.con);
 
@@ -208,13 +185,11 @@ int ssl_negotiate(H3270 *hSession)
 
 	case X509_V_ERR_UNABLE_TO_GET_CRL:
 		trace_dsn(hSession,"%s","The CRL of a certificate could not be found.\n" );
-		lib3270_disconnect(hSession);
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "SSL error" ),
-								_( "Unable to get certificate CRL." ),
-								_( "The Certificate revocation list (CRL) of a certificate could not be found." )
-							);
+
+		((struct ssl_error_message *) message)->title = _( "SSL error" );
+		((struct ssl_error_message *) message)->text = _( "Unable to get certificate CRL." );
+		((struct ssl_error_message *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
+
 		return -1;
 
 	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
@@ -224,14 +199,9 @@ int ssl_negotiate(H3270 *hSession)
 #ifdef SSL_ALLOW_SELF_SIGNED_CERT
 		break;
 #else
-		lib3270_disconnect(hSession);
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "SSL error" ),
-								_( "The SSL certificate for this host is not trusted." ),
-								_( "The security certificate presented by this host was not issued by a trusted certificate authority." )
-							);
-
+		((struct ssl_error_message *) message)->title = _( "SSL error" );
+		((struct ssl_error_message *) message)->text = _( "The SSL certificate for this host is not trusted." );
+		((struct ssl_error_message *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
 		return -1;
 #endif // SSL_ALLOW_SELF_SIGNED_CERT
 
@@ -286,9 +256,63 @@ int ssl_negotiate(H3270 *hSession)
 
 	/* Tell the world that we are (still) connected, now in secure mode. */
 	lib3270_set_connected_initial(hSession);
-	non_blocking(hSession,True);
 
 	return 0;
+}
+
+int ssl_negotiate(H3270 *hSession)
+{
+	int rc;
+	struct ssl_error_message msg;
+
+	memset(&msg,0,sizeof(msg));
+
+	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
+	non_blocking(hSession,False);
+
+	rc = lib3270_run_task(hSession, background_ssl_negotiation, &msg);
+	if(rc)
+	{
+		// SSL Negotiation has failed.
+		if(msg.description)
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
+		else
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
+
+		lib3270_disconnect(hSession);
+
+	}
+
+	non_blocking(hSession,True);
+
+	return rc;
+}
+
+int	ssl_init(H3270 *hSession) {
+
+	int rc;
+	struct ssl_error_message msg;
+
+	memset(&msg,0,sizeof(msg));
+
+	non_blocking(hSession,False);
+
+	rc = lib3270_run_task(hSession, background_ssl_init, &msg);
+	if(rc)
+	{
+		// SSL init has failed.
+		if(msg.description)
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
+		else
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
+
+		lib3270_disconnect(hSession);
+	}
+
+	non_blocking(hSession,True);
+
+	return rc;
+
 }
 
 /* Callback for tracing protocol negotiation. */
@@ -352,7 +376,7 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 						);
 
 		}
-
+		break;
 
 	default:
 		trace_dsn(hSession,"SSL Current state is \"%s\"\n",SSL_state_string_long(s));

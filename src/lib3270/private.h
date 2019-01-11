@@ -599,9 +599,11 @@ struct _h3270
 	unsigned char			  saved_bg;
 
 	// xio
-	void 					* ns_read_id;
-	void 					* ns_write_id;
-	void 					* ns_exception_id;
+	struct {
+		void 				* read;
+		void 				* write;
+		void 				* except;
+	} xio;
 
 	// SSL Data (Always defined to maintain the structure size)
 	struct

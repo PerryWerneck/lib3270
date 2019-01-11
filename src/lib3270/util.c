@@ -19,207 +19,42 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como util.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- * macmiranda@bb.com.br		(Marco Aurélio Caldas Miranda)
  *
  */
 
-/*
- *	util.c
- *		Utility functions for x3270/c3270/s3270/tcl3270
+/**
+ * @brief Utility functions for x3270/c3270/s3270/tcl3270
  */
 
 #define _GNU_SOURCE
 
-#if defined(_WIN32)
-	#include <winsock2.h>
-	#include <windows.h>
-#endif // _WIN32
-
 #include "private.h"
+// #include <pwd.h>
 
-#if defined(_WIN32)
+//#ifdef HAVE_ICONV
+//	#include <iconv.h>
+//#endif // HAVE_ICONV
 
-	#include "winversc.h"
-	#include <ws2tcpip.h>
-	#include <stdio.h>
-	#include <errno.h>
-	#include "w3miscc.h"
-
-#else
-	#include <pwd.h>
-#endif // _WIN32
-
-#ifdef HAVE_MALLOC_H
-	#include <malloc.h>
-#endif
-
-#ifndef ANDROID
-	#include <stdlib.h>
-#endif // !ANDROID
-
-#ifdef HAVE_ICONV
-	#include <iconv.h>
-#endif // HAVE_ICONV
-
-#include <stdarg.h>
-#include "resources.h"
+//#include <stdarg.h>
+// #include "resources.h"
 
 #include "utilc.h"
-#include "popupsc.h"
-#include "api.h"
+//#include "popupsc.h"
+//#include "api.h"
 
-#include <lib3270/session.h>
-#include <lib3270/selection.h>
+//#include <lib3270/session.h>
+//#include <lib3270/selection.h>
 
 #define my_isspace(c)	isspace((unsigned char)c)
 
-#if defined(_WIN32)
-
-int is_nt = 1;
-int has_ipv6 = 1;
-
-int get_version_info(void)
-{
-	OSVERSIONINFO info;
-
-	// Figure out what version of Windows this is.
-	memset(&info, '\0', sizeof(info));
-	info.dwOSVersionInfoSize = sizeof(info);
-	if(GetVersionEx(&info) == 0)
-	{
-		lib3270_write_log(NULL,"lib3270","%s","Can't get Windows version");
-		return -1;
-	}
-
-	// Yes, people still run Win98.
-	if (info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-		is_nt = 0;
-
-	// Win2K and earlier is IPv4-only.  WinXP and later can have IPv6.
-	if (!is_nt || info.dwMajorVersion < 5 || (info.dwMajorVersion == 5 && info.dwMinorVersion < 1))
-	{
-		has_ipv6 = 0;
-	}
-
-	return 0;
-}
-
-// Convert a network address to a string.
-#ifndef HAVE_INET_NTOP
-const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
-{
-    	union {
-	    	struct sockaddr sa;
-		struct sockaddr_in sin;
-		struct sockaddr_in6 sin6;
-	} sa;
-	DWORD ssz;
-	DWORD sz = cnt;
-
-	memset(&sa, '\0', sizeof(sa));
-
-	switch (af) {
-	case AF_INET:
-	    	sa.sin = *(struct sockaddr_in *)src;	// struct copy
-		ssz = sizeof(struct sockaddr_in);
-		break;
-	case AF_INET6:
-	    	sa.sin6 = *(struct sockaddr_in6 *)src;	// struct copy
-		ssz = sizeof(struct sockaddr_in6);
-		break;
-	default:
-	    	if (cnt > 0)
-			dst[0] = '\0';
-		return NULL;
-	}
-
-	sa.sa.sa_family = af;
-
-	if (WSAAddressToString(&sa.sa, ssz, NULL, dst, &sz) != 0) {
-	    	if (cnt > 0)
-			dst[0] = '\0';
-		return NULL;
-	}
-
-	return dst;
-}
-#endif // HAVE_INET_NTOP
-
-// Decode a Win32 error number.
-LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
-{
-	static char buffer[4096];
-
-	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,e,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL) == 0)
-	{
-	    snprintf(buffer, 4095, _( "Windows error %d" ), e);
-		return buffer;
-	}
-
-#ifdef HAVE_ICONV
-	{
-		// Convert from windows codepage to UTF-8 pw3270´s default charset
-		iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
-
-		trace("[%s]",buffer);
-
-		if(hConv == (iconv_t) -1)
-		{
-			lib3270_write_log(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
-		}
-		else
-		{
-			size_t				  in 		= strlen(buffer);
-			size_t				  out 		= (in << 1);
-			char				* ptr;
-			char				* outBuffer = (char *) malloc(out);
-			ICONV_CONST char	* inBuffer	= (ICONV_CONST char	*) buffer;
-
-			memset(ptr=outBuffer,0,out);
-
-			iconv(hConv,NULL,NULL,NULL,NULL);	// Reset state
-
-			if(iconv(hConv,&inBuffer,&in,&ptr,&out) != ((size_t) -1))
-			{
-				strncpy(buffer,outBuffer,4095);
-			}
-
-			free(outBuffer);
-
-			iconv_close(hConv);
-		}
-
-	}
-#endif // HAVE_ICONV
-
-	return buffer;
-}
-
-LIB3270_EXPORT const char * lib3270_win32_local_charset(void)
-{
-	// Reference:
-	// http://msdn.microsoft.com/en-us/library/windows/desktop/dd318070(v=vs.85).aspx
-
-	/// TODO: Use GetACP() to identify the correct code page
-
-	trace("Windows CHARSET is %u",GetACP());
-
-	return "CP1252";
-}
-
-
-#endif // _WIN32
-
-/*
- * Cheesy internal version of sprintf that allocates its own memory.
+/**
+ * @brief Cheesy internal version of sprintf that allocates its own memory.
  */
 char * lib3270_vsprintf(const char *fmt, va_list args)
 {
@@ -270,10 +105,11 @@ LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...)
 	return r;
 }
 
-/*
- * Common helper functions to insert strings, through a template, into a new
- * buffer.
- * 'format' is assumed to be a printf format string with '%s's in it.
+/**
+ * @brief Common helper functions to insert strings, through a template, into a new  buffer.
+ *
+ * @param format	A printf format string with '%s's in it.
+ *
  */
 char * xs_buffer(const char *fmt, ...)
 {
@@ -314,7 +150,9 @@ xs_error(const char *fmt, ...)
 }
 
 
-/*
+/**
+ * @brief Definition resource splitter.
+ *
  * Definition resource splitter, for resources of the repeating form:
  *	left: right\n
  *
@@ -392,8 +230,9 @@ split_dresource(char **st, char **left, char **right)
 	return 1;
 }
 
-/*
- * Split a DBCS resource into its parts.
+/**
+ * @brief Split a DBCS resource into its parts.
+ *
  * Returns the number of parts found:
  *	-1 error (empty sub-field)
  *	 0 nothing found
@@ -466,8 +305,8 @@ split_dbcs_resource(const char *value, char sep, char **part1, char **part2)
 }
 
 #if defined(X3270_DISPLAY) /*[*/
-/*
- * List resource splitter, for lists of elements speparated by newlines.
+/**
+ * @brief List resource splitter, for lists of elements speparated by newlines.
  *
  * Can be called iteratively.
  * Returns 1 for success, 0 for EOF, -1 for error.
@@ -518,243 +357,8 @@ split_lresource(char **st, char **value)
 #endif /*]*/
 
 
-/*
-#if !defined(LIB3270)
-
-const char *
-get_message(const char *key)
-{
-	static char namebuf[128];
-	char *r;
-
-	(void) sprintf(namebuf, "%s.%s", ResMessage, key);
-	if ((r = get_resource(namebuf)) != CN)
-		return r;
-	else {
-		(void) sprintf(namebuf, "[missing \"%s\" message]", key);
-		return namebuf;
-	}
-}
-
-#endif
-*/
-
-// #define ex_getenv getenv
-
-/* Variable and tilde substitution functions. */ /*
-static char *
-var_subst(const char *s)
-{
-	enum { VS_BASE, VS_QUOTE, VS_DOLLAR, VS_BRACE, VS_VN, VS_VNB, VS_EOF }
-	    state = VS_BASE;
-	char c;
-	int o_len = strlen(s) + 1;
-	char *ob;
-	char *o;
-	const char *vn_start = CN;
-
-	if (strchr(s, '$') == CN)
-		return NewString(s);
-
-	o_len = strlen(s) + 1;
-	ob = lib3270_malloc(o_len);
-	o = ob;
-#	define LBR	'{'
-#	define RBR	'}'
-
-	while (state != VS_EOF) {
-		c = *s;
-		switch (state) {
-		    case VS_BASE:
-			if (c == '\\')
-			    state = VS_QUOTE;
-			else if (c == '$')
-			    state = VS_DOLLAR;
-			else
-			    *o++ = c;
-			break;
-		    case VS_QUOTE:
-			if (c == '$') {
-				*o++ = c;
-				o_len--;
-			} else {
-				*o++ = '\\';
-				*o++ = c;
-			}
-			state = VS_BASE;
-			break;
-		    case VS_DOLLAR:
-			if (c == LBR)
-				state = VS_BRACE;
-			else if (isalpha(c) || c == '_') {
-				vn_start = s;
-				state = VS_VN;
-			} else {
-				*o++ = '$';
-				*o++ = c;
-				state = VS_BASE;
-			}
-			break;
-		    case VS_BRACE:
-			if (isalpha(c) || c == '_') {
-				vn_start = s;
-				state = VS_VNB;
-			} else {
-				*o++ = '$';
-				*o++ = LBR;
-				*o++ = c;
-				state = VS_BASE;
-			}
-			break;
-		    case VS_VN:
-		    case VS_VNB:
-			if (!(isalnum(c) || c == '_')) {
-				int vn_len;
-				char *vn;
-				char *vv;
-
-				vn_len = s - vn_start;
-				if (state == VS_VNB && c != RBR) {
-					*o++ = '$';
-					*o++ = LBR;
-					(void) strncpy(o, vn_start, vn_len);
-					o += vn_len;
-					state = VS_BASE;
-					continue;	// rescan
-				}
-				vn = lib3270_malloc(vn_len + 1);
-				(void) strncpy(vn, vn_start, vn_len);
-				vn[vn_len] = '\0';
-
-#ifndef ANDROID
-				if((vv = getenv(vn)))
-				{
-					*o = '\0';
-					o_len = o_len
-					    - 1			// '$'
-					    - (state == VS_VNB)	//
-					    - vn_len		// name
-					    - (state == VS_VNB)	// }
-					    + strlen(vv);
-					ob = Realloc(ob, o_len);
-					o = strchr(ob, '\0');
-					(void) strcpy(o, vv);
-					o += strlen(vv);
-				}
-#endif // !ANDROID
-
-				lib3270_free(vn);
-				if (state == VS_VNB) {
-					state = VS_BASE;
-					break;
-				} else {
-					// Rescan this character
-					state = VS_BASE;
-					continue;
-				}
-			}
-			break;
-		    case VS_EOF:
-			break;
-		}
-		s++;
-		if (c == '\0')
-			state = VS_EOF;
-	}
-	return ob;
-}
-*/
-
-#if !defined(_WIN32)
-/*
- * Do tilde (home directory) substitution on a string.  Returns a malloc'd
- * result.
- */
- /*
-static char *
-tilde_subst(const char *s)
-{
-	char *slash;
-	const char *name;
-	const char *rest;
-	struct passwd *p;
-	char *r;
-	char *mname = CN;
-
-	// Does it start with a "~"?
-	if (*s != '~')
-		return NewString(s);
-
-	// Terminate with "/".
-	slash = strchr(s, '/');
-	if (slash) {
-		int len = slash - s;
-
-		mname = lib3270_malloc(len + 1);
-		(void) strncpy(mname, s, len);
-		mname[len] = '\0';
-		name = mname;
-		rest = slash;
-	} else {
-		name = s;
-		rest = strchr(name, '\0');
-	}
-
-	// Look it up.
-	if (!strcmp(name, "~"))	// this user
-		p = getpwuid(getuid());
-	else			// somebody else
-		p = getpwnam(name + 1);
-
-	// Free any temporary copy.
-	lib3270_free(mname);
-
-	// Substitute and return.
-	if (p == (struct passwd *)NULL)
-		r = NewString(s);
-	else {
-		r = lib3270_malloc(strlen(p->pw_dir) + strlen(rest) + 1);
-		(void) strcpy(r, p->pw_dir);
-		(void) strcat(r, rest);
-	}
-	return r;
-} */
-#endif
-/*
-char *
-do_subst(const char *s, Boolean do_vars, Boolean do_tilde)
-{
-	if (!do_vars && !do_tilde)
-		return NewString(s);
-
-	if (do_vars) {
-		char *t;
-
-		t = var_subst(s);
-#if !defined(_WIN32)
-		if (do_tilde) {
-			char *u;
-
-			u = tilde_subst(t);
-			lib3270_free(t);
-			return u;
-		}
-#endif
-		return t;
-	}
-
-#if !defined(_WIN32)
-	return tilde_subst(s);
-#else
-	return NewString(s);
-#endif
-}
-
-*/
-
-/*
- * ctl_see
- *	Expands a character in the manner of "cat -v".
+/**
+ *	@brief Expands a character in the manner of "cat -v".
  */
 char *
 ctl_see(int c)
@@ -782,8 +386,8 @@ ctl_see(int c)
 	return buf;
 }
 
-/*
- * Whitespace stripper.
+/**
+ * @brief Whitespace stripper.
  */
 char *
 strip_whitespace(const char *s)
@@ -802,8 +406,8 @@ strip_whitespace(const char *s)
 	return t;
 }
 
-/*
- * Hierarchy (a>b>c) splitter.
+/**
+ * @brief Hierarchy (a>b>c) splitter.
  */
 Boolean
 split_hier(char *label, char **base, char ***parents)
@@ -837,8 +441,8 @@ split_hier(char *label, char **base, char ***parents)
 	return True;
 }
 
-/*
- * Incremental, reallocing version of snprintf.
+/**
+ * @brief Incremental, reallocing version of snprintf.
  */
 #define RPF_BLKSIZE	4096
 #define SP_TMP_LEN	16384
@@ -852,14 +456,18 @@ rpf_init(rpf_t *r)
 	r->cur_len = 0;
 }
 
-/* Reset an initialized RPF structure (re-use with length 0). */
+/**
+ * @brief Reset an initialized RPF structure (re-use with length 0).
+ */
 void
 rpf_reset(rpf_t *r)
 {
 	r->cur_len = 0;
 }
 
-/* Append a string to a dynamically-allocated buffer. */
+/**
+ * @brief Append a string to a dynamically-allocated buffer.
+ */
 void
 rpf(rpf_t *r, char *fmt, ...)
 {
@@ -889,7 +497,9 @@ rpf(rpf_t *r, char *fmt, ...)
 	r->cur_len += ns;
 }
 
-/* Free resources associated with an RPF. */
+/**
+ * @brief Free resources associated with an RPF.
+ */
 void
 rpf_free(rpf_t *r)
 {
@@ -930,7 +540,6 @@ LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr)
 
 	return ptr;
 }
-
 
 LIB3270_EXPORT void * lib3270_malloc(int len)
 {
@@ -988,37 +597,16 @@ void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 
 }
 
-#if defined(_WIN32)
-
-#define SECS_BETWEEN_EPOCHS	11644473600ULL
-#define SECS_TO_100NS		10000000ULL /* 10^7 */
-
-int gettimeofday(struct timeval *tv, void *ignored)
+LIB3270_EXPORT int lib3270_print(H3270 *h)
 {
-	FILETIME t;
-	ULARGE_INTEGER u;
-
-	GetSystemTimeAsFileTime(&t);
-	memcpy(&u, &t, sizeof(ULARGE_INTEGER));
-
-	/* Isolate seconds and move epochs. */
-	tv->tv_sec = (DWORD)((u.QuadPart / SECS_TO_100NS) - SECS_BETWEEN_EPOCHS);
-	tv->tv_usec = (u.QuadPart % SECS_TO_100NS) / 10ULL;
-	return 0;
-}
-
-#endif
-
- LIB3270_EXPORT int lib3270_print(H3270 *h)
- {
 	CHECK_SESSION_HANDLE(h);
 	trace("%s(%p)",__FUNCTION__,h);
 	return h->cbk.print(h);
- }
+}
 
 
- LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
- {
+LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
+{
 	static const struct _ptr {
 		unsigned short	id;
 		LIB3270_POINTER	value;
@@ -1050,10 +638,10 @@ int gettimeofday(struct timeval *tv, void *ignored)
 
 	return hSession->pointer;
 
- }
+}
 
- LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
- {
+LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
+{
 	CHECK_SESSION_HANDLE(hSession);
 
  	memset(addr,0,*addrlen);
@@ -1065,10 +653,10 @@ int gettimeofday(struct timeval *tv, void *ignored)
 
 	return getpeername(hSession->sock, addr, addrlen);
 
- }
+}
 
- LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
- {
+LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
+{
 	CHECK_SESSION_HANDLE(hSession);
 
  	memset(addr,0,*addrlen);
@@ -1079,4 +667,4 @@ int gettimeofday(struct timeval *tv, void *ignored)
  	}
 
 	return getsockname(hSession->sock, addr, addrlen);
- }
+}

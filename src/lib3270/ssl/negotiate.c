@@ -84,10 +84,11 @@ int ssl_init(H3270 *hSession)
 	hSession->ssl.error = 0;
 	hSession->ssl.host = False;
 
-	if(ssl_ctx_init()) {
+	if(ssl_ctx_init(hSession)) {
 
 		hSession->ssl.error = ERR_get_error();
 
+		/*
 		lib3270_popup_dialog(
 				hSession,
 				LIB3270_NOTIFY_ERROR,
@@ -95,6 +96,7 @@ int ssl_init(H3270 *hSession)
 				N_( "SSL initialization has failed" ),
 				"%s",ERR_reason_error_string(hSession->ssl.error)
 			);
+		*/
 
 		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 
@@ -110,6 +112,7 @@ int ssl_init(H3270 *hSession)
 	{
 		hSession->ssl.error = ERR_get_error();
 
+		/*
 		lib3270_popup_dialog(
 				hSession,
 				LIB3270_NOTIFY_ERROR,
@@ -117,6 +120,7 @@ int ssl_init(H3270 *hSession)
 				N_( "Cant create a new SSL structure for current connection." ),
 				N_( "%s" ),ERR_lib_error_string(hSession->ssl.error)
 		);
+		*/
 
 		return -1;
 	}

@@ -65,7 +65,7 @@
  * @return 0 if ok, non zero if fails.
  *
  */
-int ssl_ctx_init(void)
+int ssl_ctx_init(H3270 *hSession)
 {
 	debug("%s ssl_ctx=%p",__FUNCTION__,ssl_ctx);
 

@@ -279,8 +279,9 @@ typedef struct timeout
  * @brief I/O events.
  *
  */
-typedef struct input
+typedef struct _input_t
 {
+		unsigned char	  enabled;
         struct input	* next;
         H3270			* session;
         int 			  fd;

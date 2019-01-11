@@ -157,6 +157,9 @@
 		<Unit filename="src/lib3270/kybd.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/linux/event_dispatcher.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -209,9 +212,6 @@
 		<Unit filename="src/lib3270/sf.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/ssl.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/lib3270/ssl/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -243,6 +243,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/version.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/windows/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/windows/resources.rc" />

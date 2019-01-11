@@ -157,6 +157,9 @@
 		<Unit filename="src/lib3270/kybd.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/linux/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/linux/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -243,6 +246,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/version.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/windows/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/windows/event_dispatcher.c">

@@ -180,10 +180,15 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	{
 	case X509_V_OK:
 		peer = SSL_get_peer_certificate(hSession->ssl.con);
+
+		debug("TLS/SSL negotiated connection complete. Peer certificate %s presented.", peer ? "was" : "was not");
 		trace_dsn(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
+
 		break;
 
 	case X509_V_ERR_UNABLE_TO_GET_CRL:
+
+		debug("%s","The CRL of a certificate could not be found." );
 		trace_dsn(hSession,"%s","The CRL of a certificate could not be found.\n" );
 
 		((struct ssl_error_message *) message)->title = _( "SSL error" );
@@ -193,7 +198,10 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		return -1;
 
 	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
+
 		peer = SSL_get_peer_certificate(hSession->ssl.con);
+
+		debug("%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain" );
 		trace_dsn(hSession,"%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n" );
 
 #ifdef SSL_ALLOW_SELF_SIGNED_CERT
@@ -206,6 +214,8 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 #endif // SSL_ALLOW_SELF_SIGNED_CERT
 
 	default:
+
+		debug("Unexpected or invalid TLS/SSL verify result %d",rv);
 		trace_dsn(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 	}
 

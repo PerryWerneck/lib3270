@@ -327,8 +327,17 @@ LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HAN
 {
 	CHECK_SESSION_HANDLE(hSession);
 
-	hSession->trace.handler	= handler ? handler : def_trace;
+	hSession->trace.handler		= handler ? handler : def_trace;
 	hSession->trace.userdata	= userdata;
+}
+
+LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata)
+{
+	CHECK_SESSION_HANDLE(hSession);
+
+	*handler	= hSession->trace.handler;
+	*userdata	= hSession->trace.userdata;
+
 }
 
 LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list)) {

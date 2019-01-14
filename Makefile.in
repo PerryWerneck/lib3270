@@ -70,8 +70,12 @@ DEPENDS= \
 	Makefile \
 	src/include/*.h \
 	src/include/lib3270/*.h \
-	src/lib3270/*.h
-
+	src/lib3270/*.h \
+        $(wildcard src/lib3270/*) \
+        $(wildcard src/lib3270/@OSNAME@/*) \
+        $(wildcard src/lib3270/ssl/*) \
+        $(wildcard src/lib3270/ssl/@OSNAME@/*) \
+        $(wildcard src/@OSNAME@/*)
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 

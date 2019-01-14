@@ -33,6 +33,9 @@
  *	@brief This module handles the keyboard for the 3270 emulator.
  */
 
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
+
 struct ta;
 
 #define LIB3270_TA struct ta

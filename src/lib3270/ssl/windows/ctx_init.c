@@ -18,30 +18,28 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como ssl.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  *
  * References:
  *
  * http://www.openssl.org/docs/ssl/
+ * https://stackoverflow.com/questions/4389954/does-openssl-automatically-handle-crls-certificate-revocation-lists-now
  *
  */
 
 /**
- * @brief OpenSSL initialization.
+ * @brief OpenSSL initialization for windows.
  *
  */
 
 #include <config.h>
 #if defined(HAVE_LIBSSL)
-
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
@@ -50,7 +48,7 @@
 	#define SSL_ST_OK 3
 #endif // !SSL_ST_OK
 
-#include "../private.h"
+#include "../../private.h"
 #include <errno.h>
 #include <lib3270.h>
 #include <lib3270/internals.h>
@@ -69,87 +67,85 @@ int ssl_ctx_init(H3270 *hSession)
 {
 	debug("%s ssl_ctx=%p",__FUNCTION__,ssl_ctx);
 
-	if(!ssl_ctx)
+	if(ssl_ctx)
+		return 0;
+
+	trace_dsn(hSession,"Initializing SSL context.\n");
+
+	SSL_load_error_strings();
+	SSL_library_init();
+
+	ssl_ctx = SSL_CTX_new(SSLv23_method());
+	if(ssl_ctx == NULL)
+		return -1;
+
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
+	SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
+	SSL_CTX_set_default_verify_paths(ssl_ctx);
+
+	//
+	// Get path from windows registry.
+	//
+	HKEY hKey = 0;
+
+	if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\" PACKAGE_NAME,0,KEY_QUERY_VALUE,&hKey) == ERROR_SUCCESS)
 	{
-		trace_dsn(hSession,"Initializing SSL context.\n");
+		char			data[4096];
+		unsigned long	datalen	= sizeof(data);		// data field length(in), data returned length(out)
+		unsigned long	datatype;					// #defined in winnt.h (predefined types 0-11)
 
-		SSL_load_error_strings();
-		SSL_library_init();
-
-		ssl_ctx = SSL_CTX_new(SSLv23_method());
-		if(ssl_ctx == NULL)
-			return -1;
-
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
-		SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
-		SSL_CTX_set_default_verify_paths(ssl_ctx);
-
-#if defined(_WIN32)
+		if(RegQueryValueExA(hKey,"datadir",NULL,&datatype,(LPBYTE) data,&datalen) == ERROR_SUCCESS)
 		{
-			HKEY hKey = 0;
+			strncat(data,"\\certs",4095);
 
-			if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\" PACKAGE_NAME,0,KEY_QUERY_VALUE,&hKey) == ERROR_SUCCESS)
+			if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
 			{
-				char			data[4096];
-				unsigned long	datalen	= sizeof(data);		// data field length(in), data returned length(out)
-				unsigned long	datatype;					// #defined in winnt.h (predefined types 0-11)
+				hSession->ssl.error = ERR_get_error();
 
-				if(RegQueryValueExA(hKey,"datadir",NULL,&datatype,(LPBYTE) data,&datalen) == ERROR_SUCCESS)
-				{
-					strncat(data,"\\certs",4095);
+				trace_dsn(
+					hSession,
+					"Cant set default locations for trusted CA certificates to %s\n%s\m"
+						data,
+						ERR_lib_error_string(hSession->ssl.error)
+				);
 
-					if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
-					{
-						hSession->ssl.error = ERR_get_error();
+				lib3270_write_log(
+					hSession,
+					"ssl",
+					"Cant set default locations for trusted CA certificates to %s\n%s",
+							data,
+							ERR_lib_error_string(hSession->ssl.error)
+				);
 
-						trace_dsn(
-							hSession,
-							"Cant set default locations for trusted CA certificates to %s\n%s\m"
-								data,
-								ERR_lib_error_string(hSession->ssl.error)
-						);
-
-						lib3270_write_log(
-							hSession,
-							"ssl",
-							"Cant set default locations for trusted CA certificates to %s\n%s",
-									data,
-									ERR_lib_error_string(hSession->ssl.error)
-						);
-
-					}
-				}
-				RegCloseKey(hKey);
 			}
-
-
 		}
-#else
+		RegCloseKey(hKey);
+	}
 
-		static const char * ssldir[] =
-		{
-#ifdef DATAROOTDIR
-			DATAROOTDIR "/" PACKAGE_NAME "/certs",
-#endif // DATAROOTDIR
-#ifdef SYSCONFDIR
-			SYSCONFDIR "/ssl/certs",
-			SYSCONFDIR "/certs",
-#endif
-			"/etc/ssl/certs"
-		};
+	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
-		size_t f;
+	//
+	// Initialize CUSTOM CRL CHECK
+	//
 
-		for(f = 0;f < sizeof(ssldir) / sizeof(ssldir[0]);f++)
-		{
-			SSL_CTX_load_verify_locations(ssl_ctx,NULL,ssldir[f]);
-		}
+	return 0;
+}
 
-	#endif // _WIN32
+#endif // HAVE_LIBSSL
 
-		//
-		// Initialize CUSTOM CRL CHECK
-		//
+/*
+// Load CRLs into the `X509_STORE`
+
+X509_STORE *x509_store = SSL_CTX_get_cert_store(ctx);
+X509_STORE_add_crl(x509_store, crl);
+
+// Enable CRL checking
+X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+SSL_CTX_set1_param(ctx, param);
+X509_VERIFY_PARAM_free(param);
+
+
 
 	}
 
@@ -178,9 +174,3 @@ int ssl_ctx_init(H3270 *hSession)
 #endif // SSL_ENABLE_CRL_CHECK
 */
 
-	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
-
-	return 0;
-}
-
-#endif // HAVE_LIBSSL

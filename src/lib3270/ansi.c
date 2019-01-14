@@ -29,10 +29,12 @@
  *
  */
 
-/*
- *	ansi.c
- *		ANSI terminal emulation.
+
+/**
+ * @brief ANSI terminal emulation.
  */
+
+#pragma GCC diagnostic ignored "-Wsign-compare"
 
 #include "private.h"
 

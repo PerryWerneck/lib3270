@@ -30,12 +30,11 @@
  */
 
 /**
- *	@file
- *		This module handles interpretation of the 3270 data stream and
- *		maintenance of the 3270 device state.  It was split out from
- *		screen.c, which handles X operations.
+ *	@brief Handles interpretation of the 3270 data stream and maintenance of the 3270 device state.
  *
  */
+
+#pragma GCC diagnostic ignored "-Wsign-compare"
 
 #include "private.h"
 #include <errno.h>
@@ -2648,7 +2647,7 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
 }
 
 /**
- * Copy a block of characters in the 3270 buffer.
+ * @brief Copy a block of characters in the 3270 buffer.
  *
  * Copy a block of characters in the 3270 buffer, optionally including all of
  * the extended attributes.  (The character set, which is actually kept in the
@@ -2656,7 +2655,7 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
  *
  * @param hSession	Session handle
  */
-void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int move_ea)
+void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int move_ea unused)
 {
 	/* Move the characters. */
 	if (memcmp((char *) &hSession->ea_buf[baddr_from],(char *) &hSession->ea_buf[baddr_to],count * sizeof(struct lib3270_ea)))
@@ -2669,12 +2668,12 @@ void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int mo
 
 #if defined(X3270_ANSI) /*[*/
 /**
- * Erase a region of the 3270 buffer, optionally clearing extended attributes as well.
+ * @brief Erase a region of the 3270 buffer, optionally clearing extended attributes as well.
  *
  * @param hSession	Session handle
  *
  */
-void ctlr_aclear(H3270 *hSession, int baddr, int count, int clear_ea)
+void ctlr_aclear(H3270 *hSession, int baddr, int count, int clear_ea unused)
 {
 	if (memcmp((char *) &hSession->ea_buf[baddr], (char *) hSession->zero_buf,
 		    count * sizeof(struct lib3270_ea))) {

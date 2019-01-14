@@ -252,7 +252,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 
 	// s = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
-	if(lib3270_run_task(hSession, background_connect, &host))
+	if(lib3270_run_task(hSession, background_connect, &host) || hSession->sock < 0)
 	{
 		char buffer[4096];
 		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
@@ -265,7 +265,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								host.message);
 
 		lib3270_set_disconnected(hSession);
-		return errno = ENOENT;
+		return errno = ENOTCONN;
 	}
 
 	/* don't share the socket with our children */
@@ -291,26 +291,6 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 #endif // HAVE_LIBSSL
 	}
 
-	/* connect */
-	if(hSession->sock < 0)
-	{
-		lib3270_set_disconnected(hSession);
-
-		char buffer[4096];
-		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
-
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Connection error" ),
-			buffer,
-			"%s",
-			host.message
-		);
-
-		return errno = ENOTCONN;
-	}
-
 	// set options for inline out-of-band data and keepalives
 	optval = 1;
 	if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
@@ -322,6 +302,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								"%s",
 								strerror(errno));
 		SOCK_CLOSE(hSession);
+		return errno = ENOTCONN;
 	}
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
@@ -337,6 +318,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								"%s",
 								strerror(errno));
 		SOCK_CLOSE(hSession);
+		return errno = ENOTCONN;
 	}
 	else
 	{

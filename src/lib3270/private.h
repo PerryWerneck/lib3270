@@ -282,7 +282,7 @@ typedef struct timeout
 typedef struct _input_t
 {
 		unsigned char	  enabled;
-        struct input	* next;
+        struct _input_t	* next;
         H3270			* session;
         int 			  fd;
         LIB3270_IO_FLAG	  flag;

@@ -228,7 +228,7 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 	ip->userdata				= userdata;
 	ip->call					= call;
 
-	ip->next					= session->inputs;
+	ip->next					= (input_t *) session->inputs;
 
 	session->inputs 			= ip;
 	session->inputs_changed 	= 1;
@@ -267,17 +267,16 @@ static void internal_remove_poll(H3270 *session, void *id)
  static void internal_set_poll_state(H3270 *session, void *id, int enabled)
  {
 	input_t *ip;
-	input_t *prev = (input_t *)NULL;
 
 	for (ip = session->inputs; ip != (input_t *) NULL; ip = (input_t *) ip->next)
 	{
 		if (ip == (input_t *)id)
 		{
 			ip->enabled = enabled ? 1 : 0;
+			session->inputs_changed = 1;
 			break;
 		}
 
-		prev = ip;
 	}
 
  }
@@ -318,7 +317,7 @@ LIB3270_EXPORT void	 lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_F
 
 	input_t *ip;
 
-	for (ip = session->inputs; ip != (input_t *)NULL; ip = ip->next)
+	for (ip = session->inputs; ip != (input_t *)NULL; ip = (input_t *) ip->next)
 	{
 		if(ip->fd == fd)
 		{

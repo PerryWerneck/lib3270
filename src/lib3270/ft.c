@@ -29,6 +29,8 @@
  *
  */
 
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
 #ifdef WIN32
 	#include <winsock2.h>
 	#include <windows.h>

@@ -65,7 +65,6 @@
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/X11keysym.h" />
 		<Unit filename="src/include/lib3270/action_table.h" />
-		<Unit filename="src/include/lib3270/actions.h" />
 		<Unit filename="src/include/lib3270/charset.h" />
 		<Unit filename="src/include/lib3270/filetransfer.h" />
 		<Unit filename="src/include/lib3270/html.h" />
@@ -215,13 +214,16 @@
 		<Unit filename="src/lib3270/sf.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/ssl/ctx_init.c">
+		<Unit filename="src/lib3270/ssl/linux/ctx_init.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/ssl/negotiate.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/ssl/state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/ssl/windows/ctx_init.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/state.c">

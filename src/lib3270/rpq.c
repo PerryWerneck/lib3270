@@ -30,9 +30,10 @@
  *
  */
 
-/*
- *	rpq.c
- *		RPQNAMES structured field support.
+ #pragma GCC diagnostic ignored "-Wsign-compare"
+
+/**
+ * @brief RPQNAMES structured field support.
  *
  */
 

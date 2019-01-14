@@ -29,11 +29,11 @@
  *
  */
 
+ #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 
-/*
- *	telnet.c
- *		This module initializes and manages a telnet socket to
- *		the given IBM host.
+
+/**
+ * @brief Initializes and manages a telnet socket to the given IBM host.
  */
 
 #if defined(_WIN32)
@@ -340,16 +340,25 @@ void popup_a_sockerr(H3270 *hSession, char *fmt, ...)
 	text = lib3270_vsprintf(fmt, args);
 	va_end(args);
 
-	lib3270_write_log(hSession, "3270", "Network error:\n%s\n%s",text,msg);
+	lib3270_write_log(
+			hSession,
+			"3270",
+			"Network error:\n%s\n%s",
+			text,
+			msg
+	);
 
-	lib3270_popup_dialog(	hSession,
-							LIB3270_NOTIFY_ERROR,
-							_( "Network error" ),
-							text,
-							"%s", msg);
-
+	lib3270_popup_dialog(
+			hSession,
+			LIB3270_NOTIFY_ERROR,
+			_( "Network error" ),
+			text,
+			"%s",
+			msg
+	);
 
 	lib3270_free(text);
+
 }
 
 /*

@@ -124,9 +124,9 @@
 
  static void append_string(struct html_info *info, const char *text)
  {
- 	int sz = strlen(info->text)+strlen(text);
+ 	size_t sz = strlen(info->text)+strlen(text);
 
-	if(strlen(info->text)+sz <= info->szText)
+	if(strlen(info->text)+sz <= ((size_t)info->szText) )
 	{
 		info->szText	+= (100+sz);
 		info->text		 = lib3270_realloc(info->text,info->szText);

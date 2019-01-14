@@ -31,12 +31,11 @@
  */
 
 
-/*
- *	host.c
- *		This module handles the ibm_hosts file, connecting to and
- *		disconnecting from hosts, and state changes on the host
- *		connection.
+/**
+ * @brief Handle connect and disconnect from hosts, and state changes on the host connection.
  */
+
+#pragma GCC diagnostic ignored "-Wsign-compare"
 
 #include <malloc.h>
 #include "private.h"

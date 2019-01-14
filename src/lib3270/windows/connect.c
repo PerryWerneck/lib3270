@@ -29,50 +29,32 @@
 
 #include <config.h>
 
-#if defined(_WIN32)
+// Compiling for WinXP or later: Expose getaddrinfo()/freeaddrinfo().
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
 
-	// Compiling for WinXP or later: Expose getaddrinfo()/freeaddrinfo().
-	#undef _WIN32_WINNT
-	#define _WIN32_WINNT 0x0501
-
-	#include <winsock2.h>
-	#include <windows.h>
-	#include <ws2tcpip.h>
-
-#endif
+#include <winsock2.h>
+#include <windows.h>
+#include <ws2tcpip.h>
 
 #include "private.h"
 #include <errno.h>
 
-#if defined(_WIN32)
-	#include <ws2tcpip.h>
-#else
-	#include <sys/types.h>
-	#include <sys/socket.h>
-	#include <sys/ioctl.h>
-	#include <netinet/in.h>
-	#include <netdb.h>
-	#include <unistd.h>
-	#include <fcntl.h>
-#endif
+#include <ws2tcpip.h>
 
 #ifdef HAVE_ICONV
 	#include <iconv.h>
 #endif // HAVE_ICONV
 
-#if defined(_WIN32) /*[*/
-	#define SOCK_CLOSE(s)	closesocket(s->sock); s->sock = -1;
-#else /*][*/
-	#define SOCK_CLOSE(s)	close(s->sock); s->sock = -1;
-#endif /*]*/
+#define SOCK_CLOSE(s)	closesocket(s->sock); s->sock = -1;
 
-#include <stdlib.h>
-#include "statusc.h"
+//#include "statusc.h"
 #include "hostc.h"
 #include "trace_dsc.h"
-#include "utilc.h"
+//#include "utilc.h"
 #include "telnetc.h"
 #include "screen.h"
+
 #include <lib3270/internals.h>
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
@@ -97,11 +79,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								LIB3270_NOTIFY_ERROR,
 								_( "Network error" ),
 								_( "Unable to get connection state." ),
-#ifdef _WIN32
 								"%s", lib3270_win32_strerror(WSAGetLastError())
-#else
-								_( "%s" ), strerror(errno)
-#endif // _WIN32
 							);
 		return;
 	}
@@ -115,11 +93,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								LIB3270_NOTIFY_ERROR,
 								_( "Connection failed" ),
 								buffer,
-#ifdef _WIN32
 								_( "%s"), lib3270_win32_strerror(err)
-#else
-								_( "%s" ), strerror(err)
-#endif // _WIN32
 							);
 		trace("%s",__FUNCTION__);
 		return;
@@ -141,11 +115,8 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 }
 
-
-#if defined(_WIN32)
-
- static void sockstart(H3270 *session)
- {
+static void sockstart(H3270 *session)
+{
 	static int initted = 0;
 	WORD wVersionRequested;
 	WSADATA wsaData;
@@ -177,11 +148,10 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								N_( "Can't use winsock version %d.%d" ), LOBYTE(wsaData.wVersion), HIBYTE(wsaData.wVersion));
 		_exit(1);
 	}
- }
-#endif // WIN32
+}
 
- LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int wait)
- {
+LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int wait)
+{
 	CHECK_SESSION_HANDLE(hSession);
 
 	if(url && *url)
@@ -191,10 +161,10 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 	return lib3270_connect(hSession, wait);
 
- }
+}
 
- LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_OPTION opt)
- {
+LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_OPTION opt)
+{
 	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hostname)
@@ -235,10 +205,63 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 	return lib3270_connect(hSession,opt & LIB3270_OPTION_WAIT);
 
- }
+}
 
- int lib3270_connect(H3270 *hSession, int seconds)
+ struct resolver
  {
+ 	int			  convert;
+	const char 	* message;
+ };
+
+ static int background_connect(H3270 *hSession, void *host)
+ {
+	struct addrinfo	  hints;
+ 	struct addrinfo * result	= NULL;
+	struct addrinfo * rp		= NULL;
+
+	memset(&hints,0,sizeof(hints));
+	hints.ai_family 	= AF_UNSPEC;	// Allow IPv4 or IPv6
+	hints.ai_socktype	= SOCK_STREAM;	// Stream socket
+	hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
+	hints.ai_protocol	= 0;			// Any protocol
+
+ 	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
+ 	if(rc != 0)
+	{
+		((struct resolver *) host)->message = gai_strerror(rc);
+		((struct resolver *) host)->convert = 1;
+		return -1;
+	}
+
+	status_connecting(hSession,1);
+
+	for(rp = result; hSession->sock < 0 && rp != NULL; rp = rp->ai_next)
+	{
+		hSession->sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+		if(hSession->sock < 0)
+		{
+			((struct resolver *) host)->message = strerror(errno);
+			continue;
+		}
+
+		// Connected!
+		if(connect(hSession->sock, rp->ai_addr, rp->ai_addrlen))
+		{
+			SOCK_CLOSE(hSession);
+			((struct resolver *) host)->message = strerror(errno);
+			continue;
+		}
+
+	}
+
+	freeaddrinfo(result);
+
+	return 0;
+
+}
+
+int lib3270_connect(H3270 *hSession, int seconds)
+{
  	int					  s;
 	int					  optval;
 	struct addrinfo		  hints;
@@ -255,9 +278,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	if(hSession->sock > 0)
 		return errno = EBUSY;
 
-#if defined(_WIN32)
 	sockstart(hSession);
-#endif
 
 #if defined(HAVE_LIBSSL)
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
@@ -266,71 +287,46 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
 
 	hSession->ever_3270	= False;
-
-	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family 	= AF_UNSPEC;	/* Allow IPv4 or IPv6 */
-	hints.ai_socktype	= SOCK_STREAM;	/* Stream socket */
-	hints.ai_flags		= AI_PASSIVE;	/* For wildcard IP address */
-	hints.ai_protocol	= 0;			/* Any protocol */
-	hints.ai_canonname	= NULL;
-	hints.ai_addr		= NULL;
-	hints.ai_next		= NULL;
-
 	hSession->cstate = LIB3270_RESOLVING;
+
 	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 
-	s = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
-
-	if(s != 0)
+	// s = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
+	if(lib3270_run_task(hSession, background_connect, &host) || hSession->sock < 0)
 	{
 		char buffer[4096];
+		char msg[4096];
 
 		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
 
-#if defined(WIN32) && defined(HAVE_ICONV)
+		strncpy(msg,host.message,4095);
+
+#ifdef HAVE_ICONV
+		if(host.convert)
 		{
-			char 		  tmpbuffer[4096];
-			const char 	* msg 		= gai_strerror(s);
-			size_t		  in 		= strlen(msg);
-			size_t		  out 		= 4096;
-			char		* ptr		= tmpbuffer;
+			char	* ptr = msg;
+			size_t	  out = 4096;
 
 			iconv_t hConv = iconv_open(lib3270_win32_local_charset(),"UTF-8");
-
-			trace("Antes: [%s]",msg);
-			if(iconv(hConv,&msg,&in,&ptr,&out) != ((size_t) -1))
-				msg = tmpbuffer;
-			trace("Depois: [%s]",msg);
-
+			if(iconv(hConv,&host.message,&in,&ptr,&out) == ((size_t) -1))
+			{
+				strncpy(msg,host.message,4095);
+			}
 			iconv_close(hConv);
 
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									buffer,
-									"%s",
-									msg);
 		}
+#endif // HAVE_ICONV
 
-#else
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,
 								_( "Connection error" ),
 								buffer,
 								"%s",
-								gai_strerror(s));
-#endif // WIN32
-
+								msg);
 
 		lib3270_set_disconnected(hSession);
-		return errno = ENOENT;
+		return errno = ENOTCONN;
 	}
-
-
-#if !defined(_WIN32)
-	/* don't share the socket with our children */
-	(void) fcntl(hSession->sock, F_SETFD, 1);
-#endif
 
 	hSession->ever_3270 = False;
 	hSession->ssl.host  = 0;
@@ -353,141 +349,40 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	}
 
 	/* connect */
-	status_connecting(hSession,1);
 
-	for(rp = result; hSession->sock < 0 && rp != NULL; rp = rp->ai_next)
+	WSASetLastError(0);
+	u_long iMode=1;
+
+	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
+	if (setsockopt(hSession->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
 	{
-		hSession->sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-		if(hSession->sock < 0)
-			continue;
+		char buffer[4096];
+		snprintf(buffer,4095,N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
-		trace("sock=%d",hSession->sock);
-
-#ifdef WIN32
-
-		WSASetLastError(0);
-		u_long iMode=1;
-		trace("sock=%d",hSession->sock);
-
-		optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
-		if (setsockopt(hSession->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
-		{
-			char buffer[4096];
-			snprintf(buffer,4095,N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
-
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									buffer,
-									"%s", lib3270_win32_strerror(WSAGetLastError()));
-			SOCK_CLOSE(hSession);
-			continue;
-		}
-		else
-		{
-			trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
-		}
-
-		if(ioctlsocket(hSession->sock,FIONBIO,&iMode))
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "ioctlsocket(FIONBIO) failed." ),
-									"%s", lib3270_win32_strerror(WSAGetLastError()));
-			SOCK_CLOSE(hSession);
-			continue;
-		}
-		else if(connect(hSession->sock, rp->ai_addr, rp->ai_addrlen))
-		{
-			int err = WSAGetLastError();
-			if(err != WSAEWOULDBLOCK)
-			{
-				char buffer[4096];
-				snprintf(buffer,4095,_( "Can't connect to %s"), lib3270_get_host(hSession));
-
-				lib3270_popup_dialog(	hSession,
-										LIB3270_NOTIFY_ERROR,
-										_( "Connection error" ),
-										buffer,
-										"%s", lib3270_win32_strerror(err));
-				SOCK_CLOSE(hSession);
-				continue;
-
-			}
-		}
-
-		optval = 1;
-		if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "setsockopt(SO_OOBINLINE) has failed" ),
-									"%s", lib3270_win32_strerror(WSAGetLastError()));
-			SOCK_CLOSE(hSession);
-			continue;
-		}
-
-#else
-		fcntl(hSession->sock, F_SETFL,fcntl(hSession->sock,F_GETFL,0)|O_NONBLOCK);
-
-		errno = 0;
-		if(connect(hSession->sock, rp->ai_addr, rp->ai_addrlen))
-		{
-			if( errno != EINPROGRESS )
-			{
-				char buffer[4096];
-				snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
-
-				lib3270_popup_dialog(	hSession,
-										LIB3270_NOTIFY_ERROR,
-										_( "Connection error" ),
-										buffer,
-										"%s",
-										strerror(errno));
-				SOCK_CLOSE(hSession);
-				continue;
-			}
-		}
-
-		optval = 1;
-		if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "setsockopt(SO_OOBINLINE) has failed" ),
-									"%s",
-									strerror(errno));
-			SOCK_CLOSE(hSession);
-			continue;
-		}
-
-		optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
-		if (setsockopt(hSession->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
-		{
-			char buffer[4096];
-			snprintf(buffer,4095,N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
-
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									buffer,
-									"%s",
-									strerror(errno));
-			SOCK_CLOSE(hSession);
-			continue;
-		}
-		else
-		{
-			trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
-		}
-
-#endif // WIN32
+		lib3270_popup_dialog(	hSession,
+								LIB3270_NOTIFY_ERROR,
+								_( "Connection error" ),
+								buffer,
+								"%s", lib3270_win32_strerror(WSAGetLastError()));
+		SOCK_CLOSE(hSession);
+		return errno = ENOTCONN;
+	}
+	else
+	{
+		trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
 	}
 
-	freeaddrinfo(result);
+	optval = 1;
+	if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
+	{
+		lib3270_popup_dialog(	hSession,
+								LIB3270_NOTIFY_ERROR,
+								_( "Connection error" ),
+								_( "setsockopt(SO_OOBINLINE) has failed" ),
+								"%s", lib3270_win32_strerror(WSAGetLastError()));
+		SOCK_CLOSE(hSession);
+		return errno = ENOTCONN;
+	}
 
 	// set options for inline out-of-band data and keepalives
 
@@ -501,12 +396,6 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 #endif
 
 	*/
-
-	if(hSession->sock < 0)
-	{
-		lib3270_set_disconnected(hSession);
-		return errno = ENOTCONN;
-	}
 
 	// Connecting, set callbacks, wait for connection
 	hSession->cstate = LIB3270_PENDING;

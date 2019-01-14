@@ -30,8 +30,9 @@ LIBNAME=lib@LIB3270_NAME@
 
 SOURCES= \
 	$(wildcard *.c) \
-	$(wildcard ssl/*.c) \
 	$(wildcard @OSNAME@/*.c) \
+	$(wildcard ssl/*.c) \
+	$(wildcard ssl/@OSNAME@/*.c) \
 	$(wildcard @OSNAME@/*.rc) \
 	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c
 

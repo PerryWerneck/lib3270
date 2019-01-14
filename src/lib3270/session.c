@@ -209,7 +209,7 @@ static void def_popup(H3270 *session, LIB3270_NOTIFY type unused, const char *ti
 #endif // ANDROID
 }
 
-static void def_trace(H3270 *session unused, const char *fmt, va_list args)
+static void def_trace(H3270 *session unused, void *userdata unused, const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
 	fflush(stdout);
@@ -271,7 +271,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->cbk.update_selection		= update_selection;
 	hSession->cbk.cursor 				= set_cursor;
 	hSession->cbk.message				= message;
-	hSession->cbk.trace					= def_trace;
 	hSession->cbk.popup					= def_popup;
 	hSession->cbk.update_ssl			= update_ssl;
 	hSession->cbk.display				= screen_disp;
@@ -281,6 +280,9 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->cbk.set_timer				= set_timer;
 	hSession->cbk.print					= print;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
+
+	// Trace management.
+	hSession->trace.handler				= def_trace;
 
 	// Set the defaults.
 	hSession->extended  			=  1;
@@ -321,11 +323,12 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 }
 
-LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler(H3270 *session, LIB3270_TRACE_HANDLER handler)
+LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata)
 {
-	void (*ret)(H3270 *session, const char *fmt, va_list args) = session->cbk.trace;
-	session->cbk.trace = handler ? handler : def_trace;
-	return ret;
+	CHECK_SESSION_HANDLE(hSession);
+
+	hSession->trace.handler	= handler ? handler : def_trace;
+	hSession->trace.userdata	= userdata;
 }
 
 LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list)) {

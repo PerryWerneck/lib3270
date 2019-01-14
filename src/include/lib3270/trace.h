@@ -42,18 +42,18 @@
 	#define LIB3270_AS_PRINTF(a,b) __attribute__((format(printf, a, b)))
 #endif
 
-	typedef void (*LIB3270_TRACE_HANDLER)(H3270 *, const char *, va_list);
+	typedef void (*LIB3270_TRACE_HANDLER)(H3270 *, void *, const char *, va_list);
 
 
 	/**
 	 * Set trace handle callback.
 	 *
-	 * @param handle	Callback to write in trace file or show trace window (NULL send all trace to stdout/syslog).
-	 * @param data		User data to pass to the trace handler.
+	 * @param hSession	TN3270 Session handle.
+	 * @param handler	Callback to write in trace file or show trace window (NULL send all trace to stdout/syslog).
+	 * @param userdata	User data to pass to the trace handler.
 	 *
-	 * @return Current trace handler
 	 */
-	LIB3270_EXPORT LIB3270_TRACE_HANDLER lib3270_set_trace_handler(H3270 *session, LIB3270_TRACE_HANDLER handler);
+	LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata);
 
 	/**
 	 * Write on trace file.

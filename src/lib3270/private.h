@@ -618,6 +618,12 @@ struct _h3270
 	input_t 				* inputs;
 	int						  inputs_changed : 1;
 
+	// Trace Window.
+	struct {
+		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
+		void *userdata;
+	} trace;
+
 	// Callbacks.
 	struct lib3270_state_callback		* st_callbacks[LIB3270_STATE_USER];
 	struct lib3270_state_callback		* st_last[LIB3270_STATE_USER];

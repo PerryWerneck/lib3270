@@ -50,6 +50,7 @@
 	#undef HAVE_LDAP
 	#undef HAVE_LIBSSL
 	#undef SSL_ALLOW_SELF_SIGNED_CERT
+	#undef SSL_ENABLE_CRL_CHECK
 
 	/* Windows Options */
 #ifdef WIN32

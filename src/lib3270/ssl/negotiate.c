@@ -70,15 +70,6 @@
  */
  SSL_CTX * ssl_ctx = NULL;
 
-struct ssl_error_message
-{
-	int			  error;
-	const char	* title;
-	const char	* text;
-	const char	* description;
-};
-
-
 /**
  * @brief Initialize openssl session.
  *
@@ -94,15 +85,9 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	hSession->ssl.error = 0;
 	hSession->ssl.host = False;
 
-	if(ssl_ctx_init(hSession)) {
-
-		((struct ssl_error_message *) message)->error = hSession->ssl.error = ERR_get_error();
-		((struct ssl_error_message *) message)->title = N_( "Security error" );
-		((struct ssl_error_message *) message)->text = N_( "SSL context initialization has failed" );
-
+	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) message)) {
 		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 		hSession->ssl.host = False;
-
 		return -1;
 	}
 
@@ -112,9 +97,9 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	hSession->ssl.con = SSL_new(ssl_ctx);
 	if(hSession->ssl.con == NULL)
 	{
-		((struct ssl_error_message *) message)->error = hSession->ssl.error = ERR_get_error();
-		((struct ssl_error_message *) message)->title = N_( "Security error" );
-		((struct ssl_error_message *) message)->text = N_( "Cant create a new SSL structure for current connection." );
+		((SSL_ERROR_MESSAGE *) message)->error = hSession->ssl.error = ERR_get_error();
+		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = N_( "Cant create a new SSL structure for current connection." );
 		return -1;
 	}
 
@@ -142,9 +127,9 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	{
 		trace_dsn(hSession,"%s","SSL_set_fd failed!\n");
 
-		((struct ssl_error_message *) message)->title = N_( "Security error" );
-		((struct ssl_error_message *) message)->text = N_( "SSL negotiation failed" );
-		((struct ssl_error_message *) message)->description = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." );
+		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL negotiation failed" );
+		((SSL_ERROR_MESSAGE *) message)->description = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." );
 
 		return -1;
 	}
@@ -157,16 +142,16 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	{
 		const char	* msg 		= "";
 
-		((struct ssl_error_message *) message)->error = SSL_get_error(hSession->ssl.con,rv);
-		if(((struct ssl_error_message *) message)->error == SSL_ERROR_SYSCALL && hSession->ssl.error)
-			((struct ssl_error_message *) message)->error = hSession->ssl.error;
+		((SSL_ERROR_MESSAGE *) message)->error = SSL_get_error(hSession->ssl.con,rv);
+		if(((SSL_ERROR_MESSAGE *) message)->error == SSL_ERROR_SYSCALL && hSession->ssl.error)
+			((SSL_ERROR_MESSAGE *) message)->error = hSession->ssl.error;
 
-		msg = ERR_lib_error_string(((struct ssl_error_message *) message)->error);
+		msg = ERR_lib_error_string(((SSL_ERROR_MESSAGE *) message)->error);
 
 		trace_dsn(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
-		((struct ssl_error_message *) message)->title = N_( "Security error" );
-		((struct ssl_error_message *) message)->text = N_( "SSL Connect failed" );
+		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL Connect failed" );
 		lib3270_disconnect(hSession);
 		return -1;
 
@@ -191,9 +176,9 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		debug("%s","The CRL of a certificate could not be found." );
 		trace_dsn(hSession,"%s","The CRL of a certificate could not be found.\n" );
 
-		((struct ssl_error_message *) message)->title = _( "SSL error" );
-		((struct ssl_error_message *) message)->text = _( "Unable to get certificate CRL." );
-		((struct ssl_error_message *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "Unable to get certificate CRL." );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
 
 		return -1;
 
@@ -207,9 +192,9 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 #ifdef SSL_ALLOW_SELF_SIGNED_CERT
 		break;
 #else
-		((struct ssl_error_message *) message)->title = _( "SSL error" );
-		((struct ssl_error_message *) message)->text = _( "The SSL certificate for this host is not trusted." );
-		((struct ssl_error_message *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
 		return -1;
 #endif // SSL_ALLOW_SELF_SIGNED_CERT
 
@@ -273,7 +258,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 int ssl_negotiate(H3270 *hSession)
 {
 	int rc;
-	struct ssl_error_message msg;
+	SSL_ERROR_MESSAGE msg;
 
 	memset(&msg,0,sizeof(msg));
 
@@ -301,7 +286,7 @@ int ssl_negotiate(H3270 *hSession)
 int	ssl_init(H3270 *hSession) {
 
 	int rc;
-	struct ssl_error_message msg;
+	SSL_ERROR_MESSAGE msg;
 
 	memset(&msg,0,sizeof(msg));
 

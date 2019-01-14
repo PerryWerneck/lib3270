@@ -664,11 +664,19 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 #if defined(HAVE_LIBSSL) /*[*/
 
-	LIB3270_INTERNAL int	ssl_ctx_init(H3270 *hSession);
+	typedef struct _ssl_error_message
+	{
+		int			  error;
+		const char	* title;
+		const char	* text;
+		const char	* description;
+	} SSL_ERROR_MESSAGE;
+
+
+	LIB3270_INTERNAL int	ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);
 	LIB3270_INTERNAL int	ssl_init(H3270 *session);
 	LIB3270_INTERNAL int	ssl_negotiate(H3270 *hSession);
 	LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
-
 
 	#if OPENSSL_VERSION_NUMBER >= 0x00907000L /*[*/
 		#define INFO_CONST const

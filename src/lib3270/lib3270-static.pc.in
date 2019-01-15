@@ -7,7 +7,7 @@ version_major=@PACKAGE_MAJOR_VERSION@
 version_minor=@PACKAGE_MINOR_VERSION@
 sdk_version=@LIB3270_SDK_VERSION@
 
-Name: @PACKAGE_NAME@
+Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)
 Version: @PACKAGE_VERSION@
 Libs: -L\@libdir@ -l@LIB3270_NAME@-static @LIBSSL_LIBS@ @INTL_LIBS@

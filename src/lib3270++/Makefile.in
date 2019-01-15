@@ -211,7 +211,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		-L$(BINRLS) \
 		$(LIBS) \
-		-l3270
+		-l@LIB3270_NAME@
 
 $(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
@@ -365,7 +365,7 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 		-L$(BINDBG) \
 		$(LIBS) \
-		-l3270
+		-l@LIB3270_NAME@
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 

@@ -183,7 +183,6 @@ void trace_ssl(H3270 *session, const char *fmt, ...)
 {
 	va_list args;
 
-	debug("******************* %d",(int) lib3270_get_toggle(session,LIB3270_TOGGLE_SSL_TRACE));
 	if (!lib3270_get_toggle(session,LIB3270_TOGGLE_SSL_TRACE))
 		return;
 

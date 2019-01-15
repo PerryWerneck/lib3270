@@ -267,9 +267,10 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			return NULL;
 		}
 
-		debug("CRL Length=%d",(int) value[0]->bv_len);
+		// Precisa salvar uma cópia porque d2i_X509_CRL modifica o ponteiro.
+		const unsigned char *crl_data = (const unsigned char *) value[0]->bv_val;
 
-		if(!d2i_X509_CRL(&crl, (const unsigned char **) &value[0]->bv_val, value[0]->bv_len))
+		if(!d2i_X509_CRL(&crl, &crl_data, value[0]->bv_len))
 		{
 			message->error = hSession->ssl.error = ERR_get_error();
 			message->title = N_( "Security error" );
@@ -277,7 +278,7 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			lib3270_write_log(hSession,"ssl","%s: %s",url, message->text);
 		}
 
-		// ldap_value_free_len(value);
+		ldap_value_free_len(value);
 
 	}
 #endif // HAVE_LDAP

@@ -12,6 +12,8 @@
 				<Option object_output=".obj/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application=".bin/Debug/lib3270" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -211,7 +213,10 @@
 		<Unit filename="src/lib3270/sf.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/ssl/linux/ctx_init.c">
+		<Unit filename="src/lib3270/ssl/ctx_init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/ssl/linux/getcrl.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/ssl/negotiate.c">

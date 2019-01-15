@@ -217,7 +217,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	default:
 
 		debug("Unexpected or invalid TLS/SSL verify result %d",rv);
-		trace_dsn(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
+		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 	}
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
@@ -226,7 +226,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		int 				  alg_bits		= 0;
 		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(hSession->ssl.con);
 
-		trace_dsn(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
+		trace_ssl(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
 		SSL_CIPHER_get_bits(cipher, &alg_bits);
 		trace_ssl(hSession,"%s version %s with %d bits\n",
 						SSL_CIPHER_get_name(cipher),
@@ -342,16 +342,16 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 	switch(where)
 	{
 	case SSL_CB_CONNECT_LOOP:
-		trace_dsn(hSession,"SSL_connect: %s %s\n",SSL_state_string(s), SSL_state_string_long(s));
+		trace_ssl(hSession,"SSL_connect: %s %s\n",SSL_state_string(s), SSL_state_string_long(s));
 		break;
 
 	case SSL_CB_CONNECT_EXIT:
 
-		trace_dsn(hSession,"%s: SSL_CB_CONNECT_EXIT\n",__FUNCTION__);
+		trace_ssl(hSession,"%s: SSL_CB_CONNECT_EXIT\n",__FUNCTION__);
 
 		if (ret == 0)
 		{
-			trace_dsn(hSession,"SSL_connect: failed in %s\n",SSL_state_string_long(s));
+			trace_ssl(hSession,"SSL_connect: failed in %s\n",SSL_state_string_long(s));
 		}
 		else if (ret < 0)
 		{
@@ -379,7 +379,7 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 				err_buf[0] = '\0';
 			}
 
-			trace_dsn(hSession,"SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
+			trace_ssl(hSession,"SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
 							ret,
 							err_buf,
 							SSL_state_string_long(s),
@@ -390,7 +390,7 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 		break;
 
 	default:
-		trace_dsn(hSession,"SSL Current state is \"%s\"\n",SSL_state_string_long(s));
+		trace_ssl(hSession,"SSL Current state is \"%s\"\n",SSL_state_string_long(s));
 	}
 
 #ifdef DEBUG
@@ -401,11 +401,11 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 #endif
 
 	if(where & SSL_CB_ALERT)
-		trace_dsn(hSession,"SSL ALERT: %s\n",SSL_alert_type_string_long(ret));
+		trace_ssl(hSession,"SSL ALERT: %s\n",SSL_alert_type_string_long(ret));
 
 	if(where & SSL_CB_HANDSHAKE_DONE)
 	{
-		trace_dsn(hSession,"%s: SSL_CB_HANDSHAKE_DONE state=%04x\n",__FUNCTION__,SSL_get_state(s));
+		trace_ssl(hSession,"%s: SSL_CB_HANDSHAKE_DONE state=%04x\n",__FUNCTION__,SSL_get_state(s));
 		if(SSL_get_state(s) == SSL_ST_OK)
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 		else

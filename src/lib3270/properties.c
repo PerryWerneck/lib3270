@@ -285,6 +285,43 @@
 	return lib3270_get_revision();
  }
 
+ int lib3270_set_crl(H3270 *hSession, const char *crl)
+ {
+
+    FAIL_IF_ONLINE(hSession);
+
+#ifdef SSL_ENABLE_CRL_CHECK
+
+	if(hSession->ssl.crl)
+	{
+		free(hSession->ssl.crl);
+		hSession->ssl.crl = NULL;
+	}
+
+	if(crl)
+	{
+		hSession->ssl.crl = strdup(crl);
+	}
+
+	return 0;
+
+#else
+
+	return errno = ENOTSUP;
+
+#endif // SSL_ENABLE_CRL_CHECK
+
+ }
+
+ static const char * lib3270_get_crl(H3270 *hSession)
+ {
+#ifdef SSL_ENABLE_CRL_CHECK
+	if(hSession->ssl.crl)
+		return hSession->ssl.crl;
+#endif
+ 	return "";
+ }
+
  LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void)
  {
 	 static const LIB3270_STRING_PROPERTY properties[] = {
@@ -344,6 +381,14 @@
 			get_revision,								//  Get value.
 			NULL										//  Set value.
 		},
+
+		{
+			"crl",										//  Property name.
+			N_( "URL for the CRL file" ),				//  Property description.
+			lib3270_get_crl,							//  Get value.
+			lib3270_set_crl,							//  Set value.
+		},
+
 
 		/*
 		{

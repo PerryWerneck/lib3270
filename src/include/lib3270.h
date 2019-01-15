@@ -466,6 +466,17 @@
 	 LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *url);
 
 	/**
+	 * @brief Set URL for the certificate revocation list.
+	 *
+	 * @param hSession	Session handle.
+	 * @param crl		URL for the certificate revocation list.
+	 *
+	 * @return 0 on sucess, non zero on error (sets errno).
+	 *
+	 */
+	 LIB3270_EXPORT int lib3270_set_crl(H3270 *hSession, const char *crl);
+
+	/**
 	 * @brief Get hostname for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
@@ -1174,7 +1185,7 @@
 
 	LIB3270_EXPORT void * lib3270_malloc(int len);
 	LIB3270_EXPORT void * lib3270_realloc(void *p, int len);
-	LIB3270_EXPORT void * lib3270_replace(void **p, void *ptr);
+//	LIB3270_EXPORT void * lib3270_replace(void **p, void *ptr);
 	LIB3270_EXPORT void * lib3270_strdup(const char *str);
 
 	#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName

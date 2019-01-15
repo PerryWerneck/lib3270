@@ -34,12 +34,13 @@
  */
 
 /**
- * @brief OpenSSL initialization for windows.
+ * @brief OpenSSL initialization for linux.
  *
  */
 
 #include <config.h>
 #if defined(HAVE_LIBSSL)
+
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
@@ -48,14 +49,27 @@
 	#define SSL_ST_OK 3
 #endif // !SSL_ST_OK
 
-#include "../../private.h"
+#include "../private.h"
 #include <errno.h>
 #include <lib3270.h>
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>
+#include <lib3270/log.h>
 #include "trace_dsc.h"
 
+#ifdef SSL_ENABLE_CRL_CHECK
+	#include <openssl/x509.h>
+#endif // SSL_ENABLE_CRL_CHECK
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
+
+#ifdef SSL_ENABLE_CRL_CHECK
+static inline void lib3270_autoptr_cleanup_X509_CRL(X509_CRL **crl)
+{
+	if(*crl)
+		X509_CRL_free(*crl);
+}
+#endif // SSL_ENABLE_CRL_CHECK
 
 /**
  * @brief Initialize openssl library.
@@ -63,7 +77,7 @@
  * @return 0 if ok, non zero if fails.
  *
  */
-int ssl_ctx_init(H3270 *hSession)
+int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 {
 	debug("%s ssl_ctx=%p",__FUNCTION__,ssl_ctx);
 
@@ -77,100 +91,65 @@ int ssl_ctx_init(H3270 *hSession)
 
 	ssl_ctx = SSL_CTX_new(SSLv23_method());
 	if(ssl_ctx == NULL)
+	{
+		message->error = hSession->ssl.error = ERR_get_error();
+		message->title = N_( "Security error" );
+		message->text = N_( "Cant initialize the SSL context." );
 		return -1;
+	}
 
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
 	SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
+
 	SSL_CTX_set_default_verify_paths(ssl_ctx);
-
-	//
-	// Get path from windows registry.
-	//
-	HKEY hKey = 0;
-
-	if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\" PACKAGE_NAME,0,KEY_QUERY_VALUE,&hKey) == ERROR_SUCCESS)
-	{
-		char			data[4096];
-		unsigned long	datalen	= sizeof(data);		// data field length(in), data returned length(out)
-		unsigned long	datatype;					// #defined in winnt.h (predefined types 0-11)
-
-		if(RegQueryValueExA(hKey,"datadir",NULL,&datatype,(LPBYTE) data,&datalen) == ERROR_SUCCESS)
-		{
-			strncat(data,"\\certs",4095);
-
-			if(!SSL_CTX_load_verify_locations(ssl_ctx,NULL,data))
-			{
-				hSession->ssl.error = ERR_get_error();
-
-				trace_dsn(
-					hSession,
-					"Cant set default locations for trusted CA certificates to %s\n%s\m"
-						data,
-						ERR_lib_error_string(hSession->ssl.error)
-				);
-
-				lib3270_write_log(
-					hSession,
-					"ssl",
-					"Cant set default locations for trusted CA certificates to %s\n%s",
-							data,
-							ERR_lib_error_string(hSession->ssl.error)
-				);
-
-			}
-		}
-		RegCloseKey(hKey);
-	}
 
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
+#ifdef SSL_ENABLE_CRL_CHECK
 	//
-	// Initialize CUSTOM CRL CHECK
+	// Set up CRL validation
 	//
+	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
+	//
+	lib3270_autoptr(X509_CRL) crl = lib3270_get_X509_CRL(hSession,message);
 
-	return 0;
-}
+	if(!crl)
+		return  -1;
 
-#endif // HAVE_LIBSSL
+// const ASN1_TIME *X509_CRL_get0_nextUpdate(const X509_CRL *crl);
+// X509_NAME *X509_CRL_get_issuer(const X509_CRL *crl);
 
-/*
-// Load CRLs into the `X509_STORE`
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
+	{
+		BIO				* out	= BIO_new(BIO_s_mem());
+		unsigned char	* data;
+		unsigned char	* text;
+		int				  n;
 
-X509_STORE *x509_store = SSL_CTX_get_cert_store(ctx);
-X509_STORE_add_crl(x509_store, crl);
+		X509_CRL_print(out,crl);
 
-// Enable CRL checking
-X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
-SSL_CTX_set1_param(ctx, param);
-X509_VERIFY_PARAM_free(param);
+		n		= BIO_get_mem_data(out, &data);
+		text	= (unsigned char *) malloc (n+1);
+		text[n]	='\0';
+		memcpy(text,data,n);
 
+		trace_dsn(hSession,"\n%s\n",text);
 
+		free(text);
+		BIO_free(out);
 
 	}
 
-
-
-/*
-#if defined(SSL_ENABLE_CRL_CHECK)
-	// Set up CRL validation
-	// https://stackoverflow.com/questions/4389954/does-openssl-automatically-handle-crls-certificate-revocation-lists-now
 	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-
-	// Enable CRL checking
+	X509_STORE_add_crl(store, crl);
 	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
 	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
 	X509_STORE_set1_param(store, param);
 	X509_VERIFY_PARAM_free(param);
 
-	// X509_STORE_free(store);
-
-	trace_dsn(hSession,"CRL CHECK is enabled.\n");
-
-#else
-
-	trace_dsn(hSession,"CRL CHECK is disabled.\n");
-
 #endif // SSL_ENABLE_CRL_CHECK
-*/
 
+	return 0;
+}
+
+#endif // HAVE_LIBSSL

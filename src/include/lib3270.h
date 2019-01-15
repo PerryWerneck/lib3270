@@ -1176,6 +1176,14 @@
 	LIB3270_EXPORT void * lib3270_replace(void **p, void *ptr);
 	LIB3270_EXPORT void * lib3270_strdup(const char *str);
 
+	#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
+
+	/**
+	 * @brief Declare an auto-cleanup pointer.
+	 *
+	 */
+	#define lib3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
+
 	/**
 	 * @brief Release allocated memory.
 	 *
@@ -1185,6 +1193,7 @@
 	 */
 	LIB3270_EXPORT void  * lib3270_free(void *p);
 
+	LIB3270_EXPORT void   lib3270_autoptr_cleanup_char(char **ptr);
 
 	/**
 	 * Get default session handle.

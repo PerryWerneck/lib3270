@@ -163,6 +163,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	switch(rv)
 	{
+	// https://www.openssl.org/docs/man1.0.2/crypto/X509_STORE_CTX_set_error.html
 	case X509_V_OK:
 		peer = SSL_get_peer_certificate(hSession->ssl.con);
 
@@ -180,6 +181,21 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Unable to get certificate CRL." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
 
+		return -1;
+
+	case X509_V_ERR_CRL_NOT_YET_VALID:
+		trace_dsn(hSession,"%s","The CRL of a certificate is not yet valid.\n" );
+
+		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL is not yet valid." );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) is not yet valid." );
+		return -1;
+
+	case X509_V_ERR_CRL_HAS_EXPIRED:
+		trace_dsn(hSession,"%s","The CRL of a certificate has expired.\n" );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL has expired." );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) has expired." );
 		return -1;
 
 	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:

@@ -234,10 +234,6 @@ struct lib3270_text
 	unsigned short attr;	///< @brief Converted character attribute (color & etc)
 };
 
-#ifndef HEADER_SSL_H
-	#define SSL void
-#endif // !HEADER_SSL_H
-
 #ifndef LIB3270_TA
 	#define LIB3270_TA void
 #endif // !LIB3270_TA
@@ -314,7 +310,6 @@ struct _h3270
 	// flags
 	LIB3270_OPTION			  options;							///< @brief Session options.
 
-//	int						  bgthread					: 1;	///< @brief Running on a background thread ?.
 	int					  	  selected					: 1;	///< @brief Has selected region?
 	int						  rectsel					: 1;	///< @brief Selected region is a rectangle ?
 	int						  vcontrol					: 1;	///< @brief Visible control ?
@@ -334,15 +329,15 @@ struct _h3270
 	int						  onlcr						: 1;
 	int						  bsd_tm					: 1;
 	int 					  syncing					: 1;
-	int						  reverse 					: 1;	/**< reverse-input mode */
+	int						  reverse 					: 1;	/**< @brief reverse-input mode */
 	int						  dbcs						: 1;
 	int             		  linemode					: 1;
 	int						  trace_skipping			: 1;
 	int						  need_tls_follows			: 1;
 	int						  cut_xfer_in_progress		: 1;
 //		int						  auto_keymap				: 1;
-	int						  formatted					: 1;	/**< Formatted screen flag */
-	int						  starting					: 1;	/**< Is starting (no first screen)? */
+	int						  formatted					: 1;	/**< @brief Formatted screen flag */
+	int						  starting					: 1;	/**< @brief Is starting (no first screen)? */
 
 	char					* oversize;
 
@@ -382,7 +377,7 @@ struct _h3270
 	unsigned short			  current_port;
 
 	// Misc
-	H3270FT					* ft;					/**< Active file transfer data */
+	H3270FT					* ft;					/**< @brief Active file transfer data */
 
 	// screen info
 	int						  ov_rows;
@@ -395,14 +390,14 @@ struct _h3270
 	int						  cursor_addr;
 	int						  buffer_addr;
 	char					  flipped;
-	int						  screen_alt;			/**< alternate screen? */
+	int						  screen_alt;			/**< @brief alternate screen? */
 	int						  is_altbuffer;
 
 	// Screen contents
-	void 					* buffer[2];			/**< Internal buffers */
-	struct lib3270_ea  		* ea_buf;				/**< 3270 device buffer. ea_buf[-1] is the dummy default field attribute */
-	struct lib3270_ea		* aea_buf;				/**< alternate 3270 extended attribute buffer */
-	struct lib3270_text		* text;					/**< Converted 3270 chars */
+	void 					* buffer[2];			/**< @brief Internal buffers */
+	struct lib3270_ea  		* ea_buf;				/**< @brief 3270 device buffer. ea_buf[-1] is the dummy default field attribute */
+	struct lib3270_ea		* aea_buf;				/**< @brief alternate 3270 extended attribute buffer */
+	struct lib3270_text		* text;					/**< @brief Converted 3270 chars */
 
 	// host.c
 	char	 				  std_ds_host;
@@ -424,7 +419,7 @@ struct _h3270
 	int						  mticking			: 1;
 	int						  crm_nattr;
 	unsigned char			  crm_attr[16];
-	unsigned char 			* zero_buf;				/**< empty buffer, for area clears */
+	unsigned char 			* zero_buf;				/**< @brief Empty buffer, for area clears */
 
 	struct timeval			  t_start;
 	void					* tick_id;
@@ -432,8 +427,8 @@ struct _h3270
 
 	// Telnet.c
 	unsigned char 			* ibuf;
-	int      				  ibuf_size;			/**< size of ibuf */
-	unsigned char			* obuf;					/**< 3270 output buffer */
+	int      				  ibuf_size;			/**< @brief size of ibuf */
+	unsigned char			* obuf;					/**< @brief 3270 output buffer */
 	unsigned char			* obptr;
 	time_t          		  ns_time;
 	int             		  ns_brcvd;
@@ -441,8 +436,8 @@ struct _h3270
 	int             		  ns_bsent;
 	int             		  ns_rsent;
 	struct timeval 			  ds_ts;
-	unsigned long			  e_funcs;				/**< negotiated TN3270E functions */
-	unsigned short			  e_xmit_seq;			/**< transmit sequence number */
+	unsigned long			  e_funcs;				/**< @brief negotiated TN3270E functions */
+	unsigned short			  e_xmit_seq;			/**< @brief transmit sequence number */
 	int						  response_required;
 	int						  tn3270e_bound;
 	int						  tn3270e_negotiated;
@@ -468,7 +463,7 @@ struct _h3270
 		E_SSCP
 	}						  tn3270e_submode;
 
-	unsigned char 			* lbuf;					/**< line-mode input buffer */
+	unsigned char 			* lbuf;					/**< @brief line-mode input buffer */
 	unsigned char 			* lbptr;
 
 
@@ -476,7 +471,6 @@ struct _h3270
 	unsigned char 			* ibptr;
 	unsigned char 			* obuf_base;
 	int						  obuf_size;
-//		unsigned char 			* netrbuf;
 
 	// network input buffer
 	unsigned char 			* sbbuf;
@@ -484,14 +478,13 @@ struct _h3270
 	// telnet sub-option buffer
 	unsigned char 			* sbptr;
 	unsigned char			  telnet_state;
-//		char					  ttype_tmpval[13];
 
 	unsigned char 			  myopts[LIB3270_TELNET_N_OPTS];
 	unsigned char			  hisopts[LIB3270_TELNET_N_OPTS];
 
 	// kybd.c
-	unsigned int			  kybdlock;				///< @brief keyboard lock state
-	unsigned char			  aid;					///< @brief current attention ID
+	unsigned int			  kybdlock;				///< @brief @brief keyboard lock state.
+	unsigned char			  aid;					///< @brief @brief current attention ID.
 	void					* unlock_id;
 	time_t					  unlock_delay_time;
 	unsigned long 			  unlock_delay_ms;		///< @brief Delay before actually unlocking the keyboard after the host permits it.
@@ -548,12 +541,12 @@ struct _h3270
 	int						  saved_wide_mode			: 1;
 
 	int						  saved_altbuffer			: 1;
-	int						  ansi_reset				: 1;	/**< Non zero if the ansi_reset() was called in this session */
+	int						  ansi_reset				: 1;	/**< @brief Non zero if the ansi_reset() was called in this session */
 
 	int      				  ansi_ch;
 	int						  cs_to_change;
 
-	/** ANSI Character sets. */
+	/** @brief ANSI Character sets. */
 	enum lib3270_ansi_cs
 	{
 		LIB3270_ANSI_CS_G0 = 0,
@@ -563,7 +556,7 @@ struct _h3270
 	}						  cset;
 	enum lib3270_ansi_cs	  saved_cset;
 
-	/** Character set designations. */
+	/** @brief Character set designations. */
 	enum lib3270_ansi_csd
 	{
 		LIB3270_ANSI_CSD_LD = 0,
@@ -605,7 +598,8 @@ struct _h3270
 		void 				* except;
 	} xio;
 
-	// SSL Data (Always defined to maintain the structure size)
+#ifdef HAVE_LIBSSL
+	/// @brief SSL Data.
 	struct
 	{
 		char				  host;
@@ -613,12 +607,13 @@ struct _h3270
 		unsigned long 		  error;
 		SSL 				* con;
 	} ssl;
+#endif // HAVE_LIBSSL
 
 	timeout_t				* timeouts;
 	input_t 				* inputs;
 	int						  inputs_changed : 1;
 
-	// Trace Window.
+	// Trace methods.
 	struct {
 		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
 		void *userdata;
@@ -662,7 +657,7 @@ LIB3270_INTERNAL int check_offline_session(H3270 *hSession);
 
 LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
-#if defined(HAVE_LIBSSL) /*[*/
+#if defined(HAVE_LIBSSL)
 
 	typedef struct _ssl_error_message
 	{
@@ -672,17 +667,16 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 		const char	* description;
 	} SSL_ERROR_MESSAGE;
 
-
 	LIB3270_INTERNAL int	ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);
 	LIB3270_INTERNAL int	ssl_init(H3270 *session);
 	LIB3270_INTERNAL int	ssl_negotiate(H3270 *hSession);
 	LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 
-	#if OPENSSL_VERSION_NUMBER >= 0x00907000L /*[*/
+	#if OPENSSL_VERSION_NUMBER >= 0x00907000L
 		#define INFO_CONST const
-	#else /*][*/
+	#else
 		#define INFO_CONST
-	#endif /*]*/
+	#endif
 
 	LIB3270_INTERNAL void ssl_info_callback(INFO_CONST SSL *s, int where, int ret);
 
@@ -698,5 +692,9 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	 */
 	LIB3270_INTERNAL int ssl_3270_ex_index;
 
-#endif /*]*/
+	#ifdef SSL_ENABLE_CRL_CHECK
+		X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message);
+	#endif // SSL_ENABLE_CRL_CHECK
+
+#endif
 

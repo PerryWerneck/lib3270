@@ -48,6 +48,16 @@
 	return (int) lib3270_get_program_message(hSession);
  }
 
+ int lib3270_is_starting(H3270 *hSession)
+ {
+	return hSession->starting != 0;
+ }
+
+ int lib3270_get_formatted(H3270 *hSession)
+ {
+	return hSession->formatted != 0;
+ }
+
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void) {
 
 	static const LIB3270_INT_PROPERTY properties[] = {
@@ -140,6 +150,20 @@
 			N_( "Has selected area" ),		//  Property description.
 			lib3270_has_selection,			//  Get value.
 			NULL							//  Set value.
+		},
+
+		{
+			"starting",																			//  Property name.
+			N_( "Is starting (no first screen)?" ),												//  Property description.
+			lib3270_is_starting,																//  Get value.
+			NULL																				//  Set value.
+		},
+
+		{
+			"formatted",																		//  Property name.
+			N_( "Formatted screen" ),															//  Property description.
+			lib3270_get_formatted,																//  Get value.
+			NULL																				//  Set value.
 		},
 
 		/*

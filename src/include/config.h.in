@@ -31,10 +31,15 @@
 
 	#define LIB3270_CONFIG_INCLUDED 1
 
+	/* Version info */
 	#undef PACKAGE_NAME
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
 
+	/* Defaults */
+	#undef LIB3270_DEFAULT_HOST
+
+	/* Libraries */
 	#undef HAVE_GNUC_VISIBILITY
 	#undef HAVE_LIBINTL
 	#undef HAVE_GETADDRINFO
@@ -50,6 +55,7 @@
 	#undef HAVE_LIBSSL
 	#undef SSL_ALLOW_SELF_SIGNED_CERT
 	#undef SSL_ENABLE_CRL_CHECK
+	#undef LIB3270_DEFAULT_CRL
 
 	/* Windows Options */
 #ifdef WIN32

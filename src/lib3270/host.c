@@ -232,12 +232,6 @@ static void update_host(H3270 *h)
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-	return hSession->host.full;
-}
-
 LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
 {
     FAIL_IF_ONLINE(hSession);
@@ -245,11 +239,37 @@ LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
 	return 0;
 }
 
+LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
+{
+	CHECK_SESSION_HANDLE(hSession);
+
+	if(hSession->host.full)
+		return hSession->host.full;
+
+#ifdef LIB3270_DEFAULT_HOST
+	return LIB3270_DEFAULT_HOST;
+#else
+	return getenv("LIB3270_DEFAULT_HOST");
+#endif // LIB3270_DEFAULT_HOST
+
+}
+
 LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 {
     FAIL_IF_ONLINE(h);
 
-	if(n && n != h->host.full)
+	if(!n)
+	{
+#ifdef LIB3270_DEFAULT_HOST
+		n = LIB3270_DEFAULT_HOST;
+#else
+		n = getenv("LIB3270_DEFAULT_HOST");
+		if(!n)
+			return errno = EINVAL;
+#endif // LIB3270_DEFAULT_HOST
+	}
+
+	if(!h->host.full || strcmp(n,h->host.full))
 	{
 		static const struct _sch
 		{

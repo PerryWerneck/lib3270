@@ -344,6 +344,8 @@ if test "$app_cv_self_signed_certs" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
 fi
 
+AC_ARG_WITH([default-crl], [AS_HELP_STRING([--with-default-crl], [Set lib3270 default crl url])], [ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_CRL,"$withval") ],[ AC_MSG_NOTICE(No default crl)])
+
 dnl ---------------------------------------------------------------------------
 dnl Check for pic
 dnl ---------------------------------------------------------------------------
@@ -386,6 +388,8 @@ AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library 
 
 AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
+
+AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], [ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST,"$withval") ],[ AC_MSG_NOTICE(No default host)])
 
 dnl ---------------------------------------------------------------------------
 dnl Check for headers

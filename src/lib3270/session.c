@@ -320,14 +320,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->unlock_delay_ms		= 350; // 0.35s after last unlock
 	hSession->pointer				= (unsigned short) LIB3270_POINTER_LOCKED;
 
-#ifdef SSL_ENABLE_CRL_CHECK
-	char *env = getenv("LIB3270_DEFAULT_CRL");
-	if(env)
-	{
-		hSession->ssl.crl = strdup(env);
-	}
-#endif // SSL_ENABLE_CRL_CHECK
-
 	// CSD
 	for(f=0;f<4;f++)
 		hSession->csd[f] = hSession->saved_csd[f] = LIB3270_ANSI_CSD_US;

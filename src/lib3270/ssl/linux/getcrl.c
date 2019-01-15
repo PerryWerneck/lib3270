@@ -47,6 +47,7 @@
 #endif // HAVE_LDAP
 
 #include "../../private.h"
+#include <trace_dsc.h>
 #include <errno.h>
 #include <lib3270.h>
 
@@ -96,6 +97,24 @@ static inline void lib3270_autoptr_cleanup_LDAPPTR(char **ptr)
 X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 {
 	X509_CRL * crl = NULL;
+
+	if(!hSession->ssl.crl)
+	{
+#ifdef LIB3270_DEFAULT_CRL
+		hSession->ssl.crl = strdup(LIB3270_DEFAULT_CRL);
+#else
+		char *env = getenv("LIB3270_DEFAULT_CRL");
+		if(env)
+			hSession->ssl.crl = strdup(env);
+#endif // LIB3270_DEFAULT_CRL
+	}
+
+	if(!hSession->ssl.crl)
+	{
+		return NULL;
+	}
+
+	trace_ssl(hSession, "crl=%s",hSession->ssl.crl);
 
 	if(strncasecmp(hSession->ssl.crl,"file://",7) == 0)
 	{

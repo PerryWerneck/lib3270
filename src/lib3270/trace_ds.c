@@ -160,7 +160,9 @@ void trace_ds_nb(H3270 *hSession, const char *fmt, ...)
 	lib3270_free(text);
 }
 
-/* Conditional data stream trace, without line splitting. */
+/**
+ * @brief Conditional data stream trace, without line splitting.
+ */
 void trace_dsn(H3270 *session, const char *fmt, ...)
 {
 	va_list args;
@@ -173,6 +175,24 @@ void trace_dsn(H3270 *session, const char *fmt, ...)
 	session->trace.handler(session,session->trace.userdata,fmt, args);
 	va_end(args);
 }
+
+/**
+ * @brief Conditional ssl stream trace, without line splitting.
+ */
+void trace_ssl(H3270 *session, const char *fmt, ...)
+{
+	va_list args;
+
+	debug("******************* %d",(int) lib3270_get_toggle(session,LIB3270_TOGGLE_SSL_TRACE));
+	if (!lib3270_get_toggle(session,LIB3270_TOGGLE_SSL_TRACE))
+		return;
+
+	/* print out message */
+	va_start(args, fmt);
+	session->trace.handler(session,session->trace.userdata,fmt, args);
+	va_end(args);
+}
+
 
 /* Write to the trace file. */
 static void wtrace(H3270 *session, const char *fmt, ...)

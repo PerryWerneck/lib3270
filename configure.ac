@@ -472,8 +472,8 @@ else
         LDAP_LIBS=
 fi
 
+AC_SUBST(LDAP_CFLAGS)
 AC_SUBST(LDAP_LIBS)
-
 
 dnl ---------------------------------------------------------------------------
 dnl Directory config

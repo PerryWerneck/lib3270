@@ -149,6 +149,7 @@
 		LIB3270_TOGGLE_ALTSCREEN,					/**< @brief auto resize on altscreen */
 		LIB3270_TOGGLE_KEEP_ALIVE,					/**< @brief Enable network keep-alive with SO_KEEPALIVE */
 		LIB3270_TOGGLE_NETWORK_TRACE,				/**< @brief Enable network in/out trace */
+		LIB3270_TOGGLE_SSL_TRACE,				/**< @brief Enable security traces */
 
 		LIB3270_TOGGLE_COUNT
 

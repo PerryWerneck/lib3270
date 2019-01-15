@@ -605,6 +605,9 @@ struct _h3270
 		char				  host;
 		LIB3270_SSL_STATE	  state;
 		unsigned long 		  error;
+#ifdef SSL_ENABLE_CRL_CHECK
+		char				* crl;
+#endif // SSL_ENABLE_CRL_CHECK
 		SSL 				* con;
 	} ssl;
 #endif // HAVE_LIBSSL

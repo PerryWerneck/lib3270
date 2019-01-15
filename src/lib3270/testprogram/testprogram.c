@@ -17,7 +17,8 @@ int main(int numpar, char *param[])
 	h = lib3270_session_new("");
 	printf("3270 session %p created\n]",h);
 
-	lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
+//	lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
+	lib3270_set_toggle(h,LIB3270_TOGGLE_SSL_TRACE,1);
 
 	lib3270_set_url(h,url ? url : "tn3270://fandezhi.efglobe.com");
 	rc = lib3270_connect(h,120);

@@ -125,7 +125,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	/* Set up the TLS/SSL connection. */
 	if(SSL_set_fd(hSession->ssl.con, hSession->sock) != 1)
 	{
-		trace_dsn(hSession,"%s","SSL_set_fd failed!\n");
+		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
 		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
 		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL negotiation failed" );
@@ -134,9 +134,9 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		return -1;
 	}
 
-	trace("%s: Running SSL_connect",__FUNCTION__);
+	trace_ssl(hSession, "%s","Running SSL_connect\n");
 	rv = SSL_connect(hSession->ssl.con);
-	trace("%s: SSL_connect exits with rc=%d",__FUNCTION__,rv);
+	trace_ssl(hSession, "SSL_connect exits with rc=%d\n",rv);
 
 	if (rv != 1)
 	{
@@ -148,7 +148,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		msg = ERR_lib_error_string(((SSL_ERROR_MESSAGE *) message)->error);
 
-		trace_dsn(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
+		trace_ssl(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
 		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
 		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL Connect failed" );
@@ -168,14 +168,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		peer = SSL_get_peer_certificate(hSession->ssl.con);
 
 		debug("TLS/SSL negotiated connection complete. Peer certificate %s presented.", peer ? "was" : "was not");
-		trace_dsn(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
+		trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
 
 		break;
 
 	case X509_V_ERR_UNABLE_TO_GET_CRL:
 
 		debug("%s","The CRL of a certificate could not be found." );
-		trace_dsn(hSession,"%s","The CRL of a certificate could not be found.\n" );
+		trace_ssl(hSession,"%s","The CRL of a certificate could not be found.\n" );
 
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Unable to get certificate CRL." );
@@ -184,7 +184,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		return -1;
 
 	case X509_V_ERR_CRL_NOT_YET_VALID:
-		trace_dsn(hSession,"%s","The CRL of a certificate is not yet valid.\n" );
+		trace_ssl(hSession,"%s","The CRL of a certificate is not yet valid.\n" );
 
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL is not yet valid." );
@@ -192,7 +192,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		return -1;
 
 	case X509_V_ERR_CRL_HAS_EXPIRED:
-		trace_dsn(hSession,"%s","The CRL of a certificate has expired.\n" );
+		trace_ssl(hSession,"%s","The CRL of a certificate has expired.\n" );
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL has expired." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) has expired." );
@@ -203,7 +203,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		peer = SSL_get_peer_certificate(hSession->ssl.con);
 
 		debug("%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain" );
-		trace_dsn(hSession,"%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n" );
+		trace_ssl(hSession,"%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n" );
 
 #ifdef SSL_ALLOW_SELF_SIGNED_CERT
 		break;
@@ -220,7 +220,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		trace_dsn(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 	}
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 	{
 		char				  buffer[4096];
 		int 				  alg_bits		= 0;
@@ -228,7 +228,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		trace_dsn(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
 		SSL_CIPHER_get_bits(cipher, &alg_bits);
-		trace_dsn(hSession,"%s version %s with %d bits\n",
+		trace_ssl(hSession,"%s version %s with %d bits\n",
 						SSL_CIPHER_get_name(cipher),
 						SSL_CIPHER_get_version(cipher),
 						alg_bits);
@@ -237,7 +237,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	if(peer)
 	{
-		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
+		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 		{
 			BIO				* out	= BIO_new(BIO_s_mem());
 			unsigned char	* data;
@@ -251,7 +251,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 			text[n]	='\0';
 			memcpy(text,data,n);
 
-			trace_dsn(hSession,"TLS/SSL peer certificate:\n%s\n",text);
+			trace_ssl(hSession,"TLS/SSL peer certificate:\n%s\n",text);
 
 			free(text);
 			BIO_free(out);

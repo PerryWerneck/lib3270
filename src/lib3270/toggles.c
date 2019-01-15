@@ -224,13 +224,19 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			N_( "Trace network data flow" ),
 			N_( "Enable network in/out trace" )
 		},
+		{
+			"ssltrace",
+			False,
+			N_( "Trace SSL negotiation" ),
+			N_( "Enable SSL messages trace" )
+		},
 };
 
 LIB3270_EXPORT unsigned char lib3270_get_toggle(H3270 *session, LIB3270_TOGGLE ix)
 {
 	CHECK_SESSION_HANDLE(session);
 
-	if(ix < 0 || ix >= N_TOGGLES)
+	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT)
 		return 0;
 
 	return session->toggle[ix].value != 0;
@@ -324,8 +330,8 @@ static void toggle_keepalive(H3270 *session, struct lib3270_toggle *t unused, LI
 	}
 }
 
-/*
- * Called from system initialization code to handle initial toggle settings.
+/**
+ * @brief Called from system initialization code to handle initial toggle settings.
  */
 void initialize_toggles(H3270 *session)
 {
@@ -367,21 +373,21 @@ void shutdown_toggles(H3270 *session)
 
 LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix)
 {
-	if(ix < N_TOGGLES)
+	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].label;
 	return "";
 }
 
 LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix)
 {
-	if(ix < N_TOGGLES)
+	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].description;
 	return "";
 }
 
 LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix)
 {
-	if(ix < N_TOGGLES)
+	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].name;
 	return "";
 }
@@ -391,7 +397,7 @@ LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name)
 	if(name)
 	{
 		int f;
-		for(f=0;f<N_TOGGLES;f++)
+		for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 		{
 			if(!strcasecmp(name,toggle_info[f].name))
 				return f;

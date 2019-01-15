@@ -94,13 +94,15 @@ CFLAGS= \
 	-g \
 	-I../include
 	-DBUILD_DATE=`date +%Y%m%d` \
-	@LIBSSL_CFLAGS@
+	@LIBSSL_CFLAGS@ \
+	@LDAP_CFLAGS@
 
 LIBS= \
 	@LIBS@ \
 	@LIBSSL_LIBS@ \
 	@LIBICONV@ \
-	@INTL_LIBS@
+	@INTL_LIBS@ \
+	@LDAP_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
@@ -325,7 +327,14 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
-	@$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+	@$(LD) \
+		-Wl,--rpath,$(BINDBG) \
+		-o $@ \
+		$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$(LDFLAGS) \
+		$(LIBS) \
+		-L$(BINDBG) \
+		-l@LIB3270_NAME@
 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@

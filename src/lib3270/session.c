@@ -74,6 +74,14 @@ void lib3270_session_free(H3270 *h)
 
 	shutdown_toggles(h);
 
+#ifdef SSL_ENABLE_CRL_CHECK
+	if(h->ssl.crl)
+	{
+		free(h->ssl.crl);
+		h->ssl.crl = NULL;
+	}
+#endif // SSL_ENABLE_CRL_CHECK
+
 	// Release state change callbacks
 	for(f=0;f<LIB3270_STATE_USER;f++)
 	{
@@ -311,6 +319,14 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->m3279					= 1;
 	hSession->unlock_delay_ms		= 350; // 0.35s after last unlock
 	hSession->pointer				= (unsigned short) LIB3270_POINTER_LOCKED;
+
+#ifdef SSL_ENABLE_CRL_CHECK
+	char *env = getenv("LIB3270_DEFAULT_CRL");
+	if(env)
+	{
+		hSession->ssl.crl = strdup(env);
+	}
+#endif // SSL_ENABLE_CRL_CHECK
 
 	// CSD
 	for(f=0;f<4;f++)

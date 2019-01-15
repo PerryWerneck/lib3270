@@ -27,14 +27,11 @@
  *
  */
 
-/*
- *	trace_dsc.h
- *		Global declarations for trace_ds.c.
+/**
+ *	@brief Global declarations for trace_ds.c.
  */
 
 #if defined(X3270_TRACE)
-
-//	LIB3270_INTERNAL Boolean trace_skipping;
 
 	const char *rcba(H3270 *session, int baddr);
 
@@ -43,23 +40,22 @@
 	void trace_ds(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
 	void trace_ds_nb(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
 	void trace_dsn(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+	void trace_ssl(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
 	void trace_screen(H3270 *session);
-
-//	#define trace_event(...)	lib3270_trace_event(&h3270,__VA_ARGS__)
 
 #elif defined(__GNUC__)
 
 	#define trace_ds(session, format, args...)
 	#define trace_dsn(session, format, args...)
+	#define trace_ssl(session, format, args...)
 	#define trace_ds_nb(session, format, args...)
-//	#define trace_event(session, format, args...)
 
 #else
 
 	#define trace_ds 0 &&
 	#define trace_ds_nb 0 &&
 	#define trace_dsn 0 &&
-//	#define trace_event 0 &&
+	#define trace_ssl 0 &&
 	#define rcba 0 &&
 
 #endif

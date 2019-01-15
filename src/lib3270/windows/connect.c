@@ -37,7 +37,7 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
-#include "private.h"
+#include "../private.h"
 #include <errno.h>
 
 #include <ws2tcpip.h>
@@ -262,13 +262,12 @@ LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, c
 
 int lib3270_connect(H3270 *hSession, int seconds)
 {
- 	int					  s;
-	int					  optval;
-	struct addrinfo		  hints;
-	struct addrinfo 	* result		= NULL;
-	struct addrinfo 	* rp			= NULL;
+ 	int					  optval;
+	struct resolver		  host;
 
 	CHECK_SESSION_HANDLE(hSession);
+
+	memset(&host,0,sizeof(host));
 
 	lib3270_main_iterate(hSession,0);
 
@@ -308,7 +307,7 @@ int lib3270_connect(H3270 *hSession, int seconds)
 			size_t	  out = 4096;
 
 			iconv_t hConv = iconv_open(lib3270_win32_local_charset(),"UTF-8");
-			if(iconv(hConv,&host.message,&in,&ptr,&out) == ((size_t) -1))
+			if(iconv(hConv,&host.message,&msg,&ptr,&out) == ((size_t) -1))
 			{
 				strncpy(msg,host.message,4095);
 			}
@@ -351,7 +350,7 @@ int lib3270_connect(H3270 *hSession, int seconds)
 	/* connect */
 
 	WSASetLastError(0);
-	u_long iMode=1;
+	// u_long iMode=1;
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
 	if (setsockopt(hSession->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)

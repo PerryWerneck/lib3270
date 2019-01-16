@@ -439,13 +439,13 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 						(ft->flags & LIB3270_FT_OPTION_APPEND)	? " APPEND"	: ""
 			);
 
-	trace("tso=%s",hSession->options & LIB3270_OPTION_TSO ? "yes" : "No");
+	trace("tso=%s",lib3270_is_tso(hSession) ? "yes" : "No");
 
 	if(!(ft->flags & LIB3270_FT_OPTION_RECEIVE))
 	{
 		// Sending file
 
-		if(hSession->options & LIB3270_OPTION_TSO)
+		if(lib3270_is_tso(hSession))
 		{
 			// TSO Host
 			if(recfm > 0)
@@ -492,7 +492,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 
 	if(*op)
 	{
-		if(hSession->options & LIB3270_OPTION_TSO)
+		if(lib3270_is_tso(hSession))
 			snconcat(buffer,4095," %s",op+1);
 		else
 			snconcat(buffer,4095," (%s",op+1);

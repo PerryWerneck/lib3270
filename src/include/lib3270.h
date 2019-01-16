@@ -278,33 +278,27 @@
 
 
 	/**
-	 * Connect options
+	 * @brief Host options
 	 *
 	 */
-	typedef enum lib3270_option
+	typedef enum lib3270_host_type
 	{
-		/* Host types */
-		LIB3270_OPTION_AS400		= 0x0001,	/**< AS400 host - Prefix every PF with PA1 */
-		LIB3270_OPTION_TSO			= 0x0002,	/**< Host is TSO? */
-		LIB3270_OPTION_S390			= 0x0006,	/**< Host is S390? (TSO included) */
+		// Host types
+		LIB3270_HOST_AS400		= 0x0001,	///< AS400 host - Prefix every PF with PA1
+		LIB3270_HOST_TSO		= 0x0002,	///< Host is TSO?
+		LIB3270_HOST_S390		= 0x0006,	///< Host is S390? (TSO included)
 
-		/* Other options */
-		LIB3270_OPTION_SSL			= 0x0010,	/**< Secure connection ? */
+	} LIB3270_HOST_TYPE;
 
+	#define LIB3270_HOSTTYPE_DEFAULT LIB3270_HOST_S390
 
-		LIB3270_OPTION_WAIT			= 0x8000	/**< Wait for session ready on connect ? */
-	} LIB3270_OPTION;
-
-	#define LIB3270_OPTION_HOST_TYPE	0x0007
-	#define LIB3270_OPTION_DEFAULTS		LIB3270_OPTION_S390
-
-	typedef struct _lib3270_option_entry
+	typedef struct _LIB3270_HOST_TYPE_entry
 	{
-		LIB3270_OPTION	  option;
-		const char		* name;
-		const char		* description;
-		const char		* tooltip;
-	} LIB3270_OPTION_ENTRY;
+		LIB3270_HOST_TYPE	  type;
+		const char			* name;
+		const char			* description;
+		const char			* tooltip;
+	} LIB3270_HOST_TYPE_ENTRY;
 
 	/**
 	 * SSL state
@@ -517,7 +511,9 @@
 	 * @param h		Session handle.
 	 *
 	 */
-	LIB3270_EXPORT LIB3270_OPTION lib3270_get_options(H3270 *hSession);
+	LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(H3270 *hSession);
+
+	LIB3270_EXPORT const char * lib3270_get_host_type_name(H3270 *hSession);
 
 	/**
 	 * @brief Get URL of the hostname for the connect/reconnect operations.
@@ -531,17 +527,17 @@
 
 
 	/**
-	 * @brief Network connect operation, keep main loop running
+	 * @brief Reconnect to host.
 	 *
 	 * @param h			Session handle.
-	 * @param seconds	Seconds to wait for connection .
+	 * @param seconds	Seconds to wait for connection.
 	 *
 	 * @return 0 for success, EAGAIN if auto-reconnect is in progress, EBUSY if connected, ENOTCONN if connection has failed, -1 on unexpected failure.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_connect(H3270 *h,int seconds);
+	LIB3270_EXPORT int lib3270_reconnect(H3270 *h,int seconds);
 
-	LIB3270_EXPORT int lib3270_set_connected(H3270 *h,int state);
+//	LIB3270_EXPORT int lib3270_set_connected(H3270 *h,int state);
 
 	/**
 	 * @brief Connect to defined host, keep main loop running.
@@ -554,7 +550,7 @@
 	 * @return 0 for success, EAGAIN if auto-reconnect is in progress, EBUSY if connected, ENOTCONN if connection has failed, -1 on unexpected failure.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_OPTION opt);
+//	LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_HOST_TYPE opt);
 
 	/**
 	 * @brief Connect by URL
@@ -1249,17 +1245,16 @@
 
 	LIB3270_EXPORT int lib3270_clear_operator_error(H3270 *hSession);
 
-	LIB3270_EXPORT void lib3270_set_options(H3270 *hSession, LIB3270_OPTION opt);
 
 	LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype);
 	LIB3270_EXPORT int lib3270_get_color_type(H3270 *hSession);
 
-	LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, const char *name);
-	LIB3270_EXPORT const char * lib3270_get_host_type(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *name);
+	LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt);
 
-	LIB3270_EXPORT LIB3270_OPTION lib3270_parse_host_type(const char *name);
+	LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_parse_host_type(const char *name);
 
-	LIB3270_EXPORT const LIB3270_OPTION_ENTRY * lib3270_get_option_list(void);
+	LIB3270_EXPORT const LIB3270_HOST_TYPE_ENTRY * lib3270_get_option_list(void);
 
 	LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr);
 
@@ -1277,14 +1272,28 @@
 	LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm);
 
 	/**
-	 * The host is TSO?
+	 * @brief The host is TSO?
 	 *
 	 * @param hSession	Session Handle
 	 *
 	 * @return Non zero if the host is TSO.
 	 *
 	 */
-	LIB3270_EXPORT int 	 lib3270_is_tso(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_is_tso(H3270 *hSession);
+
+	LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on);
+
+	/**
+	 * @brief Host is AS400 (Prefix every PF with PA1).
+	 *
+	 * @param hSession	Session Handle
+	 *
+	 * @return Non zero if the host is AS400.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_is_as400(H3270 *hSession);
+
+	LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on);
 
 #ifdef WIN32
 	LIB3270_EXPORT const char	* lib3270_win32_strerror(int e);

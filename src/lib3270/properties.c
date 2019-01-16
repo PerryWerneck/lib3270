@@ -72,7 +72,7 @@
 			"connected",										//  Property name.
 			N_( "" ),											//  Property description.
 			lib3270_is_connected,								//  Get value.
-			lib3270_set_connected								//  Set value.
+			NULL												//  Set value.
 		},
 
 		{
@@ -86,7 +86,14 @@
 			"tso",												//  Property name.
 			N_( "Non zero if the host is TSO." ),				//  Property description.
 			lib3270_is_tso,										//  Get value.
-			NULL												//  Set value.
+			lib3270_set_tso										//  Set value.
+		},
+
+		{
+			"as400",											//  Property name.
+			N_( "Non zero if the host is AS400." ),				//  Property description.
+			lib3270_is_as400,									//  Get value.
+			lib3270_set_as400									//  Set value.
 		},
 
 		{
@@ -360,8 +367,8 @@
 		{
 			"host_type",								//  Property name.
 			N_( "" ),									//  Property description.
-			lib3270_get_host_type,						//  Get value.
-			lib3270_set_host_type						//  Set value.
+			lib3270_get_host_type_name,					//  Get value.
+			lib3270_set_host_type_by_name				//  Set value.
 		},
 
 		{
@@ -422,11 +429,12 @@
 
  }
 
+ /*
  int lib3270_set_connected(H3270 *hSession, int state) {
 
 	if(state) {
 
-		if(lib3270_connect(hSession,120))
+		if(lib3270_reconnect(hSession,120))
 			return -1;
 
 	} else {
@@ -436,6 +444,7 @@
 
 	return 0;
  }
+ */
 
 int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
 {

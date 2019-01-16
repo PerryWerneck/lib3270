@@ -314,7 +314,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->saved_wraparound_mode	= 1;
 	hSession->once_cset 			= -1;
 	hSession->state					= LIB3270_ANSI_STATE_DATA;
-	hSession->options				= LIB3270_OPTION_DEFAULTS;
+	hSession->host_type				= LIB3270_HOSTTYPE_DEFAULT;
 	hSession->colors				= 16;
 	hSession->m3279					= 1;
 	hSession->unlock_delay_ms		= 350; // 0.35s after last unlock

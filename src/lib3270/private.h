@@ -309,7 +309,7 @@ struct _h3270
 	LIB3270_CSTATE			  cstate;							///< @brief Connection state.
 
 	// flags
-	LIB3270_OPTION			  options;							///< @brief Session options.
+	LIB3270_HOST_TYPE		  host_type;						///< @brief Host type.
 
 	int					  	  selected					: 1;	///< @brief Has selected region?
 	int						  rectsel					: 1;	///< @brief Selected region is a rectangle ?
@@ -605,6 +605,7 @@ struct _h3270
 	/// @brief SSL Data.
 	struct
 	{
+		char				  enabled;
 		char				  host;
 		LIB3270_SSL_STATE	  state;
 		unsigned long 		  error;
@@ -647,7 +648,7 @@ LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-LIB3270_INTERNAL int	lib3270_reconnect(H3270 *hSession);
+LIB3270_INTERNAL int	lib3270_check_for_auto_reconnect(H3270 *hSession);
 
 #if defined(DEBUG)
 	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);

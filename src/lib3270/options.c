@@ -35,22 +35,22 @@
 
 /*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
 
- static const LIB3270_OPTION_ENTRY host_type[] =
+ static const LIB3270_HOST_TYPE_ENTRY host_type[] =
  {
 	{
-		LIB3270_OPTION_S390,
+		LIB3270_HOST_S390,
 		"S390",
 		N_( "IBM S/390" ),
 		NULL
 	},
 	{
-		LIB3270_OPTION_AS400,
+		LIB3270_HOST_AS400,
 		"AS400",
 		N_( "IBM AS/400" ),
 		NULL
 	},
 	{
-		LIB3270_OPTION_TSO,
+		LIB3270_HOST_TSO,
 		"TSO",
 		N_( "Other (TSO)" ),
 		NULL
@@ -73,25 +73,17 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT LIB3270_OPTION lib3270_get_options(H3270 *hSession)
+LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
-	return hSession->options;
+	return hSession->host_type;
 }
 
-LIB3270_EXPORT void lib3270_set_options(H3270 *hSession, LIB3270_OPTION opt)
+LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt)
 {
-	CHECK_SESSION_HANDLE(hSession);
-	hSession->options = opt;
-
-	Replace(hSession->host.full,
-			lib3270_strdup_printf(
-				"%s%s:%s",
-					hSession->options&LIB3270_OPTION_SSL ? "tn3270s://" : "tn3270://",
-					hSession->host.current,
-					hSession->host.srvc
-		));
-
+    FAIL_IF_ONLINE(hSession);
+	hSession->host_type = opt;
+	return 0;
 }
 
 LIB3270_EXPORT int lib3270_get_color_type(H3270 *hSession)
@@ -137,7 +129,7 @@ LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype)
 }
 
 
-LIB3270_EXPORT const LIB3270_OPTION_ENTRY * lib3270_get_option_list(void)
+LIB3270_EXPORT const LIB3270_HOST_TYPE_ENTRY * lib3270_get_option_list(void)
 {
 	return host_type;
 }
@@ -145,10 +137,40 @@ LIB3270_EXPORT const LIB3270_OPTION_ENTRY * lib3270_get_option_list(void)
 LIB3270_EXPORT int lib3270_is_tso(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
-	return (hSession->options & LIB3270_OPTION_TSO) != 0;
+	return (hSession->host_type & LIB3270_HOST_TSO) != 0;
 }
 
-LIB3270_EXPORT LIB3270_OPTION lib3270_parse_host_type(const char *name)
+LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on)
+{
+    FAIL_IF_ONLINE(hSession);
+
+    if(on)
+		hSession->host_type = LIB3270_HOST_TSO;
+	else
+		hSession->host_type &= ~LIB3270_HOST_TSO;
+
+	return 0;
+}
+
+LIB3270_EXPORT int lib3270_is_as400(H3270 *hSession)
+{
+	CHECK_SESSION_HANDLE(hSession);
+	return (hSession->host_type & LIB3270_HOST_AS400) != 0;
+}
+
+LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on)
+{
+    FAIL_IF_ONLINE(hSession);
+
+    if(on)
+		hSession->host_type |= LIB3270_HOST_AS400;
+	else
+		hSession->host_type &= ~LIB3270_HOST_AS400;
+
+	return 0;
+}
+
+LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_parse_host_type(const char *name)
 {
 
 	int f;
@@ -156,22 +178,23 @@ LIB3270_EXPORT LIB3270_OPTION lib3270_parse_host_type(const char *name)
 	for(f=0;host_type[f].name;f++)
 	{
 		if(!strcasecmp(host_type[f].name,name))
-			return host_type[f].option;
+			return host_type[f].type;
 	}
 
+	errno = ENOENT;
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, const char *name)
+LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *name)
 {
-	size_t f;
+	FAIL_IF_ONLINE(hSession);
 
+	size_t f;
 	for(f=0;f<(sizeof(host_type)/sizeof(host_type[0]));f++)
 	{
 		if(host_type[f].name && !strcasecmp(host_type[f].name,name))
 		{
-			hSession->options &= ~LIB3270_OPTION_HOST_TYPE;
-			hSession->options |= host_type[f].option;
+			hSession->host_type = host_type[f].type;
 			return 0;
 		}
 	}
@@ -179,13 +202,13 @@ LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, const char *name)
 	return errno = EINVAL;
 }
 
-LIB3270_EXPORT const char * lib3270_get_host_type(H3270 *hSession)
+LIB3270_EXPORT const char * lib3270_get_host_type_name(H3270 *hSession)
 {
 	size_t f;
 
 	for(f=0;f<(sizeof(host_type)/sizeof(host_type[0]));f++)
 	{
-		if(hSession->options & host_type[f].option)
+		if(hSession->host_type == host_type[f].type)
 		{
 			return host_type[f].name;
 		}

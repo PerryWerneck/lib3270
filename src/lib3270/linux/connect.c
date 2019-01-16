@@ -124,11 +124,12 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 		lib3270_set_url(hSession,url);
 	}
 
-	return lib3270_connect(hSession, wait);
+	return lib3270_reconnect(hSession, wait);
 
  }
 
- LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_OPTION opt)
+ /*
+ LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_HOST_TYPE opt)
  {
 	CHECK_SESSION_HANDLE(hSession);
 
@@ -155,22 +156,23 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 		hostname = name;
 	}
 
- 	hSession->options = opt & ~LIB3270_OPTION_WAIT;
+ 	hSession->options = opt & ~LIB3270_HOST_TYPE_WAIT;
 	Replace(hSession->host.current,strdup(hostname));
 	Replace(hSession->host.srvc,strdup(srvc));
 
 	Replace(hSession->host.full,
 			lib3270_strdup_printf(
 				"%s%s:%s",
-					opt&LIB3270_OPTION_SSL ? "tn3270s://" : "tn3270://",
+					opt&LIB3270_HOST_TYPE_SSL ? "tn3270s://" : "tn3270://",
 					hostname,
 					srvc ));
 
 	trace("current_host=\"%s\"",hSession->host.current);
 
-	return lib3270_connect(hSession,opt & LIB3270_OPTION_WAIT);
+	return lib3270_reconnect(hSession,opt & LIB3270_HOST_TYPE_WAIT);
 
  }
+ */
 
  struct resolver
  {
@@ -223,7 +225,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
  }
 
- int lib3270_connect(H3270 *hSession, int seconds)
+ int lib3270_reconnect(H3270 *hSession, int seconds)
  {
 	int					  optval;
 	struct resolver		  host;
@@ -283,22 +285,13 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	hSession->ever_3270 = False;
 	hSession->ssl.host  = 0;
 
-	if(hSession->options&LIB3270_OPTION_SSL)
-	{
 #if defined(HAVE_LIBSSL)
+	if(hSession->ssl.enabled)
+	{
 		hSession->ssl.host = 1;
 		ssl_init(hSession);
-#else
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "SSL error" ),
-								_( "Unable to connect to secure hosts" ),
-								_( "This version of %s was built without support for secure sockets layer (SSL)." ),
-								PACKAGE_NAME);
-
-		return errno = EINVAL;
-#endif // HAVE_LIBSSL
 	}
+#endif // HAVE_LIBSSL
 
 	// set options for inline out-of-band data and keepalives
 	optval = 1;

@@ -58,11 +58,21 @@
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-int lib3270_reconnect(H3270 *hSession)
+int lib3270_check_for_auto_reconnect(H3270 *hSession)
 {
-	lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
-	hSession->auto_reconnect_inprogress = 0;
-	lib3270_connect(hSession,0);
+	if(hSession->popups)
+	{
+		lib3270_write_log(hSession,"3270","Delaying auto-reconnect. There's %u pending popup(s)",(unsigned int) hSession->popups);
+		return 1;
+	}
+
+	if(hSession->auto_reconnect_inprogress)
+	{
+		lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
+		lib3270_reconnect(hSession,0);
+		hSession->auto_reconnect_inprogress = 0;
+	}
+
 	return 0;
 }
 
@@ -86,7 +96,7 @@ int host_disconnect(H3270 *hSession, int failed)
 		{
 			/* Schedule an automatic reconnection. */
 			hSession->auto_reconnect_inprogress = 1;
-			(void) AddTimer(failed ? RECONNECT_ERR_MS : RECONNECT_MS, hSession, lib3270_reconnect);
+			(void) AddTimer(failed ? RECONNECT_ERR_MS : RECONNECT_MS, hSession, lib3270_check_for_auto_reconnect);
 		}
 
 		/*
@@ -219,12 +229,16 @@ static void update_host(H3270 *h)
 	Replace(h->host.full,
 			lib3270_strdup_printf(
 				"%s%s:%s",
-					h->options&LIB3270_OPTION_SSL ? "tn3270s://" : "tn3270://",
+#ifdef HAVE_LIBSSL
+					(h->ssl.enabled ? "tn3270s://" : "tn3270://"),
+#else
+					"tn3270://",
+#endif // HAVE_LIBSSL
 					h->host.current,
 					h->host.srvc
 		));
 
-	trace("hosturl=[%s] ssl=%s",h->host.full,(h->options&LIB3270_OPTION_SSL) ? "yes" : "no");
+	trace("hosturl=[%s] ssl=%s",h->host.full,h->ssl.enabled ? "yes" : "no");
 
 }
 
@@ -269,18 +283,21 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	{
 		static const struct _sch
 		{
-			LIB3270_OPTION	  opt;
+			char			  ssl;
 			const char		* text;
 			const char		* srvc;
 		} sch[] =
 		{
-			{ LIB3270_OPTION_DEFAULTS,  "tn3270://",	"telnet"	},
-			{ LIB3270_OPTION_SSL,		"tn3270s://",	"telnets"	},
-			{ LIB3270_OPTION_DEFAULTS,  "telnet://",	"telnet"	},
-			{ LIB3270_OPTION_DEFAULTS,  "telnets://",	"telnets"	},
-			{ LIB3270_OPTION_SSL,		"L://",			"telnets"	},
+#ifdef HAVE_LIBSSL
+			{ 1, "tn3270s://",	"telnets"	},
+			{ 1, "telnets://",	"telnets"	},
+			{ 1, "L://",		"telnets"	},
+			{ 1, "L:",			"telnets"	},
+#endif // HAVE_LIBSSL
 
-			{ LIB3270_OPTION_SSL,		"L:",			"telnets"	}	// The compatibility should be the last option
+			{ 0, "tn3270://",	"telnet"	},
+			{ 0, "telnet://",	"telnet"	}
+
 		};
 
 		char					* str 		= strdup(n);
@@ -291,16 +308,21 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 		int						  f;
 
 		trace("%s(%s)",__FUNCTION__,str);
-		h->options = LIB3270_OPTION_DEFAULTS;
+
+#ifdef HAVE_LIBSSL
+		h->ssl.enabled = 0;
+#endif // HAVE_LIBSSL
 
 		for(f=0;f < sizeof(sch)/sizeof(sch[0]);f++)
 		{
 			size_t sz = strlen(sch[f].text);
 			if(!strncasecmp(hostname,sch[f].text,sz))
 			{
-				h->options	 = sch[f].opt;
-				srvc		 = sch[f].srvc;
-				hostname	+= sz;
+#ifdef HAVE_LIBSSL
+				h->ssl.enabled	= sch[f].ssl;
+#endif // HAVE_LIBSSL
+				srvc			= sch[f].srvc;
+				hostname		+= sz;
 				break;
 			}
 		}
@@ -348,24 +370,17 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 					*(val++) = 0;
 
 					if(lib3270_set_string_property(h, var, val, 0) == 0)
-					{
 						continue;
-					}
-
-					/*
-					if(!(strcasecmp(var,"lu") && strcasecmp(var,"luname")))
-					{
-						lib3270_set_luname(h, val);
-						// strncpy(h->luname,val,LIB3270_LUNAME_LENGTH);
-					}
-					else
-					{
-						lib3270_write_log(h,"","Ignoring invalid URL attribute \"%s\"",var);
-					}
-					*/
 
 					lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
 
+				}
+				else
+				{
+					if(lib3270_set_int_property(h,var,1,0))
+						continue;
+
+					lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
 				}
 
 			}

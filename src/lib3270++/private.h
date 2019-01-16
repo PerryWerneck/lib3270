@@ -237,24 +237,25 @@
 					Uint64	= 't'
 				};
 
-				#pragma pack(1)
+				struct {
+					size_t 	  length;
+					size_t	  used;
+					uint8_t * block;
+				} in;
+
+				struct {
+					size_t 	  length;
+					size_t	  used;
+					uint8_t * block;
+				} out;
+
 				struct DataBlock {
 					Type type;
 				};
-				#pragma pack()
-
-				std::vector<DataBlock *> input;
-
-				std::vector<DataBlock *> output;
 
 				/// @brief Create DataBlock
-				static DataBlock * createDataBlock(const void *ptr, size_t len);
+				DataBlock * pushBlock(const void *ptr, size_t len);
 
-				/// @brief Descompacta argumentos recebidos.
-				static void unpack(std::vector<DataBlock *> &args, const uint8_t * buffer, size_t szBuffer);
-
-				/// @brief Compacta array de argumentos em um bloco de dados.
-				static DWORD pack(std::vector<DataBlock *> &args, uint8_t * outBuffer, size_t szBuffer);
 #else
 				struct {
 					DBusMessage		* in;

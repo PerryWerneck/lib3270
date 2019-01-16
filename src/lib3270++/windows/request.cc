@@ -44,35 +44,65 @@
 
  namespace TN3270 {
 
+	#define PIPE_BUFFER_LENGTH 8192
+
 	IPC::Request::Request(const Session &session) {
+
+		in.length = PIPE_BUFFER_LENGTH;
+		in.used = 0;
+		in.block = new uint8_t[in.length];
+
+		out.length = PIPE_BUFFER_LENGTH;
+		out.used = 0;
+		out.block = new uint8_t[in.length];
+
 	}
 
 	IPC::Request::Request(const Session &session, const char *method) : Request(session) {
+
+		// Add name
+		strcpy((char *) out.block, method);
+		out.used += strlen((char *) method) + 1;
+
+		// Add ID
+		*((uint16_t *) (out.block + out.used)) = (uint16_t) 3;
+		out.used += sizeof(uint16_t);
+
 	}
 
 	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session) {
+
+		// Add name
+		strcpy((char *) out.block, property);
+		out.used += strlen((char *) property) + 1;
+
+		// Add ID (SetProperty = 2, getProperty = 1)
+		*((uint16_t *) (out.block + out.used)) = (uint16_t) (isSet ? 2 : 1);
+		out.used += sizeof(uint16_t);
+
 	}
 
 	IPC::Request::~Request() {
 
-		for(auto block : input) {
-			delete[] ((uint8_t *) block);
-		}
-
-		for(auto block : output) {
-			delete[] ((uint8_t *) block);
-		}
+		delete[] ((uint8_t *) in.block);
+		delete[] ((uint8_t *) out.block);
 
 	}
 
 	/// @brief Create DataBlock
-	IPC::Request::DataBlock * IPC::Request::createDataBlock(const void *ptr, size_t length) {
+	IPC::Request::DataBlock * IPC::Request::pushBlock(const void *ptr, size_t length) {
 
-		IPC::Request::DataBlock * rc = (IPC::Request::DataBlock *) (new uint8_t[sizeof(IPC::Request::DataBlock)+length]);
-		memset((void *) rc, 0, sizeof(IPC::Request::DataBlock));
+		if((out.used + length + sizeof(IPC::Request::DataBlock)) >= out.length) {
+			throw std::runtime_error("Too big");
+		}
+
+		IPC::Request::DataBlock * rc = (IPC::Request::DataBlock *) (out.block + out.used);
 		memcpy(((uint8_t *) (rc+1)), ((uint8_t *) ptr), length);
 
+		out.used += (sizeof(IPC::Request::DataBlock) + length);
+
 		return rc;
+
 	}
 
 	IPC::Request & IPC::Request::call() {
@@ -80,9 +110,7 @@
 	}
 
 	IPC::Request & IPC::Request::push(const char *arg) {
-		IPC::Request::DataBlock * block = createDataBlock(arg, strlen(arg)+1);
-		block->type = IPC::Request::String;
-		output.push_back(block);
+		pushBlock(arg, strlen(arg)+1)->type = IPC::Request::String;
 		return *this;
 	}
 

@@ -226,13 +226,15 @@
 				#pragma pack(1)
 				struct DataBlock {
 					uint8_t	  type;
-					size_t	  sz;
 				};
 				#pragma pack()
 
 				std::vector<DataBlock *> input;
 
 				std::vector<DataBlock *> output;
+
+				/// @brief Create DataBlock
+				static DataBlock * createDataBlock(const void *ptr, size_t len);
 
 				/// @brief Descompacta argumentos recebidos.
 				static void unpack(std::vector<DataBlock *> &args, const uint8_t * buffer, size_t szBuffer);

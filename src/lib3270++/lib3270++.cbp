@@ -57,6 +57,7 @@
 		<Unit filename="private.h" />
 		<Unit filename="session.cc" />
 		<Unit filename="testprogram/testprogram.cc" />
+		<Unit filename="windows/request.cc" />
 		<Extensions>
 			<code_completion />
 			<envvars />

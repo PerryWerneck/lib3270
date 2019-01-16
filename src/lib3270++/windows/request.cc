@@ -81,6 +81,7 @@
 
 	IPC::Request & IPC::Request::push(const char *arg) {
 		IPC::Request::DataBlock * block = createDataBlock(arg, strlen(arg)+1);
+		block->type = IPC::Request::String;
 		output.push_back(block);
 		return *this;
 	}

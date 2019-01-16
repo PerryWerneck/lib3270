@@ -223,9 +223,23 @@
 			private:
 
 #ifdef _WIN32
+				/// @brief IPC Data type.
+				enum Type : uint8_t {
+					String	= 's',
+					Boolean	= 'b',
+					Uchar	= 'y',
+					Int16	= 'n',
+					Uint16	= 'q',
+					Int32	= 'i',
+					Int32x	= 'h',
+					Uint32	= 'u',
+					Int64	= 'x',
+					Uint64	= 't'
+				};
+
 				#pragma pack(1)
 				struct DataBlock {
-					uint8_t	  type;
+					Type type;
 				};
 				#pragma pack()
 

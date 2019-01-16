@@ -111,42 +111,38 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	//
 	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
 	//
-	if(hSession->ssl.crl)
+	lib3270_autoptr(X509_CRL) crl = lib3270_get_X509_CRL(hSession,message);
+
+	if(!crl)
+		return  -1;
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 	{
-		lib3270_autoptr(X509_CRL) crl = lib3270_get_X509_CRL(hSession,message);
+		BIO				* out	= BIO_new(BIO_s_mem());
+		unsigned char	* data;
+		unsigned char	* text;
+		int				  n;
 
-		if(!crl)
-			return  -1;
+		X509_CRL_print(out,crl);
 
-		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-		{
-			BIO				* out	= BIO_new(BIO_s_mem());
-			unsigned char	* data;
-			unsigned char	* text;
-			int				  n;
+		n		= BIO_get_mem_data(out, &data);
+		text	= (unsigned char *) malloc (n+1);
+		text[n]	='\0';
+		memcpy(text,data,n);
 
-			X509_CRL_print(out,crl);
+		trace_ssl(hSession,"\n%s\n",text);
 
-			n		= BIO_get_mem_data(out, &data);
-			text	= (unsigned char *) malloc (n+1);
-			text[n]	='\0';
-			memcpy(text,data,n);
-
-			trace_ssl(hSession,"\n%s\n",text);
-
-			free(text);
-			BIO_free(out);
-
-		}
-
-		X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-		X509_STORE_add_crl(store, crl);
-		X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-		X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
-		X509_STORE_set1_param(store, param);
-		X509_VERIFY_PARAM_free(param);
+		free(text);
+		BIO_free(out);
 
 	}
+
+	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
+	X509_STORE_add_crl(store, crl);
+	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+	X509_STORE_set1_param(store, param);
+	X509_VERIFY_PARAM_free(param);
 #endif // SSL_ENABLE_CRL_CHECK
 
 	return 0;

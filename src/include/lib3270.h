@@ -474,7 +474,9 @@
 	 * @return 0 on sucess, non zero on error (sets errno).
 	 *
 	 */
-	 LIB3270_EXPORT int lib3270_set_crl(H3270 *hSession, const char *crl);
+	 LIB3270_EXPORT int lib3270_set_crl_url(H3270 *hSession, const char *crl);
+
+	 LIB3270_EXPORT const char * lib3270_get_crl_url(H3270 *hSession);
 
 	/**
 	 * @brief Get hostname for the connect/reconnect operations.

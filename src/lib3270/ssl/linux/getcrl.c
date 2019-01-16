@@ -96,29 +96,23 @@ static inline void lib3270_autoptr_cleanup_LDAPPTR(char **ptr)
 
 X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 {
-	X509_CRL * crl = NULL;
+	X509_CRL	* crl = NULL;
+	const char	* consturl = lib3270_get_crl_url(hSession);
 
-	if(!hSession->ssl.crl)
+	if(!(consturl && *consturl))
 	{
-#ifdef LIB3270_DEFAULT_CRL
-		hSession->ssl.crl = strdup(LIB3270_DEFAULT_CRL);
-#else
-		char *env = getenv("LIB3270_DEFAULT_CRL");
-		if(env)
-			hSession->ssl.crl = strdup(env);
-#endif // LIB3270_DEFAULT_CRL
-	}
-
-	if(!hSession->ssl.crl)
-	{
+		message->error = hSession->ssl.error = 0;
+		message->title = N_( "Security error" );
+		message->text = N_( "Can't open CRL File" );
+		message->description = N_("The URL for the CRL is undefined or empty");
 		return NULL;
 	}
 
-	trace_ssl(hSession, "crl=%s",hSession->ssl.crl);
+	trace_ssl(hSession, "crl=%s",consturl);
 
-	if(strncasecmp(hSession->ssl.crl,"file://",7) == 0)
+	if(strncasecmp(consturl,"file://",7) == 0)
 	{
-		lib3270_autoptr(FILE) hCRL = fopen(hSession->ssl.crl+7,"r");
+		lib3270_autoptr(FILE) hCRL = fopen(consturl+7,"r");
 
 		if(!hCRL)
 		{
@@ -127,20 +121,20 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			message->title = N_( "Security error" );
 			message->text = N_( "Can't open CRL File" );
 			message->description = strerror(errno);
-			lib3270_write_log(hSession,"ssl","Can't open %s: %s",hSession->ssl.crl,message->description);
+			lib3270_write_log(hSession,"ssl","Can't open %s: %s",consturl,message->description);
 			return NULL;
 
 		}
 
-		lib3270_write_log(hSession,"ssl","Loading CRL from %s",hSession->ssl.crl+7);
+		lib3270_write_log(hSession,"ssl","Loading CRL from %s",consturl+7);
 		d2i_X509_CRL_fp(hCRL, &crl);
 
 	}
 #ifdef HAVE_LDAP
-	else if(strncasecmp(hSession->ssl.crl,"ldap",4) == 0)
+	else if(strncasecmp(consturl,"ldap",4) == 0)
 	{
 		int	rc;
-		lib3270_autoptr(char) url = strdup(hSession->ssl.crl);
+		lib3270_autoptr(char) url = strdup(consturl);
 
 		char * attrs[] = { NULL, NULL };
 		char * base = NULL;
@@ -307,7 +301,7 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		message->title = N_( "Security error" );
 		message->text = N_( "Unexpected or invalid CRL URL" );
 		message->description = N_("The URL scheme is unknown");
-		lib3270_write_log(hSession,"ssl","%s: %s",hSession->ssl.crl, message->description);
+		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
 		return NULL;
 	}
 

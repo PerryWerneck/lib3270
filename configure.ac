@@ -340,7 +340,7 @@ AC_ARG_ENABLE([ssl-crl-check],
 	app_cv_enable_crl_check="no"
 ])
 
-if test "$app_cv_self_signed_certs" == "yes"; then
+if test "$app_cv_enable_crl_check" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
 fi
 

@@ -58,8 +58,8 @@
 /*---[ Standard calls ]-------------------------------------------------------------------------------------*/
 
 // Timeout calls
- static void       internal_remove_timeout(H3270 *session, void *timer);
- static void	* internal_add_timeout(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session));
+ static void      internal_remove_timer(H3270 *session, void *timer);
+ static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session));
 
  static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
  static void	  internal_remove_poll(H3270 *session, void *id);
@@ -74,11 +74,11 @@
 
 /*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
 
- static void	* (*add_timeout)(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session))
-					= internal_add_timeout;
+ static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session))
+					= internal_add_timer;
 
- static void	  (*remove_timeout)(H3270 *session, void *timer)
-					= internal_remove_timeout;
+ static void	  (*remove_timer)(H3270 *session, void *timer)
+					= internal_remove_timer;
 
  static void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
 					= internal_add_poll;
@@ -124,7 +124,7 @@ static void ms_ts(unsigned long long *u)
 }
 #endif
 
-static void * internal_add_timeout(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session))
+static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session))
 {
 	timeout_t *t_new;
 	timeout_t *t;
@@ -184,12 +184,12 @@ static void * internal_add_timeout(H3270 *session, unsigned long interval_ms, vo
 		prev->next = t_new;
 	}
 
-	trace("Timeout %p added with value %ld",t_new,interval_ms);
+	trace("Timer %p added with value %ld",t_new,interval_ms);
 
 	return t_new;
 }
 
-static void internal_remove_timeout(H3270 *session, void * timer)
+static void internal_remove_timer(H3270 *session, void * timer)
 {
 	timeout_t *st = (timeout_t *)timer;
 	timeout_t *t;
@@ -354,22 +354,21 @@ static void internal_ring_bell(H3270 *session unused)
 
 /* External entry points */
 
-void * AddTimeOut(unsigned long interval_ms, H3270 *session, void (*proc)(H3270 *session))
+void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session))
 {
 	void *timer;
 	CHECK_SESSION_HANDLE(session);
-	timer = add_timeout(session,interval_ms,proc);
+	timer = add_timer(session,interval_ms,proc);
 	trace("Timeout %p created with %ld ms",timer,interval_ms);
 	return timer;
 }
 
-void RemoveTimeOut(H3270 *session, void * timer)
+void RemoveTimer(H3270 *session, void * timer)
 {
 	if(!timer)
 		return;
-
 	trace("Removing timeout %p",timer);
-	return remove_timeout(session, timer);
+	return remove_timer(session, timer);
 }
 
 void x_except_on(H3270 *h)
@@ -410,13 +409,13 @@ void remove_input_calls(H3270 *session)
 	}
 }
 
-LIB3270_EXPORT void lib3270_register_time_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer))
+LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer))
 {
 	if(add)
-		add_timeout = add;
+		add_timer = add;
 
 	if(rm)
-		remove_timeout = rm;
+		remove_timer = rm;
 
 }
 
@@ -433,7 +432,7 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 	if(!cbk || cbk->sz != sizeof(LIB3270_IO_CONTROLLER))
 		return errno = EINVAL;
 
-	lib3270_register_time_handlers(cbk->AddTimeOut,cbk->RemoveTimeOut);
+	lib3270_register_timer_handlers(cbk->AddTimer,cbk->RemoveTimer);
 	lib3270_register_fd_handlers(cbk->add_poll,cbk->remove_poll);
 
 	if(cbk->Wait)

@@ -265,7 +265,7 @@ typedef struct timeout
 	struct timeval tv;
 #endif /*]*/
 
-	void (*proc)(H3270 *session);
+	int (*proc)(H3270 *session);
 
 	H3270 *session;
 
@@ -300,8 +300,6 @@ typedef struct _input_t
 struct _h3270
 {
 	struct lib3270_session_callbacks	  cbk;					// Callback table - Always the first one.
-
-//	unsigned short 		  	  sz;								/**< Struct size */
 
 	// Session info
 	char					  id;								///< @brief Session Identifier.
@@ -601,6 +599,8 @@ struct _h3270
 		void 				* except;
 	} xio;
 
+	size_t					  popups;	///< @brief Count open popups.
+
 #ifdef HAVE_LIBSSL
 	/// @brief SSL Data.
 	struct
@@ -647,7 +647,7 @@ LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-LIB3270_INTERNAL void lib3270_reconnect(H3270 *hSession);
+LIB3270_INTERNAL int	lib3270_reconnect(H3270 *hSession);
 
 #if defined(DEBUG)
 	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);

@@ -2809,7 +2809,7 @@ delta_msec(struct timeval *t1, struct timeval *t0)
 	       (t1->tv_usec - t0->tv_usec + 500) / 1000;
 }
 
-static void keep_ticking(H3270 *hSession)
+static int keep_ticking(H3270 *hSession)
 {
 	struct timeval t1;
 	long msec;
@@ -2821,8 +2821,9 @@ static void keep_ticking(H3270 *hSession)
 		msec = delta_msec(&hSession->t_want, &t1);
 	} while (msec <= 0);
 
-	hSession->tick_id = AddTimeOut(msec, hSession, keep_ticking);
 	status_timing(hSession,&hSession->t_start, &t1);
+
+	return 1;
 }
 
 void ticking_start(H3270 *hSession, Boolean anyway)
@@ -2846,10 +2847,10 @@ void ticking_start(H3270 *hSession, Boolean anyway)
 		status_untiming(hSession);
 
 		if (hSession->ticking)
-			RemoveTimeOut(hSession, hSession->tick_id);
+			RemoveTimer(hSession, hSession->tick_id);
 
 		hSession->ticking = 1;
-		hSession->tick_id = AddTimeOut(1000, hSession, keep_ticking);
+		hSession->tick_id = AddTimer(1000, hSession, keep_ticking);
 		hSession->t_want = hSession->t_start;
 	}
 
@@ -2875,7 +2876,7 @@ static void ticking_stop(H3270 *hSession)
 
 		if (!hSession->ticking)
 			return;
-		RemoveTimeOut(hSession, hSession->tick_id);
+		RemoveTimer(hSession, hSession->tick_id);
 		hSession->ticking = 0;
 		status_timing(hSession,&hSession->t_start, &t1);
 	}

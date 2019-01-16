@@ -833,8 +833,8 @@
 	{
 		unsigned short sz;
 
-		void	* (*AddTimeOut)(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session));
-		void	  (*RemoveTimeOut)(H3270 *session, void *timer);
+		void	* (*AddTimer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session));
+		void	  (*RemoveTimer)(H3270 *session, void *timer);
 
 		void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
 		void	  (*remove_poll)(H3270 *session, void *id);
@@ -864,7 +864,7 @@
 	 * @param rm	Callback for removing a timeout
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_register_time_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer));
+	LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer));
 
 	LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
 

@@ -46,7 +46,6 @@
 		<Unit filename="src/include/ansic.h" />
 		<Unit filename="src/include/api.h" />
 		<Unit filename="src/include/aplc.h" />
-		<Unit filename="src/include/appres.h" />
 		<Unit filename="src/include/arpa_telnet.h" />
 		<Unit filename="src/include/cg.h" />
 		<Unit filename="src/include/childc.h" />

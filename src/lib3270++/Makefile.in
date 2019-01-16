@@ -90,6 +90,7 @@ DEPENDS= \
 
 CFLAGS= \
 	@CFLAGS@ \
+	@CPPFLAGS@ \
 	-g \
 	-I../include \
 	-DBUILD_DATE=`date +%Y%m%d` \

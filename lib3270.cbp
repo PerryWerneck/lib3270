@@ -57,7 +57,6 @@
 		<Unit filename="src/include/ft_dft_ds.h" />
 		<Unit filename="src/include/ft_dftc.h" />
 		<Unit filename="src/include/ftc.h" />
-		<Unit filename="src/include/gluec.h" />
 		<Unit filename="src/include/hostc.h" />
 		<Unit filename="src/include/icmdc.h" />
 		<Unit filename="src/include/keypadc.h" />

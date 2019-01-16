@@ -5,6 +5,7 @@
 #include <getopt.h>
 
 #include <lib3270.h>
+#include <lib3270/actions.h>
 
 #define MAX_ARGS 10
 

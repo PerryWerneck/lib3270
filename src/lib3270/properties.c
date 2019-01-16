@@ -584,3 +584,22 @@ int lib3270_set_string_property(H3270 *hSession, const char *name, const char * 
 	return -1;
 
 }
+
+/**
+ * @brief Get SSL host option.
+ *
+ * @return Non zero if the host URL has SSL scheme.
+ *
+ */
+LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession)
+{
+	CHECK_SESSION_HANDLE(hSession);
+
+#ifdef HAVE_LIBSSL
+	return hSession->ssl.enabled ? 1 : 0;
+#else
+	return 0;
+#endif // HAVE_LIBSSL
+
+}
+

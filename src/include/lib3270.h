@@ -484,6 +484,13 @@
 
 	 LIB3270_EXPORT void lib3270_set_hostname(H3270 *h, const char *hostname);
 
+	/**
+	 * @brief Get SSL host option.
+	 *
+	 * @return Non zero if the host URL has SSL scheme.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession);
 
 	/**
 	 * @brief Get service or port for the connect/reconnect operations.

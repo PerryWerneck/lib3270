@@ -167,7 +167,7 @@
 	} LIB3270_DIRECTION;
 
 	/**
-	 * Toggle types.
+	 * @brief Toggle types.
 	 *
 	 */
 	typedef enum _LIB3270_TOGGLE_TYPE
@@ -751,7 +751,7 @@
 	 * @param ix	Toggle id.
 	 * @param value	New toggle state (non zero for true).
 	 *
-	 * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on invalid toggle id
+	 * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
 	 */
 	LIB3270_EXPORT int lib3270_set_toggle(H3270 *h, LIB3270_TOGGLE ix, int value);
 

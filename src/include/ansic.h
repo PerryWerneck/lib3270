@@ -12,9 +12,8 @@
  * for more details.
  */
 
-/*
- *	ansic.h
- *		Global declarations for ansi.c.
+/**
+ * @brief Global declarations for ansi.c.
  */
 
 #if defined(X3270_ANSI) /*[*/

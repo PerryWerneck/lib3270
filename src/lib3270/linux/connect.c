@@ -229,7 +229,6 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	struct resolver		  host;
 
 	CHECK_SESSION_HANDLE(hSession);
-
 	memset(&host,0,sizeof(host));
 
 	lib3270_main_iterate(hSession,0);
@@ -239,6 +238,16 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 	if(hSession->sock > 0)
 		return errno = EBUSY;
+
+	if(!(hSession->host.current && hSession->host.srvc))
+	{
+		// No host info, try the default one.
+        lib3270_set_url(hSession,NULL);
+		if(!(hSession->host.current && hSession->host.srvc))
+		{
+			return errno = ENOENT;
+		}
+	}
 
 #if defined(HAVE_LIBSSL)
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);

@@ -42,16 +42,15 @@ int main(int argc, char *argv[])
 
 	}
 
-	printf("HOST URL: %s\HOST CRL: %s\n",lib3270_get_url(h),lib3270_get_crl_url(h));
+//	printf("HOST URL: %s\HOST CRL: %s\n",lib3270_get_url(h),lib3270_get_crl_url(h));
 
-	if(lib3270_set_url(h,NULL))
-		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
+//	if(lib3270_set_url(h,NULL))
+//		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
 
-//	lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
+	//lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(h,LIB3270_TOGGLE_SSL_TRACE,1);
 
 	rc = lib3270_connect(h,120);
-
 	printf("\nConnect %s exits with rc=%d\n",lib3270_get_url(h),rc);
 
 	lib3270_wait_for_ready(h,10);

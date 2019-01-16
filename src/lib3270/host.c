@@ -55,19 +55,14 @@
 #include <lib3270/internals.h>
 #include <lib3270/properties.h>
 
-#define RECONNECT_MS		2000	/* 2 sec before reconnecting to host */
-#define RECONNECT_ERR_MS	5000	/* 5 sec before reconnecting to host */
-
-static void try_reconnect(H3270 *session);
-
-/*
- * Called from timer to attempt an automatic reconnection.
+/**
+ * @brief Called from timer to attempt an automatic reconnection.
  */
-static void try_reconnect(H3270 *session)
+void lib3270_reconnect(H3270 *hSession)
 {
-	lib3270_write_log(session,"3270","Starting auto-reconnect (Host: %s)",session->host.full ? session->host.full : "-");
-	session->auto_reconnect_inprogress = 0;
-	lib3270_connect(session,0);
+	lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
+	hSession->auto_reconnect_inprogress = 0;
+	lib3270_connect(hSession,0);
 }
 
 LIB3270_EXPORT int lib3270_disconnect(H3270 *h)
@@ -90,7 +85,7 @@ int host_disconnect(H3270 *hSession, int failed)
 		{
 			/* Schedule an automatic reconnection. */
 			hSession->auto_reconnect_inprogress = 1;
-			(void) AddTimeOut(failed ? RECONNECT_ERR_MS: RECONNECT_MS, hSession, try_reconnect);
+			(void) AddTimeOut(failed ? RECONNECT_ERR_MS : RECONNECT_MS, hSession, lib3270_reconnect);
 		}
 
 		/*

@@ -119,6 +119,9 @@
 	#undef X3270_MENUS
 #endif /*]*/
 
+#define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
+#define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
+
 /* types of internal actions */
 enum iaction {
 	IA_STRING, IA_PASTE, IA_REDRAW,
@@ -640,6 +643,11 @@ LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
 
 LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
+
+/**
+ * @brief Called from timer to attempt an automatic reconnection.
+ */
+LIB3270_INTERNAL void lib3270_reconnect(H3270 *hSession);
 
 #if defined(DEBUG)
 	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);

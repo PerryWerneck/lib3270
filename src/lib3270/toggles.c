@@ -57,7 +57,8 @@
 #include "screenc.h"
 #include "trace_dsc.h"
 #include "togglesc.h"
-#include "api.h"
+//#include "api.h"
+#include "utilc.h"
 
 static const struct _toggle_info
 {
@@ -255,6 +256,15 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 
 }
 
+/**
+ * @brief Set toggle state.
+ *
+ * @param h		Session handle.
+ * @param ix	Toggle id.
+ * @param value	New toggle state (non zero for true).
+ *
+ * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
+ */
 LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE ix, int value)
 {
 	char v = value ? True : False;
@@ -263,7 +273,7 @@ LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE ix, int val
 	CHECK_SESSION_HANDLE(session);
 
 	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT)
-		return -EINVAL;
+		return -(errno = EINVAL);
 
 	t = &session->toggle[ix];
 
@@ -330,6 +340,23 @@ static void toggle_keepalive(H3270 *session, struct lib3270_toggle *t unused, LI
 	}
 }
 
+static void toggle_reconnect(H3270 *hSession, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE type  )
+{
+
+	// If already connected or not interactive returns.
+	if(hSession->sock > 0 || type != TT_INTERACTIVE)
+		return;
+
+	if(t->value && !hSession->auto_reconnect_inprogress)
+	{
+		/* Schedule an automatic reconnection. */
+		lib3270_write_log(hSession,"toggle","Auto-reconnect toggle was activated when offline, reconnecting");
+		hSession->auto_reconnect_inprogress = 1;
+		(void) AddTimeOut(RECONNECT_MS, hSession, lib3270_reconnect);
+	}
+
+}
+
 /**
  * @brief Called from system initialization code to handle initial toggle settings.
  */
@@ -345,6 +372,7 @@ void initialize_toggles(H3270 *session)
 	session->toggle[LIB3270_TOGGLE_UNDERLINE].upcall 		= toggle_redraw;
 	session->toggle[LIB3270_TOGGLE_ALTSCREEN].upcall 		= toggle_altscreen;
 	session->toggle[LIB3270_TOGGLE_KEEP_ALIVE].upcall		= toggle_keepalive;
+	session->toggle[LIB3270_TOGGLE_RECONNECT].upcall		= toggle_reconnect;
 
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 	{
@@ -355,8 +383,8 @@ void initialize_toggles(H3270 *session)
 
 }
 
-/*
- * Called from system exit code to handle toggles.
+/**
+ * @brief Called from system exit code to handle toggles.
  */
 void shutdown_toggles(H3270 *session)
 {

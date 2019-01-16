@@ -52,6 +52,7 @@
 #include <lib3270.h>
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>
+#include "hostc.h" // host_disconnect
 #include "trace_dsc.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -152,7 +153,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
 		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL Connect failed" );
-		lib3270_disconnect(hSession);
+
 		return -1;
 
 	}
@@ -285,12 +286,13 @@ int ssl_negotiate(H3270 *hSession)
 	if(rc)
 	{
 		// SSL Negotiation has failed.
+		host_disconnect(hSession,1); // Disconnect with "failed" status.
+
 		if(msg.description)
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
 		else
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
 
-		lib3270_disconnect(hSession);
 
 	}
 
@@ -312,12 +314,13 @@ int	ssl_init(H3270 *hSession) {
 	if(rc)
 	{
 		// SSL init has failed.
+		host_disconnect(hSession,1); // Disconnect with "failed" status.
+
 		if(msg.description)
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
 		else
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
 
-		lib3270_disconnect(hSession);
 	}
 
 	non_blocking(hSession,True);

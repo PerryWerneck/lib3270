@@ -307,9 +307,14 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 		{
 			char	* ptr = msg;
 			size_t	  out = 4096;
+			size_t	  in	= strlen(host.message);
 
 			iconv_t hConv = iconv_open(lib3270_win32_local_charset(),"UTF-8");
-			if(iconv(hConv,&host.message,&msg,&ptr,&out) == ((size_t) -1))
+			if(iconv(
+					hConv,
+					&host.message,&in,
+					&ptr,&out
+				) == ((size_t) -1))
 			{
 				strncpy(msg,host.message,4095);
 			}
@@ -332,22 +337,13 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 	hSession->ever_3270 = False;
 	hSession->ssl.host  = 0;
 
-	if(hSession->options&LIB3270_HOST_TYPE_SSL)
-	{
 #if defined(HAVE_LIBSSL)
+	if(hSession->ssl.enabled)
+	{
 		hSession->ssl.host = 1;
 		ssl_init(hSession);
-#else
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "SSL error" ),
-								_( "Unable to connect to secure hosts" ),
-								_( "This version of %s was built without support for secure sockets layer (SSL)." ),
-								PACKAGE_NAME);
-
-		return errno = EINVAL;
-#endif // HAVE_LIBSSL
 	}
+#endif // HAVE_LIBSSL
 
 	/* connect */
 

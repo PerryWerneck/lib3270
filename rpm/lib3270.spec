@@ -127,6 +127,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc AUTHORS LICENSE README.md
 
+%dir %{_datadir}/pw3270
+
 %{_libdir}/lib3270.so.5
 %{_libdir}/lib3270.so.5.2
 
@@ -147,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/*.so
 %{_libdir}/*.a
+
+%dir %{_datadir}/pw3270/pot
+%{_datadir}/pw3270/pot/*.pot
 
 %pre
 /sbin/ldconfig

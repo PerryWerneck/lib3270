@@ -194,10 +194,15 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	case X509_V_ERR_CRL_HAS_EXPIRED:
 		trace_ssl(hSession,"%s","The CRL of a certificate has expired.\n" );
+
+#ifdef SSL_ALLOW_EXPIRED_CRL
+		break;
+#else
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL has expired." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) has expired." );
 		return -1;
+#endif // SSL_ALLOW_EXPIRED_CRL
 
 	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
 

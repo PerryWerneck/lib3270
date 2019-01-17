@@ -353,6 +353,19 @@ if test "$app_cv_self_signed_certs" == "yes"; then
 	AC_DEFINE(SSL_ALLOW_SELF_SIGNED_CERT)
 fi
 
+AC_ARG_ENABLE([expired-crl],
+	[AS_HELP_STRING([--disable-expired-crl], [disable SSL connection when host presents an expired certificate revocation list])],
+[
+	app_cv_expired_crl="$enableval"
+],[
+	app_cv_expired_crl="no"
+])
+
+if test "$app_cv_expired_crl" == "yes"; then
+	AC_DEFINE(SSL_ALLOW_EXPIRED_CRL)
+fi
+
+
 AC_ARG_ENABLE([ssl-crl-check],
 	[AS_HELP_STRING([--enable-ssl-crl-check], [Enable use of SSL Certificate Revocation List])],
 [

@@ -254,15 +254,8 @@ static void set_peer_certificate)(const void *cert unused)
 }
 #endif // HAVE_LIBSSL
 
-static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)
+void lib3270_reset_callbacks(H3270 *hSession)
 {
-	int		f;
-
-	memset(hSession,0,sizeof(H3270));
-//	hSession->sz = sizeof(H3270);
-
-	lib3270_set_host_charset(hSession,charset);
-
 	// Default calls
 	hSession->cbk.write					= lib3270_sock_send;
 	hSession->cbk.disconnect			= lib3270_sock_disconnect;
@@ -288,6 +281,17 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->cbk.set_timer				= set_timer;
 	hSession->cbk.print					= print;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
+}
+
+static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)
+{
+	int		f;
+
+	memset(hSession,0,sizeof(H3270));
+//	hSession->sz = sizeof(H3270);
+
+	lib3270_set_host_charset(hSession,charset);
+	lib3270_reset_callbacks(hSession);
 
 	// Trace management.
 	hSession->trace.handler				= def_trace;

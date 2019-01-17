@@ -446,6 +446,7 @@
 	 */
 	LIB3270_EXPORT void lib3270_register_schange(H3270 *h,LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data);
 
+	LIB3270_EXPORT void lib3270_reset_callbacks(H3270 *hSession);
 
 	/**
 	 * @brief Set host id for the connect/reconnect operations.

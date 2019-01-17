@@ -257,6 +257,8 @@ static void set_peer_certificate)(const void *cert unused)
 void lib3270_reset_callbacks(H3270 *hSession)
 {
 	// Default calls
+	memset(&hSession->cbk,0,sizeof(hSession->cbk));
+
 	hSession->cbk.write					= lib3270_sock_send;
 	hSession->cbk.disconnect			= lib3270_sock_disconnect;
 	hSession->cbk.update 				= update_char;
@@ -281,6 +283,8 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.set_timer				= set_timer;
 	hSession->cbk.print					= print;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
+	hSession->cbk.update_luname			= (void (*)(H3270 *, const char *)) nop_int;
+
 }
 
 static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)

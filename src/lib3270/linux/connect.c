@@ -297,19 +297,22 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	optval = 1;
 	if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
 	{
+		int rc = errno;
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,
 								_( "Connection error" ),
 								_( "setsockopt(SO_OOBINLINE) has failed" ),
 								"%s",
-								strerror(errno));
+								strerror(rc));
 		SOCK_CLOSE(hSession);
-		return errno = ENOTCONN;
+		return rc;
 	}
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
 	if (setsockopt(hSession->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
 	{
+		int rc = errno;
+
 		char buffer[4096];
 		snprintf(buffer,4095,N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
@@ -318,9 +321,9 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 								_( "Connection error" ),
 								buffer,
 								"%s",
-								strerror(errno));
+								strerror(rc));
 		SOCK_CLOSE(hSession);
-		return errno = ENOTCONN;
+		return rc;
 	}
 	else
 	{
@@ -375,6 +378,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 			default:
 				lib3270_write_log(hSession,"connect", "%s: State changed to unexpected state %d",__FUNCTION__,hSession->cstate);
+				errno = EINVAL;
 				return -1;
 			}
 
@@ -382,6 +386,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 		lib3270_disconnect(hSession);
 		lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
+
 		return errno = ETIMEDOUT;
 	}
 

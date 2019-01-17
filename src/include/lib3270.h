@@ -308,11 +308,10 @@
 	{
 		LIB3270_SSL_UNSECURE,			/**< @brief No secure connection */
 		LIB3270_SSL_SECURE,				/**< @brief Connection secure with CA check */
-		LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA or self-signed */
+		LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA, self-signed or expired CRL */
 		LIB3270_SSL_NEGOTIATING,		/**< @brief Negotiating SSL */
 		LIB3270_SSL_UNDEFINED			/**< @brief Undefined */
 	} LIB3270_SSL_STATE;
-
 
 	/**
 	 * @brief Field information.

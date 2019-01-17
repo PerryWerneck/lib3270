@@ -341,20 +341,20 @@ dnl ---------------------------------------------------------------------------
 dnl SSL Security options
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_ENABLE([self-signed-certs],
-	[AS_HELP_STRING([--disable-self-signed-certs], [disable SSL connection when host presents a self signed certificate])],
+AC_ARG_ENABLE([self-signed-cert-check],
+	[AS_HELP_STRING([--enable-self-signed-cert-check], [Reject SSL connection when host presents a self signed certificate])],
 [
 	app_cv_self_signed_certs="$enableval"
 ],[
-	app_cv_self_signed_certs="yes"
+	app_cv_self_signed_certs="no"
 ])
 
 if test "$app_cv_self_signed_certs" == "yes"; then
-	AC_DEFINE(SSL_ALLOW_SELF_SIGNED_CERT)
+	AC_DEFINE(SSL_ENABLE_SELF_SIGNED_CERT_CHECK)
 fi
 
-AC_ARG_ENABLE([expired-crl],
-	[AS_HELP_STRING([--disable-expired-crl], [disable SSL connection when host presents an expired certificate revocation list])],
+AC_ARG_ENABLE([crl-expiration-check],
+	[AS_HELP_STRING([--enable-crl-expiration-check], [Reject SSL connection when host presents an expired certificate revocation list])],
 [
 	app_cv_expired_crl="$enableval"
 ],[
@@ -362,7 +362,7 @@ AC_ARG_ENABLE([expired-crl],
 ])
 
 if test "$app_cv_expired_crl" == "yes"; then
-	AC_DEFINE(SSL_ALLOW_EXPIRED_CRL)
+	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK)
 fi
 
 
@@ -378,7 +378,13 @@ if test "$app_cv_enable_crl_check" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
 fi
 
-AC_ARG_WITH([default-crl], [AS_HELP_STRING([--with-default-crl], [Set lib3270 default crl url])], [ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_CRL,"$withval") ],[ AC_MSG_NOTICE(No default crl)])
+AC_ARG_WITH([default-crl-url], 
+	[AS_HELP_STRING([--with-default-crl-url], [Set lib3270 default crl url])], 
+[ 
+	AC_DEFINE_UNQUOTED(SSL_DEFAULT_CRL_URL,"$withval") 
+],[ 
+	AC_MSG_NOTICE(No default crl url)
+])
 
 dnl ---------------------------------------------------------------------------
 dnl Check for pic

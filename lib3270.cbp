@@ -39,7 +39,6 @@
 		<Unit filename="LICENCA" />
 		<Unit filename="LICENSE" />
 		<Unit filename="README.md" />
-		<Unit filename="configure.ac" />
 		<Unit filename="gitsync.sh" />
 		<Unit filename="src/include/3270ds.h" />
 		<Unit filename="src/include/actionsc.h" />

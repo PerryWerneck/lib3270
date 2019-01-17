@@ -53,10 +53,12 @@
 	/* Security options */
 	#undef HAVE_LDAP
 	#undef HAVE_LIBSSL
-	#undef SSL_ALLOW_SELF_SIGNED_CERT
-	#undef SSL_ALLOW_EXPIRED_CRL
+
+	#undef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+
 	#undef SSL_ENABLE_CRL_CHECK
-	#undef LIB3270_DEFAULT_CRL
+	#undef SSL_ENABLE_CRL_EXPIRATION_CHECK
+	#undef SSL_DEFAULT_CRL_URL
 
 	/* Windows Options */
 #ifdef WIN32

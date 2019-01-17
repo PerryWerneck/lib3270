@@ -195,14 +195,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	case X509_V_ERR_CRL_HAS_EXPIRED:
 		trace_ssl(hSession,"%s","The CRL of a certificate has expired.\n" );
 
-#ifdef SSL_ALLOW_EXPIRED_CRL
-		break;
-#else
+#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL has expired." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) has expired." );
 		return -1;
-#endif // SSL_ALLOW_EXPIRED_CRL
+#else
+		break;
+#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
 
 	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
 
@@ -211,14 +211,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		debug("%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain" );
 		trace_ssl(hSession,"%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n" );
 
-#ifdef SSL_ALLOW_SELF_SIGNED_CERT
-		break;
-#else
+#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
 		return -1;
-#endif // SSL_ALLOW_SELF_SIGNED_CERT
+#else
+		break;
+#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 
 	default:
 

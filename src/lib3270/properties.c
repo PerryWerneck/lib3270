@@ -298,18 +298,17 @@
 	if(hSession->ssl.crl)
 		return hSession->ssl.crl;
 
-#ifdef LIB3270_DEFAULT_CRL
-	return LIB3270_DEFAULT_CRL;
+#ifdef SSL_DEFAULT_CRL_URL
+	return SSL_DEFAULT_CRL_URL;
 #else
 	return getenv("LIB3270_DEFAULT_CRL");
-#endif // LIB3270_DEFAULT_CRL
+#endif // SSL_DEFAULT_CRL_URL
 
 #else
 	errno = ENOTSUP;
 	return "";
 #endif
  }
-
 
  int lib3270_set_crl_url(H3270 *hSession, const char *crl)
  {

@@ -265,135 +265,133 @@ LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
 
 }
 
+LIB3270_EXPORT const char * lib3270_get_default_host(H3270 *hSession unused)
+{
+#ifdef LIB3270_DEFAULT_HOST
+	return LIB3270_DEFAULT_HOST;
+#else
+	return getenv("LIB3270_DEFAULT_HOST");
+#endif // LIB3270_DEFAULT_HOST
+}
+
 LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 {
     FAIL_IF_ONLINE(h);
 
 	if(!n)
+		n = lib3270_get_default_host(h);
+
+	if(!n)
+		return errno = ENOENT;
+
+	static const struct _sch
 	{
-#ifdef LIB3270_DEFAULT_HOST
-		n = LIB3270_DEFAULT_HOST;
-#else
-		n = getenv("LIB3270_DEFAULT_HOST");
-		if(!n)
-			return errno = EINVAL;
-#endif // LIB3270_DEFAULT_HOST
+		char			  ssl;
+		const char		* text;
+		const char		* srvc;
+	} sch[] =
+	{
+#ifdef HAVE_LIBSSL
+		{ 1, "tn3270s://",	"telnets"	},
+		{ 1, "telnets://",	"telnets"	},
+		{ 1, "L://",		"telnets"	},
+		{ 1, "L:",			"telnets"	},
+#endif // HAVE_LIBSSL
+
+		{ 0, "tn3270://",	"telnet"	},
+		{ 0, "telnet://",	"telnet"	}
+
+	};
+
+	lib3270_autoptr(char)	  str 		= strdup(n);
+	char					* hostname 	= str;
+	const char 				* srvc		= "telnet";
+	char					* ptr;
+	char					* query		= "";
+	int						  f;
+
+	trace("%s(%s)",__FUNCTION__,str);
+
+#ifdef HAVE_LIBSSL
+	h->ssl.enabled = 0;
+#endif // HAVE_LIBSSL
+
+	for(f=0;f < sizeof(sch)/sizeof(sch[0]);f++)
+	{
+		size_t sz = strlen(sch[f].text);
+		if(!strncasecmp(hostname,sch[f].text,sz))
+		{
+#ifdef HAVE_LIBSSL
+			h->ssl.enabled	= sch[f].ssl;
+#endif // HAVE_LIBSSL
+			srvc			= sch[f].srvc;
+			hostname		+= sz;
+			break;
+		}
 	}
 
-	if(!h->host.full || strcmp(n,h->host.full))
+	if(!*hostname)
+		return 0;
+
+	ptr = strchr(hostname,':');
+	if(ptr)
 	{
-		static const struct _sch
-		{
-			char			  ssl;
-			const char		* text;
-			const char		* srvc;
-		} sch[] =
-		{
-#ifdef HAVE_LIBSSL
-			{ 1, "tn3270s://",	"telnets"	},
-			{ 1, "telnets://",	"telnets"	},
-			{ 1, "L://",		"telnets"	},
-			{ 1, "L:",			"telnets"	},
-#endif // HAVE_LIBSSL
+		*(ptr++) = 0;
+		srvc  = ptr;
+		query = strchr(ptr,'?');
 
-			{ 0, "tn3270://",	"telnet"	},
-			{ 0, "telnet://",	"telnet"	}
+		trace("QUERY=[%s]",query);
 
-		};
+		if(query)
+			*(query++) = 0;
+		else
+			query = "";
+	}
 
-		char					* str 		= strdup(n);
-		char					* hostname 	= str;
-		const char 				* srvc		= "telnet";
-		char					* ptr;
-		char					* query		= "";
-		int						  f;
+	trace("SRVC=[%s]",srvc);
 
-		trace("%s(%s)",__FUNCTION__,str);
+	Replace(h->host.current,strdup(hostname));
+	Replace(h->host.srvc,strdup(srvc));
 
-#ifdef HAVE_LIBSSL
-		h->ssl.enabled = 0;
-#endif // HAVE_LIBSSL
-
-		for(f=0;f < sizeof(sch)/sizeof(sch[0]);f++)
-		{
-			size_t sz = strlen(sch[f].text);
-			if(!strncasecmp(hostname,sch[f].text,sz))
-			{
-#ifdef HAVE_LIBSSL
-				h->ssl.enabled	= sch[f].ssl;
-#endif // HAVE_LIBSSL
-				srvc			= sch[f].srvc;
-				hostname		+= sz;
-				break;
-			}
-		}
-
-		if(!*hostname)
-			return 0;
-
-		ptr = strchr(hostname,':');
-		if(ptr)
-		{
-			*(ptr++) = 0;
-			srvc  = ptr;
-			query = strchr(ptr,'?');
-
-			trace("QUERY=[%s]",query);
-
-			if(query)
-				*(query++) = 0;
-			else
-				query = "";
-		}
-
-		trace("SRVC=[%s]",srvc);
-
-		Replace(h->host.current,strdup(hostname));
-		Replace(h->host.srvc,strdup(srvc));
-
-		// Verifica parâmetros
-		if(query && *query)
-		{
-			char *str 		= strdup(query);
-			char *ptr;
+	// Verifica parâmetros
+	if(query && *query)
+	{
+		lib3270_autoptr(char) str = strdup(query);
+		char *ptr;
 
 #ifdef HAVE_STRTOK_R
-			char *saveptr	= NULL;
-			for(ptr = strtok_r(str,"&",&saveptr);ptr;ptr=strtok_r(NULL,"&",&saveptr))
+		char *saveptr	= NULL;
+		for(ptr = strtok_r(str,"&",&saveptr);ptr;ptr=strtok_r(NULL,"&",&saveptr))
 #else
-			for(ptr = strtok(str,"&");ptr;ptr=strtok(NULL,"&"))
+		for(ptr = strtok(str,"&");ptr;ptr=strtok(NULL,"&"))
 #endif
+		{
+			char *var = ptr;
+			char *val = strchr(ptr,'=');
+			if(val)
 			{
-				char *var = ptr;
-				char *val = strchr(ptr,'=');
-				if(val)
-				{
-					*(val++) = 0;
+				*(val++) = 0;
 
-					if(lib3270_set_string_property(h, var, val, 0) == 0)
-						continue;
+				if(lib3270_set_string_property(h, var, val, 0) == 0)
+					continue;
 
-					lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
-
-				}
-				else
-				{
-					if(lib3270_set_int_property(h,var,1,0))
-						continue;
-
-					lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
-				}
+				lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
 
 			}
+			else
+			{
+				if(lib3270_set_int_property(h,var,1,0))
+					continue;
 
-			free(str);
+				lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
+			}
+
 		}
 
-		// Notifica atualização
-		update_host(h);
-
-		free(str);
 	}
+
+	// Notifica atualização
+	update_host(h);
 
 	return 0;
 }

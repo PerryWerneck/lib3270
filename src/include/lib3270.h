@@ -452,12 +452,21 @@
 	 * @brief Set host id for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
-	 * @param url	URL of host to set in the format tn3270://hostname:service or tn3270s://hostname:service .
+	 * @param url	URL of host to set in the format tn3270://hostname:service or tn3270s://hostname:service
 	 *
 	 * @return 0
 	 *
 	 */
 	 LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *url);
+
+	/**
+	 * @brief Get the URL of the predefined tn3270 host.
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 * @return URL of the predefined host in the format tn3270://hostname:service or tn3270s://hostname:service
+	 */
+	 LIB3270_EXPORT const char * lib3270_get_default_host(H3270 *hSession);
 
 	/**
 	 * @brief Set URL for the certificate revocation list.

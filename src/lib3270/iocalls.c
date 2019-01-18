@@ -449,6 +449,9 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 	if(cbk->run_task)
 		run_task = cbk->run_task;
 
+	if(cbk->set_poll_state)
+		set_poll_state = cbk->set_poll_state;
+
 	return 0;
 
 }

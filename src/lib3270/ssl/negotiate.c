@@ -270,10 +270,6 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		X509_free(peer);
 	}
 
-
-	/* Tell the world that we are (still) connected, now in secure mode. */
-	lib3270_set_connected_initial(hSession);
-
 	return 0;
 }
 
@@ -299,6 +295,11 @@ int ssl_negotiate(H3270 *hSession)
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
 
 
+	}
+	else
+	{
+		/* Tell the world that we are (still) connected, now in secure mode. */
+		lib3270_set_connected_initial(hSession);
 	}
 
 	non_blocking(hSession,True);

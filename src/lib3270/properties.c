@@ -350,42 +350,42 @@
 
 		{
 			"luname",									//  Property name.
-			N_( "" ),									//  Property description.
+			N_( "The name of the active LU" ),			//  Property description.
 			lib3270_get_luname,							//  Get value.
 			lib3270_set_luname							//  Set value.
 		},
 
 		{
 			"url",										//  Property name.
-			N_( "" ),									//  Property description.
+			N_( "URL of the current host" ),			//  Property description.
 			lib3270_get_url,							//  Get value.
 			lib3270_set_url								//  Set value.
 		},
 
 		{
 			"model",									//  Property name.
-			N_( "" ),									//  Property description.
+			N_( "Model name" ),							//  Property description.
 			lib3270_get_model,							//  Get value.
 			lib3270_set_model							//  Set value.
 		},
 
 		{
 			"host_type",								//  Property name.
-			N_( "" ),									//  Property description.
+			N_( "Host type name" ),						//  Property description.
 			lib3270_get_host_type_name,					//  Get value.
 			lib3270_set_host_type_by_name				//  Set value.
 		},
 
 		{
 			"host_charset",								//  Property name.
-			N_( "" ),									//  Property description.
+			N_( "Host charset" ),						//  Property description.
 			lib3270_get_host_charset,					//  Get value.
 			lib3270_set_host_charset					//  Set value.
 		},
 
 		{
 			"display_charset",							//  Property name.
-			N_( "" ),									//  Property description.
+			N_( "Display charset" ),					//  Property description.
 			lib3270_get_display_charset,				//  Get value.
 			NULL										//  Set value.
 		},
@@ -405,10 +405,17 @@
 		},
 
 		{
-			"crlpath",									//  Property name.
-			N_( "URL for the CRL file" ),				//  Property description.
-			lib3270_get_crl_url,						//  Get value.
-			lib3270_set_crl_url,						//  Set value.
+			"crlpath",											//  Property name.
+			N_( "URL for the certificate revocation list" ),	//  Property description.
+			lib3270_get_crl_url,								//  Get value.
+			lib3270_set_crl_url,								//  Set value.
+		},
+
+		{
+			"default_host",										//  Property name.
+			N_( "Default host URL" ),							//  Property description.
+			lib3270_get_default_host,							//  Get value.
+			NULL												//  Set value.
 		},
 
 

@@ -289,8 +289,11 @@ LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id)
 
 LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled)
 {
-	debug("%s(%d,%p,%d)",__FUNCTION__,session->sock,id,enabled);
-	set_poll_state(session, id, enabled);
+	if(id)
+	{
+		debug("%s: Polling on %d (%p) is %s",__FUNCTION__,session->sock,id,(enabled ? "enabled" : "disabled"));
+		set_poll_state(session, id, enabled);
+	}
 }
 
 LIB3270_EXPORT void	 lib3270_remove_poll_fd(H3270 *session, int fd)
@@ -582,7 +585,7 @@ int non_blocking(H3270 *hSession, Boolean on)
 	lib3270_set_poll_state(hSession,hSession->xio.write, on);
 	lib3270_set_poll_state(hSession,hSession->xio.except, on);
 
-	trace("Socket %d is %s",hSession->sock, on ? "non-blocking" : "blocking");
+	trace("******** Socket %d is %s",hSession->sock, on ? "non-blocking" : "blocking");
 
 	return 0;
 }

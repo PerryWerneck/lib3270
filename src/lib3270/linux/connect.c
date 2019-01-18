@@ -286,11 +286,13 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	hSession->ssl.host  = 0;
 
 #if defined(HAVE_LIBSSL)
+	debug("** SSL init %s","begins");
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;
 		ssl_init(hSession);
 	}
+	debug("** SSL init %s","ends");
 #endif // HAVE_LIBSSL
 
 	// set options for inline out-of-band data and keepalives

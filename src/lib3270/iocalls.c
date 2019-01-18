@@ -48,7 +48,6 @@
 	#include <fcntl.h>
 #endif
 
-
 #define MILLION			1000000L
 //
 //#if defined(_WIN32)
@@ -443,6 +442,9 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 
 	if(cbk->ring_bell)
 		ring_bell = cbk->ring_bell;
+
+	if(cbk->run_task)
+		run_task = cbk->run_task;
 
 	return 0;
 

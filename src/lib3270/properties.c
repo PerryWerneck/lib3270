@@ -292,6 +292,8 @@
 	return lib3270_get_revision();
  }
 
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wunused-parameter"
  const char * lib3270_get_crl_url(H3270 *hSession)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
@@ -309,7 +311,10 @@
 	return "";
 #endif
  }
+ #pragma GCC diagnostic pop
 
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wunused-parameter"
  int lib3270_set_crl_url(H3270 *hSession, const char *crl)
  {
 
@@ -337,6 +342,7 @@
 #endif // SSL_ENABLE_CRL_CHECK
 
  }
+ #pragma GCC diagnostic pop
 
  LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void)
  {

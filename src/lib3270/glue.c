@@ -94,10 +94,8 @@
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
-/*
- * parse_ctlchar
- *	Parse an stty control-character specification.
- *	A cheap, non-complaining implementation.
+/**
+ * @brief Parse an stty control-character specification; a cheap, non-complaining implementation.
  */
 static char parse_ctlchar(char *s)
 {
@@ -141,7 +139,7 @@ int lib3270_unloaded(void)
 
 #if defined WIN32
 
-BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd)
+BOOL WINAPI DllMain(HANDLE hinst unused, DWORD dwcallpurpose, LPVOID lpvResvd unused)
 {
 //	Trace("%s - Library %s",__FUNCTION__,(dwcallpurpose == DLL_PROCESS_ATTACH) ? "Loaded" : "Unloaded");
 

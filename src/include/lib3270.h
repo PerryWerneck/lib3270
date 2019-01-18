@@ -553,21 +553,6 @@
 	 */
 	LIB3270_EXPORT int lib3270_reconnect(H3270 *h,int seconds);
 
-//	LIB3270_EXPORT int lib3270_set_connected(H3270 *h,int state);
-
-	/**
-	 * @brief Connect to defined host, keep main loop running.
-	 *
-	 * @param hSession	Session handle.
-	 * @param hostname	Host name.
-	 * @param srvc		Service name (telnet if NULL).
-	 * @param opt		Session options.
-	 *
-	 * @return 0 for success, EAGAIN if auto-reconnect is in progress, EBUSY if connected, ENOTCONN if connection has failed, -1 on unexpected failure.
-	 *
-	 */
-//	LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_HOST_TYPE opt);
-
 	/**
 	 * @brief Connect by URL
 	 *

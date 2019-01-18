@@ -128,52 +128,6 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
  }
 
- /*
- LIB3270_EXPORT int lib3270_connect_host(H3270 *hSession, const char *hostname, const char *srvc, LIB3270_HOST_TYPE opt)
- {
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(!hostname)
-		return EINVAL;
-
-	if(!srvc)
-		srvc = "telnet";
-
-	if(*hostname == '$')
-	{
-		const char *name = getenv(hostname+1);
-		if(!name)
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "Unable to find selected hostname." ),
-									_( "Can't determine value for environment variable \"%s\" " ),
-									hostname);
-			lib3270_set_disconnected(hSession);
-			return ENOENT;
-		}
-		hostname = name;
-	}
-
- 	hSession->options = opt & ~LIB3270_HOST_TYPE_WAIT;
-	Replace(hSession->host.current,strdup(hostname));
-	Replace(hSession->host.srvc,strdup(srvc));
-
-	Replace(hSession->host.full,
-			lib3270_strdup_printf(
-				"%s%s:%s",
-					opt&LIB3270_HOST_TYPE_SSL ? "tn3270s://" : "tn3270://",
-					hostname,
-					srvc ));
-
-	trace("current_host=\"%s\"",hSession->host.current);
-
-	return lib3270_reconnect(hSession,opt & LIB3270_HOST_TYPE_WAIT);
-
- }
- */
-
  struct resolver
  {
 	const char 			* message;

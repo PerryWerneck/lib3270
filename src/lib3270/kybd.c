@@ -42,6 +42,7 @@ struct ta;
 
 #include "private.h"
 #include <lib3270/trace.h>
+#include <lib3270/selection.h>
 
 #ifndef ANDROID
 	#include <stdlib.h>
@@ -1758,6 +1759,97 @@ LIB3270_EXPORT int lib3270_nextword(H3270 *hSession)
 }
 
 /**
+ * @brief Move cursor.
+ *
+ * @param hSession	Session handle.
+ * @param dir		Where to move.
+ * @param sel		Non zero if it's selecting.
+ *
+ */
+LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, unsigned char sel)
+{
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	int cursor_addr = hSession->cursor_addr;
+	int maxlen		= hSession->cols * hSession->rows;
+
+	switch(dir)
+	{
+	case LIB3270_DIR_UP:
+
+		if(sel && cursor_addr <= hSession->cols)
+			return errno = EINVAL;
+
+		cursor_addr -= hSession->cols;
+		break;
+
+	case LIB3270_DIR_DOWN:
+
+		if(sel && cursor_addr >= (hSession->cols * (hSession->rows-1)))
+			return errno = EINVAL;
+
+		cursor_addr += hSession->cols;
+		break;
+
+	case LIB3270_DIR_LEFT:
+
+		if(sel &&  (cursor_addr % hSession->cols) < 1)
+			return errno = EINVAL;
+
+		cursor_addr--;
+		break;
+
+	case LIB3270_DIR_RIGHT:
+
+		if(sel &&  (cursor_addr % hSession->cols) >= (hSession->cols-1))
+			return errno = EINVAL;
+
+		cursor_addr++;
+		break;
+
+	case LIB3270_DIR_END:
+
+		cursor_addr = lib3270_get_field_end(hSession,cursor_addr);
+		if(cursor_addr == -1)
+			return errno = EINVAL;
+		break;
+
+	default:
+		errno = EINVAL;
+		return -1;
+	}
+
+	if(sel)
+	{
+		lib3270_select_to(hSession,cursor_addr);
+	}
+	else
+	{
+
+		if(cursor_addr >= maxlen)
+		{
+			cursor_move(hSession,cursor_addr % maxlen);
+		}
+		else if(cursor_addr < 0)
+		{
+			cursor_move(hSession,cursor_addr + maxlen);
+		}
+		else
+		{
+			cursor_move(hSession,cursor_addr);
+		}
+
+		if(hSession->kybdlock && (KYBDLOCK_IS_OERR(hSession)))
+		{
+			status_reset(hSession);
+		}
+
+	}
+
+	return 0;
+}
+
+/**
  * @brief Cursor up 1 position.
  */
 LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession)
@@ -1766,6 +1858,7 @@ LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession)
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
+	trace("kybdlock=%d OERR=%s",(int) hSession->kybdlock, (KYBDLOCK_IS_OERR(hSession) ? "yes" : "no"));
 	if (hSession->kybdlock)
 	{
 		if (KYBDLOCK_IS_OERR(hSession))
@@ -1776,16 +1869,17 @@ LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession)
 		else
 		{
 			ENQUEUE_ACTION(lib3270_cursor_up);
-//			enq_ta(Up_action, CN, CN);
 			return 0;
 		}
 	}
+
 #if defined(X3270_ANSI) /*[*/
 	if (IN_ANSI) {
 		ansi_send_up(hSession);
 		return 0;
 	}
 #endif /*]*/
+
 	baddr = hSession->cursor_addr - hSession->cols;
 	if (baddr < 0)
 		baddr = (hSession->cursor_addr + (hSession->rows * hSession->cols)) - hSession->cols;

@@ -568,14 +568,17 @@ void status_reset(H3270 *session)
 
 	if (session->kybdlock & KL_ENTER_INHIBIT)
 	{
+		trace("%s",__FUNCTION__);
 		status_changed(session,LIB3270_MESSAGE_INHIBIT);
 	}
 	else if (session->kybdlock & KL_DEFERRED_UNLOCK)
 	{
+		trace("%s",__FUNCTION__);
 		status_changed(session,LIB3270_MESSAGE_X);
 	}
 	else
 	{
+		trace("%s",__FUNCTION__);
 		mcursor_set(session,LIB3270_POINTER_UNLOCKED);
 		status_changed(session,LIB3270_MESSAGE_NONE);
 	}

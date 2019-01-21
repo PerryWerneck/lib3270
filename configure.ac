@@ -519,6 +519,28 @@ AC_SUBST(LDAP_CFLAGS)
 AC_SUBST(LDAP_LIBS)
 
 dnl ---------------------------------------------------------------------------
+dnl Check for CURL
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_ENABLE([curl],
+        AS_HELP_STRING([--disable-curl],[Disable optional CURL support]),
+                [case "${enableval}" in
+                        yes) have_curl=yes ;;
+                        no) have_curl=no ;;
+                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-curl);;
+                esac],
+                [have_curl=auto])
+
+
+if test "x${have_curl}" != xno ; then
+	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL), AC_MSG_NOTICE([libcurl not present.]) )
+fi
+
+AC_SUBST(LIBCURL_LIBS)
+AC_SUBST(LIBCURL_CFLAGS)
+
+
+dnl ---------------------------------------------------------------------------
 dnl Directory config
 dnl ---------------------------------------------------------------------------
 

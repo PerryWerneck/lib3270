@@ -225,8 +225,6 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 
 	memset(&host,0,sizeof(host));
 
-	lib3270_main_iterate(hSession,0);
-
 	if(hSession->auto_reconnect_inprogress)
 		return errno = EAGAIN;
 

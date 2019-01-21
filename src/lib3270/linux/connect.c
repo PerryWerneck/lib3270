@@ -30,6 +30,7 @@
 #include <config.h>
 #include "../private.h"
 #include <errno.h>
+#include <lib3270/trace.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -187,8 +188,6 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	CHECK_SESSION_HANDLE(hSession);
 	memset(&host,0,sizeof(host));
 
-	lib3270_main_iterate(hSession,0);
-
 	if(hSession->auto_reconnect_inprogress)
 		return errno = EAGAIN;
 
@@ -210,6 +209,8 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 #endif // HAVE_LIBSSL
 
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
+
+	lib3270_trace_event(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
 
 	hSession->ever_3270	= False;
 	hSession->cstate = LIB3270_RESOLVING;

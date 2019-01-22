@@ -150,23 +150,6 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	memcpy(&(data->contents[data->length]),contents,realsize);
 	data->length += realsize;
 
-	/*
-	struct MemoryStruct *mem = (struct MemoryStruct *)userp;
-
-	char *ptr = realloc(mem->memory, mem->size + realsize + 1);
-	if(ptr == NULL) {
-	printf("not enough memory (realloc returned NULL)\n");
-	return 0;
-	}
-
-	mem->memory = ptr;
-	memcpy(&(mem->memory[mem->size]), contents, realsize);
-	mem->size += realsize;
-	mem->memory[mem->size] = 0;
-
-	*/
-
-
 	return realsize;
 }
 

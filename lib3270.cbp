@@ -219,7 +219,7 @@
 		<Unit filename="src/lib3270/ssl/state.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/ssl/windows/ctx_init.c">
+		<Unit filename="src/lib3270/ssl/windows/getcrl.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/state.c">

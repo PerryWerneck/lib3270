@@ -61,11 +61,6 @@
 	#undef SSL_ENABLE_CRL_EXPIRATION_CHECK
 	#undef SSL_DEFAULT_CRL_URL
 
-	/* Windows Options */
-#ifdef WIN32
-	#undef HAVE_WIN_REGISTRY
-#endif // WIN32
-
 	/* Optional parts. */
 	#undef X3270_DBCS
 	#undef X3270_SCRIPT

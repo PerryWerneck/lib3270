@@ -254,6 +254,11 @@ static void set_peer_certificate)(const void *cert unused)
 }
 #endif // HAVE_LIBSSL
 
+static void default_update_luname(H3270 *session unused, const char *name unused)
+{
+
+}
+
 void lib3270_reset_callbacks(H3270 *hSession)
 {
 	// Default calls
@@ -283,7 +288,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.set_timer				= set_timer;
 	hSession->cbk.print					= print;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
-	hSession->cbk.update_luname			= (void (*)(H3270 *, const char *)) nop_int;
+	hSession->cbk.update_luname			= default_update_luname;
 
 }
 
@@ -298,7 +303,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	lib3270_reset_callbacks(hSession);
 
 	// Trace management.
-	hSession->trace.handler				= def_trace;
+	hSession->trace.handler			= def_trace;
 
 	// Set the defaults.
 	hSession->extended  			=  1;

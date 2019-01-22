@@ -11,8 +11,8 @@
 
 int main(int argc, char *argv[])
 {
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+//	#pragma GCC diagnostic push
+//	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 	static struct option options[] = {
 		{ "crl",		required_argument,	0,	'C' },
 		{ "url",		required_argument,	0,	'U' },
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 		{ 0, 0, 0, 0}
 
 	};
-	#pragma GCC diagnostic pop
+//	#pragma GCC diagnostic pop
 
 	H3270		* h;
 	int			  rc	= 0;

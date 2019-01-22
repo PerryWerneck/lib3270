@@ -482,13 +482,13 @@ dnl Check for LDAP
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE([ldap],
-        AS_HELP_STRING([--disable-ldap],[Disable optional LDAP support]),
+        AS_HELP_STRING([--enable-ldap],[Enable optional LDAP support]),
                 [case "${enableval}" in
                         yes) have_ldap=yes ;;
                         no) have_ldap=no ;;
                         *) AC_MSG_ERROR(bad value ${enableval} for --disable-ldap);;
                 esac],
-                [have_ldap=auto])
+                [have_ldap=no])
 
 
 if test "x${have_ldap}" != xno ; then
@@ -523,13 +523,13 @@ dnl Check for CURL
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE([curl],
-        AS_HELP_STRING([--disable-curl],[Disable optional CURL support]),
+        AS_HELP_STRING([--enable-curl],[Enable optional CURL support]),
                 [case "${enableval}" in
                         yes) have_curl=yes ;;
                         no) have_curl=no ;;
                         *) AC_MSG_ERROR(bad value ${enableval} for --disable-curl);;
                 esac],
-                [have_curl=auto])
+                [have_curl=no])
 
 
 if test "x${have_curl}" != xno ; then
@@ -538,7 +538,6 @@ fi
 
 AC_SUBST(LIBCURL_LIBS)
 AC_SUBST(LIBCURL_CFLAGS)
-
 
 dnl ---------------------------------------------------------------------------
 dnl Directory config

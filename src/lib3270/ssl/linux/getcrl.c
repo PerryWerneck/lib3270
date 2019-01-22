@@ -33,7 +33,10 @@
  *
  */
 
+#define CRL_DATA_LENGTH 4096
+
 #include <config.h>
+
 #if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 
 #include <openssl/ssl.h>
@@ -45,6 +48,10 @@
 	#define LDAP_DEPRECATED 1
 	#include <ldap.h>
 #endif // HAVE_LDAP
+
+#ifdef HAVE_LIBCURL
+	#include <curl/curl.h>
+#endif // HAVE_LIBCURL
 
 #include "../../private.h"
 #include <trace_dsc.h>
@@ -93,6 +100,71 @@ static inline void lib3270_autoptr_cleanup_LDAPPTR(char **ptr)
 }
 
 #endif // HAVE_LDAP
+
+#ifdef HAVE_LIBCURL
+static inline void lib3270_autoptr_cleanup_CURL(CURL **ptr)
+{
+	debug("%s(%p)",__FUNCTION__,*ptr);
+	if(*ptr)
+		curl_easy_cleanup(*ptr);
+	*ptr = NULL;
+}
+
+typedef struct _curldata
+{
+	size_t		  		  length;
+	SSL_ERROR_MESSAGE	* message;
+	unsigned char		  contents[CRL_DATA_LENGTH];
+} CURLDATA;
+
+static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
+{
+	debug("%s(%p)",__FUNCTION__,*ptr);
+	if(*ptr)
+		lib3270_free(*ptr);
+	*ptr = NULL;
+}
+
+
+static size_t internal_curl_write_callback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+	CURLDATA * data = (CURLDATA *) userp;
+
+	size_t realsize = size * nmemb;
+
+	if((size + data->length) > CRL_DATA_LENGTH)
+	{
+		debug("CRL Data block is bigger than allocated block (%u bytes)",(unsigned int) size);
+		return 0;
+	}
+
+	debug("Received %u bytes", (unsigned int) realsize);
+
+	memcpy(&(data->contents[data->length]),contents,realsize);
+	data->length += realsize;
+
+	/*
+	struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+
+	char *ptr = realloc(mem->memory, mem->size + realsize + 1);
+	if(ptr == NULL) {
+	printf("not enough memory (realloc returned NULL)\n");
+	return 0;
+	}
+
+	mem->memory = ptr;
+	memcpy(&(mem->memory[mem->size]), contents, realsize);
+	mem->size += realsize;
+	mem->memory[mem->size] = 0;
+
+	*/
+
+
+	return realsize;
+}
+
+#endif // HAVE_LIBCURL
+
 
 X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 {
@@ -297,12 +369,89 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 #endif // HAVE_LDAP
 	else
 	{
+#ifdef HAVE_LIBCURL
+
+		// Use CURL to download the CRL
+		lib3270_autoptr(CURLDATA) crl_data = lib3270_malloc(sizeof(CURLDATA));
+		lib3270_autoptr(CURL) hCurl = curl_easy_init();
+
+		memset(crl_data,0,sizeof(CURLDATA));
+		crl_data->message = message;
+
+		if(hCurl)
+		{
+			CURLcode res;
+
+			curl_easy_setopt(hCurl, CURLOPT_URL, consturl);
+			curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
+
+			curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
+			curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
+
+			res = curl_easy_perform(hCurl);
+
+			if(res != CURLE_OK)
+			{
+				message->error = hSession->ssl.error = 0;
+				message->title = N_( "Security error" );
+				message->text = N_( "Error loading CRL" );
+				message->description =  curl_easy_strerror(res);
+				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
+				return NULL;
+			}
+
+			char *ct = NULL;
+			res = curl_easy_getinfo(hCurl, CURLINFO_CONTENT_TYPE, &ct);
+			if(res != CURLE_OK)
+			{
+				message->error = hSession->ssl.error = 0;
+				message->title = N_( "Security error" );
+				message->text = N_( "Error loading CRL" );
+				message->description =  curl_easy_strerror(res);
+				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
+				return NULL;
+			}
+
+			if(ct)
+			{
+				const unsigned char * data = crl_data->contents;
+
+				if(strcasecmp(ct,"application/pkix-crl") == 0)
+				{
+					// CRL File, convert it
+					if(!d2i_X509_CRL(&crl, &data, crl_data->length))
+					{
+						message->error = hSession->ssl.error = ERR_get_error();
+						message->title = N_( "Security error" );
+						message->text = N_( "Got an invalid CRL from server" );
+						lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+					}
+				}
+				else
+				{
+					message->error = hSession->ssl.error = ERR_get_error();
+					message->title = N_( "Security error" );
+					message->text = N_( "Got an invalid CRL from server" );
+					lib3270_write_log(hSession,"ssl","%s: content-type unexpected: \"%s\"",consturl, ct);
+				}
+			}
+
+			debug("content-type: %s",ct);
+
+
+
+		}
+
+#else
+		// Can't get CRL.
+
 		message->error = hSession->ssl.error = 0;
 		message->title = N_( "Security error" );
 		message->text = N_( "Unexpected or invalid CRL URL" );
 		message->description = N_("The URL scheme is unknown");
 		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
 		return NULL;
+#endif // HAVE_LIBCURL
 	}
 
 	return crl;

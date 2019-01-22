@@ -95,14 +95,16 @@ CFLAGS= \
 	-I../include
 	-DBUILD_DATE=`date +%Y%m%d` \
 	@LIBSSL_CFLAGS@ \
-	@LDAP_CFLAGS@
+	@LDAP_CFLAGS@ \
+	@LIBCURL_CFLAGS@
 
 LIBS= \
 	@LIBS@ \
 	@LIBSSL_LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
-	@LDAP_LIBS@
+	@LDAP_LIBS@ \
+	@LIBCURL_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 

@@ -125,6 +125,13 @@ static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
 	*ptr = NULL;
 }
 
+static inline void lib3270_autoptr_cleanup_BIO(BIO **ptr)
+{
+	debug("%s(%p)",__FUNCTION__,*ptr);
+	if(*ptr)
+		BIO_free_all(*ptr);
+	*ptr = NULL;
+}
 
 static size_t internal_curl_write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -412,6 +419,8 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				return NULL;
 			}
 
+			debug("content-type: %s",ct);
+
 			if(ct)
 			{
 				const unsigned char * data = crl_data->contents;
@@ -425,6 +434,7 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 						message->title = N_( "Security error" );
 						message->text = N_( "Got an invalid CRL from server" );
 						lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+						return NULL;
 					}
 				}
 				else
@@ -433,12 +443,42 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 					message->title = N_( "Security error" );
 					message->text = N_( "Got an invalid CRL from server" );
 					lib3270_write_log(hSession,"ssl","%s: content-type unexpected: \"%s\"",consturl, ct);
+					return NULL;
 				}
 			}
+			else if(strncasecmp(consturl,"ldap://",7) == 0)
+			{
+				// It's an LDAP query, assumes a base64 data.
+				char * data = strstr((char *) crl_data->contents,":: ");
+				if(!data)
+				{
+					message->error = hSession->ssl.error = ERR_get_error();
+					message->title = N_( "Security error" );
+					message->text = N_( "Got an invalid CRL from LDAP server" );
+					lib3270_write_log(hSession,"ssl","%s: invalid format:\n%s\n",consturl, crl_data->contents);
+					return NULL;
+				}
+				data += 3;
 
-			debug("content-type: %s",ct);
+				debug("\n%s\nlength=%u",data,(unsigned int) strlen(data));
 
+				lib3270_autoptr(BIO) bio = BIO_new_mem_buf(data,-1);
 
+				BIO * b64 = BIO_new(BIO_f_base64());
+				bio = BIO_push(b64, bio);
+
+				BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
+
+				if(!d2i_X509_CRL_bio(bio, &crl))
+				{
+					message->error = hSession->ssl.error = ERR_get_error();
+					message->title = N_( "Security error" );
+					message->text = N_( "Got an invalid CRL from server" );
+					lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+					return NULL;
+				}
+
+			}
 
 		}
 

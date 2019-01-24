@@ -43,12 +43,13 @@
 	 */
 	typedef enum _LIB3270_NOTIFY
 	{
-		LIB3270_NOTIFY_INFO,		/**< Simple information dialog */
-		LIB3270_NOTIFY_WARNING,
-		LIB3270_NOTIFY_ERROR,
-		LIB3270_NOTIFY_CRITICAL,	/**< Critical error, user can abort application */
+		LIB3270_NOTIFY_INFO,		///< @brief Simple information dialog.
+		LIB3270_NOTIFY_WARNING,		///< @brief Warning message.
+		LIB3270_NOTIFY_ERROR,		///< @brief Error message.
+		LIB3270_NOTIFY_CRITICAL,	///< @brief Critical error, user can abort application.
+		LIB3270_NOTIFY_SECURE,		///< @brief Secure host dialog.
 
-		LIB3270_NOTIFY_USER			/**< Reserved, always the last one */
+		LIB3270_NOTIFY_USER			///< @brief Reserved, always the last one.
 	} LIB3270_NOTIFY;
 
 	LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list));
@@ -66,6 +67,8 @@
 	LIB3270_EXPORT void lib3270_popup_dialog(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, ...);
 
 	LIB3270_EXPORT void lib3270_popup_va(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, va_list);
+
+	LIB3270_EXPORT LIB3270_NOTIFY lib3270_get_ssl_state_icon(H3270 *hSession);
 
 #ifdef __cplusplus
 	}

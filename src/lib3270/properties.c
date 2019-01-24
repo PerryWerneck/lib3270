@@ -418,6 +418,19 @@
 			NULL												//  Set value.
 		},
 
+		{
+			"sslmessage",										//  Property name.
+			N_( "The security state" ),							//  Property description.
+			lib3270_get_ssl_state_message,						//  Get value.
+			NULL												//  Set value.
+		},
+
+		{
+			"ssldescription",									//  Property name.
+			N_( "Description of the current security state" ),	//  Property description.
+			lib3270_get_ssl_state_description,					//  Get value.
+			NULL												//  Set value.
+		},
 
 		/*
 		{

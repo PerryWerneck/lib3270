@@ -167,17 +167,12 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	// https://www.openssl.org/docs/man1.0.2/crypto/X509_STORE_CTX_set_error.html
 	case X509_V_OK:
 		peer = SSL_get_peer_certificate(hSession->ssl.con);
-
-		debug("TLS/SSL negotiated connection complete. Peer certificate %s presented.", peer ? "was" : "was not");
 		trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
-
 		break;
 
 	case X509_V_ERR_UNABLE_TO_GET_CRL:
 
-		debug("%s","The CRL of a certificate could not be found." );
 		trace_ssl(hSession,"%s","The CRL of a certificate could not be found.\n" );
-
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Unable to get certificate CRL." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
@@ -222,8 +217,15 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	default:
 
-		debug("Unexpected or invalid TLS/SSL verify result %d",rv);
 		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
+
+#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
+		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
+		return -1;
+#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
+
 	}
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))

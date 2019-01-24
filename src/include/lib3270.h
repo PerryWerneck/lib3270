@@ -502,6 +502,18 @@
 	LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession);
 
 	/**
+	 * @brief Get security state as text.
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_get_ssl_state_message(H3270 *hSession);
+
+	/**
+	 * @brief Get security state message.
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(H3270 *hSession);
+
+	/**
 	 * @brief Get service or port for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.

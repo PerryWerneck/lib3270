@@ -185,10 +185,10 @@ static void set_cursor(H3270 *session unused, LIB3270_POINTER id unused)
 {
 }
 
-static int print(H3270 *session)
+static int print(H3270 *session, LIB3270_PRINT_MODE mode unused)
 {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
-	return -1;
+	return errno = ENOTSUP;
 }
 
 static void message(H3270 *session, LIB3270_NOTIFY id  unused, const char *title, const char *msg, const char *text)

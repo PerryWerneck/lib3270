@@ -82,6 +82,17 @@
 	#define LIB3270_LUNAME_LENGTH			16
 
 	/**
+	 * @brief Print modes.
+	 *
+	 */
+	typedef enum _lib3270_print_mode
+	{
+		LIB3270_PRINT_ALL,
+		LIB3270_PRINT_SELECTED,
+		LIB3270_PRINT_COPY
+	} LIB3270_PRINT_MODE;
+
+	/**
 	 * @brief Character attributes.
 	 */
 	typedef enum _lib3270_attr
@@ -720,15 +731,21 @@
 	 */
 	 LIB3270_EXPORT int lib3270_move_cursor(H3270 *h, LIB3270_DIRECTION dir, unsigned char sel);
 
+
 	/**
 	 * @brief Print page
 	 *
-	 * @param h		Session Handle.
+	 * @param hSession	Session Handle.
+	 * @param mode		Print mode.
 	 *
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_print(H3270 *h);
+	LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_PRINT_MODE mode);
+
+	LIB3270_EXPORT int lib3270_print_all(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession);
 
 	/**
 	 * @brief Get buffer contents.

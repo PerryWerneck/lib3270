@@ -74,8 +74,7 @@
 		void (*set_selection)(H3270 *session, unsigned char on);
 		void (*ctlr_done)(H3270 *session);
 		void (*autostart)(H3270 *session);
-		int  (*print)(H3270 *session);
-
+		int  (*print)(H3270 *session, LIB3270_PRINT_MODE mode);
 
 		void (*message)(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text);
 		void (*popup)(H3270 *session, LIB3270_NOTIFY id, const char *title, const char *msg, const char *fmt, va_list);

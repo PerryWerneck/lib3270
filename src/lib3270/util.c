@@ -592,13 +592,27 @@ void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 
 }
 
-LIB3270_EXPORT int lib3270_print(H3270 *h)
+LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_PRINT_MODE mode)
 {
-	CHECK_SESSION_HANDLE(h);
-	trace("%s(%p)",__FUNCTION__,h);
-	return h->cbk.print(h);
+	return hSession->cbk.print(hSession, mode);
 }
 
+LIB3270_EXPORT int lib3270_print_all(H3270 *hSession)
+{
+	return lib3270_print(hSession,LIB3270_PRINT_ALL);
+}
+
+LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession)
+{
+	if(lib3270_has_selection(hSession))
+		return lib3270_print(hSession,LIB3270_PRINT_SELECTED);
+	return errno = ENODATA;
+}
+
+LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession)
+{
+	return lib3270_print(hSession,LIB3270_PRINT_COPY);
+}
 
 LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
 {

@@ -157,6 +157,9 @@
 		<Unit filename="src/lib3270/linux/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/linux/util.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/log.c">
 			<Option compilerVar="CC" />
 		</Unit>

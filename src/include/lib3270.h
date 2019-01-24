@@ -66,6 +66,8 @@
 
 	#endif
 
+	#define LIB3270_STRINGIZE(x) #x
+	#define LIB3270_STRINGIZE_VALUE_OF(x) LIB3270_STRINGIZE(x)
 
 	/**
 	 * @brief BIND definitions.
@@ -1329,6 +1331,14 @@
 	LIB3270_EXPORT const char	* lib3270_win32_strerror(int e);
 	LIB3270_EXPORT const char	* lib3270_win32_local_charset(void);
 #endif // WIn32
+
+	/**
+	 * @brief Build filename on "DATADIR".
+	 *
+	 * @return Full path for the file (release it with lib3270_free).
+	 *
+	 */
+	LIB3270_EXPORT char * lib3270_build_data_filename(const char *name);
 
 #ifdef __cplusplus
 	}

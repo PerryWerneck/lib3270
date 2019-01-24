@@ -118,6 +118,7 @@ $(OBJDBG)/%.o: \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
+		-DDATADIR=. \
 		-o $@ -c $<
 
 $(OBJDBG)/%.o: \
@@ -138,6 +139,7 @@ $(OBJRLS)/%.o: \
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
+		-DDATADIR=$(datarootdir)/pw3270 \
 		-o $@ -c $<
 
 $(OBJRLS)/%.o: \

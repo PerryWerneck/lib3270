@@ -208,3 +208,22 @@ int gettimeofday(struct timeval *tv, void *ignored unused)
 	return 0;
 }
 
+char * lib3270_build_data_filename(const char *name)
+{
+	// https://github.com/GNOME/glib/blob/master/glib/gwin32.c
+
+	char *p;
+	wchar_t wc_fn[MAX_PATH];
+
+	if (!GetModuleFileNameW(NULL, wc_fn, MAX_PATH))
+		return NULL;
+
+	if((p = strrchr (filename, '\\')) != NULL)
+		*p = '\0';
+
+	if((p = strrchr (filename, '/')) != NULL)
+		*p = '\0';
+
+	return lib3270_strdup_printf("%s\\%s",wc_fn,name);
+
+}

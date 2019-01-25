@@ -208,7 +208,7 @@ int gettimeofday(struct timeval *tv, void *ignored unused)
 	return 0;
 }
 
-char * lib3270_build_data_filename(const char *name)
+LIB3270_EXPORT char * lib3270_build_data_filename(const char *name)
 {
 	// https://github.com/GNOME/glib/blob/master/glib/gwin32.c
 

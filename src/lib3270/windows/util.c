@@ -213,15 +213,15 @@ char * lib3270_build_data_filename(const char *name)
 	// https://github.com/GNOME/glib/blob/master/glib/gwin32.c
 
 	char *p;
-	wchar_t wc_fn[MAX_PATH];
+	char wc_fn[MAX_PATH];
 
-	if (!GetModuleFileNameW(NULL, wc_fn, MAX_PATH))
+	if (!GetModuleFileName(NULL, wc_fn, MAX_PATH))
 		return NULL;
 
-	if((p = strrchr (filename, '\\')) != NULL)
+	if((p = strrchr(wc_fn, '\\')) != NULL)
 		*p = '\0';
 
-	if((p = strrchr (filename, '/')) != NULL)
+	if((p = strrchr(wc_fn, '/')) != NULL)
 		*p = '\0';
 
 	return lib3270_strdup_printf("%s\\%s",wc_fn,name);

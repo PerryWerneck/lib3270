@@ -1333,7 +1333,7 @@
 #endif // WIn32
 
 	/**
-	 * @brief Build filename on "DATADIR".
+	 * @brief Build filename on "LIB3270_DATADIR".
 	 *
 	 * @return Full path for the file (release it with lib3270_free).
 	 *

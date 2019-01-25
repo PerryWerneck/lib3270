@@ -38,5 +38,5 @@
 
 char * lib3270_build_data_filename(const char *name)
 {
-	return lib3270_strdup_printf("%s/%s",LIB3270_STRINGIZE_VALUE_OF(DATADIR),name);
+	return lib3270_strdup_printf("%s/%s",LIB3270_STRINGIZE_VALUE_OF(LIB3270_DATADIR),name);
 }

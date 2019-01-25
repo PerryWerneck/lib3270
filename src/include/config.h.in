@@ -38,6 +38,7 @@
 
 	/* Defaults */
 	#undef LIB3270_DEFAULT_HOST
+	#undef LIB3270_DATADIR
 
 	/* Libraries */
 	#undef HAVE_GNUC_VISIBILITY

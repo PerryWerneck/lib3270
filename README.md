@@ -45,4 +45,15 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* ./lib3270/win/win-configure.sh --64 (for 64 bits)
 
 
+Compiling for Windows (With MSYS2)
+-------------------------------
+
+1. Install MSYS2 
+
+	* Get installer from https://www.msys2.org/
+	* Run "pacman -Syu" repeatedly
+
+2. Install devel packages
+
+	* pacman -S --needed mingw-w64-x86_64-toolchain automake autoconf make
 

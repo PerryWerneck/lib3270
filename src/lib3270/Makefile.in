@@ -360,7 +360,7 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@: \
 
 	@echo $< ...
 	@rm -f $@
-	$(LN_S) \
+	@$(LN_S) \
 		$^ \
 		$@
 

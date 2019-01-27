@@ -39,6 +39,7 @@
 		<Unit filename="LICENCA" />
 		<Unit filename="LICENSE" />
 		<Unit filename="README.md" />
+		<Unit filename="configure.ac" />
 		<Unit filename="gitsync.sh" />
 		<Unit filename="src/include/3270ds.h" />
 		<Unit filename="src/include/actionsc.h" />
@@ -111,7 +112,9 @@
 		<Unit filename="src/lib3270++/private.h" />
 		<Unit filename="src/lib3270++/session.cc" />
 		<Unit filename="src/lib3270++/testprogram/testprogram.cc" />
-		<Unit filename="src/lib3270++/windows/resources.rc" />
+		<Unit filename="src/lib3270++/windows/resources.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="src/lib3270/actions.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -254,7 +257,9 @@
 		<Unit filename="src/lib3270/windows/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/windows/resources.rc" />
+		<Unit filename="src/lib3270/windows/resources.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="src/lib3270/windows/resources.rc.in" />
 		<Unit filename="src/lib3270/windows/util.c">
 			<Option compilerVar="CC" />

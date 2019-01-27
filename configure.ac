@@ -75,7 +75,7 @@ dnl ---------------------------------------------------------------------------
 DLLPREFIX="lib"
 
 case "$host" in
-	*-mingw32)
+	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
@@ -201,7 +201,7 @@ AC_CHECK_HEADER(libintl.h, [
 	AC_DEFINE(HAVE_LIBINTL, 1)
 
 	case "$host" in
-	*-mingw32)
+	*-mingw32|*-pc-msys)
 		INTL_LIBS="-lintl"
 		;;
 
@@ -380,11 +380,11 @@ if test "$app_cv_enable_crl_check" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
 fi
 
-AC_ARG_WITH([default-crl-url], 
-	[AS_HELP_STRING([--with-default-crl-url], [Set lib3270 default crl url])], 
-[ 
-	AC_DEFINE_UNQUOTED(SSL_DEFAULT_CRL_URL,"$withval") 
-],[ 
+AC_ARG_WITH([default-crl-url],
+	[AS_HELP_STRING([--with-default-crl-url], [Set lib3270 default crl url])],
+[
+	AC_DEFINE_UNQUOTED(SSL_DEFAULT_CRL_URL,"$withval")
+],[
 	AC_MSG_NOTICE(No default crl url)
 ])
 
@@ -447,7 +447,7 @@ AC_ARG_WITH([inet-ntop], [AS_HELP_STRING([--with-inet-ntop], [Assume that inet_n
 if test "$app_cv_inet_ntop" == "auto"; then
 
 	case "$host" in
-	*-mingw32)
+	*-mingw32|*-pc-msys)
 		app_cv_inet_ntop="yes"
 		;;
 

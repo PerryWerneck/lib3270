@@ -131,6 +131,7 @@ struct akeysym
 #define ak_eq(k1, k2)	(((k1).keysym  == (k2).keysym) && \
 			 ((k1).keytype == (k2).keytype))
 
+
 struct ta
 {
 	struct ta 		*next;
@@ -139,25 +140,29 @@ struct ta
 	{
 		TA_TYPE_DEFAULT,
 		TA_TYPE_KEY_AID,
+		TA_TYPE_ACTION,
 		TA_TYPE_USER
 	} type;
 
-	void (*fn)(H3270 *, const char *, const char *);
-	char *parm[2];
-	unsigned char aid_code;
-};
+	union
+	{
+		unsigned char aid_code;
+		struct
+		{
+			void (*fn)(H3270 *, const char *, const char *);
+			char *parm[2];
+		} def;
 
-#if defined(DEBUG)
-	#define ENQUEUE_ACTION(x) enq_ta(hSession, (void (*)(H3270 *, const char *, const char *)) x, NULL, NULL, #x)
-#else
-	#define ENQUEUE_ACTION(x) enq_ta(hSession, (void (*)(H3270 *, const char *, const char *)) x, NULL, NULL)
-#endif // DEBUG
+		int (*action)(H3270 *);
+
+	} args;
+
+};
 
 static const char dxl[] = "0123456789abcdef";
 #define FROM_HEX(c)	(strchr(dxl, tolower(c)) - dxl)
 #define KYBDLOCK_IS_OERR(hSession)	(hSession->kybdlock && !(hSession->kybdlock & ~KL_OERR_MASK))
 
-
 /*
  * Check if the typeahead queue is available
  */
@@ -196,8 +201,8 @@ static int enq_chk(H3270 *hSession)
 	return 0;
 }
 
-/*
- * Put a "Key-aid" on the typeahead queue
+/**
+ * @brief Put a "Key-aid" on the typeahead queue
  */
  static void enq_key(H3270 *session, unsigned char aid_code)
  {
@@ -207,9 +212,9 @@ static int enq_chk(H3270 *hSession)
 		return;
 
 	ta = (struct ta *) lib3270_malloc(sizeof(*ta));
-	ta->next 		= (struct ta *) NULL;
-	ta->type 		= TA_TYPE_KEY_AID;
-	ta->aid_code	= aid_code;
+	ta->next 			= (struct ta *) NULL;
+	ta->type 			= TA_TYPE_KEY_AID;
+	ta->args.aid_code	= aid_code;
 
 	trace("Adding key %02x on queue",(int) aid_code);
 
@@ -227,34 +232,28 @@ static int enq_chk(H3270 *hSession)
 	lib3270_trace_event(session,"  Key-aid queued (kybdlock 0x%x)\n", session->kybdlock);
  }
 
-/*
- * Put an action on the typeahead queue.
+
+
+/**
+ * @brief Put an action on the typeahead queue.
  */
-#if defined(DEBUG)
-static void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char *), const char *parm1, const char *parm2, const char *name)
-#else
 static void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char *), const char *parm1, const char *parm2)
-#endif // DEBUG
 {
 	struct ta *ta;
-
-	CHECK_SESSION_HANDLE(hSession);
-
-	trace("%s: %s",__FUNCTION__,name);
 
  	if(enq_chk(hSession))
 		return;
 
 	ta = (struct ta *) lib3270_malloc(sizeof(*ta));
-	ta->next	= (struct ta *) NULL;
-	ta->type	= TA_TYPE_DEFAULT;
-	ta->fn		= fn;
+	ta->next			= (struct ta *) NULL;
+	ta->type			= TA_TYPE_DEFAULT;
+	ta->args.def.fn		= fn;
 
 	if (parm1)
-		ta->parm[0] = NewString(parm1);
+		ta->args.def.parm[0] = NewString(parm1);
 
 	if (parm2)
-		ta->parm[1] = NewString(parm2);
+		ta->args.def.parm[1] = NewString(parm2);
 
 	if(hSession->ta_head)
 	{
@@ -270,8 +269,35 @@ static void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char
 	lib3270_trace_event(hSession,"  action queued (kybdlock 0x%x)\n", hSession->kybdlock);
 }
 
-/*
- * Execute an action from the typeahead queue.
+static void enq_action(H3270 *hSession, int (*fn)(H3270 *))
+{
+	struct ta *ta;
+
+ 	if(enq_chk(hSession))
+		return;
+
+	ta = (struct ta *) lib3270_malloc(sizeof(*ta));
+	ta->next			= (struct ta *) NULL;
+	ta->type			= TA_TYPE_ACTION;
+	ta->args.action		= fn;
+
+	if(hSession->ta_head)
+	{
+		hSession->ta_tail->next = ta;
+	}
+	else
+	{
+		hSession->ta_head = ta;
+		status_typeahead(hSession,True);
+	}
+	hSession->ta_tail = ta;
+
+	lib3270_trace_event(hSession,"  action queued (kybdlock 0x%x)\n", hSession->kybdlock);
+}
+
+
+/**
+ * @brief Execute an action from the typeahead queue.
  */
 int run_ta(H3270 *hSession)
 {
@@ -289,14 +315,17 @@ int run_ta(H3270 *hSession)
 	switch(ta->type)
 	{
 	case TA_TYPE_DEFAULT:
-		ta->fn(hSession,ta->parm[0],ta->parm[1]);
-		lib3270_free(ta->parm[0]);
-		lib3270_free(ta->parm[1]);
+		ta->args.def.fn(hSession,ta->args.def.parm[0],ta->args.def.parm[1]);
+		lib3270_free(ta->args.def.parm[0]);
+		lib3270_free(ta->args.def.parm[1]);
+		break;
+
+	case TA_TYPE_ACTION:
+		ta->args.action(hSession);
 		break;
 
 	case TA_TYPE_KEY_AID:
-//		trace("Sending enqueued key %02x",ta->aid_code);
-		key_AID(hSession,ta->aid_code);
+		key_AID(hSession,ta->args.aid_code);
 		break;
 
 	default:
@@ -309,9 +338,9 @@ int run_ta(H3270 *hSession)
 	return 1;
 }
 
-/*
- * Flush the typeahead queue.
- * Returns whether or not anything was flushed.
+/**
+ * @brief Flush the typeahead queue.
+ * @return whether or not anything was flushed.
  */
 static int flush_ta(H3270 *hSession)
 {
@@ -320,8 +349,11 @@ static int flush_ta(H3270 *hSession)
 
 	for (ta = hSession->ta_head; ta != (struct ta *) NULL; ta = next)
 	{
-		lib3270_free(ta->parm[0]);
-		lib3270_free(ta->parm[1]);
+		if(ta->type == TA_TYPE_DEFAULT)
+		{
+			lib3270_free(ta->args.def.parm[0]);
+			lib3270_free(ta->args.def.parm[1]);
+		}
 		next = ta->next;
 		lib3270_free(ta);
 		any++;
@@ -740,11 +772,7 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 
 		(void) sprintf(codename, "%d", code |(with_ge ? GE_WFLAG : 0) | (pasting ? PASTE_WFLAG : 0));
 
-#if defined(DEBUG)
-		enq_ta(hSession,key_Character_wrapper, codename, CN, "key_Character_wrapper");
-#else
 		enq_ta(hSession,key_Character_wrapper, codename, CN);
-#endif // DEBUG
 
 		return False;
 	}
@@ -1031,7 +1059,7 @@ LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession)
 			status_reset(hSession);
 		} else
 		{
-			ENQUEUE_ACTION(lib3270_nextfield);
+			enq_action(hSession, lib3270_nextfield);
 			return 0;
 		}
 	}
@@ -1079,7 +1107,7 @@ LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession)
 		}
 		else
 		{
-			ENQUEUE_ACTION(lib3270_previousfield);
+			enq_action(hSession, lib3270_previousfield);
 			return 0;
 		}
 	}
@@ -1202,7 +1230,7 @@ LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_firstfield);
+		enq_action(hSession, lib3270_firstfield);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -1250,7 +1278,7 @@ LIB3270_EXPORT int lib3270_cursor_left(H3270 *hSession)
 		}
 		else
 		{
-			ENQUEUE_ACTION(lib3270_cursor_left);
+			enq_action(hSession, lib3270_cursor_left);
 			return 0;
 		}
 	}
@@ -1380,7 +1408,7 @@ LIB3270_EXPORT int lib3270_delete(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_delete);
+		enq_action(hSession, lib3270_delete);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -1413,7 +1441,7 @@ LIB3270_EXPORT int lib3270_backspace(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION( lib3270_backspace );
+		enq_action(hSession, lib3270_backspace );
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -1508,7 +1536,7 @@ int lib3270_erase(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_erase);
+		enq_action(hSession, lib3270_erase);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -1541,7 +1569,7 @@ LIB3270_EXPORT int lib3270_cursor_right(H3270 *hSession)
 		}
 		else
 		{
-			ENQUEUE_ACTION(lib3270_cursor_right);
+			enq_action(hSession, lib3270_cursor_right);
 			return 0;
 		}
 	}
@@ -1580,7 +1608,7 @@ LIB3270_EXPORT int lib3270_previousword(H3270 *hSession)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if (hSession->kybdlock) {
-		ENQUEUE_ACTION(lib3270_previousword);
+		enq_action(hSession, lib3270_previousword);
 //		enq_ta(PreviousWord_action, CN, CN);
 		return 0;
 	}
@@ -1703,7 +1731,7 @@ LIB3270_EXPORT int lib3270_nextword(H3270 *hSession)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if (hSession->kybdlock) {
-		ENQUEUE_ACTION( lib3270_nextword );
+		enq_action(hSession, lib3270_nextword );
 //		enq_ta(NextWord_action, CN, CN);
 		return 0;
 	}
@@ -1868,7 +1896,7 @@ LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession)
 		}
 		else
 		{
-			ENQUEUE_ACTION(lib3270_cursor_up);
+			enq_action(hSession, lib3270_cursor_up);
 			return 0;
 		}
 	}
@@ -1905,7 +1933,7 @@ LIB3270_EXPORT int lib3270_cursor_down(H3270 *hSession)
 			status_reset(hSession);
 		} else
 		{
-			ENQUEUE_ACTION(lib3270_cursor_down);
+			enq_action(hSession, lib3270_cursor_down);
 //			enq_ta(Down_action, CN, CN);
 			return 0;
 		}
@@ -1934,7 +1962,7 @@ LIB3270_EXPORT int lib3270_newline(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_newline);
+		enq_action(hSession, lib3270_newline);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -1965,7 +1993,7 @@ LIB3270_EXPORT int lib3270_dup(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_dup);
+		enq_action(hSession, lib3270_dup);
 		return 0;
 	}
 #if defined(X3270_ANSI)
@@ -1990,7 +2018,7 @@ LIB3270_EXPORT int lib3270_fieldmark(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_fieldmark);
+		enq_action(hSession, lib3270_fieldmark);
 		return 0;
 	}
 #if defined(X3270_ANSI)
@@ -2021,7 +2049,7 @@ LIB3270_EXPORT int lib3270_enter(H3270 *hSession)
 	}
 	else if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_enter);
+		enq_action(hSession, lib3270_enter);
 	}
 	else
 	{
@@ -2052,7 +2080,7 @@ LIB3270_EXPORT int lib3270_sysreq(H3270 *hSession)
 		if (hSession->kybdlock & KL_OIA_MINUS)
 			return 0;
 		else if (hSession->kybdlock)
-			ENQUEUE_ACTION(lib3270_sysreq);
+			enq_action(hSession, lib3270_sysreq);
 		else
 			key_AID(hSession,AID_SYSREQ);
 	}
@@ -2069,7 +2097,7 @@ LIB3270_EXPORT int lib3270_clear(H3270 *hSession)
 	if (hSession->kybdlock & KL_OIA_MINUS)
 		return 0;
 	if (hSession->kybdlock && CONNECTED) {
-		ENQUEUE_ACTION(lib3270_clear);
+		enq_action(hSession, lib3270_clear);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -2100,7 +2128,7 @@ LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession)
 //	reset_idle_timer();
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_eraseeol);
+		enq_action(hSession, lib3270_eraseeol);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -2168,7 +2196,7 @@ LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession)
 //	reset_idle_timer();
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION(lib3270_eraseeof);
+		enq_action(hSession, lib3270_eraseeof);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -2219,7 +2247,7 @@ LIB3270_EXPORT int lib3270_eraseinput(H3270 *hSession)
 
 //	reset_idle_timer();
 	if (hSession->kybdlock) {
-		ENQUEUE_ACTION( lib3270_eraseinput );
+		enq_action(hSession,  lib3270_eraseinput );
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
@@ -2284,7 +2312,7 @@ LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession)
 
 //	reset_idle_timer();
 	if (hSession->kybdlock) {
-		ENQUEUE_ACTION(lib3270_deleteword);
+		enq_action(hSession, lib3270_deleteword);
 //		enq_ta(DeleteWord_action, CN, CN);
 		return 0;
 	}
@@ -2353,7 +2381,7 @@ LIB3270_EXPORT int lib3270_deletefield(H3270 *hSession)
 
 //	reset_idle_timer();
 	if (hSession->kybdlock) {
-		ENQUEUE_ACTION(lib3270_deletefield);
+		enq_action(hSession, lib3270_deletefield);
 //		enq_ta(DeleteField_action, CN, CN);
 		return 0;
 	}
@@ -2399,7 +2427,7 @@ LIB3270_EXPORT int lib3270_fieldend(H3270 *hSession)
 
 	if (hSession->kybdlock)
 	{
-		ENQUEUE_ACTION( lib3270_fieldend );
+		enq_action(hSession, lib3270_fieldend );
 		return 0;
 	}
 

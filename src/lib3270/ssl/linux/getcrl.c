@@ -148,15 +148,15 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 		return 0;
 	}
 
-#ifdef DEBUG
-	lib3270_trace_data(
-		data->hSession,
-		"Received",
-		(const char *) contents,
-		realsize
-	);
-
-#endif // DEBUG
+	if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE))
+	{
+		lib3270_trace_data(
+			data->hSession,
+			"Received",
+			(const char *) contents,
+			realsize
+		);
+	}
 
 	memcpy(&(data->contents[data->length]),contents,realsize);
 	data->length += realsize;

@@ -302,5 +302,43 @@ void trace_ansi_disc(H3270 *hSession)
 	hSession->trace_skipping = 1;
 }
 
+void lib3270_trace_data(H3270 *hSession, const char *msg, const char *data, size_t datalen)
+{
+	// 00000000001111111111222222222233333333334444444444555555555566666666667777777777
+	// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+	// xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx . . . . . . . . . . . . . . . .
+
+	size_t ix;
+	char buffer[80];
+	char hexvalue[3];
+
+	memset(buffer,0,sizeof(buffer));
+
+	wtrace(hSession, "%s (%u bytes)\n", msg, (unsigned int) datalen);
+
+	for(ix = 0; ix < datalen; ix++)
+	{
+		size_t col = (ix%15);
+
+		if(col == 0)
+		{
+			if(ix)
+				wtrace(hSession,"   %s\n",buffer);
+
+			memset(buffer,' ',79);
+			buffer[79] = 0;
+		}
+
+		snprintf(hexvalue,3,"%02x",data[ix]);
+		memcpy(buffer+(col*3),hexvalue,2);
+
+		if(data[ix] > ' ')
+			buffer[48 + (col*2)] = data[ix];
+
+	}
+
+	wtrace(hSession,"   %s\n",buffer);
+
+}
 
 #endif

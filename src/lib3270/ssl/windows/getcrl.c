@@ -54,6 +54,7 @@
 #include <trace_dsc.h>
 #include <errno.h>
 #include <lib3270.h>
+#include <lib3270/trace.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -78,6 +79,7 @@ static inline void lib3270_autoptr_cleanup_CURL(CURL **ptr)
 typedef struct _curldata
 {
 	size_t		  		  length;
+	H3270				* hSession;
 	SSL_ERROR_MESSAGE	* message;
 	char 				  errbuf[CURL_ERROR_SIZE];
 	unsigned char		  contents[CRL_DATA_LENGTH];
@@ -110,7 +112,9 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 
 	unsigned char *ptr = (unsigned char *) contents;
 
-	debug("\n------------------------------------\n%s\n", ptr);
+#ifdef DEBUG
+	lib3270_trace_data(data->hSession,"************* Received block",(const char *) contents, realsize);
+#endif
 
 	for(ix = 0; ix < realsize; ix++)
 	{
@@ -128,6 +132,53 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	return realsize;
 }
 
+static int internal_curl_trace_callback(CURL *handle unused, curl_infotype type, char *data, size_t size, void *userp)
+{
+	const char * text = NULL;
+
+	switch (type) {
+	case CURLINFO_TEXT:
+		lib3270_write_log(((CURLDATA *) userp)->hSession,"curl","%s",data);
+		return 0;
+
+	case CURLINFO_HEADER_OUT:
+		text = "=> Send header";
+		break;
+
+	case CURLINFO_DATA_OUT:
+		text = "=> Send data";
+		break;
+
+	case CURLINFO_SSL_DATA_OUT:
+		text = "=> Send SSL data";
+		break;
+
+	case CURLINFO_HEADER_IN:
+		text = "<= Recv header";
+		break;
+
+	case CURLINFO_DATA_IN:
+		text = "<= Recv data";
+		break;
+
+	case CURLINFO_SSL_DATA_IN:
+		text = "<= Recv SSL data";
+		break;
+
+	default:
+		return 0;
+
+	}
+
+	lib3270_trace_data(
+		((CURLDATA *) userp)->hSession,
+		text,
+		data,
+		size
+	);
+
+	return 0;
+}
 #endif // HAVE_LIBCURL
 
 
@@ -179,6 +230,7 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 		memset(crl_data,0,sizeof(CURLDATA));
 		crl_data->message = message;
+		crl_data->hSession = hSession;
 
 		debug("datablock is %p",crl_data);
 
@@ -189,12 +241,20 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			curl_easy_setopt(hCurl, CURLOPT_URL, consturl);
 			curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
 
-			curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data);
+			curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data->errbuf);
 
 			curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
 			curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
 
 			curl_easy_setopt(hCurl, CURLOPT_USERNAME, "");
+
+			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+			{
+				curl_easy_setopt(hCurl, CURLOPT_VERBOSE, 1L);
+				curl_easy_setopt(hCurl, CURLOPT_DEBUGFUNCTION, internal_curl_trace_callback);
+				curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) crl_data);
+				CURLOPT_DEBUGDATA
+			}
 
 			res = curl_easy_perform(hCurl);
 

@@ -35,7 +35,10 @@
  */
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#pragma GCC diagnostic ignored "-Wstringop-truncation"
+
+#ifdef _WIN32
+	#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif // _WIN32
 
 #include "private.h"
 

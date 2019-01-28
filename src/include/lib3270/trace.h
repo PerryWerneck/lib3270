@@ -65,7 +65,7 @@
 	LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata);
 
 	/**
-	 * Write on trace file.
+	 * @brief Write on trace file.
 	 *
 	 * Write text on trace file, if DStrace is enabled.
 	 *
@@ -76,7 +76,7 @@
 	LIB3270_EXPORT void lib3270_write_dstrace(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
 
 	/**
-	 * Write on trace file.
+	 * @brief Write on trace file.
 	 *
 	 * Write text on trace file, if network trace is enabled.
 	 *
@@ -87,7 +87,7 @@
 	LIB3270_EXPORT void lib3270_write_nettrace(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
 
 	/**
-	 * Write on trace file.
+	 * @brief Write on trace file.
 	 *
 	 * Write text on trace file, if event is enabled.
 	 *
@@ -96,6 +96,19 @@
 	 *
 	 */
 	LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
+
+
+	/**
+	 * @brief Write datablock on trace file.
+	 *
+	 * @param hSession	TN3270 Session handle.
+	 * @param msg		Message.
+	 * @param data		Data block in ASCII.
+	 * @param datalen	Length of the data block.
+	 *
+	 */
+	LIB3270_EXPORT void lib3270_trace_data(H3270 *hSession, const char *msg, const char *data, size_t datalen);
+
 
 #ifdef __cplusplus
 	}

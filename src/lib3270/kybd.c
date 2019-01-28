@@ -141,6 +141,7 @@ struct ta
 		TA_TYPE_DEFAULT,
 		TA_TYPE_KEY_AID,
 		TA_TYPE_ACTION,
+		TA_TYPE_CURSOR_MOVE,
 		TA_TYPE_USER
 	} type;
 
@@ -155,6 +156,13 @@ struct ta
 
 		int (*action)(H3270 *);
 
+		struct
+		{
+			LIB3270_DIRECTION direction;
+			unsigned char sel;
+			int (*fn)(H3270 *, LIB3270_DIRECTION, unsigned char);
+		} move;
+
 	} args;
 
 };
@@ -165,17 +173,17 @@ static const char dxl[] = "0123456789abcdef";
 
 /*
  * Check if the typeahead queue is available
- */
+ */ /*
 static int enq_chk(H3270 *hSession)
 {
-	/* If no connection, forget it. */
+	// If no connection, forget it.
 	if (!lib3270_connected(hSession))
 	{
 		lib3270_trace_event(hSession,"  dropped (not connected)\n");
 		return -1;
 	}
 
-	/* If operator error, complain and drop it. */
+	// If operator error, complain and drop it.
 	if (hSession->kybdlock & KL_OERR_MASK)
 	{
 		lib3270_ring_bell(hSession);
@@ -183,7 +191,7 @@ static int enq_chk(H3270 *hSession)
 		return -1;
 	}
 
-	/* If scroll lock, complain and drop it. */
+	// If scroll lock, complain and drop it.
 	if (hSession->kybdlock & KL_SCROLLED)
 	{
 		lib3270_ring_bell(hSession);
@@ -191,7 +199,7 @@ static int enq_chk(H3270 *hSession)
 		return -1;
 	}
 
-	/* If typeahead disabled, complain and drop it. */
+	// If typeahead disabled, complain and drop it.
 	if (!hSession->typeahead)
 	{
 		lib3270_trace_event(hSession,"  dropped (no typeahead)\n");
@@ -200,38 +208,87 @@ static int enq_chk(H3270 *hSession)
 
 	return 0;
 }
+*/
 
 /**
- * @brief Put a "Key-aid" on the typeahead queue
+ * @brief Create a new typeahead action.
+ *
+ * Check for typeahead availability and create a new TA structure.
+ *
+ * @return new typeahead struct or NULL if it's not available.
  */
- static void enq_key(H3270 *session, unsigned char aid_code)
- {
+static struct ta * new_ta(H3270 *hSession, enum _ta_type type)
+{
 	struct ta *ta;
 
- 	if(enq_chk(session))
-		return;
+	// If no connection, forget it.
+	if (!lib3270_connected(hSession))
+	{
+		lib3270_ring_bell(hSession);
+		lib3270_trace_event(hSession,"typeahead action dropped (not connected)\n");
+		return NULL;
+	}
+
+	// If operator error, complain and drop it.
+	if (hSession->kybdlock & KL_OERR_MASK)
+	{
+		lib3270_ring_bell(hSession);
+		lib3270_trace_event(hSession,"typeahead action dropped (operator error)\n");
+		return NULL;
+	}
+
+	// If scroll lock, complain and drop it.
+	if (hSession->kybdlock & KL_SCROLLED)
+	{
+		lib3270_ring_bell(hSession);
+		lib3270_trace_event(hSession,"typeahead action dropped (scrolled)\n");
+		return NULL;
+	}
+
+	// If typeahead disabled, complain and drop it.
+	if (!hSession->typeahead)
+	{
+		lib3270_trace_event(hSession,"typeahead action dropped (no typeahead)\n");
+		return NULL;
+	}
 
 	ta = (struct ta *) lib3270_malloc(sizeof(*ta));
-	ta->next 			= (struct ta *) NULL;
-	ta->type 			= TA_TYPE_KEY_AID;
-	ta->args.aid_code	= aid_code;
+	ta->next = (struct ta *) NULL;
+	ta->type = type;
 
-	trace("Adding key %02x on queue",(int) aid_code);
-
-	if (session->ta_head)
+	if(hSession->ta_head)
 	{
-		session->ta_tail->next = ta;
+		hSession->ta_tail->next = ta;
 	}
 	else
 	{
-		session->ta_head = ta;
-		status_typeahead(session,True);
+		hSession->ta_head = ta;
+		status_typeahead(hSession,True);
 	}
-	session->ta_tail = ta;
 
-	lib3270_trace_event(session,"  Key-aid queued (kybdlock 0x%x)\n", session->kybdlock);
+	hSession->ta_tail = ta;
+
+	return ta;
+}
+
+
+/**
+ * @brief Put a "Key-aid" on the typeahead queue
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param aid_code	Key-ad code to put on typeahead.
+ */
+ static void enq_key(H3270 *hSession, unsigned char aid_code)
+ {
+	struct ta *ta = new_ta(hSession, TA_TYPE_KEY_AID);
+
+ 	if(!ta)
+		return;
+
+	ta->args.aid_code = aid_code;
+
+	lib3270_trace_event(hSession,"typeahead action Key-aid queued (kybdlock 0x%x)\n", hSession->kybdlock);
  }
-
 
 
 /**
@@ -239,15 +296,12 @@ static int enq_chk(H3270 *hSession)
  */
 static void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char *), const char *parm1, const char *parm2)
 {
-	struct ta *ta;
+	struct ta *ta = new_ta(hSession, TA_TYPE_DEFAULT);
 
- 	if(enq_chk(hSession))
+ 	if(!ta)
 		return;
 
-	ta = (struct ta *) lib3270_malloc(sizeof(*ta));
-	ta->next			= (struct ta *) NULL;
-	ta->type			= TA_TYPE_DEFAULT;
-	ta->args.def.fn		= fn;
+	ta->args.def.fn	= fn;
 
 	if (parm1)
 		ta->args.def.parm[0] = NewString(parm1);
@@ -255,44 +309,17 @@ static void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char
 	if (parm2)
 		ta->args.def.parm[1] = NewString(parm2);
 
-	if(hSession->ta_head)
-	{
-		hSession->ta_tail->next = ta;
-	}
-	else
-	{
-		hSession->ta_head = ta;
-		status_typeahead(hSession,True);
-	}
-	hSession->ta_tail = ta;
 
-	lib3270_trace_event(hSession,"  action queued (kybdlock 0x%x)\n", hSession->kybdlock);
+	lib3270_trace_event(hSession,"typeahead action queued (kybdlock 0x%x)\n", hSession->kybdlock);
 }
 
 static void enq_action(H3270 *hSession, int (*fn)(H3270 *))
 {
-	struct ta *ta;
+	struct ta *ta = new_ta(hSession, TA_TYPE_ACTION);
 
- 	if(enq_chk(hSession))
-		return;
-
-	ta = (struct ta *) lib3270_malloc(sizeof(*ta));
-	ta->next			= (struct ta *) NULL;
-	ta->type			= TA_TYPE_ACTION;
 	ta->args.action		= fn;
 
-	if(hSession->ta_head)
-	{
-		hSession->ta_tail->next = ta;
-	}
-	else
-	{
-		hSession->ta_head = ta;
-		status_typeahead(hSession,True);
-	}
-	hSession->ta_tail = ta;
-
-	lib3270_trace_event(hSession,"  action queued (kybdlock 0x%x)\n", hSession->kybdlock);
+	lib3270_trace_event(hSession,"single action queued (kybdlock 0x%x)\n", hSession->kybdlock);
 }
 
 
@@ -318,6 +345,10 @@ int run_ta(H3270 *hSession)
 		ta->args.def.fn(hSession,ta->args.def.parm[0],ta->args.def.parm[1]);
 		lib3270_free(ta->args.def.parm[0]);
 		lib3270_free(ta->args.def.parm[1]);
+		break;
+
+	case TA_TYPE_CURSOR_MOVE:
+		ta->args.move.fn(hSession,ta->args.move.direction,ta->args.move.sel);
 		break;
 
 	case TA_TYPE_ACTION:
@@ -753,9 +784,11 @@ static void key_Character_wrapper(H3270 *hSession, const char *param1, const cha
 	(void) key_Character(hSession, code, with_ge, pasting, NULL);
 }
 
-/*
- * Handle an ordinary displayable character key.  Lots of stuff to handle
- * insert-mode, protected fields and etc.
+/**
+ * @brief Handle an ordinary displayable character key.
+ *
+ * Lots of stuff to handle insert-mode, protected fields and etc.
+ *
  */
 static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean pasting, Boolean *skipped)
 {
@@ -1732,9 +1765,9 @@ LIB3270_EXPORT int lib3270_nextword(H3270 *hSession)
 
 	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_nextword );
-//		enq_ta(NextWord_action, CN, CN);
 		return 0;
 	}
+
 #if defined(X3270_ANSI) /*[*/
 	if (IN_ANSI)
 		return 0;
@@ -1798,48 +1831,37 @@ LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, u
 {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	int cursor_addr = hSession->cursor_addr;
-	int maxlen		= hSession->cols * hSession->rows;
+	if (hSession->kybdlock) {
+
+		struct ta *ta = new_ta(hSession, TA_TYPE_CURSOR_MOVE);
+
+		ta->args.move.direction = dir;
+		ta->args.move.fn = lib3270_move_cursor;
+		ta->args.move.sel = sel;
+
+		return 0;
+	}
 
 	switch(dir)
 	{
 	case LIB3270_DIR_UP:
-
-		if(sel && cursor_addr <= hSession->cols)
-			return errno = EINVAL;
-
-		cursor_addr -= hSession->cols;
+		lib3270_cursor_up(hSession);
 		break;
 
 	case LIB3270_DIR_DOWN:
-
-		if(sel && cursor_addr >= (hSession->cols * (hSession->rows-1)))
-			return errno = EINVAL;
-
-		cursor_addr += hSession->cols;
+		lib3270_cursor_down(hSession);
 		break;
 
 	case LIB3270_DIR_LEFT:
-
-		if(sel &&  (cursor_addr % hSession->cols) < 1)
-			return errno = EINVAL;
-
-		cursor_addr--;
+		lib3270_cursor_left(hSession);
 		break;
 
 	case LIB3270_DIR_RIGHT:
-
-		if(sel &&  (cursor_addr % hSession->cols) >= (hSession->cols-1))
-			return errno = EINVAL;
-
-		cursor_addr++;
+		lib3270_cursor_right(hSession);
 		break;
 
 	case LIB3270_DIR_END:
-
-		cursor_addr = lib3270_get_field_end(hSession,cursor_addr);
-		if(cursor_addr == -1)
-			return errno = EINVAL;
+		cursor_move(hSession,lib3270_get_field_end(hSession,hSession->cursor_addr));
 		break;
 
 	default:
@@ -1848,31 +1870,7 @@ LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, u
 	}
 
 	if(sel)
-	{
-		lib3270_select_to(hSession,cursor_addr);
-	}
-	else
-	{
-
-		if(cursor_addr >= maxlen)
-		{
-			cursor_move(hSession,cursor_addr % maxlen);
-		}
-		else if(cursor_addr < 0)
-		{
-			cursor_move(hSession,cursor_addr + maxlen);
-		}
-		else
-		{
-			cursor_move(hSession,cursor_addr);
-		}
-
-		if(hSession->kybdlock && (KYBDLOCK_IS_OERR(hSession)))
-		{
-			status_reset(hSession);
-		}
-
-	}
+		lib3270_select_to(hSession,hSession->cursor_addr);
 
 	return 0;
 }

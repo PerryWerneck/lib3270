@@ -86,7 +86,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	else if(err)
 	{
 		char buffer[4096];
-		snprintf(buffer,4095,_( "Can't connect to %s" ), hSession->host.current );
+		snprintf(buffer,4095,_( "Can't connect to %s" ), lib3270_get_url(hSession) );
 
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(	hSession,
@@ -175,11 +175,16 @@ LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int wai
  	struct addrinfo * result	= NULL;
 	struct addrinfo * rp		= NULL;
 
+	if(!(hSession->host.current && hSession->host.srvc))
+		return errno = ENOENT;
+
 	memset(&hints,0,sizeof(hints));
 	hints.ai_family 	= AF_UNSPEC;	// Allow IPv4 or IPv6
 	hints.ai_socktype	= SOCK_STREAM;	// Stream socket
 	hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
 	hints.ai_protocol	= 0;			// Any protocol
+
+	debug("%s(%s,%s)",__FUNCTION__,hSession->host.current, hSession->host.srvc);
 
  	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
  	if(rc != 0)
@@ -250,7 +255,7 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 		char buffer[4096];
 		char msg[4096];
 
-		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
+		snprintf(buffer,4095,_( "Can't connect to %s"), lib3270_get_url(hSession));
 
 		strncpy(msg,host.message,4095);
 

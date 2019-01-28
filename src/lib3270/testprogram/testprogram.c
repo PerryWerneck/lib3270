@@ -28,6 +28,8 @@ int main(int argc, char *argv[])
 	h = lib3270_session_new("");
 	printf("3270 session %p created\n]",h);
 
+	lib3270_set_url(h,NULL);
+
 	int long_index =0;
 	int opt;
 	while((opt = getopt_long(argc, argv, "C:U:", options, &long_index )) != -1) {

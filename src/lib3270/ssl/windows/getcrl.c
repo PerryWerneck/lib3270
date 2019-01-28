@@ -130,7 +130,7 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		return NULL;
 	}
 
-	trace_ssl(hSession, "crl=%s",consturl);
+	trace_ssl(hSession, "crl=%s\n",consturl);
 
 	if(strncasecmp(consturl,"file://",7) == 0)
 	{
@@ -185,6 +185,9 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				return NULL;
 			}
 
+			debug("Tamanho da resposta: %u", (unsigned int) crl_data->length);
+			debug("Resposta:\n-------------------------------------------\n%s\n-------------------------------------------\n",crl_data->contents);
+
 			char *ct = NULL;
 			res = curl_easy_getinfo(hCurl, CURLINFO_CONTENT_TYPE, &ct);
 			if(res != CURLE_OK)
@@ -192,12 +195,12 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				message->error = hSession->ssl.error = 0;
 				message->title = N_( "Security error" );
 				message->text = N_( "Error loading CRL" );
-				message->description =  curl_easy_strerror(res);
+				message->description = curl_easy_strerror(res);
 				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
 				return NULL;
 			}
 
-			debug("content-type: %s",ct);
+			// debug("content-type: %s",ct);
 
 			if(ct)
 			{
@@ -233,7 +236,6 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 					message->error = hSession->ssl.error = ERR_get_error();
 					message->title = N_( "Security error" );
 					message->text = N_( "Got an invalid CRL from LDAP server" );
-					lib3270_write_log(hSession,"ssl","%s: invalid format:\n%s\n",consturl, crl_data->contents);
 					return NULL;
 				}
 				data += 3;

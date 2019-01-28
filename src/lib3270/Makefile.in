@@ -354,6 +354,14 @@ else
 			$(BINDBG)/$(LIBNAME)@EXEEXT@
 endif
 
+publish-debug: \
+	$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+	@rm -f ~/public-html/debug-$(LIBNAME)-@host_cpu@.zip
+	@zip \
+		-9 -D \
+		~/public_html/debug-$(LIBNAME)-@host_cpu@.zip \
+		$(BINDBG)/*
 
 $(BINDBG)/$(LIBNAME)@DLLEXT@: \
 	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@

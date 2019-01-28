@@ -87,7 +87,8 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	else if(err)
 	{
 		char buffer[4096];
-		snprintf(buffer,4095,_( "Can't connect to %s" ), hSession->host.current );
+
+		snprintf(buffer,4095,_( "Can't connect to %s" ), lib3270_get_url(hSession) );
 
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(

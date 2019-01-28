@@ -170,7 +170,7 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		return NULL;
 	}
 
-	trace_ssl(hSession, "crl=%s",consturl);
+	trace_ssl(hSession, "crl=%s\n",consturl);
 
 	if(strncasecmp(consturl,"file://",7) == 0)
 	{

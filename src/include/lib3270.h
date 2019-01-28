@@ -733,7 +733,6 @@
 	 */
 	 LIB3270_EXPORT int lib3270_move_cursor(H3270 *h, LIB3270_DIRECTION dir, unsigned char sel);
 
-
 	/**
 	 * @brief Print page
 	 *

@@ -127,7 +127,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 		data->contents[data->length++] = *(ptr++);
 	}
 
-	debug("\n%s\n-------------------------------------------", data->contents);
+//	debug("\n%s\n-------------------------------------------", data->contents);
 
 	return realsize;
 }
@@ -253,7 +253,6 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				curl_easy_setopt(hCurl, CURLOPT_VERBOSE, 1L);
 				curl_easy_setopt(hCurl, CURLOPT_DEBUGFUNCTION, internal_curl_trace_callback);
 				curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) crl_data);
-				CURLOPT_DEBUGDATA
 			}
 
 			res = curl_easy_perform(hCurl);
@@ -293,11 +292,11 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				return NULL;
 			}
 
-			// debug("content-type: %s",ct);
-
 			if(ct)
 			{
 				const unsigned char * data = crl_data->contents;
+
+				trace_ssl(crl_data->hSession, "Content-type: %s", ct);
 
 				if(strcasecmp(ct,"application/pkix-crl") == 0)
 				{
@@ -323,6 +322,8 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			else if(strncasecmp(consturl,"ldap://",7) == 0)
 			{
 				// It's an LDAP query, assumes a base64 data.
+				trace_ssl(crl_data->hSession, "No mime-type, assuming LDAP/BASE64");
+
 				char * data = strstr((char *) crl_data->contents,":: ");
 				if(!data)
 				{

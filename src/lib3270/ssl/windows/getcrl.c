@@ -194,6 +194,8 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
 			curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
 
+			curl_easy_setopt(hCurl, CURLOPT_USERNAME, "");
+
 			res = curl_easy_perform(hCurl);
 
 			if(res != CURLE_OK)

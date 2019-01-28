@@ -249,14 +249,11 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 
 	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 
-	// s = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
 	if(lib3270_run_task(hSession, background_connect, &host) || hSession->sock < 0)
 	{
-		char buffer[4096];
+		lib3270_autoptr(char) message = lib3270_strdup_printf(_( "Can't connect to %s"), lib3270_get_url(hSession));
+
 		char msg[4096];
-
-		snprintf(buffer,4095,_( "Can't connect to %s"), lib3270_get_url(hSession));
-
 		strncpy(msg,host.message,4095);
 
 #ifdef HAVE_ICONV
@@ -283,7 +280,7 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,
 								_( "Connection error" ),
-								buffer,
+								message,
 								"%s",
 								msg);
 
@@ -298,7 +295,9 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;
-		ssl_init(hSession);
+		if(ssl_init(hSession))
+			return errno = ENOTCONN;
+
 	}
 #endif // HAVE_LIBSSL
 

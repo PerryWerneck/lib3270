@@ -246,7 +246,10 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;
-		ssl_init(hSession);
+
+		if(ssl_init(hSession))
+			return errno = ENOTCONN;
+
 	}
 	debug("** SSL init %s","ends");
 #endif // HAVE_LIBSSL

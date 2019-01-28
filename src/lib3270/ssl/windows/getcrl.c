@@ -79,6 +79,7 @@ typedef struct _curldata
 {
 	size_t		  		  length;
 	SSL_ERROR_MESSAGE	* message;
+	char 				  errbuf[CURL_ERROR_SIZE];
 	unsigned char		  contents[CRL_DATA_LENGTH];
 } CURLDATA;
 
@@ -188,6 +189,8 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			curl_easy_setopt(hCurl, CURLOPT_URL, consturl);
 			curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
 
+			curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data);
+
 			curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
 			curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
 
@@ -197,8 +200,18 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			{
 				message->error = hSession->ssl.error = 0;
 				message->title = N_( "Security error" );
-				message->text = N_( "Error loading CRL" );
-				message->description =  curl_easy_strerror(res);
+
+				if(crl_data->errbuf[0])
+				{
+					message->text = curl_easy_strerror(res);
+					message->description =  crl_data->errbuf;
+				}
+				else
+				{
+					message->text = N_( "Error loading CRL" );
+					message->description =  curl_easy_strerror(res);
+				}
+
 				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
 				return NULL;
 			}

@@ -139,13 +139,13 @@
 		<Unit filename="src/lib3270/ft_dft.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/glue.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/lib3270/host.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/html.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/iocalls.c">

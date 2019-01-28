@@ -35,6 +35,7 @@
  */
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
 
 #include "private.h"
 
@@ -44,8 +45,6 @@
 #include <X11/Shell.h>
 #endif /*]*/
 
-//#include "appres.h"
-// #include "ctlr.h"
 #if defined(X3270_DBCS) /*[*/
 #include <lib3270/3270ds.h>
 #endif /*]*/
@@ -54,8 +53,6 @@
 #include "ctlrc.h"
 #include "hostc.h"
 #include "screenc.h"
-// #include "scrollc.h"
-// #include "tablesc.h"
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utf8c.h"
@@ -65,68 +62,67 @@
 
 #define MB_MAX	LIB3270_MB_MAX
 
-#define	SC	1	/* save cursor position */
-#define RC	2	/* restore cursor position */
-#define NL	3	/* new line */
-#define UP	4	/* cursor up */
-#define	E2	5	/* second level of ESC processing */
-#define rS	6	/* reset */
-#define IC	7	/* insert chars */
-#define DN	8	/* cursor down */
-#define RT	9	/* cursor right */
-#define LT	10	/* cursor left */
-#define CM	11	/* cursor motion */
-#define ED	12	/* erase in display */
-#define EL	13	/* erase in line */
-#define IL	14	/* insert lines */
-#define DL	15	/* delete lines */
-#define DC	16	/* delete characters */
-#define	SG	17	/* set graphic rendition */
-#define BL	18	/* ring bell */
-#define NP	19	/* new page */
-#define BS	20	/* backspace */
-#define CR	21	/* carriage return */
-#define LF	22	/* line feed */
-#define HT	23	/* horizontal tab */
-#define E1	24	/* first level of ESC processing */
-#define Xx	25	/* undefined control character (nop) */
-#define Pc	26	/* printing character */
-#define Sc	27	/* semicolon (after ESC [) */
-#define Dg	28	/* digit (after ESC [ or ESC [ ?) */
-#define RI	29	/* reverse index */
-#define DA	30	/* send device attributes */
-#define SM	31	/* set mode */
-#define RM	32	/* reset mode */
-#define DO	33	/* return terminal ID (obsolete) */
-#define SR	34	/* device status report */
-#define CS	35	/* character set designate */
-#define E3	36	/* third level of ESC processing */
-#define DS	37	/* DEC private set */
-#define DR	38	/* DEC private reset */
-#define DV	39	/* DEC private save */
-#define DT	40	/* DEC private restore */
-#define SS	41	/* set scrolling region */
-#define TM	42	/* text mode (ESC ]) */
-#define T2	43	/* semicolon (after ESC ]) */
-#define TX	44	/* text parameter (after ESC ] n ;) */
-#define TB	45	/* text parameter done (ESC ] n ; xxx BEL) */
-#define TS	46	/* tab set */
-#define TC	47	/* tab clear */
-#define C2	48	/* character set designate (finish) */
-#define G0	49	/* select G0 character set */
-#define G1	50	/* select G1 character set */
-#define G2	51	/* select G2 character set */
-#define G3	52	/* select G3 character set */
-#define S2	53	/* select G2 for next character */
-#define S3	54	/* select G3 for next character */
-#define MB	55	/* process multi-byte character */
+#define	SC	1	/**< @brief save cursor position */
+#define RC	2	/**< @brief restore cursor position */
+#define NL	3	/**< @brief new line */
+#define UP	4	/**< @brief cursor up */
+#define	E2	5	/**< @brief second level of ESC processing */
+#define rS	6	/**< @brief reset */
+#define IC	7	/**< @brief insert chars */
+#define DN	8	/**< @brief cursor down */
+#define RT	9	/**< @brief cursor right */
+#define LT	10	/**< @brief cursor left */
+#define CM	11	/**< @brief cursor motion */
+#define ED	12	/**< @brief erase in display */
+#define EL	13	/**< @brief erase in line */
+#define IL	14	/**< @brief insert lines */
+#define DL	15	/**< @brief delete lines */
+#define DC	16	/**< @brief delete characters */
+#define	SG	17	/**< @brief set graphic rendition */
+#define BL	18	/**< @brief ring bell */
+#define NP	19	/**< @brief new page */
+#define BS	20	/**< @brief backspace */
+#define CR	21	/**< @brief carriage return */
+#define LF	22	/**< @brief line feed */
+#define HT	23	/**< @brief horizontal tab */
+#define E1	24	/**< @brief first level of ESC processing */
+#define Xx	25	/**< @brief undefined control character (nop) */
+#define Pc	26	/**< @brief printing character */
+#define Sc	27	/**< @brief semicolon (after ESC [) */
+#define Dg	28	/**< @brief digit (after ESC [ or ESC [ ?) */
+#define RI	29	/**< @brief reverse index */
+#define DA	30	/**< @brief send device attributes */
+#define SM	31	/**< @brief set mode */
+#define RM	32	/**< @brief reset mode */
+#define DO	33	/**< @brief return terminal ID (obsolete) */
+#define SR	34	/**< @brief device status report */
+#define CS	35	/**< @brief character set designate */
+#define E3	36	/**< @brief third level of ESC processing */
+#define DS	37	/**< @brief DEC private set */
+#define DR	38	/**< @brief DEC private reset */
+#define DV	39	/**< @brief DEC private save */
+#define DT	40	/**< @brief DEC private restore */
+#define SS	41	/**< @brief set scrolling region */
+#define TM	42	/**< @brief text mode (ESC ]) */
+#define T2	43	/**< @brief semicolon (after ESC ]) */
+#define TX	44	/**< @brief text parameter (after ESC ] n ;) */
+#define TB	45	/**< @brief text parameter done (ESC ] n ; xxx BEL) */
+#define TS	46	/**< @brief tab set */
+#define TC	47	/**< @brief tab clear */
+#define C2	48	/**< @brief character set designate (finish) */
+#define G0	49	/**< @brief select G0 character set */
+#define G1	50	/**< @brief select G1 character set */
+#define G2	51	/**< @brief select G2 character set */
+#define G3	52	/**< @brief select G3 character set */
+#define S2	53	/**< @brief select G2 for next character */
+#define S3	54	/**< @brief select G3 for next character */
+#define MB	55	/**< @brief process multi-byte character */
 
 #define DATA	LIB3270_ANSI_STATE_DATA
 #define ESC		LIB3270_ANSI_STATE_ESC
 #define CSDES	LIB3270_ANSI_STATE_CSDES
 #define N1		LIB3270_ANSI_STATE_N1
 #define DECP	LIB3270_ANSI_STATE_DECP
-// #define TEXT	LIB3270_ANSI_STATE_TEXT
 #define TEXT2	LIB3270_ANSI_STATE_TEXT2
 #define MBPEND	LIB3270_ANSI_STATE_MBPEND
 

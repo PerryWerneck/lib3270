@@ -634,7 +634,6 @@ struct _h3270
 
 /* Library internal calls */
 LIB3270_INTERNAL void	key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped);
-LIB3270_INTERNAL void	lib3270_initialize(void);
 LIB3270_INTERNAL int	cursor_move(H3270 *session, int baddr);
 
 LIB3270_INTERNAL void	toggle_rectselect(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt);

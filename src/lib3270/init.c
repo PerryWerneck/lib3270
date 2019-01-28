@@ -18,70 +18,36 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como glue.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
 
 
-/*
- *	glue.c
- *		A displayless 3270 Terminal Emulator
- *		Glue for missing parts.
+/**
+ *	@brief Init/Deinit lib3270 internals.
  */
 
+#include <config.h>
 
+#ifdef HAVE_LIBCURL
+	#include <curl/curl.h>
+#endif // HAVE_LIBCURL
 
-#include "private.h"
+#include <lib3270.h>
 
-#if !defined(_WIN32) /*[*/
-	#include <sys/wait.h>
-#else
+#ifdef _WIN32
+	#include <winsock2.h>
 	#include <windows.h>
-#endif /*]*/
+	#include "winversc.h"
+#endif // _WIN32
 
-#include <signal.h>
-#include <errno.h>
-#include <stdarg.h>
-
-#include "3270ds.h"
-#include "resources.h"
-
-//#include "actionsc.h"
-#include "ansic.h"
-// #include "charsetc.h"
-#include "ctlrc.h"
-// #include "gluec.h"
-#include "hostc.h"
-// #include "keymapc.h"
-#include "kybdc.h"
-//#include "macrosc.h"
-#include "popupsc.h"
-#include "screenc.h"
-// #include "selectc.h"
-//#include "tablesc.h"
-#include "telnetc.h"
-#include "togglesc.h"
-#include "trace_dsc.h"
-#include "utilc.h"
-// #include "idlec.h"
-// #include "printerc.h"
-
-#if defined(X3270_FT)
-	#include "ftc.h"
-#endif
-
-#if defined(_WIN32) /*[*/
-#include "winversc.h"
-#endif /*]*/
-
-// #include "session.h"
+#include <lib3270/log.h>
+#include "private.h"
 
 #if defined WIN32
 	BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
@@ -89,8 +55,6 @@
 	int lib3270_loaded(void) __attribute__((constructor));
 	int lib3270_unloaded(void) __attribute__((destructor));
 #endif
-
- #define LAST_ARG	"--"
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -127,12 +91,23 @@ int lib3270_loaded(void)
 	ansictl.vrprnt  = parse_ctlchar("^R");
 	ansictl.vlnext  = parse_ctlchar("^V");
 
+#ifdef HAVE_LIBCURL
+	trace("%s.curl_global_init",__FUNCTION__);
+	curl_global_init(CURL_GLOBAL_DEFAULT);
+#endif // HAVE_LIBCURL
+
     return 0;
 }
 
 int lib3270_unloaded(void)
 {
 	trace("%s",__FUNCTION__);
+
+#ifdef HAVE_LIBCURL
+	trace("%s.curl_global_cleanup",__FUNCTION__);
+	curl_global_cleanup();
+#endif // HAVE_LIBCURL
+
     return 0;
 }
 
@@ -162,11 +137,5 @@ BOOL WINAPI DllMain(HANDLE hinst unused, DWORD dwcallpurpose, LPVOID lpvResvd un
 #endif
 
 
-#ifdef DEBUG
-extern void lib3270_initialize(void)
-{
-	lib3270_loaded();
-}
-#endif
 
 

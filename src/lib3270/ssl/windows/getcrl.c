@@ -31,6 +31,8 @@
  * http://www.openssl.org/docs/ssl/
  * https://stackoverflow.com/questions/4389954/does-openssl-automatically-handle-crls-certificate-revocation-lists-now
  *
+ * https://www.codepool.biz/build-use-libcurl-vs2015-windows.html
+ *
  */
 
 #define CRL_DATA_LENGTH 4096
@@ -66,8 +68,11 @@ static inline void lib3270_autoptr_cleanup_CURL(CURL **ptr)
 {
 	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
+	{
 		curl_easy_cleanup(*ptr);
+	}
 	*ptr = NULL;
+
 }
 
 typedef struct _curldata
@@ -98,17 +103,26 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	CURLDATA * data = (CURLDATA *) userp;
 
 	size_t realsize = size * nmemb;
+	size_t ix;
 
-	if((size + data->length) > CRL_DATA_LENGTH)
+	debug("Received %u bytes (datablock is %p)", (unsigned int) realsize, data);
+
+	unsigned char *ptr = (unsigned char *) contents;
+
+	debug("\n------------------------------------\n%s\n", ptr);
+
+	for(ix = 0; ix < realsize; ix++)
 	{
-		debug("CRL Data block is bigger than allocated block (%u bytes)",(unsigned int) size);
-		return 0;
+		if(data->length >= CRL_DATA_LENGTH)
+		{
+			lib3270_write_log(NULL,"ssl","CRL Data block is bigger than allocated block (%u)", (unsigned int) CRL_DATA_LENGTH);
+			return 0;
+		}
+
+		data->contents[data->length++] = *(ptr++);
 	}
 
-	debug("Received %u bytes", (unsigned int) realsize);
-
-	memcpy(&(data->contents[data->length]),contents,realsize);
-	data->length += realsize;
+	debug("\n%s\n-------------------------------------------", data->contents);
 
 	return realsize;
 }
@@ -158,10 +172,14 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 		// Use CURL to download the CRL
 		lib3270_autoptr(CURLDATA) crl_data = lib3270_malloc(sizeof(CURLDATA));
+
+		// Initialize curl and curl_easy
 		lib3270_autoptr(CURL) hCurl = curl_easy_init();
 
 		memset(crl_data,0,sizeof(CURLDATA));
 		crl_data->message = message;
+
+		debug("datablock is %p",crl_data);
 
 		if(hCurl)
 		{

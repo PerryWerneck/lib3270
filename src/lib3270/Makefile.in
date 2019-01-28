@@ -232,18 +232,17 @@ install-shared: \
 	# Install library
 	@mkdir -p $(DESTDIR)$(libdir)
 
-	@$(INSTALL_PROGRAM) \
+	$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)
+		$(DESTDIR)/$(libdir)
 
-
-	@$(LN_S) \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+	$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)/$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 
-	@$(LN_S) \
+	$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+		$(DESTDIR)/$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a

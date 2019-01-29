@@ -24,7 +24,8 @@ versions
 ChangeLog*
 Makefile
 aclocal.m4
-configure
+configure*
+*.trace
 autom4te.cache
 makegtkruntime.sh
 copydeps.sh

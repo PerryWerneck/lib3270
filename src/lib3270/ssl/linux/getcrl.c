@@ -252,70 +252,39 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	}
 #ifdef HAVE_LDAP
-	else if(strncasecmp(consturl,"ldap",4) == 0)
+	else if(strncasecmp(consturl,"ldap://",7) == 0 && strlen(consturl) > 8)
 	{
 		int	rc;
 		lib3270_autoptr(char) url = strdup(consturl);
-
+		char * base = strchr(url+7,'/');
 		char * attrs[] = { NULL, NULL };
-		char * base = NULL;
 
-		const struct _args
+        if(!base)
 		{
-			const char	*  name;
-			char 		** value;
-		}
-		args[] =
-		{
-			{ "attr",	&attrs[0]	},
-			{ "base",	&base		}
-		};
-
-		// Get arguments
-		size_t arg;
-		char 	*  ptr = strchr(url,'?');
-		while(ptr)
-		{
-            *(ptr++) = 0;
-            char *value = strchr(ptr,'=');
-            if(!value)
-			{
-				message->error = hSession->ssl.error = 0;
-				message->title = N_( "Security error" );
-				message->text = N_( "Invalid argument format" );
-				message->description = "The URL argument should be in the format name=value";
-				return NULL;
-			}
-
-			*(value++) = 0;
-
-			debug("%s=%s",ptr,value);
-
-			for(arg = 0; arg < (sizeof(args)/sizeof(args[0])); arg++)
-			{
-                if(!strcasecmp(ptr,args[arg].name))
-				{
-					*args[arg].value = value;
-					debug("%s=\"%s\"",args[arg].name,*args[arg].value);
-				}
-			}
-
-            ptr = strchr(value,'&');
+			message->error = hSession->ssl.error = 0;
+			message->title = N_( "Security error" );
+			message->text = N_( "No DN of the entry at which to start the search on the URL" );
+			message->description = _( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" );
+			return NULL;
 		}
 
-		// Do we get all the required arguments?
-		for(arg = 0; arg < (sizeof(args)/sizeof(args[0])); arg++)
+		*(base++) = 0;
+        attrs[0] = strchr(base,'?');
+
+        if(!base)
 		{
-			if(!*args[arg].value)
-			{
-				message->error = hSession->ssl.error = 0;
-				message->title = N_( "Security error" );
-				message->text = N_( "Can't set LDAP query" );
-				message->description = N_("Insuficient arguments");
-				lib3270_write_log(hSession,"ssl","%s: Required argument \"%s\" is missing",url, args[arg].name);
-				return NULL;
-			}
+			message->error = hSession->ssl.error = 0;
+			message->title = N_( "Security error" );
+			message->text = N_( "No LDAP attribute on the URL" );
+			message->description = _( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" );
+			return NULL;
 		}
+
+        *(attrs[0]++) = 0;
+
+        debug("host: \"%s\"",url);
+        debug("Base: \"%s\"",base);
+        debug("Attr: \"%s\"",attrs[0]);
 
 		// Do LDAP Query
 		LDAP __attribute__ ((__cleanup__(lib3270_autoptr_cleanup_LDAP))) *ld = NULL;
@@ -399,6 +368,16 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			message->description = N_("Search did not produce any values.");
 			lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
 			return NULL;
+		}
+
+		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+		{
+			lib3270_trace_data(
+				hSession,
+				"CRL Data received from LDAP server",
+				(const char *) value[0]->bv_val,
+				value[0]->bv_len
+			);
 		}
 
 		// Precisa salvar uma cópia porque d2i_X509_CRL modifica o ponteiro.
@@ -485,7 +464,18 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				return NULL;
 			}
 
-			debug("content-type: %s",ct);
+			/*
+			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+			{
+				lib3270_autoptr(char) msg = lib3270_strdup_printf("CRL Data received with content-type \"%s\"", (ct ? ct : "undefined"));
+				lib3270_trace_data(
+					hSession,
+					msg,
+					(const char *) crl_data->contents,
+					crl_data->length
+				);
+			}
+			*/
 
 			if(ct)
 			{
@@ -525,8 +515,6 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 					return NULL;
 				}
 				data += 3;
-
-				debug("\n%s\nlength=%u",data,(unsigned int) strlen(data));
 
 				lib3270_autoptr(BIO) bio = BIO_new_mem_buf(data,-1);
 

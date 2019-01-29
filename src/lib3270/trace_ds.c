@@ -31,9 +31,8 @@
  */
 
 
-/*
- *	trace_ds.c
- *		3270 data stream tracing.
+/**
+ * @brief 3270 data stream tracing.
  *
  */
 
@@ -193,7 +192,9 @@ void trace_ssl(H3270 *session, const char *fmt, ...)
 }
 
 
-/* Write to the trace file. */
+/**
+ * @brief Write to the trace file.
+ */
 static void wtrace(H3270 *session, const char *fmt, ...)
 {
 	va_list args;

@@ -6,8 +6,21 @@
 
 #include <lib3270.h>
 #include <lib3270/actions.h>
+#include <lib3270/trace.h>
 
 #define MAX_ARGS 10
+
+const char *trace_file = "test.trace";
+
+static void write_trace(H3270 *session, void *userdata, const char *fmt, va_list args)
+{
+	FILE *out = fopen(trace_file,"a");
+	if(out)
+	{
+		vfprintf(out,fmt,args);
+		fclose(out);
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +29,7 @@ int main(int argc, char *argv[])
 	static struct option options[] = {
 		{ "crl",		required_argument,	0,	'C' },
 		{ "url",		required_argument,	0,	'U' },
+		{ "tracefile",	required_argument,	0,	't' },
 
 		{ 0, 0, 0, 0}
 
@@ -32,7 +46,7 @@ int main(int argc, char *argv[])
 
 	int long_index =0;
 	int opt;
-	while((opt = getopt_long(argc, argv, "C:U:", options, &long_index )) != -1) {
+	while((opt = getopt_long(argc, argv, "C:U:t:", options, &long_index )) != -1) {
 		switch(opt) {
 		case 'U':
 			lib3270_set_url(h,optarg);
@@ -40,6 +54,11 @@ int main(int argc, char *argv[])
 
 		case 'C':
 			lib3270_set_crl_url(h,optarg);
+			break;
+
+		case 't':
+			trace_file = optarg;
+			lib3270_set_trace_handler(h,write_trace,NULL);
 			break;
 		}
 

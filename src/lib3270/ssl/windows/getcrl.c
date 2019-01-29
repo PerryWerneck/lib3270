@@ -292,6 +292,19 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				return NULL;
 			}
 
+			/*
+			if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE))
+			{
+				lib3270_autoptr(msg) = lib3270_vsprintf("CRL Data received with content-type \"%s\"", (ct ? ct : "undefined"));
+				lib3270_trace_data(
+					data->hSession,
+					msg,
+					(const char *) crl_data->contents,
+					crl_data->length
+				);
+			}
+			*/
+
 			if(ct)
 			{
 				const unsigned char * data = crl_data->contents;
@@ -321,35 +334,76 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			}
 			else if(strncasecmp(consturl,"ldap://",7) == 0)
 			{
-				// It's an LDAP query, assumes a base64 data.
-				trace_ssl(crl_data->hSession, "No mime-type, assuming LDAP/BASE64");
-
-				char * data = strstr((char *) crl_data->contents,":: ");
-				if(!data)
+				// LDAP Query on curl for windows returns an unprocessed response instead of a base64 data.
+				char * attr = strchr(consturl,'?');
+				if(!attr)
 				{
-					message->error = hSession->ssl.error = ERR_get_error();
+					message->error = hSession->ssl.error = 0;
 					message->title = N_( "Security error" );
-					message->text = N_( "Got an invalid CRL from LDAP server" );
+					message->text = N_( "No attribute in LDAP search URL" );
 					return NULL;
 				}
-				data += 3;
 
-				debug("\n%s\nlength=%u",data,(unsigned int) strlen(data));
+				attr++;
 
-				lib3270_autoptr(BIO) bio = BIO_new_mem_buf(data,-1);
+				//
+				// There's something odd on libcurl for windows! For some reason it's not converting the LDAP response values to
+				// base64, because of this I've to extract the BER directly.
+				//
+				// This is an ugly solution, I know!
+				//
 
-				BIO * b64 = BIO_new(BIO_f_base64());
-				bio = BIO_push(b64, bio);
+				lib3270_autoptr(char) text = lib3270_strdup_printf("No mime-type, extracting \"%s\" directly from LDAP response\n",attr);
+				trace_ssl(crl_data->hSession, text);
 
-				BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
+				lib3270_autoptr(char) key = lib3270_strdup_printf("%s: ",attr);
+				char *ptr = strstr((char *) crl_data->contents, key);
 
-				if(!d2i_X509_CRL_bio(bio, &crl))
+				debug("key=\"%s\" ptr=%p",key,ptr)
+
+				if(!ptr)
+				{
+					message->error = hSession->ssl.error = 0;
+					message->title = N_( "Security error" );
+					message->text = N_( "Can't find attribute in LDAP response" );
+					return NULL;
+				}
+
+				ptr += strlen(key);
+				size_t length = crl_data->length - (ptr - ((char *) crl_data->contents));
+				size_t ix;
+
+				for(ix = 0; ix < (length-1); ix++)
+				{
+					if(ptr[ix] == '\n' && ptr[ix+1] == '\n')
+						break;
+				}
+
+				debug("length=%u ix=%u", (unsigned int) length, (unsigned int) ix);
+
+				if(ix >= length)
+				{
+					message->error = hSession->ssl.error = 0;
+					message->title = N_( "Security error" );
+					message->text = N_( "Can't find attribute end in LDAP response" );
+					return NULL;
+				}
+
+				length = ix;
+
+				lib3270_trace_data(
+					hSession,
+					"CRL Data received from LDAP server",
+					(const char *) ptr,
+					length
+				);
+
+				if(!d2i_X509_CRL(&crl, (const unsigned char **) &ptr, length))
 				{
 					message->error = hSession->ssl.error = ERR_get_error();
 					message->title = N_( "Security error" );
-					message->text = N_( "Got an invalid CRL from server" );
+					message->text = N_( "Can't get CRL from LDAP Search" );
 					lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
-					return NULL;
 				}
 
 			}

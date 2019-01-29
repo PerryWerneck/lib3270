@@ -395,12 +395,15 @@ X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 			length = ix;
 
-			lib3270_trace_data(
-				hSession,
-				"CRL Data received from LDAP server",
-				(const char *) ptr,
-				length
-			);
+			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+			{
+				lib3270_trace_data(
+					hSession,
+					"CRL Data received from LDAP server",
+					(const char *) ptr,
+					length
+				);
+			}
 
 			if(!d2i_X509_CRL(&crl, (const unsigned char **) &ptr, length))
 			{

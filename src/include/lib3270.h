@@ -177,6 +177,8 @@
 
 		LIB3270_DIR_END,
 
+		LIB3270_DIR_COUNT						/**< @brief Nº máximo de direções. */
+
 	} LIB3270_DIRECTION;
 
 	/**

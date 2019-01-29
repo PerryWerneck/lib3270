@@ -66,7 +66,6 @@ struct ta;
 #include "hostc.h"
 #include "kybdc.h"
 #include "popupsc.h"
-// #include "printc.h"
 #include "screenc.h"
 #include "screen.h"
 #include "statusc.h"
@@ -132,83 +131,8 @@ struct akeysym
 			 ((k1).keytype == (k2).keytype))
 
 
-struct ta
-{
-	struct ta 		*next;
-
-	enum _ta_type
-	{
-		TA_TYPE_DEFAULT,
-		TA_TYPE_KEY_AID,
-		TA_TYPE_ACTION,
-		TA_TYPE_CURSOR_MOVE,
-		TA_TYPE_USER
-	} type;
-
-	union
-	{
-		unsigned char aid_code;
-		struct
-		{
-			void (*fn)(H3270 *, const char *, const char *);
-			char *parm[2];
-		} def;
-
-		int (*action)(H3270 *);
-
-		struct
-		{
-			LIB3270_DIRECTION direction;
-			unsigned char sel;
-			int (*fn)(H3270 *, LIB3270_DIRECTION, unsigned char);
-		} move;
-
-	} args;
-
-};
-
 static const char dxl[] = "0123456789abcdef";
 #define FROM_HEX(c)	(strchr(dxl, tolower(c)) - dxl)
-#define KYBDLOCK_IS_OERR(hSession)	(hSession->kybdlock && !(hSession->kybdlock & ~KL_OERR_MASK))
-
-/*
- * Check if the typeahead queue is available
- */ /*
-static int enq_chk(H3270 *hSession)
-{
-	// If no connection, forget it.
-	if (!lib3270_connected(hSession))
-	{
-		lib3270_trace_event(hSession,"  dropped (not connected)\n");
-		return -1;
-	}
-
-	// If operator error, complain and drop it.
-	if (hSession->kybdlock & KL_OERR_MASK)
-	{
-		lib3270_ring_bell(hSession);
-		lib3270_trace_event(hSession,"  dropped (operator error)\n");
-		return -1;
-	}
-
-	// If scroll lock, complain and drop it.
-	if (hSession->kybdlock & KL_SCROLLED)
-	{
-		lib3270_ring_bell(hSession);
-		lib3270_trace_event(hSession,"  dropped (scrolled)\n");
-		return -1;
-	}
-
-	// If typeahead disabled, complain and drop it.
-	if (!hSession->typeahead)
-	{
-		lib3270_trace_event(hSession,"  dropped (no typeahead)\n");
-		return -1;
-	}
-
-	return 0;
-}
-*/
 
 /**
  * @brief Create a new typeahead action.
@@ -217,7 +141,7 @@ static int enq_chk(H3270 *hSession)
  *
  * @return new typeahead struct or NULL if it's not available.
  */
-static struct ta * new_ta(H3270 *hSession, enum _ta_type type)
+struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 {
 	struct ta *ta;
 
@@ -313,7 +237,7 @@ static void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char
 	lib3270_trace_event(hSession,"typeahead action queued (kybdlock 0x%x)\n", hSession->kybdlock);
 }
 
-static void enq_action(H3270 *hSession, int (*fn)(H3270 *))
+void enq_action(H3270 *hSession, int (*fn)(H3270 *))
 {
 	struct ta *ta = new_ta(hSession, TA_TYPE_ACTION);
 
@@ -1298,47 +1222,6 @@ static void do_left(H3270 *hSession)
 	cursor_move(hSession,baddr);
 }
 
-LIB3270_EXPORT int lib3270_cursor_left(H3270 *hSession)
-{
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if (hSession->kybdlock)
-	{
-		if(KYBDLOCK_IS_OERR(hSession))
-		{
-			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);
-			status_reset(hSession);
-		}
-		else
-		{
-			enq_action(hSession, lib3270_cursor_left);
-			return 0;
-		}
-	}
-#if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI)
-	{
-		ansi_send_left(hSession);
-		return 0;
-	}
-#endif /*]*/
-
-	if (!hSession->flipped)
-	{
-		do_left(hSession);
-	}
-	else
-	{
-		register int	baddr;
-
-		baddr = hSession->cursor_addr;
-		INC_BA(baddr);
-		/* XXX: DBCS? */
-		lib3270_set_cursor_address(hSession,baddr);
-	}
-	return 0;
-}
-
 /**
  * @brief Delete char key.
  *
@@ -1584,51 +1467,6 @@ int lib3270_erase(H3270 *hSession)
 }
 
 /**
- * @brief Cursor right 1 position.
- */
-LIB3270_EXPORT int lib3270_cursor_right(H3270 *hSession)
-{
-	register int	baddr;
-	enum dbcs_state d;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if (hSession->kybdlock)
-	{
-		if (KYBDLOCK_IS_OERR(hSession))
-		{
-			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);
-			status_reset(hSession);
-		}
-		else
-		{
-			enq_action(hSession, lib3270_cursor_right);
-			return 0;
-		}
-	}
-#if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI) {
-		ansi_send_right(hSession);
-		return 0;
-	}
-#endif /*]*/
-	if (!hSession->flipped)
-	{
-		baddr = hSession->cursor_addr;
-		INC_BA(baddr);
-		d = ctlr_dbcs_state(baddr);
-		if (IS_RIGHT(d))
-			INC_BA(baddr);
-		lib3270_set_cursor_address(hSession,baddr);
-	}
-	else
-	{
-		do_left(hSession);
-	}
-	return 0;
-}
-
-/**
  * @brief Cursor to previous word.
  */
 LIB3270_EXPORT int lib3270_previousword(H3270 *hSession)
@@ -1816,135 +1654,6 @@ LIB3270_EXPORT int lib3270_nextword(H3270 *hSession)
 			cursor_move(hSession,baddr);
 	}
 
-	return 0;
-}
-
-/**
- * @brief Move cursor.
- *
- * @param hSession	Session handle.
- * @param dir		Where to move.
- * @param sel		Non zero if it's selecting.
- *
- */
-LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, unsigned char sel)
-{
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if (hSession->kybdlock) {
-
-		struct ta *ta = new_ta(hSession, TA_TYPE_CURSOR_MOVE);
-
-		ta->args.move.direction = dir;
-		ta->args.move.fn = lib3270_move_cursor;
-		ta->args.move.sel = sel;
-
-		return 0;
-	}
-
-	switch(dir)
-	{
-	case LIB3270_DIR_UP:
-		lib3270_cursor_up(hSession);
-		break;
-
-	case LIB3270_DIR_DOWN:
-		lib3270_cursor_down(hSession);
-		break;
-
-	case LIB3270_DIR_LEFT:
-		lib3270_cursor_left(hSession);
-		break;
-
-	case LIB3270_DIR_RIGHT:
-		lib3270_cursor_right(hSession);
-		break;
-
-	case LIB3270_DIR_END:
-		cursor_move(hSession,lib3270_get_field_end(hSession,hSession->cursor_addr));
-		break;
-
-	default:
-		errno = EINVAL;
-		return -1;
-	}
-
-	if(sel)
-		lib3270_select_to(hSession,hSession->cursor_addr);
-
-	return 0;
-}
-
-/**
- * @brief Cursor up 1 position.
- */
-LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession)
-{
-	register int	baddr;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	trace("kybdlock=%d OERR=%s",(int) hSession->kybdlock, (KYBDLOCK_IS_OERR(hSession) ? "yes" : "no"));
-	if (hSession->kybdlock)
-	{
-		if (KYBDLOCK_IS_OERR(hSession))
-		{
-			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);
-			status_reset(hSession);
-		}
-		else
-		{
-			enq_action(hSession, lib3270_cursor_up);
-			return 0;
-		}
-	}
-
-#if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI) {
-		ansi_send_up(hSession);
-		return 0;
-	}
-#endif /*]*/
-
-	baddr = hSession->cursor_addr - hSession->cols;
-	if (baddr < 0)
-		baddr = (hSession->cursor_addr + (hSession->rows * hSession->cols)) - hSession->cols;
-	lib3270_set_cursor_address(hSession,baddr);
-	return 0;
-}
-
-/**
- * @brief Cursor down 1 position.
- *
- */
-LIB3270_EXPORT int lib3270_cursor_down(H3270 *hSession)
-{
-	register int	baddr;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if (hSession->kybdlock)
-	{
-		if (KYBDLOCK_IS_OERR(hSession))
-		{
-			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);
-			status_reset(hSession);
-		} else
-		{
-			enq_action(hSession, lib3270_cursor_down);
-//			enq_ta(Down_action, CN, CN);
-			return 0;
-		}
-	}
-#if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI)
-	{
-		ansi_send_down(hSession);
-		return 0;
-	}
-#endif /*]*/
-	baddr = (hSession->cursor_addr + hSession->cols) % (hSession->cols * hSession->rows);
-	lib3270_set_cursor_address(hSession,baddr);
 	return 0;
 }
 

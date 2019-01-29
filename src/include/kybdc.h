@@ -12,14 +12,50 @@
  * for more details.
  */
 
-/*
- *	kybdc.h
- *		Global declarations for kybd.c.
+/**
+ *	@brief Global declarations for kybd.c.
  */
 
 #ifndef KYBDC_H_INCLUDED
 
 	#define KYBDC_H_INCLUDED
+
+	/// @brief Element in typeahead queue.
+	struct ta
+	{
+		struct ta *next;
+
+		enum _ta_type
+		{
+			TA_TYPE_DEFAULT,
+			TA_TYPE_KEY_AID,
+			TA_TYPE_ACTION,
+			TA_TYPE_CURSOR_MOVE,
+			TA_TYPE_USER
+		} type;
+
+		union
+		{
+			unsigned char aid_code;
+			struct
+			{
+				void (*fn)(H3270 *, const char *, const char *);
+				char *parm[2];
+			} def;
+
+			int (*action)(H3270 *);
+
+			struct
+			{
+				LIB3270_DIRECTION direction;
+				unsigned char sel;
+				int (*fn)(H3270 *, LIB3270_DIRECTION, unsigned char);
+			} move;
+
+		} args;
+
+	};
+
 
 	/* keyboard lock states */
 	typedef enum lib3270_kl_state
@@ -54,26 +90,25 @@
 	#define KL_SCROLLED			LIB3270_KL_SCROLLED
 	#define KL_OIA_MINUS		LIB3270_KL_OIA_MINUS
 
-
+	#define KYBDLOCK_IS_OERR(hSession)	(hSession->kybdlock && !(hSession->kybdlock & ~KL_OERR_MASK))
 
 	/* other functions */
 	LIB3270_INTERNAL void add_xk(KeySym key, KeySym assoc);
 	LIB3270_INTERNAL void clear_xks(void);
 	LIB3270_INTERNAL void do_reset(H3270 *session, Boolean explicit);
-//	LIB3270_INTERNAL void hex_input(char *s);
 
-//	#define kybdlock_clr(session, bits, cause) lib3270_kybdlock_clear(session, bits)
 	LIB3270_INTERNAL void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KL_STATE bits);
 
 
 	LIB3270_INTERNAL void kybd_inhibit(H3270 *session, Boolean inhibit);
-//	LIB3270_INTERNAL void kybd_init(void);
 	LIB3270_INTERNAL int kybd_prime(H3270 *hSession);
 	LIB3270_INTERNAL void kybd_scroll_lock(Boolean lock);
-	LIB3270_INTERNAL int	run_ta(H3270 *hSession);
-//	LIB3270_INTERNAL int state_from_keymap(char keymap[32]);
 	LIB3270_INTERNAL void kybd_connect(H3270 *session, int connected, void *dunno);
 	LIB3270_INTERNAL void kybd_in3270(H3270 *session, int in3270, void *dunno);
+
+	LIB3270_INTERNAL int			run_ta(H3270 *hSession);
+	LIB3270_INTERNAL struct ta *	new_ta(H3270 *hSession, enum _ta_type type);
+	LIB3270_INTERNAL void			enq_action(H3270 *hSession, int (*fn)(H3270 *));
 
 
 #endif /* KYBDC_H_INCLUDED */

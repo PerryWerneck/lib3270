@@ -103,6 +103,33 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	SSL_CTX_set_default_verify_paths(ssl_ctx);
 
+#ifdef _WIN32
+	{
+		lib3270_autoptr(char) certpath = lib3270_build_data_filename("certs");
+
+		if(SSL_CTX_load_verify_locations(ssl_ctx,NULL,certpath))
+		{
+			trace_ssl(hSession,"Searching certs from \"%s\".\n", certpath);
+		}
+		else
+		{
+			int ssl_error = ERR_get_error();
+
+			lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't read SSL certificates from \"%s\"" ), certpath);
+
+			lib3270_popup_dialog(
+				hSession,
+				LIB3270_NOTIFY_ERROR,
+				N_( "Security error" ),
+				message,
+				"%s", ERR_lib_error_string(ssl_error)
+			);
+
+		}
+
+	}
+#endif // _WIN32
+
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
 #ifdef SSL_ENABLE_CRL_CHECK

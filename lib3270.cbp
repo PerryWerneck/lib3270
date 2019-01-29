@@ -130,6 +130,9 @@
 		<Unit filename="src/lib3270/ctlr.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/cursor.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/ft.c">
 			<Option compilerVar="CC" />
 		</Unit>

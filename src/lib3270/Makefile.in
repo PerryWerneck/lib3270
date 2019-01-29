@@ -362,6 +362,15 @@ publish-debug: \
 		~/public_html/debug-$(LIBNAME)-@host_cpu@.zip \
 		$(BINDBG)/*
 
+publish-release: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@
+
+	@rm -f ~/public-html/release-$(LIBNAME)-@host_cpu@.zip
+	@zip \
+		-9 -D \
+		~/public_html/release-$(LIBNAME)-@host_cpu@.zip \
+		$(BINRLS)/*@DLLEXT@
+
 $(BINDBG)/$(LIBNAME)@DLLEXT@: \
 	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 

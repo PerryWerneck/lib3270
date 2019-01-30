@@ -75,12 +75,17 @@ void lib3270_session_free(H3270 *h)
 	shutdown_toggles(h);
 
 #ifdef SSL_ENABLE_CRL_CHECK
-	if(h->ssl.crl)
+	if(h->ssl.crl.url)
 	{
-		free(h->ssl.crl);
-		h->ssl.crl = NULL;
+		free(h->ssl.url);
+		h->ssl.url = NULL;
 	}
-#endif // SSL_ENABLE_CRL_CHECK
+
+	if(h->ssl.crl.cert)
+	{
+		X509_CRL_free(h->ssl.crl.cert);
+		h->ssl.crl.cert = NULL;
+	}
 
 	// Release state change callbacks
 	for(f=0;f<LIB3270_STATE_USER;f++)
@@ -92,6 +97,7 @@ void lib3270_session_free(H3270 *h)
 			h->st_callbacks[f] = next;
 		}
 	}
+#endif // SSL_ENABLE_CRL_CHECK
 
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;

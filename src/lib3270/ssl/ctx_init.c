@@ -63,14 +63,6 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-#ifdef SSL_ENABLE_CRL_CHECK
-static inline void lib3270_autoptr_cleanup_X509_CRL(X509_CRL **crl)
-{
-	if(*crl)
-		X509_CRL_free(*crl);
-}
-#endif // SSL_ENABLE_CRL_CHECK
-
 /**
  * @brief Initialize openssl library.
  *
@@ -138,9 +130,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	//
 	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
 	//
-	lib3270_autoptr(X509_CRL) crl = lib3270_get_X509_CRL(hSession,message);
-
-	if(!crl)
+	if(lib3270_get_X509_CRL(hSession,message))
 		return  -1;
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
@@ -170,6 +160,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
 	X509_STORE_set1_param(store, param);
 	X509_VERIFY_PARAM_free(param);
+
 #endif // SSL_ENABLE_CRL_CHECK
 
 	return 0;

@@ -68,7 +68,8 @@
 
 	LIB3270_EXPORT void lib3270_popup_va(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, va_list);
 
-	LIB3270_EXPORT LIB3270_NOTIFY lib3270_get_ssl_state_icon(H3270 *hSession);
+	LIB3270_EXPORT LIB3270_NOTIFY	lib3270_get_ssl_state_icon(H3270 *hSession);
+	LIB3270_EXPORT const char *		lib3270_get_ssl_state_icon_name(H3270 *hSession);
 
 #ifdef __cplusplus
 	}

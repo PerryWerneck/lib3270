@@ -297,8 +297,8 @@
  const char * lib3270_get_crl_url(H3270 *hSession)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
-	if(hSession->ssl.crl)
-		return hSession->ssl.crl;
+	if(hSession->ssl.url)
+		return hSession->ssl.url;
 
 #ifdef SSL_DEFAULT_CRL_URL
 	return SSL_DEFAULT_CRL_URL;

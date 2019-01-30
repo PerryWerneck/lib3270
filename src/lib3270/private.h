@@ -610,7 +610,11 @@ struct _h3270
 		LIB3270_SSL_STATE	  state;
 		unsigned long 		  error;
 #ifdef SSL_ENABLE_CRL_CHECK
-		char				* crl;
+		struct
+		{
+			char			* url;
+			X509_CRL 		* cert;
+		} crl;
 #endif // SSL_ENABLE_CRL_CHECK
 		SSL 				* con;
 	} ssl;
@@ -704,7 +708,7 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	LIB3270_INTERNAL int ssl_3270_ex_index;
 
 	#ifdef SSL_ENABLE_CRL_CHECK
-		X509_CRL * lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message);
+		int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message);
 	#endif // SSL_ENABLE_CRL_CHECK
 
 #endif

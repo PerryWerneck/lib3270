@@ -84,6 +84,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
  {
 	long			  id;
 	LIB3270_NOTIFY	  icon;
+	const char		* iconName;		// Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 	const char		* message;
 	const char		* description;
  }
@@ -93,6 +94,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_OK,
 		LIB3270_NOTIFY_SECURE,
+		"security-high",
 		N_( "Secure connection was successful." ),
 		N_( "The connection is secure and the host identity was confirmed." )
 	},
@@ -100,6 +102,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Unable to get issuer certificate" ),
 		N_( "The issuer certificate of a looked up certificate could not be found. This normally means the list of trusted certificates is not complete." )
 	},
@@ -107,6 +110,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_GET_CRL,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Unable to get certificate CRL." ),
 		N_( "The Certificate revocation list (CRL) of a certificate could not be found." )
 	},
@@ -114,6 +118,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Unable to decrypt certificate's signature" ),
 		N_( "The certificate signature could not be decrypted. This means that the actual signature value could not be determined rather than it not matching the expected value, this is only meaningful for RSA keys." )
 	},
@@ -121,6 +126,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Unable to decrypt CRL's signature" ),
 		N_( "The CRL signature could not be decrypted: this means that the actual signature value could not be determined rather than it not matching the expected value. Unused." )
 	},
@@ -128,6 +134,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Unable to decode issuer public key" ),
 		N_( "The public key in the certificate SubjectPublicKeyInfo could not be read." )
 	},
@@ -135,6 +142,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CERT_SIGNATURE_FAILURE,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Certificate signature failure" ),
 		N_( "The signature of the certificate is invalid." )
 	},
@@ -142,6 +150,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CRL_SIGNATURE_FAILURE,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "CRL signature failure" ),
 		N_( "The signature of the certificate is invalid." )
 	},
@@ -149,6 +158,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CERT_NOT_YET_VALID,
 		LIB3270_NOTIFY_WARNING,
+		"dialog-warning",
 		N_( "Certificate is not yet valid" ),
 		N_( "The certificate is not yet valid: the notBefore date is after the current time." )
 	},
@@ -156,6 +166,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CERT_HAS_EXPIRED,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Certificate has expired" ),
 		N_( "The certificate has expired: that is the notAfter date is before the current time." )
 	},
@@ -163,6 +174,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CRL_NOT_YET_VALID,
 		LIB3270_NOTIFY_WARNING,
+		"dialog-error",
 		N_( "The CRL is not yet valid." ),
 		N_( "The Certificate revocation list (CRL) is not yet valid." )
 	},
@@ -174,6 +186,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 #else
 		LIB3270_NOTIFY_WARNING,
 #endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
+		"security-medium",
 		N_( "The CRL has expired." ),
 		N_( "The Certificate revocation list (CRL) has expired.")
 	},
@@ -181,6 +194,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Format error in certificate's notBefore field" ),
 		N_( "The certificate notBefore field contains an invalid time." )
 	},
@@ -188,6 +202,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Format error in certificate's notAfter field" ),
 		N_( "The certificate notAfter field contains an invalid time." )
 	},
@@ -195,6 +210,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Format error in CRL's lastUpdate field" ),
 		N_( "The CRL lastUpdate field contains an invalid time." )
 	},
@@ -202,6 +218,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Format error in CRL's nextUpdate field" ),
 		N_( "The CRL nextUpdate field contains an invalid time." )
 	},
@@ -209,6 +226,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_OUT_OF_MEM,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Out of memory" ),
 		N_( "An error occurred trying to allocate memory. This should never happen." )
 	},
@@ -216,6 +234,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT,
 		LIB3270_NOTIFY_WARNING,
+		"security-medium",
 		N_( "Self signed certificate" ),
 		N_( "The passed certificate is self signed and the same certificate cannot be found in the list of trusted certificates." )
 	},
@@ -224,10 +243,12 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 		X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN,
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 		LIB3270_NOTIFY_ERROR,
+		"security-medium",
 		N_( "The SSL certificate for this host is not trusted." ),
 		N_( "The security certificate presented by this host was not issued by a trusted certificate authority." )
 #else
 		LIB3270_NOTIFY_WARNING,
+		"security-medium",
 		N_( "Self signed certificate in certificate chain" ),
 		N_( "The certificate chain could be built up using the untrusted certificates but the root could not be found locally." )
 #endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
@@ -236,6 +257,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY,
 		LIB3270_NOTIFY_WARNING,
+		"security-low",
 		N_( "Unable to get local issuer certificate" ),
 		N_( "The issuer certificate could not be found: this occurs if the issuer certificate of an untrusted certificate cannot be found." )
 	},
@@ -243,6 +265,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE,
 		LIB3270_NOTIFY_ERROR,
+		"security-low",
 		N_( "Unable to verify the first certificate" ),
 		N_( "No signatures could be verified because the chain contains only one certificate and it is not self signed." )
 	},
@@ -250,6 +273,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CERT_REVOKED,
 		LIB3270_NOTIFY_ERROR,
+		"security-low",
 		N_( "Certificate revoked" ),
 		N_( "The certificate has been revoked." )
 	},
@@ -257,6 +281,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_INVALID_CA,
 		LIB3270_NOTIFY_ERROR,
+		"security-low",
 		N_( "Invalid CA certificate" ),
 		N_( "A CA certificate is invalid. Either it is not a CA or its extensions are not consistent with the supplied purpose." )
 	},
@@ -264,6 +289,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_PATH_LENGTH_EXCEEDED,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Path length constraint exceeded" ),
 		N_( "The basicConstraints pathlength parameter has been exceeded." ),
 	},
@@ -271,6 +297,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_INVALID_PURPOSE,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Unsupported certificate purpose" ),
 		N_( "The supplied certificate cannot be used for the specified purpose." )
 	},
@@ -278,6 +305,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CERT_UNTRUSTED,
 		LIB3270_NOTIFY_WARNING,
+		"security-low",
 		N_( "Certificate not trusted" ),
 		N_( "The root CA is not marked as trusted for the specified purpose." )
 	},
@@ -285,6 +313,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_CERT_REJECTED,
 		LIB3270_NOTIFY_ERROR,
+		"security-low",
 		N_( "Certificate rejected" ),
 		N_( "The root CA is marked to reject the specified purpose." )
 	},
@@ -292,6 +321,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_SUBJECT_ISSUER_MISMATCH,
 		LIB3270_NOTIFY_ERROR,
+		"security-low",
 		N_( "Subject issuer mismatch" ),
 		N_( "The current candidate issuer certificate was rejected because its subject name did not match the issuer name of the current certificate. Only displayed when the -issuer_checks option is set." )
 	},
@@ -299,6 +329,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_AKID_SKID_MISMATCH,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Authority and subject key identifier mismatch" ),
 		N_( "The current candidate issuer certificate was rejected because its subject key identifier was present and did not match the authority key identifier current certificate. Only displayed when the -issuer_checks option is set." )
 	},
@@ -306,6 +337,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Authority and issuer serial number mismatch" ),
 		N_( "The current candidate issuer certificate was rejected because its issuer name and serial number was present and did not match the authority key identifier of the current certificate. Only displayed when the -issuer_checks option is set." )
 	},
@@ -313,6 +345,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	{
 		X509_V_ERR_KEYUSAGE_NO_CERTSIGN,
 		LIB3270_NOTIFY_ERROR,
+		"dialog-error",
 		N_( "Key usage does not include certificate signing" ),
 		N_( "The current candidate issuer certificate was rejected because its keyUsage extension does not permit certificate signing." )
 	}
@@ -341,8 +374,23 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 			return gettext(info->message);
 	}
 
-	return lib3270_get_hostname(hSession);
+	return _( "The connection is insecure" );
+
  }
+
+ const char	* lib3270_get_ssl_state_icon_name(H3270 *hSession)
+ {
+	if(lib3270_get_secure(hSession) != LIB3270_SSL_UNSECURE)
+	{
+		const struct ssl_status_msg *info = get_ssl_status_msg(hSession);
+		if(info)
+			return info->iconName;
+	}
+
+	return "dialog-error";
+
+ }
+
 
  const char * lib3270_get_ssl_state_description(H3270 *hSession)
  {

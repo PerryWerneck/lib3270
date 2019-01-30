@@ -242,13 +242,13 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			message->error = hSession->ssl.error = 0;
 			message->title = N_( "Security error" );
 			message->text = N_( "Can't open CRL File" );
-			message->description = strerror(errno);
-			lib3270_write_log(hSession,"ssl","Can't open %s: %s",consturl,message->description);
+			message->description = strerror(err);
+			trace_ssl(hSession,"Can't open %s: %s\n",consturl,message->description);
 			return err;
 
 		}
 
-		lib3270_write_log(hSession,"ssl","Loading CRL from %s",consturl+7);
+		trace_ssl(hSession,"Loading CRL from %s\n",consturl+7);
 		d2i_X509_CRL_fp(hCRL, &hSession->ssl.crl.cert);
 
 	}

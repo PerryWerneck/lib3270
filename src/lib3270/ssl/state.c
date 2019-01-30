@@ -437,5 +437,10 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
  	return LIB3270_NOTIFY_ERROR;
  }
 
+ const char	* lib3270_get_ssl_state_icon_name(H3270 *hSession)
+ {
+ 	return "dialog-error";
+ }
+
 #endif // HAVE_LIBSSL
 

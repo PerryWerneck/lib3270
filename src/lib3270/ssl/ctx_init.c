@@ -135,27 +135,21 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 	{
-		BIO				* out	= BIO_new(BIO_s_mem());
-		unsigned char	* data;
-		unsigned char	* text;
-		int				  n;
+		lib3270_autoptr(char) text = lib3270_get_crl_text(hSession);
 
-		X509_CRL_print(out,crl);
-
-		n		= BIO_get_mem_data(out, &data);
-		text	= (unsigned char *) malloc (n+1);
-		text[n]	='\0';
-		memcpy(text,data,n);
-
-		trace_ssl(hSession,"\n%s\n",text);
-
-		free(text);
-		BIO_free(out);
+		if(text)
+			trace_ssl(hSession,"\n%s\n",text);
 
 	}
 
 	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-	X509_STORE_add_crl(store, crl);
+
+	if(hSession->ssl.crl.cert)
+	{
+		X509_STORE_add_crl(store, hSession->ssl.crl.cert);
+		trace_ssl(hSession,"CRL was added to cert store");
+	}
+
 	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
 	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
 	X509_STORE_set1_param(store, param);

@@ -297,8 +297,8 @@
  const char * lib3270_get_crl_url(H3270 *hSession)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
-	if(hSession->ssl.url)
-		return hSession->ssl.url;
+	if(hSession->ssl.crl.url)
+		return hSession->ssl.crl.url;
 
 #ifdef SSL_DEFAULT_CRL_URL
 	return SSL_DEFAULT_CRL_URL;
@@ -322,15 +322,21 @@
 
 #ifdef SSL_ENABLE_CRL_CHECK
 
-	if(hSession->ssl.crl)
+	if(hSession->ssl.crl.url)
 	{
-		free(hSession->ssl.crl);
-		hSession->ssl.crl = NULL;
+		free(hSession->ssl.crl.url);
+		hSession->ssl.crl.url = NULL;
+	}
+
+	if(hSession->ssl.crl.cert)
+	{
+		X509_CRL_free(hSession->ssl.crl.cert);
+		hSession->ssl.crl.cert = NULL;
 	}
 
 	if(crl)
 	{
-		hSession->ssl.crl = strdup(crl);
+		hSession->ssl.crl.url = strdup(crl);
 	}
 
 	return 0;
@@ -628,3 +634,33 @@ LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession)
 
 }
 
+LIB3270_EXPORT char * lib3270_get_crl_text(H3270 *hSession)
+{
+#ifdef SSL_ENABLE_CRL_CHECK
+
+	if(hSession->ssl.crl.cert)
+	{
+
+		BIO				* out = BIO_new(BIO_s_mem());
+		unsigned char	* data;
+		unsigned char	* text;
+		int				  n;
+
+		X509_CRL_print(out,hSession->ssl.crl.cert);
+
+		n		= BIO_get_mem_data(out, &data);
+		text	= (unsigned char *) lib3270_malloc(n+1);
+		text[n]	='\0';
+
+		memcpy(text,data,n);
+		BIO_free(out);
+
+		return (char *) text;
+
+	}
+
+
+#endif // SSL_ENABLE_CRL_CHECK
+
+	return NULL;
+}

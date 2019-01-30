@@ -522,11 +522,15 @@
 	 */
 	LIB3270_EXPORT const char * lib3270_get_ssl_state_message(H3270 *hSession);
 
+	LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(H3270 *hSession);
+
 	/**
 	 * @brief Get security state message.
 	 *
 	 */
 	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(H3270 *hSession);
+
+	LIB3270_EXPORT char * lib3270_get_crl_text(H3270 *hSession);
 
 	/**
 	 * @brief Get service or port for the connect/reconnect operations.

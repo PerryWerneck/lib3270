@@ -77,8 +77,8 @@ void lib3270_session_free(H3270 *h)
 #ifdef SSL_ENABLE_CRL_CHECK
 	if(h->ssl.crl.url)
 	{
-		free(h->ssl.url);
-		h->ssl.url = NULL;
+		free(h->ssl.crl.url);
+		h->ssl.crl.url = NULL;
 	}
 
 	if(h->ssl.crl.cert)

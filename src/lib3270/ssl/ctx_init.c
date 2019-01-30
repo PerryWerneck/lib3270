@@ -135,7 +135,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 	{
-		lib3270_autoptr(char) text = lib3270_get_crl_text(hSession);
+		lib3270_autoptr(char) text = lib3270_get_ssl_crl_text(hSession);
 
 		if(text)
 			trace_ssl(hSession,"\n%s\n",text);

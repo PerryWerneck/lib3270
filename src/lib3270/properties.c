@@ -37,6 +37,9 @@
  #include <lib3270.h>
  #include <lib3270/properties.h>
 
+#if defined(HAVE_LIBSSL)
+	#include <openssl/ssl.h>
+#endif
 
  static int lib3270_get_connection_state_as_int(H3270 *hSession)
  {
@@ -634,7 +637,7 @@ LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession)
 
 }
 
-LIB3270_EXPORT char * lib3270_get_crl_text(H3270 *hSession)
+LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession)
 {
 #ifdef SSL_ENABLE_CRL_CHECK
 
@@ -661,6 +664,35 @@ LIB3270_EXPORT char * lib3270_get_crl_text(H3270 *hSession)
 
 
 #endif // SSL_ENABLE_CRL_CHECK
+
+	return NULL;
+}
+
+LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(H3270 *hSession)
+{
+#ifdef HAVE_LIBSSL
+	if(hSession->ssl.con)
+	{
+		X509 * peer = SSL_get_peer_certificate(hSession->ssl.con);
+		if(peer)
+		{
+			BIO				* out	= BIO_new(BIO_s_mem());
+			unsigned char	* data;
+			unsigned char	* text;
+			int				  n;
+
+			X509_print(out,peer);
+
+			n		= BIO_get_mem_data(out, &data);
+			text	= (unsigned char *) lib3270_malloc(n+1);
+			text[n]	='\0';
+			memcpy(text,data,n);
+			BIO_free(out);
+
+			return (char *) text;
+		}
+	}
+#endif // HAVE_LIBSSL
 
 	return NULL;
 }

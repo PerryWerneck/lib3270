@@ -530,7 +530,9 @@
 	 */
 	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(H3270 *hSession);
 
-	LIB3270_EXPORT char * lib3270_get_crl_text(H3270 *hSession);
+	LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession);
+	LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(H3270 *hSession);
+
 
 	/**
 	 * @brief Get service or port for the connect/reconnect operations.

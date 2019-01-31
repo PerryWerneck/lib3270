@@ -236,6 +236,22 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 	if(hSession->sock > 0)
 		return errno = EBUSY;
 
+	if(!(hSession->host.current && hSession->host.srvc))
+	{
+		// No host info, try the default one.
+        if(lib3270_set_url(hSession,NULL))
+		{
+			int err = errno;
+			lib3270_trace_event(hSession,"Can't set default URL (%s)\n",strerror(err));
+			return errno = err;
+		}
+
+		if(!(hSession->host.current && hSession->host.srvc))
+		{
+			return errno = ENOENT;
+		}
+	}
+
 	sockstart(hSession);
 
 #if defined(HAVE_LIBSSL)
@@ -253,36 +269,49 @@ int lib3270_reconnect(H3270 *hSession, int seconds)
 	{
 		lib3270_autoptr(char) message = lib3270_strdup_printf(_( "Can't connect to %s"), lib3270_get_url(hSession));
 
-		char msg[4096];
-		strncpy(msg,host.message,4095);
+		if(host.message)
+		{
+			char msg[4096];
+			strncpy(msg,host.message,4095);
 
 #ifdef HAVE_ICONV
-		if(host.convert)
-		{
-			char	* ptr = msg;
-			size_t	  out = 4096;
-			size_t	  in	= strlen(host.message);
-
-			iconv_t hConv = iconv_open(lib3270_win32_local_charset(),"UTF-8");
-			if(iconv(
-					hConv,
-					&host.message,&in,
-					&ptr,&out
-				) == ((size_t) -1))
+			if(host.convert)
 			{
-				strncpy(msg,host.message,4095);
-			}
-			iconv_close(hConv);
+				char	* ptr = msg;
+				size_t	  out = 4096;
+				size_t	  in	= strlen(host.message);
 
-		}
+				iconv_t hConv = iconv_open(lib3270_win32_local_charset(),"UTF-8");
+				if(iconv(
+						hConv,
+						&host.message,&in,
+						&ptr,&out
+					) == ((size_t) -1))
+				{
+					strncpy(msg,host.message,4095);
+				}
+				iconv_close(hConv);
+
+			}
 #endif // HAVE_ICONV
 
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								message,
-								"%s",
-								msg);
+			lib3270_popup_dialog(	hSession,
+									LIB3270_NOTIFY_ERROR,
+									_( "Connection error" ),
+									message,
+									"%s",
+									NULL);
+
+		}
+		else
+		{
+			lib3270_popup_dialog(	hSession,
+									LIB3270_NOTIFY_ERROR,
+									_( "Connection error" ),
+									message,
+									"%s",
+									NULL);
+		}
 
 		lib3270_set_disconnected(hSession);
 		return errno = ENOTCONN;

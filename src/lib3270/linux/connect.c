@@ -198,7 +198,13 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	if(!(hSession->host.current && hSession->host.srvc))
 	{
 		// No host info, try the default one.
-        lib3270_set_url(hSession,NULL);
+        if(lib3270_set_url(hSession,NULL))
+		{
+			int err = errno;
+			lib3270_trace_event(hSession,"Can't set default URL (%s)\n",strerror(err));
+			return errno = err;
+		}
+
 		if(!(hSession->host.current && hSession->host.srvc))
 		{
 			return errno = ENOENT;

@@ -66,21 +66,21 @@
 	static const LIB3270_INT_PROPERTY properties[] = {
 		{
 			"ready",											//  Property name.
-			N_( "" ),											//  Property description.
+			N_( "Is terminal ready" ),							//  Property description.
 			lib3270_is_ready,									//  Get value.
 			NULL												//  Set value.
 		},
 
 		{
 			"connected",										//  Property name.
-			N_( "" ),											//  Property description.
+			N_( "Is terminal connected" ),						//  Property description.
 			lib3270_is_connected,								//  Get value.
 			NULL												//  Set value.
 		},
 
 		{
 			"secure",											//  Property name.
-			N_( "" ),											//  Property description.
+			N_( "Is connection secure" ),						//  Property description.
 			lib3270_is_secure,									//  Get value.
 			NULL												//  Set value.
 		},
@@ -101,28 +101,28 @@
 
 		{
 			"pconnected",										//  Property name.
-			N_( "" ),											//  Property description.
+			"",											//  Property description.
 			lib3270_pconnected,									//  Get value.
 			NULL												//  Set value.
 		},
 
 		{
-			"half_connected",		//  Property name.
-			N_( "" ),				//  Property description.
-			lib3270_half_connected,	//  Get value.
-			NULL					//  Set value.
+			"half_connected",							//  Property name.
+			"",											//  Property description.
+			lib3270_half_connected,						//  Get value.
+			NULL										//  Set value.
 		},
 
 		{
 			"neither",						//  Property name.
-			N_( "" ),						//  Property description.
+			"",						//  Property description.
 			lib3270_in_neither,				//  Get value.
 			NULL							//  Set value.
 		},
 
 		{
 			"ansi",							//  Property name.
-			N_( "" ),						//  Property description.
+			"",						//  Property description.
 			lib3270_in_ansi,				//  Get value.
 			NULL							//  Set value.
 		},
@@ -136,14 +136,14 @@
 
 		{
 			"sscp",							//  Property name.
-			N_( "" ),						//  Property description.
+			"",						//  Property description.
 			lib3270_in_sscp,				//  Get value.
 			NULL							//  Set value.
 		},
 
 		{
 			"tn3270e",						//  Property name.
-			N_( "" ),						//  Property description.
+			"",						//  Property description.
 			lib3270_in_tn3270e,				//  Get value.
 			NULL							//  Set value.
 		},
@@ -179,7 +179,7 @@
 		/*
 		{
 			"",						//  Property name.
-			N_( "" ),				//  Property description.
+			"",				//  Property description.
 			NULL,					//  Get value.
 			NULL					//  Set value.
 		},
@@ -268,7 +268,7 @@
 		/*
 		{
 			"",						//  Property name.
-			N_( "" ),				//  Property description.
+			"",				//  Property description.
 			NULL,					//  Get value.
 			NULL					//  Set value.
 		},
@@ -444,7 +444,7 @@
 		/*
 		{
 			"",											//  Property name.
-			N_( "" ),									//  Property description.
+			"",									//  Property description.
 			,											//  Get value.
 			NULL										//  Set value.
 		},

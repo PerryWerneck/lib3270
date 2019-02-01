@@ -86,6 +86,7 @@ void lib3270_session_free(H3270 *h)
 		X509_CRL_free(h->ssl.crl.cert);
 		h->ssl.crl.cert = NULL;
 	}
+#endif // SSL_ENABLE_CRL_CHECK
 
 	// Release state change callbacks
 	for(f=0;f<LIB3270_STATE_USER;f++)
@@ -97,7 +98,6 @@ void lib3270_session_free(H3270 *h)
 			h->st_callbacks[f] = next;
 		}
 	}
-#endif // SSL_ENABLE_CRL_CHECK
 
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;

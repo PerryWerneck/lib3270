@@ -48,10 +48,8 @@
 
 #include <stdlib.h>
 
-//#include "statusc.h"
 #include "hostc.h"
 #include "trace_dsc.h"
-//#include "utilc.h"
 #include "telnetc.h"
 #include "screen.h"
 
@@ -117,19 +115,6 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 }
 
- LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int wait)
- {
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(url && *url)
-	{
-		lib3270_set_url(hSession,url);
-	}
-
-	return lib3270_reconnect(hSession, wait);
-
- }
-
  struct resolver
  {
 	const char 			* message;
@@ -147,6 +132,8 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
 	hints.ai_protocol	= 0;			// Any protocol
 
+	status_resolving(hSession);
+
  	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
  	if(rc != 0)
 	{
@@ -154,7 +141,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 		return -1;
 	}
 
-	status_connecting(hSession,1);
+	status_connecting(hSession);
 
 	for(rp = result; hSession->sock < 0 && rp != NULL; rp = rp->ai_next)
 	{
@@ -181,50 +168,11 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
  }
 
- int lib3270_reconnect(H3270 *hSession, int seconds)
+ int net_reconnect(H3270 *hSession, int seconds)
  {
-	int					  optval;
 	struct resolver		  host;
-
-	CHECK_SESSION_HANDLE(hSession);
 	memset(&host,0,sizeof(host));
 
-	if(hSession->auto_reconnect_inprogress)
-		return errno = EAGAIN;
-
-	if(hSession->sock > 0)
-		return errno = EBUSY;
-
-	if(!(hSession->host.current && hSession->host.srvc))
-	{
-		// No host info, try the default one.
-        if(lib3270_set_url(hSession,NULL))
-		{
-			int err = errno;
-			lib3270_trace_event(hSession,"Can't set default URL (%s)\n",strerror(err));
-			return errno = err;
-		}
-
-		if(!(hSession->host.current && hSession->host.srvc))
-		{
-			return errno = ENOENT;
-		}
-	}
-
-#if defined(HAVE_LIBSSL)
-	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-#endif // HAVE_LIBSSL
-
-	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
-
-	lib3270_trace_event(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
-
-	hSession->ever_3270	= False;
-	hSession->cstate = LIB3270_RESOLVING;
-
-	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
-
-	// s = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
 	if(lib3270_run_task(hSession, background_connect, &host) || hSession->sock < 0)
 	{
 		char buffer[4096];
@@ -245,10 +193,8 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 	(void) fcntl(hSession->sock, F_SETFD, 1);
 
 	hSession->ever_3270 = False;
-	hSession->ssl.host  = 0;
 
 #if defined(HAVE_LIBSSL)
-	debug("** SSL init %s","begins");
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;
@@ -257,11 +203,10 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 			return errno = ENOTCONN;
 
 	}
-	debug("** SSL init %s","ends");
 #endif // HAVE_LIBSSL
 
 	// set options for inline out-of-band data and keepalives
-	optval = 1;
+	int optval = 1;
 	if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
 	{
 		int rc = errno;

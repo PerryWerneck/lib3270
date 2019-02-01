@@ -127,6 +127,9 @@
 		<Unit filename="src/lib3270/charset.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/ctlr.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -556,10 +556,26 @@ void status_oerr(H3270 *session, int error_type)
 
 }
 
-void status_connecting(H3270 *session, Boolean on)
+/**
+ * @brief Resolving DNS name.
+ *
+ */
+void status_resolving(H3270 *hSession)
 {
-	mcursor_set(session,on ? LIB3270_POINTER_LOCKED : LIB3270_POINTER_UNLOCKED);
-	status_changed(session, on ? LIB3270_MESSAGE_CONNECTING : LIB3270_MESSAGE_NONE);
+	hSession->cstate = LIB3270_RESOLVING;
+	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
+
+	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
+}
+
+void status_connecting(H3270 *hSession)
+{
+	hSession->cstate = LIB3270_RESOLVING;
+	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
+
+	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
 }
 
 void status_reset(H3270 *session)

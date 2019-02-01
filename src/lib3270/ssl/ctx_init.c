@@ -147,7 +147,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	if(hSession->ssl.crl.cert)
 	{
 		X509_STORE_add_crl(store, hSession->ssl.crl.cert);
-		trace_ssl(hSession,"CRL was added to cert store");
+		trace_ssl(hSession,"CRL was added to cert store\n");
 	}
 
 	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();

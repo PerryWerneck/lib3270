@@ -381,7 +381,8 @@
 	 */
 	typedef enum _lib3270_state
 	{
-		LIB3270_STATE_RESOLVING,
+		LIB3270_STATE_RESOLVING,			///< @brief Resolving DNS.
+		LIB3270_STATE_CONNECTING,			///< @brief Connecting to host.
 		LIB3270_STATE_HALF_CONNECT,
 		LIB3270_STATE_CONNECT,
 		LIB3270_STATE_3270_MODE,

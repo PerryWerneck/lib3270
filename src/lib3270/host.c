@@ -193,10 +193,10 @@ LIB3270_EXPORT void lib3270_register_schange(H3270 *h, LIB3270_STATE tx, void (*
 void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 {
 #if defined(DEBUG)
-
 	static const char * state_name[LIB3270_STATE_USER] =
 	{
 		"LIB3270_STATE_RESOLVING",
+		"LIB3270_STATE_CONNECTING",
 		"LIB3270_STATE_HALF_CONNECT",
 		"LIB3270_STATE_CONNECT",
 		"LIB3270_STATE_3270_MODE",
@@ -204,10 +204,8 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 		"LIB3270_STATE_REMODEL",
 		"LIB3270_STATE_PRINTER",
 		"LIB3270_STATE_EXITING",
-		"LIB3270_STATE_CHARSET",
-
+		"LIB3270_STATE_CHARSET"
 	};
-
 #endif // DEBUG
 
 	struct lib3270_state_callback *st;
@@ -218,7 +216,6 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 
 	for (st = h->st_callbacks[tx];st;st = st->next)
 	{
-//		trace("st=%p func=%p",st,st->func);
 		st->func(h,mode,st->data);
 	}
 

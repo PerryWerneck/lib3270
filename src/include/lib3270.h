@@ -1150,7 +1150,6 @@
 	 */
 	LIB3270_EXPORT int lib3270_field_length(H3270 *h, int baddr);
 
-
 	/**
 	 * @brief Get a terminal character and attribute.
 	 *
@@ -1163,6 +1162,28 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_get_element(H3270 *h, int baddr, unsigned char *c, unsigned short *attr);
+
+	/**
+	 * @brief Check if the informed addr is marked as selected.
+	 *
+	 * @param h		Session Handle.
+	 * @param baddr	Element address ((element_row*cols)+element_col)
+	 *
+	 * @return >0 zero if element is selected, 0 if not, -1 if fails (sets errno).
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, int baddr);
+
+	/**
+	 * @brief Get attribute at the requested ADDR.
+	 *
+	 * @param h		Session Handle.
+	 * @param baddr	Element address ((element_row*cols)+element_col)
+	 *
+	 * @return Attribute of the required address or -1 if failed.
+	 *
+	 */
+	LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, int baddr);
 
 	/**
 	 * Get field region

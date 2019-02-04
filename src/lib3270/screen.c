@@ -93,6 +93,33 @@ static void addch(H3270 *session, int baddr, unsigned char c, unsigned short att
 	session->cbk.update(session,baddr,c,attr,baddr == session->cursor_addr);
 }
 
+LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, int baddr)
+{
+	if(check_online_session(hSession))
+		return (LIB3270_ATTR) -1;
+
+	if(!hSession->text || baddr < 0 || baddr > (hSession->rows*hSession->cols))
+	{
+		errno = EINVAL;
+		return (LIB3270_ATTR) -1;
+	}
+
+	return hSession->text[baddr].attr;
+}
+
+LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, int baddr)
+{
+    FAIL_IF_NOT_ONLINE(hSession);
+
+	if(!hSession->text || baddr < 0 || baddr > (hSession->rows*hSession->cols))
+	{
+		errno = EINVAL;
+		return -1;
+	}
+
+	return (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) != 0;
+}
+
 LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, int baddr, unsigned char *c, unsigned short *attr)
 {
     FAIL_IF_NOT_ONLINE(hSession);

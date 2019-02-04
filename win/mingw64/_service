@@ -12,7 +12,7 @@
 	<!-- https://github.com/openSUSE/obs-service-extract_file -->
 	<!-- service name="extract_file">
 		<param name="archive">*.tar</param>
-		<param name="files">*/win/mingw64-lib3270.spec</param>
+		<param name="files">*/win/mingw64/lib3270.spec</param>
 		<param name="outfilename">mingw64-lib3270.spec</param>
 	</service -->
 

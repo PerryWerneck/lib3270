@@ -32,12 +32,12 @@
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		TN3270 Access library
-Name:           	mingw64-lib3270-%{_libvrs}
-Version:        	5.2
-Release:        	0
-License:        	GPL-2.0
+Name:			mingw64-lib3270-%{_libvrs}
+Version:		5.2
+Release:		0
+License:		GPL-2.0
 
-Source:			%{name}-%{version}.tar.xz
+Source:			lib3270-%{version}.tar.xz
 
 Url:			https://portal.softwarepublico.gov.br/social/pw3270/
 
@@ -92,7 +92,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -n lib3270-%{version}
 
 NOCONFIGURE=1 ./autogen.sh
 
@@ -127,6 +127,8 @@ rm -rf %{buildroot}
 %{_mingw64_libdir}/lib3270++.dll.%{MAJOR_VERSION}
 %{_mingw64_libdir}/lib3270++.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
+%dir %{_mingw64_datadir}/pw3270
+
 %files devel
 %defattr(-,root,root)
 
@@ -135,5 +137,8 @@ rm -rf %{buildroot}
 %{_mingw64_includedir}/*.h
 %{_mingw64_libdir}/pkgconfig/*.pc
 %{_mingw64_libdir}/*.a
+
+%dir %{_mingw64_datadir}/pw3270/pot
+%{_mingw64_datadir}/pw3270/pot/*.pot
 
 %changelog

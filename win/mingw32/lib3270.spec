@@ -37,7 +37,7 @@ Version:        5.2
 Release:        0
 License:        GPL-2.0
 
-Source:			%{name}-%{version}.tar.xz
+Source:			lib3270-%{version}.tar.xz
 
 Url:			https://portal.softwarepublico.gov.br/social/pw3270/
 
@@ -92,7 +92,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -n lib3270-%{version}
 
 NOCONFIGURE=1 ./autogen.sh
 
@@ -127,6 +127,8 @@ rm -rf %{buildroot}
 %{_mingw32_libdir}/lib3270++.dll.%{MAJOR_VERSION}
 %{_mingw32_libdir}/lib3270++.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
+%dir %{_mingw32_datadir}/pw3270
+
 %files devel
 %defattr(-,root,root)
 
@@ -135,6 +137,10 @@ rm -rf %{buildroot}
 %{_mingw32_includedir}/*.h
 %{_mingw32_libdir}/pkgconfig/*.pc
 %{_mingw32_libdir}/*.a
+
+%dir %{_mingw32_datadir}/pw3270/pot
+%{_mingw32_datadir}/pw3270/pot/*.pot
+
 
 %changelog
 

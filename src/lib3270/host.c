@@ -397,6 +397,10 @@ LIB3270_EXPORT const char * lib3270_get_hostname(H3270 *h)
 {
     CHECK_SESSION_HANDLE(h);
 
+    // TODO: Find a better way!
+	if(!h->host.current)
+		lib3270_set_url(h,NULL);
+
 	if(h->host.current)
 		return h->host.current;
 
@@ -413,6 +417,11 @@ LIB3270_EXPORT void lib3270_set_hostname(H3270 *h, const char *hostname)
 LIB3270_EXPORT const char * lib3270_get_srvcname(H3270 *h)
 {
     CHECK_SESSION_HANDLE(h);
+
+    // TODO: Find a better way!
+	if(!h->host.srvc)
+		lib3270_set_url(h,NULL);
+
     if(h->host.srvc)
 		return h->host.srvc;
 	return "telnet";

@@ -629,6 +629,10 @@ LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
 
+    // TODO: Find a better way!
+	if(!hSession->host.current)
+		lib3270_set_url(hSession,NULL);
+
 #ifdef HAVE_LIBSSL
 	return hSession->ssl.enabled ? 1 : 0;
 #else

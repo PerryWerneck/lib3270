@@ -340,6 +340,7 @@ static void toggle_keepalive(H3270 *session, struct lib3270_toggle *t unused, LI
 	}
 }
 
+/*
 static void toggle_reconnect(H3270 *hSession, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE type  )
 {
 
@@ -349,13 +350,14 @@ static void toggle_reconnect(H3270 *hSession, struct lib3270_toggle *t unused, L
 
 	if(t->value && !hSession->auto_reconnect_inprogress)
 	{
-		/* Schedule an automatic reconnection. */
+		// Schedule an automatic reconnection.
 		lib3270_write_log(hSession,"toggle","Auto-reconnect toggle was activated when offline, reconnecting");
 		hSession->auto_reconnect_inprogress = 1;
 		(void) AddTimer(RECONNECT_MS, hSession, lib3270_check_for_auto_reconnect);
 	}
 
 }
+*/
 
 /**
  * @brief Called from system initialization code to handle initial toggle settings.
@@ -372,7 +374,7 @@ void initialize_toggles(H3270 *session)
 	session->toggle[LIB3270_TOGGLE_UNDERLINE].upcall 		= toggle_redraw;
 	session->toggle[LIB3270_TOGGLE_ALTSCREEN].upcall 		= toggle_altscreen;
 	session->toggle[LIB3270_TOGGLE_KEEP_ALIVE].upcall		= toggle_keepalive;
-	session->toggle[LIB3270_TOGGLE_RECONNECT].upcall		= toggle_reconnect;
+//	session->toggle[LIB3270_TOGGLE_RECONNECT].upcall		= toggle_reconnect;
 
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 	{

@@ -945,7 +945,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 						if (!any)
 							trace_ds(hSession," '");
 
-						trace_ds(hSession,"%s",see_ebc(hSession->ea_buf[baddr].cc));
+						trace_ds(hSession,"%s",see_ebc(hSession, hSession->ea_buf[baddr].cc));
 						any = True;
 					}
 					INC_BA(baddr);
@@ -994,7 +994,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 				*hSession->obptr++ = hSession->ea_buf[baddr].cc;
 				if (!any)
 					trace_ds(hSession,"%s","'");
-				trace_ds(hSession,"%s",see_ebc(hSession->ea_buf[baddr].cc));
+				trace_ds(hSession,"%s",see_ebc(hSession, hSession->ea_buf[baddr].cc));
 				any = True;
 				nbytes++;
 			}
@@ -1125,12 +1125,12 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 				if (any)
 					trace_ds(hSession,"'");
 
-				trace_ds(hSession," %s", see_ebc(hSession->ea_buf[baddr].cc));
+				trace_ds(hSession," %s", see_ebc(hSession, hSession->ea_buf[baddr].cc));
 				any = False;
 			} else {
 				if (!any)
 					trace_ds(hSession," '");
-				trace_ds(hSession,"%s", see_ebc(hSession->ea_buf[baddr].cc));
+				trace_ds(hSession,"%s", see_ebc(hSession, hSession->ea_buf[baddr].cc));
 				any = True;
 			}
 		}
@@ -1484,7 +1484,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				if (add_c1)
 					trace_ds(hSession,"'");
 
-				trace_ds(hSession,"%s", see_ebc(add_c1));
+				trace_ds(hSession,"%s", see_ebc(hSession, add_c1));
 				if (add_c1)
 					trace_ds(hSession,"'");
 
@@ -1573,7 +1573,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			previous = ORDER;
 			if (*cp)
 				trace_ds(hSession,"'");
-			trace_ds(hSession,"%s", see_ebc(*cp));
+			trace_ds(hSession,"%s", see_ebc(hSession, *cp));
 			if (*cp)
 				trace_ds(hSession,"'");
 
@@ -1788,7 +1788,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		case FCORDER_NL:
 		case FCORDER_EM:
 		case FCORDER_EO:
-			END_TEXT(see_ebc(*cp));
+			END_TEXT(see_ebc(hSession, *cp));
 			previous = ORDER;
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (hSession->default_cs == CS_DBCS || d != DBCS_NONE) {
@@ -1805,7 +1805,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			break;
 		case FCORDER_SO:
 			/* Look left for errors. */
-			END_TEXT(see_ebc(*cp));
+			END_TEXT(see_ebc(hSession, *cp));
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("SO overwriting right half of DBCS character");
@@ -1829,7 +1829,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			break;
 		case FCORDER_SI:
 			/* Look left for errors. */
-			END_TEXT(see_ebc(*cp));
+			END_TEXT(see_ebc(hSession, *cp));
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("SI overwriting right half of DBCS character");
@@ -1889,7 +1889,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				case EBC_dup:
 				case EBC_fm:
 					/* DBCS control code */
-					END_TEXT(see_ebc(add_c2));
+					END_TEXT(see_ebc(hSession, add_c2));
 					add_dbcs = True;
 					break;
 				case ORDER_SF:
@@ -1963,7 +1963,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			} else {
 #endif /*]*/
 				add_c1 = *cp;
-				trace_ds(hSession,"%s", see_ebc(*cp));
+				trace_ds(hSession,"%s", see_ebc(hSession, *cp));
 #if defined(X3270_DBCS) /*[*/
 			}
 #endif /*]*/

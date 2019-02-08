@@ -61,10 +61,8 @@ unknown(unsigned char value)
 	return buf;
 }
 
-const char *
-see_ebc(unsigned char ch)
+const char *see_ebc(H3270 *hSession, unsigned char ch)
 {
-	H3270 *hSession = lib3270_get_default_session_handle();
 	static char buf[8];
 
 	switch (ch) {
@@ -97,23 +95,10 @@ see_ebc(unsigned char ch)
 	else
 		(void) sprintf(buf, "\\%o", ch);
 
-/*
-	if (ebc2asc[ch])
-		(void) sprintf(buf,
-#if !defined(PR3287)
-			       "%s", utf8_expand(ebc2asc[ch])
-#else
-			       "%c", ebc2asc[ch]
-#endif
-			       );
-	else
-		(void) sprintf(buf, "\\%o", ch);
-*/
 	return buf;
 }
 
-const char *
-see_aid(unsigned char code)
+const char * see_aid(unsigned char code)
 {
 	switch (code) {
 	case AID_NO:
@@ -191,8 +176,7 @@ see_aid(unsigned char code)
 	}
 }
 
-const char *
-see_attr(unsigned char fa)
+const char * see_attr(unsigned char fa)
 {
 	static char buf[256];
 	const char *paren = "(";
@@ -245,8 +229,7 @@ see_attr(unsigned char fa)
 	return buf;
 }
 
-static const char *
-see_highlight(unsigned char setting)
+static const char * see_highlight(unsigned char setting)
 {
 	switch (setting) {
 	    case XAH_DEFAULT:
@@ -266,8 +249,7 @@ see_highlight(unsigned char setting)
 	}
 }
 
-const char *
-see_color(unsigned char setting)
+const char * see_color(unsigned char setting)
 {
 	static const char *color_name[] = {
 	    "neutralBlack",
@@ -296,8 +278,7 @@ see_color(unsigned char setting)
 		return color_name[setting - 0xf0];
 }
 
-static const char *
-see_transparency(unsigned char setting)
+static const char * see_transparency(unsigned char setting)
 {
 	switch (setting) {
 	    case XAT_DEFAULT:
@@ -313,8 +294,7 @@ see_transparency(unsigned char setting)
 	}
 }
 
-static const char *
-see_validation(unsigned char setting)
+static const char * see_validation(unsigned char setting)
 {
 	static char buf[64];
 	const char *paren = "(";
@@ -342,8 +322,7 @@ see_validation(unsigned char setting)
 	return buf;
 }
 
-static const char *
-see_outline(unsigned char setting)
+static const char * see_outline(unsigned char setting)
 {
 	static char buf[64];
 	const char *paren = "(";
@@ -376,8 +355,7 @@ see_outline(unsigned char setting)
 	return buf;
 }
 
-static const char *
-see_input_control(unsigned char setting)
+static const char * see_input_control(unsigned char setting)
 {
 	switch (setting) {
 	    case XAI_DISABLED:
@@ -389,8 +367,7 @@ see_input_control(unsigned char setting)
 	}
 }
 
-const char *
-see_efa(unsigned char efa, unsigned char value)
+const char * see_efa(unsigned char efa, unsigned char value)
 {
 	static char buf[64];
 
@@ -434,8 +411,7 @@ see_efa(unsigned char efa, unsigned char value)
 	return buf;
 }
 
-const char *
-see_efa_only(unsigned char efa)
+const char * see_efa_only(unsigned char efa)
 {
 	switch (efa) {
 	    case XA_ALL:

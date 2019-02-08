@@ -32,6 +32,11 @@
  *	@brief Init/Deinit lib3270 internals.
  */
 
+#ifdef _WIN32
+	#include <winsock2.h>
+	#include <windows.h>
+#endif // _WIN32
+
 #include <config.h>
 
 #ifdef HAVE_LIBCURL

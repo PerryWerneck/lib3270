@@ -119,7 +119,7 @@ static void cut_data(H3270 *hSession);
 static void cut_ack(H3270 *hSession);
 static void cut_abort(H3270 *hSession, unsigned short code, const char *fmt, ...) LIB3270_GNUC_FORMAT(3,4);
 
-static unsigned from6(unsigned char c);
+static unsigned from6(H3270 *hSession, unsigned char c);
 static int xlate_getc(H3270FT *ft);
 
 /**
@@ -393,7 +393,7 @@ static void cut_data_request(H3270 *hSession)
 	int				  i;
 	unsigned char	  attr;
 
-	trace_ds(hSession,"< FT DATA_REQUEST %u\n", from6(seq));
+	trace_ds(hSession,"< FT DATA_REQUEST %u\n", from6(hSession, seq));
 	if (lib3270_get_ft_state(hSession) == FT_ABORT_WAIT)
 	{
 		cut_abort(hSession,SC_ABORT_FILE,"%s", N_("Transfer cancelled by user") );
@@ -447,7 +447,7 @@ static void cut_data_request(H3270 *hSession)
 	ctlr_add_fa(hSession,O_DR_SF, attr, 0);
 
 	/* Send it up to the host. */
-	trace_ds(hSession,"> FT DATA %u\n", from6(seq));
+	trace_ds(hSession,"> FT DATA %u\n", from6(hSession, seq));
 	ft_update_length(ft);
 	ft->expanded_length += count;
 
@@ -463,14 +463,11 @@ static void  cut_retransmit(H3270 *hSession)
 	cut_abort(hSession,SC_ABORT_XMIT,"%s",_("Transmission error"));
 }
 
-/*
- * Convert an encoded integer.
+/**
+ * @brief Convert an encoded integer.
  */
-static unsigned
-from6(unsigned char c)
+static unsigned from6(H3270 *hSession, unsigned char c)
 {
-	H3270 *hSession = lib3270_get_default_session_handle();
-
 	char *p;
 
 	c = hSession->charset.ebc2asc[c];
@@ -499,8 +496,8 @@ static void cut_data(H3270 *hSession)
 	}
 
 	/* Copy and convert the data. */
-	raw_length = from6(hSession->ea_buf[O_DT_LEN].cc) << 6 |
-		     from6(hSession->ea_buf[O_DT_LEN + 1].cc);
+	raw_length = from6(hSession, hSession->ea_buf[O_DT_LEN].cc) << 6 |
+		     from6(hSession, hSession->ea_buf[O_DT_LEN + 1].cc);
 
 	if ((int)raw_length > O_RESPONSE - O_DT_DATA)
 	{

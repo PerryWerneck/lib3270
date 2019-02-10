@@ -1,6 +1,6 @@
 # Maintainer: Perry Werneck <perry.werneck@gmail.com>
 
-pkgname=lib3270
+pkgname=${MINGW_PACKAGE_PREFIX}-lib3270
 
 pkgver=5.2
 pkgrel=1
@@ -14,26 +14,29 @@ checkdepends=()
 
 #groups=(gnome)
 
-source=($pkgname-$pkgver.tar.xz)
+source=(lib3270-$pkgver.tar.xz)
 sha256sums=('SKIP')
 
 provides=($pkgname)
 conflicts=($pkgname)
 
 prepare() {
-  cd $pkgname-$pkgver
+  cd lib3270-$pkgver
   NOCONFIGURE=1 ./autogen.sh
   ./configure --prefix=$MINGW_PREFIX
 }
 
 build() {
-  cd $pkgname-$pkgver
+  cd lib3270-$pkgver
   make all
 }
 
 package() {
-  cd $pkgname-$pkgver
+  cd lib3270-$pkgver
   DESTDIR="$pkgdir" make install-dev
   install .bin/Release/*.dll $MINGW_PREFIX/bin
+
+  dlltool.exe -D .bin/Release/lib3270.dll -l $MINGW_PREFIX/lib/lib3270_dll.a
+
 }
 

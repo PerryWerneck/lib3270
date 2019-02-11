@@ -46,7 +46,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 
 
 Compiling for Windows (With MSYS2)
--------------------------------
+----------------------------------
 
 1. Install MSYS2 
 
@@ -56,5 +56,16 @@ Compiling for Windows (With MSYS2)
 
 2. Install devel packages
 
-	* pacman -S --needed mingw-w64-x86_64-toolchain automake autoconf make git
+	* pacman -S --needed mingw-w64-x86_64-toolchain automake autoconf make git openssl
+
+3. Get lib3270 sources from git using the mingw shell
+
+	* git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./lib3270
+
+4. Build library using the mingw shell
+
+	* cd lib3270
+	* ./autogen.sh
+	* make all
+
 

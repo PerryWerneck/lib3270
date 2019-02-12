@@ -595,7 +595,7 @@
 	 * @param h			Session handle.
 	 * @param seconds	Seconds to wait for connection.
 	 *
-	 * @return 0 for success, EAGAIN if auto-reconnect is in progress, EBUSY if connected, ENOTCONN if connection has failed, -1 on unexpected failure.
+	 * @return 0 for success, non zero if fails (sets errno).
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_reconnect(H3270 *h,int seconds);

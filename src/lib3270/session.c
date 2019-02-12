@@ -432,17 +432,11 @@ LIB3270_INTERNAL int check_online_session(H3270 *hSession) {
 
 	// Is the session valid?
 	if(!hSession)
-	{
-		errno = EINVAL;
-		return -1;
-	}
+		return errno = EINVAL;
 
 	// Is it connected?
 	if((int) hSession->cstate < (int)LIB3270_CONNECTED_INITIAL)
-	{
-		errno = ENOTCONN;
-		return -1;
-	}
+		return errno = ENOTCONN;
 
 	return 0;
 }
@@ -451,17 +445,11 @@ LIB3270_INTERNAL int check_offline_session(H3270 *hSession) {
 
 	// Is the session valid?
 	if(!hSession)
-	{
-		errno = EINVAL;
-		return -1;
-	}
+		return errno = EINVAL;
 
 	// Is it connected?
 	if((int) hSession->cstate >= (int)LIB3270_CONNECTED_INITIAL)
-	{
-		errno = EBUSY;
-		return -1;
-	}
+		return errno = EISCONN;
 
 	return 0;
 }

@@ -89,6 +89,10 @@
 			#define ENOTCONN -1107
 		#endif
 
+		#ifndef EISCONN
+			#define EISCONN -1106
+		#endif
+
 		#ifndef CN
 			#define CN ((char *) NULL)
 		#endif

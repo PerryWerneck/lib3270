@@ -669,10 +669,10 @@ LIB3270_INTERNAL int check_online_session(H3270 *hSession);
 LIB3270_INTERNAL int check_offline_session(H3270 *hSession);
 
 /// @brief Returns -1 if the session is invalid or not online (sets errno).
-#define FAIL_IF_NOT_ONLINE(x) if(check_online_session(x)) return -1;
+#define FAIL_IF_NOT_ONLINE(x) if(check_online_session(x)) return errno;
 
 /// @brief Returns -1 if the session is invalid or online (sets errno).
-#define FAIL_IF_ONLINE(x) if(check_offline_session(x)) return -1;
+#define FAIL_IF_ONLINE(x) if(check_offline_session(x)) return errno;
 
 LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 

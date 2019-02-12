@@ -252,7 +252,7 @@ int lib3270_set_model(H3270 *hSession, const char *model)
 	int		model_number;
 
 	if(hSession->cstate != LIB3270_NOT_CONNECTED)
-		return errno = EBUSY;
+		return errno = EISCONN;
 
 	strncpy(hSession->full_model_name,"IBM-",LIB3270_FULL_MODEL_NAME_LENGTH);
 	hSession->model_name = &hSession->full_model_name[4];

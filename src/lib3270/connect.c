@@ -62,7 +62,7 @@
 		return errno = EAGAIN;
 
 	if(hSession->sock > 0)
-		return errno = EBUSY;
+		return errno = EISCONN;
 
 	if(!(hSession->host.current && hSession->host.srvc))
 	{

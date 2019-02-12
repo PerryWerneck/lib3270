@@ -153,7 +153,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	}
 
 	if(!force)
-		return EBUSY;
+		return errno = EBUSY;
 
 	// Impatient user or hung host -- just clean up.
 	ft_failed(ft, N_("Cancelled by user") );

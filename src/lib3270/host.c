@@ -93,7 +93,8 @@ int host_disconnect(H3270 *hSession, int failed)
 		net_disconnect(hSession);
 
 		trace("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
-		if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT) && !hSession->auto_reconnect_inprogress)
+
+		if(failed && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT) && !hSession->auto_reconnect_inprogress)
 		{
 			/* Schedule an automatic reconnection. */
 			hSession->auto_reconnect_inprogress = 1;
@@ -115,8 +116,7 @@ int host_disconnect(H3270 *hSession, int failed)
 
 	}
 
-	errno = ENOTCONN;
-	return -1;
+	return errno = ENOTCONN;
 
 }
 

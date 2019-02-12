@@ -205,7 +205,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		@DLL_LDFLAGS@ \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
@@ -266,7 +266,7 @@ install-dev:
 
 	@$(INSTALL_DATA) \
 		../include/lib3270/*.h \
-		$(DESTDIR)$(includedir)/lib3270		
+		$(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
 		../include/lib3270.h \

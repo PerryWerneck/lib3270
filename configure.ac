@@ -65,7 +65,7 @@ DBG_CFLAGS="-g -fstack-check -DDEBUG=1"
 RLS_CFLAGS="-DNDEBUG=1"
 APP_RESOURCES=""
 APP_LDFLAGS=""
-DLL_LDFLAGS="-shared"
+DLL_LDFLAGS="-shared -Wl,-soname,\$(@F)"
 STATIC_LDFLAGS=""
 
 dnl ---------------------------------------------------------------------------
@@ -79,8 +79,8 @@ case "$host" in
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
-		LDFLAGS="$LDFLAGS -pthread -static-libgcc -static-libstdc++"
-		DLL_LDFLAGS="-shared"
+		LDFLAGS="$LDFLAGS -pthread"
+		DLL_LDFLAGS="-shared -Wl,--output-def,\$@.def"
 		DLLEXT=".dll"
 
 		app_win32_revision=$(date +%y.%m.%d.%H)
@@ -119,6 +119,7 @@ AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
 AC_SUBST(DLLPREFIX)
+AC_SUBST(DLL_LDFLAGS)
 
 dnl ---------------------------------------------------------------------------
 dnl Check host compiler

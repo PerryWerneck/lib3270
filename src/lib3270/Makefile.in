@@ -202,7 +202,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
 $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		@DLL_LDFLAGS@ \

@@ -201,12 +201,11 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
 $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 
 	@$(LD) \
-		-shared \
-		-Wl,-soname,$(@F) \
+		@DLL_LDFLAGS@ \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \

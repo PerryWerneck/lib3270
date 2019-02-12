@@ -473,7 +473,7 @@
 	 * @return 0 if suceeds, non zero if fails (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, void * id);
+	LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, const void * id);
 
 	LIB3270_EXPORT void lib3270_reset_callbacks(H3270 *hSession);
 

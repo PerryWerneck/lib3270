@@ -50,6 +50,8 @@
 
  int lib3270_reconnect(H3270 *hSession, int seconds)
  {
+ 	debug("%s",__FUNCTION__);
+
  	FAIL_IF_ONLINE(hSession);
 
 	//

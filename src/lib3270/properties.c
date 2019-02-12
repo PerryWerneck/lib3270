@@ -641,9 +641,9 @@ LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession)
 
 }
 
+#ifdef SSL_ENABLE_CRL_CHECK
 LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession)
 {
-#ifdef SSL_ENABLE_CRL_CHECK
 
 	if(hSession->ssl.crl.cert)
 	{
@@ -666,11 +666,16 @@ LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession)
 
 	}
 
+	return NULL;
 
-#endif // SSL_ENABLE_CRL_CHECK
-
+}
+#else
+LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession unused)
+{
 	return NULL;
 }
+#endif // SSL_ENABLE_CRL_CHECK
+
 
 LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(H3270 *hSession)
 {

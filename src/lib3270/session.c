@@ -91,11 +91,11 @@ void lib3270_session_free(H3270 *h)
 	// Release state change callbacks
 	for(f=0;f<LIB3270_STATE_USER;f++)
 	{
-		while(h->st_callbacks[f])
+		while(h->st.callbacks[f])
 		{
-			struct lib3270_state_callback *next = h->st_callbacks[f]->next;
-			lib3270_free(h->st_callbacks[f]);
-			h->st_callbacks[f] = next;
+			struct lib3270_state_callback *next = h->st.callbacks[f]->next;
+			lib3270_free(h->st.callbacks[f]);
+			h->st.callbacks[f] = next;
 		}
 	}
 
@@ -321,7 +321,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->sock					= -1;
 	hSession->model_num				= -1;
 	hSession->cstate				= LIB3270_NOT_CONNECTED;
-	hSession->oia_status			= -1;
+	hSession->oia.status			= -1;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;
 	hSession->reply_mode 			= SF_SRM_FIELD;

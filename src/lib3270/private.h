@@ -366,14 +366,16 @@ struct _h3270
 		char	   	    	* qualified;
 	} host;
 
-	char					* proxy;			/**< Proxy server (type:host[:port]) */
+	// char					* proxy;			/**< Proxy server (type:host[:port]) */
 	char					* termname;
 
 	struct lib3270_charset	  charset;
 
-	LIB3270_MESSAGE			  oia_status;
-
-	unsigned char	 		  oia_flag[LIB3270_FLAG_COUNT];
+	struct
+	{
+		LIB3270_MESSAGE		  status;
+		unsigned char		  flag[LIB3270_FLAG_COUNT];
+	} oia;
 
 	unsigned short			  current_port;
 
@@ -630,9 +632,11 @@ struct _h3270
 		void *userdata;
 	} trace;
 
-	// Callbacks.
-	struct lib3270_state_callback		* st_callbacks[LIB3270_STATE_USER];
-	struct lib3270_state_callback		* st_last[LIB3270_STATE_USER];
+	// State change listeners.
+	struct {
+		struct lib3270_state_callback	* callbacks[LIB3270_STATE_USER];
+		struct lib3270_state_callback	* last[LIB3270_STATE_USER];
+	} st;
 
 };
 

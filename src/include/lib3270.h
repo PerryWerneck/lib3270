@@ -454,13 +454,26 @@
 	/**
 	 * @brief Register a function interested in a state change.
 	 *
-	 * @param h		Session handle.
-	 * @param tx	State ID
-	 * @param func	Callback
-	 * @param data	Data
+	 * @param hSession	Session handle.
+	 * @param tx		State ID
+	 * @param func		Callback
+	 * @param data		Data
+	 *
+	 * @return State change identifier.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_register_schange(H3270 *h,LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data);
+	LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data);
+
+	/**
+	 * @brief Unregister a function interested in a state change.
+	 *
+	 * @param hSession	Session handle.
+	 * @param id		State change identifier.
+	 *
+	 * @return 0 if suceeds, non zero if fails (sets errno).
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, void * id);
 
 	LIB3270_EXPORT void lib3270_reset_callbacks(H3270 *hSession);
 

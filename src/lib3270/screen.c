@@ -545,8 +545,8 @@ void set_status(H3270 *session, LIB3270_FLAG id, Boolean on)
 {
 	CHECK_SESSION_HANDLE(session);
 
-	session->oia_flag[id] = (on != 0);
-	session->cbk.update_oia(session,id,session->oia_flag[id]);
+	session->oia.flag[id] = (on != 0);
+	session->cbk.update_oia(session,id,session->oia.flag[id]);
 
 }
 
@@ -640,7 +640,7 @@ void status_reset(H3270 *session)
 LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(H3270 *session)
 {
 	CHECK_SESSION_HANDLE(session);
-	return session->oia_status;
+	return session->oia.status;
 }
 
 /**
@@ -655,8 +655,8 @@ LIB3270_EXPORT LIB3270_MESSAGE lib3270_lock_status(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
 
-	if(hSession->oia_status)
-		return hSession->oia_status;
+	if(hSession->oia.status)
+		return hSession->oia.status;
 
 	if(hSession->kybdlock)
 		return LIB3270_MESSAGE_KYBDLOCK;
@@ -683,10 +683,10 @@ void status_changed(H3270 *session, LIB3270_MESSAGE id)
 {
 	CHECK_SESSION_HANDLE(session);
 
-	if(id == session->oia_status || id < 0)
+	if(id == session->oia.status || id < 0)
 		return;
 
-	session->oia_status = id;
+	session->oia.status = id;
 
 	session->cbk.update_status(session,id);
 }

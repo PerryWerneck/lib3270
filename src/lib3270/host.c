@@ -167,25 +167,65 @@ void lib3270_set_disconnected(H3270 *hSession)
 
 /**
  * @brief Register a function interested in a state change.
+ *
+ * @param hSession	Session handle.
+ * @param tx		State ID
+ * @param func		Callback
+ * @param data		Data
+ *
+ * @return State change identifier.
+ *
  */
-LIB3270_EXPORT void lib3270_register_schange(H3270 *h, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data)
+LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data)
 {
 	struct lib3270_state_callback *st;
 
-    CHECK_SESSION_HANDLE(h);
+    CHECK_SESSION_HANDLE(hSession);
 
 	st 			= (struct lib3270_state_callback *) lib3270_malloc(sizeof(struct lib3270_state_callback));
 	st->func	= func;
 	st->data	= data;
 
-	if (h->st_last[tx])
-		h->st_last[tx]->next = st;
+	if (hSession->st.last[tx])
+		hSession->st.last[tx]->next = st;
 	else
-		h->st_callbacks[tx] = st;
+		hSession->st.callbacks[tx] = st;
 
-	h->st_last[tx] = st;
+	hSession->st.last[tx] = st;
+
+	return (void *) st;
 
 }
+
+LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, void * id)
+{
+	struct lib3270_state_callback *st;
+	struct lib3270_state_callback *prev = (struct lib3270_state_callback *) NULL;
+
+	for (st = hSession->st.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
+	{
+		if (st == (struct lib3270_state_callback *)id)
+			break;
+
+		prev = st;
+	}
+
+	if (st == (struct lib3270_state_callback *)NULL)
+	{
+		lib3270_write_log(hSession,"lib3270","Invalid call to (%s): %p wasnt found in the list",__FUNCTION__,id);
+		return errno = ENOENT;
+	}
+
+	if (prev != (struct lib3270_state_callback *) NULL)
+		prev->next = st->next;
+	else
+		hSession->st.callbacks[tx] = (struct lib3270_state_callback *) st->next;
+
+	lib3270_free(id);
+
+	return 0;
+}
+
 
 /**
  * @brief Signal a state change.
@@ -214,7 +254,7 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 
 	trace("%s is %d on session %p",state_name[tx],mode,h);
 
-	for (st = h->st_callbacks[tx];st;st = st->next)
+	for(st = h->st.callbacks[tx];st;st = st->next)
 	{
 		st->func(h,mode,st->data);
 	}
@@ -449,23 +489,23 @@ LIB3270_EXPORT const char * lib3270_get_luname(H3270 *h)
 LIB3270_EXPORT int lib3270_has_active_script(H3270 *h)
 {
     CHECK_SESSION_HANDLE(h);
-	return (h->oia_flag[LIB3270_FLAG_SCRIPT] != 0);
+	return (h->oia.flag[LIB3270_FLAG_SCRIPT] != 0);
 }
 
 LIB3270_EXPORT int lib3270_get_typeahead(H3270 *h)
 {
     CHECK_SESSION_HANDLE(h);
-	return (h->oia_flag[LIB3270_FLAG_TYPEAHEAD] != 0);
+	return (h->oia.flag[LIB3270_FLAG_TYPEAHEAD] != 0);
 }
 
 LIB3270_EXPORT int lib3270_get_undera(H3270 *h)
 {
     CHECK_SESSION_HANDLE(h);
-	return (h->oia_flag[LIB3270_FLAG_UNDERA] != 0);
+	return (h->oia.flag[LIB3270_FLAG_UNDERA] != 0);
 }
 
 LIB3270_EXPORT int lib3270_get_oia_box_solid(H3270 *h)
 {
     CHECK_SESSION_HANDLE(h);
-	return (h->oia_flag[LIB3270_FLAG_BOXSOLID] != 0);
+	return (h->oia.flag[LIB3270_FLAG_BOXSOLID] != 0);
 }

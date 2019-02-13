@@ -34,7 +34,7 @@ build() {
 package() {
   cd lib3270-$pkgver
   DESTDIR="$pkgdir" make install-dev
-  install .bin/Release/*.dll $MINGW_PREFIX/lib
-
+  install .bin/Release/lib3270.dll $MINGW_PREFIX/bin
+  dlltool --dllname lib3270.dll --input-def .bin/Release/lib3270.def --output-lib $MINGW_PREFIX/lib/lib3270.a
 }
 

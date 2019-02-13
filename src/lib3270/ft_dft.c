@@ -558,7 +558,7 @@ static void dft_abort(H3270 *hSession, unsigned short code, const char *fmt, ...
 	net_output(hSession);
 
 	/* Update the pop-up and state. */
-	ft_aborting(ft);
+	ft_aborting(ft,ft->abort_string);
 }
 
 /* Returns the number of bytes in s, limited by len, that aren't CRs or ^Zs. */

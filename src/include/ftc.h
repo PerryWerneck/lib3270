@@ -32,7 +32,7 @@
 
 	LIB3270_INTERNAL void		  ft_init(H3270 *hSession);
 
-	LIB3270_INTERNAL void		  ft_aborting(H3270FT *h);
+	LIB3270_INTERNAL void		  ft_aborting(H3270FT *h, const char *reason);
 	LIB3270_INTERNAL void		  ft_complete(H3270FT *h, const char *errmsg);
 	LIB3270_INTERNAL void		  ft_failed(H3270FT *h, const char *errmsg);
 	LIB3270_INTERNAL void		  ft_message(H3270FT *h, const char *msg);

@@ -94,7 +94,7 @@
 		void (*message)(H3270 *hSession, const char *msg, void *userdata);
 		void (*update)(H3270 *hSession, unsigned long current, unsigned long length, double kbytes_sec, void *userdata);
 		void (*running)(H3270 *hSession, int is_cut, void *userdata);
-		void (*aborting)(H3270 *hSession, void *userdata);
+		void (*aborting)(H3270 *hSession, const char *reason, void *userdata);
 		void (*state_changed)(H3270 *hSession, LIB3270_FT_STATE state, const char *text, void *userdata);
 	};
 
@@ -185,9 +185,9 @@
 	LIB3270_EXPORT H3270FT						* lib3270_ft_new(H3270 *hSession, LIB3270_FT_OPTION flags, const char *local, const char *remote, int lrecl, int blksize, int primspace, int secspace, int dft, const char **msg);
 
 	LIB3270_EXPORT int							  lib3270_ft_start(H3270 *hSession);
-	LIB3270_EXPORT int							  lib3270_ft_destroy(H3270 *hSession);
+	LIB3270_EXPORT int							  lib3270_ft_destroy(H3270 *hSession, const char *reason);
 
-	LIB3270_EXPORT int							  lib3270_ft_cancel(H3270 *hSession, int force);
+	LIB3270_EXPORT int							  lib3270_ft_cancel(H3270 *hSession, int force, const char *reason);
 
 	LIB3270_EXPORT void							  lib3270_ft_set_user_data(H3270 *h, void *ptr);
 	LIB3270_EXPORT void						 	* lib3270_ft_get_user_data(H3270 *h);

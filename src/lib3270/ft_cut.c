@@ -569,7 +569,7 @@ static void cut_abort(H3270 *hSession, unsigned short reason, const char *fmt, .
 	lib3270_pfkey(hSession,2);
 
 	/* Update the in-progress pop-up. */
-	ft_aborting(ft);
+	ft_aborting(ft,ft->saved_errmsg);
 }
 
 /**

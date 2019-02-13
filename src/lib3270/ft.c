@@ -135,7 +135,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	lib3270_register_schange(hSession, LIB3270_STATE_3270_MODE, ( void (*)(H3270 *, int, void *)) ft_in3270, NULL);
  }
 
- LIB3270_EXPORT int lib3270_ft_cancel(H3270 *hSession, int force)
+ LIB3270_EXPORT int lib3270_ft_cancel(H3270 *hSession, int force, const char *reason)
  {
  	H3270FT *ft;
 
@@ -143,12 +143,12 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 
 	ft = get_ft_handle(hSession);
 	if(!ft)
-		return EINVAL;
+		return errno = EINVAL;
 
 	if (ft->state == LIB3270_FT_STATE_RUNNING)
 	{
 		set_ft_state(ft,LIB3270_FT_STATE_ABORT_WAIT);
-		ft->cbk.aborting(hSession,ft->user_data);
+		ft->cbk.aborting(hSession,reason,ft->user_data);
 		return 0;
 	}
 
@@ -156,7 +156,10 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 		return errno = EBUSY;
 
 	// Impatient user or hung host -- just clean up.
-	ft_failed(ft, N_("Cancelled by user") );
+	if(!reason)
+		reason = _("Cancelled by user");
+
+	ft_failed(ft, reason);
 
 	return 0;
  }
@@ -186,7 +189,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 
  }
 
- static void def_aborting(H3270 *hSession unused, void *userdata unused)
+ static void def_aborting(H3270 *hSession unused, const char *reason unused, void *userdata unused)
  {
 
  }
@@ -569,7 +572,7 @@ void ft_failed(H3270FT *ft, const char *errmsg)
 	ft->cbk.failed(ft->host,ft->ft_length,finish(ft),errmsg ? errmsg : N_("Transfer failed"),ft->user_data);
 }
 
-LIB3270_EXPORT int lib3270_ft_destroy(H3270 *hSession)
+LIB3270_EXPORT int lib3270_ft_destroy(H3270 *hSession, const char *reason)
 {
 	H3270FT *session;
 
@@ -581,7 +584,7 @@ LIB3270_EXPORT int lib3270_ft_destroy(H3270 *hSession)
 
 	if (session->state != LIB3270_FT_STATE_NONE)
 	{
-		lib3270_ft_cancel(hSession,1);
+		lib3270_ft_cancel(hSession,1,reason);
 	}
 
 	if(session->local_file)
@@ -653,13 +656,13 @@ LIB3270_EXPORT struct lib3270_ft_callbacks * lib3270_get_ft_callbacks(H3270 *ses
 
 
 // Process a protocol-generated abort.
-void ft_aborting(H3270FT *h)
+void ft_aborting(H3270FT *h, const char *reason)
 {
 	if (h->state == FT_RUNNING || h->state == FT_ABORT_WAIT)
 	{
 		set_ft_state(h,FT_ABORT_SENT);
 		h->cbk.message(h->host,N_("Aborting..."),h->user_data);
-		h->cbk.aborting(h->host,h->user_data);
+		h->cbk.aborting(h->host,reason,h->user_data);
 	}
 }
 

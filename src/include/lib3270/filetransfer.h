@@ -197,6 +197,16 @@
 	LIB3270_EXPORT struct lib3270_ft_callbacks	* lib3270_get_ft_callbacks(H3270 *session, unsigned short sz);
 
 	/**
+	 * @brief Set all FT callbacks to default valides.
+	 *
+	 * @param hSession	TN3270 session to reset.
+	 *
+	 * @return 0 if hSession has a valid FT session, non zero if not (sets errno).
+	 *
+	 */
+	LIB3270_EXPORT int							  lib3270_reset_ft_callbacks(H3270 *hSession);
+
+	/**
 	 * @brief Translate IND$FILE response.
 	 *
 	 * @param msg	Message received.

@@ -315,15 +315,6 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	ftHandle->dft				= dft;
 	ftHandle->quadrant			= -1;
 
-	ftHandle->cbk.complete 		= def_complete;
-	ftHandle->cbk.failed		= def_failed;
-	ftHandle->cbk.message 		= def_message;
-	ftHandle->cbk.update 		= def_update;
-	ftHandle->cbk.running 		= def_running;
-	ftHandle->cbk.aborting 		= def_aborting;
-	ftHandle->cbk.state_changed	= def_state_changed;
-
-
 	// Setup file transfer charset.
 	memcpy(&ftHandle->charset,&session->charset,sizeof(struct lib3270_charset));
 
@@ -343,7 +334,29 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 
 	session->ft				= ftHandle;
 
+	lib3270_reset_ft_callbacks(session);
+
  	return ftHandle;
+ }
+
+ LIB3270_EXPORT int lib3270_reset_ft_callbacks(H3270 *hSession)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+ 	if(!hSession->ft)
+	{
+		return errno = EINVAL;
+	}
+
+	hSession->ft->cbk.complete 		= def_complete;
+	hSession->ft->cbk.failed		= def_failed;
+	hSession->ft->cbk.message 		= def_message;
+	hSession->ft->cbk.update 		= def_update;
+	hSession->ft->cbk.running 		= def_running;
+	hSession->ft->cbk.aborting 		= def_aborting;
+	hSession->ft->cbk.state_changed	= def_state_changed;
+
+	return 0;
  }
 
  LIB3270_EXPORT void lib3270_ft_set_user_data(H3270 *hSession, void *ptr)
@@ -653,7 +666,6 @@ LIB3270_EXPORT struct lib3270_ft_callbacks * lib3270_get_ft_callbacks(H3270 *ses
 	return NULL;
 
 }
-
 
 // Process a protocol-generated abort.
 void ft_aborting(H3270FT *h, const char *reason)

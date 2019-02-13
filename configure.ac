@@ -80,7 +80,7 @@ case "$host" in
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
 		LDFLAGS="$LDFLAGS -pthread"
-		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def,--out-implib,\$(@D)/\$(LIBNAME).a"
+		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"
 
 		app_win32_revision=$(date +%y.%m.%d.%H)

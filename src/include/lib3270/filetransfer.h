@@ -157,12 +157,18 @@
 
 	};
 
-
+	typedef struct _lib3270_ft_message
+	{
+		const char		* id;					///< @brief Message ID.
+		unsigned char	  failed;				///< @brief Non zero if this message indicates a failure.
+		const char		* message;				///< @brief Message text.
+		const char 		* description;			///< @brief Message description.
+	} LIB3270_FT_MESSAGE;
 
 	/**
-	 * Create a new file transfer session.
+	 * @brief Create a new file transfer session.
 	 *
-	 * @param session
+	 * @param hSession
 	 * @param flags
 	 * @param local
 	 * @param remote
@@ -173,8 +179,8 @@
 	 * @param dft
 	 * @param msg		Pointer to receive message text.
 	 *
-	 * @return Filetransfer callback table
-	 *
+	 * @return Filetransfer session handle.
+	  *
 	 */
 	LIB3270_EXPORT H3270FT						* lib3270_ft_new(H3270 *hSession, LIB3270_FT_OPTION flags, const char *local, const char *remote, int lrecl, int blksize, int primspace, int secspace, int dft, const char **msg);
 
@@ -189,6 +195,16 @@
 	LIB3270_EXPORT LIB3270_FT_STATE				  lib3270_get_ft_state(H3270 *session);
 
 	LIB3270_EXPORT struct lib3270_ft_callbacks	* lib3270_get_ft_callbacks(H3270 *session, unsigned short sz);
+
+	/**
+	 * @brief Translate IND$FILE response.
+	 *
+	 * @param msg	Message received.
+	 *
+	 * @return Structure with message description and type.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_FT_MESSAGE * lib3270_translate_ft_message(const char *msg);
 
 
 #endif // LIB3270_FILETRANSFER_INCLUDED

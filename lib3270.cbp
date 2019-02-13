@@ -145,6 +145,9 @@
 		<Unit filename="src/lib3270/ft_dft.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/lib3270/ftmessages.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/lib3270/host.c">
 			<Option compilerVar="CC" />
 		</Unit>

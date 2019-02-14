@@ -9,7 +9,7 @@ url="https://portal.softwarepublico.gov.br/social/pw3270/"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()
-makedepends=(autoconf automake make openssl-devel)
+makedepends=(autoconf automake make openssl)
 checkdepends=()
 
 #groups=(gnome)
@@ -22,7 +22,8 @@ conflicts=($pkgname)
 
 prepare() {
   cd $pkgname-$pkgver
-  ./autogen.sh
+  NOCONFIGURE=1 ./autogen.sh
+  ./configure --prefix=/usr
 }
 
 build() {

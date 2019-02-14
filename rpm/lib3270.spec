@@ -38,22 +38,21 @@
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
-Summary:	TN3270 Access library
-Name:		lib3270-%{_libvrs}
-Version:	5.2
-Release:	0
-License:        LGPL-3.0
-Source:		%{name}-%{version}.tar.xz
+Summary:		TN3270 Access library
+Name:			lib3270-%{_libvrs}
+Version:		5.2
+Release:		0
+License:		LGPL-3.0
+Source:			lib3270-%{version}.tar.xz
 
-Url:		https://portal.softwarepublico.gov.br/social/pw3270/
+Url:			https://portal.softwarepublico.gov.br/social/pw3270/
 
-Group:		Development/Libraries/C and C++
-BuildRoot:	/var/tmp/%{name}-%{version}
+Group:			Development/Libraries/C and C++
+BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:	lib3270_%{_libvrs}
-Conflicts:	otherproviders(lib3270_%{_libvrs})
+Provides:		lib3270_%{_libvrs}
+Conflicts:		otherproviders(lib3270_%{_libvrs})
 
-BuildRequires:  pkgconfig(openssl)
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -62,7 +61,21 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig
+
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
+
+BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(dbus-1)
+BuildRequires:  pkgconfig(libssl)
+BuildRequires:  pkgconfig(libcrypto)
+
+%else
+
+BuildRequires:  openssl-devel
+BuildRequires:  dbus-1-devel
+BuildRequires:	xz
+
+%endif
 
 %description
 
@@ -107,7 +120,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -n lib3270-%{version}
 
 NOCONFIGURE=1 ./autogen.sh
 

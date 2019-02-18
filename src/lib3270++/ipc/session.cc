@@ -58,7 +58,7 @@
 	void IPC::Session::waitForReady(time_t timeout) throw() {
 
 		int rc;
-		Request request(*this,"waitforready");
+		Request request(*this,"waitForReady");
 
 		time_t end = time(nullptr) + timeout;
 

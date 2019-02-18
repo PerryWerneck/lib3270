@@ -95,6 +95,8 @@
 		lib3270_trace_data(NULL,"Request block",(const char *) this->out.block, this->out.used);
 #endif // DEBUG
 
+		in.current = 0;
+
 		if(!TransactNamedPipe(
 				this->hPipe,
 				this->out.block,

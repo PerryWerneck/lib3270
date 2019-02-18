@@ -91,7 +91,7 @@
 
 	}
 
-	/// @brief Create DataBlock
+	/// @brief Store value on data block.
 	IPC::Request::DataBlock * IPC::Request::pushBlock(const void *ptr, size_t length) {
 
 		if((out.used + length + sizeof(IPC::Request::DataBlock)) >= out.length) {
@@ -107,17 +107,61 @@
 
 	}
 
+	/// @brief Get next argument.
+	IPC::Request::DataBlock * IPC::Request::getNextBlock() const {
+
+		if((in.current + sizeof(IPC::Request::DataBlock)) >= in.used) {
+			throw std::runtime_error("Out of range");
+		}
+
+		return (IPC::Request::DataBlock *) (in.block + in.current);
+
+	}
+
 	IPC::Request & IPC::Request::push(const char *arg) {
 		pushBlock(arg, strlen(arg)+1)->type = IPC::Request::String;
 		return *this;
 	}
 
 	IPC::Request & IPC::Request::pop(std::string &value) {
+		DataBlock * block = getNextBlock();
+
+		if(block->type != IPC::Request::String)
+			throw std::runtime_error("Invalid format");
+
+		const char *ptr = (const char *) (block+1);
+
+		in.current += (strlen(ptr)+1+sizeof(DataBlock));
+
+		value.assign(ptr);
 
 		return *this;
 	}
 
 	IPC::Request & IPC::Request::Request::pop(int &value) {
+
+		DataBlock * block = getNextBlock();
+
+		switch(block->type) {
+		case IPC::Request::Int16:
+			value = * ((int16_t *) (block+1));
+			in.current += sizeof(int16_t) + sizeof(DataBlock);
+			break;
+
+		case IPC::Request::Int32:
+			value = * ((int32_t *) (block+1));
+			in.current += sizeof(int32_t) + sizeof(DataBlock);
+			break;
+
+		case IPC::Request::Int64:
+			value = * ((int64_t *) (block+1));
+			in.current += sizeof(int64_t) + sizeof(DataBlock);
+			break;
+
+		default:
+			throw std::runtime_error("Invalid format");
+		}
+
 		return *this;
 	}
 

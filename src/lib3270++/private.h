@@ -241,8 +241,9 @@
 				};
 
 				struct {
-					DWORD 	  length;
-					DWORD	  used;
+					DWORD 	  length;	///< @brief Length of input buffer.
+					DWORD	  used;		///< @brief Length of used block.
+					DWORD	  current;	///< @brief Offset of the current argument.
 					uint8_t * block;
 				} in;
 
@@ -256,8 +257,11 @@
 					Type type;
 				};
 
-				/// @brief Create DataBlock
+				/// @brief Store value on data block.
 				DataBlock * pushBlock(const void *ptr, size_t len);
+
+				/// @brief Get next argument.
+				DataBlock * getNextBlock() const;
 
 #else
 				struct {
@@ -290,7 +294,6 @@
 				Request & call();
 
 				// Push values
-
 				Request & push(const char *arg);
 
 				// Pop values

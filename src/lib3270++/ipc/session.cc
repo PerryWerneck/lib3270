@@ -45,13 +45,6 @@
 
  namespace TN3270 {
 
-	/*
-	void IPC::Session::wait(time_t timeout) {
-
-
-	}
-	*/
-
 	void IPC::Session::connect(const char *url) {
 		Request request(*this,"connect");
 		request.push(url).call();
@@ -63,7 +56,24 @@
 
 	// Wait for session state.
 	void IPC::Session::waitForReady(time_t timeout) throw() {
-		throw std::system_error(EINVAL, std::system_category());
+
+		int rc;
+		Request request(*this,"waitforready");
+
+		time_t end = time(nullptr) + timeout;
+
+		while(time(nullptr) < end) {
+
+			request.call();
+
+			request.pop(rc);
+
+			if(rc == 0)
+				return;
+
+		}
+
+		throw std::system_error(ETIMEDOUT, std::system_category());
 	}
 
 	std::string	IPC::Session::toString(int baddr, size_t len, char lf) const {

@@ -59,13 +59,9 @@
 
 	// host.connect(getenv("LIB3270_DEFAULT_HOST"));
 
-	/*
-	cout << host << endl;
-
-	host << TN3270::ENTER;
-
-	cout << host << endl;
-	*/
+	if(host) {
+		cout << host << endl;
+	}
 
 	return 0;
  }

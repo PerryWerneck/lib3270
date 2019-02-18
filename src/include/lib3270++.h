@@ -306,7 +306,7 @@
 			}
 
 			inline operator bool() const {
-				return isConnected() && isReady();
+				return isReady();
 			}
 
 			inline operator ProgramMessage() const {

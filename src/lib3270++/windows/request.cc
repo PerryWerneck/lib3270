@@ -48,13 +48,15 @@
 
 	IPC::Request::Request(const Session &session) {
 
+		this->hPipe = session.hPipe;
+
 		in.length = PIPE_BUFFER_LENGTH;
 		in.used = 0;
 		in.block = new uint8_t[in.length];
 
 		out.length = PIPE_BUFFER_LENGTH;
 		out.used = 0;
-		out.block = new uint8_t[in.length];
+		out.block = new uint8_t[out.length];
 
 	}
 
@@ -103,10 +105,6 @@
 
 		return rc;
 
-	}
-
-	IPC::Request & IPC::Request::call() {
-		return *this;
 	}
 
 	IPC::Request & IPC::Request::push(const char *arg) {

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como lib3270++.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -28,46 +28,71 @@
  */
 
 /**
- * @file src/lib3270++/testprogram/testprogram.cc
+ * @file src/lib3270++/ipc/linux/session.cc
  *
- * @brief
+ * @brief Implements Linux session create/destroy session.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include <cstdlib>
- #include <lib3270++.h>
+ #include "../private.h"
+ #include <cstring>
+ #include <lib3270/trace.h>
 
- using namespace std;
+ using std::string;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- int main(int argc, const char *argv[]) {
+ static void throws_if_error(DBusError &err) {
 
-	TN3270::Host host{"pw3270:a"};
+ 	if(dbus_error_is_set(&err)) {
+		string message = err.message;
+		dbus_error_free(&err);
+		throw std::runtime_error(message.c_str());
+ 	}
 
-	cout
-		<< "Version: " << host.getVersion()
-		<< "\tRevision: " << host.getRevision()
-		<< std::endl;
+ 	return;
 
-	cout
-		<< "Connection state is " << host.getConnectionState()
-		<< "\tProgram message is " << host.getProgramMessage()
-		<< std::endl;
+ }
 
-	// host.connect(getenv("LIB3270_DEFAULT_HOST"));
+ namespace TN3270 {
 
-	/*
-	cout << host << endl;
+	IPC::Session::Session(const char *id) : Abstract::Session() {
 
-	host << TN3270::ENTER;
+		// Create D-Bus session.
+		DBusError err;
 
-	cout << host << endl;
-	*/
+		dbus_error_init(&err);
+		this->conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
 
-	return 0;
+		debug("dbus_bus_get conn=",conn);
+
+		throws_if_error(err);
+
+		if(!conn)
+			throw std::runtime_error("DBUS Connection failed");
+
+		auto sep = strchr(id,':');
+		if(!sep) {
+			throw std::system_error(EINVAL, std::system_category());
+		}
+
+		this->name = "br.com.bb.";
+		this->name += string(id,(sep - id));
+		this->name += ".";
+		this->name += (sep+1);
+		this->path = "/br/com/bb/tn3270/session";
+		this->interface = "br.com.bb.tn3270.session";
+
+		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
+
+	}
+
+	IPC::Session::~Session() {
+
+	}
+
  }
 
 

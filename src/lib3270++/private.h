@@ -223,6 +223,9 @@
 			private:
 
 #ifdef _WIN32
+				/// @brief Pipe Handle.
+				HANDLE hPipe;
+
 				/// @brief IPC Data type.
 				enum Type : uint8_t {
 					String	= 's',
@@ -238,14 +241,14 @@
 				};
 
 				struct {
-					size_t 	  length;
-					size_t	  used;
+					DWORD 	  length;
+					DWORD	  used;
 					uint8_t * block;
 				} in;
 
 				struct {
-					size_t 	  length;
-					size_t	  used;
+					DWORD 	  length;
+					DWORD	  used;
 					uint8_t * block;
 				} out;
 

@@ -278,16 +278,6 @@ install-dev:
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
-	X3270.xad \
-	$(wildcard mkfb/*.c)
-
-	@$(MKDIR) `dirname $@`
-	@$(MKDIR) $(BINDIR)
-	@echo $< ...
-	@$(HOST_CC) -g -o $(BINDIR)/mkfb@EXEEXT@ $(wildcard mkfb/*.c)
-	@$(BINDIR)/mkfb@EXEEXT@ -c X3270.xad $@
-
 $(POTDIR)/$(LIBNAME).pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 

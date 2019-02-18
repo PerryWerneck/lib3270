@@ -52,12 +52,14 @@
 		<Unit filename="host.cc" />
 		<Unit filename="ipc/session.cc" />
 		<Unit filename="linux/request.cc" />
+		<Unit filename="linux/session.cc" />
 		<Unit filename="local/events.cc" />
 		<Unit filename="local/session.cc" />
 		<Unit filename="private.h" />
 		<Unit filename="session.cc" />
 		<Unit filename="testprogram/testprogram.cc" />
 		<Unit filename="windows/request.cc" />
+		<Unit filename="windows/session.cc" />
 		<Extensions>
 			<code_completion />
 			<envvars />

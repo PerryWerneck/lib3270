@@ -107,14 +107,19 @@
 		<Unit filename="src/lib3270++/abstract.cc" />
 		<Unit filename="src/lib3270++/events.cc" />
 		<Unit filename="src/lib3270++/host.cc" />
+		<Unit filename="src/lib3270++/ipc/session.cc" />
+		<Unit filename="src/lib3270++/linux/request.cc" />
+		<Unit filename="src/lib3270++/linux/session.cc" />
 		<Unit filename="src/lib3270++/local/events.cc" />
 		<Unit filename="src/lib3270++/local/session.cc" />
 		<Unit filename="src/lib3270++/private.h" />
 		<Unit filename="src/lib3270++/session.cc" />
 		<Unit filename="src/lib3270++/testprogram/testprogram.cc" />
+		<Unit filename="src/lib3270++/windows/request.cc" />
 		<Unit filename="src/lib3270++/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="src/lib3270++/windows/session.cc" />
 		<Unit filename="src/lib3270/actions.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -123,6 +123,27 @@
 		return *this;
 	}
 
+	IPC::Request & IPC::Request::push(const bool arg) {
+		uint8_t value = (uint8_t) (arg ? 0xff : 0);
+		pushBlock(&value, sizeof(value))->type = IPC::Request::Boolean;
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const uint8_t arg) {
+		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uchar;
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const int32_t arg) {
+		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Int32;
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const uint32_t arg) {
+		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uint32;
+		return *this;
+	}
+
 	IPC::Request & IPC::Request::pop(std::string &value) {
 		DataBlock * block = getNextBlock();
 

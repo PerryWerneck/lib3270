@@ -66,7 +66,7 @@
 			debug("Running waitForReady request...");
 
 			Request(*this,"waitForReady")
-				.push(1)
+				.push((uint32_t) 1)
 				.call()
 				.pop(rc);
 

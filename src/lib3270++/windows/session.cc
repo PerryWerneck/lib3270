@@ -92,7 +92,7 @@
 	IPC::Request & IPC::Request::call() {
 
 #ifdef DEBUG
-		lib3270_trace_data(NULL,"Request block",(const char *) this->out.block, this->out.used);
+		// lib3270_trace_data(NULL,"Request block",(const char *) this->out.block, this->out.used);
 #endif // DEBUG
 
 		in.current = 0;
@@ -111,9 +111,23 @@
 
 		}
 
+		debug("Received response \"", in.block, "\" with ", in.used, " bytes");
 #ifdef DEBUG
-		lib3270_trace_data(NULL,"Response block",(const char *) this->in.block, this->in.used);
+		// lib3270_trace_data(NULL,"Response block",(const char *) this->in.block, this->in.used);
 #endif // DEBUG
+
+		// Extract response name
+		in.current = strlen((const char *) in.block)+1;
+
+		// Extract return code
+		uint16_t rc = *((uint16_t *) (in.block + in.current));
+		in.current += sizeof(uint16_t);
+
+		// Extract argc
+		uint16_t argc = *((uint16_t *) (in.block + in.current));
+		in.current += sizeof(uint16_t);
+
+		debug("Received response \"", ((const char *) in.block), "\" with rc=", rc, " and ", argc, " arguments");
 
 		return *this;
 	}

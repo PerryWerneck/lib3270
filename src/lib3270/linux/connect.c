@@ -290,8 +290,7 @@ static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag u
 
 			default:
 				lib3270_write_log(hSession,"connect", "%s: State changed to unexpected state %d",__FUNCTION__,hSession->cstate);
-				errno = EINVAL;
-				return -1;
+				return errno = EINVAL;
 			}
 
 		}

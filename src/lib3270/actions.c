@@ -68,6 +68,10 @@
 /**
  * @brief Launch an action by name.
  *
+ * @param name	Name of the action to launch.
+ *
+ * @return 0 if ok, error code if not (sets errno).
+ *
  */
 LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 {
@@ -87,7 +91,6 @@ LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 	}
 
 	lib3270_trace_event(hSession,"Unknown action %s\n",name);
-	errno = ENOENT;
-	return -1;
+	return errno = ENOENT;
 
 }

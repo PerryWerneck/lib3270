@@ -1751,8 +1751,7 @@ LIB3270_EXPORT int lib3270_enter(H3270 *hSession)
 
 	if (hSession->kybdlock & KL_OIA_MINUS)
 	{
-		errno = EPERM;
-		return -1;
+		return errno = EPERM;
 	}
 	else if (hSession->kybdlock)
 	{
@@ -1772,7 +1771,6 @@ LIB3270_EXPORT int lib3270_sysreq(H3270 *hSession)
 
 	if (IN_ANSI)
 	{
-		errno = ENOTCONN;
 		return 0;
 	}
 
@@ -1848,7 +1846,7 @@ LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession)
 	if (FA_IS_PROTECTED(fa) || hSession->ea_buf[baddr].fa)
 	{
 		operator_error(hSession,KL_OERR_PROTECTED);
-		return -1;
+		return errno = EPERM;
 	}
 
 	if (hSession->formatted)
@@ -1914,7 +1912,7 @@ LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession)
 	fa = get_field_attribute(hSession,baddr);
 	if (FA_IS_PROTECTED(fa) || hSession->ea_buf[baddr].fa) {
 		operator_error(hSession,KL_OERR_PROTECTED);
-		return -1;
+		return errno = EPERM;
 	}
 	if (hSession->formatted)
 	{	/* erase to next field attribute */
@@ -2039,7 +2037,7 @@ LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession)
 	/* Make sure we're on a modifiable field. */
 	if (FA_IS_PROTECTED(fa) || hSession->ea_buf[baddr].fa) {
 		operator_error(hSession,KL_OERR_PROTECTED);
-		return -1;
+		return errno = EPERM;
 	}
 
 	/* Backspace over any spaces to the left of the cursor. */
@@ -2105,7 +2103,7 @@ LIB3270_EXPORT int lib3270_deletefield(H3270 *hSession)
 	fa = get_field_attribute(hSession,baddr);
 	if (FA_IS_PROTECTED(fa) || hSession->ea_buf[baddr].fa) {
 		operator_error(hSession,KL_OERR_PROTECTED);
-		return -1;
+		return errno = EPERM;
 	}
 	while (!hSession->ea_buf[baddr].fa)
 		DEC_BA(baddr);
@@ -2153,16 +2151,18 @@ int lib3270_get_field_end(H3270 *hSession, int baddr)
 
 #if defined(X3270_ANSI) /*[*/
 	if (IN_ANSI)
-		return -1;
+	{
+		return errno = EINVAL;
+	}
 #endif /*]*/
 
 	if (!hSession->formatted)
-		return -1;
+		return errno = EINVAL;
 
 	faddr = find_field_attribute(hSession,baddr);
 	fa = hSession->ea_buf[faddr].fa;
 	if (faddr == baddr || FA_IS_PROTECTED(fa))
-		return -1;
+		return errno = EPERM;
 
 	baddr = faddr;
 	while (True)
@@ -2317,7 +2317,7 @@ LIB3270_EXPORT int lib3270_emulate_input(H3270 *hSession, const char *s, int len
 		if (hSession->kybdlock)
 		{
 			lib3270_trace_event(hSession,"  keyboard locked, string dropped\n");
-			return -1;
+			return errno = EPERM;
 		}
 
 		if (pasting && IN_3270)

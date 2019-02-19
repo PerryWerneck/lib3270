@@ -433,7 +433,7 @@ LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr)
 	CHECK_SESSION_HANDLE(hSession);
 
 	if (!hSession->formatted)
-		return -1;
+		return errno = ENOTCONN;
 
     if(baddr < 0)
 		baddr = hSession->cursor_addr;
@@ -459,7 +459,7 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 	CHECK_SESSION_HANDLE(hSession);
 
 	if (!hSession->formatted)
-		return -1;
+		return errno = ENOTCONN;
 
 	if(baddr < 0)
 		baddr = hSession->cursor_addr;
@@ -498,10 +498,7 @@ LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!hSession->formatted)
-	{
-		errno = ENOTCONN;
-		return -1;
-	}
+		return errno = ENOTCONN;
 
 	sbaddr = baddr;
 	do
@@ -522,10 +519,7 @@ LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!hSession->formatted)
-	{
-		errno = ENOTCONN;
-		return -1;
-	}
+		return errno = ENOTCONN;
 
 	sbaddr = baddr;
 	do
@@ -571,8 +565,7 @@ int lib3270_field_length(H3270 *hSession, int baddr)
 		width++;
 	} while (addr != saddr);
 
-	errno = EINVAL;
-	return -1;
+	return errno = EINVAL;
 
 }
 
@@ -601,10 +594,7 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!hSession->formatted)
-	{
-		errno = ENOTCONN;
-		return -1;
-	}
+		return errno = ENOTCONN;
 
 	if(baddr0 < 0)
 		baddr0 = hSession->cursor_addr;

@@ -240,10 +240,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, cons
 
 	// Is Keyboard locked ?
 	if(hSession->kybdlock)
-	{
-		errno = EPERM;
-		return -1;
-	}
+		return errno = EPERM;
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
 		lib3270_unselect(hSession);
@@ -273,10 +270,7 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(hSession->kybdlock)
-	{
-		errno = EPERM;
-		return -1;
-	}
+		return errno = EPERM;
 
 	if(lib3270_set_cursor_address(hSession,baddr) < 0)
 		return -1;
@@ -307,10 +301,7 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(hSession->kybdlock)
-	{
-		errno = EPERM;
-		return -1;
-	}
+		return errno = EPERM;
 
 	hSession->cbk.suspend(hSession);
 	rc = set_string(hSession, str);

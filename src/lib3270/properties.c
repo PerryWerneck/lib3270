@@ -463,23 +463,6 @@
 
  }
 
- /*
- int lib3270_set_connected(H3270 *hSession, int state) {
-
-	if(state) {
-
-		if(lib3270_reconnect(hSession,120))
-			return -1;
-
-	} else {
-
-		return lib3270_disconnect(hSession);
-	}
-
-	return 0;
- }
- */
-
 int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
 {
 	size_t ix;

@@ -42,7 +42,7 @@
  * @param start		return location for start of selection, as a character offset.
  * @param end		return location for end of selection, as a character offset.
  *
- * @return -1 if invalid or not connected (sets errno).
+ * @return Non zero if invalid or not connected (sets errno).
  *
  */
 LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *start, int *end)
@@ -52,7 +52,7 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *sta
 	first = lib3270_field_addr(hSession,baddr);
 
 	if(first < 0)
-		return -1;
+		return errno = (errno == 0 ? EINVAL : errno);
 
 	first++;
 

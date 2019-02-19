@@ -295,7 +295,10 @@
 
 				// Push values
 				Request & push(const char *arg);
-				Request & push(int32_t arg);
+				Request & push(const bool arg);
+				Request & push(const int32_t arg);
+				Request & push(const uint32_t arg);
+				Request & push(const uint8_t arg);
 
 				// Pop values
 				Request & pop(std::string &value);

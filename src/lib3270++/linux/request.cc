@@ -146,10 +146,26 @@
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::push(int32_t arg) {
+	IPC::Request & IPC::Request::push(const bool arg) {
+		dbus_message_append_args(this->msg.out,DBUS_TYPE_BOOLEAN,&arg,DBUS_TYPE_INVALID);
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const uint8_t arg) {
+		dbus_message_append_args(this->msg.out,DBUS_TYPE_BYTE,&arg,DBUS_TYPE_INVALID);
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const int32_t arg) {
 		dbus_message_append_args(this->msg.out,DBUS_TYPE_INT32,&arg,DBUS_TYPE_INVALID);
 		return *this;
 	}
+
+	IPC::Request & IPC::Request::push(const uint32_t arg) {
+		dbus_message_append_args(this->msg.out,DBUS_TYPE_UINT32,&arg,DBUS_TYPE_INVALID);
+		return *this;
+	}
+
 
 	IPC::Request & IPC::Request::pop(std::string &value) {
 

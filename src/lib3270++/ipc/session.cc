@@ -81,11 +81,32 @@
 	}
 
 	std::string	IPC::Session::toString(int baddr, size_t len, char lf) const {
-		throw std::system_error(EINVAL, std::system_category());
+
+		std::string rc;
+
+		Request(*this,"getStringAtAddress")
+			.push((uint32_t) baddr)
+			.push((uint32_t) len)
+			.push((uint8_t) lf)
+			.call()
+			.pop(rc);
+
+		return rc;
 	}
 
 	std::string	IPC::Session::toString(int row, int col, size_t sz, char lf) const {
-		throw std::system_error(EINVAL, std::system_category());
+
+		std::string rc;
+
+		Request(*this,"getStringAt")
+			.push((uint32_t) row)
+			.push((uint32_t) col)
+			.push((uint32_t) sz)
+			.push((uint8_t) lf)
+			.call()
+			.pop(rc);
+
+		return rc;
 	}
 
 	ProgramMessage IPC::Session::getProgramMessage() const {

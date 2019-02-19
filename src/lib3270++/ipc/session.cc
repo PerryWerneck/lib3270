@@ -55,18 +55,22 @@
 	}
 
 	// Wait for session state.
-	void IPC::Session::waitForReady(time_t timeout) throw() {
+	void IPC::Session::waitForReady(time_t timeout) {
 
 		int rc;
-		Request request(*this,"waitForReady");
 
 		time_t end = time(nullptr) + timeout;
 
 		while(time(nullptr) < end) {
 
-			request.call();
+			debug("Running waitForReady request...");
 
-			request.pop(rc);
+			Request(*this,"waitForReady")
+				.push(1)
+				.call()
+				.pop(rc);
+
+			debug("Wait for ready returned ",rc);
 
 			if(rc == 0)
 				return;

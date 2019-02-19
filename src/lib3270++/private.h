@@ -295,6 +295,7 @@
 
 				// Push values
 				Request & push(const char *arg);
+				Request & push(int32_t arg);
 
 				// Pop values
 				Request & pop(std::string &value);
@@ -331,7 +332,7 @@
 				void disconnect() override;
 
 				// Wait for session state.
-				void waitForReady(time_t timeout = 5)  throw() override;
+				void waitForReady(time_t timeout = 5) override;
 
 				// Get properties.
 				void getProperty(const char *name, int &value) const override;

@@ -47,21 +47,30 @@
 
 	TN3270::Host host{"pw3270:a"};
 
-	cout
-		<< "Version: " << host.getVersion()
-		<< "\tRevision: " << host.getRevision()
-		<< std::endl;
+	try {
 
-	cout
-		<< "Connection state is " << host.getConnectionState()
-		<< "\tProgram message is " << host.getProgramMessage()
-		<< std::endl;
+		cout
+			<< "Version: " << host.getVersion()
+			<< "\tRevision: " << host.getRevision()
+			<< std::endl;
 
-	// host.connect(getenv("LIB3270_DEFAULT_HOST"));
+		cout
+			<< "Connection state is " << host.getConnectionState()
+			<< "\tProgram message is " << host.getProgramMessage()
+			<< std::endl;
 
-	if(host) {
-		cout << host << endl;
+		// host.connect(getenv("LIB3270_DEFAULT_HOST"));
+
+		if(host) {
+			cout << host << endl;
+		}
+
+	} catch(const std::exception &e) {
+
+		cerr << std::endl << e.what() << std::endl << std::endl;
+
 	}
+
 
 	return 0;
  }

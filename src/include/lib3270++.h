@@ -202,7 +202,7 @@
 			virtual void disconnect() = 0;
 
 			// Wait for session state.
-			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) throw() = 0;
+			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) = 0;
 
 			// Gets
 			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;

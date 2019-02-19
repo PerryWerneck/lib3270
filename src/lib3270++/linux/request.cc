@@ -146,6 +146,11 @@
 		return *this;
 	}
 
+	IPC::Request & IPC::Request::push(int32_t arg) {
+		dbus_message_append_args(this->msg.out,DBUS_TYPE_INT32,&arg,DBUS_TYPE_INVALID);
+		return *this;
+	}
+
 	IPC::Request & IPC::Request::pop(std::string &value) {
 
 		const char * str = "";

@@ -127,59 +127,169 @@
 
 	/// @brief Set field at current position, jumps to next writable field.
 	TN3270::Session & IPC::Session::push(const char *text) {
-		throw std::system_error(EINVAL, std::system_category());
+
+		int rc;
+
+		Request(*this,"setString")
+			.push(text)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+		return *this;
+
 	}
 
 	TN3270::Session & IPC::Session::push(int baddr, const std::string &text) {
 
+		int rc;
+
+		Request(*this,"setStringAtAddress")
+			.push((uint32_t) baddr)
+			.push(text.c_str())
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
 
 		return *this;
+
 	}
 
 	TN3270::Session & IPC::Session::push(int row, int col, const std::string &text) {
 
+		int32_t rc;
+
+		Request(*this,"setStringAt")
+			.push((uint32_t) row)
+			.push((uint32_t) col)
+			.push(text.c_str())
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
 
 		return *this;
+
 	}
 
 	TN3270::Session & IPC::Session::push(const PFKey key) {
 
+		int32_t rc;
+
+		Request(*this,"pfkey")
+			.push((uint32_t) key)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
 
 		return *this;
+
 	}
 
 	TN3270::Session & IPC::Session::push(const PAKey key) {
 
+		int32_t rc;
+
+		Request(*this,"pakey")
+			.push((uint32_t) key)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
 
 		return *this;
+
 	}
 
 	TN3270::Session & IPC::Session::push(const Action action) {
 
+		const char * actions[] = {
+			"enter",
+			"erase",
+			"eraseeof",
+			"eraseeol",
+			"eraseinput"
+		};
+
+		int32_t rc;
+
+		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {
+            throw std::system_error(EINVAL, std::system_category());
+		}
+
+		Request(*this,actions[(size_t) action])
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 		return *this;
+
 	}
 
 	TN3270::Session & IPC::Session::pop(int baddr, std::string &text) {
 
+		Request(*this,"getFieldAtAddress")
+			.push((uint32_t) baddr)
+			.call()
+			.pop(text);
 
 		return *this;
 	}
 
 	TN3270::Session & IPC::Session::pop(int row, int col, std::string &text) {
 
+		Request(*this,"getFieldAt")
+			.push((uint32_t) row)
+			.push((uint32_t) col)
+			.call()
+			.pop(text);
+
 		return *this;
 	}
 
 	TN3270::Session & IPC::Session::pop(std::string &text) {
 
+		Request(*this,"getFieldAtCursor")
+			.call()
+			.pop(text);
+
 		return *this;
+
 	}
 
 	/// @brief Set cursor address.
 	///
 	/// @param addr	Cursor address.
-	void IPC::Session::setCursorPosition(unsigned short addr) {
+	TN3270::Session & IPC::Session::setCursorPosition(unsigned short addr) {
 
+		int32_t rc;
+
+		Request(*this,"setCursorAddress")
+			.push((uint32_t) addr)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+		return *this;
 
 	}
 
@@ -187,8 +297,21 @@
 	///
 	/// @param row	New cursor row.
 	/// @param col	New cursor column.
-	void IPC::Session::setCursorPosition(unsigned short row, unsigned short col) {
+	TN3270::Session & IPC::Session::setCursorPosition(unsigned short row, unsigned short col) {
 
+		int32_t rc;
+
+		Request(*this,"setCursorPosition")
+			.push((uint32_t) row)
+			.push((uint32_t) col)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+		return *this;
 
 	}
 

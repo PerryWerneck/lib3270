@@ -344,23 +344,26 @@
 	/// @brief Set cursor address.
 	///
 	/// @param addr	Cursor address.
-	void Local::Session::setCursorPosition(unsigned short addr) {
+	TN3270::Session & Local::Session::setCursorPosition(unsigned short addr) {
 
 		if(lib3270_set_cursor_address(hSession,addr) < 0) {
 			throw std::system_error(errno, std::system_category());
 		}
 
+		return *this;
 	}
 
 	/// @brief Set cursor position.
 	///
 	/// @param row	New cursor row.
 	/// @param col	New cursor column.
-	void Local::Session::setCursorPosition(unsigned short row, unsigned short col) {
+	TN3270::Session & Local::Session::setCursorPosition(unsigned short row, unsigned short col) {
 
 		if(lib3270_set_cursor_position(hSession,row,col)) {
 			throw std::system_error(errno, std::system_category());
 		}
+
+		return *this;
 
 	}
 

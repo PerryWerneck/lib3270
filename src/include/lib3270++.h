@@ -243,10 +243,10 @@
 			}
 
 			/// @brief Set cursor address.
-			virtual void setCursorPosition(unsigned short addr) = 0;
+			virtual TN3270::Session & setCursorPosition(unsigned short addr) = 0;
 
 			/// @brief Set cursor position.
-			virtual void setCursorPosition(unsigned short row, unsigned short col) = 0;
+			virtual TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) = 0;
 
 			virtual Session & push(int baddr, const std::string &text) = 0;
 			virtual Session & push(int row, int col, const std::string &text) = 0;

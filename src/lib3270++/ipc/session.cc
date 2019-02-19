@@ -224,21 +224,11 @@
 			"eraseinput"
 		};
 
-		int32_t rc;
-
 		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {
             throw std::system_error(EINVAL, std::system_category());
 		}
 
-		Request(*this,actions[(size_t) action])
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-		return *this;
+		return this->action(actions[action]);
 
 	}
 
@@ -351,6 +341,23 @@
 		getProperty("revision",rc);
 		return rc;
 
+	}
+
+	/// @brief Execute action by name.
+	TN3270::Session & IPC::Session::action(const char *action_name) {
+
+		int32_t rc;
+
+		Request(*this,"action")
+			.push(action_name)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+		return *this;
 	}
 
  }

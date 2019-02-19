@@ -253,29 +253,27 @@
 	}
 
 	TN3270::Session & Local::Session::push(const Action action) {
+
+		typedef int (*ActionCallback)(H3270 *);
+
+		static const ActionCallback actions[] = {
+            lib3270_enter,
+            lib3270_erase,
+            lib3270_eraseeof,
+            lib3270_eraseeol,
+            lib3270_eraseinput
+		};
+
+		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {
+            throw std::system_error(EINVAL, std::system_category());
+		}
+
 		std::lock_guard<std::mutex> lock(sync);
 
-		switch(action) {
-        case ENTER:
-            lib3270_enter(hSession);
-            break;
+		int rc = actions[(size_t) action](hSession);
 
-        case ERASE:
-            lib3270_erase(hSession);
-            break;
-
-        case ERASE_EOF:
-            lib3270_eraseeof(hSession);
-            break;
-
-        case ERASE_EOL:
-            lib3270_eraseeol(hSession);
-            break;
-
-        case ERASE_INPUT:
-            lib3270_eraseinput(hSession);
-            break;
-
+		if(rc) {
+			throw std::system_error(errno, std::system_category());
 		}
 
 		return *this;
@@ -376,6 +374,15 @@
 		return lib3270_get_revision();
 	}
 
+	/// @brief Execute action by name.
+	TN3270::Session & Local::Session::action(const char *action_name) {
+
+		if(lib3270_action(hSession,action_name)) {
+			throw std::system_error(errno, std::system_category());
+		}
+
+		return *this;
+	}
 
  }
 

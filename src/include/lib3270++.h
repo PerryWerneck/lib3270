@@ -262,6 +262,11 @@
 			/// @brief Insert event listener.
 			void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
+			// Misc
+
+			/// @brief Execute action by name.
+			virtual Session & action(const char *action_name) = 0;
+
 		};
 
 		/// @brief TN3270 Host

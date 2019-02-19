@@ -209,6 +209,9 @@
 				TN3270::Session & pop(int row, int col, std::string &text) override;
 				TN3270::Session & pop(std::string &text) override;
 
+				/// @brief Execute action by name.
+				TN3270::Session & action(const char *action_name) override;
+
 			};
 
 		}
@@ -369,6 +372,9 @@
 				TN3270::Session & pop(int baddr, std::string &text) override;
 				TN3270::Session & pop(int row, int col, std::string &text) override;
 				TN3270::Session & pop(std::string &text) override;
+
+				/// @brief Execute action by name.
+				TN3270::Session & action(const char *action_name) override;
 
 			};
 

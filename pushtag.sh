@@ -24,6 +24,7 @@ git checkout master
 git merge origin/master
 
 git tag -f ${1}
+git push -f --tags
 
 for repo in $(git remote -v | grep -v origin | grep "(push)" | awk '{print $1}')
 do

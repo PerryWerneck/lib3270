@@ -119,7 +119,7 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
 		#endif
 
-		if(X509_cmp_current_time(next_update))
+		if(X509_cmp_current_time(next_update) == 1)
 		{
 			int day, sec;
 			if(ASN1_TIME_diff(&day, &sec, NULL, next_update))
@@ -165,24 +165,6 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	{
 		X509_STORE_add_crl(store, hSession->ssl.crl.cert);
 		trace_ssl(hSession,"CRL was added to cert store\n");
-
-		//time_t next_update = ASN1_GetTimeT(X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert));
-
-#ifdef DEBUG
-		{
-			int day, sec;
-
-			 if(ASN1_TIME_diff(&day, &sec, NULL, X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert)))
-			 {
-				debug("CRL Expiration: %d day(x)  %d second(s)",day,sec);
-			 }
-
-	 		time_t now = time(NULL);
-			debug("********************* CMP_TIME=%d",X509_cmp_time(X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert), &now));
-
-		}
-#endif // DEBUG
-
 	}
 
 	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();

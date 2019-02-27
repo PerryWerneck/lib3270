@@ -109,13 +109,19 @@ $(BINRLS)/lib@LIB3270_NAME@++@DLLEXT@: \
 #---[ Misc Rules ]-----------------------------------------------------------------------
 
 $(POTDIR)/lib3270.pot: \
-	src/lib3270/* \
+	src/lib3270/*.c \
+	src/lib3270/@OSNAME@/* \
+	src/lib3270/ssl/* \
+	src/lib3270/ssl/@OSNAME@/* \
 	$(DEPENDS)
 
 	@$(MAKE) -C src/lib3270 $@
 
 $(POTDIR)/lib3270++.pot: \
 	src/lib3270++/* \
+	src/lib3270++/local/* \
+	src/lib3270++/@OSNAME@/* \
+	src/lib3270++/ipc/* \
 	$(DEPENDS)
 
 	@$(MAKE) -C src/lib3270++ $@

@@ -33,6 +33,10 @@
 #include <errno.h>
 #include <lib3270/trace.h>
 
+#if defined(HAVE_LIBSSL)
+	#include <openssl/err.h>
+#endif
+
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int wait)
@@ -47,6 +51,13 @@
 	return lib3270_reconnect(hSession, wait);
 
  }
+
+#ifdef SSL_ENABLE_CRL_CHECK
+static int background_ssl_crl_check(H3270 *hSession, void *ssl_error)
+{
+	return lib3270_check_X509_crl(hSession, (SSL_ERROR_MESSAGE *) ssl_error);
+}
+#endif // SSL_ENABLE_CRL_CHECK
 
  int lib3270_reconnect(H3270 *hSession, int seconds)
  {
@@ -80,8 +91,25 @@
 		}
 	}
 
+#ifdef SSL_ENABLE_CRL_CHECK
+	SSL_ERROR_MESSAGE ssl_error;
+	memset(&ssl_error,0,sizeof(ssl_error));
+
+	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
+	int rc = lib3270_run_task(hSession, background_ssl_crl_check, &ssl_error);
+	if(rc)
+	{
+		if(ssl_error.description)
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ssl_error.description);
+		else
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ERR_reason_error_string(ssl_error.error));
+
+		return errno = rc;
+	}
+#endif // SSL_ENABLE_CRL_CHECK
+
 #if defined(HAVE_LIBSSL)
-	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 #endif // HAVE_LIBSSL
 
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);

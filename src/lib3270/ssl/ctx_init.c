@@ -63,6 +63,132 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+#ifdef SSL_ENABLE_CRL_CHECK
+
+/*
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsequence-point"
+
+// https://stackoverflow.com/questions/10975542/asn1-time-to-time-t-conversion
+static time_t ASN1_GetTimeT(const ASN1_TIME* time)
+{
+    struct tm t;
+    const char* str = (const char*) time->data;
+    size_t i = 0;
+
+    memset(&t, 0, sizeof(t));
+
+    if (time->type == V_ASN1_UTCTIME) // two digit year
+    {
+        t.tm_year = (str[i++] - '0') * 10 + (str[++i] - '0');
+        if (t.tm_year < 70)
+        t.tm_year += 100;
+    }
+    else if (time->type == V_ASN1_GENERALIZEDTIME) // four digit year
+    {
+        t.tm_year = (str[i++] - '0') * 1000 + (str[++i] - '0') * 100 + (str[++i] - '0') * 10 + (str[++i] - '0');
+        t.tm_year -= 1900;
+    }
+    t.tm_mon = ((str[i++] - '0') * 10 + (str[++i] - '0')) - 1; // -1 since January is 0 not 1.
+    t.tm_mday = (str[i++] - '0') * 10 + (str[++i] - '0');
+    t.tm_hour = (str[i++] - '0') * 10 + (str[++i] - '0');
+    t.tm_min  = (str[i++] - '0') * 10 + (str[++i] - '0');
+    t.tm_sec  = (str[i++] - '0') * 10 + (str[++i] - '0');
+
+    // Note: we did not adjust the time based on time zone information
+    return mktime(&t);
+}
+#pragma GCC diagnostic pop
+*/
+
+int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
+{
+	// Returns if don't have an SSL context.
+	if(!ssl_ctx)
+		return 0;
+
+	// Do I have X509 CRL? Is it valid?
+	if(hSession->ssl.crl.cert)
+	{
+
+		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
+		time_t now = time(NULL);
+		if(X509_cmp_time(X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert), &now))
+		{
+			int day, sec;
+			if(ASN1_TIME_diff(&day, &sec, NULL, X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert)))
+			{
+				trace_ssl(hSession,"CRL Certificate is valid for %d day(s) and %d second(s)\n",day,sec);
+				return 0;
+			}
+			else
+			{
+				trace_ssl(hSession,"Can't get CRL next update\n");
+			}
+
+		}
+
+		// Certificate is no longer valid, release it.
+		trace_ssl(hSession,"CRL Certificate is no longer valid\n");
+
+		X509_CRL_free(hSession->ssl.crl.cert);
+		hSession->ssl.crl.cert = NULL;
+
+	}
+
+	//
+	// Set up CRL validation
+	//
+	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
+	//
+	if(lib3270_get_X509_CRL(hSession,message))
+		return  -1;
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+	{
+		lib3270_autoptr(char) text = lib3270_get_ssl_crl_text(hSession);
+
+		if(text)
+			trace_ssl(hSession,"\n%s\n",text);
+
+	}
+
+	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
+
+	if(hSession->ssl.crl.cert)
+	{
+		X509_STORE_add_crl(store, hSession->ssl.crl.cert);
+		trace_ssl(hSession,"CRL was added to cert store\n");
+
+		//time_t next_update = ASN1_GetTimeT(X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert));
+
+#ifdef DEBUG
+		{
+			int day, sec;
+
+			 if(ASN1_TIME_diff(&day, &sec, NULL, X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert)))
+			 {
+				debug("CRL Expiration: %d day(x)  %d second(s)",day,sec);
+			 }
+
+	 		time_t now = time(NULL);
+			debug("********************* CMP_TIME=%d",X509_cmp_time(X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert), &now));
+
+		}
+#endif // DEBUG
+
+	}
+
+	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+	X509_STORE_set1_param(store, param);
+	X509_VERIFY_PARAM_free(param);
+
+	return 0;
+}
+#endif // SSL_ENABLE_CRL_CHECK
+
+
 /**
  * @brief Initialize openssl library.
  *
@@ -125,39 +251,11 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
 #ifdef SSL_ENABLE_CRL_CHECK
-	//
-	// Set up CRL validation
-	//
-	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
-	//
-	if(lib3270_get_X509_CRL(hSession,message))
-		return  -1;
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-	{
-		lib3270_autoptr(char) text = lib3270_get_ssl_crl_text(hSession);
-
-		if(text)
-			trace_ssl(hSession,"\n%s\n",text);
-
-	}
-
-	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-
-	if(hSession->ssl.crl.cert)
-	{
-		X509_STORE_add_crl(store, hSession->ssl.crl.cert);
-		trace_ssl(hSession,"CRL was added to cert store\n");
-	}
-
-	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
-	X509_STORE_set1_param(store, param);
-	X509_VERIFY_PARAM_free(param);
-
+	return lib3270_check_X509_crl(hSession,message);
+#else
+	return 0;
 #endif // SSL_ENABLE_CRL_CHECK
 
-	return 0;
 }
 
 #endif // HAVE_LIBSSL

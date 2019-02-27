@@ -113,10 +113,12 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
 		time_t now = time(NULL);
-		if(X509_cmp_time(X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert), &now))
+		const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
+
+		if(X509_cmp_time(next_update, &now))
 		{
 			int day, sec;
-			if(ASN1_TIME_diff(&day, &sec, NULL, X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert)))
+			if(ASN1_TIME_diff(&day, &sec, NULL, next_update))
 			{
 				trace_ssl(hSession,"CRL Certificate is valid for %d day(s) and %d second(s)\n",day,sec);
 				return 0;

@@ -112,7 +112,12 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	{
 
 		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
-		const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
+		// X509_CRL_get_nextUpdate is deprecated in openssl 1.1.0
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
+			const ASN1_TIME * next_update = X509_CRL_get_nextUpdate(hSession->ssl.crl.cert);
+		#else
+			const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
+		#endif
 
 		if(X509_cmp_current_time(next_update))
 		{

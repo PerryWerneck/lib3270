@@ -45,7 +45,7 @@ Release:		0
 License:		LGPL-3.0
 Source:			lib3270-%{version}.tar.xz
 
-Url:			https://portal.softwarepublico.gov.br/social/pw3270/
+Url:			https://github.com/PerryWerneck/lib3270.git
 
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}

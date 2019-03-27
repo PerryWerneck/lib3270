@@ -7,13 +7,16 @@
       	<param name="sslverify">disable</param>
 		<param name="url">http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git</param>
 		-->
-
-      	<param name="url">https://github.com/PerryWerneck/lib3270.git</param>
+      
       	<param name="changesgenerate">enable</param>
+      	<param name="changesauthor">perry.werneck@gmail.com</param>
+      
+      	<param name="url">https://github.com/PerryWerneck/lib3270.git</param>
 		<param name="versionformat">@PARENT_TAG@</param>
 		<param name="scm">git</param>
 	</service>
 
+  
 	<!-- https://github.com/openSUSE/obs-service-extract_file -->
 	<service name="extract_file">
 		<param name="archive">*.tar</param>

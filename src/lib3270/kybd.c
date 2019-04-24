@@ -412,8 +412,8 @@ void kybd_connect(H3270 *session, int connected, void *dunno unused)
 	}
 }
 
-/*
- * Called when we switch between 3270 and ANSI modes.
+/**
+ * @brief Called when we switch between 3270 and ANSI modes.
  */
 void kybd_in3270(H3270 *hSession, int in3270 unused, void *dunno unused)
 {
@@ -427,8 +427,8 @@ void kybd_in3270(H3270 *hSession, int in3270 unused, void *dunno unused)
 		ps_process(hSession);
 }
 
-/*
- * Lock the keyboard because of an operator error.
+/**
+ * @brief Lock the keyboard because of an operator error.
  */
 static void operator_error(H3270 *hSession, int error_type)
 {
@@ -448,7 +448,7 @@ static void operator_error(H3270 *hSession, int error_type)
 /**
  * @brief Handle an AID (Attention IDentifier) key.
  *
- *  This is the common stuff that gets executed for all AID keys (PFs, PAs, Clear and etc).
+ * This is the common stuff that gets executed for all AID keys (PFs, PAs, Clear and etc).
  *
  */
 static void key_AID(H3270 *hSession, unsigned char aid_code)
@@ -585,8 +585,7 @@ LIB3270_EXPORT int lib3270_attn(H3270 *hSession)
 }
 
 /**
- * Prepare for an insert of 'count' bytes.
- *
+ * @brief Prepare for an insert of 'count' bytes.
  *
  * @return True if the insert is legal, False otherwise.
  */
@@ -1097,10 +1096,9 @@ LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession)
 	return 0;
 }
 
-/*
- * Deferred keyboard unlock.
+/**
+ * @brief Deferred keyboard unlock.
  */
-
 static int defer_unlock(H3270 *hSession)
 {
 	lib3270_kybdlock_clear(hSession,KL_DEFERRED_UNLOCK);
@@ -1111,7 +1109,7 @@ static int defer_unlock(H3270 *hSession)
 }
 
 /**
- * Reset keyboard lock.
+ * @brief Reset keyboard lock.
  *
  * @param hSession	Session handle.
  * @param explicit	Explicit request from the keyboard.

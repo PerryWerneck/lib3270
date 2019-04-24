@@ -172,6 +172,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 	// If typeahead disabled, complain and drop it.
 	if (!hSession->typeahead)
 	{
+		lib3270_ring_bell(hSession);
 		lib3270_trace_event(hSession,"typeahead action dropped (no typeahead)\n");
 		return NULL;
 	}
@@ -206,7 +207,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
  {
 	struct ta *ta = new_ta(hSession, TA_TYPE_KEY_AID);
 
- 	if(!ta)
+ 	if(ta)
 		return;
 
 	ta->args.aid_code = aid_code;
@@ -241,11 +242,13 @@ void enq_action(H3270 *hSession, int (*fn)(H3270 *))
 {
 	struct ta *ta = new_ta(hSession, TA_TYPE_ACTION);
 
+	if(!ta)
+		return;
+
 	ta->args.action		= fn;
-
 	lib3270_trace_event(hSession,"single action queued (kybdlock 0x%x)\n", hSession->kybdlock);
-}
 
+}
 
 /**
  * @brief Execute an action from the typeahead queue.
@@ -442,10 +445,11 @@ static void operator_error(H3270 *hSession, int error_type)
 	}
 }
 
-
-/*
- * Handle an AID (Attention IDentifier) key.  This is the common stuff that
- * gets executed for all AID keys (PFs, PAs, Clear and etc).
+/**
+ * @brief Handle an AID (Attention IDentifier) key.
+ *
+ *  This is the common stuff that gets executed for all AID keys (PFs, PAs, Clear and etc).
+ *
  */
 static void key_AID(H3270 *hSession, unsigned char aid_code)
 {

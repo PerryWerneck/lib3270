@@ -207,7 +207,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
  {
 	struct ta *ta = new_ta(hSession, TA_TYPE_KEY_AID);
 
- 	if(ta)
+ 	if(!ta)
 		return;
 
 	ta->args.aid_code = aid_code;

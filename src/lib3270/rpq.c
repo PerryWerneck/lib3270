@@ -124,7 +124,7 @@ static struct rpq_keyword
 static char *x3270rpq;
 
 /**
- * RPQNAMES query reply.
+ * @brief RPQNAMES query reply.
  */
 void do_qr_rpqnames(H3270 *hSession)
 {
@@ -271,7 +271,9 @@ void do_qr_rpqnames(H3270 *hSession)
 	rpq_dump_warnings(hSession);
 }
 
-/* Utility function used by the RPQNAMES query reply. */
+/**
+ * @brief Utility function used by the RPQNAMES query reply.
+ */
 static Boolean select_rpq_terms(H3270 *hSession)
 {
 	int i,j,k,len;
@@ -373,7 +375,7 @@ static Boolean select_rpq_terms(H3270 *hSession)
 }
 
 /**
- * Utility function used by the RPQNAMES query reply.
+ * @brief Utility function used by the RPQNAMES query reply.
  */
 static int get_rpq_timezone(H3270 *hSession)
 {
@@ -458,7 +460,9 @@ static int get_rpq_timezone(H3270 *hSession)
 }
 
 
-/* Utility function used by the RPQNAMES query reply. */
+/**
+ * @brief Utility function used by the RPQNAMES query reply.
+ */
 static int get_rpq_user(H3270 *hSession, unsigned char buf[], const int buflen)
 {
 	/*

@@ -321,7 +321,9 @@ static int flush_ta(H3270 *hSession)
 	return any;
 }
 
-/* Set bits in the keyboard lock. */
+/**
+ * @brief Set bits in the keyboard lock.
+ */
 static void kybdlock_set(H3270 *hSession, unsigned int bits)
 {
 	unsigned int n;
@@ -343,7 +345,7 @@ static void kybdlock_set(H3270 *hSession, unsigned int bits)
 }
 
 /**
- * Clear bits in the keyboard lock.
+ * @brief Clear bits in the keyboard lock.
  *
  */
 void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KL_STATE bits)
@@ -368,7 +370,7 @@ void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KL_STATE bits)
 }
 
 /**
- * Set or clear enter-inhibit mode.
+ * @brief Set or clear enter-inhibit mode.
  *
  * @param session	Session handle
  * @param inhibit	New state
@@ -390,8 +392,8 @@ void kybd_inhibit(H3270 *session, Boolean inhibit)
 	}
 }
 
-/*
- * Called when a host connects or disconnects.
+/**
+ * @brief Called when a host connects or disconnects.
  */
 void kybd_connect(H3270 *session, int connected, void *dunno unused)
 {

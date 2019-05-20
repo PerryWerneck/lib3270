@@ -44,6 +44,12 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* ./lib3270/win/win-configure.sh --32 (for 32 bits)
 	* ./lib3270/win/win-configure.sh --64 (for 64 bits)
 
+4. Build
+
+	* cd lib3270
+	* make clean
+	* make all
+
 
 Compiling for Windows (With MSYS2)
 ----------------------------------

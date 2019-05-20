@@ -155,49 +155,49 @@ void lib3270_session_free(H3270 *h)
 
 }
 
-static void update_char(H3270 *session unused, int addr unused, unsigned char chr unused, unsigned short attr unused, unsigned char cursor unused)
+static void update_char(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(addr), unsigned char GNUC_UNUSED(chr), unsigned short GNUC_UNUSED(attr), unsigned char GNUC_UNUSED(cursor))
 {
 }
 
-static void nop_char(H3270 *session unused, unsigned char chr unused)
+static void nop_char(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(chr))
 {
 }
 
-static void nop(H3270 *session unused)
+static void nop(H3270 GNUC_UNUSED(*session))
 {
 }
 
-static void update_model(H3270 *session unused, const char *name unused, int model unused, int rows unused, int cols unused)
+static void update_model(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name), int GNUC_UNUSED(model), int GNUC_UNUSED(rows), int GNUC_UNUSED(cols))
 {
 }
 
-static void changed(H3270 *session unused, int bstart unused, int bend unused)
+static void changed(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(bstart), int GNUC_UNUSED(bend))
 {
 }
 
-static void update_cursor(H3270 *session unused, unsigned short row unused, unsigned short col unused, unsigned char c unused, unsigned short attr unused)
+static void update_cursor(H3270 GNUC_UNUSED(*session), unsigned short GNUC_UNUSED(row), unsigned short GNUC_UNUSED(col), unsigned char GNUC_UNUSED(c), unsigned short GNUC_UNUSED(attr))
 {
 }
 
-static void update_oia(H3270 *session unused, LIB3270_FLAG id unused, unsigned char on unused)
+static void update_oia(H3270 GNUC_UNUSED(*session), LIB3270_FLAG GNUC_UNUSED(id), unsigned char GNUC_UNUSED(on))
 {
 }
 
-static void update_selection(H3270 *session unused, int start unused, int end unused)
+static void update_selection(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(start), int GNUC_UNUSED(end))
 {
 }
 
-static void set_cursor(H3270 *session unused, LIB3270_POINTER id unused)
+static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(id))
 {
 }
 
-static int print(H3270 *session, LIB3270_PRINT_MODE mode unused)
+static int print(H3270 *session, LIB3270_PRINT_MODE GNUC_UNUSED(mode))
 {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
 	return errno = ENOTSUP;
 }
 
-static void message(H3270 *session, LIB3270_NOTIFY id  unused, const char *title, const char *msg, const char *text)
+static void message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *title, const char *msg, const char *text)
 {
 #ifdef ANDROID
 	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",title);
@@ -210,7 +210,7 @@ static void message(H3270 *session, LIB3270_NOTIFY id  unused, const char *title
 #endif // ANDROID
 }
 
-static void def_popup(H3270 *session, LIB3270_NOTIFY type unused, const char *title, const char *msg, const char *fmt, va_list arg)
+static void def_popup(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(type), const char *title, const char *msg, const char *fmt, va_list arg)
 {
 #ifdef ANDROID
 	char *mask = xs_buffer("%s\n",fmt);
@@ -223,17 +223,17 @@ static void def_popup(H3270 *session, LIB3270_NOTIFY type unused, const char *ti
 #endif // ANDROID
 }
 
-static void def_trace(H3270 *session unused, void *userdata unused, const char *fmt, va_list args)
+static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
 	fflush(stdout);
 }
 
-static void update_ssl(H3270 *session unused, LIB3270_SSL_STATE state unused)
+static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state))
 {
 }
 
-static void set_timer(H3270 *session unused, unsigned char on unused)
+static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on))
 {
 }
 
@@ -243,24 +243,24 @@ static void screen_disp(H3270 *session)
 	screen_update(session,0,session->rows*session->cols);
 }
 
-static void nop_int(H3270 *session unused, int width unused)
+static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width))
 {
 	return;
 }
 
 #ifdef HAVE_LIBSSL
-static void set_peer_certificate(const X509 *cert unused)
+static void set_peer_certificate(const X509 GNUC_UNUSED(*cert))
 {
 
 }
 #else
-static void set_peer_certificate)(const void *cert unused)
+static void set_peer_certificate)(const void GNUC_UNUSED(*cert))
 {
 
 }
 #endif // HAVE_LIBSSL
 
-static void default_update_luname(H3270 *session unused, const char *name unused)
+static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name))
 {
 
 }

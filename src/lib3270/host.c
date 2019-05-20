@@ -327,7 +327,7 @@ LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_default_host(H3270 *hSession unused)
+LIB3270_EXPORT const char * lib3270_get_default_host(H3270 GNUC_UNUSED(*hSession))
 {
 #ifdef LIB3270_DEFAULT_HOST
 	return LIB3270_DEFAULT_HOST;

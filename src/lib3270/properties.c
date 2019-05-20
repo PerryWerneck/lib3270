@@ -285,12 +285,12 @@
 	 return properties;
  }
 
- static const char * get_version(H3270 *hSession unused)
+ static const char * get_version(H3270 GNUC_UNUSED(*hSession))
  {
 	return lib3270_get_version();
  }
 
- static const char * get_revision(H3270 *hSession unused)
+ static const char * get_revision(H3270 GNUC_UNUSED(*hSession))
  {
 	return lib3270_get_revision();
  }

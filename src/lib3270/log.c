@@ -81,7 +81,7 @@
 	loghandler(session,module,0,fmt,arg);
  }
 
- static void defaultlog(H3270 *session unused, const char *module, int rc unused, const char *fmt, va_list arg_ptr)
+ static void defaultlog(H3270 GNUC_UNUSED(*session), const char *module, int GNUC_UNUSED(rc), const char *fmt, va_list arg_ptr)
  {
  	fprintf(stderr,"%s:\t",module);
 	vfprintf(stderr,fmt,arg_ptr);

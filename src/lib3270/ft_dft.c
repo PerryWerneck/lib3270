@@ -91,10 +91,10 @@ static void dft_set_cur_req(H3270 *hSession);
 static int  filter_len(char *s, register int len);
 
 /**
- * Process a Transfer Data structured field from the host.
+ * @brief Process a Transfer Data structured field from the host.
  *
  */
-void ft_dft_data(H3270 *hSession, unsigned char *data, int length unused)
+void ft_dft_data(H3270 *hSession, unsigned char *data, int GNUC_UNUSED(length))
 {
 	struct data_buffer *data_bufr = (struct data_buffer *)data;
 	unsigned short data_length, data_type;

@@ -349,7 +349,7 @@ static int internal_wait(H3270 *hSession, int seconds)
 	return 0;
 }
 
-static void internal_ring_bell(H3270 *session unused)
+static void internal_ring_bell(H3270 GNUC_UNUSED(*session))
 {
 	return;
 }

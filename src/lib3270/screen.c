@@ -722,7 +722,7 @@ void status_lu(H3270 *session, const char *lu)
 
 }
 
-static void status_connect(H3270 *hSession, int connected, void *dunno unused)
+static void status_connect(H3270 *hSession, int connected, void GNUC_UNUSED(*dunno))
 {
 	LIB3270_MESSAGE id = LIB3270_MESSAGE_USER;
 
@@ -748,7 +748,7 @@ static void status_connect(H3270 *hSession, int connected, void *dunno unused)
 
 }
 
-static void status_3270_mode(H3270 *hSession, int ignored unused, void *dunno unused)
+static void status_3270_mode(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
 	Boolean oia_boxsolid = (IN_3270 && !IN_SSCP);
 
@@ -767,7 +767,7 @@ static void status_printer(H3270 *session, int on, void *dunno)
 }
 */
 
-void status_timing(H3270 *session unused, struct timeval *t0 unused, struct timeval *t1 unused)
+void status_timing(H3270 GNUC_UNUSED(*session), struct timeval GNUC_UNUSED(*t0), struct timeval GNUC_UNUSED(*t1))
 {
 }
 

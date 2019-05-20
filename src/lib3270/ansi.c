@@ -493,13 +493,13 @@ static int	dbcs_process(H3270 *hSession, int ch, unsigned char ebc[]);
 static void	ansi_scroll(H3270 *hSession);
 
 static enum lib3270_ansi_state
-ansi_data_mode(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+ansi_data_mode(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-dec_save_cursor(H3270 *hSession, int ig1 unused, int ig2 unused)
+dec_save_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -513,7 +513,7 @@ dec_save_cursor(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state dec_restore_cursor(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state dec_restore_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -528,7 +528,7 @@ static enum lib3270_ansi_state dec_restore_cursor(H3270 *hSession, int ig1 unuse
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int nc;
 
@@ -545,7 +545,7 @@ static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int ig1 unused, int
 }
 
 static enum lib3270_ansi_state
-ansi_cursor_up(H3270 *hSession, int nn, int ig2 unused)
+ansi_cursor_up(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int rr;
 
@@ -561,7 +561,7 @@ ansi_cursor_up(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_esc2(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+ansi_esc2(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	register int	i;
 
@@ -571,7 +571,7 @@ ansi_esc2(H3270 *hSession unused, int ig1 unused, int ig2 unused)
 	return N1;
 }
 
-static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 //	static Boolean first = True;
@@ -627,7 +627,7 @@ static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int ig1 unused, int i
 }
 
 static enum lib3270_ansi_state
-ansi_insert_chars(H3270 *hSession, int nn, int ig2 unused)
+ansi_insert_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int cc = hSession->cursor_addr % hSession->cols;	/* current col */
 	int mc = hSession->cols - cc;		/* max chars that can be inserted */
@@ -649,7 +649,7 @@ ansi_insert_chars(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_cursor_down(H3270 *hSession, int nn, int ig2 unused)
+ansi_cursor_down(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int rr;
 
@@ -664,8 +664,7 @@ ansi_cursor_down(H3270 *hSession, int nn, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_cursor_right(H3270 *hSession, int nn, int ig2 unused)
+static enum lib3270_ansi_state ansi_cursor_right(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int cc;
 
@@ -682,7 +681,7 @@ ansi_cursor_right(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_cursor_left(H3270 *hSession, int nn, int ig2 unused)
+ansi_cursor_left(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int cc;
 
@@ -715,7 +714,7 @@ ansi_cursor_motion(H3270 *hSession, int n1, int n2)
 }
 
 static enum lib3270_ansi_state
-ansi_erase_in_display(H3270 *hSession, int nn, int ig2 unused)
+ansi_erase_in_display(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	switch (nn) {
 	    case 0:	/* below */
@@ -733,7 +732,7 @@ ansi_erase_in_display(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_erase_in_line(H3270 *hSession, int nn, int ig2 unused)
+ansi_erase_in_line(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int nc = hSession->cursor_addr % hSession->cols;
 
@@ -752,7 +751,7 @@ ansi_erase_in_line(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_insert_lines(H3270 *hSession, int nn, int ig2 unused)
+ansi_insert_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int rr = hSession->cursor_addr / hSession->cols;	/* current row */
 	int mr = hSession->scroll_bottom - rr;		/* rows left at and below this one */
@@ -778,7 +777,7 @@ ansi_insert_lines(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_delete_lines(H3270 *hSession, int nn, int ig2 unused)
+ansi_delete_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int rr = hSession->cursor_addr / hSession->cols;	/* current row */
 	int mr = hSession->scroll_bottom - rr;				/* max rows that can be deleted */
@@ -804,7 +803,7 @@ ansi_delete_lines(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_delete_chars(H3270 *hSession, int nn, int ig2 unused)
+ansi_delete_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	int cc = hSession->cursor_addr % hSession->cols;	/* current col */
 	int mc = hSession->cols - cc;						/* max chars that can be deleted */
@@ -826,7 +825,7 @@ ansi_delete_chars(H3270 *hSession, int nn, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_sgr(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_sgr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -925,19 +924,19 @@ ansi_sgr(H3270 *hSession, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_bell(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_bell(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	lib3270_ring_bell(hSession);
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_newpage(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_newpage(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	ctlr_clear(hSession,False);
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	if (hSession->held_wrap)
 	{
@@ -958,8 +957,7 @@ static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int ig1 unused, i
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_cr(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_cr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	if (hSession->cursor_addr % hSession->cols)
 		cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->cols));
@@ -971,14 +969,13 @@ ansi_cr(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_lf(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_lf(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int nc = hSession->cursor_addr + hSession->cols;
 
 	hSession->held_wrap = 0;
 
-	/* If we're below the scrolling region, don't scroll. */
+	// If we're below the scrolling region, don't scroll.
 	if((hSession->cursor_addr / hSession->cols) >= hSession->scroll_bottom)
 	{
 		if (nc < hSession->rows * hSession->cols)
@@ -993,8 +990,7 @@ ansi_lf(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_htab(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_htab(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int col = hSession->cursor_addr % hSession->cols;
 	int i;
@@ -1009,14 +1005,12 @@ ansi_htab(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_escape(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_escape(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	return ESC;
 }
 
-static enum lib3270_ansi_state
-ansi_nop(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_nop(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	return DATA;
 }
@@ -1036,7 +1030,7 @@ ansi_nop(H3270 *hSession unused, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_printing(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int nc;
 	unsigned char ebc_ch;
@@ -1215,8 +1209,7 @@ ansi_printing(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_multibyte(H3270 *hSession, int ig1, int ig2)
+static enum lib3270_ansi_state ansi_multibyte(H3270 *hSession, int ig1, int ig2)
 {
 	char mbs[MB_MAX];
 	unsigned char ch;
@@ -1267,8 +1260,7 @@ ansi_multibyte(H3270 *hSession, int ig1, int ig2)
 	return (*fn)(hSession,n[0], n[1]);
 }
 
-static enum lib3270_ansi_state
-ansi_semicolon(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_semicolon(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	if (nx >= NN)
 		return DATA;
@@ -1276,15 +1268,13 @@ ansi_semicolon(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return hSession->state;
 }
 
-static enum lib3270_ansi_state
-ansi_digit(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_digit(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	n[nx] = (n[nx] * 10) + (hSession->ansi_ch - '0');
 	return hSession->state;
 }
 
-static enum lib3270_ansi_state
-ansi_reverse_index(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_reverse_index(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int rr = hSession->cursor_addr / hSession->cols;	/* current row */
 	int np = (hSession->scroll_top - 1) - rr;			/* number of rows in the scrolling region, above this line */
@@ -1318,21 +1308,19 @@ ansi_reverse_index(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_send_attributes(H3270 *hSession, int nn, int ig2 unused)
+static enum lib3270_ansi_state ansi_send_attributes(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	if (!nn)
 		net_sends(hSession,"\033[?1;2c");
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-dec_return_terminal_id(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state dec_return_terminal_id(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	return ansi_send_attributes(hSession, 0, 0);
 }
 
-static enum lib3270_ansi_state
-ansi_set_mode(H3270 *hSession, int nn, int ig2 unused)
+static enum lib3270_ansi_state ansi_set_mode(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	switch (nn)
 	{
@@ -1346,8 +1334,7 @@ ansi_set_mode(H3270 *hSession, int nn, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_reset_mode(H3270 *hSession, int nn, int ig2 unused)
+static enum lib3270_ansi_state ansi_reset_mode(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	switch (nn)
 	{
@@ -1361,8 +1348,7 @@ ansi_reset_mode(H3270 *hSession, int nn, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_status_report(H3270 *hSession, int nn, int ig2 unused)
+static enum lib3270_ansi_state ansi_status_report(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	static char cpr[22];
 
@@ -1380,70 +1366,66 @@ ansi_status_report(H3270 *hSession, int nn, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_cs_designate(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_cs_designate(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->cs_to_change = strchr(gnnames, hSession->ansi_ch) - gnnames;
 	return CSDES;
 }
 
-static enum lib3270_ansi_state
-ansi_cs_designate2(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_cs_designate2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->csd[hSession->cs_to_change] = strchr(csnames, hSession->ansi_ch) - csnames;
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_select_g0(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_select_g0(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->cset = CS_G0;
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_select_g1(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state ansi_select_g1(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->cset = CS_G1;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_select_g2(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_select_g2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->cset = CS_G2;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_select_g3(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_select_g3(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->cset = CS_G3;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_one_g2(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_one_g2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->once_cset = CS_G2;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_one_g3(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_one_g3(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	hSession->once_cset = CS_G3;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_esc3(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+ansi_esc3(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	return DECP;
 }
 
 static enum lib3270_ansi_state
-dec_set(H3270 *hSession, int ig1 unused, int ig2 unused)
+dec_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -1480,7 +1462,7 @@ dec_set(H3270 *hSession, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-dec_reset(H3270 *hSession, int ig1 unused, int ig2 unused)
+dec_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -1513,7 +1495,7 @@ dec_reset(H3270 *hSession, int ig1 unused, int ig2 unused)
 	return DATA;
 }
 
-static enum lib3270_ansi_state dec_save(H3270 *hSession, int ig1 unused, int ig2 unused)
+static enum lib3270_ansi_state dec_save(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -1543,7 +1525,7 @@ static enum lib3270_ansi_state dec_save(H3270 *hSession, int ig1 unused, int ig2
 }
 
 static enum lib3270_ansi_state
-dec_restore(H3270 *hSession, int ig1 unused, int ig2 unused)
+dec_restore(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	int i;
 
@@ -1599,7 +1581,7 @@ dec_scrolling_region(H3270 *hSession, int top, int bottom)
 }
 
 static enum lib3270_ansi_state
-xterm_text_mode(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+xterm_text_mode(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	nx = 0;
 	n[0] = 0;
@@ -1607,14 +1589,14 @@ xterm_text_mode(H3270 *hSession unused, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-xterm_text_semicolon(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+xterm_text_semicolon(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	tx = 0;
 	return LIB3270_ANSI_STATE_TEXT2;
 }
 
 static enum lib3270_ansi_state
-xterm_text(H3270 *hSession, int ig1 unused, int ig2 unused)
+xterm_text(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	if (tx < NT)
 		text[tx++] = hSession->ansi_ch;
@@ -1622,7 +1604,7 @@ xterm_text(H3270 *hSession, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-xterm_text_do(H3270 *hSession unused, int ig1 unused, int ig2 unused)
+xterm_text_do(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 /*
 #if defined(X3270_DISPLAY) || defined(WC3270)
@@ -1666,7 +1648,7 @@ xterm_text_do(H3270 *hSession unused, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_htab_set(H3270 *hSession, int ig1 unused, int ig2 unused)
+ansi_htab_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
 	register int col = hSession->cursor_addr % hSession->cols;
 
@@ -1675,7 +1657,7 @@ ansi_htab_set(H3270 *hSession, int ig1 unused, int ig2 unused)
 }
 
 static enum lib3270_ansi_state
-ansi_htab_clear(H3270 *hSession, int nn, int ig2 unused)
+ansi_htab_clear(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	register int col, i;
 
@@ -1721,7 +1703,7 @@ static void ansi_scroll(H3270 *hSession)
 }
 
 /* Callback for when we enter ANSI mode. */
-void ansi_in3270(H3270 *session, int in3270, void *dunno unused)
+void ansi_in3270(H3270 *session, int in3270, void GNUC_UNUSED(*dunno))
 {
 	if (!in3270)
 		(void) ansi_reset(session, 0, 0);
@@ -1847,8 +1829,7 @@ ansi_send_pf(H3270 *hSession, int nn)
 	net_sends(hSession,fn_buf);
 }
 
-void
-ansi_send_pa(H3270 *hSession, int nn)
+void ansi_send_pa(H3270 *hSession, int nn)
 {
 	static char fn_buf[4];
 	static char code[4] = { 'P', 'Q', 'R', 'S' };
@@ -1859,7 +1840,7 @@ ansi_send_pa(H3270 *hSession, int nn)
 	net_sends(hSession,fn_buf);
 }
 
-void toggle_lineWrap(H3270 *hSession, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE type unused)
+void toggle_lineWrap(H3270 *hSession, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(type))
 {
 	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_LINE_WRAP))
 		hSession->wraparound_mode = 1;

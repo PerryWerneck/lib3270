@@ -617,7 +617,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
  * @param hSession	Session handle
  *
  */
-void net_input(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void *dunno unused)
+void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
 {
 //	register unsigned char	* cp;
 	int						  nr;
@@ -1579,11 +1579,10 @@ static int process_eor(H3270 *hSession)
 }
 
 
-/*
- * net_exception
- *	Called when there is an exceptional condition on the socket.
+/**
+ *	@brief Called when there is an exceptional condition on the socket.
  */
-void net_exception(H3270 *session, int fd unused, LIB3270_IO_FLAG flag unused, void *dunno unused)
+void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
 {
 	CHECK_SESSION_HANDLE(session);
 
@@ -1600,13 +1599,14 @@ void net_exception(H3270 *session, int fd unused, LIB3270_IO_FLAG flag unused, v
 	}
 }
 
-/*
+/**
+ *	@brief send a 3270 record
+ *
  * Flavors of Network Output:
  *
- *   3270 mode
- *	net_output	send a 3270 record
+ * 3270 mode
  *
- *   ANSI mode; call each other in turn
+ *  ANSI mode; call each other in turn
  *	net_sendc	net_cookout for 1 byte
  *	net_sends	net_cookout for a null-terminated string
  *	net_cookout	send user data with cooked-mode processing, ANSI mode

@@ -351,7 +351,7 @@ static char *utf8_tab[U_MAX][96] = {
  * character set.
  * Returns 0 if the lookup fails.
  */
-unsigned char utf8_lookup(char *mbs unused, enum ulfail *fail, int *consumed unused)
+unsigned char utf8_lookup(char GNUC_UNUSED(*mbs), enum ulfail *fail, int GNUC_UNUSED(*consumed))
 {
 	if (fail != NULL)
 		*fail = ULFAIL_NOUTF8;

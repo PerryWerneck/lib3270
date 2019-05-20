@@ -117,7 +117,7 @@ static const unsigned char code_table[64] =
 /*
  * Initialize the emulated 3270 hardware.
  */
-void ctlr_init(H3270 *session, unsigned cmask unused)
+void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask))
 {
 	/* Register callback routines. */
 	lib3270_register_schange(session,LIB3270_STATE_HALF_CONNECT, ctlr_half_connect, 0);
@@ -390,18 +390,18 @@ static void update_formatted(H3270 *hSession)
 
 }
 
-/*
- * Called when a host is half connected.
- */
-static void ctlr_half_connect(H3270 *hSession, int ignored unused, void *dunno unused)
+///
+/// @brief Called when a host is half connected.
+///
+static void ctlr_half_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
 	ticking_start(hSession,True);
 }
 
-/*
- * Called when a host connects, disconnects, or changes ANSI/3270 modes.
- */
-static void ctlr_connect(H3270 *hSession, int ignored unused, void *dunno unused)
+///
+/// @brief Called when a host connects, disconnects, or changes ANSI/3270 modes.
+///
+static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
 	ticking_stop(hSession);
 	status_untiming(hSession);
@@ -2645,7 +2645,7 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
  *
  * @param hSession	Session handle
  */
-void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int move_ea unused)
+void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int GNUC_UNUSED(move_ea))
 {
 	/* Move the characters. */
 	if (memcmp((char *) &hSession->ea_buf[baddr_from],(char *) &hSession->ea_buf[baddr_to],count * sizeof(struct lib3270_ea)))
@@ -2663,7 +2663,7 @@ void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int mo
  * @param hSession	Session handle
  *
  */
-void ctlr_aclear(H3270 *hSession, int baddr, int count, int clear_ea unused)
+void ctlr_aclear(H3270 *hSession, int baddr, int count, int GNUC_UNUSED(clear_ea))
 {
 	if (memcmp((char *) &hSession->ea_buf[baddr], (char *) hSession->zero_buf,
 		    count * sizeof(struct lib3270_ea))) {
@@ -2674,8 +2674,8 @@ void ctlr_aclear(H3270 *hSession, int baddr, int count, int clear_ea unused)
 	/* XXX: What about clear_ea? */
 }
 
-/*
- * Scroll the screen 1 row.
+/**
+ * @brief Scroll the screen 1 row.
  *
  * This could be accomplished with ctlr_bcopy() and ctlr_aclear(), but this
  * operation is common enough to warrant a separate path.
@@ -2700,8 +2700,8 @@ void ctlr_scroll(H3270 *hSession)
 }
 #endif /*]*/
 
-/*
- * Swap the regular and alternate screen buffers
+/**
+ * @brief Swap the regular and alternate screen buffers
  */
 void ctlr_altbuffer(H3270 *session, int alt)
 {
@@ -2728,9 +2728,8 @@ void ctlr_altbuffer(H3270 *session, int alt)
 	}
 }
 
-
-/*
- * Set or clear the MDT on an attribute
+/**
+ * @brief Set or clear the MDT on an attribute
  */
 void mdt_set(H3270 *hSession, int baddr)
 {
@@ -2778,7 +2777,6 @@ ctlr_dbcs_state(int baddr)
 }
 #endif /*]*/
 
-
 /*
  * Transaction timing.  The time between sending an interrupt (PF, PA, Enter,
  * Clear) and the host unlocking the keyboard is indicated on the status line
@@ -2791,9 +2789,8 @@ ctlr_dbcs_state(int baddr)
 //static void * tick_id;
 //static struct timeval t_want;
 
-/* Return the difference in milliseconds between two timevals. */
-static long
-delta_msec(struct timeval *t1, struct timeval *t0)
+/// @brief Return the difference in milliseconds between two timevals.
+static long delta_msec(struct timeval *t1, struct timeval *t0)
 {
 	return (t1->tv_sec - t0->tv_sec) * 1000 +
 	       (t1->tv_usec - t0->tv_usec + 500) / 1000;

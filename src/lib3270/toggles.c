@@ -303,13 +303,13 @@ LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE ix)
 	return (int) t->value;
 }
 
-static void toggle_altscreen(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt unused)
+static void toggle_altscreen(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	if(!session->screen_alt)
 		set_viewsize(session,t->value ? 24 : session->maxROWS,80);
 }
 
-static void toggle_redraw(H3270 *session, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused)
+static void toggle_redraw(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	session->cbk.display(session);
 }
@@ -317,11 +317,11 @@ static void toggle_redraw(H3270 *session, struct lib3270_toggle *t unused, LIB32
 /*
  * No-op toggle.
  */
-static void toggle_nop(H3270 *session unused, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused )
+static void toggle_nop(H3270 GNUC_UNUSED(*session), struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 }
 
-static void toggle_keepalive(H3270 *session, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE tt unused )
+static void toggle_keepalive(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	if(session->sock > 0)
 	{

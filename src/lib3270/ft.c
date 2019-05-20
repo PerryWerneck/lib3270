@@ -164,37 +164,37 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	return 0;
  }
 
- static void def_complete(H3270 *hSession, unsigned long length unused, double kbytes_sec unused, const char *msg, void *userdata unused)
+ static void def_complete(H3270 *hSession, unsigned long GNUC_UNUSED(length), double GNUC_UNUSED(kbytes_sec), const char *msg, void GNUC_UNUSED(*userdata))
  {
  	hSession->ft->cbk.message(hSession,msg,hSession->ft->user_data);
  }
 
- static void def_failed(H3270 *hSession, unsigned long length,double kbytes_sec,const char *msg, void *userdata)
+ static void def_failed(H3270 *hSession, unsigned long length, double kbytes_sec, const char *msg, void *userdata)
  {
  	hSession->ft->cbk.complete(hSession,length,kbytes_sec,msg,userdata);
  }
 
- static void def_message(H3270 *hSession, const char *msg, void *userdata unused)
+ static void def_message(H3270 *hSession, const char *msg, void GNUC_UNUSED(*userdata))
  {
 	lib3270_write_log(hSession,"ft","%s",msg);
  }
 
- static void def_update(H3270 *hSession unused, unsigned long current unused, unsigned long length unused, double kbytes_sec unused, void *userdata unused)
+ static void def_update(H3270 GNUC_UNUSED(*hSession), unsigned long GNUC_UNUSED(current), unsigned long GNUC_UNUSED(length), double GNUC_UNUSED(kbytes_sec), void GNUC_UNUSED(*userdata))
  {
 
  }
 
- static void def_running(H3270 *hSession unused, int is_cut unused, void *userdata unused)
+ static void def_running(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(is_cut), void GNUC_UNUSED(*userdata))
  {
 
  }
 
- static void def_aborting(H3270 *hSession unused, const char *reason unused, void *userdata unused)
+ static void def_aborting(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*reason), void GNUC_UNUSED(*userdata))
  {
 
  }
 
- static void def_state_changed(H3270 *hSession unused, LIB3270_FT_STATE state unused, const char *text unused, void *userdata unused)
+ static void def_state_changed(H3270 GNUC_UNUSED(*hSession), LIB3270_FT_STATE GNUC_UNUSED(state), const char GNUC_UNUSED(*text), void GNUC_UNUSED(*userdata))
  {
 
  }
@@ -679,14 +679,14 @@ void ft_aborting(H3270FT *h, const char *reason)
 }
 
 /* Process a disconnect abort. */
-static void ft_connected(H3270 *hSession, int ignored unused, void *dunno unused)
+static void ft_connected(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
 	if (!CONNECTED && lib3270_get_ft_state(hSession) != LIB3270_FT_STATE_NONE)
 		ft_failed(get_ft_handle(hSession),_("Host disconnected, transfer cancelled"));
 }
 
 /* Process an abort from no longer being in 3270 mode. */
-static void ft_in3270(H3270 *hSession, int ignored unused, void *dunno unused)
+static void ft_in3270(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
 	if (!IN_3270 && lib3270_get_ft_state(hSession) != LIB3270_FT_STATE_NONE)
 		ft_failed(get_ft_handle(hSession),_("Not in 3270 mode, transfer cancelled"));

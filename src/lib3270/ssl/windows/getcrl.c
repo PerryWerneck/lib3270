@@ -131,7 +131,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	return realsize;
 }
 
-static int internal_curl_trace_callback(CURL *handle unused, curl_infotype type, char *data, size_t size, void *userp)
+static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype type, char *data, size_t size, void *userp)
 {
 	const char * text = NULL;
 

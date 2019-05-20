@@ -653,7 +653,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession)
 
 }
 #else
-LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession unused)
+LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 GNUC_UNUSED(*hSession))
 {
 	return NULL;
 }

@@ -340,25 +340,6 @@ static void toggle_keepalive(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*
 	}
 }
 
-/*
-static void toggle_reconnect(H3270 *hSession, struct lib3270_toggle *t unused, LIB3270_TOGGLE_TYPE type  )
-{
-
-	// If already connected or not interactive returns.
-	if(hSession->sock > 0 || type != TT_INTERACTIVE)
-		return;
-
-	if(t->value && !hSession->auto_reconnect_inprogress)
-	{
-		// Schedule an automatic reconnection.
-		lib3270_write_log(hSession,"toggle","Auto-reconnect toggle was activated when offline, reconnecting");
-		hSession->auto_reconnect_inprogress = 1;
-		(void) AddTimer(RECONNECT_MS, hSession, lib3270_check_for_auto_reconnect);
-	}
-
-}
-*/
-
 /**
  * @brief Called from system initialization code to handle initial toggle settings.
  */

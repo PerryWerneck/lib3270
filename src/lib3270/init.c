@@ -119,7 +119,7 @@ int lib3270_unloaded(void)
 
 #if defined WIN32
 
-BOOL WINAPI DllMain(HANDLE hinst unused, DWORD dwcallpurpose, LPVOID lpvResvd unused)
+BOOL WINAPI DllMain(HANDLE GNUC_UNUSED(hinst), DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lpvResvd))
 {
 //	Trace("%s - Library %s",__FUNCTION__,(dwcallpurpose == DLL_PROCESS_ATTACH) ? "Loaded" : "Unloaded");
 

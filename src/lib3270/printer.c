@@ -106,8 +106,8 @@ static void	printer_otimeout(H3270 *session);
 static void	printer_etimeout(H3270 *session);
 static void	printer_dump(struct pr3o *p, Boolean is_err, Boolean is_dead);
 #endif /*]*/
-static void	printer_host_connect(H3270 *session, int connected unused, void *dunno);
-static void	printer_exiting(H3270 *session, int b unused, void *dunno);
+static void	printer_host_connect(H3270 *session, int connected, void *dunno);
+static void	printer_exiting(H3270 *session, int b, void *dunno);
 
 /* Globals */
 
@@ -660,7 +660,7 @@ printer_stop(void)
 
 /* The emulator is exiting.  Make sure the printer session is cleaned up. */
 static void
-printer_exiting(H3270 *session, int b unused, void *dunno)
+printer_exiting(H3270 *session, int GNUC_UNUSED(b), void *dunno)
 {
 	printer_stop();
 }
@@ -668,7 +668,7 @@ printer_exiting(H3270 *session, int b unused, void *dunno)
 #if defined(X3270_DISPLAY) /*[*/
 /* Callback for "OK" button on printer specific-LU popup */
 static void
-lu_callback(Widget w, XtPointer client_data, XtPointer call_data unused)
+lu_callback(Widget w, XtPointer client_data, XtPointer G_GNUC_UNUSED(call_data))
 {
 	char *lu;
 
@@ -687,7 +687,7 @@ lu_callback(Widget w, XtPointer client_data, XtPointer call_data unused)
 
 /* Host connect/disconnect/3270-mode event. */
 static void
-printer_host_connect(H3270 *session, int connected unused, void *dunno)
+printer_host_connect(H3270 *session, int GNUC_UNUSED(connected), void *dunno)
 {
 	if (IN_3270) {
 		char *printer_lu = appres.printer_lu;

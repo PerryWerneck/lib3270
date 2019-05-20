@@ -194,7 +194,7 @@ LIB3270_EXPORT const char * lib3270_win32_local_charset(void)
 #define SECS_BETWEEN_EPOCHS	11644473600ULL
 #define SECS_TO_100NS		10000000ULL /* 10^7 */
 
-int gettimeofday(struct timeval *tv, void *ignored unused)
+int gettimeofday(struct timeval *tv, void GNUC_UNUSED(*ignored))
 {
 	FILETIME t;
 	ULARGE_INTEGER u;

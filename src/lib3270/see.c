@@ -369,43 +369,43 @@ static const char * see_input_control(unsigned char setting)
 
 const char * see_efa(unsigned char efa, unsigned char value)
 {
-	static char buf[64];
+	static char buf[80];
 
 	switch (efa) {
 	    case XA_ALL:
-		(void) sprintf(buf, " all(%x)", value);
+		(void) snprintf(buf, sizeof(buf), " all(%x)", value);
 		break;
 	    case XA_3270:
-		(void) sprintf(buf, " 3270%s", see_attr(value));
+		(void) snprintf(buf, sizeof(buf), " 3270%s", see_attr(value));
 		break;
 	    case XA_VALIDATION:
-		(void) sprintf(buf, " validation%s", see_validation(value));
+		(void) snprintf(buf, sizeof(buf), " validation%s", see_validation(value));
 		break;
 	    case XA_OUTLINING:
-		(void) sprintf(buf, " outlining(%s)", see_outline(value));
+		(void) snprintf(buf, sizeof(buf), " outlining(%s)", see_outline(value));
 		break;
 	    case XA_HIGHLIGHTING:
-		(void) sprintf(buf, " highlighting(%s)", see_highlight(value));
+		(void) snprintf(buf, sizeof(buf), " highlighting(%s)", see_highlight(value));
 		break;
 	    case XA_FOREGROUND:
-		(void) sprintf(buf, " foreground(%s)", see_color(value));
+		(void) snprintf(buf, sizeof(buf), " foreground(%s)", see_color(value));
 		break;
 	    case XA_CHARSET:
-		(void) sprintf(buf, " charset(%x)", value);
+		(void) snprintf(buf, sizeof(buf), " charset(%x)", value);
 		break;
 	    case XA_BACKGROUND:
 		(void) sprintf(buf, " background(%s)", see_color(value));
 		break;
 	    case XA_TRANSPARENCY:
-		(void) sprintf(buf, " transparency(%s)",
+		(void) snprintf(buf, sizeof(buf), " transparency(%s)",
 		    see_transparency(value));
 		break;
 	    case XA_INPUT_CONTROL:
-		(void) sprintf(buf, " input-control(%s)",
+		(void) snprintf(buf, sizeof(buf), " input-control(%s)",
 		    see_input_control(value));
 		break;
 	    default:
-		(void) sprintf(buf, " %s[0x%x]", unknown(efa), value);
+		(void) snprintf(buf, sizeof(buf), " %s[0x%x]", unknown(efa), value);
 		break;
 	}
 	return buf;

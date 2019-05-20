@@ -86,16 +86,24 @@
 	#define BLOCKING_CONNECT_ONLY	1
 #endif /*]*/
 
-/*
- * Compiler-specific #defines.
- */
+//
+// Compiler-specific #defines.
+//
+// Reference: GLIBC gmacros.h
+//
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
 
-/* 'unused' explicitly flags an unused parameter */
-#if defined(__GNUC__)
 	#define unused __attribute__((__unused__))
+
+	#define GNUC_UNUSED \
+		__attribute__((__unused__))
+
 #else
+
 	#define unused
+	#define GNUC_UNUSED
 	#define printflike(s, f)
+
 #endif
 
 

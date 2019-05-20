@@ -76,8 +76,8 @@ static void	wtrace(H3270 *session, const char *fmt, ...);
 /* display a (row,col) */
 const char * rcba(H3270 *hSession, int baddr)
 {
-	static char buf[16];
-	(void) sprintf(buf, "(%d,%d)", baddr/hSession->cols + 1, baddr%hSession->cols + 1);
+	static char buf[48];
+	(void) snprintf(buf, 48, "(%d,%d)", baddr/hSession->cols + 1, baddr%hSession->cols + 1);
 	return buf;
 }
 

@@ -58,8 +58,7 @@
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
 
-//static void net_connected(H3270 *hSession)
-static void net_connected(H3270 *hSession, int fd unused, LIB3270_IO_FLAG flag unused, void *dunno unused)
+static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
 {
 	int 		err;
 	socklen_t	len		= sizeof(err);

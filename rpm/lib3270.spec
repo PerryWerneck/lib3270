@@ -98,7 +98,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
-%package devel
+%package -n lib3270-devel
 
 Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
@@ -106,10 +106,7 @@ Group:		Development/Libraries/C and C++
 Requires:	%{name} = %{version}
 Requires:	lib3270++%{_libvrs} = %{version}
 
-Provides:	lib3270-devel = %{version}
-Conflicts:	otherproviders(lib3270-devel)
-
-%description devel
+%description -n lib3270-devel
 
 TN3270 access library for C/C++ development files.
 
@@ -142,16 +139,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{_datadir}/pw3270
 
-%{_libdir}/lib3270.so.5
-%{_libdir}/lib3270.so.5.2
+%{_libdir}/lib3270.so.%{MAJOR_VERSION}
+%{_libdir}/lib3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %files -n lib3270++%{_libvrs}
 %defattr(-,root,root)
 
-%{_libdir}/lib3270++.so.5
-%{_libdir}/lib3270++.so.5.2
+%{_libdir}/lib3270++.so.%{MAJOR_VERSION}
+%{_libdir}/lib3270++.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files devel
+%files -n lib3270-devel
 %defattr(-,root,root)
 
 %{_libdir}/lib3270.so

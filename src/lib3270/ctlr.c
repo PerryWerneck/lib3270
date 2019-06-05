@@ -2429,9 +2429,8 @@ int ctlr_any_data(H3270 *session)
 	return 0;
 }
 
-/*
- * Clear the text (non-status) portion of the display.  Also resets the cursor
- * and buffer addresses and extended attributes.
+/**
+ * @brief Clear the text (non-status) portion of the display.  Also resets the cursor and buffer addresses and extended attributes.
  */
 void ctlr_clear(H3270 *session, Boolean can_snap)
 {
@@ -2452,7 +2451,11 @@ void ctlr_clear(H3270 *session, Boolean can_snap)
 	(void) memset((char *)session->ea_buf, 0, session->rows*session->cols*sizeof(struct lib3270_ea));
 	cursor_move(session,0);
 	session->buffer_addr = 0;
-	lib3270_unselect(session);
+
+	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_KEEP_SELECTED)) {
+		lib3270_unselect(session);
+	}
+
 	set_formatted(session,0);
 	session->default_fg = 0;
 	session->default_bg = 0;

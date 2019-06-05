@@ -182,6 +182,8 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
 
 	CHECK_SESSION_HANDLE(hSession);
 
+	trace("%s",__FUNCTION__);
+
 	if(hSession->selected)
 	{
 		hSession->selected = 0;

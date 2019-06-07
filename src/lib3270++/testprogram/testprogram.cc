@@ -36,6 +36,7 @@
  *
  */
 
+ #include <getopt.h>
  #include <cstdlib>
  #include <lib3270++.h>
 
@@ -43,9 +44,33 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- int main(int argc, const char *argv[]) {
+ int main(int argc, char **argv) {
 
-	TN3270::Host host{"pw3270:a"};
+	const char * session = "pw3270:a";
+
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+	static struct option options[] = {
+		{ "session",	required_argument,	0,	's' },
+		{ 0, 0, 0, 0}
+
+	};
+	#pragma GCC diagnostic pop
+
+	int long_index =0;
+	int opt;
+	while((opt = getopt_long(argc, argv, "s:", options, &long_index )) != -1) {
+
+		switch(opt) {
+		case 's':
+			session = optarg;
+			break;
+
+		}
+
+	}
+
+	TN3270::Host host{session};
 
 	try {
 

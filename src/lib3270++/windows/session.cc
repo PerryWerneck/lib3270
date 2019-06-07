@@ -39,6 +39,7 @@
  #include "../private.h"
  #include <cstring>
  #include <lib3270/trace.h>
+ #include <algorithm>
 
  using std::string;
 
@@ -58,6 +59,8 @@
 		pipename += string(id,ptr - id);
 		pipename += "\\";
 		pipename += (ptr+1);
+
+		std::transform(pipename.begin(), pipename.end(), pipename.begin(), ::tolower);
 
 		debug("pipename: \"%s\"",pipename.c_str());
 

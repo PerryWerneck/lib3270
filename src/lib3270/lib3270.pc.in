@@ -6,6 +6,7 @@ includedir=@includedir@
 version_major=@PACKAGE_MAJOR_VERSION@
 version_minor=@PACKAGE_MINOR_VERSION@
 sdk_version=@LIB3270_SDK_VERSION@
+library_name=@LIB3270_NAME@
 
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@

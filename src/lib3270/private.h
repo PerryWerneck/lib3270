@@ -648,6 +648,16 @@ struct _h3270
 
 };
 
+#define SELECTION_LEFT			0x01
+#define SELECTION_TOP			0x02
+#define SELECTION_RIGHT			0x04
+#define SELECTION_BOTTOM		0x08
+
+#define SELECTION_SINGLE_COL	0x10
+#define SELECTION_SINGLE_ROW	0x20
+
+#define SELECTION_ACTIVE		0x80
+
 /* Library internal calls */
 LIB3270_INTERNAL void	key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped);
 LIB3270_INTERNAL int	cursor_move(H3270 *session, int baddr);
@@ -659,6 +669,9 @@ LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
 
 LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
+
+LIB3270_INTERNAL void 	do_select(H3270 *h, int start, int end, int rect);
+
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.

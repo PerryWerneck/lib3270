@@ -1,0 +1,14 @@
+{
+   libcrypt_FIPS_selftest
+   Memcheck:Cond
+   ...
+   fun:FIPS_selftest
+}
+
+{
+   libcrypt_FIPS_mode_set
+   Memcheck:Cond
+   ...
+   fun:FIPS_mode_set
+}
+

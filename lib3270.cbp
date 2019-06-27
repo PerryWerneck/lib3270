@@ -217,7 +217,10 @@
 		<Unit filename="src/lib3270/see.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/lib3270/selection.c">
+		<Unit filename="src/lib3270/selection/actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lib3270/selection/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/lib3270/session.c">

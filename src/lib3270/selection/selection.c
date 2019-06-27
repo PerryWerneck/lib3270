@@ -27,24 +27,12 @@
  *
  */
 
- #include "private.h"
+ #include "../private.h"
  #include <lib3270.h>
  #include <lib3270/actions.h>
  #include <lib3270/session.h>
  #include <lib3270/selection.h>
  #include "3270ds.h"
-
- #define SELECTION_LEFT			0x01
- #define SELECTION_TOP			0x02
- #define SELECTION_RIGHT		0x04
- #define SELECTION_BOTTOM		0x08
-
- #define SELECTION_SINGLE_COL	0x10
- #define SELECTION_SINGLE_ROW	0x20
-
- #define SELECTION_ACTIVE		0x80
-
- static void do_select(H3270 *h, int start, int end, int rect);
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -176,74 +164,7 @@ void toggle_rectselect(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LI
 		update_selected_region(session);
 }
 
-LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
-{
-	int a;
-
-	CHECK_SESSION_HANDLE(hSession);
-
-	trace("%s",__FUNCTION__);
-
-	if(hSession->selected)
-	{
-		hSession->selected = 0;
-
-		for(a = 0; a < hSession->rows*hSession->cols; a++)
-		{
-			if(hSession->text[a].attr & LIB3270_ATTR_SELECTED)
-			{
-				hSession->text[a].attr &= ~LIB3270_ATTR_SELECTED;
-				if(hSession->cbk.update)
-					hSession->cbk.update(hSession,a,hSession->text[a].chr,hSession->text[a].attr,a == hSession->cursor_addr);
-			}
-		}
-
-		hSession->cbk.set_selection(hSession,0);
-		hSession->cbk.update_selection(hSession,-1,-1);
-	}
-
-	return 0;
-}
-
-LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr)
-{
-	int start, end;
-
-	CHECK_SESSION_HANDLE(session);
-
-	if(!lib3270_connected(session))
-		return;
-
-	start = session->selected ? session->select.start : session->cursor_addr;
-
-	cursor_move(session,end = baddr);
-
-	do_select(session,start,end,lib3270_get_toggle(session,LIB3270_TOGGLE_RECTANGLE_SELECT));
-
-}
-
-LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
-{
-	int maxlen;
-
-	CHECK_SESSION_HANDLE(h);
-
-	if(!lib3270_connected(h))
-		return ENOTCONN;
-
-	maxlen = (h->rows * h->cols);
-
-	// Check bounds
-	if(start < 0 || start > maxlen || end < 0 || end > maxlen || start > end)
-		return EINVAL;
-
-	do_select(h,start,end,lib3270_get_toggle(h,LIB3270_TOGGLE_RECTANGLE_SELECT));
-	cursor_move(h,h->select.end);
-
-	return 0;
-}
-
-static void do_select(H3270 *h, int start, int end, int rect)
+void do_select(H3270 *h, int start, int end, int rect)
 {
 	if(start < 0 || end > (h->rows * h->cols))
 		return;
@@ -318,60 +239,6 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 	}
 
 	return rc;
-}
-
-LIB3270_EXPORT int lib3270_select_word_at(H3270 *session, int baddr)
-{
-	int start, end;
-
-	if(lib3270_get_word_bounds(session,baddr,&start,&end))
-		return -1;
-
-	trace("%s: baddr=%d start=%d end=%d",__FUNCTION__,baddr,start,end);
-
-	do_select(session,start,end,0);
-
-	return 0;
-}
-
-LIB3270_EXPORT int lib3270_select_field_at(H3270 *session, int baddr)
-{
-	int start, end;
-
-	if(lib3270_get_field_bounds(session,baddr,&start,&end))
-		return -1;
-
-	do_select(session,start,end,0);
-
-	return 0;
-}
-
-LIB3270_EXPORT int lib3270_select_field(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-	lib3270_select_field_at(hSession,hSession->cursor_addr);
-	return 0;
-}
-
-LIB3270_EXPORT int lib3270_select_all(H3270 * hSession)
-{
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	do_select(hSession,0,(hSession->rows*hSession->cols)-1,0);
-
-	return 0;
-}
-
-LIB3270_EXPORT int lib3270_reselect(H3270 *hSession)
-{
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if(hSession->select.start == hSession->select.end || hSession->selected)
-		return 0;
-
-	do_select(hSession, hSession->select.start,hSession->select.end,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECTANGLE_SELECT));
-
-	return 0;
 }
 
 static char * get_text(H3270 *hSession,unsigned char all, unsigned char tok)
@@ -739,174 +606,5 @@ char * cut_text(H3270 *hSession, char tok)
 LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
 {
     return cut_text(hSession,0);
-}
-
-LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int *end)
-{
-	int first, last;
-
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(!hSession->selected || hSession->select.start == hSession->select.end)
-		return 0;
-
-	if(hSession->select.end > hSession->select.start)
-	{
-		first = hSession->select.start;
-		last  = hSession->select.end;
-	}
-	else
-	{
-		first = hSession->select.end;
-		last  = hSession->select.start;
-	}
-
-	if(start)
-		*start = first;
-
-	if(end)
-		*end = last;
-
-	return 1;
-}
-
-LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to)
-{
-	int pos[2];
-	int rows, cols, f, step;
-
-	if(from == to)
-		return from;
-
-	if(!lib3270_get_selection_bounds(hSession,&pos[0],&pos[1]))
-		return from;
-
-	rows = (to / hSession->cols) - (from / hSession->cols);
-	cols = (to % hSession->cols) - (from % hSession->cols);
-
-	for(f=0;f<2;f++)
-	{
-		int row  = (pos[f] / hSession->cols) + rows;
-		int col  = (pos[f] % hSession->cols) + cols;
-
-		if(row < 0)
-			rows = - (pos[f] / hSession->cols);
-
-		if(col < 0)
-			cols = - (pos[f] % hSession->cols);
-
-		if(row >= (hSession->rows))
-			rows = hSession->rows - ((pos[f] / hSession->cols)+1);
-
-		if(col >= hSession->cols)
-			cols = hSession->cols - ((pos[f] % hSession->cols)+1);
-	}
-
-	step = (rows * hSession->cols) + cols;
-
-	do_select(hSession,hSession->select.start + step,hSession->select.end + step,hSession->rectsel);
-	cursor_move(hSession,hSession->select.end);
-
-	return from+step;
-}
-
-LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int origin, int baddr)
-{
-	int first, last, row, col;
-
-	if(!lib3270_get_selection_bounds(h,&first,&last))
-		return origin;
-
-/*
-	trace("%s: flag=%04x %s %s %s %s",__FUNCTION__,
-				flag,
-				flag & SELECTION_LEFT	? "Left"	: "-",
-				flag & SELECTION_TOP	? "Top"		: "-",
-				flag & SELECTION_RIGHT	? "Right"	: "-",
-				flag & SELECTION_BOTTOM	? "Bottom"	: "-"
-				);
-*/
-
-	if(!flag)
-		return origin;
-	else if((flag&0x8F) == SELECTION_ACTIVE)
-		return lib3270_move_selected_area(h,origin,baddr);
-
-	row = baddr/h->cols;
-	col = baddr%h->cols;
-
-	if(flag & SELECTION_LEFT)		// Update left margin
-		origin = first = ((first/h->cols)*h->cols) + col;
-
-	if(flag & SELECTION_TOP)		// Update top margin
-		origin = first = (row*h->cols) + (first%h->cols);
-
-	if(flag & SELECTION_RIGHT) 		// Update right margin
-		origin = last = ((last/h->cols)*h->cols) + col;
-
-	if(flag & SELECTION_BOTTOM)		// Update bottom margin
-		origin = last = (row*h->cols) + (last%h->cols);
-
-	trace("origin=%d first=%d last=%d",origin,first,last);
-
-	if(first < last)
-		do_select(h,first,last,h->rectsel);
-	else
-		do_select(h,last,first,h->rectsel);
-
-	cursor_move(h,h->select.end);
-
-	return origin;
-}
-
-
-LIB3270_EXPORT int lib3270_move_selection(H3270 *hSession, LIB3270_DIRECTION dir)
-{
-	int start, end;
-
-	if(!hSession->selected || hSession->select.start == hSession->select.end)
-		return ENOENT;
-
-	start = hSession->select.start;
-	end   = hSession->select.end;
-
-	switch(dir)
-	{
-	case LIB3270_DIR_UP:
-		if(start <= hSession->cols)
-			return EINVAL;
-		start -= hSession->cols;
-		end   -= hSession->cols;
-		break;
-
-	case LIB3270_DIR_DOWN:
-		if(end >= (hSession->cols * (hSession->rows-1)))
-			return EINVAL;
-		start += hSession->cols;
-		end   += hSession->cols;
-		break;
-
-	case LIB3270_DIR_LEFT:
-		if( (start % hSession->cols) < 1)
-			return EINVAL;
-		start--;
-		end--;
-		break;
-
-	case LIB3270_DIR_RIGHT:
-		if( (end % hSession->cols) >= (hSession->cols-1))
-			return EINVAL;
-		start++;
-		end++;
-		break;
-
-	default:
-		return -1;
-	}
-
-	do_select(hSession,start,end,hSession->rectsel);
-	cursor_move(hSession,hSession->select.end);
-
-	return 0;
 }
 

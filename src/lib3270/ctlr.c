@@ -645,14 +645,14 @@ void ctlr_erase(H3270 *session, int alt)
 
 	if (alt)
 	{
-		/* Going from 24x80 to maximum. */
+		// Going from 24x80 to maximum.
 		session->cbk.display(session);
 
 		set_viewsize(session,session->maxROWS,session->maxCOLS);
 	}
 	else
 	{
-		/* Going from maximum to 24x80. */
+		// Going from maximum to 24x80.
 		if (session->maxROWS > 24 || session->maxCOLS > 80)
 		{
 			if(session->vcontrol)

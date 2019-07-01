@@ -255,6 +255,9 @@ LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, int *r, int *c)
 	CHECK_SESSION_HANDLE(h);
 	*r = h->rows;
 	*c = h->cols;
+
+//	trace("%s: %d - %d",__FUNCTION__, h->rows, h->cols);
+
 }
 
 LIB3270_EXPORT int lib3270_get_width(H3270 *h)
@@ -707,6 +710,8 @@ void set_viewsize(H3270 *session, int rows, int cols)
 
 	session->rows = rows;
 	session->cols = cols;
+
+	trace("View size changes to %dx%d",rows,cols);
 
 	if(session->cbk.configure)
 		session->cbk.configure(session,session->rows,session->cols);

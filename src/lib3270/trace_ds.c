@@ -203,6 +203,15 @@ static void wtrace(H3270 *session, const char *fmt, ...)
 	va_end(args);
 }
 
+LIB3270_EXPORT void lib3270_write_trace(H3270 *session, const char *fmt, ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	session->trace.handler(session,session->trace.userdata,fmt, args);
+	va_end(args);
+}
+
 LIB3270_EXPORT void lib3270_write_dstrace(H3270 *session, const char *fmt, ...)
 {
 	va_list args;

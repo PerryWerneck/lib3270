@@ -219,7 +219,6 @@
 		LOCAL_EXTERN void screen_size(int *rows, int *cols);
 
 		#define lib3270_paste_string(str) lib3270_set_string(NULL,str)
-		#define get_3270_terminal_size(h,r,c) lib3270_get_screen_size(h,r,c)
 
 		/* Keyboard */
 		LOCAL_EXTERN int			  emulate_input(char *s, int len, int pasting);

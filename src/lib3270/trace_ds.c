@@ -260,11 +260,11 @@ void trace_screen(H3270 *session)
 
 	if (lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE))
 	{
-		int row, baddr;
+		unsigned int row, baddr;
 
 		for(row=baddr=0;row < session->rows;row++)
 		{
-			int col;
+			unsigned int col;
 			wtrace(session,"%02d ",row+1);
 
 			for(col = 0; col < session->cols;col++)
@@ -302,7 +302,7 @@ void trace_char(H3270 *hSession, char c)
  */
 void trace_ansi_disc(H3270 *hSession)
 {
-	int i;
+	unsigned int i;
 
 	wtrace(hSession,"%c",'\n');
 	for (i = 0; i < hSession->cols; i++)

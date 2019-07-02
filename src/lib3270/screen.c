@@ -244,13 +244,13 @@ static unsigned short calc_attrs(H3270 *session, int baddr, int fa_addr, int fa)
 	return a;
 }
 
-LIB3270_EXPORT int lib3270_get_length(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
 	return h->rows * h->cols;
 }
 
-LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, int *r, int *c)
+LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, unsigned int *r, unsigned int *c)
 {
 	CHECK_SESSION_HANDLE(h);
 	*r = h->rows;
@@ -260,19 +260,19 @@ LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, int *r, int *c)
 
 }
 
-LIB3270_EXPORT int lib3270_get_width(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_width(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
 	return h->cols;
 }
 
-LIB3270_EXPORT int lib3270_get_height(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_height(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
 	return h->rows;
 }
 
-void update_model_info(H3270 *session, int model, int cols, int rows)
+void update_model_info(H3270 *session, unsigned int model, unsigned int cols, unsigned int rows)
 {
 	if(model == session->model_num && session->maxROWS == rows && session->maxCOLS == cols)
 		return;

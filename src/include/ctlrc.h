@@ -67,7 +67,7 @@ LIB3270_INTERNAL void mdt_set(H3270 *hSession, int baddr);
 LIB3270_INTERNAL enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen);
 LIB3270_INTERNAL void ps_process(H3270 *hSession);
 
-LIB3270_INTERNAL void update_model_info(H3270 *session, int model, int cols, int rows);
+LIB3270_INTERNAL void update_model_info(H3270 *session, unsigned int model, unsigned int cols, unsigned int rows);
 LIB3270_INTERNAL void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr);
 LIB3270_INTERNAL void ctlr_erase(H3270 *session, int alt);
 

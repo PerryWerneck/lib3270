@@ -409,7 +409,7 @@
 	 * @param c Pointer to screen columns.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, int *r, int *c);
+	LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, unsigned int *r, unsigned int *c);
 
 	/**
 	 * Get current screen width in columns.
@@ -419,7 +419,7 @@
 	 * @return screen width.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_width(H3270 *h);
+	LIB3270_EXPORT unsigned int lib3270_get_width(H3270 *h);
 
 	/**
 	 * Get current screen width in rows.
@@ -429,9 +429,9 @@
 	 * @return screen rows.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_height(H3270 *h);
+	LIB3270_EXPORT unsigned int lib3270_get_height(H3270 *h);
 
-	LIB3270_EXPORT int lib3270_get_length(H3270 *h);
+	LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h);
 
 	/**
 	 * @brief Creates an empty TN3270 session.

@@ -363,7 +363,7 @@ struct _h3270
 
 	char					  full_model_name[LIB3270_FULL_MODEL_NAME_LENGTH+1];
 	char					* model_name;
-	int						  model_num;
+	unsigned int			  model_num;
 	char  	     	    	* termtype;
 
 	struct
@@ -391,13 +391,13 @@ struct _h3270
 	H3270FT					* ft;					/**< @brief Active file transfer data */
 
 	// screen info
-	int						  ov_rows;
-	int						  ov_cols;
-	int						  maxROWS;
-	int						  maxCOLS;
-	unsigned short			  rows;
-	unsigned short			  cols;
-	unsigned short			  pointer;				/**< @brief Current pointer. */
+	unsigned int			  ov_rows;
+	unsigned int			  ov_cols;
+	unsigned int			  maxROWS;
+	unsigned int			  maxCOLS;
+	unsigned int			  rows;
+	unsigned int			  cols;
+	LIB3270_POINTER			  pointer;				/**< @brief Current pointer. */
 	int						  cursor_addr;
 	int						  buffer_addr;
 	char					  flipped;

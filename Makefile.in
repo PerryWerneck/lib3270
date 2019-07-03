@@ -27,6 +27,8 @@
 MODULES= \
 	lib@LIB3270_NAME@@DLLEXT@
 
+INSTALL_PACKAGES=@INSTALL_PACKAGES@
+
 #---[ Tools ]----------------------------------------------------------------------------
 
 MKDIR=@MKDIR_P@
@@ -155,9 +157,7 @@ doc:
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-shared \
-	install-static \
-	install-dev
+	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-shared:
 	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@

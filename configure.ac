@@ -67,6 +67,7 @@ APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared -Wl,-soname,\$(@F)"
 STATIC_LDFLAGS=""
+INSTALL_PACKAGES="shared dev"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -88,6 +89,9 @@ case "$host" in
 
 		AC_CONFIG_FILES(src/lib3270/windows/resources.rc)
 		AC_CONFIG_FILES(src/lib3270++/windows/resources.rc)
+
+		app_cv_static='yes'
+
 		;;
 
  	s390x-*)
@@ -97,6 +101,9 @@ case "$host" in
 		app_cv_confdir="/etc"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
+
+		app_cv_static='no'
+
 		;;
 
  	*)
@@ -107,6 +114,8 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+
+		app_cv_static='no'
 
 esac
 
@@ -434,6 +443,22 @@ AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 
 AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], [ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST,"$withval") ],[ AC_MSG_NOTICE(No default host)])
 
+AC_ARG_ENABLE([static],
+ 	[AS_HELP_STRING([--enable-static], [Enable build and install the static library])],
+[
+ 	app_cv_static="$enableval"
+],[
+	AC_MSG_NOTICE([Keep default selection for static library.])
+])
+
+if test "$app_cv_expired_crl" == "yes"; then
+	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK)
+fi
+
+if test "$app_cv_static" == "yes"; then
+	INSTALL_PACKAGES="$INSTALL_PACKAGES static"
+fi
+
 dnl ---------------------------------------------------------------------------
 dnl Check for headers
 dnl ---------------------------------------------------------------------------
@@ -553,6 +578,8 @@ AC_SUBST(BASEDIR,$app_cv_buildir)
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
+
+AC_SUBST(INSTALL_PACKAGES)
 
 AC_CONFIG_FILES(Makefile)
 

@@ -93,12 +93,12 @@ static void addch(H3270 *session, int baddr, unsigned char c, unsigned short att
 	session->cbk.update(session,baddr,c,attr,baddr == session->cursor_addr);
 }
 
-LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, int baddr)
+LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, unsigned int baddr)
 {
 	if(check_online_session(hSession))
 		return (LIB3270_ATTR) -1;
 
-	if(!hSession->text || baddr < 0 || baddr > (hSession->rows*hSession->cols))
+	if(!hSession->text ||baddr > (hSession->rows*hSession->cols))
 	{
 		errno = EINVAL;
 		return (LIB3270_ATTR) -1;
@@ -107,11 +107,11 @@ LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, in
 	return hSession->text[baddr].attr;
 }
 
-LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, int baddr)
+LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, unsigned int baddr)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!hSession->text || baddr < 0 || baddr > (hSession->rows*hSession->cols))
+	if(!hSession->text || baddr > (hSession->rows*hSession->cols))
 	{
 		errno = EINVAL;
 		return -1;
@@ -120,11 +120,11 @@ LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, int baddr)
 	return (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) != 0;
 }
 
-LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, int baddr, unsigned char *c, unsigned short *attr)
+LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, unsigned int baddr, unsigned char *c, unsigned short *attr)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!hSession->text || baddr < 0 || baddr > (hSession->rows*hSession->cols))
+	if(!hSession->text || baddr > (hSession->rows*hSession->cols))
 	{
 		errno = EINVAL;
 		return -1;
@@ -420,14 +420,14 @@ LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *h)
  * @return Current address or -1 if invalid (sets errno).
  *
  */
-LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int col)
+LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, unsigned int row, unsigned int col)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
 	row--;
 	col--;
 
-	if(row < 0 || col < 0 || row > hSession->rows || col > hSession->cols)
+	if(row > hSession->rows || col > hSession->cols)
 	{
 		// Invalid coordinates
 		errno = EINVAL;
@@ -449,13 +449,13 @@ LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, int row, int co
  * @return Old cursor address or -1 in case of error (sets errno).
  *
  */
-LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr)
+LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int baddr)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
 	trace("%s(%d)",__FUNCTION__,baddr);
 
-	if(baddr < 0 || baddr > (hSession->rows * hSession->cols))
+	if(baddr > (hSession->rows * hSession->cols))
 	{
 		errno = EINVAL;
 		return -1;
@@ -479,7 +479,7 @@ LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr)
  * @return Old cursor address or -1 in case of error (sets errno).
  *
  */
-LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *hSession, int row, int col)
+LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *hSession, unsigned int row, unsigned int col)
 {
 	return lib3270_set_cursor_address(hSession,lib3270_translate_to_address(hSession, row, col));
 
@@ -701,7 +701,7 @@ void status_twait(H3270 *session)
 	status_changed(session,LIB3270_MESSAGE_TWAIT);
 }
 
-void set_viewsize(H3270 *session, int rows, int cols)
+void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols)
 {
 	CHECK_SESSION_HANDLE(session);
 
@@ -947,7 +947,7 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 	int f;
 	int fg		= COLOR_BLUE;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	FAIL_IF_ONLINE(hSession);
 
 	max = (hSession->maxROWS * hSession->maxCOLS);
 	for(f=0;f<max;f++)

@@ -122,7 +122,8 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 NOCONFIGURE=1 ./autogen.sh
 
 %configure \
-	--with-sdk-version=%{version}
+	--with-sdk-version=%{version} \
+    --disable-static
 
 %build
 make clean
@@ -158,7 +159,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/*.so
-%{_libdir}/*.a
 
 %dir %{_datadir}/pw3270/pot
 %{_datadir}/pw3270/pot/*.pot

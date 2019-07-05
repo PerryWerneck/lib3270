@@ -33,7 +33,7 @@
  *
  */
 
-#define CRL_DATA_LENGTH 4096
+#define CRL_DATA_LENGTH 16384
 
 #include <config.h>
 
@@ -140,13 +140,19 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 {
 	CURLDATA * data = (CURLDATA *) userp;
 
+	debug("%s",__FUNCTION__);
+
 	size_t realsize = size * nmemb;
+
+	debug("%s size=%d data->length=%d crldatalength=%d",__FUNCTION__,(int) size, (int) data->length, CRL_DATA_LENGTH);
 
 	if((size + data->length) > CRL_DATA_LENGTH)
 	{
 		debug("CRL Data block is bigger than allocated block (%u bytes)",(unsigned int) size);
 		return 0;
 	}
+
+	debug("%s",__FUNCTION__);
 
 	if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE))
 	{
@@ -158,8 +164,12 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 		);
 	}
 
+	debug("%s",__FUNCTION__);
+
 	memcpy(&(data->contents[data->length]),contents,realsize);
 	data->length += realsize;
+
+	debug("%s",__FUNCTION__);
 
 	return realsize;
 }
@@ -404,7 +414,6 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 		// Use CURL to download the CRL
 		lib3270_autoptr(CURLDATA) crl_data = lib3270_malloc(sizeof(CURLDATA));
-
 		lib3270_autoptr(CURL) hCurl = curl_easy_init();
 
 		memset(crl_data,0,sizeof(CURLDATA));

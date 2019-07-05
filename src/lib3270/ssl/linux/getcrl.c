@@ -33,7 +33,7 @@
  *
  */
 
-#define CRL_DATA_LENGTH 16384
+#define CRL_DATA_LENGTH 2048
 
 #include <config.h>
 
@@ -117,14 +117,25 @@ typedef struct _curldata
 	H3270				* hSession;
 	SSL_ERROR_MESSAGE	* message;
 	char 				  errbuf[CURL_ERROR_SIZE];
-	unsigned char		  contents[CRL_DATA_LENGTH];
+	struct {
+		size_t			  length;
+		unsigned char	* contents;
+	} data;
 } CURLDATA;
 
 static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
 {
 	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
-		lib3270_free(*ptr);
+	{
+		CURLDATA *cdata = *ptr;
+
+		if(cdata->data.contents) {
+			lib3270_free(cdata->data.contents);
+			cdata->data.contents = NULL;
+		}
+		lib3270_free(cdata);
+	}
 	*ptr = NULL;
 }
 
@@ -146,10 +157,10 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 
 	debug("%s size=%d data->length=%d crldatalength=%d",__FUNCTION__,(int) size, (int) data->length, CRL_DATA_LENGTH);
 
-	if((size + data->length) > CRL_DATA_LENGTH)
+	if((realsize + data->length) > data->data.length)
 	{
-		debug("CRL Data block is bigger than allocated block (%u bytes)",(unsigned int) size);
-		return 0;
+		data->data.length += (CRL_DATA_LENGTH + realsize);
+		data->data.contents = lib3270_realloc(data->data.contents,data->data.length);
 	}
 
 	debug("%s",__FUNCTION__);
@@ -166,7 +177,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 
 	debug("%s",__FUNCTION__);
 
-	memcpy(&(data->contents[data->length]),contents,realsize);
+	memcpy(&(data->data.contents[data->length]),contents,realsize);
 	data->length += realsize;
 
 	debug("%s",__FUNCTION__);
@@ -413,12 +424,14 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 #ifdef HAVE_LIBCURL
 
 		// Use CURL to download the CRL
-		lib3270_autoptr(CURLDATA) crl_data = lib3270_malloc(sizeof(CURLDATA));
-		lib3270_autoptr(CURL) hCurl = curl_easy_init();
+		lib3270_autoptr(CURLDATA)	crl_data		= lib3270_malloc(sizeof(CURLDATA));
+		lib3270_autoptr(CURL)		hCurl			= curl_easy_init();
 
 		memset(crl_data,0,sizeof(CURLDATA));
-		crl_data->message = message;
-		crl_data->hSession = hSession;
+		crl_data->message		= message;
+		crl_data->hSession		= hSession;
+		crl_data->data.length	= CRL_DATA_LENGTH;
+		crl_data->data.contents = lib3270_malloc(crl_data->data.length);
 
 		if(hCurl)
 		{
@@ -478,7 +491,7 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 			if(ct)
 			{
-				const unsigned char * data = crl_data->contents;
+				const unsigned char * data = crl_data->data.contents;
 
 				if(strcasecmp(ct,"application/pkix-crl") == 0)
 				{
@@ -504,13 +517,13 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			else if(strncasecmp(consturl,"ldap://",7) == 0)
 			{
 				// It's an LDAP query, assumes a base64 data.
-				char * data = strstr((char *) crl_data->contents,":: ");
+				char * data = strstr((char *) crl_data->data.contents,":: ");
 				if(!data)
 				{
 					message->error = hSession->ssl.error = ERR_get_error();
 					message->title = N_( "Security error" );
 					message->text = N_( "Got an invalid CRL from LDAP server" );
-					lib3270_write_log(hSession,"ssl","%s: invalid format:\n%s\n",consturl, crl_data->contents);
+					lib3270_write_log(hSession,"ssl","%s: invalid format:\n%s\n",consturl, crl_data->data.contents);
 					return -1;
 				}
 				data += 3;

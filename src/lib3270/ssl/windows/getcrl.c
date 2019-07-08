@@ -197,9 +197,9 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	if(!(consturl && *consturl))
 	{
 		message->error = hSession->ssl.error = 0;
-		message->title = N_( "Security error" );
-		message->text = N_( "Can't open CRL File" );
-		message->description = N_("The URL for the CRL is undefined or empty");
+		message->title = _( "Security error" );
+		message->text = _( "Can't open CRL File" );
+		message->description = _("The URL for the CRL is undefined or empty");
 		return errno = ENOENT;
 	}
 
@@ -215,8 +215,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			int err = errno;
 
 			message->error = hSession->ssl.error = 0;
-			message->title = N_( "Security error" );
-			message->text = N_( "Can't open CRL File" );
+			message->title = _( "Security error" );
+			message->text = _( "Can't open CRL File" );
 			message->description = strerror(err);
 			trace_ssl(hSession,"Can't open %s: %s\n",consturl,message->description);
 			return err;
@@ -244,8 +244,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		if(!hCurl)
 		{
 			message->error = hSession->ssl.error = 0;
-			message->title = N_( "Security error" );
-			message->text = N_( "Can't initialize curl" );
+			message->title = _( "Security error" );
+			message->text = _( "Can't initialize curl" );
 			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
 			return -1;
 		}
@@ -274,7 +274,7 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		if(res != CURLE_OK)
 		{
 			message->error = hSession->ssl.error = 0;
-			message->title = N_( "Security error" );
+			message->title = _( "Security error" );
 
 			if(crl_data->errbuf[0])
 			{
@@ -283,7 +283,7 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			}
 			else
 			{
-				message->text = N_( "Error loading CRL" );
+				message->text = _( "Error loading CRL" );
 				message->description =  curl_easy_strerror(res);
 			}
 
@@ -298,8 +298,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		if(res != CURLE_OK)
 		{
 			message->error = hSession->ssl.error = 0;
-			message->title = N_( "Security error" );
-			message->text = N_( "Error loading CRL" );
+			message->title = _( "Security error" );
+			message->text = _( "Error loading CRL" );
 			message->description = curl_easy_strerror(res);
 			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
 			return -1;
@@ -319,8 +319,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				if(!d2i_X509_CRL(&hSession->ssl.crl.cert, &data, crl_data->length))
 				{
 					message->error = hSession->ssl.error = ERR_get_error();
-					message->title = N_( "Security error" );
-					message->text = N_( "Got an invalid CRL from server" );
+					message->title = _( "Security error" );
+					message->text = _( "Got an invalid CRL from server" );
 					lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
 					return -1;
 				}
@@ -328,8 +328,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			else
 			{
 				message->error = hSession->ssl.error = ERR_get_error();
-				message->title = N_( "Security error" );
-				message->text = N_( "Got an invalid CRL from server" );
+				message->title = _( "Security error" );
+				message->text = _( "Got an invalid CRL from server" );
 				lib3270_write_log(hSession,"ssl","%s: content-type unexpected: \"%s\"",consturl, ct);
 				return -1;
 			}
@@ -341,8 +341,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			if(!attr)
 			{
 				message->error = hSession->ssl.error = 0;
-				message->title = N_( "Security error" );
-				message->text = N_( "No attribute in LDAP search URL" );
+				message->title = _( "Security error" );
+				message->text = _( "No attribute in LDAP search URL" );
 				return errno = ENOENT;
 			}
 
@@ -366,8 +366,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			if(!ptr)
 			{
 				message->error = hSession->ssl.error = 0;
-				message->title = N_( "Security error" );
-				message->text = N_( "Can't find attribute in LDAP response" );
+				message->title = _( "Security error" );
+				message->text = _( "Can't find attribute in LDAP response" );
 				return errno = ENOENT;
 			}
 
@@ -386,8 +386,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			if(ix >= length)
 			{
 				message->error = hSession->ssl.error = 0;
-				message->title = N_( "Security error" );
-				message->text = N_( "Can't find attribute end in LDAP response" );
+				message->title = _( "Security error" );
+				message->text = _( "Can't find attribute end in LDAP response" );
 				return errno = ENOENT;
 			}
 
@@ -406,8 +406,8 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			if(!d2i_X509_CRL(&hSession->ssl.crl.cert, (const unsigned char **) &ptr, length))
 			{
 				message->error = hSession->ssl.error = ERR_get_error();
-				message->title = N_( "Security error" );
-				message->text = N_( "Can't decode CRL got from LDAP Search" );
+				message->title = _( "Security error" );
+				message->text = _( "Can't decode CRL got from LDAP Search" );
 				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
 				return -1;
 			}
@@ -417,9 +417,9 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		// Can't get CRL.
 
 		message->error = hSession->ssl.error = 0;
-		message->title = N_( "Security error" );
-		message->text = N_( "Unexpected or invalid CRL URL" );
-		message->description = N_("The URL scheme is unknown");
+		message->title = _( "Security error" );
+		message->text = _( "Unexpected or invalid CRL URL" );
+		message->description = _("The URL scheme is unknown");
 		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
 		return errno= EINVAL;
 #endif // HAVE_LIBCURL

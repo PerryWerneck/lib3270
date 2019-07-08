@@ -101,8 +101,10 @@ static int background_ssl_crl_check(H3270 *hSession, void *ssl_error)
 	{
 		if(ssl_error.description)
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ssl_error.description);
-		else
+		else if(ssl_error.error)
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ERR_reason_error_string(ssl_error.error));
+		else
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s","");
 
 		return errno = rc;
 	}

@@ -20,10 +20,9 @@
  * file LICENSE for more details.
  */
 
-/*
- *	3270ds.h
- *
- *		Header file for the 3270 Data Stream Protocol.
+/**
+ *	@file 3270ds.h
+ *	@brief Header file for the 3270 Data Stream Protocol.
  */
 
 /* 3270 commands */

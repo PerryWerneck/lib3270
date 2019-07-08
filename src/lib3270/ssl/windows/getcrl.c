@@ -292,7 +292,6 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		}
 
 		debug("Tamanho da resposta: %u", (unsigned int) crl_data->length);
-		debug("Resposta:\n-------------------------------------------\n%s\n-------------------------------------------\n",crl_data->contents);
 
 		char *ct = NULL;
 		res = curl_easy_getinfo(hCurl, CURLINFO_CONTENT_TYPE, &ct);
@@ -360,7 +359,7 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			trace_ssl(crl_data->hSession, text);
 
 			lib3270_autoptr(char) key = lib3270_strdup_printf("%s: ",attr);
-			char *ptr = strstr((char *) crl_data->contents, key);
+			char *ptr = strstr((char *) crl_data->data.contents, key);
 
 			debug("key=\"%s\" ptr=%p",key,ptr)
 
@@ -373,7 +372,7 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			}
 
 			ptr += strlen(key);
-			size_t length = crl_data->length - (ptr - ((char *) crl_data->contents));
+			size_t length = crl_data->length - (ptr - ((char *) crl_data->data.contents));
 			size_t ix;
 
 			for(ix = 0; ix < (length-1); ix++)

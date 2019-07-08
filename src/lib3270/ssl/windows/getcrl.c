@@ -82,14 +82,25 @@ typedef struct _curldata
 	H3270				* hSession;
 	SSL_ERROR_MESSAGE	* message;
 	char 				  errbuf[CURL_ERROR_SIZE];
-	unsigned char		  contents[CRL_DATA_LENGTH];
+	struct {
+		size_t			  length;
+		unsigned char	* contents;
+	} data;
 } CURLDATA;
 
 static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
 {
 	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
-		lib3270_free(*ptr);
+	{
+		CURLDATA *cdata = *ptr;
+
+		if(cdata->data.contents) {
+			lib3270_free(cdata->data.contents);
+			cdata->data.contents = NULL;
+		}
+		lib3270_free(cdata);
+	}
 	*ptr = NULL;
 }
 
@@ -117,16 +128,14 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 
 	for(ix = 0; ix < realsize; ix++)
 	{
-		if(data->length >= CRL_DATA_LENGTH)
+		if(data->length >= data->data.length)
 		{
-			lib3270_write_log(NULL,"ssl","CRL Data block is bigger than allocated block (%u)", (unsigned int) CRL_DATA_LENGTH);
-			return 0;
+			data->data.length += (CRL_DATA_LENGTH + realsize);
+			data->data.contents = lib3270_realloc(data->data.contents,data->data.length);
 		}
 
-		data->contents[data->length++] = *(ptr++);
+		data->data.contents[data->length++] = *(ptr++);
 	}
-
-//	debug("\n%s\n-------------------------------------------", data->contents);
 
 	return realsize;
 }
@@ -297,9 +306,11 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			return -1;
 		}
 
+		trace_ssl(hSession,"CRL Data has %u bytes",(unsigned int) crl_data->length);
+
 		if(ct)
 		{
-			const unsigned char * data = crl_data->contents;
+			const unsigned char * data = crl_data->data.contents;
 
 			trace_ssl(crl_data->hSession, "Content-type: %s", ct);
 

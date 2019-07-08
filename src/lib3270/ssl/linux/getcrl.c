@@ -409,7 +409,7 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		{
 			message->error = hSession->ssl.error = ERR_get_error();
 			message->title = N_( "Security error" );
-			message->text = N_( "Can't get CRL from LDAP Search" );
+			message->text = N_( "Can't decode CRL got from LDAP Search" );
 			lib3270_write_log(hSession,"ssl","%s: %s",url, message->text);
 			ldap_value_free_len(value);
 			return -1;

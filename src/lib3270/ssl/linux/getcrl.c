@@ -489,9 +489,12 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				return -1;
 			}
 
+			trace_ssl(hSession,"CRL Data has %u bytes",(unsigned int) crl_data->length);
+
 			if(ct)
 			{
 				const unsigned char * data = crl_data->data.contents;
+
 
 				if(strcasecmp(ct,"application/pkix-crl") == 0)
 				{

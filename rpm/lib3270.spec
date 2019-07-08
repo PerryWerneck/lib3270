@@ -136,7 +136,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS LICENSE README.md
+
+# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
+%if 0%{?sle_version} > 120200
+%doc AUTHORS README.md
+%license LICENSE
+%else
+%doc AUTHORS README.md LICENSE
+%endif
 
 %dir %{_datadir}/pw3270
 

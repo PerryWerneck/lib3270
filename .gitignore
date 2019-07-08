@@ -54,4 +54,5 @@ doxygen/html
 src/include/lib3270/actions.h
 doxygen/doxyfile
 win32-configure*
+ValgrindOut.xml
 

@@ -141,4 +141,3 @@ LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
 	return lib3270_get_selection(hSession,0,LIB3270_SELECTION_CUT);
 }
 
-

@@ -169,7 +169,7 @@ void do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect
 		return;
 
 	// Do we really need to change selection?
-	if(start == h->select.start && end == h->select.end && h->selected)
+	if( ((int) start) == h->select.start && ((int) end) == h->select.end && h->selected)
 		return;
 
 	// Start address is inside the screen?
@@ -239,102 +239,6 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 
 	return rc;
 }
-
-/*
-static void clear_chr(H3270 *hSession, int baddr)
-{
-	hSession->text[baddr].chr = ' ';
-
-	hSession->ea_buf[baddr].cc = EBC_null;
-	hSession->ea_buf[baddr].cs = 0;
-
-	hSession->cbk.update(	hSession,
-							baddr,
-							hSession->text[baddr].chr,
-							hSession->text[baddr].attr,
-							baddr == hSession->cursor_addr );
-}
-
-static char * get_text(H3270 *hSession, unsigned char all, char tok, unsigned char cut)
-{
-	int				  row, col, baddr;
-	char 			* ret;
-	size_t			  buflen	= (hSession->rows * (hSession->cols+1))+1;
-	size_t			  sz		= 0;
-    unsigned short	  attr		= 0xFFFF;
-
-	if(check_online_session(hSession))
-		return NULL;
-
-	if(!hSession->selected || hSession->select.start == hSession->select.end)
-		return NULL;
-
-	ret = lib3270_malloc(buflen);
-
-	baddr = 0;
-	unsigned char fa = 0;
-
-	for(row=0;row < hSession->rows;row++)
-	{
-		int cr = 0;
-
-		for(col = 0; col < hSession->cols;col++)
-		{
-			if(hSession->ea_buf[baddr].fa) {
-				fa = hSession->ea_buf[baddr].fa;
-			}
-
-			if(all || hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)
-			{
-				if(tok && attr != hSession->text[baddr].attr)
-				{
-					attr = hSession->text[baddr].attr;
-					ret[sz++] = tok;
-					ret[sz++] = (attr & 0x0F);
-					ret[sz++] = ((attr & 0xF0) >> 4);
-
-				}
-
-				cr++;
-				ret[sz++] = hSession->text[baddr].chr;
-
-				if(cut && !FA_IS_PROTECTED(fa)) {
-					clear_chr(hSession,baddr);
-				}
-
-			}
-			baddr++;
-		}
-
-		if(cr)
-			ret[sz++] = '\n';
-
-        if((sz+10) > buflen)
-        {
-            buflen += 100;
-       		ret = lib3270_realloc(ret,buflen);
-        }
-	}
-
-	if(!sz)
-	{
-		lib3270_free(ret);
-		errno = ENOENT;
-		return NULL;
-	}
-	else if(sz > 1 && ret[sz-1] == '\n') // Remove ending \n
-	{
-		ret[sz-1] = 0;
-	}
-
-	ret[sz++] = 0;
-
-	if(sz != buflen)
-		ret = lib3270_realloc(ret,sz);
-
-	return ret;
-}
-*/
 
 LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, unsigned char all)
 {
@@ -470,3 +374,56 @@ LIB3270_EXPORT int lib3270_has_selection(H3270 *hSession)
 
 	return hSession->selected != 0;
 }
+
+LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *col, unsigned int *row, unsigned int *width, unsigned int *height)
+{
+	unsigned int r, c, minRow, minCol, maxRow, maxCol, baddr, count;
+
+	if(check_online_session(hSession))
+		return errno;
+
+	if(!hSession->selected || hSession->select.start == hSession->select.end)
+		return errno = ENOENT;
+
+	minRow = hSession->rows;
+	minCol = hSession->cols;
+	maxRow = 0;
+	maxCol = 0;
+	baddr  = 0;
+	count  = 0;
+
+	for(r=0;r < hSession->rows;r++)
+	{
+		for(c = 0; c < hSession->cols;c++)
+		{
+			if(hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)
+			{
+				count++;
+
+				if(c < minCol)
+					minCol = c;
+
+				if(r < minRow)
+					minRow = r;
+
+				if(c > maxCol)
+					maxCol = c;
+
+				if(r > maxRow)
+					maxRow = r;
+			}
+			baddr++;
+		}
+	}
+
+	if(!count)
+		return errno = ENOENT;
+
+	*col	= minCol;
+	*row	= minRow;
+	*width	= (maxCol - minCol);
+	*height = (maxRow - minRow);
+
+	return 0;
+}
+

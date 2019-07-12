@@ -134,6 +134,20 @@
 	 LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int *end);
 
 	/**
+	 * @brief Get the coordinates of a rectangle containing the selected region.
+	 *
+	 * @param hSession	Session handle.
+	 * @param col		Pointer to last row.
+	 * @param row		Pointer to first row.
+	 * @param width		Pointer to first col.
+	 * @param height	Pointer to last col.
+	 *
+	 * @return 0 if suceeds, error code if not (sets errno).
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *col, unsigned int *row, unsigned int *width, unsigned int *height);
+
+	/**
 	 * @brief Get bitmasked flag for the current selection.
 	 *
 	 * Calculate flags to help drawing of the correct mouse pointer over a selection.

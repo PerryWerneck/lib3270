@@ -318,6 +318,7 @@ LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
 	if(!lib3270_connected(h))
 	{
 		lib3270_ring_bell(h);
+		errno = ENOTCONN;
 		return 0;
 	}
 

@@ -145,7 +145,7 @@
 	 * @return 0 if suceeds, error code if not (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *col, unsigned int *row, unsigned int *width, unsigned int *height);
+	LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height);
 
 	/**
 	 * @brief Get bitmasked flag for the current selection.

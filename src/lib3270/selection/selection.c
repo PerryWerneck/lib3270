@@ -220,6 +220,8 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 		if( (col == 0) || !(hSession->text[baddr-1].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_LEFT;
 
+		/// FIXME: It should text if baddr is the last element before the +1.
+
 		if( (col == hSession->cols) || !(hSession->text[baddr+1].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_RIGHT;
 	}
@@ -375,7 +377,7 @@ LIB3270_EXPORT int lib3270_has_selection(H3270 *hSession)
 	return hSession->selected != 0;
 }
 
-LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *col, unsigned int *row, unsigned int *width, unsigned int *height)
+LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height)
 {
 	unsigned int r, c, minRow, minCol, maxRow, maxCol, baddr, count;
 
@@ -419,10 +421,12 @@ LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int
 	if(!count)
 		return errno = ENOENT;
 
+	debug("Selection from %u,%u and to %u,%u",minCol,minRow,maxCol,maxRow);
+
 	*col	= minCol;
 	*row	= minRow;
-	*width	= (maxCol - minCol);
-	*height = (maxRow - minRow);
+	*width	= (maxCol - minCol)+1;
+	*height = (maxRow - minRow)+1;
 
 	return 0;
 }

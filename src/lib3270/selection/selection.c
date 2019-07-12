@@ -84,9 +84,9 @@ static void update_selected_rectangle(H3270 *session)
 
 	// First remove unselected areas
 	baddr = 0;
-	for(row=0;row < session->rows;row++)
+	for(row=0;row < ((int) session->rows);row++)
 	{
-		for(col = 0; col < session->cols;col++)
+		for(col = 0; col < ((int) session->cols);col++)
 		{
 			if(!(row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && (session->text[baddr].attr & LIB3270_ATTR_SELECTED))
 			{
@@ -99,9 +99,9 @@ static void update_selected_rectangle(H3270 *session)
 
 	// Then, draw selected ones
 	baddr = 0;
-	for(row=0;row < session->rows;row++)
+	for(row=0;row < ((int) session->rows);row++)
 	{
-		for(col = 0; col < session->cols;col++)
+		for(col = 0; col < ((int) session->cols);col++)
 		{
 			if((row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && !(session->text[baddr].attr & LIB3270_ATTR_SELECTED))
 			{
@@ -163,9 +163,9 @@ void toggle_rectselect(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LI
 		update_selected_region(session);
 }
 
-void do_select(H3270 *h, int start, int end, int rect)
+void do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect)
 {
-	if(start < 0 || end > (h->rows * h->cols))
+	if(end > (h->rows * h->cols))
 		return;
 
 	// Do we really need to change selection?
@@ -240,6 +240,7 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 	return rc;
 }
 
+/*
 static void clear_chr(H3270 *hSession, int baddr)
 {
 	hSession->text[baddr].chr = ' ';
@@ -254,7 +255,7 @@ static void clear_chr(H3270 *hSession, int baddr)
 							baddr == hSession->cursor_addr );
 }
 
-static char * get_text(H3270 *hSession,unsigned char all, unsigned char tok, Boolean cut)
+static char * get_text(H3270 *hSession, unsigned char all, char tok, unsigned char cut)
 {
 	int				  row, col, baddr;
 	char 			* ret;
@@ -333,6 +334,7 @@ static char * get_text(H3270 *hSession,unsigned char all, unsigned char tok, Boo
 
 	return ret;
 }
+*/
 
 LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, unsigned char all)
 {
@@ -341,9 +343,7 @@ LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, u
 	int		sz = 0;
 	int		baddr;
 
-	CHECK_SESSION_HANDLE(h);
-
-	if(!lib3270_connected(h))
+	if(check_online_session(h))
 		return NULL;
 
 	maxlen = h->rows * (h->cols+1);
@@ -470,14 +470,3 @@ LIB3270_EXPORT int lib3270_has_selection(H3270 *hSession)
 
 	return hSession->selected != 0;
 }
-
-LIB3270_EXPORT char * lib3270_get_selected(H3270 *hSession)
-{
-	return get_text(hSession,0,0,0);
-}
-
-LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
-{
-	return get_text(hSession,0,0,1);
-}
-

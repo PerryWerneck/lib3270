@@ -24,10 +24,15 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
+
+ /**
+  * @brief LIB3270 calls for managing selected area.
+  *
+  * @author perry.werneck@gmail.com
+  *
+  */
 
  #ifndef LIB3270_SELECTION_H_INCLUDED
 
@@ -41,7 +46,21 @@
 	LIB3270_EXPORT int	  lib3270_select_all(H3270 *session);
 
 	/**
-	 * "Paste" supplied string.
+	 * @brief Get selection options.
+	 *
+	 * @see lib3270_get_selection
+	 *
+	 */
+	typedef enum _LIB3270_SELECTION_OPTIONS {
+
+		LIB3270_SELECTION_CUT				= 0x0001,		///< @brief Cut selected data (if available).
+		LIB3270_SELECTION_ALL				= 0x0002,		///< @brief Get all data (the default is get only selected data).
+		LIB3270_SELECTION_UNPROTECTED_ONLY	= 0x0004,		///< @brief Get only unprotected contents.
+
+	} LIB3270_SELECTION_OPTIONS;
+
+	/**
+	 * @brief "Paste" supplied string.
 	 *
 	 * @param h		Session handle.
 	 * @param str	String to paste.
@@ -54,7 +73,7 @@
 	 LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str);
 
 	/**
-	 * Paste remaining string.
+	 * @brief Paste remaining string.
 	 *
 	 * @param h	Session handle.
 	 *
@@ -66,7 +85,7 @@
 	 LIB3270_EXPORT int lib3270_pastenext(H3270 *h);
 
 	/**
-	 * Move selected box 1 char in the selected direction.
+	 * @brief Move selected box 1 char in the selected direction.
 	 *
 	 * @param h		Session handle.
 	 * @param dir	Direction to move
@@ -76,7 +95,7 @@
 	 LIB3270_EXPORT int lib3270_move_selection(H3270 *h, LIB3270_DIRECTION dir);
 
 	/**
-	 * Move selected box.
+	 * @brief Move selected box.
 	 *
 	 * @param h		Session handle.
 	 * @param from	Address of origin position inside the selected buffer.
@@ -88,7 +107,7 @@
 	 LIB3270_EXPORT int lib3270_move_selected_area(H3270 *h, int from, int to);
 
 	/**
-	 * Drag selected region.
+	 * @brief Drag selected region.
 	 *
 	 * Move or resize selected box according to the selection flags.
 	 *
@@ -103,7 +122,7 @@
 	 LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int origin, int baddr);
 
 	/**
-	 * Gets the selected range of characters in the screen
+	 * @brief Gets the selected range of characters in the screen
 	 *
 	 * @param h		Session handle.
 	 * @param start	return location for start of selection, as a character offset.
@@ -115,7 +134,7 @@
 	 LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int *end);
 
 	/**
-	 * Get bitmasked flag for the current selection.
+	 * @brief Get bitmasked flag for the current selection.
 	 *
 	 * Calculate flags to help drawing of the correct mouse pointer over a selection.
 	 *
@@ -127,7 +146,7 @@
 	 LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *h, int baddr);
 
 	/**
-	 * Get a string from required region.
+	 * @brief Get a string from required region.
 	 *
 	 * @param h			Session handle.
 	 * @param start_pos	First char to get.
@@ -141,7 +160,7 @@
 
 
 	/**
-	 * Selects a range of characters in the screen.
+	 * @brief Selects a range of characters in the screen.
 	 *
 	 * @param h				Session handle.
 	 * @param start_offset	Start offset.

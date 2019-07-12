@@ -1040,7 +1040,7 @@
 	 * @return selected text if available, or NULL. Release it with free()
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_get_selected(H3270 *h);
+	LIB3270_EXPORT char * lib3270_get_selected(H3270 *hSession);
 
 	LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession);
 

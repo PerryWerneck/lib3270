@@ -58,7 +58,6 @@ static void update_selected_rectangle(H3270 *session)
 		int col;
 	} p[2];
 
-
 	int begin, end, row, col, baddr;
 
 	get_selected_addr(session,&begin,&end);
@@ -263,11 +262,11 @@ static char * get_text(H3270 *hSession,unsigned char all, unsigned char tok, Boo
 	size_t			  sz		= 0;
     unsigned short	  attr		= 0xFFFF;
 
-	if(!(lib3270_connected(hSession) && hSession->text))
-	{
-		errno = ENOTCONN;
+	if(check_online_session(hSession))
 		return NULL;
-	}
+
+	if(!hSession->selected || hSession->select.start == hSession->select.end)
+		return NULL;
 
 	ret = lib3270_malloc(buflen);
 
@@ -466,171 +465,19 @@ LIB3270_EXPORT char * lib3270_get_field_text_at(H3270 *session, int baddr)
 
 LIB3270_EXPORT int lib3270_has_selection(H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
+	if(check_online_session(hSession))
+		return 0;
+
 	return hSession->selected != 0;
 }
 
 LIB3270_EXPORT char * lib3270_get_selected(H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(!hSession->selected || hSession->select.start == hSession->select.end)
-		return NULL;
-
-	if(!lib3270_connected(hSession))
-		return NULL;
-
 	return get_text(hSession,0,0,0);
 }
 
 LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(!hSession->selected || hSession->select.start == hSession->select.end)
-		return NULL;
-
-	if(!lib3270_connected(hSession))
-		return NULL;
-
 	return get_text(hSession,0,0,1);
 }
 
-/*
-
-LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
-{
-    return cut_text(hSession,0);
-}
-
-static void copy_chr(H3270 *hSession, int from, int to)
-{
-	if(hSession->text[from].chr == hSession->text[to].chr)
-		return;
-
-	hSession->text[to].chr = hSession->text[from].chr;
-
-	memcpy(&hSession->ea_buf[to], &hSession->ea_buf[from],sizeof(struct lib3270_ea));
-	hSession->ea_buf[from].fa = 0;
-
-	hSession->cbk.update(	hSession,
-							to,
-							hSession->text[to].chr,
-							hSession->text[to].attr,
-							to == hSession->cursor_addr );
-}
-
-int cut_addr(H3270 *hSession, int daddr, int saddr, int maxlen, int *sattr)
-{
-	if(hSession->ea_buf[saddr].fa)
-		*sattr = hSession->ea_buf[saddr++].fa;
-
-	if(FA_IS_PROTECTED(*sattr) || saddr >= maxlen)
-		clear_chr(hSession,daddr);
-	else
-		copy_chr(hSession,saddr++,daddr);
-
-	return saddr;
-}
-
-char * cut_text(H3270 *hSession, char tok)
-{
-    unsigned short attr = 0xFFFF;
-
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(!hSession->selected || hSession->select.start == hSession->select.end)
-		return NULL;
-
-	if(!(lib3270_connected(hSession) && hSession->text))
-		return NULL;
-
-	trace("Rectangle select is %s",lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECTANGLE_SELECT) ? "Active" : "Inactive");
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECTANGLE_SELECT))
-	{
-		// Rectangle cut is not implemented
-		lib3270_popup_dialog(hSession, LIB3270_NOTIFY_INFO, _( "Not available" ), _( "Invalid cut action" ), "%s", _( "Can't cut rectangular regions") );
-	}
-	else
-	{
-		int end;
-		size_t szText;
-		size_t buflen;
-		size_t bufpos = 0;
-		int daddr;	// Destination addr
-		int dattr;	// Destination addr attribute
-		int saddr;	// Source addr (First field after the selected area)
-		int sattr;	// Source addr attribute
-		char *text;
-		size_t maxlen = hSession->rows * hSession->cols;
-		size_t f;
-
-		get_selected_addr(hSession,&daddr,&end);
-
-		lib3270_set_cursor_address(hSession,daddr);
-
-		if(daddr >= end)
-			return NULL;
-
-		dattr = lib3270_field_attribute(hSession,daddr);	// Get first attribute
-
-		szText = (end-daddr)+1;
-		buflen = szText;
-		bufpos = 0;
-
-		text = lib3270_malloc(buflen+1);
-
-		saddr = daddr+szText;
-		sattr = lib3270_field_attribute(hSession,saddr);
-
-		for(f=0;f<szText;f++)
-		{
-			if(hSession->ea_buf[daddr].fa)
-				dattr = hSession->ea_buf[daddr].fa;
-
-            if((bufpos+10) > buflen)
-            {
-                buflen += 100;
-                text = lib3270_realloc(text,buflen);
-            }
-
-            if(tok && attr != hSession->text[daddr].attr)
-            {
-                attr = hSession->text[daddr].attr;
-                text[bufpos++] = tok;
-                text[bufpos++] = (attr & 0x0F);
-                text[bufpos++] = ((attr & 0xF0) >> 4);
-            }
-
-			text[bufpos++] = hSession->text[daddr].chr;
-
-			if(!FA_IS_PROTECTED(dattr))
-				saddr = cut_addr(hSession,daddr,saddr,maxlen,&sattr);
-
-			daddr++;
-		}
-
-        text[bufpos++] = 0;
-        text = lib3270_realloc(text,bufpos);
-
-		// Move contents of the current field
-		while(daddr < (int) (maxlen-1) && !hSession->ea_buf[daddr].fa)
-		{
-			saddr = cut_addr(hSession,daddr,saddr,maxlen,&sattr);
-			daddr++;
-		}
-
-		if(!hSession->ea_buf[daddr].fa)
-			clear_chr(hSession,daddr);
-
-		hSession->cbk.changed(hSession,0,maxlen);
-
-		lib3270_unselect(hSession);
-		return text;
-	}
-
-	return NULL;
-}
-
-*/

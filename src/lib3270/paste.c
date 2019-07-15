@@ -108,7 +108,7 @@
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE))
 	{
 		baddr = hSession->cursor_addr;
-		while(BA_TO_COL(baddr) < lmargin)
+		while(BA_TO_COL(baddr) < ((unsigned int) lmargin))
 		{
 			baddr = ROWCOL_TO_BA(BA_TO_ROW(baddr), lmargin);
 			if (!ever)
@@ -151,7 +151,7 @@
 
 	data->qtd++;
 
- 	if(BA_TO_ROW(hSession->cursor_addr) != data->row)
+ 	if(BA_TO_ROW(hSession->cursor_addr) != ((unsigned int) data->row))
  	{
  		trace("Row changed from %d to %d",data->row,BA_TO_ROW(hSession->cursor_addr));
 		if(!remargin(hSession,data->orig_col))

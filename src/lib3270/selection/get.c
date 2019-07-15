@@ -35,7 +35,7 @@
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void clear_chr(H3270 *hSession, int baddr)
+void clear_chr(H3270 *hSession, int baddr)
 {
 	hSession->text[baddr].chr = ' ';
 

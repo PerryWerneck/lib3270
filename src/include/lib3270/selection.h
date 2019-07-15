@@ -183,4 +183,12 @@
 	 */
 	 LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end);
 
+	/**
+	 * @brief Erase selected inputs.
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_erase_selected(H3270 *hSession);
+
  #endif // LIB3270_SELECTION_H_INCLUDED

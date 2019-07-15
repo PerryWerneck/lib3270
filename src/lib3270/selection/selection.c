@@ -33,6 +33,7 @@
  #include <lib3270/session.h>
  #include <lib3270/selection.h>
  #include "3270ds.h"
+ #include "kybdc.h"
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -431,3 +432,30 @@ LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int
 	return 0;
 }
 
+LIB3270_EXPORT int lib3270_erase_selected(H3270 *hSession)
+{
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	if (hSession->kybdlock)
+	{
+		enq_action(hSession, lib3270_erase_selected);
+		return 0;
+	}
+
+	unsigned int baddr = 0;
+	unsigned char fa = 0;
+
+	for(baddr = 0; baddr < lib3270_get_length(hSession); baddr++)
+	{
+		if(hSession->ea_buf[baddr].fa) {
+			fa = hSession->ea_buf[baddr].fa;
+		}
+
+		if( (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) && !FA_IS_PROTECTED(fa))
+		{
+			clear_chr(hSession,baddr);
+		}
+	}
+
+    return -1;
+}

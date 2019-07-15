@@ -29,6 +29,7 @@
  *
  */
 
+#error Deprecated
 
 #ifndef LIB3270_API_INCLUDED
 
@@ -99,35 +100,11 @@
 
 		#include <lib3270/log.h>
 
-		#define OIA_FLAG_BOXSOLID	LIB3270_FLAG_BOXSOLID
-		#define OIA_FLAG_UNDERA		LIB3270_FLAG_UNDERA
-		#define OIA_FLAG_TYPEAHEAD	LIB3270_FLAG_TYPEAHEAD
-		#define OIA_FLAG_USER		LIB3270_FLAG_COUNT
-		#define OIA_FLAG			LIB3270_FLAG
-
-//		struct lib3270_state_callback;
-
 		#include <lib3270/session.h>
 
 
 		/** Type of dialog boxes */
 		#include <lib3270/popup.h>
-
-		#define PW3270_DIALOG_INFO		LIB3270_NOTIFY_INFO
-		#define PW3270_DIALOG_CRITICAL	LIB3270_NOTIFY_CRITICAL
-		#define PW3270_DIALOG			LIB3270_NOTIFY
-
-		#define GR_BLINK		0x01
-		#define GR_REVERSE		0x02
-		#define GR_UNDERLINE	0x04
-		#define GR_INTENSIFY	0x08
-
-		#define CS_MASK			0x03	/**< mask for specific character sets */
-		#define CS_BASE			0x00	/**< base character set (X'00') */
-		#define CS_APL			0x01	/**< APL character set (X'01' or GE) */
-		#define CS_LINEDRAW		0x02	/**< DEC line-drawing character set (ANSI) */
-		#define CS_DBCS			0x03	/**< DBCS character set (X'F8') */
-		#define CS_GE			0x04	/**< cs flag for Graphic Escape */
 
 		/* File transfer */
 
@@ -140,12 +117,6 @@
 		#define FT_ALLOCATION_UNITS_CYLINDERS	LIB3270_FT_ALLOCATION_UNITS_CYLINDERS
 		#define FT_ALLOCATION_UNITS_AVBLOCK		LIB3270_FT_ALLOCATION_UNITS_AVBLOCK
 		#define FT_ALLOCATION_UNITS_MASK		LIB3270_FT_ALLOCATION_UNITS_MASK
-
-		#define FT_NONE							LIB3270_FT_STATE_NONE
-		#define FT_AWAIT_ACK					LIB3270_FT_STATE_AWAIT_ACK
-		#define FT_RUNNING						LIB3270_FT_STATE_RUNNING
-		#define FT_ABORT_WAIT					LIB3270_FT_STATE_ABORT_WAIT
-		#define FT_ABORT_SENT					LIB3270_FT_STATE_ABORT_SENT
 
 		LOCAL_EXTERN int 				CancelFileTransfer(int force);
 
@@ -160,21 +131,13 @@
 		#define IN_TN3270E		lib3270_in_tn3270e(hSession)
 		#define IN_E			lib3270_in_e(hSession)
 
-		#define COLOR_ATTR_NONE			0x0000
-		#define COLOR_ATTR_FIELD		LIB3270_ATTR_FIELD
-		#define COLOR_ATTR_BLINK		LIB3270_ATTR_BLINK
-		#define COLOR_ATTR_INTENSIFY	LIB3270_ATTR_INTENSIFY
-
-		#define CHAR_ATTR_UNCONVERTED	LIB3270_ATTR_CG
-
-
 		/* Set/Get screen contents */
 		#define find_field_attribute(s,a) lib3270_field_addr(s,a)
 		#define find_field_length(s,a) find_field_length(s,a)
 
-		LOCAL_EXTERN unsigned char get_field_attribute(H3270 *session, int baddr);
-		LOCAL_EXTERN void Input_String(const unsigned char *str);
-		LOCAL_EXTERN void screen_size(int *rows, int *cols);
+		// LOCAL_EXTERN unsigned char get_field_attribute(H3270 *session, int baddr);
+		// LOCAL_EXTERN void Input_String(const unsigned char *str);
+		// LOCAL_EXTERN void screen_size(int *rows, int *cols);
 
 		#define lib3270_paste_string(str) lib3270_set_string(NULL,str)
 

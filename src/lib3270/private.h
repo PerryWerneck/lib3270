@@ -36,7 +36,8 @@
 #include <config.h>				/* autoconf settings */
 #include <lib3270.h>			/* lib3270 API calls and defs */
 #include <lib3270/charset.h>
-#include "api.h"
+#include <lib3270/session.h>
+// #include "api.h"
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
@@ -158,11 +159,32 @@ struct toggle_name {
 	int index;
 };
 
+/// @brief State macros
+#define PCONNECTED		lib3270_pconnected(hSession)
+#define HALF_CONNECTED	lib3270_half_connected(hSession)
+#define CONNECTED		lib3270_connected(hSession)
 
-/*   input key type */
+#define IN_NEITHER		lib3270_in_neither(hSession)
+#define IN_ANSI			lib3270_in_ansi(hSession)
+#define IN_3270			lib3270_in_3270(hSession)
+#define IN_SSCP			lib3270_in_sscp(hSession)
+#define IN_TN3270E		lib3270_in_tn3270e(hSession)
+#define IN_E			lib3270_in_e(hSession)
 
-/* Naming convention for private actions. */
+/// @brief Naming convention for private actions.
 #define PA_PFX	"PA-"
+
+#define GR_BLINK		0x01
+#define GR_REVERSE		0x02
+#define GR_UNDERLINE	0x04
+#define GR_INTENSIFY	0x08
+
+#define CS_MASK			0x03	///< @brief mask for specific character sets */
+#define CS_BASE			0x00	///< @brief base character set (X'00') */
+#define CS_APL			0x01	///< @brief APL character set (X'01' or GE) */
+#define CS_LINEDRAW		0x02	///< @brief DEC line-drawing character set (ANSI) */
+#define CS_DBCS			0x03	///< @brief DBCS character set (X'F8') */
+#define CS_GE			0x04	///< @brief cs flag for Graphic Escape */
 
 /// @brief Shorthand macros
 #define CN	((char *) NULL)
@@ -313,7 +335,7 @@ struct lib3270_state_callback
  */
 struct _h3270
 {
-	struct lib3270_session_callbacks	  cbk;					// Callback table - Always the first one.
+	struct lib3270_session_callbacks	  cbk;					///< @brief Callback table - Always the first one.
 
 	// Session info
 	char					  id;								///< @brief Session Identifier.
@@ -745,6 +767,8 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	/// @brief Clear element at adress.
 	LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
+
+	LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
 
 #endif
 

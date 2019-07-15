@@ -44,22 +44,17 @@
 
 #if defined(X3270_FT) /*[*/
 
-//#include "appres.h"
 #include "3270ds.h"
 #include "ft_dft_ds.h"
-
-//#include "actionsc.h"
 #include "kybdc.h"
 #include "ft_dftc.h"
 #include "ftc.h"
-//#include "tablesc.h"
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
+#include <lib3270/log.h>
 
 #include <errno.h>
-
-// extern unsigned char aid;
 
 /* Macros. */
 #define OPEN_MSG	"FT:MSG"		/* Open request for message */
@@ -100,7 +95,7 @@ void ft_dft_data(H3270 *hSession, unsigned char *data, int GNUC_UNUSED(length))
 	unsigned short data_length, data_type;
 	unsigned char *cp;
 
-	if (lib3270_get_ft_state(hSession) == FT_NONE)
+	if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_NONE)
 	{
 		trace_ds(hSession," (no transfer in progress)\n");
 		return;
@@ -228,7 +223,7 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 	int				  my_length;
 	unsigned char	* cp;
 
-	if(!ft->message_flag && lib3270_get_ft_state(hSession) == FT_ABORT_WAIT)
+	if(!ft->message_flag && lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT)
 	{
 		dft_abort(hSession,TR_DATA_INSERT, "%s", _("Transfer cancelled by user") );
 		return;
@@ -273,7 +268,7 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 			ft_complete(hSession->ft,(const char *) msgp);
 			lib3270_free(msgp);
 		}
-		else if (lib3270_get_ft_state(hSession) == FT_ABORT_SENT && ((H3270FT *) hSession->ft)->abort_string != CN)
+		else if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_SENT && ((H3270FT *) hSession->ft)->abort_string != CN)
 		{
 			trace_ds(hSession,"ABORT_TRANSFER [%s]\n",msgp);
 			lib3270_free(msgp);
@@ -371,7 +366,7 @@ static void dft_get_request(H3270 *hSession)
 
 	trace_ds(hSession," Get\n");
 
-	if (!ft->message_flag && lib3270_get_ft_state(hSession) == FT_ABORT_WAIT)
+	if (!ft->message_flag && lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT)
 	{
 		dft_abort(hSession,TR_GET_REQ, _( "Transfer cancelled by user" ) );
 		return;

@@ -43,6 +43,7 @@ struct ta;
 #include "private.h"
 #include <lib3270/trace.h>
 #include <lib3270/selection.h>
+#include <lib3270/log.h>
 
 #ifndef ANDROID
 	#include <stdlib.h>
@@ -80,7 +81,7 @@ struct ta;
 
 #include <lib3270/actions.h>
 
-#include "api.h"
+// #include "api.h"
 
 
 //#ifdef DEBUG
@@ -739,7 +740,7 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 		return False;
 	}
 	baddr = hSession->cursor_addr;
-	faddr = find_field_attribute(hSession,baddr);
+	faddr = lib3270_field_addr(hSession,baddr);
 	fa = get_field_attribute(hSession,baddr);
 
 	if (hSession->ea_buf[baddr].fa || FA_IS_PROTECTED(fa))
@@ -1394,7 +1395,7 @@ static void do_erase(H3270 *hSession)
 	enum dbcs_state d;
 
 	baddr = hSession->cursor_addr;
-	faddr = find_field_attribute(hSession,baddr);
+	faddr = lib3270_field_addr(hSession,baddr);
 	if (faddr == baddr || FA_IS_PROTECTED(hSession->ea_buf[baddr].fa))
 	{
 		operator_error(hSession,KL_OERR_PROTECTED);
@@ -1685,7 +1686,7 @@ LIB3270_EXPORT int lib3270_newline(H3270 *hSession)
 #endif /*]*/
 	baddr = (hSession->cursor_addr + hSession->cols) % (hSession->cols * hSession->rows);	/* down */
 	baddr = (baddr / hSession->cols) * hSession->cols;			/* 1st col */
-	faddr = find_field_attribute(hSession,baddr);
+	faddr = lib3270_field_addr(hSession,baddr);
 	fa = hSession->ea_buf[faddr].fa;
 	if (faddr != baddr && !FA_IS_PROTECTED(fa))
 		cursor_move(hSession,baddr);
@@ -2163,7 +2164,7 @@ int lib3270_get_field_end(H3270 *hSession, int baddr)
 	if (!hSession->formatted)
 		return errno = EINVAL;
 
-	faddr = find_field_attribute(hSession,baddr);
+	faddr = lib3270_field_addr(hSession,baddr);
 	fa = hSession->ea_buf[faddr].fa;
 	if (faddr == baddr || FA_IS_PROTECTED(fa))
 		return errno = EPERM;
@@ -2243,7 +2244,7 @@ static Boolean remargin(H3270 *hSession, int lmargin)
 			b0 = baddr;
 			ever = True;
 		}
-		faddr = find_field_attribute(hSession,baddr);
+		faddr = lib3270_field_addr(hSession,baddr);
 		fa = hSession->ea_buf[faddr].fa;
 
 		if (faddr == baddr || FA_IS_PROTECTED(fa))

@@ -31,6 +31,7 @@
 #include "private.h"
 #include "telnetc.h"
 #include <errno.h>
+#include <lib3270/log.h>
 #include <lib3270/trace.h>
 
 #if defined(HAVE_LIBSSL)

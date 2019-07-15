@@ -38,6 +38,7 @@
 #include "utilc.h"
 #include "popupsc.h"
 #include <lib3270/selection.h>
+#include <lib3270/log.h>
 
 #define my_isspace(c)	isspace((unsigned char)c)
 

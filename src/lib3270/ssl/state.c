@@ -35,6 +35,8 @@
 #include <lib3270/popup.h>
 #include <lib3270/trace.h>
 #include <trace_dsc.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 
 #ifdef HAVE_LIBSSL
 	#include <openssl/ssl.h>

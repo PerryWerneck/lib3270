@@ -35,9 +35,8 @@
 #include "../private.h"
 #include <sys/time.h>
 #include <sys/types.h>
-// #include "../xioc.h"
-// #include "telnetc.h"
-// #include "utilc.h"
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 
 #define MILLION			1000000L
 #define TN	(timeout_t *)NULL

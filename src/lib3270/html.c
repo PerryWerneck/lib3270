@@ -236,7 +236,7 @@
 
  LIB3270_EXPORT char * lib3270_get_as_html(H3270 *session, LIB3270_HTML_OPTION option)
  {
-	int	row, baddr;
+	unsigned int row, baddr;
 	struct html_info info;
 
  	memset(&info,0,sizeof(info));
@@ -256,7 +256,7 @@
 	baddr = 0;
 	for(row=0;row < session->rows;row++)
 	{
-		int col;
+		unsigned int col;
 
 		for(col = 0; col < session->cols;col++)
 		{

@@ -59,6 +59,7 @@
 #include "togglesc.h"
 //#include "api.h"
 #include "utilc.h"
+#include <lib3270/log.h>
 
 static const struct _toggle_info
 {

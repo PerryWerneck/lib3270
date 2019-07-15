@@ -37,6 +37,8 @@
 #include "private.h"
 #include <lib3270/X11keysym.h>
 #include <lib3270/charset.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 
 /*
  * EBCDIC-to-Unicode translation tables.
@@ -45,18 +47,6 @@
  */
 #define UT_SIZE		190
 #define UT_OFFSET	0x41
-
-/*
-typedef struct
-{
-	const char 		* name;
-	const char 		* host_codepage;
-	const char		* cgcsgid;
-	const char		* display_charset;
-	unsigned short	  code[UT_SIZE];
-} charset_table;
-*/
-
 
 /*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
 

@@ -693,7 +693,7 @@
 	 * @return Negative if error or number of processed characters.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, const unsigned char *str);
+	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str);
 
 	/**
 	 * @brief Set string at defined adress.

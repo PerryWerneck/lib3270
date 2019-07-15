@@ -63,7 +63,7 @@
 #include "trace_dsc.h"
 #include "utilc.h"
 
-#include "api.h"
+// #include "api.h"
 
 // Externals
 // extern unsigned char reply_mode;

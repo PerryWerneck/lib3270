@@ -34,6 +34,7 @@
 
 #include "private.h"
 #include <lib3270/trace.h>
+#include <lib3270/log.h>
 #include <lib3270/selection.h>
 
 #include "kybdc.h"

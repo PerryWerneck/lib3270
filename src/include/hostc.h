@@ -35,7 +35,7 @@
  *	@brief Global declarations for host.c.
  */
 
- #include "api.h"
+// #include "api.h"
 
 
 /**

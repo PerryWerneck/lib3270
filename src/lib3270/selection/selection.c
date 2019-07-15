@@ -32,6 +32,7 @@
  #include <lib3270/actions.h>
  #include <lib3270/session.h>
  #include <lib3270/selection.h>
+ #include <lib3270/log.h>
  #include "3270ds.h"
  #include "kybdc.h"
 
@@ -221,9 +222,9 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 		if( (col == 0) || !(hSession->text[baddr-1].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_LEFT;
 
-		/// FIXME: It should text if baddr is the last element before the +1.
+		/// FIXME: It should test if baddr is the last element before the +1.
 
-		if( (col == hSession->cols) || !(hSession->text[baddr+1].attr & LIB3270_ATTR_SELECTED) )
+		if( (col == ((int) hSession->cols)) || !(hSession->text[baddr+1].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_RIGHT;
 	}
 
@@ -236,7 +237,7 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 		if( (row == 0) || !(hSession->text[baddr-hSession->cols].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_TOP;
 
-		if( (row == hSession->rows) || !(hSession->text[baddr+hSession->cols].attr & LIB3270_ATTR_SELECTED) )
+		if( (row == ((int) hSession->rows)) || !(hSession->text[baddr+hSession->cols].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_BOTTOM;
 	}
 

@@ -54,6 +54,8 @@
 #include <errno.h>
 #include <lib3270/internals.h>
 #include <lib3270/properties.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.
@@ -152,7 +154,7 @@ void lib3270_set_disconnected(H3270 *hSession)
 	hSession->starting	= 0;
 	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;
 
-	set_status(hSession,OIA_FLAG_UNDERA,False);
+	set_status(hSession,LIB3270_FLAG_UNDERA,False);
 
 	lib3270_st_changed(hSession,LIB3270_STATE_CONNECT, False);
 

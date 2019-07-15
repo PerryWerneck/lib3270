@@ -50,8 +50,8 @@
 #include "errno.h"
 #include "statusc.h"
 #include "togglesc.h"
-#include "api.h"
 #include <lib3270/actions.h>
+#include <lib3270/log.h>
 
 #if defined(_WIN32)
 	#include <windows.h>
@@ -165,10 +165,10 @@ int screen_init(H3270 *session)
 static unsigned short color_from_fa(H3270 *hSession, unsigned char fa)
 {
 	if (hSession->m3279)
-		return get_color_pair(DEFCOLOR_MAP(fa),0) | COLOR_ATTR_FIELD;
+		return get_color_pair(DEFCOLOR_MAP(fa),0) | LIB3270_ATTR_FIELD;
 
 	// Green on black
-	return get_color_pair(0,0) | COLOR_ATTR_FIELD | ((FA_IS_HIGH(fa)) ? COLOR_ATTR_INTENSIFY : 0);
+	return get_color_pair(0,0) | LIB3270_ATTR_FIELD | ((FA_IS_HIGH(fa)) ? LIB3270_ATTR_INTENSIFY : 0);
 }
 
 /*
@@ -322,7 +322,7 @@ void screen_update(H3270 *session, int bstart, int bend)
 
 	fa		= get_field_attribute(session,bstart);
 	a  		= color_from_fa(session,fa);
-	fa_addr = find_field_attribute(session,bstart); // may be -1, that's okay
+	fa_addr = lib3270_field_addr(session,bstart); // may be -1, that's okay
 
 	for(baddr = bstart; baddr < bend; baddr++)
 	{
@@ -556,7 +556,7 @@ void set_status(H3270 *session, LIB3270_FLAG id, Boolean on)
 void status_ctlr_done(H3270 *session)
 {
 	CHECK_SESSION_HANDLE(session);
-	set_status(session,OIA_FLAG_UNDERA,True);
+	set_status(session,LIB3270_FLAG_UNDERA,True);
 	session->cbk.ctlr_done(session);
 }
 
@@ -697,7 +697,7 @@ void status_changed(H3270 *session, LIB3270_MESSAGE id)
 void status_twait(H3270 *session)
 {
 	CHECK_SESSION_HANDLE(session);
-	set_status(session,OIA_FLAG_UNDERA,False);
+	set_status(session,LIB3270_FLAG_UNDERA,False);
 	status_changed(session,LIB3270_MESSAGE_TWAIT);
 }
 
@@ -735,7 +735,7 @@ static void status_connect(H3270 *hSession, int connected, void GNUC_UNUSED(*dun
 
 	if (connected)
 	{
-		set_status(hSession,OIA_FLAG_BOXSOLID,IN_3270 && !IN_SSCP);
+		set_status(hSession,LIB3270_FLAG_BOXSOLID,IN_3270 && !IN_SSCP);
 
 		if (hSession->kybdlock & KL_AWAITING_FIRST)
 			id = LIB3270_MESSAGE_AWAITING_FIRST;
@@ -745,7 +745,7 @@ static void status_connect(H3270 *hSession, int connected, void GNUC_UNUSED(*dun
 	}
 	else
 	{
-		set_status(hSession,OIA_FLAG_BOXSOLID,False);
+		set_status(hSession,LIB3270_FLAG_BOXSOLID,False);
 		id = LIB3270_MESSAGE_DISCONNECTED;
 	}
 
@@ -760,15 +760,15 @@ static void status_3270_mode(H3270 *hSession, int GNUC_UNUSED(ignored), void GNU
 	CHECK_SESSION_HANDLE(hSession);
 
 	if(oia_boxsolid)
-		set_status(hSession,OIA_FLAG_UNDERA,True);
-	set_status(hSession,OIA_FLAG_BOXSOLID,oia_boxsolid);
+		set_status(hSession,LIB3270_FLAG_UNDERA,True);
+	set_status(hSession,LIB3270_FLAG_BOXSOLID,oia_boxsolid);
 
 }
 
 /*
 static void status_printer(H3270 *session, int on, void *dunno)
 {
-	set_status(session,OIA_FLAG_PRINTER,on);
+	set_status(session,LIB3270_FLAG_PRINTER,on);
 }
 */
 

@@ -37,11 +37,15 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
 #include "private.h"
+
+#include <lib3270.h>
+#include <lib3270/trace.h>
+#include <lib3270/log.h>
+#include <lib3270/actions.h>
+
 #include <errno.h>
 #include <stdlib.h>
 #include "3270ds.h"
-//#include "appres.h"
-// #include "ctlr.h"
 #include "screen.h"
 #include "resources.h"
 
@@ -53,11 +57,9 @@
 #include "kybdc.h"
 #include "popupsc.h"
 #include "screenc.h"
-// #include "scrollc.h"
 #include "seec.h"
 #include "sf.h"
 #include "statusc.h"
-// #include "tablesc.h"
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
@@ -464,7 +466,7 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 	if(baddr < 0)
 		baddr = hSession->cursor_addr;
 
-	addr = find_field_attribute(hSession,baddr);
+	addr = lib3270_field_addr(hSession,baddr);
 
 	if(addr < 0)
 		return -1;
@@ -550,7 +552,7 @@ int lib3270_field_length(H3270 *hSession, int baddr)
 	int addr;
 	int width = 0;
 
-	addr = find_field_attribute(hSession,baddr);
+	addr = lib3270_field_addr(hSession,baddr);
 
 	if(addr < 0)
 		return -1;
@@ -575,7 +577,7 @@ int lib3270_field_length(H3270 *hSession, int baddr)
  */
 unsigned char get_field_attribute(H3270 *hSession, int baddr)
 {
-	return hSession->ea_buf[find_field_attribute(hSession,baddr)].fa;
+	return hSession->ea_buf[lib3270_field_addr(hSession,baddr)].fa;
 }
 
 /**
@@ -622,7 +624,7 @@ LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr)
     if(baddr < 0)
 		baddr = hSession->cursor_addr;
 
-	int faddr = find_field_attribute(hSession,baddr);
+	int faddr = lib3270_field_addr(hSession,baddr);
 
 	return FA_IS_PROTECTED(hSession->ea_buf[faddr].fa) ? 1 : 0;
 }
@@ -1827,7 +1829,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			if (d != DBCS_NONE && why == DBCS_FIELD) {
 				ABORT_WRITE("SI in DBCS field");
 			}
-			fa_addr = find_field_attribute(hSession,hSession->buffer_addr);
+			fa_addr = lib3270_field_addr(hSession,hSession->buffer_addr);
 			baddr = hSession->buffer_addr;
 			DEC_BA(baddr);
 			while (!aborted &&
@@ -2145,7 +2147,7 @@ ctlr_lookleft_state(int baddr, enum dbcs_why *why)
 		return DBCS_NONE;
 
 	/* Find the field attribute, if any. */
-	faddr = find_field_attribute(baddr);
+	faddr = lib3270_field_addr(baddr);
 
 	/*
 	 * First in precedence is a DBCS field.
@@ -2258,7 +2260,7 @@ int ctlr_dbcs_postprocess(H3270 *hSession)
 	 * dummy at -1.  Also compute the starting and ending points for the
 	 * scan: the first location after that field attribute.
 	 */
-	faddr0 = find_field_attribute(0);
+	faddr0 = lib3270_field_addr(0);
 	baddr = faddr0;
 	INC_BA(baddr);
 	if (faddr0 < 0)
@@ -2738,7 +2740,7 @@ void mdt_set(H3270 *hSession, int baddr)
 {
 	int faddr;
 
-	faddr = find_field_attribute(hSession,baddr);
+	faddr = lib3270_field_addr(hSession,baddr);
 	if (faddr >= 0 && !(hSession->ea_buf[faddr].fa & FA_MODIFY))
 	{
 		hSession->ea_buf[faddr].fa |= FA_MODIFY;
@@ -2749,7 +2751,7 @@ void mdt_set(H3270 *hSession, int baddr)
 
 void mdt_clear(H3270 *hSession, int baddr)
 {
-	int faddr = find_field_attribute(hSession,baddr);
+	int faddr = lib3270_field_addr(hSession,baddr);
 
 	if (faddr >= 0 && (hSession->ea_buf[faddr].fa & FA_MODIFY))
 	{

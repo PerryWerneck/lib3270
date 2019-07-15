@@ -77,10 +77,11 @@
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/
-#include "api.h"
+// #include "api.h"
 
 #include <lib3270/popup.h>
 #include <lib3270/selection.h>
+#include <lib3270/log.h>
 
 /*---[ Struct ]-------------------------------------------------------------------------------------------------*/
 
@@ -117,7 +118,7 @@
 				ever = True;
 			}
 
-			faddr = find_field_attribute(hSession,baddr);
+			faddr = lib3270_field_addr(hSession,baddr);
 			fa = hSession->ea_buf[faddr].fa;
 			if (faddr == baddr || FA_IS_PROTECTED(fa))
 			{
@@ -138,7 +139,7 @@
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SMART_PASTE))
 	{
-		int faddr = find_field_attribute(hSession,hSession->cursor_addr);
+		int faddr = lib3270_field_addr(hSession,hSession->cursor_addr);
 		if(FA_IS_PROTECTED(hSession->ea_buf[faddr].fa))
 			hSession->cursor_addr++;
 		else
@@ -190,7 +191,7 @@ static int set_string(H3270 *hSession, const unsigned char *str)
 
 				baddr = (hSession->cursor_addr + hSession->cols) % (hSession->cols * hSession->rows);   /* down */
 				baddr = (baddr / hSession->cols) * hSession->cols;               /* 1st col */
-				faddr = find_field_attribute(hSession,baddr);
+				faddr = lib3270_field_addr(hSession,baddr);
 				fa = hSession->ea_buf[faddr].fa;
 				if (faddr != baddr && !FA_IS_PROTECTED(fa))
 					cursor_move(hSession,baddr);
@@ -232,7 +233,7 @@ static int set_string(H3270 *hSession, const unsigned char *str)
  * @return -1 if error (sets errno) or number of processed characters.
  *
  */
-LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, const unsigned char *str)
+LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str)
 {
     int rc = 0;
 
@@ -248,7 +249,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, int row, int col, cons
 	row--;
 	col--;
 
-	if(row >= 0 && col >= 0 && row <= hSession->rows && col <= hSession->cols)
+	if(row <= hSession->rows && col <= hSession->cols)
 	{
 		hSession->cbk.suspend(hSession);
 

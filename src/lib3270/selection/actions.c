@@ -32,6 +32,8 @@
  #include <lib3270/actions.h>
  #include <lib3270/session.h>
  #include <lib3270/selection.h>
+ #include <lib3270/log.h>
+ #include <lib3270/trace.h>
  #include "3270ds.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -48,7 +50,7 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
 	{
 		hSession->selected = 0;
 
-		for(a = 0; a < hSession->rows*hSession->cols; a++)
+		for(a = 0; a < ((int) (hSession->rows*hSession->cols)); a++)
 		{
 			if(hSession->text[a].attr & LIB3270_ATTR_SELECTED)
 			{
@@ -211,10 +213,10 @@ LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to)
 		if(col < 0)
 			cols = - (pos[f] % hSession->cols);
 
-		if(row >= (hSession->rows))
+		if(row >= ((int) hSession->rows))
 			rows = hSession->rows - ((pos[f] / hSession->cols)+1);
 
-		if(col >= hSession->cols)
+		if(col >= ((int) hSession->cols))
 			cols = hSession->cols - ((pos[f] % hSession->cols)+1);
 	}
 

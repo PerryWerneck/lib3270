@@ -41,7 +41,7 @@
 #include <config.h>
 #include <lib3270.h>
 #include <lib3270/log.h>
-#include "api.h"
+// #include "api.h"
 
 /*---[ Prototipes ]-----------------------------------------------------------------------------------------*/
 

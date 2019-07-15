@@ -39,17 +39,18 @@
 
 #include "private.h"
 
+#include <lib3270.h>
+#include <lib3270/actions.h>
+
 #if defined(X3270_FT) /*[*/
 
 #include "3270ds.h"
-//#include "actionsc.h"
 #include "ctlrc.h"
 #include "ft_cutc.h"
 #include "ft_cut_ds.h"
 #include "ftc.h"
 #include "kybdc.h"
 #include "popupsc.h"
-// #include "tablesc.h"
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
@@ -343,7 +344,7 @@ static void cut_control_code(H3270 *hSession)
 		hSession->cut_xfer_in_progress = 0;
 		cut_ack(hSession);
 
-		if (lib3270_get_ft_state(hSession) == FT_ABORT_SENT && ft->saved_errmsg != CN)
+		if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_SENT && ft->saved_errmsg != CN)
 		{
 			buf = ft->saved_errmsg;
 			ft->saved_errmsg = CN;
@@ -394,7 +395,7 @@ static void cut_data_request(H3270 *hSession)
 	unsigned char	  attr;
 
 	trace_ds(hSession,"< FT DATA_REQUEST %u\n", from6(hSession, seq));
-	if (lib3270_get_ft_state(hSession) == FT_ABORT_WAIT)
+	if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT)
 	{
 		cut_abort(hSession,SC_ABORT_FILE,"%s", N_("Transfer cancelled by user") );
 		return;

@@ -53,7 +53,7 @@
 	#include <stdlib.h>
 #endif // !ANDROID
 
-#include "api.h"
+// #include "api.h"
 
 #include <assert.h>
 #include <stdarg.h>
@@ -65,6 +65,8 @@
 #include "trace_dsc.h"
 #include "utilc.h"
 #include "sf.h"
+
+#include <lib3270/log.h>
 
 /* Statics */
 static Boolean select_rpq_terms(H3270 *hSession);

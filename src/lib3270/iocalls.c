@@ -48,6 +48,9 @@
 	#include <fcntl.h>
 #endif
 
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
+
 #define MILLION			1000000L
 //
 //#if defined(_WIN32)

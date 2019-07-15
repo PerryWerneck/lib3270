@@ -39,6 +39,7 @@
 #include <config.h>
 #include <lib3270.h>
 #include <lib3270/filetransfer.h>
+#include <lib3270/log.h>
 #include "private.h"
 #include <lib3270/trace.h>
 
@@ -404,8 +405,8 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	if(!ft)
 		return EINVAL;
 
- 	recfm			= (ft->flags & FT_RECORD_FORMAT_MASK) >> 8;
- 	units			= (ft->flags & FT_ALLOCATION_UNITS_MASK) >> 12;
+ 	recfm			= (ft->flags & LIB3270_FT_RECORD_FORMAT_MASK) >> 8;
+ 	units			= (ft->flags & LIB3270_FT_ALLOCATION_UNITS_MASK) >> 12;
 	ft->ascii_flag	= (ft->flags & LIB3270_FT_OPTION_ASCII)	? 1 : 0;
 	ft->cr_flag   	= (ft->flags & LIB3270_FT_OPTION_CRLF)	? 1 : 0;
 	ft->remap_flag	= (ft->flags & LIB3270_FT_OPTION_REMAP)	? 1 : 0;
@@ -568,7 +569,7 @@ static double finish(H3270FT *ft)
 	}
 
 	// Clean up the state.
-	set_ft_state(ft,FT_NONE);
+	set_ft_state(ft,LIB3270_FT_STATE_NONE);
 
 	ft_update_length(ft);
 
@@ -643,8 +644,8 @@ void ft_running(H3270FT *ft, Boolean is_cut)
 
 	gettimeofday(&ft->starting_time, (struct timezone *)NULL);
 
-	if (ft->state == FT_AWAIT_ACK)
-		set_ft_state(ft,FT_RUNNING);
+	if (ft->state == LIB3270_FT_STATE_AWAIT_ACK)
+		set_ft_state(ft,LIB3270_FT_STATE_RUNNING);
 
 	ft->cbk.running(ft->host,is_cut,ft->user_data);
 
@@ -670,9 +671,9 @@ LIB3270_EXPORT struct lib3270_ft_callbacks * lib3270_get_ft_callbacks(H3270 *ses
 // Process a protocol-generated abort.
 void ft_aborting(H3270FT *h, const char *reason)
 {
-	if (h->state == FT_RUNNING || h->state == FT_ABORT_WAIT)
+	if (h->state == LIB3270_FT_STATE_RUNNING || h->state == LIB3270_FT_STATE_ABORT_WAIT)
 	{
-		set_ft_state(h,FT_ABORT_SENT);
+		set_ft_state(h,LIB3270_FT_STATE_ABORT_SENT);
 		h->cbk.message(h->host,N_("Aborting..."),h->user_data);
 		h->cbk.aborting(h->host,reason,h->user_data);
 	}

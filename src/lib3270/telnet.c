@@ -103,6 +103,7 @@
 
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>
+#include <lib3270/log.h>
 
 #if !defined(TELOPT_NAWS) /*[*/
 #define TELOPT_NAWS	31

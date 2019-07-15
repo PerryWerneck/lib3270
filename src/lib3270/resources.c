@@ -36,6 +36,7 @@
 
 #include "private.h"
 #include "utilc.h"
+#include <lib3270/log.h>
 
 extern String fallbacks[];
 

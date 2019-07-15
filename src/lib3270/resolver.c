@@ -59,7 +59,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "api.h"
+// #include "api.h"
 
 #include "resolverc.h"
 #include "statusc.h"

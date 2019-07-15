@@ -49,7 +49,7 @@ void clear_chr(H3270 *hSession, int baddr)
 							baddr == hSession->cursor_addr );
 }
 
-LIB3270_EXPORT char * lib3270_get_selection(H3270 *hSession, char tok, LIB3270_SELECTION_OPTIONS options)
+LIB3270_EXPORT char * lib3270_get_selected_text(H3270 *hSession, char tok, LIB3270_SELECTION_OPTIONS options)
 {
 	int				  row, col, baddr;
 	char 			* ret;
@@ -63,7 +63,10 @@ LIB3270_EXPORT char * lib3270_get_selection(H3270 *hSession, char tok, LIB3270_S
 		return NULL;
 
 	if(!hSession->selected || hSession->select.start == hSession->select.end)
+	{
+		errno = ENOENT;
 		return NULL;
+	}
 
 	ret = lib3270_malloc(buflen);
 
@@ -133,11 +136,65 @@ LIB3270_EXPORT char * lib3270_get_selection(H3270 *hSession, char tok, LIB3270_S
 
 LIB3270_EXPORT char * lib3270_get_selected(H3270 *hSession)
 {
-	return lib3270_get_selection(hSession,0,0);
+	return lib3270_get_selected_text(hSession,0,0);
 }
 
 LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
 {
-	return lib3270_get_selection(hSession,0,LIB3270_SELECTION_CUT);
+	return lib3270_get_selected_text(hSession,0,LIB3270_SELECTION_CUT);
 }
 
+LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut)
+{
+	// Get block size
+	unsigned int row, col, width, height;
+	if(lib3270_get_selection_rectangle(hSession, &row, &col, &width, &height))
+	{
+		return NULL;
+	}
+
+	// Get output buffer.
+	lib3270_selection * selection = lib3270_malloc(sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * (width*height)));
+
+	selection->bounds.col = col;
+	selection->bounds.row = row;
+	selection->bounds.height = height;
+	selection->bounds.width = width;
+
+	unsigned int dstaddr = 0;
+
+	for(row=0;row < selection->bounds.height; row++)
+	{
+		// Get starting address.
+		int baddr			= lib3270_translate_to_address(hSession, selection->bounds.row+row+1, selection->bounds.col+1);
+		unsigned char fa	= get_field_attribute(hSession,baddr);
+
+		if(baddr < 0)
+		{
+			errno = EINVAL;
+			lib3270_free(selection);
+			return NULL;
+		}
+
+		for(col=0;col < selection->bounds.width; col++)
+		{
+			if(hSession->ea_buf[baddr].fa) {
+				fa = hSession->ea_buf[baddr].fa;
+			}
+
+			selection->contents[dstaddr].chr		= (hSession->text[baddr].chr ? hSession->text[baddr].chr : ' ');
+			selection->contents[dstaddr].flags		= hSession->text[baddr].attr;
+			selection->contents[dstaddr].attributes = fa;
+
+			if(cut && !FA_IS_PROTECTED(fa)) {
+				clear_chr(hSession,baddr);
+			}
+
+			dstaddr++;
+			baddr++;
+		}
+
+	}
+
+	return selection;
+}

@@ -38,6 +38,35 @@
 
 	#define LIB3270_SELECTION_H_INCLUDED 1
 
+	/**
+	 * @brief Selection element
+	 *
+	 */
+	typedef struct _lib3270_selection_element {
+		unsigned char	chr;			///< @brief Element character
+		unsigned short	flags;			///< @brief Element colors & visual state.
+		unsigned char	attributes;		///< @brief 3270 attributes.
+	} lib3270_selection_element;
+
+	/**
+	 * @brief A rectangle containing the selected area.
+	 *
+	 */
+	typedef struct _lib3270_selection
+	{
+		struct {
+			unsigned int row;
+			unsigned int col;
+			unsigned int width;
+			unsigned int height;
+
+		} bounds;					///< @brief Clipboard rectangle.
+
+		lib3270_selection_element contents[1];
+
+	} lib3270_selection;
+
+
 	LIB3270_EXPORT int	  lib3270_unselect(H3270 *session);
 	LIB3270_EXPORT void	  lib3270_select_to(H3270 *session, int baddr);
 	LIB3270_EXPORT int	  lib3270_select_word_at(H3270 *session, int baddr);
@@ -48,7 +77,7 @@
 	/**
 	 * @brief Get selection options.
 	 *
-	 * @see lib3270_get_selection
+	 * @see lib3270_get_selection_as_text
 	 *
 	 */
 	typedef enum _LIB3270_SELECTION_OPTIONS {
@@ -146,6 +175,17 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height);
+
+	/**
+	 * @brief Get selection contents.
+	 *
+	 * @param hSession	Session handle.
+	 * @param cut		Non zero to clear selected contents.
+	 *
+	 * @return NULL on error (sets errno), pointer to a rectangle containing the selected area (release it with lib3270_free).
+	 *
+	 */
+	LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut);
 
 	/**
 	 * @brief Get bitmasked flag for the current selection.

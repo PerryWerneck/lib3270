@@ -299,6 +299,12 @@ typedef struct _input_t
 
 } input_t;
 
+struct lib3270_state_callback
+{
+	struct lib3270_state_callback	* next;			/**< Next callback in chain */
+	void							* data;			/**< User data */
+	void (*func)(H3270 *, int, void *);		/**< Function to call */
+};
 
 /**
  *

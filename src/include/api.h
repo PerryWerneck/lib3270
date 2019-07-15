@@ -99,33 +99,15 @@
 
 		#include <lib3270/log.h>
 
-//		#define WriteLog(module,fmt, ...) 		lib3270_write_log(NULL,module,fmt,__VA_ARGS__)
-//		#define WriteRCLog(module,rc,fmt, ...)	lib3270_write_rc(NULL,module,fmt,__VA_ARGS__)
-
-/*
-		#ifdef LIB3270_MODULE_NAME
-			#define Log(fmt, ...)		lib3270_write_log(NULL,LIB3270_MODULE_NAME,fmt,__VA_ARGS__)
-		#else
-			#define Log(fmt, ...)		lib3270_write_log(NULL,"MSG",fmt,__VA_ARGS__)
-		#endif
-*/
-
 		#define OIA_FLAG_BOXSOLID	LIB3270_FLAG_BOXSOLID
 		#define OIA_FLAG_UNDERA		LIB3270_FLAG_UNDERA
 		#define OIA_FLAG_TYPEAHEAD	LIB3270_FLAG_TYPEAHEAD
 		#define OIA_FLAG_USER		LIB3270_FLAG_COUNT
 		#define OIA_FLAG			LIB3270_FLAG
 
-		struct lib3270_state_callback;
+//		struct lib3270_state_callback;
 
 		#include <lib3270/session.h>
-
-		struct lib3270_state_callback
-		{
-			struct lib3270_state_callback	* next;			/**< Next callback in chain */
-			void							* data;			/**< User data */
-			void (*func)(H3270 *, int, void *);		/**< Function to call */
-		};
 
 
 		/** Type of dialog boxes */
@@ -178,30 +160,6 @@
 		#define IN_TN3270E		lib3270_in_tn3270e(hSession)
 		#define IN_E			lib3270_in_e(hSession)
 
-		/* Screen processing */
-
-		typedef enum _SCRIPT_STATE
-		{
-			SCRIPT_STATE_NONE,
-			SCRIPT_STATE_RUNNING,
-			SCRIPT_STATE_HALTED,
-
-			SCRIPT_STATE_USER
-
-		} SCRIPT_STATE;
-
-		typedef enum _COUNTER_ID
-		{
-			COUNTER_ID_CTLR_DONE,
-			COUNTER_ID_RESET,
-
-			COUNTER_ID_USER
-		} COUNTER_ID;
-
-		LOCAL_EXTERN int query_counter(COUNTER_ID id);
-
-		#define	query_screen_change_counter() query_counter(COUNTER_ID_CTLR_DONE)
-
 		#define COLOR_ATTR_NONE			0x0000
 		#define COLOR_ATTR_FIELD		LIB3270_ATTR_FIELD
 		#define COLOR_ATTR_BLINK		LIB3270_ATTR_BLINK
@@ -224,13 +182,6 @@
 		LOCAL_EXTERN int			  emulate_input(char *s, int len, int pasting);
 
         /* Misc calls */
-
-		#define query_3270_terminal_status(void) lib3270_get_program_message(NULL)
-
-		/* Get connection info */
-		#define get_connected_lu(h) lib3270_get_luname(h)
-
-		LOCAL_EXTERN SCRIPT_STATE status_script(SCRIPT_STATE state);
 
 		#include <lib3270/actions.h>
 

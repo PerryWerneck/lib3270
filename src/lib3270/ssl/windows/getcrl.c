@@ -54,6 +54,7 @@
 #include <trace_dsc.h>
 #include <errno.h>
 #include <lib3270.h>
+#include <lib3270/log.h>
 #include <lib3270/trace.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/

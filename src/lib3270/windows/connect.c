@@ -40,6 +40,7 @@
 #include "../private.h"
 #include <errno.h>
 #include <lib3270/trace.h>
+#include <lib3270/log.h>
 
 #ifdef HAVE_ICONV
 	#include <iconv.h>
@@ -47,10 +48,8 @@
 
 #define SOCK_CLOSE(s)	closesocket(s->sock); s->sock = -1;
 
-//#include "statusc.h"
 #include "hostc.h"
 #include "trace_dsc.h"
-//#include "utilc.h"
 #include "telnetc.h"
 #include "screen.h"
 

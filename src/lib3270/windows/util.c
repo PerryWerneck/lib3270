@@ -47,15 +47,7 @@
 	#include <iconv.h>
 #endif // HAVE_ICONV
 
-//#include <stdarg.h>
-//#include "resources.h"
-
-//#include "utilc.h"
-//#include "popupsc.h"
-//#include "api.h"
-
-//#include <lib3270/session.h>
-//#include <lib3270/selection.h>
+#include <lib3270/log.h>
 
 #define my_isspace(c)	isspace((unsigned char)c)
 

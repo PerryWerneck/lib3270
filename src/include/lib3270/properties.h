@@ -44,12 +44,21 @@
 
 	typedef struct _lib3270_int_property
 	{
-		const char		* name;						///< @brief Property name.
-		const char		* description;				///< @brief Property description.
-		int (*get)(H3270 *hSession);				///< @brief Get value.
-		int (*set)(H3270 *hSession, int value);		///< @brief Set value.
+		const char		* name;											///< @brief Property name.
+		const char		* description;									///< @brief Property description.
+		int (*get)(H3270 *hSession);									///< @brief Get value.
+		int (*set)(H3270 *hSession, int value);							///< @brief Set value.
 
 	} LIB3270_INT_PROPERTY;
+
+	typedef struct _lib3270_uint_property
+	{
+		const char		* name;											///< @brief Property name.
+		const char		* description;									///< @brief Property description.
+		unsigned int (*get)(H3270 *hSession);							///< @brief Get value.
+		unsigned int (*set)(H3270 *hSession, unsigned int value);		///< @brief Set value.
+
+	} LIB3270_UINT_PROPERTY;
 
 	typedef struct _lib3270_string_property
 	{
@@ -69,12 +78,20 @@
 	LIB3270_EXPORT const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void);
 
 	/**
-	 * @brief Get lib3270 integer properties table.
+	 * @brief Get lib3270 signed int properties table.
 	 *
 	 * @return The properties table.
 	 *
 	 */
 	LIB3270_EXPORT const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void);
+
+	/**
+	 * @brief Get lib3270 unsigned signed int properties table.
+	 *
+	 * @return The properties table.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void);
 
 	/**
 	 * @brief Get lib3270 string properties table.

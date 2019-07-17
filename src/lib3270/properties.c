@@ -61,7 +61,8 @@
 	return hSession->formatted != 0;
  }
 
- const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void) {
+ const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
+ {
 
 	static const LIB3270_INT_PROPERTY properties[] = {
 		{
@@ -101,85 +102,85 @@
 
 		{
 			"pconnected",										//  Property name.
-			"",											//  Property description.
+			"",													//  Property description.
 			lib3270_pconnected,									//  Get value.
 			NULL												//  Set value.
 		},
 
 		{
-			"half_connected",							//  Property name.
-			"",											//  Property description.
-			lib3270_half_connected,						//  Get value.
-			NULL										//  Set value.
+			"half_connected",									//  Property name.
+			"",													//  Property description.
+			lib3270_half_connected,								//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"neither",						//  Property name.
-			"",						//  Property description.
-			lib3270_in_neither,				//  Get value.
-			NULL							//  Set value.
+			"neither",											//  Property name.
+			"",													//  Property description.
+			lib3270_in_neither,									//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"ansi",							//  Property name.
-			"",						//  Property description.
-			lib3270_in_ansi,				//  Get value.
-			NULL							//  Set value.
+			"ansi",												//  Property name.
+			"",													//  Property description.
+			lib3270_in_ansi,									//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"tn3270",									//  Property name.
-			N_( "State is 3270, TN3270e or SSCP" ),		//  Property description.
-			lib3270_in_3270,							//  Get value.
-			NULL										//  Set value.
+			"tn3270",											//  Property name.
+			N_( "State is 3270, TN3270e or SSCP" ),				//  Property description.
+			lib3270_in_3270,									//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"sscp",							//  Property name.
-			"",						//  Property description.
-			lib3270_in_sscp,				//  Get value.
-			NULL							//  Set value.
+			"sscp",												//  Property name.
+			"",													//  Property description.
+			lib3270_in_sscp,									//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"tn3270e",						//  Property name.
-			"",						//  Property description.
-			lib3270_in_tn3270e,				//  Get value.
-			NULL							//  Set value.
+			"tn3270e",											//  Property name.
+			"",													//  Property description.
+			lib3270_in_tn3270e,									//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"e",																				//  Property name.
-			N_( "Is terminal in the INITIAL_E state?" ),										//  Property description.
-			lib3270_in_e,																		//  Get value.
-			NULL																				//  Set value.
+			"e",												//  Property name.
+			N_( "Is terminal in the INITIAL_E state?" ),		//  Property description.
+			lib3270_in_e,										//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"has_selection",				//  Property name.
-			N_( "Has selected area" ),		//  Property description.
-			lib3270_has_selection,			//  Get value.
-			NULL							//  Set value.
+			"has_selection",									//  Property name.
+			N_( "Has selected area" ),							//  Property description.
+			lib3270_has_selection,								//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"starting",																			//  Property name.
-			N_( "Is starting (no first screen)?" ),												//  Property description.
-			lib3270_is_starting,																//  Get value.
-			NULL																				//  Set value.
+			"starting",											//  Property name.
+			N_( "Is starting (no first screen)?" ),				//  Property description.
+			lib3270_is_starting,								//  Get value.
+			NULL												//  Set value.
 		},
 
 		{
-			"formatted",																		//  Property name.
-			N_( "Formatted screen" ),															//  Property description.
-			lib3270_get_formatted,																//  Get value.
-			NULL																				//  Set value.
+			"formatted",										//  Property name.
+			N_( "Formatted screen" ),							//  Property description.
+			lib3270_get_formatted,								//  Get value.
+			NULL												//  Set value.
 		},
 
 		/*
 		{
 			"",						//  Property name.
-			"",				//  Property description.
+			"",						//  Property description.
 			NULL,					//  Get value.
 			NULL					//  Set value.
 		},
@@ -198,29 +199,55 @@
 
  }
 
- const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void) {
+ const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void)
+ {
+
+	static const LIB3270_UINT_PROPERTY properties[] = {
+
+		/*
+		{
+			"",						//  Property name.
+			"",				//  Property description.
+			NULL,					//  Get value.
+			NULL					//  Set value.
+		},
+		*/
+
+		{
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		}
+	};
+
+	return properties;
+ }
+
+ const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void)
+ {
 
 	static const LIB3270_INT_PROPERTY properties[] = {
 
 		{
-			"cursor_address",				//  Property name.
-			N_( "Cursor address" ),			//  Property description.
-			lib3270_get_cursor_address,		//  Get value.
-			lib3270_set_cursor_address		//  Set value.
+			"cursor_address",							//  Property name.
+			N_( "Cursor address" ),						//  Property description.
+			lib3270_get_cursor_address,					//  Get value.
+			lib3270_set_cursor_address					//  Set value.
 		},
 
 		{
-			"model_number",					//  Property name.
-			N_( "The model number" ),		//  Property description.
-			lib3270_get_model_number,		//  Get value.
-			NULL							//  Set value.
+			"model_number",								//  Property name.
+			N_( "The model number" ),					//  Property description.
+			lib3270_get_model_number,					//  Get value.
+			NULL										//  Set value.
 		},
 
 		{
-			"color_type",					//  Property name.
-			N_( "The color type" ),			//  Property description.
-			lib3270_get_color_type,			//  Get value.
-			lib3270_set_color_type			//  Set value.
+			"color_type",								//  Property name.
+			N_( "The color type" ),						//  Property description.
+			lib3270_get_color_type,						//  Get value.
+			lib3270_set_color_type						//  Set value.
 		},
 
 		{

@@ -26,6 +26,9 @@
  *
  */
 
+#error Deprecated
+
+ /*
 #ifndef LIB3270_HTML_H_INCLUDED
 
 	#define LIB3270_HTML_H_INCLUDED 1
@@ -50,4 +53,4 @@
 #endif
 
 #endif // LIB3270_HTML_H_INCLUDED
-
+*/

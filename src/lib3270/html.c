@@ -25,6 +25,8 @@
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  *
  */
+
+/*
 #ifdef WIN32
 	#include <winsock2.h>
 	#include <windows.h>
@@ -46,7 +48,7 @@
 	const char		* xlat;
  };
 
-/*--[ Defines ]--------------------------------------------------------------------------------------*/
+//--[ Defines ]--------------------------------------------------------------------------------------
 
  enum html_element
  {
@@ -107,10 +109,10 @@
 
 	enum HTML_MODE
 	{
-		HTML_MODE_TEXT,				/**< Non editable */
-		HTML_MODE_INPUT_TEXT,		/**< Text input */
-		HTML_MODE_INPUT_PASSWORD,	/**< Password input */
-		HTML_MODE_INPUT_BUTTON,	/**< Button input (PFkey) */
+		HTML_MODE_TEXT,				///< Non editable
+		HTML_MODE_INPUT_TEXT,		///< Text input
+		HTML_MODE_INPUT_PASSWORD,	///< Password input
+		HTML_MODE_INPUT_BUTTON,		///< Button input (PFkey)
 	}				  mode;
 
 	char			* text;
@@ -120,7 +122,7 @@
 	unsigned short	  bg;
  };
 
- /*--[ Implement ]------------------------------------------------------------------------------------*/
+ //--[ Implement ]------------------------------------------------------------------------------------
 
  static void append_string(struct html_info *info, const char *text)
  {
@@ -424,4 +426,4 @@
 	return info.text;
  }
 
-
+*/

@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	printf("HOST URL: %s\HOST CRL: %s\n",lib3270_get_url(h),lib3270_get_crl_url(h));
+	printf("HOST URL: %s\tHOST CRL: %s\n",lib3270_get_url(h),lib3270_get_crl_url(h));
 
 	if(lib3270_set_url(h,NULL))
 		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");

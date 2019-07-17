@@ -204,6 +204,41 @@
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
+		{
+			"cursor_address",							//  Property name.
+			N_( "Cursor address" ),						//  Property description.
+			lib3270_get_cursor_address,					//  Get value.
+			lib3270_set_cursor_address					//  Set value.
+		},
+
+		{
+			"width",//  Property name.
+			N_( "Current screen width in columns" ),	//  Property description.
+			lib3270_get_width,							//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
+			"height",									//  Property name.
+			N_( "Current screen height in rows" ),		//  Property description.
+			lib3270_get_height,							//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
+			"length",									//  Property name.
+			N_( "Screen buffer length in bytes" ),		//  Property description.
+			lib3270_get_length,							//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
+			"unlock_delay",																			//  Property name.
+			N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
+			lib3270_get_unlock_delay,																//  Get value.
+			lib3270_set_unlock_delay																//  Set value.
+		},
+
 		/*
 		{
 			"",						//  Property name.
@@ -230,13 +265,6 @@
 	static const LIB3270_INT_PROPERTY properties[] = {
 
 		{
-			"cursor_address",							//  Property name.
-			N_( "Cursor address" ),						//  Property description.
-			lib3270_get_cursor_address,					//  Get value.
-			lib3270_set_cursor_address					//  Set value.
-		},
-
-		{
 			"model_number",								//  Property name.
 			N_( "The model number" ),					//  Property description.
 			lib3270_get_model_number,					//  Get value.
@@ -251,27 +279,6 @@
 		},
 
 		{
-			"width",//  Property name.
-			N_( "Current screen width in columns" ),	//  Property description.
-			lib3270_get_width,							//  Get value.
-			NULL										//  Set value.
-		},
-
-		{
-			"height",									//  Property name.
-			N_( "Current screen width in rows" ),		//  Property description.
-			lib3270_get_height,							//  Get value.
-			NULL										//  Set value.
-		},
-
-		{
-			"length",									//  Property name.
-			N_( "Screen buffer length in bytes" ),		//  Property description.
-			lib3270_get_length,							//  Get value.
-			NULL										//  Set value.
-		},
-
-		{
 			"cstate",									//  Property name.
 			N_( "Connection state" ),					//  Property description.
 			lib3270_get_connection_state_as_int,		//  Get value.
@@ -283,13 +290,6 @@
 			N_( "Latest program message" ),				//  Property description.
 			lib3270_get_program_message_as_int,			//  Get value.
 			NULL										//  Set value.
-		},
-
-		{
-			"unlock_delay",																			//  Property name.
-			N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
-			lib3270_get_unlock_delay,																//  Get value.
-			lib3270_set_unlock_delay																//  Set value.
 		},
 
 		/*

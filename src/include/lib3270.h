@@ -738,11 +738,10 @@
 	 *
 	 * @param hSession Session handle.
 	 *
-	 * @return Cursor address or -1 if invalid (sets errno).
+	 * @return Cursor address or 0 if invalid (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *hSession);
-
+	LIB3270_EXPORT unsigned int lib3270_get_cursor_address(H3270 *hSession);
 
 	/**
 	 * @brief Move cursor
@@ -1238,8 +1237,8 @@
 	 * @param			Delay in milliseconds.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *session, int delay);
-	LIB3270_EXPORT int lib3270_get_unlock_delay(H3270 *session);
+	LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *session, unsigned int delay);
+	LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(H3270 *session);
 
 	/**
 	 * @brief Alloc/Realloc memory buffer.

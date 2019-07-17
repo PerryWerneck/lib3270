@@ -404,10 +404,12 @@ void screen_update(H3270 *session, int bstart, int bend)
 
 }
 
-LIB3270_EXPORT int lib3270_get_cursor_address(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_cursor_address(H3270 *hSession)
 {
-    CHECK_SESSION_HANDLE(h);
-    return h->cursor_addr;
+	if(check_online_session(hSession))
+		return 0;
+
+    return hSession->cursor_addr;
 }
 
 /**

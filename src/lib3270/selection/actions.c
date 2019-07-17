@@ -290,14 +290,14 @@ LIB3270_EXPORT int lib3270_move_selection(H3270 *hSession, LIB3270_DIRECTION dir
 	switch(dir)
 	{
 	case LIB3270_DIR_UP:
-		if(start <= hSession->cols)
+		if(start <= ((int) hSession->cols))
 			return EINVAL;
 		start -= hSession->cols;
 		end   -= hSession->cols;
 		break;
 
 	case LIB3270_DIR_DOWN:
-		if(end >= (hSession->cols * (hSession->rows-1)))
+		if(end >= ((int) (hSession->cols * (hSession->rows-1))))
 			return EINVAL;
 		start += hSession->cols;
 		end   += hSession->cols;

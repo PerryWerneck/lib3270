@@ -56,7 +56,7 @@
 		const char		* name;											///< @brief Property name.
 		const char		* description;									///< @brief Property description.
 		unsigned int (*get)(H3270 *hSession);							///< @brief Get value.
-		unsigned int (*set)(H3270 *hSession, unsigned int value);		///< @brief Set value.
+		int (*set)(H3270 *hSession, unsigned int value);				///< @brief Set value.
 
 	} LIB3270_UINT_PROPERTY;
 

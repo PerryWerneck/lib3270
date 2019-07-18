@@ -113,7 +113,6 @@ static const unsigned char pa_xlate[] =
 };
 #define PF_SZ			(sizeof(pf_xlate)/sizeof(pf_xlate[0]))
 #define PA_SZ			(sizeof(pa_xlate)/sizeof(pa_xlate[0]))
-#define UNLOCK_MS		350	/* 0.35s after last unlock */
 
 static		Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean pasting,Boolean *skipped);
 static int	flush_ta(H3270 *hSession);

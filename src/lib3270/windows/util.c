@@ -121,6 +121,54 @@ const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
 }
 #endif // HAVE_INET_NTOP
 
+LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
+{
+	char * buffer = lib3270_malloc(4096);
+
+	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,lasterror,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,4096,NULL) == 0)
+	{
+	    snprintf(buffer, 4095, _( "Windows error %d" ), e);
+	}
+
+#ifdef HAVE_ICONV
+	{
+		// Convert from windows codepage to UTF-8 pw3270´s default charset
+		iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
+
+		trace("[%s]",buffer);
+
+		if(hConv == (iconv_t) -1)
+		{
+			lib3270_write_log(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
+		}
+		else
+		{
+			size_t				  in 		= strlen(buffer);
+			size_t				  out 		= (in << 1);
+			char				* ptr;
+			char				* outBuffer = (char *) malloc(out);
+			ICONV_CONST char	* inBuffer	= (ICONV_CONST char	*) buffer;
+
+			memset(ptr=outBuffer,0,out);
+
+			iconv(hConv,NULL,NULL,NULL,NULL);	// Reset state
+
+			if(iconv(hConv,&inBuffer,&in,&ptr,&out) != ((size_t) -1))
+			{
+				strncpy(buffer,outBuffer,4095);
+			}
+
+			free(outBuffer);
+
+			iconv_close(hConv);
+		}
+
+	}
+#endif // HAVE_ICONV
+
+	return buffer;
+}
+
 // Decode a Win32 error number.
 LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
 {

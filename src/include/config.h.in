@@ -36,11 +36,17 @@
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
 
-	/* Defaults */
+	/* Default settings */
+
+	/** @brief The lib3270's default host URL */
 	#undef LIB3270_DEFAULT_HOST
+
 	#undef LIB3270_DATADIR
 
-	/* Libraries */
+	/** @brief the delay, in miliseconds, between the host unlocking the keyboard and lib3270 actually performing the unlock */
+	#define UNLOCK_MS 350
+
+	/* Library options */
 	#undef HAVE_GNUC_VISIBILITY
 	#undef HAVE_LIBINTL
 	#undef HAVE_GETADDRINFO

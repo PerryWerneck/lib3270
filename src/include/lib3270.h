@@ -1234,7 +1234,7 @@
 	 * The value is in milliseconds; use 0 to turn off the delay completely.
 	 *
 	 * @param session	lib3270 session.
-	 * @param			Delay in milliseconds.
+	 * @param delay		Delay in milliseconds.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *session, unsigned int delay);
@@ -1256,7 +1256,6 @@
 
 	LIB3270_EXPORT void * lib3270_malloc(int len);
 	LIB3270_EXPORT void * lib3270_realloc(void *p, int len);
-//	LIB3270_EXPORT void * lib3270_replace(void **p, void *ptr);
 	LIB3270_EXPORT void * lib3270_strdup(const char *str);
 
 	#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
@@ -1285,17 +1284,6 @@
 	 *
 	 */
 	LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void);
-
-	/**
-	 * Get resource string.
-	 *
-	 * @param first_element	First element of resource path
-	 * @param ...			Resource path (ends with NULL)
-	 *
-	 * @return Resource string (Release with lib3270_free())
-	 *
-	 */
-	LIB3270_EXPORT char * lib3270_get_resource_string(H3270 *hSession, const char *first_element, ...);
 
 	/**
 	 * Get library version.
@@ -1371,6 +1359,17 @@
 #ifdef WIN32
 	LIB3270_EXPORT const char	* lib3270_win32_strerror(int e);
 	LIB3270_EXPORT const char	* lib3270_win32_local_charset(void);
+
+	/**
+	 * @brief Translate windows error code.
+	 *
+	 * @param lasterror	Windows error code (from GetLastError()).
+	 *
+	 * @return String with translated message (release it with lib3270_free).
+	 *
+	 */
+	LIB3270_EXPORT char 		* lib3270_win32_translate_error_code(int lasterror);
+
 #endif // WIn32
 
 	/**

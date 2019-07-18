@@ -209,7 +209,7 @@ static int set_string(H3270 *hSession, const unsigned char *str)
 		}
 		str++;
 
-		if(IN_3270 && lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE) && BA_TO_COL(hSession->cursor_addr) < data.orig_col)
+		if(IN_3270 && lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE) && BA_TO_COL(hSession->cursor_addr) < ((unsigned int) data.orig_col))
 		{
 			if(!remargin(hSession,data.orig_col))
 				last = 0;

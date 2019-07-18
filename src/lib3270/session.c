@@ -337,8 +337,14 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->host_type				= LIB3270_HOSTTYPE_DEFAULT;
 	hSession->colors				= 16;
 	hSession->m3279					= 1;
-	hSession->unlock_delay_ms		= 350; // 0.35s after last unlock
 	hSession->pointer				= (unsigned short) LIB3270_POINTER_LOCKED;
+
+#ifdef UNLOCK_MS
+	hSession->unlock_delay_ms		= UNLOCK_MS;
+#else
+	#error aqui
+	hSession->unlock_delay_ms		= 350;
+#endif // UNLOCK_MS
 
 	// CSD
 	for(f=0;f<4;f++)

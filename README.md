@@ -17,6 +17,32 @@ Installation repositories
 Building for Linux
 ==================
 
+1. Get lib3270 sources from git
+
+	* git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./lib3270
+
+2. Install the required libraries
+
+	* autoconf
+	* automake
+	* binutils
+	* coreutils
+	* gcc-c++
+	* gettext-devel
+	* m4
+	* pkgconfig
+	* openssl-devel
+	* dbus-1-devel
+	* xz
+
+(This command can make it easy on SuSE: grep -i buildrequires rpm/lib3270.spec | cut -d: -f2 | sudo xargs zypper in )
+
+3. Configure and build
+
+	* ./autogen.sh
+	* make clean
+	* make Debug
+
 
 Cross-compiling for Windows
 ===========================

@@ -279,18 +279,34 @@
 	 */
 	typedef enum lib3270_cstate
 	{
-		LIB3270_NOT_CONNECTED,			/**< @brief no socket, disconnected */
-		LIB3270_RESOLVING,				/**< @brief resolving hostname */
-		LIB3270_PENDING,				/**< @brief connection pending */
-		LIB3270_CONNECTED_INITIAL,		/**< @brief connected, no mode yet */
-		LIB3270_CONNECTED_ANSI,			/**< @brief connected in NVT ANSI mode */
-		LIB3270_CONNECTED_3270,			/**< @brief connected in old-style 3270 mode */
-		LIB3270_CONNECTED_INITIAL_E,	/**< @brief connected in TN3270E mode, unnegotiated */
-		LIB3270_CONNECTED_NVT,			/**< @brief connected in TN3270E mode, NVT mode */
-		LIB3270_CONNECTED_SSCP,			/**< @brief connected in TN3270E mode, SSCP-LU mode */
-		LIB3270_CONNECTED_TN3270E		/**< @brief connected in TN3270E mode, 3270 mode */
+		LIB3270_NOT_CONNECTED,			///< @brief no socket, disconnected
+		LIB3270_RESOLVING,				///< @brief resolving hostname
+		LIB3270_PENDING,				///< @brief connection pending
+		LIB3270_CONNECTED_INITIAL,		///< @brief connected, no mode yet
+		LIB3270_CONNECTED_ANSI,			///< @brief connected in NVT ANSI mode
+		LIB3270_CONNECTED_3270,			///< @brief connected in old-style 3270 mode
+		LIB3270_CONNECTED_INITIAL_E,	///< @brief connected in TN3270E mode, unnegotiated
+		LIB3270_CONNECTED_NVT,			///< @brief connected in TN3270E mode, NVT mode
+		LIB3270_CONNECTED_SSCP,			///< @brief connected in TN3270E mode, SSCP-LU mode
+		LIB3270_CONNECTED_TN3270E		///< @brief connected in TN3270E mode, 3270 mode
 	} LIB3270_CSTATE;
 
+	/**
+	 * @brief Field attributes.
+	 */
+	 typedef enum lib3270_field_attribute
+	 {
+		LIB3270_FIELD_ATTRIBUTE_PRINTABLE		= 0xc0,	///< @brief these make the character "printable"
+		LIB3270_FIELD_ATTRIBUTE_PROTECT			= 0x20,	///< @brief unprotected (0) / protected (1)
+		LIB3270_FIELD_ATTRIBUTE_NUMERIC			= 0x10,	///< @brief alphanumeric (0) / numeric (1)
+		LIB3270_FIELD_ATTRIBUTE_INTENSITY		= 0x0c,	///< @brief display/selector pen detectable:
+		LIB3270_FIELD_ATTRIBUTE_INT_NORM_NSEL	= 0x00,	///< @brief 00 normal, non-detect
+		LIB3270_FIELD_ATTRIBUTE_INT_NORM_SEL	= 0x04,	///< @brief 01 normal, detectable
+		LIB3270_FIELD_ATTRIBUTE_INT_HIGH_SEL	= 0x08,	///< @brief 10 intensified, detectable
+		LIB3270_FIELD_ATTRIBUTE_INT_ZERO_NSEL	= 0x0c,	///< @brief 11 nondisplay, non-detect
+		LIB3270_FIELD_ATTRIBUTE_RESERVED		= 0x02,	///< @brief must be 0
+		LIB3270_FIELD_ATTRIBUTE_MODIFIED		= 0x01	///< @brief modified (1)
+	} LIB3270_FIELD_ATTRIBUTE;
 
 	/**
 	 * @brief Host options
@@ -1149,7 +1165,15 @@
 	 */
 	LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr);
 
-	LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr);
+	/**
+	 * @brief Get field attribute for a given buffer address.
+	 *
+	 * @param hSession	Session handle.
+	 * @param addr		Buffer address of the field.
+	 *
+	 * @return field attribute or -1 when failed (sets errno).
+	 */
+	LIB3270_EXPORT int lib3270_get_field_attribute(H3270 *hSession, int baddr);
 
 	/**
 	 * @brief Get the length of the field at given buffer address.

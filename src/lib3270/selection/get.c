@@ -182,9 +182,9 @@ LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cu
 				fa = hSession->ea_buf[baddr].fa;
 			}
 
-			selection->contents[dstaddr].chr		= (hSession->text[baddr].chr ? hSession->text[baddr].chr : ' ');
-			selection->contents[dstaddr].flags		= hSession->text[baddr].attr;
-			selection->contents[dstaddr].attributes = fa;
+			selection->contents[dstaddr].chr				= (hSession->text[baddr].chr ? hSession->text[baddr].chr : ' ');
+			selection->contents[dstaddr].flags				= hSession->text[baddr].attr;
+			selection->contents[dstaddr].field_attributes	= fa;
 
 			if(cut && !FA_IS_PROTECTED(fa)) {
 				clear_chr(hSession,baddr);

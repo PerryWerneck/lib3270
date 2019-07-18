@@ -514,7 +514,7 @@ LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 	return -1;
 }
 
-LIB3270_EXPORT int lib3270_field_attribute(H3270 *hSession, int baddr)
+LIB3270_EXPORT int lib3270_get_field_attribute(H3270 *hSession, int baddr)
 {
 	int sbaddr;
 

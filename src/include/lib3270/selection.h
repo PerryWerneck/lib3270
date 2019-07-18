@@ -43,9 +43,9 @@
 	 *
 	 */
 	typedef struct _lib3270_selection_element {
-		unsigned char	chr;			///< @brief Element character
-		unsigned short	flags;			///< @brief Element colors & visual state.
-		unsigned char	attributes;		///< @brief 3270 attributes.
+		unsigned char	chr;				///< @brief Element character.
+		unsigned short	flags;				///< @brief Element colors & visual state. @see LIB3270_ATTR
+		unsigned char	field_attributes;	///< @brief Field attribute. @see LIB3270_FIELD_ATTRIBUTE
 	} lib3270_selection_element;
 
 	/**

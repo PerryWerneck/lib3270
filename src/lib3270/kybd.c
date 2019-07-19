@@ -437,7 +437,7 @@ static void operator_error(H3270 *hSession, int error_type)
 	if(hSession->oerr_lock)
 	{
 		status_oerr(hSession,error_type);
-		mcursor_locked(hSession);
+		mcursor_set(hSession,LIB3270_POINTER_LOCKED);
 		kybdlock_set(hSession,(unsigned int)error_type);
 		flush_ta(hSession);
 	}
@@ -963,24 +963,26 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 
 LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str)
 {
+	int rc = 0;
+
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	while(*str)
+	while(*str && !rc)
 	{
-		key_ACharacter(hSession,(unsigned char)((*str) & 0xff), KT_STD, IA_KEY, NULL);
+		rc = key_ACharacter(hSession,(unsigned char)((*str) & 0xff), KT_STD, IA_KEY, NULL);
 		str++;
 	}
 
 	screen_update(hSession,0,hSession->rows*hSession->cols);
 
-	return 0;
+	return rc;
 }
 
 /**
  * @brief Handle an ordinary character key, given an ASCII code.
  *
  */
-void key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped)
+int key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped)
 {
 	if (skipped != NULL)
 		*skipped = False;
@@ -992,7 +994,7 @@ void key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum
 		if (c < ' ')
 		{
 			lib3270_trace_event(hSession,"  dropped (control char)\n");
-			return;
+			return errno = EINVAL;
 		}
 		(void) key_Character(hSession, (int) hSession->charset.asc2ebc[c], keytype == KT_GE, False, skipped);
 	}
@@ -1005,7 +1007,9 @@ void key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum
 	else
 	{
 		lib3270_trace_event(hSession,"  dropped (not connected)\n");
+		return errno = ENOTCONN;
 	}
+	return 0;
 }
 
 LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession)

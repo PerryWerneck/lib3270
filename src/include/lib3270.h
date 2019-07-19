@@ -723,6 +723,15 @@
 	 */
 	LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str);
 
+	/**
+	 * @brief Insert string at current cursor position.
+	 *
+	 * @param hSession	Session handle.
+	 * @param str		Text to insert.
+	 *
+	 * @return 0 if success, non zero if failed.
+	 *
+	 */
 	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str);
 
 	/**

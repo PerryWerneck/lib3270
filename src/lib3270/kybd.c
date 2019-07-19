@@ -960,7 +960,6 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 	return True;
 }
 
-
 LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str)
 {
 	int rc = 0;

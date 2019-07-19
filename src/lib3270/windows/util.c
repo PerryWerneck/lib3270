@@ -127,7 +127,7 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
 
 	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,lasterror,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,4096,NULL) == 0)
 	{
-	    snprintf(buffer, 4095, _( "Windows error %d" ), e);
+	    snprintf(buffer, 4095, _( "Windows error %d" ), lasterror);
 	}
 
 #ifdef HAVE_ICONV

@@ -342,7 +342,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 #ifdef UNLOCK_MS
 	hSession->unlock_delay_ms		= UNLOCK_MS;
 #else
-	#error aqui
 	hSession->unlock_delay_ms		= 350;
 #endif // UNLOCK_MS
 

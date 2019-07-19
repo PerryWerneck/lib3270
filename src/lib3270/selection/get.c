@@ -156,10 +156,11 @@ LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cu
 	// Get output buffer.
 	lib3270_selection * selection = lib3270_malloc(sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * (width*height)));
 
-	selection->bounds.col = col;
-	selection->bounds.row = row;
-	selection->bounds.height = height;
-	selection->bounds.width = width;
+	selection->bounds.col		= col;
+	selection->bounds.row		= row;
+	selection->bounds.height	= height;
+	selection->bounds.width		= width;
+	selection->cursor_address	= lib3270_get_cursor_address(hSession);
 
 	unsigned int dstaddr = 0;
 
@@ -183,8 +184,8 @@ LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cu
 			}
 
 			selection->contents[dstaddr].chr				= (hSession->text[baddr].chr ? hSession->text[baddr].chr : ' ');
-			selection->contents[dstaddr].flags				= hSession->text[baddr].attr;
-			selection->contents[dstaddr].field_attributes	= fa;
+			selection->contents[dstaddr].attribute.visual	= hSession->text[baddr].attr;
+			selection->contents[dstaddr].attribute.field	= fa;
 
 			if(cut && !FA_IS_PROTECTED(fa)) {
 				clear_chr(hSession,baddr);

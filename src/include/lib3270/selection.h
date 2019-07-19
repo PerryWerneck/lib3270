@@ -42,30 +42,39 @@
 	 * @brief Selection element
 	 *
 	 */
-	typedef struct _lib3270_selection_element {
-		unsigned char	chr;				///< @brief Element character.
-		unsigned short	flags;				///< @brief Element colors & visual state. @see LIB3270_ATTR
-		unsigned char	field_attributes;	///< @brief Field attribute. @see LIB3270_FIELD_ATTRIBUTE
+	typedef struct _lib3270_selection_element
+	{
+		unsigned char chr;			///< @brief Element character.
+
+		struct
+		{
+			unsigned short	visual;	///< @brief Element colors & visual state. @see LIB3270_ATTR
+			unsigned char	field;	///< @brief Field attribute. @see LIB3270_FIELD_ATTRIBUTE
+		} attribute;
+
 	} lib3270_selection_element;
 
 	/**
-	 * @brief A rectangle containing the selected area.
+	 * @brief A rectangle with informations about the selected area.
 	 *
 	 */
 	typedef struct _lib3270_selection
 	{
+		/// @brief Cursor address.
+		unsigned int cursor_address;
+
+		/// @brief Clipboard rectangle.
 		struct {
 			unsigned int row;
 			unsigned int col;
 			unsigned int width;
 			unsigned int height;
+		} bounds;
 
-		} bounds;					///< @brief Clipboard rectangle.
-
+		/// @brief Selection contents.
 		lib3270_selection_element contents[1];
 
 	} lib3270_selection;
-
 
 	LIB3270_EXPORT int	  lib3270_unselect(H3270 *session);
 	LIB3270_EXPORT void	  lib3270_select_to(H3270 *session, int baddr);
@@ -84,7 +93,7 @@
 
 		LIB3270_SELECTION_CUT				= 0x0001,		///< @brief Cut selected data (if available).
 		LIB3270_SELECTION_ALL				= 0x0002,		///< @brief Get all data (the default is get only selected data).
-		LIB3270_SELECTION_UNPROTECTED_ONLY	= 0x0004,		///< @brief Get only unprotected contents.
+//		LIB3270_SELECTION_UNPROTECTED_ONLY	= 0x0004,		///< @brief Get only unprotected contents.
 
 	} LIB3270_SELECTION_OPTIONS;
 

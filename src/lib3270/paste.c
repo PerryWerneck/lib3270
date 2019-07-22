@@ -24,9 +24,6 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- * macmiranda@bb.com.br		(Marco Aurélio Caldas Miranda)
  *
  */
 
@@ -164,17 +161,22 @@
  	return c;
 }
 
-static int set_string(H3270 *hSession, const unsigned char *str)
+static int set_string(H3270 *hSession, const unsigned char *str, int length)
 {
 	PASTE_DATA data;
 	unsigned char last = 1;
+	int ix;
 
 	memset(&data,0,sizeof(data));
  	data.row		= BA_TO_ROW(hSession->cursor_addr);
 	data.orig_addr	= hSession->cursor_addr;
 	data.orig_col	= BA_TO_COL(hSession->cursor_addr);
 
-	while(*str && last && !hSession->kybdlock && hSession->cursor_addr >= data.orig_addr)
+	if(length < 0)
+		length = (int) strlen((const char *) str);
+
+//	while(*str && last && !hSession->kybdlock && hSession->cursor_addr >= data.orig_addr)
+	for(ix = 0; ix < length && *str && last && !hSession->kybdlock && hSession->cursor_addr >= data.orig_addr; ix++)
 	{
 		switch(*str)
 		{
@@ -207,6 +209,7 @@ static int set_string(H3270 *hSession, const unsigned char *str)
 			last = paste_char(hSession,&data, *str);
 
 		}
+
 		str++;
 
 		if(IN_3270 && lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE) && BA_TO_COL(hSession->cursor_addr) < ((unsigned int) data.orig_col))
@@ -254,7 +257,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 		hSession->cbk.suspend(hSession);
 
 		hSession->cursor_addr = (row * hSession->cols) + col;
-		rc += set_string(hSession, str);
+		rc += set_string(hSession, str, -1);
 
 		hSession->cbk.resume(hSession);
 	}
@@ -264,7 +267,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 	return rc;
 }
 
-LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str)
+LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str, int length)
 {
 	int rc = -1;
 
@@ -280,7 +283,7 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 		lib3270_unselect(hSession);
 
 	hSession->cbk.suspend(hSession);
-	rc = set_string(hSession, str);
+	rc = set_string(hSession, str, length);
 	hSession->cbk.resume(hSession);
 
 	return rc;
@@ -305,7 +308,7 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str)
 		return errno = EPERM;
 
 	hSession->cbk.suspend(hSession);
-	rc = set_string(hSession, str);
+	rc = set_string(hSession, str, -1);
 	hSession->cbk.resume(hSession);
 
 	return rc;

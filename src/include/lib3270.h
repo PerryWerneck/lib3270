@@ -717,11 +717,12 @@
 	 * @param hSession	Session handle.
 	 * @param baddr		Adress for the first character.
 	 * @param str		String to set.
+	 * @param length	Length of the string (-1 for auto-detect).
 	 *
 	 * @return Negative if error or number of processed characters.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str);
+	LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str, int length);
 
 	/**
 	 * @brief Insert string at current cursor position.

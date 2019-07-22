@@ -88,7 +88,6 @@ case "$host" in
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
 
 		AC_CONFIG_FILES(src/lib3270/windows/resources.rc)
-		AC_CONFIG_FILES(src/lib3270++/windows/resources.rc)
 
 		app_cv_static='yes'
 
@@ -588,11 +587,6 @@ AC_CONFIG_FILES(src/lib3270/version.c)
 
 AC_CONFIG_FILES(src/lib3270/lib3270.pc)
 AC_CONFIG_FILES(src/lib3270/lib3270-static.pc)
-
-AC_CONFIG_FILES(src/lib3270++/lib3270++.pc)
-AC_CONFIG_FILES(src/lib3270++/lib3270++static.pc)
-
-AC_CONFIG_FILES(src/lib3270++/Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.

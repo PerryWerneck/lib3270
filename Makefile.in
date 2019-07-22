@@ -87,12 +87,6 @@ $(BINDBG)/lib@LIB3270_NAME@@DLLEXT@: \
 
 	@$(MAKE) -C src/lib3270 $@
 
-$(BINDBG)/lib@LIB3270_NAME@++@DLLEXT@: \
-	src/lib3270++/* \
-	$(DEPENDS)
-
-	@$(MAKE) -C src/lib3270++ $@
-
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(BINRLS)/lib@LIB3270_NAME@@DLLEXT@: \
@@ -100,13 +94,6 @@ $(BINRLS)/lib@LIB3270_NAME@@DLLEXT@: \
 	$(DEPENDS)
 
 	@$(MAKE) -C src/lib3270 $@
-
-$(BINRLS)/lib@LIB3270_NAME@++@DLLEXT@: \
-	src/lib3270/* \
-	$(DEPENDS)
-
-	@$(MAKE) -C src/lib3270++ $@
-
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
 
@@ -119,24 +106,13 @@ $(POTDIR)/lib3270.pot: \
 
 	@$(MAKE) -C src/lib3270 $@
 
-$(POTDIR)/lib3270++.pot: \
-	src/lib3270++/* \
-	src/lib3270++/local/* \
-	src/lib3270++/@OSNAME@/* \
-	src/lib3270++/ipc/* \
-	$(DEPENDS)
-
-	@$(MAKE) -C src/lib3270++ $@
-
 #---[ Release Targets ]------------------------------------------------------------------
 
 all:
 	@$(MAKE) -C src/lib3270 $@
-	@$(MAKE) -C src/lib3270++ $@
 
 Release: \
-	$(BINRLS)/lib@LIB3270_NAME@@DLLEXT@ \
-	$(BINRLS)/lib@LIB3270_NAME@++@DLLEXT@
+	$(BINRLS)/lib@LIB3270_NAME@@DLLEXT@
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -161,17 +137,14 @@ install: \
 
 install-shared:
 	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
-	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
 
 install-static:
 	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
-	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
 
 install-dev: \
 	lib@LIB3270_NAME@.pot
 
 	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270 $@
-	@$(MAKE) DESTDIR=$(DESTDIR) -C src/lib3270++ $@
 
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/pw3270/pot
 	@$(INSTALL_DATA) lib@LIB3270_NAME@.pot $(DESTDIR)$(datarootdir)/pw3270/pot/lib3270.pot
@@ -196,13 +169,11 @@ cleanDebug:
 
 	@rm -fr $(BINDBG)
 	@$(MAKE) -C src/lib3270 $@
-	@$(MAKE) -C src/lib3270++ $@
 
 cleanRelease:
 
 	@rm -fr $(BINRLS)
 	@$(MAKE) -C src/lib3270 $@
-	@$(MAKE) -C src/lib3270++ $@
 
 clean: \
 	cleanDebug \

@@ -1,5 +1,5 @@
 #
-# spec file for packages lib3270 and lib3270++
+# spec file for packages lib3270
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -83,19 +83,6 @@ TN3270 access library originally designed as part of the pw3270 application.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
-#---[ C++ API ]-------------------------------------------------------------------------------------------------------
-
-%package -n lib3270++%{_libvrs}
-
-Summary:	TN3270 Access C++ library 
-Group:		Development/Libraries/C and C++
-
-%description -n lib3270++%{_libvrs}
-
-TN3270 access library originally designed as part of the pw3270 application (C++ Version).
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
-
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
 %package -n lib3270-devel
@@ -150,12 +137,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib3270.so.%{MAJOR_VERSION}
 %{_libdir}/lib3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files -n lib3270++%{_libvrs}
-%defattr(-,root,root)
-
-%{_libdir}/lib3270++.so.%{MAJOR_VERSION}
-%{_libdir}/lib3270++.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
-
 %files -n lib3270-devel
 %defattr(-,root,root)
 
@@ -179,14 +160,6 @@ exit 0
 exit 0
 
 %postun
-/sbin/ldconfig
-exit 0
-
-%post -n lib3270++%{_libvrs}
-/sbin/ldconfig
-exit 0
-
-%postun -n lib3270++%{_libvrs}
 /sbin/ldconfig
 exit 0
 

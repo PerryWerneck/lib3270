@@ -997,21 +997,3 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *session, LIB3270_NOTIFY id , const c
 	session->popups--;
 
 }
-
-LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
-{
-	unsigned char fa;
-
-	FAIL_IF_NOT_ONLINE(h);
-
-	if(baddr > (h->rows * h->cols))
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
-	fa = get_field_attribute(h,baddr);
-
-	return FA_IS_PROTECTED(fa);
-}
-

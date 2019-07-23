@@ -629,6 +629,28 @@ LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr)
 	return FA_IS_PROTECTED(hSession->ea_buf[faddr].fa) ? 1 : 0;
 }
 
+LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
+{
+	return lib3270_get_is_protected(h, baddr);
+
+	/*
+	unsigned char fa;
+
+	FAIL_IF_NOT_ONLINE(h);
+
+	if(baddr > (h->rows * h->cols))
+	{
+		errno = EINVAL;
+		return -1;
+	}
+
+	fa = get_field_attribute(h,baddr);
+
+	return FA_IS_PROTECTED(fa);
+	*/
+}
+
+
 
 /**
  * Perform an erase command, which may include changing the (virtual) screen size.

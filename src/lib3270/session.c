@@ -151,6 +151,11 @@ void lib3270_session_free(H3270 *h)
 		lib3270_free(ip);
 	}
 
+#ifdef _WIN32
+	DeregisterEventSource(h->hEventLog);
+	h->hEventLog = 0;
+#endif // _WIN32
+
 	trace("Releasing session %p",h);
 	lib3270_free(h);
 
@@ -407,6 +412,10 @@ H3270 * lib3270_session_new(const char *model)
 #if defined(X3270_FT)
 	ft_init(hSession);
 #endif
+
+#ifdef _WIN32
+	hSession->hEventLog = RegisterEventSource(NULL, PACKAGE_NAME);
+#endif // _WIN32
 
 	trace("%s finished",__FUNCTION__);
 

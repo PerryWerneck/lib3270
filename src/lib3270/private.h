@@ -674,6 +674,11 @@ struct _h3270
 		struct lib3270_state_callback	* last[LIB3270_STATE_USER];
 	} st;
 
+#ifdef _WIN32
+	/// @brief Windows Event Log Handler.
+	HANDLE hEventLog;
+#endif // _WIN32
+
 };
 
 #define SELECTION_LEFT			0x01
@@ -769,6 +774,10 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 
 	LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
+
+	/// @brief Default log writer.
+	LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
+
 
 #endif
 

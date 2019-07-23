@@ -1138,8 +1138,15 @@
 	/**
 	 * @brief Check if the screen position is protected.
 	 *
+	 * @param hSession	Session handle.
+	 * @param baddr0	Search start addr (-1 to use current cursor position).
+     *
+     * @return -1 when failed 1 if the addr is protected and 0 if not.
+     *
 	 */
 	LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr0);
+
+	LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_is_protected(H3270 *h, unsigned int baddr));
 
 	/**
 	 * @brief Get Check if the screen position is protected.
@@ -1253,9 +1260,6 @@
 
 	LIB3270_EXPORT const char	* lib3270_get_model(H3270 *session);
 	LIB3270_EXPORT int			  lib3270_get_model_number(H3270 *hSession);
-
-	LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr);
-	LIB3270_EXPORT int lib3270_is_protected_at(H3270 *h, unsigned int row, unsigned int col);
 
 	LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);
 

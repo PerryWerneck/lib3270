@@ -83,7 +83,7 @@ Compiling for Windows (With MSYS2)
 1. Install MSYS2 
 
 	* Download and install msys2 from https://www.msys2.org/
-	* Run "pacman -Syu" repeatedly
+	* Open a msys2 terminal and run "pacman -Syu" repeatedly
 	* Add c:\msys64\usr\bin and c:\msys64\mingw64\bin to system path
 
 2. Install devel packages

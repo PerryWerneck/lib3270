@@ -57,7 +57,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 
 2. Get lib3270 sources from git
 
-	* git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./lib3270
+	* git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 
 3. Install cross compilers
 
@@ -88,11 +88,11 @@ Compiling for Windows (With MSYS2)
 
 2. Install devel packages
 
-	* pacman -S --needed mingw-w64-x86_64-toolchain automake autoconf make git openssl
+	* pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git openssl pkg-config
 
 3. Get lib3270 sources from git using the mingw shell
 
-	* git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./lib3270
+	* git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 
 4. Build library using the mingw shell
 

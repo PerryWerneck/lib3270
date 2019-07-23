@@ -74,3 +74,8 @@
 
  }
 
+ LIB3270_EXPORT int lib3270_set_syslog(int flag)
+ {
+ 	return errno  = ENOENT;
+ }
+

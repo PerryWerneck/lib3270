@@ -463,6 +463,7 @@ dnl Check for headers
 dnl ---------------------------------------------------------------------------
 
 AC_CHECK_HEADER(malloc.h, AC_DEFINE(HAVE_MALLOC_H,,[do we have malloc.h?]))
+AC_CHECK_HEADER(syslog.h, AC_DEFINE(HAVE_SYSLOG,,[do we have malloc.h?]))
 
 AC_CHECK_FUNCS(getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO) )
 AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )

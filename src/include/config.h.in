@@ -55,6 +55,7 @@
 	#undef HAVE_INET_NTOP
 	#undef HAVE_DBUS
 	#undef HAVE_LIBCURL
+	#undef HAVE_SYSLOG
 
 	#undef HAVE_ICONV
 	#undef ICONV_CONST

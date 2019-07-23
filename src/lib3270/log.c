@@ -41,6 +41,7 @@
 #include <config.h>
 #include <lib3270.h>
 #include <lib3270/log.h>
+#include <errno.h>
 
 /*---[ Constants ]------------------------------------------------------------------------------------------*/
 
@@ -75,3 +76,4 @@
  {
 	loghandler(session,module,0,fmt,arg);
  }
+

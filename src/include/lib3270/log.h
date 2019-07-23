@@ -57,6 +57,16 @@
 		LIB3270_EXPORT int	  lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
 		LIB3270_EXPORT void	  lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg);
 
+		/**
+		 * @brief Send logs to system log (if available)
+		 *
+		 * @param flag	Non-zero to use syslog.
+		 *
+		 * @return 0 if ok, non zero if not.
+		 *
+		 */
+		LIB3270_EXPORT int	  lib3270_set_syslog(int flag);
+
 		#ifdef DEBUG
 			#include <stdio.h>
 			#undef trace

@@ -54,6 +54,10 @@
 #include <lib3270/log.h>
 #include "private.h"
 
+#ifdef HAVE_SYSLOG
+	#include <syslog.h>
+#endif // HAVE_SYSLOG
+
 #if defined WIN32
 	BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
 #else
@@ -117,6 +121,13 @@ int lib3270_unloaded(void)
 	trace("%s.curl_global_cleanup",__FUNCTION__);
 	curl_global_cleanup();
 #endif // HAVE_LIBCURL
+
+#ifdef HAVE_SYSLOG
+	if(use_syslog)
+	{
+		closelog();
+	}
+#endif // HAVE_SYSLOG
 
     return 0;
 }

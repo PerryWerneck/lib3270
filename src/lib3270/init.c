@@ -63,6 +63,11 @@
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
+#ifdef _WIN32
+/// @brief Windows Event Log Handler.
+HANDLE hEventLog = 0;
+#endif // _WIN32
+
 /**
  * @brief Parse an stty control-character specification; a cheap, non-complaining implementation.
  */
@@ -128,10 +133,13 @@ BOOL WINAPI DllMain(HANDLE GNUC_UNUSED(hinst), DWORD dwcallpurpose, LPVOID GNUC_
     case DLL_PROCESS_ATTACH:
 		get_version_info();
 		lib3270_loaded();
+		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME));
 		break;
 
 	case DLL_PROCESS_DETACH:
 		lib3270_unloaded();
+		DeregisterEventSource(hEventLog);
+		hEventLog = 0;
 		break;
 
     }

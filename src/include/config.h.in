@@ -35,6 +35,7 @@
 	#undef PACKAGE_NAME
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
+	#undef LIB3270_NAME
 
 	/* Default settings */
 

@@ -41,7 +41,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
- void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr)
+ void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *fmt, va_list arg_ptr)
  {
 	char	username[UNLEN + 1];
 	DWORD	szName = sizeof(username);
@@ -60,19 +60,17 @@
 		msg
 	};
 
-	if(session->hEventLog) {
-		ReportEvent(
-			session->hEventLog,
-			(rc == 0 ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE),
-			1,
-			0,
-			NULL,
-			3,
-			0,
-			outMsg,
-			NULL
-		);
-	}
+	ReportEvent(
+		hEventLog,
+		(rc == 0 ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE),
+		1,
+		0,
+		NULL,
+		3,
+		0,
+		outMsg,
+		NULL
+	);
 
  }
 

@@ -674,11 +674,6 @@ struct _h3270
 		struct lib3270_state_callback	* last[LIB3270_STATE_USER];
 	} st;
 
-#ifdef _WIN32
-	/// @brief Windows Event Log Handler.
-	HANDLE hEventLog;
-#endif // _WIN32
-
 };
 
 #define SELECTION_LEFT			0x01
@@ -690,6 +685,11 @@ struct _h3270
 #define SELECTION_SINGLE_ROW	0x20
 
 #define SELECTION_ACTIVE		0x80
+
+#ifdef _WIN32
+/// @brief Windows Event Log Handler.
+LIB3270_INTERNAL HANDLE hEventLog;
+#endif // _WIN32
 
 /* Library internal calls */
 LIB3270_INTERNAL int	key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped);

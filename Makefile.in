@@ -91,7 +91,8 @@ BINRLS=$(BINDIR)/Release
 DEPENDS= \
 	Makefile \
 	src/include/*.h \
-	src/include/lib3270/*.h
+	src/include/lib3270/*.h \
+	$(BASEDIR)/src/include/lib3270/actions.h
 
 CFLAGS= \
 	@CFLAGS@ \

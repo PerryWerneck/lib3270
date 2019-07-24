@@ -32,7 +32,7 @@
 #include <wtsapi32.h>
 #include <lmcons.h>
 
-#include "../private.h"
+#include <lib3270-internals.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <config.h>

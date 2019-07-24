@@ -36,6 +36,7 @@
 #include <config.h>
 
 #if defined(HAVE_LIBSSL)
+
 	#include <openssl/ssl.h>
 	#include <openssl/err.h>
 	#include <openssl/x509_vfy.h>
@@ -100,8 +101,8 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	if(hSession->ssl.con == NULL)
 	{
 		((SSL_ERROR_MESSAGE *) message)->error = hSession->ssl.error = ERR_get_error();
-		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = N_( "Cant create a new SSL structure for current connection." );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "Cant create a new SSL structure for current connection." );
 		return -1;
 	}
 
@@ -342,14 +343,6 @@ int	ssl_init(H3270 *hSession) {
 void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 {
 	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_3270_ex_index);
-
-#ifdef DEBUG
-	if(hSession != lib3270_get_default_session_handle())
-	{
-		trace("%s: hsession=%p, session=%p",__FUNCTION__,hSession,lib3270_get_default_session_handle());
-		exit(-1);
-	}
-#endif // DEBUG
 
 	switch(where)
 	{

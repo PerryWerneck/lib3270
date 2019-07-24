@@ -52,7 +52,7 @@
 	#include <curl/curl.h>
 #endif // HAVE_LIBCURL
 
-#include "../../private.h"
+#include <lib3270-internals.h>
 #include <trace_dsc.h>
 #include <errno.h>
 #include <lib3270.h>

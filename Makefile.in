@@ -356,12 +356,6 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
-	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(BINDBG)/$(LIBNAME)@EXEEXT@
-
-mem-check: \
-	$(BINDBG)/$(LIBNAME)@EXEEXT@
-
 ifeq ($(VALGRIND),no)
 
 	@LD_LIBRARY_PATH=$(BINDBG) \

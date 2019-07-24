@@ -267,7 +267,7 @@ install-static: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-static.pc
 
 install-dev: \
-	$(POTDIR)/$(LIBNAME).pot
+	$(POTDIR)/lib3270.pot
 
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 
@@ -287,7 +287,7 @@ install-dev: \
 
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/pw3270/pot
-	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/pw3270/pot/$(LIBNAME).pot
+	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datarootdir)/pw3270/pot/lib3270.pot
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -327,7 +327,7 @@ $(BASEDIR)/src/include/lib3270/actions.h: \
 
 	@$(BINDIR)/mkactions@EXEEXT@ -o $@
 
-$(POTDIR)/$(LIBNAME).pot: \
+$(POTDIR)/lib3270.pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 
 	@rm -f $@
@@ -335,7 +335,7 @@ $(POTDIR)/$(LIBNAME).pot: \
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
-	$(POTDIR)/$(LIBNAME).pot
+	$(POTDIR)/lib3270.pot
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------

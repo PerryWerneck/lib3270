@@ -41,6 +41,139 @@
 		<Unit filename="README.md" />
 		<Unit filename="configure.ac" />
 		<Unit filename="gitsync.sh" />
+		<Unit filename="src/core/actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/ansi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/bounds.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/charset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/ctlr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/cursor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/ft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/ft_cut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/ft_dft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/ftmessages.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/host.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/html.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/iocalls.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/kybd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/linux/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/linux/event_dispatcher.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/linux/log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/linux/util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/options.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/paste.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/printer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/properties.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/resolver.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/resources.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/rpq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/screen.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/see.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/session.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/sf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/telnet.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/toggles.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/trace_ds.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/utf8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/version.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/windows/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/windows/event_dispatcher.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/windows/log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/windows/resources.rc" />
+		<Unit filename="src/core/windows/util.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/3270ds.h" />
 		<Unit filename="src/include/actionsc.h" />
 		<Unit filename="src/include/ansic.h" />
@@ -62,6 +195,7 @@
 		<Unit filename="src/include/keypadc.h" />
 		<Unit filename="src/include/kybdc.h" />
 		<Unit filename="src/include/lib3270++.h" />
+		<Unit filename="src/include/lib3270-internals.h" />
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/X11keysym.h" />
 		<Unit filename="src/include/lib3270/action_table.h" />
@@ -104,178 +238,45 @@
 		<Unit filename="src/include/winversc.h" />
 		<Unit filename="src/include/xioc.h" />
 		<Unit filename="src/include/xl.h" />
-		<Unit filename="src/lib3270++/private.h" />
 		<Unit filename="src/lib3270++/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="src/lib3270/actions.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ansi.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/bounds.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/charset.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/connect.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ctlr.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/cursor.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ft.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ft_cut.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ft_dft.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ftmessages.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/host.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/html.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/init.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/iocalls.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/kybd.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/linux/connect.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/linux/event_dispatcher.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/linux/log.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/linux/util.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/log.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/mkactions/mkactions.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/mkfb/mkfb.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/options.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/paste.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/print.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/printer.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/lib3270/private.h" />
-		<Unit filename="src/lib3270/properties.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/resolver.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/resources.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/rpq.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/screen.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/see.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/selection/actions.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/selection/get.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/selection/selection.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/session.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/sf.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ssl/ctx_init.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ssl/linux/getcrl.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ssl/negotiate.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ssl/state.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/ssl/windows/getcrl.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/state.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/telnet.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/testprogram/testprogram.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/toggles.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/trace_ds.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/utf8.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/util.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/version.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/windows/connect.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/windows/event_dispatcher.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/lib3270/windows/log.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/lib3270/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="src/lib3270/windows/resources.rc.in" />
-		<Unit filename="src/lib3270/windows/util.c">
+		<Unit filename="src/mkactions/mkactions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mkfb/mkfb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/selection/actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/selection/get.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/selection/selection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/ctx_init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/linux/getcrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/negotiate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/windows/getcrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

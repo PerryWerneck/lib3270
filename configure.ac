@@ -583,6 +583,8 @@ AC_SUBST(INSTALL_PACKAGES)
 
 AC_CONFIG_FILES(Makefile)
 
+AC_CONFIG_FILES(src/core/version.c)
+
 AC_CONFIG_FILES(sdk/lib3270.pc)
 AC_CONFIG_FILES(sdk/lib3270-static.pc)
 

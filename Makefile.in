@@ -182,7 +182,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 all: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
 	$(BINRLS)/static/$(LIBNAME).a \
-	$(POTDIR)/$(LIBNAME).pot
+	$(POTDIR)/lib3270.pot
 
 Release: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \

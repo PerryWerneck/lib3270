@@ -47,9 +47,6 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 Provides:		mingw32(lib:3270) = %{version}
 Provides:		mingw32(lib:3270-%{_libvrs}) = %{version}
 
-Provides:		mingw32(lib:3270++) = %{version}
-Provides:		mingw32(lib:3270++%{_libvrs}) = %{version}
-
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gettext-tools
@@ -122,10 +119,6 @@ rm -rf %{buildroot}
 %{_mingw32_libdir}/lib3270.dll
 %{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}
 %{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
-
-%{_mingw32_libdir}/lib3270++.dll
-%{_mingw32_libdir}/lib3270++.dll.%{MAJOR_VERSION}
-%{_mingw32_libdir}/lib3270++.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %dir %{_mingw32_datadir}/pw3270
 

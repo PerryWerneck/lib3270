@@ -3,9 +3,8 @@
 	<!-- https://github.com/openSUSE/obs-service-tar_scm/blob/master/tar_scm.py -->
 	<service name="tar_scm">
         <param name="changesgenerate">enable</param>
-		<param name="sslverify">disable</param>
 		<param name="versionformat">@PARENT_TAG@</param>
-		<param name="url">http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git</param>
+		<param name="url">https://github.com/PerryWerneck/lib3270.git</param>
 		<param name="scm">git</param>
 	</service>
 
@@ -13,6 +12,7 @@
 	<!-- service name="extract_file">
 		<param name="archive">*.tar</param>
 		<param name="files">*/win/mingw32/lib3270.spec</param>
+		<param name="outfilename">mingw32-lib3270.spec</param>
 	</service -->
 
 	<service name="recompress">

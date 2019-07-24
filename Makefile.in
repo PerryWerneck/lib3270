@@ -27,6 +27,7 @@
 #---[ Library configuration ]------------------------------------------------------------
 
 LIBNAME=lib@LIB3270_NAME@
+INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
 SOURCES= \
 	$(wildcard src/core/*.c) \
@@ -227,9 +228,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-shared \
-	install-static \
-	install-dev
+	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-shared: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@
@@ -261,6 +260,11 @@ install-static: \
 		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
 
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(INSTALL_DATA) \
+		sdk/lib3270-static.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/lib3270-static.pc
+
 install-dev: \
 	$(POTDIR)/$(LIBNAME).pot
 
@@ -277,7 +281,7 @@ install-dev: \
 	# Install PKG-CONFIG files
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
 	@$(INSTALL_DATA) \
-		lib3270.pc \
+		sdk/lib3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270.pc
 
 	# Install translation files
@@ -418,7 +422,6 @@ clean: \
 
 	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
-	@rm -fr src/include/marshal
 
 cleanDebug:
 

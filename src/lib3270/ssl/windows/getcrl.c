@@ -31,13 +31,15 @@
  * http://www.openssl.org/docs/ssl/
  * https://stackoverflow.com/questions/4389954/does-openssl-automatically-handle-crls-certificate-revocation-lists-now
  *
- * https://www.codepool.biz/build-use-libcurl-vs2015-windows.html
- *
  */
 
-#define CRL_DATA_LENGTH 4096
+#define CRL_DATA_LENGTH 2048
 
 #include <config.h>
+
+#include <winsock2.h>
+#include <windows.h>
+#include <winldap.h>
 
 #if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 
@@ -54,8 +56,8 @@
 #include <trace_dsc.h>
 #include <errno.h>
 #include <lib3270.h>
-#include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/log.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -70,11 +72,8 @@ static inline void lib3270_autoptr_cleanup_CURL(CURL **ptr)
 {
 	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
-	{
 		curl_easy_cleanup(*ptr);
-	}
 	*ptr = NULL;
-
 }
 
 typedef struct _curldata
@@ -127,14 +126,20 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE))
 		lib3270_trace_data(data->hSession,"curl_write:",(const char *) contents, realsize);
 
-	for(ix = 0; ix < realsize; ix++)
+	if((realsize + data->length) > data->data.length)
 	{
-		if(data->length >= data->data.length)
+		data->data.length += (CRL_DATA_LENGTH + realsize);
+		data->data.contents = lib3270_realloc(data->data.contents,data->data.length);
+
+		for(ix = data->length; ix < data->data.length; ix++)
 		{
-			data->data.length += (CRL_DATA_LENGTH + realsize);
-			data->data.contents = lib3270_realloc(data->data.contents,data->data.length);
+			data->data.contents[ix] = 0;
 		}
 
+	}
+
+	for(ix = 0; ix < realsize; ix++)
+	{
 		data->data.contents[data->length++] = *(ptr++);
 	}
 
@@ -188,12 +193,13 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 
 	return 0;
 }
+
 #endif // HAVE_LIBCURL
 
 
-int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
+LIB3270_INTERNAL X509_CRL * lib3270_get_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
-	const char	* consturl = lib3270_get_crl_url(hSession);
+	X509_CRL * x509_crl = NULL;
 
 	if(!(consturl && *consturl))
 	{
@@ -201,10 +207,11 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		message->title = _( "Security error" );
 		message->text = _( "Can't open CRL File" );
 		message->description = _("The URL for the CRL is undefined or empty");
-		return errno = ENOENT;
+		errno = ENOENT;
+		return NULL;
 	}
 
-	trace_ssl(hSession, "crl=%s\n",consturl);
+	trace_ssl(hSession, "Getting CRL from \"%s\"\n",consturl);
 
 	if(strncasecmp(consturl,"file://",7) == 0)
 	{
@@ -220,12 +227,21 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 			message->text = _( "Can't open CRL File" );
 			message->description = strerror(err);
 			trace_ssl(hSession,"Can't open %s: %s\n",consturl,message->description);
-			return err;
+			return NULL;
 
 		}
 
 		trace_ssl(hSession,"Loading CRL from %s\n",consturl+7);
-		d2i_X509_CRL_fp(hCRL, &hSession->ssl.crl.cert);
+		if(d2i_X509_CRL_fp(hCRL, &x509_crl))
+		{
+			message->error = hSession->ssl.error = ERR_get_error();
+			message->title = _( "Security error" );
+			message->text = _( "Can't decode CRL" );
+			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+			return NULL;
+		}
+
+
 
 	}
 	else
@@ -233,187 +249,202 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 #ifdef HAVE_LIBCURL
 
 		// Use CURL to download the CRL
-		lib3270_autoptr(CURLDATA) crl_data = lib3270_malloc(sizeof(CURLDATA));
+		lib3270_autoptr(CURLDATA)	crl_data		= lib3270_malloc(sizeof(CURLDATA));
+		lib3270_autoptr(CURL)		hCurl			= curl_easy_init();
 
 		memset(crl_data,0,sizeof(CURLDATA));
-		crl_data->message = message;
-		crl_data->hSession = hSession;
+		crl_data->message		= message;
+		crl_data->hSession		= hSession;
+		crl_data->data.length	= CRL_DATA_LENGTH;
+		crl_data->data.contents = lib3270_malloc(crl_data->data.length);
 
-		// Initialize curl and curl_easy
-		lib3270_autoptr(CURL) hCurl = curl_easy_init();
-
-		if(!hCurl)
+		if(hCurl)
 		{
-			message->error = hSession->ssl.error = 0;
-			message->title = _( "Security error" );
-			message->text = _( "Can't initialize curl" );
-			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
-			return -1;
-		}
+			CURLcode res;
 
-		CURLcode res;
+			curl_easy_setopt(hCurl, CURLOPT_URL, consturl);
+			curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
 
-		curl_easy_setopt(hCurl, CURLOPT_URL, consturl);
-		curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
+			curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data->errbuf);
 
-		curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data->errbuf);
+			curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
+			curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
 
-		curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
-		curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
+			curl_easy_setopt(hCurl, CURLOPT_USERNAME, "");
 
-		curl_easy_setopt(hCurl, CURLOPT_USERNAME, "");
-
-		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-		{
-			curl_easy_setopt(hCurl, CURLOPT_VERBOSE, 1L);
-			curl_easy_setopt(hCurl, CURLOPT_DEBUGFUNCTION, internal_curl_trace_callback);
-			curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) crl_data);
-		}
-
-		res = curl_easy_perform(hCurl);
-
-		if(res != CURLE_OK)
-		{
-			message->error = hSession->ssl.error = 0;
-			message->title = _( "Security error" );
-
-			if(crl_data->errbuf[0])
+			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 			{
-				message->text = curl_easy_strerror(res);
-				message->description =  crl_data->errbuf;
+				curl_easy_setopt(hCurl, CURLOPT_VERBOSE, 1L);
+				curl_easy_setopt(hCurl, CURLOPT_DEBUGFUNCTION, internal_curl_trace_callback);
+				curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) crl_data);
 			}
-			else
+
+			res = curl_easy_perform(hCurl);
+
+			if(res != CURLE_OK)
 			{
+				message->error = hSession->ssl.error = 0;
+				message->title = _( "Security error" );
+
+				if(crl_data->errbuf[0])
+				{
+					message->text = curl_easy_strerror(res);
+					message->description =  crl_data->errbuf;
+				}
+				else
+				{
+					message->text = _( "Error loading CRL" );
+					message->description =  curl_easy_strerror(res);
+				}
+
+				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
+				errno = EINVAL;
+				return NULL;
+
+			}
+
+			char *ct = NULL;
+			res = curl_easy_getinfo(hCurl, CURLINFO_CONTENT_TYPE, &ct);
+			if(res != CURLE_OK)
+			{
+				message->error = hSession->ssl.error = 0;
+				message->title = _( "Security error" );
 				message->text = _( "Error loading CRL" );
 				message->description =  curl_easy_strerror(res);
+				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
+				errno = EINVAL;
+				return NULL;
 			}
 
-			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
-			return -1;
-		}
+			if(lib3270_get_toggle(crl_data->hSession,LIB3270_TOGGLE_SSL_TRACE))
+				lib3270_trace_data(crl_data->hSession,"CRL Data",(const char *) crl_data->data.contents, (unsigned int) crl_data->length);
 
-		debug("Tamanho da resposta: %u", (unsigned int) crl_data->length);
-
-		char *ct = NULL;
-		res = curl_easy_getinfo(hCurl, CURLINFO_CONTENT_TYPE, &ct);
-		if(res != CURLE_OK)
-		{
-			message->error = hSession->ssl.error = 0;
-			message->title = _( "Security error" );
-			message->text = _( "Error loading CRL" );
-			message->description = curl_easy_strerror(res);
-			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
-			return -1;
-		}
-
-		trace_ssl(hSession,"CRL Data has %u bytes",(unsigned int) crl_data->length);
-
-		if(ct)
-		{
-			const unsigned char * data = crl_data->data.contents;
-
-			trace_ssl(crl_data->hSession, "Content-type: %s", ct);
-
-			if(strcasecmp(ct,"application/pkix-crl") == 0)
+			if(ct)
 			{
-				// CRL File, convert it
-				if(!d2i_X509_CRL(&hSession->ssl.crl.cert, &data, crl_data->length))
+				const unsigned char * data = crl_data->data.contents;
+
+				if(strcasecmp(ct,"application/pkix-crl") == 0)
+				{
+					// CRL File, convert it
+					if(!d2i_X509_CRL(&x509_crl, &data, crl_data->length))
+					{
+						message->error = hSession->ssl.error = ERR_get_error();
+						message->title = _( "Security error" );
+						message->text = _( "Can't decode CRL" );
+						lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+						return NULL;
+					}
+				}
+				else
 				{
 					message->error = hSession->ssl.error = ERR_get_error();
 					message->title = _( "Security error" );
 					message->text = _( "Got an invalid CRL from server" );
-					lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
-					return -1;
+					lib3270_write_log(hSession,"ssl","%s: content-type unexpected: \"%s\"",consturl, ct);
+					errno = EINVAL;
+					return NULL;
 				}
 			}
-			else
+			else if(strncasecmp(consturl,"ldap://",7) == 0)
 			{
-				message->error = hSession->ssl.error = ERR_get_error();
-				message->title = _( "Security error" );
-				message->text = _( "Got an invalid CRL from server" );
-				lib3270_write_log(hSession,"ssl","%s: content-type unexpected: \"%s\"",consturl, ct);
-				return -1;
+				//
+				// curl's LDAP query on windows returns diferently. Working with it.
+				//
+#ifdef DEBUG
+				{
+					FILE *out = fopen("downloaded.crl","w");
+					if(out)
+					{
+						fwrite(crl_data->data.contents,crl_data->length,1,out);
+						fclose(out);
+					}
+
+				}
+#endif
+
+				char * attr = strchr(consturl,'?');
+				if(!attr)
+				{
+					message->error = hSession->ssl.error = 0;
+					message->title = _( "Security error" );
+					message->text = _( "No attribute in LDAP search URL" );
+					errno = ENOENT;
+					return NULL;
+				}
+
+				attr++;
+
+				lib3270_autoptr(char) text = lib3270_strdup_printf("No mime-type, extracting \"%s\" directly from LDAP response\n",attr);
+				trace_ssl(crl_data->hSession, text);
+
+				lib3270_autoptr(char) key = lib3270_strdup_printf("%s: ",attr);
+
+
+//				char *ptr = strcasestr((char *) crl_data->data.contents, key);
+
+				size_t ix;
+				unsigned char *from = NULL;
+				size_t keylength = strlen(key);
+				for(ix = 0; ix < (crl_data->length - keylength); ix++)
+				{
+					if(!strncasecmp( (char *) (crl_data->data.contents+ix),key,keylength))
+					{
+						from = crl_data->data.contents+ix;
+						break;
+					}
+				}
+
+				debug("strstr(%s): %p", key, from);
+
+				if(!from)
+				{
+					message->error = hSession->ssl.error = 0;
+					message->title = _( "Security error" );
+					message->text = _( "Can't find attribute in LDAP response" );
+					errno = ENOENT;
+					return NULL;
+				}
+
+				from += strlen(key);
+				size_t length = crl_data->length - (from - crl_data->data.contents);
+
+				static const char terminator[] = { 0x0a, 0x0a, 0x09 };
+				unsigned char *to = from+length;
+
+				for(ix = 0; ix < (length - sizeof(terminator)); ix++)
+				{
+					if(!memcmp(from+ix,terminator,sizeof(terminator)))
+					{
+						to = from+ix;
+						break;
+					}
+				}
+
+				length = to - from;
+
+				if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+				{
+					lib3270_trace_data(
+						hSession,
+						"CRL Data received from LDAP server",
+						(const char *) from,
+						length
+					);
+				}
+
+				if(!d2i_X509_CRL(&x509_crl, (const unsigned char **) &from, length))
+				{
+					message->error = hSession->ssl.error = ERR_get_error();
+					message->title = _( "Security error" );
+					message->text = _( "Can't decode CRL got from LDAP Search" );
+					lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+					errno = EINVAL;
+					return NULL;
+				}
+
 			}
 		}
-		else if(strncasecmp(consturl,"ldap://",7) == 0)
-		{
-			// LDAP Query on curl for windows returns an unprocessed response instead of a base64 data.
-			char * attr = strchr(consturl,'?');
-			if(!attr)
-			{
-				message->error = hSession->ssl.error = 0;
-				message->title = _( "Security error" );
-				message->text = _( "No attribute in LDAP search URL" );
-				return errno = ENOENT;
-			}
 
-			attr++;
-
-			//
-			// There's something odd on libcurl for windows! For some reason it's not converting the LDAP response values to
-			// base64, because of this I've to extract the BER directly.
-			//
-			// This is an ugly solution, I know!
-			//
-
-			lib3270_autoptr(char) text = lib3270_strdup_printf("No mime-type, extracting \"%s\" directly from LDAP response\n",attr);
-			trace_ssl(crl_data->hSession, text);
-
-			lib3270_autoptr(char) key = lib3270_strdup_printf("%s: ",attr);
-			char *ptr = strstr((char *) crl_data->data.contents, key);
-
-			debug("key=\"%s\" ptr=%p",key,ptr)
-
-			if(!ptr)
-			{
-				message->error = hSession->ssl.error = 0;
-				message->title = _( "Security error" );
-				message->text = _( "Can't find attribute in LDAP response" );
-				return errno = ENOENT;
-			}
-
-			ptr += strlen(key);
-			size_t length = crl_data->length - (ptr - ((char *) crl_data->data.contents));
-			size_t ix;
-
-			for(ix = 0; ix < (length-1); ix++)
-			{
-				if(ptr[ix] == '\n' && ptr[ix+1] == '\n')
-					break;
-			}
-
-			debug("length=%u ix=%u", (unsigned int) length, (unsigned int) ix);
-
-			if(ix >= length)
-			{
-				message->error = hSession->ssl.error = 0;
-				message->title = _( "Security error" );
-				message->text = _( "Can't find attribute end in LDAP response" );
-				return errno = ENOENT;
-			}
-
-			length = ix;
-
-			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-			{
-				lib3270_trace_data(
-					hSession,
-					"CRL Data received from LDAP server",
-					(const char *) ptr,
-					length
-				);
-			}
-
-			if(!d2i_X509_CRL(&hSession->ssl.crl.cert, (const unsigned char **) &ptr, length))
-			{
-				message->error = hSession->ssl.error = ERR_get_error();
-				message->title = _( "Security error" );
-				message->text = _( "Can't decode CRL got from LDAP Search" );
-				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
-				return -1;
-			}
-
-		}
 #else
 		// Can't get CRL.
 
@@ -422,12 +453,12 @@ int lib3270_get_X509_CRL(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		message->text = _( "Unexpected or invalid CRL URL" );
 		message->description = _("The URL scheme is unknown");
 		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
-		return errno= EINVAL;
+		errno = EINVAL;
+		return NULL;
 #endif // HAVE_LIBCURL
-
 	}
 
-	return hSession->ssl.crl.cert == NULL ? -1 : 0;
+	return x509_crl;
 
 }
 

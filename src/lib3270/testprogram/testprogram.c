@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	printf("\nConnecting to %s\n",lib3270_get_url(h));
 
 	rc = lib3270_reconnect(h,120);
-	printf("\nConnect exits with rc=%d\n",rc);
+	printf("\n\nConnect exits with rc=%d (%s)\n\n",rc,strerror(rc));
 
 	if(!rc)
 	{

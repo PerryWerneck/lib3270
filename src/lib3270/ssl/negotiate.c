@@ -87,6 +87,7 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	hSession->ssl.host = False;
 
 	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) message)) {
+		debug("%s has failed","ssl_ctx_init");
 		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 		hSession->ssl.host = False;
 		return -1;

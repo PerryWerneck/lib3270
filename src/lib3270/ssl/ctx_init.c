@@ -105,7 +105,10 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 {
 	// Returns if don't have an SSL context.
 	if(!ssl_ctx)
+	{
+		trace("No SSL context %s will return %d",__FUNCTION__,0);
 		return 0;
+	}
 
 	// Do I have X509 CRL? Is it valid?
 	if(hSession->ssl.crl.cert)
@@ -147,8 +150,11 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	//
 	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
 	//
-	if(lib3270_get_X509_CRL(hSession,message))
-		return  -1;
+	hSession->ssl.crl.cert = lib3270_get_crl(hSession,message,lib3270_get_crl_url(hSession));
+	if(!hSession->ssl.crl.cert)
+	{
+		return -1;
+	}
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
 	{
@@ -159,20 +165,17 @@ int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	}
 
+	// Add CRL in the store.
 	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-
-	if(hSession->ssl.crl.cert)
+	if(X509_STORE_add_crl(store, hSession->ssl.crl.cert))
 	{
-		X509_STORE_add_crl(store, hSession->ssl.crl.cert);
 		trace_ssl(hSession,"CRL was added to cert store\n");
+		return 0;
 	}
 
-	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
-	X509_STORE_set1_param(store, param);
-	X509_VERIFY_PARAM_free(param);
+	trace_ssl(hSession,"CRL was not added to cert store\n");
 
-	return 0;
+	return -1;
 }
 #endif // SSL_ENABLE_CRL_CHECK
 
@@ -239,6 +242,15 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
 #ifdef SSL_ENABLE_CRL_CHECK
+
+	// Enable CRL check
+	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
+	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+	X509_STORE_set1_param(store, param);
+	X509_VERIFY_PARAM_free(param);
+	trace_ssl(hSession,"CRL CHECK was enabled\n");
+
 	return lib3270_check_X509_crl(hSession,message);
 #else
 	return 0;

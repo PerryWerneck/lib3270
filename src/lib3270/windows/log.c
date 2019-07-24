@@ -60,6 +60,11 @@
 		msg
 	};
 
+#ifdef DEBUG
+	fprintf(stderr,"LOG(%s): %s\n",module,msg);
+	fflush(stderr);
+#endif // DEBUG
+
 	ReportEvent(
 		hEventLog,
 		(rc == 0 ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE),
@@ -74,7 +79,7 @@
 
  }
 
- LIB3270_EXPORT int lib3270_set_syslog(int flag)
+ LIB3270_EXPORT int lib3270_set_syslog(int GNUC_UNUSED(flag))
  {
  	return errno  = ENOENT;
  }

@@ -591,8 +591,6 @@ int non_blocking(H3270 *hSession, Boolean on)
 	lib3270_set_poll_state(hSession,hSession->xio.write, on);
 	lib3270_set_poll_state(hSession,hSession->xio.except, on);
 
-	trace("******** Socket %d is %s",hSession->sock, on ? "non-blocking" : "blocking");
-
 	return 0;
 }
 

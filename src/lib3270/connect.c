@@ -98,16 +98,38 @@ static int background_ssl_crl_check(H3270 *hSession, void *ssl_error)
 
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 	int rc = lib3270_run_task(hSession, background_ssl_crl_check, &ssl_error);
+
+	debug("CRL check returns %d",rc);
+
 	if(rc)
 	{
-		if(ssl_error.description)
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ssl_error.description);
-		else if(ssl_error.error)
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ERR_reason_error_string(ssl_error.error));
-		else
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s","");
+		lib3270_write_log(
+			hSession,
+			"SSL-CRL-CHECK",
+			"CRL Check error: %s (rc=%d ssl_error=%d)",
+				ssl_error.title,
+				rc,
+				ssl_error.error
+		);
 
-		return errno = rc;
+		if(ssl_error.description)
+		{
+			lib3270_write_log(hSession,"SSL-CRL-CHECK","%s",ssl_error.description);
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ssl_error.description);
+		}
+		else if(ssl_error.error)
+		{
+			lib3270_autoptr(char) formatted_error = lib3270_strdup_printf("%s (SSL error %d)",ERR_reason_error_string(ssl_error.error),ssl_error.error);
+			lib3270_write_log(hSession,"SSL-CRL-CHECK","%s",formatted_error);
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", formatted_error);
+		}
+		else
+		{
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s","");
+		}
+
+		// return errno = rc;
+
 	}
 #endif // SSL_ENABLE_CRL_CHECK
 

@@ -179,7 +179,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Unable to get certificate CRL." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
 
-		return -1;
+		return EACCES;
 
 	case X509_V_ERR_CRL_NOT_YET_VALID:
 		trace_ssl(hSession,"%s","The CRL of a certificate is not yet valid.\n" );
@@ -187,7 +187,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL is not yet valid." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) is not yet valid." );
-		return -1;
+		return EACCES;
 
 	case X509_V_ERR_CRL_HAS_EXPIRED:
 		trace_ssl(hSession,"%s","The CRL of a certificate has expired.\n" );
@@ -196,7 +196,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL has expired." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) has expired." );
-		return -1;
+		return EACCES;
 #else
 		break;
 #endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
@@ -212,7 +212,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
-		return -1;
+		return EACCES;
 #else
 		break;
 #endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
@@ -225,7 +225,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
-		return -1;
+		return EACCES;
 #endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
 
 	}
@@ -311,7 +311,8 @@ int ssl_negotiate(H3270 *hSession)
 	return rc;
 }
 
-int	ssl_init(H3270 *hSession) {
+int	ssl_init(H3270 *hSession)
+{
 
 	int rc;
 	SSL_ERROR_MESSAGE msg;
@@ -321,9 +322,30 @@ int	ssl_init(H3270 *hSession) {
 	non_blocking(hSession,False);
 
 	rc = lib3270_run_task(hSession, background_ssl_init, &msg);
-	if(rc)
+	if(rc == EACCES)
 	{
-		// SSL init has failed.
+		// SSL validation has failed
+
+		int abort = -1;
+
+		if(msg.description)
+			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,"");
+		else
+			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,ERR_reason_error_string(msg.error));
+
+		if(abort)
+		{
+			host_disconnect(hSession,1); // Disconnect with "failed" status.
+		}
+		else
+		{
+			rc = 0;
+		}
+
+	}
+	else if(rc)
+	{
+		// SSL negotiation has failed.
 		host_disconnect(hSession,1); // Disconnect with "failed" status.
 
 		if(msg.description)

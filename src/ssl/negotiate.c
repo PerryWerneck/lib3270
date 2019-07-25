@@ -164,69 +164,64 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	X509 * peer = NULL;
 	rv = SSL_get_verify_result(hSession->ssl.con);
 
-	switch(rv)
+	debug("SSL Verify result was %d", rv);
+
+	const struct ssl_status_msg * msg = ssl_get_status_from_error_code((long) rv);
+
+	if(!msg)
 	{
-	// https://www.openssl.org/docs/man1.0.2/crypto/X509_STORE_CTX_set_error.html
-	case X509_V_OK:
-		peer = SSL_get_peer_certificate(hSession->ssl.con);
-		trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
-		break;
-
-	case X509_V_ERR_UNABLE_TO_GET_CRL:
-
-		trace_ssl(hSession,"%s","The CRL of a certificate could not be found.\n" );
-		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "Unable to get certificate CRL." );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) of a certificate could not be found." );
-
-		return EACCES;
-
-	case X509_V_ERR_CRL_NOT_YET_VALID:
-		trace_ssl(hSession,"%s","The CRL of a certificate is not yet valid.\n" );
-
-		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL is not yet valid." );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) is not yet valid." );
-		return EACCES;
-
-	case X509_V_ERR_CRL_HAS_EXPIRED:
-		trace_ssl(hSession,"%s","The CRL of a certificate has expired.\n" );
-
-#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
-		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "The CRL has expired." );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "The Certificate revocation list (CRL) has expired." );
-		return EACCES;
-#else
-		break;
-#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
-
-	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
-
-		peer = SSL_get_peer_certificate(hSession->ssl.con);
-
-		debug("%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain" );
-		trace_ssl(hSession,"%s","TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n" );
-
-#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
-		return EACCES;
-#else
-		break;
-#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-
-	default:
-
 		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 
 #ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
-		((SSL_ERROR_MESSAGE *) message)->title = _( "SSL error" );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
 		return EACCES;
 #endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
+
+	}
+	else
+	{
+		switch(rv)
+		{
+		case X509_V_OK:
+			peer = SSL_get_peer_certificate(hSession->ssl.con);
+			trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
+			break;
+
+		case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
+
+			peer = SSL_get_peer_certificate(hSession->ssl.con);
+
+			trace_ssl(hSession,"TLS/SSL negotiated connection complete with self signed certificate in certificate chain (rc=%d)\n",rv);
+
+	#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+			((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
+			((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
+			return EACCES;
+	#else
+			break;
+	#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+
+		default:
+			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->description);
+
+			debug("message: %s",msg->message);
+			debug("description: %s",msg->description);
+
+			((SSL_ERROR_MESSAGE *) message)->text = gettext(msg->message);
+			((SSL_ERROR_MESSAGE *) message)->description = gettext(msg->description);
+
+			if(msg->icon == LIB3270_NOTIFY_ERROR)
+			{
+				((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+				return EACCES;
+			}
+
+			((SSL_ERROR_MESSAGE *) message)->title = _( "Security warning" );
+
+		}
 
 	}
 
@@ -277,6 +272,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	return 0;
 }
 
+/*
 int ssl_negotiate(H3270 *hSession)
 {
 	int rc;
@@ -288,61 +284,6 @@ int ssl_negotiate(H3270 *hSession)
 	non_blocking(hSession,False);
 
 	rc = lib3270_run_task(hSession, background_ssl_negotiation, &msg);
-	if(rc)
-	{
-		// SSL Negotiation has failed.
-		host_disconnect(hSession,1); // Disconnect with "failed" status.
-
-		if(msg.description)
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
-		else
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
-
-
-	}
-	else
-	{
-		/* Tell the world that we are (still) connected, now in secure mode. */
-		lib3270_set_connected_initial(hSession);
-	}
-
-	non_blocking(hSession,True);
-
-	return rc;
-}
-
-int	ssl_init(H3270 *hSession)
-{
-
-	int rc;
-	SSL_ERROR_MESSAGE msg;
-
-	memset(&msg,0,sizeof(msg));
-
-	non_blocking(hSession,False);
-
-	rc = lib3270_run_task(hSession, background_ssl_init, &msg);
-	if(rc == EACCES)
-	{
-		// SSL validation has failed
-
-		int abort = -1;
-
-		if(msg.description)
-			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,"");
-		else
-			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,ERR_reason_error_string(msg.error));
-
-		if(abort)
-		{
-			host_disconnect(hSession,1); // Disconnect with "failed" status.
-		}
-		else
-		{
-			rc = 0;
-		}
-
-	}
 	else if(rc)
 	{
 		// SSL negotiation has failed.
@@ -358,8 +299,89 @@ int	ssl_init(H3270 *hSession)
 	non_blocking(hSession,True);
 
 	return rc;
+}
+*/
+
+int ssl_negotiate(H3270 *hSession)
+{
+	int rc;
+	SSL_ERROR_MESSAGE msg;
+
+	memset(&msg,0,sizeof(msg));
+
+	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
+	non_blocking(hSession,False);
+
+	rc = lib3270_run_task(hSession, background_ssl_negotiation, &msg);
+
+	if(rc == EACCES)
+	{
+		// SSL validation has failed
+
+		int abort = -1;
+
+		if(msg.description)
+			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,msg.description);
+		else
+			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,ERR_reason_error_string(msg.error));
+
+		if(abort)
+		{
+			host_disconnect(hSession,1); // Disconnect with "failed" status.
+			return rc;
+		}
+
+	}
+	else if(rc)
+	{
+		// SSL Negotiation has failed.
+		host_disconnect(hSession,1); // Disconnect with "failed" status.
+
+		if(msg.description)
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
+		else
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
+
+
+		return rc;
+
+	}
+
+	/* Tell the world that we are (still) connected, now in secure mode. */
+	lib3270_set_connected_initial(hSession);
+	non_blocking(hSession,True);
+
+	return 0;
+}
+
+int	ssl_init(H3270 *hSession) {
+
+	int rc;
+	SSL_ERROR_MESSAGE msg;
+
+	memset(&msg,0,sizeof(msg));
+
+	non_blocking(hSession,False);
+
+	rc = lib3270_run_task(hSession, background_ssl_init, &msg);
+	if(rc)
+	{
+		// SSL init has failed.
+		host_disconnect(hSession,1); // Disconnect with "failed" status.
+
+		if(msg.description)
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
+		else
+			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
+
+	}
+
+	non_blocking(hSession,True);
+
+	return rc;
 
 }
+
 
 /* Callback for tracing protocol negotiation. */
 void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)

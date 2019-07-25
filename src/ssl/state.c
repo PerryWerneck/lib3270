@@ -82,15 +82,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 }
 
 #ifdef HAVE_LIBSSL
- static const struct ssl_status_msg
- {
-	long			  id;
-	LIB3270_NOTIFY	  icon;
-	const char		* iconName;		// Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-	const char		* message;
-	const char		* description;
- }
- status_msg[] =
+ static const struct ssl_status_msg status_msg[] =
  {
 	// http://www.openssl.org/docs/apps/verify.html
 	{
@@ -354,10 +346,9 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
  };
 
- static const struct ssl_status_msg * get_ssl_status_msg(H3270 *hSession)
+ const struct ssl_status_msg * ssl_get_status_from_error_code(long id)
  {
  	size_t f;
-	long id	= lib3270_get_SSL_verify_result(hSession);
 
 	for(f=0;f < (sizeof(status_msg)/sizeof(status_msg[0]));f++)
 	{
@@ -365,6 +356,11 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 			return status_msg+f;
 	}
 	return NULL;
+ }
+
+ static const struct ssl_status_msg * get_ssl_status_msg(H3270 *hSession)
+ {
+ 	return ssl_get_status_from_error_code(lib3270_get_SSL_verify_result(hSession));
  }
 
  const char	* lib3270_get_ssl_state_message(H3270 *hSession)

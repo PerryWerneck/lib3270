@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <trace_dsc.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/err.h>
@@ -54,10 +55,123 @@
  }
 
 #ifdef SSL_ENABLE_CRL_CHECK
-static int background_ssl_crl_check(H3270 *hSession, void *ssl_error)
+static int background_ssl_crl_get(H3270 *hSession, void *ssl_error)
 {
-	return lib3270_check_X509_crl(hSession, (SSL_ERROR_MESSAGE *) ssl_error);
+	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) ssl_error)) {
+		return -1;
+	}
+
+	// Do I have X509 CRL?
+	if(hSession->ssl.crl.cert)
+	{
+		// Ok, have it. Is it valid?
+
+		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
+		// X509_CRL_get_nextUpdate is deprecated in openssl 1.1.0
+		#if OPENSSL_VERSION_NUMBER < 0x10100000L
+			const ASN1_TIME * next_update = X509_CRL_get_nextUpdate(hSession->ssl.crl.cert);
+		#else
+			const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
+		#endif
+
+		if(X509_cmp_current_time(next_update) == 1)
+		{
+			int day, sec;
+			if(ASN1_TIME_diff(&day, &sec, NULL, next_update))
+			{
+				trace_ssl(hSession,"CRL Certificate is valid for %d day(s) and %d second(s)\n",day,sec);
+				return 0;
+			}
+			else
+			{
+				trace_ssl(hSession,"Can't get CRL next update, releasing it\n");
+			}
+
+		}
+		else
+		{
+			trace_ssl(hSession,"CRL Certificate is no longer valid\n");
+		}
+
+		// Certificate is no longer valid, release it.
+		X509_CRL_free(hSession->ssl.crl.cert);
+		hSession->ssl.crl.cert = NULL;
+
+	}
+
+	//
+	// Get CRL
+	//
+	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
+	//
+	trace_ssl(hSession,"Getting CRL from %s\n",lib3270_get_crl_url(hSession));
+
+	hSession->ssl.crl.cert = lib3270_get_crl(hSession,(SSL_ERROR_MESSAGE *) ssl_error,lib3270_get_crl_url(hSession));
+	if(hSession->ssl.crl.cert)
+	{
+		// Got CRL, add it to ssl store
+		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+		{
+			lib3270_autoptr(char) text = lib3270_get_ssl_crl_text(hSession);
+
+			if(text)
+				trace_ssl(hSession,"\n%s\n",text);
+
+		}
+
+		// Add CRL in the store.
+		X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
+		if(X509_STORE_add_crl(store, hSession->ssl.crl.cert))
+		{
+			trace_ssl(hSession,"CRL was added to cert store\n");
+		}
+		else
+		{
+			trace_ssl(hSession,"CRL was not added to cert store\n");
+		}
+
+
+	}
+
+	return 0;
+
 }
+
+static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *message)
+{
+	lib3270_write_log(
+		hSession,
+		"SSL-CRL-GET",
+		"CRL GET error: %s (rc=%d ssl_error=%d)",
+			message->title,
+			rc,
+			message->error
+	);
+
+	if(message->description)
+	{
+		lib3270_write_log(hSession,"SSL-CRL-GET","%s",message->description);
+
+		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,message->description))
+			return rc;
+	}
+	else if(message->error)
+	{
+		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "%s (SSL error %d)" ),ERR_reason_error_string(message->error),message->error);
+		lib3270_write_log(hSession,"SSL-CRL-GET","%s",formatted_error);
+
+		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
+			return rc;
+	}
+	else
+	{
+		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,""))
+			return rc;
+	}
+
+	return 0;
+}
+
 #endif // SSL_ENABLE_CRL_CHECK
 
  int lib3270_reconnect(H3270 *hSession, int seconds)
@@ -93,44 +207,18 @@ static int background_ssl_crl_check(H3270 *hSession, void *ssl_error)
 	}
 
 #ifdef SSL_ENABLE_CRL_CHECK
+
 	SSL_ERROR_MESSAGE ssl_error;
 	memset(&ssl_error,0,sizeof(ssl_error));
 
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
-	int rc = lib3270_run_task(hSession, background_ssl_crl_check, &ssl_error);
+	int rc = lib3270_run_task(hSession, background_ssl_crl_get, &ssl_error);
 
 	debug("CRL check returns %d",rc);
 
-	if(rc)
-	{
-		lib3270_write_log(
-			hSession,
-			"SSL-CRL-CHECK",
-			"CRL Check error: %s (rc=%d ssl_error=%d)",
-				ssl_error.title,
-				rc,
-				ssl_error.error
-		);
+	if(rc && notify_crl_error(hSession, rc,&ssl_error))
+		return errno = rc;
 
-		if(ssl_error.description)
-		{
-			lib3270_write_log(hSession,"SSL-CRL-CHECK","%s",ssl_error.description);
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", ssl_error.description);
-		}
-		else if(ssl_error.error)
-		{
-			lib3270_autoptr(char) formatted_error = lib3270_strdup_printf("%s (SSL error %d)",ERR_reason_error_string(ssl_error.error),ssl_error.error);
-			lib3270_write_log(hSession,"SSL-CRL-CHECK","%s",formatted_error);
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s", formatted_error);
-		}
-		else
-		{
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, ssl_error.title, ssl_error.text, "%s","");
-		}
-
-		// return errno = rc;
-
-	}
 #endif // SSL_ENABLE_CRL_CHECK
 
 #if defined(HAVE_LIBSSL)

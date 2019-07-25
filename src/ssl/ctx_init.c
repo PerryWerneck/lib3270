@@ -63,8 +63,6 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-#ifdef SSL_ENABLE_CRL_CHECK
-
 /*
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsequence-point"
@@ -100,85 +98,6 @@ static time_t ASN1_GetTimeT(const ASN1_TIME* time)
 }
 #pragma GCC diagnostic pop
 */
-
-int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message)
-{
-	// Returns if don't have an SSL context.
-	if(!ssl_ctx)
-	{
-		trace("No SSL context %s will return %d",__FUNCTION__,0);
-		return 0;
-	}
-
-	// Do I have X509 CRL? Is it valid?
-	if(hSession->ssl.crl.cert)
-	{
-
-		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
-		// X509_CRL_get_nextUpdate is deprecated in openssl 1.1.0
-		#if OPENSSL_VERSION_NUMBER < 0x10100000L
-			const ASN1_TIME * next_update = X509_CRL_get_nextUpdate(hSession->ssl.crl.cert);
-		#else
-			const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
-		#endif
-
-		if(X509_cmp_current_time(next_update) == 1)
-		{
-			int day, sec;
-			if(ASN1_TIME_diff(&day, &sec, NULL, next_update))
-			{
-				trace_ssl(hSession,"CRL Certificate is valid for %d day(s) and %d second(s)\n",day,sec);
-				return 0;
-			}
-			else
-			{
-				trace_ssl(hSession,"Can't get CRL next update\n");
-			}
-
-		}
-
-		// Certificate is no longer valid, release it.
-		trace_ssl(hSession,"CRL Certificate is no longer valid\n");
-
-		X509_CRL_free(hSession->ssl.crl.cert);
-		hSession->ssl.crl.cert = NULL;
-
-	}
-
-	//
-	// Set up CRL validation
-	//
-	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
-	//
-	hSession->ssl.crl.cert = lib3270_get_crl(hSession,message,lib3270_get_crl_url(hSession));
-	if(!hSession->ssl.crl.cert)
-	{
-		return -1;
-	}
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-	{
-		lib3270_autoptr(char) text = lib3270_get_ssl_crl_text(hSession);
-
-		if(text)
-			trace_ssl(hSession,"\n%s\n",text);
-
-	}
-
-	// Add CRL in the store.
-	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-	if(X509_STORE_add_crl(store, hSession->ssl.crl.cert))
-	{
-		trace_ssl(hSession,"CRL was added to cert store\n");
-		return 0;
-	}
-
-	trace_ssl(hSession,"CRL was not added to cert store\n");
-
-	return -1;
-}
-#endif // SSL_ENABLE_CRL_CHECK
-
 
 /**
  * @brief Initialize openssl library.
@@ -251,10 +170,9 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	X509_VERIFY_PARAM_free(param);
 	trace_ssl(hSession,"CRL CHECK was enabled\n");
 
-	return lib3270_check_X509_crl(hSession,message);
-#else
-	return 0;
 #endif // SSL_ENABLE_CRL_CHECK
+
+	return 0;
 
 }
 

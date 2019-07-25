@@ -773,7 +773,6 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	#ifdef SSL_ENABLE_CRL_CHECK
 		LIB3270_INTERNAL X509_CRL * lib3270_get_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *url);
-		LIB3270_INTERNAL int lib3270_check_X509_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message);
 	#endif // SSL_ENABLE_CRL_CHECK
 
 	/// @brief Clear element at adress.

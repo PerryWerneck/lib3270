@@ -5,6 +5,7 @@
 #include <getopt.h>
 
 #include <lib3270.h>
+#include <lib3270-internals.h>
 #include <lib3270/actions.h>
 #include <lib3270/trace.h>
 
@@ -12,7 +13,7 @@
 
 const char *trace_file = "test.trace";
 
-static void write_trace(H3270 *session, void *userdata, const char *fmt, va_list args)
+static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
 {
 	FILE *out = fopen(trace_file,"a");
 	if(out)

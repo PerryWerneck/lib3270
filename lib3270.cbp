@@ -194,7 +194,6 @@
 		<Unit filename="src/include/icmdc.h" />
 		<Unit filename="src/include/keypadc.h" />
 		<Unit filename="src/include/kybdc.h" />
-		<Unit filename="src/include/lib3270++.h" />
 		<Unit filename="src/include/lib3270-internals.h" />
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/X11keysym.h" />

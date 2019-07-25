@@ -224,6 +224,12 @@ static void def_popup(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(type), const ch
 #endif // ANDROID
 }
 
+static int def_popup_ssl_error(H3270 *session, int GNUC_UNUSED(rc), const char *title, const char *summary, const char *body)
+{
+	lib3270_popup_dialog(session, LIB3270_NOTIFY_ERROR, title, summary, "%s", body);
+    return -1;
+}
+
 static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
@@ -287,6 +293,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.cursor 				= set_cursor;
 	hSession->cbk.message				= message;
 	hSession->cbk.popup					= def_popup;
+	hSession->cbk.popup_ssl_error		= def_popup_ssl_error;
 	hSession->cbk.update_ssl			= update_ssl;
 	hSession->cbk.display				= screen_disp;
 	hSession->cbk.set_width				= nop_int;

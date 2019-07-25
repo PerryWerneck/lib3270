@@ -78,6 +78,7 @@
 
 		void (*message)(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text);
 		void (*popup)(H3270 *session, LIB3270_NOTIFY id, const char *title, const char *msg, const char *fmt, va_list);
+		int  (*popup_ssl_error)(H3270 *session, int rc, const char *title, const char *summary, const char *body);
 
 #ifdef HAVE_LIBSSL
 		void (*set_peer_certificate)(const X509 *cert);

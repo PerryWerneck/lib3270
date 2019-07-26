@@ -195,12 +195,15 @@ static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(
 static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode))
 {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
+	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't print" ), _( "Unable to print" ), "%s", strerror(ENOTSUP));
+
 	return errno = ENOTSUP;
 }
 
 static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char GNUC_UNUSED(*filename))
 {
 	lib3270_write_log(session, "save", "%s", "Saving is unavailable");
+	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't save" ), _( "Unable to save" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 

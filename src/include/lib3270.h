@@ -84,15 +84,15 @@
 	#define LIB3270_LUNAME_LENGTH			16
 
 	/**
-	 * @brief Print modes.
+	 * @brief Selection mode.
 	 *
 	 */
-	typedef enum _lib3270_print_mode
+	typedef enum _lib3270_content_option
 	{
-		LIB3270_PRINT_ALL,
-		LIB3270_PRINT_SELECTED,
-		LIB3270_PRINT_COPY
-	} LIB3270_PRINT_MODE;
+		LIB3270_CONTENT_ALL,			///< @brief Get all the terminal data.
+		LIB3270_CONTENT_SELECTED,		///< @brief Get only selected contents.
+		LIB3270_CONTENT_COPY			///< @brief Get internal copy.
+	} LIB3270_CONTENT_OPTION;
 
 	/**
 	 * @brief Character attributes.
@@ -784,16 +784,31 @@
 	 * @brief Print page
 	 *
 	 * @param hSession	Session Handle.
-	 * @param mode		Print mode.
+	 * @param mode		Content option.
 	 *
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_PRINT_MODE mode);
+	LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_CONTENT_OPTION mode);
 
 	LIB3270_EXPORT int lib3270_print_all(H3270 *hSession);
 	LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession);
 	LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession);
+
+	/**
+	 * @brief Save contents to file.
+	 *
+	 * @param hSession	Session Handle.
+	 * @param mode		Content option.
+	 * @param filename	File name.
+	 *
+	 * @return 0 if ok, error code if not.
+	 */
+	LIB3270_EXPORT int lib3270_save(H3270 *hSession, LIB3270_CONTENT_OPTION mode, const char *filename);
+
+	LIB3270_EXPORT int lib3270_save_all(H3270 *hSession, const char *filename);
+	LIB3270_EXPORT int lib3270_save_selected(H3270 *hSession, const char *filename);
+	LIB3270_EXPORT int lib3270_save_copy(H3270 *hSession, const char *filename);
 
 	/**
 	 * @brief Get buffer contents.

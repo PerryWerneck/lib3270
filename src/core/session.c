@@ -192,9 +192,15 @@ static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(
 {
 }
 
-static int print(H3270 *session, LIB3270_PRINT_MODE GNUC_UNUSED(mode))
+static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode))
 {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
+	return errno = ENOTSUP;
+}
+
+static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char GNUC_UNUSED(*filename))
+{
+	lib3270_write_log(session, "save", "%s", "Saving is unavailable");
 	return errno = ENOTSUP;
 }
 
@@ -301,6 +307,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.autostart				= nop;
 	hSession->cbk.set_timer				= set_timer;
 	hSession->cbk.print					= print;
+	hSession->cbk.save					= save;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
 

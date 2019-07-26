@@ -593,27 +593,50 @@ void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 
 }
 
-LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_PRINT_MODE mode)
+LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_CONTENT_OPTION mode)
 {
 	return hSession->cbk.print(hSession, mode);
 }
 
 LIB3270_EXPORT int lib3270_print_all(H3270 *hSession)
 {
-	return lib3270_print(hSession,LIB3270_PRINT_ALL);
+	return lib3270_print(hSession,LIB3270_CONTENT_ALL);
 }
 
 LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession)
 {
 	if(lib3270_has_selection(hSession))
-		return lib3270_print(hSession,LIB3270_PRINT_SELECTED);
+		return lib3270_print(hSession,LIB3270_CONTENT_SELECTED);
 	return errno = ENODATA;
 }
 
 LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession)
 {
-	return lib3270_print(hSession,LIB3270_PRINT_COPY);
+	return lib3270_print(hSession,LIB3270_CONTENT_COPY);
 }
+
+LIB3270_EXPORT int lib3270_save(H3270 *hSession, LIB3270_CONTENT_OPTION mode, const char *filename)
+{
+	return hSession->cbk.save(hSession, mode, filename);
+}
+
+LIB3270_EXPORT int lib3270_save_all(H3270 *hSession, const char *filename)
+{
+	return lib3270_save(hSession,LIB3270_CONTENT_ALL,filename);
+}
+
+LIB3270_EXPORT int lib3270_save_selected(H3270 *hSession, const char *filename)
+{
+	if(lib3270_has_selection(hSession))
+		return lib3270_save(hSession,LIB3270_CONTENT_SELECTED,filename);
+	return errno = ENODATA;
+}
+
+LIB3270_EXPORT int lib3270_save_copy(H3270 *hSession, const char *filename)
+{
+	return lib3270_save(hSession,LIB3270_CONTENT_COPY,filename);
+}
+
 
 LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
 {

@@ -56,7 +56,7 @@ install: build
 	make all
 
 	# Install lib3270
-	make DESTDIR=$(PWD)/debian/lib3270 -C src/lib3270 install-shared
+	make DESTDIR=$(PWD)/debian/lib3270 install-shared
 	find $(PWD)/debian/lib3270 -type f | sed -e "s@^$(PWD)/debian/lib3270/@/@g" > $(PWD)/debian/lib3270.install
 
 	# Install dev

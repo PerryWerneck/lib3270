@@ -144,11 +144,21 @@ LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
 	return lib3270_get_selected_text(hSession,0,LIB3270_SELECTION_CUT);
 }
 
-LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut)
+LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut, int all)
 {
+	if(check_online_session(hSession))
+		return NULL;
+
 	// Get block size
 	unsigned int row, col, width, height;
-	if(lib3270_get_selection_rectangle(hSession, &row, &col, &width, &height))
+
+	if(all)
+	{
+		row = col = 0;
+		width = lib3270_get_width(hSession);
+		height = lib3270_get_height(hSession);
+	}
+	else if(lib3270_get_selection_rectangle(hSession, &row, &col, &width, &height))
 	{
 		return NULL;
 	}

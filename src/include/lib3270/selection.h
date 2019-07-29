@@ -190,11 +190,12 @@
 	 *
 	 * @param hSession	Session handle.
 	 * @param cut		Non zero to clear selected contents.
+	 * @param all		Non zero to get entire terminal, zero to get only the selected rectangle.
 	 *
 	 * @return NULL on error (sets errno), pointer to a rectangle containing the selected area (release it with lib3270_free).
 	 *
 	 */
-	LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut);
+	LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut, int all);
 
 	/**
 	 * @brief Get bitmasked flag for the current selection.

@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-#include <lib3270.h>
 #include <lib3270-internals.h>
+#include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/trace.h>
 

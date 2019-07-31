@@ -781,18 +781,45 @@
 	 LIB3270_EXPORT int lib3270_move_cursor(H3270 *h, LIB3270_DIRECTION dir, unsigned char sel);
 
 	/**
-	 * @brief Print page
+	 * @brief Default print operation.
+	 *
+	 * If the terminal has selected area print them, if not, print all contents.
 	 *
 	 * @param hSession	Session Handle.
-	 * @param mode		Content option.
 	 *
 	 * @return 0 if ok, error code if not.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_CONTENT_OPTION mode);
+	LIB3270_EXPORT int lib3270_print(H3270 *hSession);
 
+	/**
+	 * @brief Print terminal screen.
+	 *
+	 * @param hSession	Session Handle.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 */
 	LIB3270_EXPORT int lib3270_print_all(H3270 *hSession);
+
+	/**
+	 * @brief Print only selected area (if available).
+	 *
+	 * @param hSession	Session Handle.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 */
 	LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession);
+
+	/**
+	 * @brief Ask the front end module to print stored copy.
+	 *
+	 * @param hSession	Session Handle.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 */
 	LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession);
 
 	/**

@@ -593,26 +593,39 @@ void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 
 }
 
-LIB3270_EXPORT int lib3270_print(H3270 *hSession, LIB3270_CONTENT_OPTION mode)
+LIB3270_EXPORT int lib3270_print(H3270 *hSession)
 {
-	return hSession->cbk.print(hSession, mode);
+	if(check_online_session(hSession))
+		return errno = ENOTCONN;
+
+	return hSession->cbk.print(hSession, (hSession->selected ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL));
 }
 
 LIB3270_EXPORT int lib3270_print_all(H3270 *hSession)
 {
-	return lib3270_print(hSession,LIB3270_CONTENT_ALL);
+	if(check_online_session(hSession))
+		return errno = ENOTCONN;
+
+	return hSession->cbk.print(hSession,LIB3270_CONTENT_ALL);
 }
 
 LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession)
 {
+	if(check_online_session(hSession))
+		return errno = ENOTCONN;
+
 	if(lib3270_has_selection(hSession))
-		return lib3270_print(hSession,LIB3270_CONTENT_SELECTED);
+		return hSession->cbk.print(hSession,LIB3270_CONTENT_SELECTED);
+
 	return errno = ENODATA;
 }
 
 LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession)
 {
-	return lib3270_print(hSession,LIB3270_CONTENT_COPY);
+	if(check_online_session(hSession))
+		return errno = ENOTCONN;
+
+	return hSession->cbk.print(hSession,LIB3270_CONTENT_COPY);
 }
 
 LIB3270_EXPORT int lib3270_save(H3270 *hSession, LIB3270_CONTENT_OPTION mode, const char *filename)

@@ -79,7 +79,7 @@ case "$host" in
 	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
-		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lwldap32"
+		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
 		LDFLAGS="$LDFLAGS -pthread"
 		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"
@@ -521,24 +521,36 @@ AC_ARG_ENABLE([ldap],
 
 
 if test "x${have_ldap}" != xno ; then
-        AC_CHECK_HEADERS(
-                [ldap.h],
-                [have_ldap=yes],
-                [if test "x$have_ldap" = xyes ; then
-                        AC_MSG_ERROR([LDAP headers not found.])
-                fi])
 
-        if test "x$have_ldap" = xyes ; then
+	case "$host" in
+		*-mingw32|*-pc-msys)
+			LDAP_LIBS="-lwldap32"
+		     	AC_DEFINE(HAVE_LDAP,1,[LDAP is available])
+			;;
 
-                LDAP_LIBS="-lldap -llber"
-             	AC_DEFINE(HAVE_LDAP,1,[LDAP is available])
-                M4_DEFINES="$M4_DEFINES -DHAVE_LDAP"
+	 	*)
 
-        else
+			AC_CHECK_HEADERS(
+				[ldap.h],
+				[have_ldap=yes],
+				[if test "x$have_ldap" = xyes ; then
+				        AC_MSG_ERROR([LDAP headers not found.])
+				fi])
 
-                have_ldap=no
+			if test "x$have_ldap" = xyes ; then
 
-        fi
+				LDAP_LIBS="-lldap -llber"
+			     	AC_DEFINE(HAVE_LDAP,1,[LDAP is available])
+				M4_DEFINES="$M4_DEFINES -DHAVE_LDAP"
+
+			else
+
+				have_ldap=no
+
+			fi
+
+
+	esac
 
 else
         LDAP_LIBS=

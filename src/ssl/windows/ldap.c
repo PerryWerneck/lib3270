@@ -27,6 +27,7 @@
  *
  * References:
  *
+ * https://docs.microsoft.com/en-us/windows/win32/api/winldap/
  * https://github.com/curl/curl/blob/curl-7_62_0/lib/ldap.c
  * http://forums.codeguru.com/showthread.php?313123-Elementary-problems-using-winldap
  * https://stackoverflow.com/questions/21501002/how-to-use-ldap-sasl-bind-in-winldap
@@ -35,7 +36,7 @@
 
 #include <config.h>
 
-#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LDAP)
 
 #include "private.h"
 #include <winldap.h>
@@ -59,7 +60,32 @@ static inline void lib3270_autoptr_cleanup_LDAP(LDAP **ptr)
 
 }
 
-X509_CRL * get_crl_using_winldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
+static inline void lib3270_autoptr_cleanup_LDAPMessage(LDAPMessage **message)
+{
+	debug("%s(%p)",__FUNCTION__,*message);
+	if(message)
+		ldap_msgfree(*message);
+	*message = NULL;
+}
+
+static inline void lib3270_autoptr_cleanup_LDAPPTR(char **ptr)
+{
+	debug("%s(%p)",__FUNCTION__,*ptr);
+	if(*ptr)
+		ldap_memfree(*ptr);
+	*ptr = NULL;
+}
+
+static inline void lib3270_autoptr_cleanup_BerElement(BerElement **ber)
+{
+	debug("%s(%p)",__FUNCTION__,*ber);
+	if(*ber)
+		ber_free(*ber, 0);
+	*ber = NULL;
+}
+
+
+X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
 	debug("********************************************************* %s",__FUNCTION__);
 
@@ -146,7 +172,7 @@ X509_CRL * get_crl_using_winldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, c
 		return NULL;
 	}
 
-	rc = ldap_simple_bind(ld, "", "");
+	rc = ldap_simple_bind_s(ld, NULL, NULL);
 	if(rc != LDAP_SUCCESS)
 	{
 		message->error = hSession->ssl.error = 0;
@@ -161,6 +187,81 @@ X509_CRL * get_crl_using_winldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, c
 		return NULL;
 	}
 
+	lib3270_autoptr(LDAPMessage) results = NULL;
+	rc = ldap_search_ext_s(
+				ld,						// Specifies the LDAP pointer returned by a previous call to ldap_init(), ldap_ssl_init(), or ldap_open().
+				base,					// Specifies the DN of the entry at which to start the search.
+				LDAP_SCOPE_BASE,		// Specifies the scope of the search.
+				NULL,					// Specifies a string representation of the filter to apply in the search.
+				(char **)  &attrs,		// Specifies a null-terminated array of character string attribute types to return from entries that match filter.
+				0,						// Should be set to 1 to request attribute types only. Set to 0 to request both attributes types and attribute values.
+				NULL,
+				NULL,
+				NULL,
+				0,
+				&results
+			);
+
+
+	if(rc != LDAP_SUCCESS)
+	{
+		message->error = hSession->ssl.error = 0;
+		message->title = _( "Security error" );
+		message->text = _( "Can't search LDAP server" );
+		message->description = ldap_err2string(rc);
+		lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
+		return NULL;
+	}
+
+	lib3270_autoptr(BerElement) ber = NULL;
+	char __attribute__ ((__cleanup__(lib3270_autoptr_cleanup_LDAPPTR))) *attr = ldap_first_attribute(ld, results, &ber);
+	if(!attr)
+	{
+		message->error = hSession->ssl.error = 0;
+		message->title = _( "Security error" );
+		message->text = _( "Can't get LDAP attribute" );
+		message->description = _("Search did not produce any attributes.");
+		lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
+		errno = ENOENT;
+		return NULL;
+	}
+
+	struct berval ** value = ldap_get_values_len(ld, results, attr);
+	if(!value)
+	{
+		message->error = hSession->ssl.error = 0;
+		message->title = _( "Security error" );
+		message->text = _( "Can't get LDAP attribute" );
+		message->description = _("Search did not produce any values.");
+		lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
+		errno = ENOENT;
+		return NULL;
+	}
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+	{
+		lib3270_trace_data(
+			hSession,
+			"CRL Data received from LDAP server",
+			(const char *) value[0]->bv_val,
+			value[0]->bv_len
+		);
+	}
+
+	// Precisa salvar uma cópia porque d2i_X509_CRL modifica o ponteiro.
+	const unsigned char *crl_data = (const unsigned char *) value[0]->bv_val;
+
+	if(!d2i_X509_CRL(&x509_crl, &crl_data, value[0]->bv_len))
+	{
+		message->error = hSession->ssl.error = ERR_get_error();
+		message->title = _( "Security error" );
+		message->text = _( "Can't decode certificate revocation list" );
+		lib3270_write_log(hSession,"ssl","%s: %s",url, message->text);
+		ldap_value_free_len(value);
+		return NULL;
+	}
+
+	ldap_value_free_len(value);
 
 	debug("********************************************************* %s",__FUNCTION__);
 
@@ -168,4 +269,4 @@ X509_CRL * get_crl_using_winldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, c
 
 }
 
-#endif // defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
+#endif //  defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LDAP)

@@ -51,6 +51,7 @@ scripts
 vgcore.*
 doxygen/html
 *.crl
+*.sh
 src/include/lib3270/actions.h
 doxygen/doxyfile
 win32-configure*

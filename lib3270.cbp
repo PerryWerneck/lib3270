@@ -62,16 +62,16 @@
 		<Unit filename="src/core/cursor.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/ft.c">
+		<Unit filename="src/core/ft/ft.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/ft_cut.c">
+		<Unit filename="src/core/ft/ft_cut.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/ft_dft.c">
+		<Unit filename="src/core/ft/ft_dft.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/ftmessages.c">
+		<Unit filename="src/core/ft/ftmessages.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/host.c">
@@ -86,7 +86,10 @@
 		<Unit filename="src/core/iocalls.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/kybd.c">
+		<Unit filename="src/core/keyboard/actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/keyboard/kybd.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/connect.c">

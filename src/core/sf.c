@@ -30,9 +30,9 @@
  */
 
 
-/*
- *	sf.c
- *		This module handles 3270 structured fields.
+/**
+ *	@file sf.c
+ *	@brief This module handles 3270 structured fields.
  *
  */
 

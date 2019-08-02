@@ -108,7 +108,14 @@
 
 	LIB3270_INTERNAL int			run_ta(H3270 *hSession);
 	LIB3270_INTERNAL struct ta *	new_ta(H3270 *hSession, enum _ta_type type);
+
+	/// @brief Put a lib3270 action on the typeahead queue.
 	LIB3270_INTERNAL void			enq_action(H3270 *hSession, int (*fn)(H3270 *));
 
+	/// @brief Put a typeahed action on the typeahead queue.
+	LIB3270_INTERNAL void			enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char *), const char *parm1, const char *parm2);
+
+	/// @brief Lock the keyboard because of an operator error.
+	LIB3270_INTERNAL void			operator_error(H3270 *hSession, int error_type);
 
 #endif /* KYBDC_H_INCLUDED */

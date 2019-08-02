@@ -30,9 +30,9 @@
  *
  */
 
-/*
- *	see.c
- *		3270 data stream decode functions.
+/**
+ *	@file see.c
+ *	@brief 3270 data stream decode functions.
  *
  */
 

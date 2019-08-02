@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como ft_dft.c e possui 562 linhas de código.
+ * Este programa está nomeado como ft_dft.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -29,9 +29,11 @@
  */
 
 
-/*
- *	tc_dft.c
- *		File transfer: DFT-style data processing functions
+/**
+ *	@file ft_dft.c
+ *
+ *	File transfer: DFT-style data processing functions.
+ *
  */
 
 #ifdef WIN32

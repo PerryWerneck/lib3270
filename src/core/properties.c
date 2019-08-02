@@ -715,3 +715,17 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(H3270 *hSession)
 
 	return NULL;
 }
+
+LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *hSession, unsigned int delay)
+{
+	CHECK_SESSION_HANDLE(hSession);
+	hSession->unlock_delay_ms = (unsigned short) delay;
+	return 0;
+}
+
+LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(H3270 *hSession)
+{
+	CHECK_SESSION_HANDLE(hSession);
+	return (unsigned int) hSession->unlock_delay_ms;
+}
+

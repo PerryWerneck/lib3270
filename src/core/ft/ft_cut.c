@@ -32,7 +32,7 @@
 /**
  *	@file ft_cut.c
  *
- *		File transfer, data movement logic, CUT version
+ *	File transfer, data movement logic, CUT version
  */
 
 #include <errno.h>

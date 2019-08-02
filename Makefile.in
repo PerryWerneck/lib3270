@@ -31,6 +31,8 @@ INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
 SOURCES= \
 	$(wildcard src/core/*.c) \
+	$(wildcard src/core/keyboard/*.c) \
+	$(wildcard src/core/ft/*.c) \
 	$(wildcard src/core/@OSNAME@/*.rc) \
 	$(wildcard src/core/@OSNAME@/*.c) \
 	$(wildcard src/selection/*.c) \

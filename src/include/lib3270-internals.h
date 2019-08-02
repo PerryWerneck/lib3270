@@ -794,6 +794,5 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	/// @brief Default log writer.
 	LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
 
-
 #endif
 

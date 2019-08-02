@@ -29,7 +29,7 @@
  */
 
 /**
- * @brief Utility functions for x3270/c3270/s3270/tcl3270
+ * @brief Utility functions.
  */
 
 #define _GNU_SOURCE

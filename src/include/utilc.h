@@ -59,3 +59,13 @@ LIB3270_INTERNAL void rpf_init(rpf_t *r);
 LIB3270_INTERNAL void rpf_reset(rpf_t *r);
 LIB3270_INTERNAL void rpf(rpf_t *r, char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
 LIB3270_INTERNAL void rpf_free(rpf_t *r);
+
+/**
+ * @brief "unescape" text (Replaces %value for corresponding character).
+ *
+ * @param text	Text to convert.
+ *
+ * @return Converted string (release it with g_free).
+ *
+ */
+LIB3270_INTERNAL char * lib3270_unescape(const char *text);

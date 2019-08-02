@@ -714,3 +714,83 @@ LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, s
 
 	return getsockname(hSession->sock, addr, addrlen);
 }
+
+static int xdigit_value(const char scanner)
+{
+
+	if(scanner >= '0' && scanner <= '9') {
+		return scanner - '0';
+	}
+
+	if(scanner >= 'A' && scanner <= 'F') {
+		return 10 + (scanner - 'A');
+	}
+
+	if(scanner >= 'a' && scanner <= 'f') {
+		return 10 + (scanner - 'a');
+	}
+
+	return -1;
+}
+
+static int unescape_character(const char *scanner)
+{
+
+		int first_digit 	= xdigit_value(*scanner++);
+		int second_digit 	= xdigit_value(*scanner++);
+
+		if (first_digit < 0)
+				return -1;
+
+		if (second_digit < 0)
+				return -1;
+
+		return (first_digit << 4) | second_digit;
+
+}
+
+char * lib3270_unescape(const char *text)
+{
+	if(!text)
+		return NULL;
+
+	size_t		  sz = strlen(text);
+	char 		* outString = lib3270_malloc(sz+1);
+	char		* dst = outString;
+	const char	* src = text;
+	char 		* ptr = strchr(src,'%');
+
+	memset(outString,0,sz+1);
+
+	while(ptr)
+	{
+		if(ptr[1] == '%')
+		{
+			src = ptr+2;
+		}
+		else
+		{
+			size_t sz = (ptr - src);
+			memcpy(dst,src,sz);
+			dst += sz;
+
+			int chr = unescape_character(ptr+1);
+			if(chr < 0)
+			{
+				*(dst++) = '?';
+			}
+			else
+			{
+				*(dst++) = (char) chr;
+			}
+
+			src += (sz+3);
+		}
+
+		ptr = strchr(src,'%');
+	}
+
+	strcpy(dst,src);
+
+	return outString;
+}

@@ -40,6 +40,7 @@
 
 #include "private.h"
 #include <winldap.h>
+#include <utilc.h>
 
 # ifndef LDAP_VENDOR_NAME
 #  error Your Platform SDK is NOT sufficient for LDAP support! \
@@ -94,7 +95,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 
 	// Strip query.
 
-	lib3270_autoptr(char) urldup = strdup(consturl);
+	lib3270_autoptr(char) urldup = lib3270_unescape(consturl);
 
 	char * url = urldup+7;
 	char * base = strchr(url,'/');

@@ -53,6 +53,7 @@
 
 static inline void lib3270_autoptr_cleanup_LDAP(LDAP **ptr)
 {
+	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
 	{
 		ldap_unbind(*ptr);

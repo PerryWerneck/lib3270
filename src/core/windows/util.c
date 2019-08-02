@@ -132,7 +132,7 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
 
 #ifdef HAVE_ICONV
 	{
-		// Convert from windows codepage to UTF-8 pw3270´s default charset
+		// Convert from windows codepage to pw3270´s default charset (UTF-8)
 		iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
 
 		trace("[%s]",buffer);

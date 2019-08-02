@@ -89,7 +89,8 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAG
 		message->title = _( "Security error" );
 		message->text = _( "No DN of the entry at which to start the search on the URL" );
 		message->description = _( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" );
-		return errno = EINVAL;
+		errno = EINVAL;
+		return NULL;
 	}
 
 	*(base++) = 0;
@@ -101,7 +102,8 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAG
 		message->title = _( "Security error" );
 		message->text = _( "No LDAP attribute on the URL" );
 		message->description = _( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" );
-		return errno = EINVAL;
+		errno = EINVAL;
+		return NULL;
 	}
 
 	*(attrs[0]++) = 0;
@@ -130,7 +132,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAG
 	if(rc != LDAP_SUCCESS) {
 		message->error = hSession->ssl.error = 0;
 		message->title = _( "Security error" );
-		message->text = _( "Can't set LDAP version" );
+		message->text = _( "Can't set LDAP protocol version" );
 		message->description = ldap_err2string(rc);
 		lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
 		return NULL;

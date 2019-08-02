@@ -744,6 +744,9 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 		const char	* title;
 		const char	* text;
 		const char	* description;
+#ifdef _WIN32
+		DWORD		  lasterror;
+#endif // _WIN32
 	} SSL_ERROR_MESSAGE;
 
 	struct ssl_status_msg

@@ -272,36 +272,6 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	return 0;
 }
 
-/*
-int ssl_negotiate(H3270 *hSession)
-{
-	int rc;
-	SSL_ERROR_MESSAGE msg;
-
-	memset(&msg,0,sizeof(msg));
-
-	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
-	non_blocking(hSession,False);
-
-	rc = lib3270_run_task(hSession, background_ssl_negotiation, &msg);
-	else if(rc)
-	{
-		// SSL negotiation has failed.
-		host_disconnect(hSession,1); // Disconnect with "failed" status.
-
-		if(msg.description)
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
-		else
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
-
-	}
-
-	non_blocking(hSession,True);
-
-	return rc;
-}
-*/
-
 int ssl_negotiate(H3270 *hSession)
 {
 	int rc;

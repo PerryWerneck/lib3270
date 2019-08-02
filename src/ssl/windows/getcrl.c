@@ -98,6 +98,13 @@ LIB3270_INTERNAL X509_CRL * lib3270_get_crl(H3270 *hSession, SSL_ERROR_MESSAGE *
 
 
 	}
+#ifdef DEBUG
+	else if(strncasecmp(consturl,"ldap://",7) == 0 && strlen(consturl) > 8)
+	{
+		return get_crl_using_winldap(hSession, message, consturl);
+
+	}
+#endif // DEBUG
 	else
 	{
 #ifdef HAVE_LIBCURL

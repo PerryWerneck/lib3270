@@ -57,7 +57,7 @@
 
 	#endif // HAVE_LIBCURL
 
-	// LIB3270_INTERNAL X509_CRL * get_crl_using_winldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl);
+	LIB3270_INTERNAL X509_CRL * get_crl_using_winldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl);
 
 
 #endif // !LIB3270_WIN32_SSL_PRIVATE_H_INCLUDED

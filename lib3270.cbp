@@ -288,6 +288,9 @@
 		<Unit filename="src/ssl/windows/getcrl.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/ssl/windows/ldap.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/ssl/windows/private.h" />
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />

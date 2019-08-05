@@ -153,7 +153,9 @@ LIB3270_INTERNAL const char * build_rpq_revision;
 #endif /*]*/
 
 
-/*   toggle names */
+/**
+ * @brief toggle names
+ */
 struct toggle_name {
 	const char *name;
 	int index;
@@ -330,9 +332,9 @@ struct lib3270_state_callback
 
 struct lib3270_toggle_callback
 {
-	struct lib3270_toggle_callback	* next;				/**< @brief Next callback in chain */
-	void							* data;				/**< @brief User data */
-	void (*func)(H3270 *, LIB3270_TOGGLE, void *);		/**< @brief Function to call */
+	struct lib3270_toggle_callback	* next;						/**< @brief Next callback in chain */
+	void							* data;						/**< @brief User data */
+	void (*func)(H3270 *, LIB3270_TOGGLE, char, void *);		/**< @brief Function to call */
 };
 
 /**

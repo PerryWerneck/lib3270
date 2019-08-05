@@ -256,7 +256,7 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 
 	for(st = session->listeners.toggle.callbacks[ix]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
 	{
-		st->func(session, ix, st->data);
+		st->func(session, ix, t->value, st->data);
 	}
 
 }
@@ -421,7 +421,7 @@ LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name)
 	return -1;
 }
 
-LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, void *),void *data)
+LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, char, void *),void *data)
 {
 	struct lib3270_toggle_callback *st;
 

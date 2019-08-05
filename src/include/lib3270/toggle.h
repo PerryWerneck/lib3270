@@ -104,7 +104,7 @@
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
 	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);
 
-	LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, void *),void *data);
+	LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, char, void *),void *data);
 	LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, const void *id);
 
 #endif /* LIB3270_TOGGLE_H_INCLUDED */

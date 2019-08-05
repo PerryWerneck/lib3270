@@ -1389,6 +1389,9 @@
 	 */
 	LIB3270_EXPORT char * lib3270_build_data_filename(const char *name);
 
+	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
+	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);
+
 #ifdef __cplusplus
 	}
 #endif

@@ -190,7 +190,6 @@
 		<Unit filename="src/include/ft_dftc.h" />
 		<Unit filename="src/include/ftc.h" />
 		<Unit filename="src/include/hostc.h" />
-		<Unit filename="src/include/keypadc.h" />
 		<Unit filename="src/include/kybdc.h" />
 		<Unit filename="src/include/lib3270-internals.h" />
 		<Unit filename="src/include/lib3270.h" />

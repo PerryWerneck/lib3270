@@ -56,6 +56,7 @@
 #include <lib3270/properties.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/toggle.h>
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.

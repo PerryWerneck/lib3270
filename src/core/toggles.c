@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como toggles.c e possui 253 linhas de código.
+ * Este programa está nomeado como toggles.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -31,9 +31,9 @@
  */
 
 
-/*
- *	toggles.c
- *		This module handles toggles.
+/**
+ *	@file toggles.c
+ *	@brief This module handles toggles.
  */
 
 #include <errno.h>
@@ -48,7 +48,7 @@
 #endif // !WIN32
 
 #include <config.h>
-#include "toggle.h"
+#include <lib3270/toggle.h>
 #include <lib3270-internals.h>
 
 #include "ansic.h"
@@ -250,10 +250,10 @@ LIB3270_EXPORT unsigned char lib3270_get_toggle(H3270 *session, LIB3270_TOGGLE i
 static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE ix)
 {
 	trace("%s: ix=%d upcall=%p",__FUNCTION__,ix,t->upcall);
-	t->upcall(session, t, TT_INTERACTIVE);
+	t->upcall(session, t, LIB3270_TOGGLE_TYPE_INTERACTIVE);
 
 	if(session->cbk.update_toggle)
-		session->cbk.update_toggle(session,ix,t->value,TT_INTERACTIVE,toggle_info[ix].name);
+		session->cbk.update_toggle(session,ix,t->value,LIB3270_TOGGLE_TYPE_INTERACTIVE,toggle_info[ix].name);
 
 }
 
@@ -362,7 +362,7 @@ void initialize_toggles(H3270 *session)
 	{
 		session->toggle[f].value = toggle_info[f].def;
 		if(session->toggle[f].value)
-			session->toggle[f].upcall(session,&session->toggle[f],TT_INITIAL);
+			session->toggle[f].upcall(session,&session->toggle[f],LIB3270_TOGGLE_TYPE_INITIAL);
 	}
 
 }
@@ -373,7 +373,7 @@ void initialize_toggles(H3270 *session)
 void shutdown_toggles(H3270 *session)
 {
 #if defined(X3270_TRACE)
-	static const LIB3270_TOGGLE disable_on_shutdown[] = {DS_TRACE, EVENT_TRACE, SCREEN_TRACE};
+	static const LIB3270_TOGGLE disable_on_shutdown[] = {LIB3270_TOGGLE_DS_TRACE, LIB3270_TOGGLE_EVENT_TRACE, LIB3270_TOGGLE_SCREEN_TRACE};
 
 	size_t f;
 
@@ -383,21 +383,21 @@ void shutdown_toggles(H3270 *session)
 #endif
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].label;
 	return "";
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].description;
 	return "";
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].name;

@@ -62,7 +62,7 @@
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
-#include "toggle.h"
+#include <lib3270/toggle.h>
 
 /* Maximum size of a tracefile header. */
 #define MAX_HEADER_SIZE		(10*1024)
@@ -88,7 +88,7 @@ static void trace_ds_s(H3270 *hSession, char *s, Boolean can_break)
 	int len = strlen(s);
 	Boolean nl = False;
 
-	if (!lib3270_get_toggle(hSession,DS_TRACE) || !len)
+	if (!lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) || !len)
 		return;
 
 	if (s && s[len-1] == '\n')
@@ -131,7 +131,7 @@ void trace_ds(H3270 *hSession, const char *fmt, ...)
 	char	* text;
 	va_list   args;
 
-	if (!lib3270_get_toggle(hSession,DS_TRACE))
+	if (!lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
 		return;
 
 	va_start(args, fmt);
@@ -148,7 +148,7 @@ void trace_ds_nb(H3270 *hSession, const char *fmt, ...)
 	char *text;
 	va_list args;
 
-	if (!lib3270_get_toggle(hSession,DS_TRACE))
+	if (!lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
 		return;
 
 	va_start(args, fmt);
@@ -166,7 +166,7 @@ void trace_dsn(H3270 *session, const char *fmt, ...)
 {
 	va_list args;
 
-	if (!lib3270_get_toggle(session,DS_TRACE))
+	if (!lib3270_get_toggle(session,LIB3270_TOGGLE_DS_TRACE))
 		return;
 
 	/* print out message */

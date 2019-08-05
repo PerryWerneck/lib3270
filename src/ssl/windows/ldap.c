@@ -41,6 +41,7 @@
 #include "private.h"
 #include <winldap.h>
 #include <utilc.h>
+#include <lib3270/toggle.h>
 
 # ifndef LDAP_VENDOR_NAME
 #  error Your Platform SDK is NOT sufficient for LDAP support! \

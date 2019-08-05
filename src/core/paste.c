@@ -79,6 +79,7 @@
 #include <lib3270/popup.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
+#include <lib3270/toggle.h>
 
 /*---[ Struct ]-------------------------------------------------------------------------------------------------*/
 

@@ -8,6 +8,7 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/trace.h>
+#include <lib3270/toggle.h>
 
 #define MAX_ARGS 10
 

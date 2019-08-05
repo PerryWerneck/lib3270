@@ -41,6 +41,7 @@
 #include <errno.h>
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
+#include <lib3270/toggle.h>
 
 #ifdef HAVE_ICONV
 	#include <iconv.h>

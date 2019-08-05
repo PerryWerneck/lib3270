@@ -210,6 +210,7 @@
 		<Unit filename="src/include/lib3270/properties.h" />
 		<Unit filename="src/include/lib3270/selection.h" />
 		<Unit filename="src/include/lib3270/session.h" />
+		<Unit filename="src/include/lib3270/toggle.h" />
 		<Unit filename="src/include/lib3270/trace.h" />
 		<Unit filename="src/include/localdefs.h" />
 		<Unit filename="src/include/objects.h" />
@@ -230,7 +231,6 @@
 		<Unit filename="src/include/statusc.h" />
 		<Unit filename="src/include/telnetc.h" />
 		<Unit filename="src/include/tn3270e.h" />
-		<Unit filename="src/include/toggle.h" />
 		<Unit filename="src/include/togglesc.h" />
 		<Unit filename="src/include/trace_dsc.h" />
 		<Unit filename="src/include/utf8c.h" />

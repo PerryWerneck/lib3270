@@ -52,6 +52,7 @@
 #include "togglesc.h"
 #include <lib3270/actions.h>
 #include <lib3270/log.h>
+#include <lib3270/toggle.h>
 
 #if defined(_WIN32)
 	#include <windows.h>

@@ -34,6 +34,7 @@
  #include <lib3270/selection.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
+ #include <lib3270/toggle.h>
  #include "3270ds.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/

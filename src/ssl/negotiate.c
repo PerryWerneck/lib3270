@@ -53,6 +53,7 @@
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
+#include <lib3270/toggle.h>
 #include "hostc.h" // host_disconnect
 #include "trace_dsc.h"
 

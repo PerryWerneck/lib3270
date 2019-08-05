@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/toggle.h>
 #include <trace_dsc.h>
 
 #if defined(HAVE_LIBSSL)

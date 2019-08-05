@@ -54,16 +54,16 @@
 #include "screenc.h"
 #include "trace_dsc.h"
 #include "togglesc.h"
-//#include "api.h"
 #include "utilc.h"
 #include <lib3270/log.h>
 
 static const struct _toggle_info
 {
-	const char * name;
-	const char   def;
-	const char * label;
-	const char * description;
+	const char * name;				///< @brief Toggle name.
+	const char   def;				///< @brief Default value.
+	const char * label;				///< @brief Button label.
+	const char * summary;			///< @brief Short description.
+	const char * description;		///< @brief Toggle description.
 }
 toggle_info[LIB3270_TOGGLE_COUNT] =
 {
@@ -71,11 +71,13 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"monocase",
 			False,
 			N_( "Monocase" ),
+			N_( "Uppercase only" ),
 			N_( "If set, the terminal operates in uppercase-only mode" )
 		},
 		{
 			"cursorblink",
 			True,
+			N_( "Blinking Cursor" ),
 			N_( "Blinking Cursor" ),
 			N_( "If set, the cursor blinks" )
 		},
@@ -83,41 +85,48 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"showtiming",
 			True,
 			N_( "Show timer when processing" ),
+			N_( "Show timer when processing" ),
 			N_( "If set, the time taken by the host to process an AID is displayed on the status line" )
 		},
 		{
 			"cursorpos",
 			True,
 			N_( "Track Cursor" ),
+			N_( "Track Cursor" ),
 			N_( "Display the cursor location in the OIA (the status line)" )
 		},
 		{
 			"dstrace",
 			False,
+			N_( "Data Stream" ),
 			N_( "Trace Data Stream" ),
 			""
 		},
 		{
 			"linewrap",
 			False,
-			"",
-			""
+			N_("Wrap around"),
+			N_("Wrap around"),
+			N_("If set, the NVT terminal emulator automatically assumes a NEWLINE character when it reaches the end of a line.")
 		},
 		{
 			"blankfill",
 			False,
+			N_( "Blank Fill" ),
 			N_( "Blank Fill" ),
 			N_( "Automatically convert trailing blanks in a field to NULLs in order to insert a character, and will automatically convert leading NULLs to blanks so that input data is not squeezed to the left" )
 		},
 		{
 			"screentrace",
 			False,
+			N_( "Screens" ),
 			N_( "Trace screen contents" ),
 			""
 		},
 		{
 			"eventtrace",
 			False,
+			N_( "Interface" ),
 			N_( "Trace interface events" ),
 			""
 		},
@@ -125,11 +134,13 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"marginedpaste",
 			False,
 			N_( "Paste with left margin" ),
+			N_( "Paste with left margin" ),
 			N_( "If set, puts restrictions on how pasted text is placed on the screen. The position of the cursor at the time the paste operation is begun is used as a left margin. No pasted text will fill any area of the screen to the left of that position. This option is useful for pasting into certain IBM editors that use the left side of the screen for control information" )
 		},
 		{
 			"rectselect",
 			False,
+			N_( "Select by rectangles" ),
 			N_( "Select by rectangles" ),
 			N_( "If set, the terminal will always select rectangular areas of the screen. Otherwise, it selects continuous regions of the screen" )
 		},
@@ -137,11 +148,13 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"crosshair",
 			False,
 			N_( "Cross hair cursor" ),
+			N_( "Cross hair cursor" ),
 			N_( "If set, the terminal will display a crosshair over the cursor: lines extending the full width and height of the screen, centered over the cursor position. This makes locating the cursor on the screen much easier" )
 		},
 		{
 			"fullscreen",
 			False,
+			N_( "Full Screen" ),
 			N_( "Full Screen" ),
 			N_( "If set, asks to place the toplevel window in the fullscreen state" )
 		},
@@ -149,11 +162,13 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"reconnect",
 			False,
 			N_( "Auto-Reconnect" ),
+			N_( "Auto-Reconnect" ),
 			N_( "Automatically reconnect to the host if it ever disconnects" )
 		},
 		{
 			"insert",
 			False,
+			N_( "Insert" ),
 			N_( "Set insert mode" ),
 			""
 		},
@@ -161,11 +176,13 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"smartpaste",
 			False,
 			N_( "Smart paste" ),
+			N_( "Smart paste" ),
 			""
 		},
 		{
 			"bold",
 			False,
+			N_( "Bold" ),
 			N_( "Bold" ),
 			""
 		},
@@ -173,17 +190,20 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"keepselected",
 			False,
 			N_( "Keep selected" ),
+			N_( "Keep selected" ),
 			""
 		},
 		{
 			"underline",
 			False,
+			N_( "Underline" ),
 			N_( "Show Underline" ),
 			""
 		},
 		{
 			"autoconnect",
 			False,
+			N_( "Auto connect" ),
 			N_( "Connect on startup" ),
 			""
 		},
@@ -191,23 +211,27 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"kpalternative",
 			False,
 			N_( "Use +/- for field navigation" ),
+			N_( "Use +/- for field navigation" ),
 			N_( "Use the keys +/- from keypad to select editable fields" )
 		},
 		{
 			"beep",
 			True,
+			N_( "Sound" ),
 			N_( "Alert sound" ),
 			N_( "Beep on errors" )
 		},
 		{
 			"fieldattr",
 			False,
+			N_( "Show Field" ),
 			N_( "Show Field attribute" ),
 			""
 		},
 		{
 			"altscreen",
 			True,
+			N_( "Alternate screen" ),
 			N_( "Resize on alternate screen" ),
 			N_( "Auto resize on altscreen" )
 		},
@@ -215,19 +239,22 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 			"keepalive",
 			True,
 			N_( "Network keep alive" ),
+			N_( "Network keep alive" ),
 			N_( "Enable network keep-alive with SO_KEEPALIVE" )
 		},
 		{
 			"nettrace",
 			False,
+			N_( "Network data" ),
 			N_( "Trace network data flow" ),
 			N_( "Enable network in/out trace" )
 		},
 		{
 			"ssltrace",
 			False,
+			N_( "SSL negotiation" ),
 			N_( "Trace SSL negotiation" ),
-			N_( "Enable SSL messages trace" )
+			N_( "Enable security negotiation messages trace" )
 		},
 };
 
@@ -386,12 +413,20 @@ void shutdown_toggles(H3270 *session)
 #endif
 }
 
+LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE ix)
+{
+	if(ix < LIB3270_TOGGLE_COUNT)
+		return toggle_info[ix].summary;
+	return "";
+}
+
 LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_info[ix].label;
 	return "";
 }
+
 
 LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE ix)
 {

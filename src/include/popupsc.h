@@ -29,7 +29,10 @@
  *
  */
 
- /* Popup calls */
+ /**
+  * @brief Popup calls
+  *
+  */
 
  #include <lib3270.h>
 

@@ -1,7 +1,7 @@
 /*
- * "Software G3270, desenvolvido com base nos códigos fontes do WC3270  e  X3270
+ * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
  * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
@@ -18,12 +18,12 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como toggle.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
  *
  */
 
@@ -84,7 +84,15 @@
 	LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE ix);
 
 	/**
-	 * @brief Get a short description of the toggle (for menus).
+	 * @brief Get a summary description of the toggle (for menus).
+	 *
+	 * @return Constant string with the toggle summary.
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE ix);
+
+	/**
+	 * @brief Get a short description of the toggle (for buttons).
 	 *
 	 * @return Constant string with the toggle label.
 	 *

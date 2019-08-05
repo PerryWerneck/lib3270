@@ -178,13 +178,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/include/3270ds.h" />
-		<Unit filename="src/include/actionsc.h" />
 		<Unit filename="src/include/ansic.h" />
-		<Unit filename="src/include/api.h" />
-		<Unit filename="src/include/aplc.h" />
 		<Unit filename="src/include/arpa_telnet.h" />
 		<Unit filename="src/include/cg.h" />
-		<Unit filename="src/include/childc.h" />
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/ctlrc.h" />
@@ -194,7 +190,6 @@
 		<Unit filename="src/include/ft_dftc.h" />
 		<Unit filename="src/include/ftc.h" />
 		<Unit filename="src/include/hostc.h" />
-		<Unit filename="src/include/icmdc.h" />
 		<Unit filename="src/include/keypadc.h" />
 		<Unit filename="src/include/kybdc.h" />
 		<Unit filename="src/include/lib3270-internals.h" />
@@ -213,17 +208,12 @@
 		<Unit filename="src/include/lib3270/toggle.h" />
 		<Unit filename="src/include/lib3270/trace.h" />
 		<Unit filename="src/include/localdefs.h" />
-		<Unit filename="src/include/objects.h" />
 		<Unit filename="src/include/popupsc.h" />
-		<Unit filename="src/include/printc.h" />
-		<Unit filename="src/include/printerc.h" />
 		<Unit filename="src/include/proxyc.h" />
 		<Unit filename="src/include/resolverc.h" />
 		<Unit filename="src/include/resources.h" />
-		<Unit filename="src/include/savec.h" />
 		<Unit filename="src/include/screen.h" />
 		<Unit filename="src/include/screenc.h" />
-		<Unit filename="src/include/scrollc.h" />
 		<Unit filename="src/include/seec.h" />
 		<Unit filename="src/include/sf.h" />
 		<Unit filename="src/include/shlobj_missing.h" />

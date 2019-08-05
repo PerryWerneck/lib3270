@@ -31,6 +31,7 @@
 #include <lib3270-internals.h>
 #include <errno.h>
 #include <lib3270/trace.h>
+#include <lib3270/toggle.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>

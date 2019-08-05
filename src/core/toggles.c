@@ -24,9 +24,6 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- * macmiranda@bb.com.br		(Marco Aurélio Caldas Miranda)
  *
  */
 
@@ -244,16 +241,23 @@ LIB3270_EXPORT unsigned char lib3270_get_toggle(H3270 *session, LIB3270_TOGGLE i
 	return session->toggle[ix].value != 0;
 }
 
-/*
- * Call the internal update routine
+/**
+ * @brief Call the internal update routine and listeners.
  */
 static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE ix)
 {
+	struct lib3270_toggle_callback * st;
+
 	trace("%s: ix=%d upcall=%p",__FUNCTION__,ix,t->upcall);
 	t->upcall(session, t, LIB3270_TOGGLE_TYPE_INTERACTIVE);
 
 	if(session->cbk.update_toggle)
 		session->cbk.update_toggle(session,ix,t->value,LIB3270_TOGGLE_TYPE_INTERACTIVE,toggle_info[ix].name);
+
+	for(st = session->listeners.toggle.callbacks[ix]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
+	{
+		st->func(session, ix, st->data);
+	}
 
 }
 
@@ -315,8 +319,8 @@ static void toggle_redraw(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t),
 	session->cbk.display(session);
 }
 
-/*
- * No-op toggle.
+/**
+ * @brief No-op toggle.
  */
 static void toggle_nop(H3270 GNUC_UNUSED(*session), struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
@@ -356,7 +360,6 @@ void initialize_toggles(H3270 *session)
 	session->toggle[LIB3270_TOGGLE_UNDERLINE].upcall 		= toggle_redraw;
 	session->toggle[LIB3270_TOGGLE_ALTSCREEN].upcall 		= toggle_altscreen;
 	session->toggle[LIB3270_TOGGLE_KEEP_ALIVE].upcall		= toggle_keepalive;
-//	session->toggle[LIB3270_TOGGLE_RECONNECT].upcall		= toggle_reconnect;
 
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 	{
@@ -418,3 +421,56 @@ LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name)
 	return -1;
 }
 
+LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, void *),void *data)
+{
+	struct lib3270_toggle_callback *st;
+
+    CHECK_SESSION_HANDLE(hSession);
+
+	st 			= (struct lib3270_toggle_callback *) lib3270_malloc(sizeof(struct lib3270_toggle_callback));
+	st->func	= func;
+	st->data	= data;
+
+	if (hSession->listeners.toggle.last[tx])
+		hSession->listeners.toggle.last[tx]->next = st;
+	else
+		hSession->listeners.toggle.callbacks[tx] = st;
+
+	hSession->listeners.toggle.last[tx] = st;
+
+	return (void *) st;
+
+}
+
+LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, const void *id)
+{
+	struct lib3270_toggle_callback *st;
+	struct lib3270_toggle_callback *prev = (struct lib3270_toggle_callback *) NULL;
+
+	for (st = hSession->listeners.toggle.callbacks[tx]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
+	{
+		if (st == (struct lib3270_toggle_callback *)id)
+			break;
+
+		prev = st;
+	}
+
+	if (st == (struct lib3270_toggle_callback *)NULL)
+	{
+		lib3270_write_log(hSession,"lib3270","Invalid call to (%s): %p wasnt found in the list",__FUNCTION__,id);
+		return errno = ENOENT;
+	}
+
+	if (prev != (struct lib3270_toggle_callback *) NULL)
+		prev->next = st->next;
+	else
+		hSession->listeners.toggle.callbacks[tx] = (struct lib3270_toggle_callback *) st->next;
+
+	for(st = hSession->listeners.toggle.callbacks[tx]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
+		hSession->listeners.toggle.last[tx] = st;
+
+	lib3270_free((void *) id);
+
+	return 0;
+
+}

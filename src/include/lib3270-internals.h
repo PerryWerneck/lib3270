@@ -323,9 +323,16 @@ typedef struct _input_t
 
 struct lib3270_state_callback
 {
-	struct lib3270_state_callback	* next;			/**< Next callback in chain */
-	void							* data;			/**< User data */
-	void (*func)(H3270 *, int, void *);		/**< Function to call */
+	struct lib3270_state_callback	* next;			/**< @brief Next callback in chain */
+	void							* data;			/**< @brief User data */
+	void (*func)(H3270 *, int, void *);				/**< @brief Function to call */
+};
+
+struct lib3270_toggle_callback
+{
+	struct lib3270_toggle_callback	* next;				/**< @brief Next callback in chain */
+	void							* data;				/**< @brief User data */
+	void (*func)(H3270 *, LIB3270_TOGGLE, void *);		/**< @brief Function to call */
 };
 
 /**
@@ -663,16 +670,31 @@ struct _h3270
 	int						  inputs_changed : 1;
 
 	// Trace methods.
-	struct {
+	struct
+	{
 		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
 		void *userdata;
 	} trace;
 
-	// State change listeners.
-	struct {
-		struct lib3270_state_callback	* callbacks[LIB3270_STATE_USER];
-		struct lib3270_state_callback	* last[LIB3270_STATE_USER];
-	} st;
+	// Listeners.
+	struct
+	{
+		// State.
+		struct
+		{
+			struct lib3270_state_callback	* callbacks[LIB3270_STATE_USER];
+			struct lib3270_state_callback	* last[LIB3270_STATE_USER];
+		} state;
+
+		// Toggle change listeners
+		struct
+		{
+			struct lib3270_toggle_callback	* callbacks[LIB3270_TOGGLE_COUNT];
+			struct lib3270_toggle_callback	* last[LIB3270_TOGGLE_COUNT];
+		} toggle;
+
+	} listeners;
+
 
 };
 

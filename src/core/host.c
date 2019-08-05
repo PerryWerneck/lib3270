@@ -189,12 +189,12 @@ LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_ST
 	st->func	= func;
 	st->data	= data;
 
-	if (hSession->st.last[tx])
-		hSession->st.last[tx]->next = st;
+	if (hSession->listeners.state.last[tx])
+		hSession->listeners.state.last[tx]->next = st;
 	else
-		hSession->st.callbacks[tx] = st;
+		hSession->listeners.state.callbacks[tx] = st;
 
-	hSession->st.last[tx] = st;
+	hSession->listeners.state.last[tx] = st;
 
 	return (void *) st;
 
@@ -207,16 +207,16 @@ LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx,
 
 #ifdef DEBUG
 	{
-		debug("Before remove of %p (last=%p):",id,hSession->st.last[tx]);
+		debug("Before remove of %p (last=%p):",id,hSession->listeners.state.last[tx]);
 
-		for (st = hSession->st.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
+		for (st = hSession->listeners.state.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
 		{
 			debug("%p",st);
 		}
 	}
 #endif // DEBUG
 
-	for (st = hSession->st.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
+	for (st = hSession->listeners.state.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
 	{
 		if (st == (struct lib3270_state_callback *)id)
 			break;
@@ -233,18 +233,18 @@ LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx,
 	if (prev != (struct lib3270_state_callback *) NULL)
 		prev->next = st->next;
 	else
-		hSession->st.callbacks[tx] = (struct lib3270_state_callback *) st->next;
+		hSession->listeners.state.callbacks[tx] = (struct lib3270_state_callback *) st->next;
 
-	for(st = hSession->st.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
-		hSession->st.last[tx] = st;
+	for(st = hSession->listeners.state.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
+		hSession->listeners.state.last[tx] = st;
 
 	lib3270_free((void *) id);
 
 #ifdef DEBUG
 	{
-		debug("After Remove of %p (last=%p):",id,hSession->st.last[tx]);
+		debug("After Remove of %p (last=%p):",id,hSession->listeners.state.last[tx]);
 
-		for (st = hSession->st.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
+		for (st = hSession->listeners.state.callbacks[tx]; st != (struct lib3270_state_callback *) NULL; st = (struct lib3270_state_callback *) st->next)
 		{
 			debug("%p",st);
 		}
@@ -282,7 +282,7 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 
 	trace("%s is %d on session %p",state_name[tx],mode,h);
 
-	for(st = h->st.callbacks[tx];st;st = st->next)
+	for(st = h->listeners.state.callbacks[tx];st;st = st->next)
 	{
 		st->func(h,mode,st->data);
 	}

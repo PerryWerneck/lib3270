@@ -243,7 +243,6 @@
 		<Unit filename="src/lib3270++/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="src/lib3270/private.h" />
 		<Unit filename="src/lib3270/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>

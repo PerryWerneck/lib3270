@@ -39,6 +39,7 @@
 
 #include "private.h"
 #include <curl/curl.h>
+#include <lib3270/toggle.h>
 
 #define CRL_DATA_LENGTH 2048
 

@@ -449,6 +449,21 @@ AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])],
 AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname)
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
+case "$host" in
+	*-mingw32|*-pc-msys)
+		AC_SUBST(SONAME,lib$app_cv_libname.dll)
+		;;
+
+ 	s390x-*)
+		AC_SUBST(SONAME,lib$app_cv_libname.so)
+		;;
+
+ 	*)
+		AC_SUBST(SONAME,lib$app_cv_libname.so.$app_vrs_major.$app_vrs_minor)
+
+esac
+
+
 AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library version for SDK])], [ app_cv_sdkversion="$withval" ],[ app_cv_sdkversion=$VERSION ])
 
 AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion)

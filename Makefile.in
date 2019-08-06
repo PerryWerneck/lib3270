@@ -26,6 +26,7 @@
 
 #---[ Library configuration ]------------------------------------------------------------
 
+SONAME=@SONAME@
 LIBNAME=lib@LIB3270_NAME@
 INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
@@ -120,7 +121,7 @@ $(OBJDBG)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -132,7 +133,7 @@ $(OBJDBG)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Release Rules ]--------------------------------------------------------------------
@@ -142,7 +143,7 @@ $(OBJRLS)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -152,7 +153,7 @@ $(OBJRLS)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
@@ -161,7 +162,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	%.c
 
 	@echo $(notdir $@) ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(XGETTEXT) \
 		--language=C \
 		--keyword=_ \
@@ -175,42 +176,25 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@touch $@
 
 
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
 	$(POTDIR)/lib3270.pot
 
 Release: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a
 
-$(BINRLS)/$(LIBNAME)@DLLEXT@: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINRLS)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@echo $< ...
 	@$(LD) \
 		@DLL_LDFLAGS@ \
@@ -224,7 +208,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(AR) rcs $@ $^
 
 
@@ -234,23 +218,23 @@ install: \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-shared: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@
+	$(BINRLS)/$(SONAME)
 
 	# Install library
-	@mkdir -p $(DESTDIR)$(libdir)
+	@$(MKDIR) $(DESTDIR)$(libdir)
 
 	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(libdir)
 
-
 	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(SONAME) \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 
 	@$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
 
 	# Install default configs
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
@@ -297,7 +281,7 @@ $(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 	src/core/X3270.xad \
 	$(wildcard src/mkfb/*.c)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(MKDIR) $(BINDIR)
 
 	@echo $< ...
@@ -316,7 +300,7 @@ $(BASEDIR)/src/include/lib3270/actions.h: \
 	src/include/lib3270/action_table.h \
 	$(wildcard src/mkactions/*.c)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(MKDIR) $(BINDIR)
 	@echo $< ...
 
@@ -333,7 +317,7 @@ $(POTDIR)/lib3270.pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 
 	@rm -f $@
-	@mkdir -p `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
@@ -347,9 +331,9 @@ Debug: \
 
 $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@
+	$(BINDBG)/$(SONAME)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@echo $< ...
 	@$(LD) \
 		-o $@ \
@@ -357,8 +341,7 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 		-L$(BINDBG) \
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
-		$(LIBS) \
-		-l@LIB3270_NAME@
+		$(LIBS)
 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
@@ -377,45 +360,18 @@ else
 endif
 
 
-$(BINDBG)/$(LIBNAME)@DLLEXT@: \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINDBG)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		@DLL_LDFLAGS@ \
 		-o $@ \
 		-L$(BINDBG) \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 		$(LIBS)
-
-zip-debug: \
-	$(LIBNAME)-debug-@PACKAGE_VERSION@-@host_cpu@.zip
-
-$(LIBNAME)-debug-@PACKAGE_VERSION@-@host_cpu@.zip: \
-	$(BINDBG)/$(LIBNAME)@EXEEXT@ \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@$(ZIP) -9 -j $@ $^
-
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 

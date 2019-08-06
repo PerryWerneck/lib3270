@@ -207,7 +207,6 @@ static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode))
 {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't print" ), _( "Unable to print" ), "%s", strerror(ENOTSUP));
-
 	return errno = ENOTSUP;
 }
 
@@ -215,6 +214,13 @@ static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const 
 {
 	lib3270_write_log(session, "save", "%s", "Saving is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't save" ), _( "Unable to save" ), "%s", strerror(ENOTSUP));
+	return errno = ENOTSUP;
+}
+
+static int load(H3270 *session, const char GNUC_UNUSED(*filename))
+{
+	lib3270_write_log(session, "load", "%s", "Loading from file is unavailable");
+	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't load" ), _( "Unable to load from file" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 
@@ -289,7 +295,6 @@ static void set_peer_certificate)(const void GNUC_UNUSED(*cert))
 
 static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name))
 {
-
 }
 
 void lib3270_reset_callbacks(H3270 *hSession)
@@ -322,9 +327,9 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.set_timer				= set_timer;
 	hSession->cbk.print					= print;
 	hSession->cbk.save					= save;
+	hSession->cbk.load					= load;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
-
 }
 
 static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)

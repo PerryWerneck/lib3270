@@ -838,6 +838,16 @@
 	LIB3270_EXPORT int lib3270_save_copy(H3270 *hSession, const char *filename);
 
 	/**
+	 * @brief Paste from file.
+	 *
+	 * @param hSession	Session Handle.
+	 * @param filename	File name.
+	 *
+	 * @return 0 if ok, error code if not.
+	 */
+	LIB3270_EXPORT int lib3270_load(H3270 *hSession, const char *filename);
+
+	/**
 	 * @brief Get buffer contents.
 	 *
 	 * @param h		Session handle.

@@ -137,14 +137,12 @@ int lib3270_unloaded(void)
 
 BOOL WINAPI DllMain(HANDLE GNUC_UNUSED(hinst), DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lpvResvd))
 {
-//	Trace("%s - Library %s",__FUNCTION__,(dwcallpurpose == DLL_PROCESS_ATTACH) ? "Loaded" : "Unloaded");
-
     switch(dwcallpurpose)
     {
     case DLL_PROCESS_ATTACH:
+		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME));
 		get_version_info();
 		lib3270_loaded();
-		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME));
 		break;
 
 	case DLL_PROCESS_DETACH:

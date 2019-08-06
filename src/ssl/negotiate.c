@@ -313,7 +313,6 @@ int ssl_negotiate(H3270 *hSession)
 		else
 			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
 
-
 		return rc;
 
 	}

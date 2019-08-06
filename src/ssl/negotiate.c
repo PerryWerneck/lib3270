@@ -292,9 +292,9 @@ int ssl_negotiate(H3270 *hSession)
 		int abort = -1;
 
 		if(msg.description)
-			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,msg.description);
+			abort = popup_ssl_error(hSession,rc,msg.title,msg.text,msg.description);
 		else
-			abort = hSession->cbk.popup_ssl_error(hSession,rc,msg.title,msg.text,ERR_reason_error_string(msg.error));
+			abort = popup_ssl_error(hSession,rc,msg.title,msg.text,ERR_reason_error_string(msg.error));
 
 		if(abort)
 		{
@@ -434,3 +434,35 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 
 #endif /*]*/
 
+int popup_ssl_error(H3270 *hSession, int rc, const char *title, const char *summary, const char *body)
+{
+#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+
+	lib3270_write_log(hSession, "SSL", "%s", summary );
+	return hSession->cbk.popup_ssl_error(hSession,rc,title,summary,body);
+
+#else
+
+	lib3270_autoptr(char) message = NULL;
+
+	if(body && *body)
+		message = lib3270_strdup_printf("%s - rc=%d",body,rc);
+	else if(rc)
+		message = lib3270_strdup_printf("%s (rc=%d)",strerror(rc),rc);
+	else
+		message = lib3270_strdup_printf("rc=%d",rc);
+
+	lib3270_write_log(
+		hSession,
+		"SSL",
+		"%s - %s - %s",
+			title,
+			summary,
+			message
+	);
+
+
+	return 0;
+#endif // SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+
+}

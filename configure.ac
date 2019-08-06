@@ -398,6 +398,20 @@ AC_ARG_WITH([default-crl-url],
 	AC_MSG_NOTICE(No default crl url)
 ])
 
+AC_ARG_ENABLE([ssl-error-notification],
+	[AS_HELP_STRING([--disable-ssl-error-notification], [Disable notifications when the security negotiation fails])],
+[
+	app_cv_enable_ssl_notification="$enableval"
+],[
+	app_cv_enable_ssl_notification="yes"
+])
+
+if test "$app_cv_enable_ssl_notification" == "yes"; then
+	AC_DEFINE(SSL_ENABLE_NOTIFICATION_WHEN_FAILED)
+else
+	AC_MSG_NOTICE(No notifications when SSL negotiation fails)
+fi
+
 dnl ---------------------------------------------------------------------------
 dnl Check for pic
 dnl ---------------------------------------------------------------------------

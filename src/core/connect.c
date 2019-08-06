@@ -151,9 +151,7 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 
 	if(message->description)
 	{
-		lib3270_write_log(hSession,"SSL-CRL-GET","%s",message->description);
-
-		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,message->description))
+		if(popup_ssl_error(hSession,rc,message->title,message->text,message->description))
 			return rc;
 	}
 #ifdef _WIN32
@@ -162,9 +160,7 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(message->lasterror);
 		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "Windows error was \"%s\" (%u)" ), windows_error,(unsigned int) message->lasterror);
 
-		lib3270_write_log(hSession,"SSL-CRL-GET","%s (lasterror=%u - %s)",message->text,(unsigned int) message->lasterror, windows_error);
-
-		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
+		if(popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
 			return rc;
 
 	}
@@ -174,12 +170,12 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "%s (SSL error %d)" ),ERR_reason_error_string(message->error),message->error);
 		lib3270_write_log(hSession,"SSL-CRL-GET","%s",formatted_error);
 
-		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
+		if(popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
 			return rc;
 	}
 	else
 	{
-		if(hSession->cbk.popup_ssl_error(hSession,rc,message->title,message->text,""))
+		if(popup_ssl_error(hSession,rc,message->title,message->text,""))
 			return rc;
 	}
 

@@ -452,6 +452,28 @@ int popup_ssl_error(H3270 *hSession, int rc, const char *title, const char *summ
 	else
 		message = lib3270_strdup_printf("rc=%d",rc);
 
+#ifdef _WIN32
+
+	const char *outMsg[] = {
+		title,
+		summary,
+		message
+	};
+
+	ReportEvent(
+		hEventLog,
+		EVENTLOG_ERROR_TYPE,
+		1,
+		0,
+		NULL,
+		3,
+		0,
+		outMsg,
+		NULL
+	);
+
+#else
+
 	lib3270_write_log(
 		hSession,
 		"SSL",
@@ -461,6 +483,7 @@ int popup_ssl_error(H3270 *hSession, int rc, const char *title, const char *summ
 			message
 	);
 
+#endif // _WIN32
 
 	return 0;
 #endif // SSL_ENABLE_NOTIFICATION_WHEN_FAILED

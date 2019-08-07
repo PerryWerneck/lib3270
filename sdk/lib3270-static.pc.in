@@ -10,6 +10,6 @@ sdk_version=@LIB3270_SDK_VERSION@
 Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)
 Version: @PACKAGE_VERSION@
-Libs: -L\@libdir@ -l@LIB3270_NAME@-static @LIBSSL_LIBS@ @INTL_LIBS@
+Libs: -L\@libdir@ -l@LIB3270_NAME@-static @LIBS@ @LIBSSL_LIBS@ @LIBICONV@ @INTL_LIBS@ @LDAP_LIBS@ @LIBCURL_LIBS@
 Cflags: -I@includedir@
 

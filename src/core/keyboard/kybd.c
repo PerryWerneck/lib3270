@@ -926,17 +926,19 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 	return True;
 }
 
-LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str)
+LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str, int length)
 {
 	int rc = 0;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	if(check_online_session(hSession))
+		return errno;
 
-	while(*str && !rc)
-	{
-		rc = key_ACharacter(hSession,(unsigned char)((*str) & 0xff), KT_STD, IA_KEY, NULL);
-		str++;
-	}
+	if(length < 0)
+		length = strlen((char *) str);
+
+	int pos;
+	for(pos = 0; pos < length && str[pos] && !rc; pos++)
+		rc = key_ACharacter(hSession,(str[pos] & 0xff), KT_STD, IA_KEY, NULL);
 
 	screen_update(hSession,0,hSession->rows*hSession->cols);
 

@@ -729,11 +729,12 @@
 	 *
 	 * @param hSession	Session handle.
 	 * @param str		Text to insert.
+	 * @param length	Length of the string (-1 for auto-detect).
 	 *
 	 * @return 0 if success, non zero if failed.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str);
+	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str, int length);
 
 	/**
 	 * @brief Move cursor to a new position.

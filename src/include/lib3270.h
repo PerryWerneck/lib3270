@@ -998,12 +998,20 @@
 	LIB3270_EXPORT void * lib3270_get_user_data(H3270 *h);
 
 	/**
-	 * Wait for "N" seconds keeping main loop active.
+	 * @brief Wait for "N" seconds keeping main loop active.
 	 *
 	 * @param seconds	Number of seconds to wait.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_wait(H3270 *hSession, int seconds);
+
+	/**
+	 * @brief Wait for "N" seconds or screen change; keeps main loop active.
+	 *
+	 * @param seconds	Number of seconds to wait.
+	 *
+	 */
+	LIB3270_EXPORT int wait_for_update(H3270 *hSession, int seconds);
 
 	/**
 	 * Wait "N" seconds for "ready" state.

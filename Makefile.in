@@ -198,9 +198,10 @@ $(BINRLS)/$(LIBNAME).delayed.a: \
 	@echo $< ...
 
 	@@DLLTOOL@ \
-		-d $(BINRLS)/$(LIBNAME).def \
+		--input-def $(BINRLS)/$(LIBNAME).def \
+		--dllname $(LIBNAME).dll \
+		--kill-at \
 		--output-delaylib $@
-
 
 $(BINRLS)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)

@@ -184,12 +184,23 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 
 all: \
 	$(BINRLS)/$(SONAME) \
-	$(BINRLS)/static/$(LIBNAME).a \
+	$(BINRLS)/$(LIBNAME).a \
 	$(POTDIR)/lib3270.pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
-	$(BINRLS)/static/$(LIBNAME).a
+	$(BINRLS)/$(LIBNAME).a
+
+$(BINRLS)/$(LIBNAME).delayed.dll.a: \
+	$(BINRLS)/$(SONAME)
+
+	@$(MKDIR) $(dir $@)
+	@echo $< ...
+
+	@@DLLTOOL@ \
+		-d $(BINRLS)/$(LIBNAME).def \
+		--output-delaylib $@
+
 
 $(BINRLS)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
@@ -204,7 +215,7 @@ $(BINRLS)/$(SONAME): \
 		-L$(BINRLS) \
 		$(LIBS)
 
-$(BINRLS)/static/$(LIBNAME).a: \
+$(BINRLS)/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
@@ -240,17 +251,32 @@ install-shared: \
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
 
 install-static: \
-	$(BINRLS)/static/$(LIBNAME).a
+	$(BINRLS)/$(LIBNAME).a
 
 	# Install static library
+	@$(MKDIR) $(DESTDIR)$(libdir)
 	@$(INSTALL_DATA) \
-		$(BINRLS)/static/$(LIBNAME).a \
-		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
+		$(BINRLS)/$(LIBNAME).a \
+		$(DESTDIR)$(libdir)/$(LIBNAME).static.a
 
-	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(MKDIR) $(DESTDIR)$(libdir)/pkgconfig
 	@$(INSTALL_DATA) \
 		sdk/lib3270-static.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-static.pc
+
+install-delayed: \
+	$(BINRLS)/$(LIBNAME).delayed.dll.a
+
+	# Install static library
+	@$(MKDIR) $(DESTDIR)$(libdir)
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).delayed.dll.a \
+		$(DESTDIR)$(libdir)
+
+	@$(MKDIR) $(DESTDIR)$(libdir)/pkgconfig
+	@$(INSTALL_DATA) \
+		sdk/lib3270-delayed.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/lib3270-delayed.pc
 
 install-dev: \
 	$(POTDIR)/lib3270.pot
@@ -358,7 +384,6 @@ else
 		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
 			$(BINDBG)/$(LIBNAME)@EXEEXT@
 endif
-
 
 $(BINDBG)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)

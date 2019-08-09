@@ -54,6 +54,7 @@ AC_PROG_CXX
 AC_PROG_SED
 AC_PROG_LN_S
 AC_PATH_TOOL([AR], [ar], [ar])
+AC_PATH_TOOL([DLLTOOL], [dlltool], [dlltool])
 
 AC_LANG([C])
 
@@ -93,6 +94,9 @@ case "$host" in
 		AC_CONFIG_FILES(src/core/windows/resources.rc)
 
 		app_cv_static='yes'
+
+		AC_CONFIG_FILES(sdk/lib3270-delayed.pc)
+		INSTALL_PACKAGES="$INSTALL_PACKAGES delayed"
 
 		;;
 

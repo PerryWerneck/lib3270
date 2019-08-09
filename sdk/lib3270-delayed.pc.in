@@ -1,0 +1,17 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+version_major=@PACKAGE_MAJOR_VERSION@
+version_minor=@PACKAGE_MINOR_VERSION@
+sdk_version=@LIB3270_SDK_VERSION@
+library_name=@LIB3270_NAME@
+
+Name: @PACKAGE_NAME@
+Description: @PACKAGE_DESCRIPTION@
+Version: @PACKAGE_VERSION@
+Libs: -L\@libdir@ -l@LIB3270_NAME@.delayed.dll
+Libs.private: @LIBS@ @LIBSSL_LIBS@ @LIBICONV@ @INTL_LIBS@ @LDAP_LIBS@ @LIBCURL_LIBS@
+Cflags: -I@includedir@
+

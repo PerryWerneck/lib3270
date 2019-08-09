@@ -191,7 +191,7 @@ Release: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).a
 
-$(BINRLS)/$(LIBNAME).delayed.dll.a: \
+$(BINRLS)/$(LIBNAME).delayed.a: \
 	$(BINRLS)/$(SONAME)
 
 	@$(MKDIR) $(dir $@)
@@ -265,12 +265,12 @@ install-static: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-static.pc
 
 install-delayed: \
-	$(BINRLS)/$(LIBNAME).delayed.dll.a
+	$(BINRLS)/$(LIBNAME).delayed.a
 
 	# Install static library
 	@$(MKDIR) $(DESTDIR)$(libdir)
 	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).delayed.dll.a \
+		$(BINRLS)/$(LIBNAME).delayed.a \
 		$(DESTDIR)$(libdir)
 
 	@$(MKDIR) $(DESTDIR)$(libdir)/pkgconfig

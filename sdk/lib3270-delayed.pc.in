@@ -11,7 +11,7 @@ library_name=@LIB3270_NAME@
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
-Libs: -L\@libdir@ -l@LIB3270_NAME@.delayed.dll
+Libs: -L\@libdir@ -l@LIB3270_NAME@.delayed
 Libs.private: @LIBS@ @LIBSSL_LIBS@ @LIBICONV@ @INTL_LIBS@ @LDAP_LIBS@ @LIBCURL_LIBS@
 Cflags: -I@includedir@
 

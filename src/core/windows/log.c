@@ -43,15 +43,7 @@
 
  void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *fmt, va_list arg_ptr)
  {
-	char	username[UNLEN + 1];
-	DWORD	szName = sizeof(username);
-
-	memset(username,0,szName);
-
-	if(!GetUserName(username, &szName)) {
-		strncpy(username,"?",UNLEN);
-	}
-
+	lib3270_autoptr(char) username = lib3270_get_user_name();
 	lib3270_autoptr(char) msg = lib3270_vsprintf(fmt,arg_ptr);
 
 	const char *outMsg[] = {

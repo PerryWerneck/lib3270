@@ -34,6 +34,7 @@
 
 #include <winsock2.h>
 #include <windows.h>
+#include <lmcons.h>
 #include <lib3270-internals.h>
 
 #include "winversc.h"
@@ -267,3 +268,31 @@ LIB3270_EXPORT char * lib3270_build_data_filename(const char *name)
 	return lib3270_strdup_printf("%s\\%s",wc_fn,name);
 
 }
+
+LIB3270_EXPORT char	* lib3270_get_installation_path()
+{
+	char lpFilename[4096];
+
+	memset(lpFilename,0,sizeof(lpFilename));
+	DWORD szPath = GetModuleFileName(hModule,lpFilename,sizeof(lpFilename));
+	lpFilename[szPath] = 0;
+
+	char * ptr = strrchr(lpFilename,'\\');
+	if(ptr)
+		ptr[1] = 0;
+
+	return strdup(lpFilename);
+}
+
+char * lib3270_get_user_name()
+{
+	char	username[UNLEN + 1];
+	DWORD	szName = UNLEN;
+
+	memset(username,0,UNLEN + 1);
+	GetUserName(username, &szName);
+
+	return strdup(username);
+
+}
+

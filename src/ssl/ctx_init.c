@@ -133,7 +133,10 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 #ifdef _WIN32
 	{
-		lib3270_autoptr(char) certpath = lib3270_build_data_filename("certs");
+		lib3270_autoptr(char) appdir = lib3270_get_installation_path();
+		lib3270_autoptr(char) certpath = lib3270_strdup_printf("%s\\certs",appdir);
+
+		debug("Searching certs from \"%s\".", certpath);
 
 		if(SSL_CTX_load_verify_locations(ssl_ctx,NULL,certpath))
 		{

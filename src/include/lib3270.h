@@ -1398,6 +1398,14 @@
 	 */
 	LIB3270_EXPORT char 		* lib3270_win32_translate_error_code(int lasterror);
 
+	/**
+	 * @brief Get lib3270's installation path.
+	 *
+	 * @return Full path for the lib3270 installation path (release it with lib3270_free)
+	 *
+	 */
+	 LIB3270_EXPORT char		* lib3270_get_installation_path();
+
 #endif // WIn32
 
 	/**

@@ -713,6 +713,7 @@ struct _h3270
 #ifdef _WIN32
 /// @brief Windows Event Log Handler.
 LIB3270_INTERNAL HANDLE hEventLog;
+LIB3270_INTERNAL HANDLE hModule;
 #endif // _WIN32
 
 #ifdef HAVE_SYSLOG
@@ -826,6 +827,8 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	/// @brief Default log writer.
 	LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
+
+	LIB3270_INTERNAL char * lib3270_get_user_name();
 
 #endif
 

@@ -90,8 +90,6 @@ static inline void lib3270_autoptr_cleanup_BerElement(BerElement **ber)
 
 X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
-	debug("********************************************************* %s",__FUNCTION__);
-
 	X509_CRL * x509_crl = NULL;
 	int rc = 0;
 
@@ -265,8 +263,6 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	}
 
 	ldap_value_free_len(value);
-
-	debug("********************************************************* %s",__FUNCTION__);
 
 	return x509_crl;
 

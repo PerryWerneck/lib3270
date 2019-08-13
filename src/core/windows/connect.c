@@ -91,7 +91,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 								LIB3270_NOTIFY_ERROR,
 								_( "Connection failed" ),
 								buffer,
-								_( "%s"), lib3270_win32_strerror(err)
+								_( "%s (rc=%d)"), strerror(err), err
 							);
 		trace("%s",__FUNCTION__);
 		return;
@@ -150,6 +150,7 @@ static void sockstart(H3270 *session)
 
  struct resolver
  {
+ 	int			  rc;
  	int			  convert;
 	const char 	* message;
  };
@@ -174,8 +175,11 @@ static void sockstart(H3270 *session)
 	status_resolving(hSession);
 
  	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
+ 	debug("getaddrinfo(%s,%s) returns %d",hSession->host.current,hSession->host.srvc,rc);
+
  	if(rc != 0)
 	{
+		((struct resolver *) host)->rc 		= rc;
 		((struct resolver *) host)->message = gai_strerror(rc);
 		((struct resolver *) host)->convert = 1;
 		return -1;
@@ -188,6 +192,7 @@ static void sockstart(H3270 *session)
 		hSession->sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 		if(hSession->sock < 0)
 		{
+			((struct resolver *) host)->rc = errno;
 			((struct resolver *) host)->message = strerror(errno);
 			continue;
 		}
@@ -196,6 +201,7 @@ static void sockstart(H3270 *session)
 		if(connect(hSession->sock, rp->ai_addr, rp->ai_addrlen))
 		{
 			SOCK_CLOSE(hSession);
+			((struct resolver *) host)->rc = errno;
 			((struct resolver *) host)->message = strerror(errno);
 			continue;
 		}
@@ -225,6 +231,37 @@ int net_reconnect(H3270 *hSession, int seconds)
 			char msg[4096];
 			strncpy(msg,host.message,4095);
 
+			debug("host.message=\"%s\"",host.message);
+
+			{
+				// Register on event log
+				lib3270_autoptr(char) username = lib3270_get_user_name();
+
+				snprintf(msg,sizeof(msg),"rc=%d",host.rc);
+
+				const char *outMsg[] = {
+					username,
+					"networking",
+					message,
+					host.message,
+					msg
+				};
+
+				ReportEvent(
+					hEventLog,
+					EVENTLOG_ERROR_TYPE,
+					1,
+					0,
+					NULL,
+					(sizeof(outMsg)/sizeof(outMsg[0])),
+					0,
+					outMsg,
+					NULL
+				);
+
+			}
+
+
 #ifdef HAVE_ICONV
 			if(host.convert)
 			{
@@ -232,7 +269,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 				size_t	  out = 4096;
 				size_t	  in	= strlen(host.message);
 
-				iconv_t hConv = iconv_open(lib3270_win32_local_charset(),"UTF-8");
+				iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
 				if(iconv(
 						hConv,
 						&host.message,&in,
@@ -250,8 +287,10 @@ int net_reconnect(H3270 *hSession, int seconds)
 									LIB3270_NOTIFY_ERROR,
 									_( "Connection error" ),
 									message,
-									"%s",
-									NULL);
+									"%s (rc=%d)",
+									msg,
+									host.rc
+								);
 
 		}
 		else

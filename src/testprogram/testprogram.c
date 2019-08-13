@@ -68,6 +68,13 @@ int main(int argc, char *argv[])
 
 	printf("HOST URL: %s\tHOST CRL: %s\n",lib3270_get_url(h),lib3270_get_crl_url(h));
 
+#ifdef _WIN32
+	{
+		lib3270_autoptr(char) apppath = lib3270_get_installation_path();
+		printf("Application path: \"%s\"\n",apppath);
+	}
+#endif // _WIN32
+
 	if(lib3270_set_url(h,NULL))
 		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
 

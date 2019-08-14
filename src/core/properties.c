@@ -259,6 +259,11 @@
 	return properties;
  }
 
+ static int lib3270_get_ssl_state_as_int(H3270 * hSession)
+ {
+ 	return (int) lib3270_get_ssl_state(hSession);
+ }
+
  const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void)
  {
 
@@ -292,10 +297,17 @@
 			NULL										//  Set value.
 		},
 
+		{
+			"ssl_state",								//  Property name.
+			N_( "ID of the session security state" ),	//  Property description.
+			lib3270_get_ssl_state_as_int,				//  Get value.
+			NULL										//  Set value.
+		},
+
 		/*
 		{
 			"",						//  Property name.
-			"",				//  Property description.
+			"",						//  Property description.
 			NULL,					//  Get value.
 			NULL					//  Set value.
 		},

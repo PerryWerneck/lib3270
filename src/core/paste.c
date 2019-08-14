@@ -93,9 +93,10 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------------------*/
 
-/*
- * Move the cursor back within the legal paste area.
- * Returns a Boolean indicating success.
+/**
+ * @brief Move the cursor back within the legal paste area.
+ *
+ * @return A Boolean indicating success.
  */
  static int remargin(H3270 *hSession, int lmargin)
  {
@@ -234,18 +235,22 @@ static int set_string(H3270 *hSession, const unsigned char *str, int length)
  * @param col		Col for the first character.
  * @param str		String to set.
  *
- * @return -1 if error (sets errno) or number of processed characters.
+ * @return negative if error (sets errno) or number of processed characters.
  *
  */
 LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str)
 {
     int rc = 0;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	if(!(str && *str))
+		return 0;
+
+	if(check_online_session(hSession))
+		return - errno;
 
 	// Is Keyboard locked ?
 	if(hSession->kybdlock)
-		return errno = EPERM;
+		return - (errno = EPERM);
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
 		lib3270_unselect(hSession);
@@ -272,12 +277,19 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 {
 	int rc = -1;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	if(!(str && *str))
+		return 0;
+
+	if(check_online_session(hSession))
+		return - errno;
+
+	if(length < 0)
+		length = (int) strlen((const char *) str);
 
 	if(hSession->kybdlock)
-		return errno = EPERM;
+		return - (errno = EPERM);
 
-	if(lib3270_set_cursor_address(hSession,baddr) < 0)
+	if(baddr >= 0 && lib3270_set_cursor_address(hSession,baddr) < 0)
 		return -1;
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
@@ -296,17 +308,21 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
  * @param hSession		Session handle.
  * @param str			String to set
  *
- * @return -1 if error (sets errno) or number of processed characters.
+ * @return negative if error (sets errno) or number of processed characters.
  *
  */
 LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str)
 {
 	int rc;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	if(!(str && *str))
+		return 0;
+
+	if(check_online_session(hSession))
+		return - errno;
 
 	if(hSession->kybdlock)
-		return errno = EPERM;
+		return - (errno = EPERM);
 
 	hSession->cbk.suspend(hSession);
 	rc = set_string(hSession, str, -1);

@@ -723,7 +723,7 @@
 	 * @brief Set string at defined adress.
 	 *
 	 * @param hSession	Session handle.
-	 * @param baddr		Adress for the first character.
+	 * @param baddr		Adress for the first character (-1 for cursor position).
 	 * @param str		String to set.
 	 * @param length	Length of the string (-1 for auto-detect).
 	 *
@@ -1017,7 +1017,7 @@
 	 * @param seconds	Number of seconds to wait.
 	 *
 	 */
-	LIB3270_EXPORT int wait_for_update(H3270 *hSession, int seconds);
+	LIB3270_EXPORT int lib3270_wait_for_update(H3270 *hSession, int seconds);
 
 	/**
 	 * Wait "N" seconds for "ready" state.

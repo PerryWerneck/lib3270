@@ -429,14 +429,21 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	hSession->crm_nattr = 0;
 }
 
+/**
+ * @brief Get field address.
+ *
+ * @return Negative on error(sets errno) or field address.
+ *
+ */
 LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr)
 {
 	int sbaddr;
 
-	CHECK_SESSION_HANDLE(hSession);
+	if(check_online_session(hSession))
+		return - errno;
 
 	if (!hSession->formatted)
-		return errno = ENOTCONN;
+		return - (errno = ENOTCONN);
 
     if(baddr < 0)
 		baddr = hSession->cursor_addr;

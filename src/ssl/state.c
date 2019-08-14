@@ -47,7 +47,7 @@
 
 LIB3270_EXPORT int lib3270_is_secure(H3270 *hSession)
 {
-	return lib3270_get_secure(hSession) == LIB3270_SSL_SECURE;
+	return lib3270_get_ssl_state(hSession) == LIB3270_SSL_SECURE;
 }
 
 LIB3270_EXPORT long lib3270_get_SSL_verify_result(H3270 *hSession)
@@ -60,7 +60,7 @@ LIB3270_EXPORT long lib3270_get_SSL_verify_result(H3270 *hSession)
 	return -1;
 }
 
-LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_secure(H3270 *hSession)
+LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
 	return hSession->ssl.state;
@@ -365,7 +365,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
  const char	* lib3270_get_ssl_state_message(H3270 *hSession)
  {
-	if(lib3270_get_secure(hSession) != LIB3270_SSL_UNSECURE)
+	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
 		const struct ssl_status_msg *info = get_ssl_status_msg(hSession);
 		if(info)
@@ -378,7 +378,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
  const char	* lib3270_get_ssl_state_icon_name(H3270 *hSession)
  {
-	if(lib3270_get_secure(hSession) != LIB3270_SSL_UNSECURE)
+	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
 		const struct ssl_status_msg *info = get_ssl_status_msg(hSession);
 		if(info)
@@ -392,7 +392,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
  const char * lib3270_get_ssl_state_description(H3270 *hSession)
  {
-	if(lib3270_get_secure(hSession) != LIB3270_SSL_UNSECURE)
+	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
 		const struct ssl_status_msg *info = get_ssl_status_msg(hSession);
 		if(info)
@@ -408,7 +408,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
  LIB3270_NOTIFY lib3270_get_ssl_state_icon(H3270 *hSession)
  {
-	if(lib3270_get_secure(hSession) != LIB3270_SSL_UNSECURE)
+	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
 		const struct ssl_status_msg *info = get_ssl_status_msg(hSession);
 		if(info)

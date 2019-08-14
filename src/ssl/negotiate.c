@@ -434,30 +434,17 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 
 #endif /*]*/
 
-int popup_ssl_error(H3270 *hSession, int rc, const char *title, const char *summary, const char *body)
+int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const char *title, const char *summary, const char *body)
 {
-#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
-
-	lib3270_write_log(hSession, "SSL", "%s", summary );
-	return hSession->cbk.popup_ssl_error(hSession,rc,title,summary,body);
-
-#else
-
-	lib3270_autoptr(char) message = NULL;
-
-	if(body && *body)
-		message = lib3270_strdup_printf("%s - rc=%d",body,rc);
-	else if(rc)
-		message = lib3270_strdup_printf("%s (rc=%d)",strerror(rc),rc);
-	else
-		message = lib3270_strdup_printf("rc=%d",rc);
-
 #ifdef _WIN32
+
+	lib3270_autoptr(char) rcMessage = lib3270_strdup_printf("The error code was %d",rc);
 
 	const char *outMsg[] = {
 		title,
 		summary,
-		message
+		(body ? body : ""),
+		rcMessage
 	};
 
 	ReportEvent(
@@ -466,7 +453,7 @@ int popup_ssl_error(H3270 *hSession, int rc, const char *title, const char *summ
 		1,
 		0,
 		NULL,
-		3,
+		(sizeof(outMsg)/sizeof(outMsg[0])),
 		0,
 		outMsg,
 		NULL
@@ -474,18 +461,18 @@ int popup_ssl_error(H3270 *hSession, int rc, const char *title, const char *summ
 
 #else
 
-	lib3270_write_log(
-		hSession,
-		"SSL",
-		"%s - %s - %s",
-			title,
-			summary,
-			message
-	);
+	lib3270_write_log(hSession, "SSL", "%s %s (rc=%d)", summary, (body ? body : ""), rc);
 
 #endif // _WIN32
 
+#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+
+	return hSession->cbk.popup_ssl_error(hSession,rc,title,summary,body);
+
+#else
+
 	return 0;
+
 #endif // SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 
 }

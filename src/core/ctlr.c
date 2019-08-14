@@ -515,28 +515,34 @@ LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 	return -1;
 }
 
-LIB3270_EXPORT int lib3270_get_field_attribute(H3270 *hSession, int baddr)
+LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr)
 {
 	int sbaddr;
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!hSession->formatted)
-		return errno = ENOTCONN;
+	{
+		errno = ENOTCONN;
+		return (LIB3270_FIELD_ATTRIBUTE) 0;
+	}
+
+	if(baddr < 0)
+		baddr = lib3270_get_cursor_address(hSession);
 
 	sbaddr = baddr;
 	do
 	{
 		if(hSession->ea_buf[baddr].fa)
-			return hSession->ea_buf[baddr].fa;
+			return (LIB3270_FIELD_ATTRIBUTE) hSession->ea_buf[baddr].fa;
+
 		DEC_BA(baddr);
 	} while (baddr != sbaddr);
 
 	errno = EINVAL;
-	return -1;
+	return (LIB3270_FIELD_ATTRIBUTE) 0;
 
 }
-
 
 /**
  * @brief Get the length of the field at given buffer address.

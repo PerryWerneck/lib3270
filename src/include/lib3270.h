@@ -547,6 +547,14 @@
 	LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession);
 
 	/**
+	 * @brief Get security state.
+	 *
+	 */
+	LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(H3270 *session);
+
+	LIB3270_EXPORT long 				lib3270_get_SSL_verify_result(H3270 *session);
+
+	/**
 	 * @brief Get security state as text.
 	 *
 	 */
@@ -971,8 +979,6 @@
 	LIB3270_EXPORT int lib3270_is_secure(H3270 *h);
 
 	LIB3270_EXPORT LIB3270_MESSAGE		lib3270_lock_status(H3270 *h);
-	LIB3270_EXPORT LIB3270_SSL_STATE	lib3270_get_secure(H3270 *session);
-	LIB3270_EXPORT long 				lib3270_get_SSL_verify_result(H3270 *session);
 
 	/**
 	 * Run main iteration.
@@ -1176,11 +1182,11 @@
 	 * @brief Get field attribute for a given buffer address.
 	 *
 	 * @param hSession	Session handle.
-	 * @param addr		Buffer address of the field.
+	 * @param addr		Buffer address of the field (-1 to use the cursor address).
 	 *
-	 * @return field attribute or -1 when failed (sets errno).
+	 * @return field attribute or 0 when failed (sets errno).
 	 */
-	LIB3270_EXPORT int lib3270_get_field_attribute(H3270 *hSession, int baddr);
+	LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr);
 
 	/**
 	 * @brief Get the length of the field at given buffer address.

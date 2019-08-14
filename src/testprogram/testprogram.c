@@ -89,6 +89,11 @@ int main(int argc, char *argv[])
 	if(!rc)
 	{
 		lib3270_wait_for_ready(h,10);
+
+		lib3270_autoptr(char) text = lib3270_get_string_at_address(h,0,-1,0);
+		if(text)
+			printf("Screen:\n[%s]\n",text);
+
 		lib3270_enter(h);
 		lib3270_wait_for_ready(h,10);
 	}

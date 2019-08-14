@@ -288,7 +288,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 		return NULL;
 	}
 
-	maxlen = (h->rows * (h->cols+1)) - offset;
+	maxlen = (h->rows * (h->cols+ (lf ? 1 : 0) )) - offset;
 	if(maxlen <= 0 || offset < 0)
 	{
 		errno = EINVAL;
@@ -301,7 +301,9 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	buffer	= lib3270_malloc(len+1);
 	ptr		= buffer;
 
-//	trace("len=%d buffer=%p",len,buffer);
+	memset(buffer,0,len+1);
+
+	trace("len=%d buffer=%p",len,buffer);
 
 	while(len > 0)
 	{

@@ -34,8 +34,17 @@
  */
 
 #include <config.h>
+#include <lib3270-internals.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
+#include <lib3270/toggle.h>
 
 #if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LDAP)
+
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/x509_vfy.h>
+#include <openssl/x509.h>
 
 #define LDAP_DEPRECATED 1
 #include <ldap.h>
@@ -124,7 +133,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAG
 		message->text = _( "Can't initialize LDAP" );
 		message->description = ldap_err2string(rc);
 		lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
-		return -1;
+		return NULL;
 	}
 
 	unsigned long version = LDAP_VERSION3;
@@ -146,7 +155,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAG
 		message->text = _( "Can't bind to LDAP server" );
 		message->description = ldap_err2string(rc);
 		lib3270_write_log(hSession,"ssl","%s: %s",url, message->description);
-		return -1;
+		return NULL;
 	}
 
 	lib3270_autoptr(LDAPMessage) results = NULL;

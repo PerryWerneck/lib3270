@@ -696,15 +696,16 @@
 	 * Returns are ignored; newlines mean "move to beginning of next line";
 	 * tabs and formfeeds become spaces.  Backslashes are not special
 	 *
-	 * @param h		Session handle.
-	 * @param s		String to input.
+	 * @param hSession	Session handle.
+	 * @param text		String to input.
+	 * @param length	Length of the string (-1 for auto-detect).
 	 *
-	 * @return -1 if error (sets errno) or number of processed characters.
+	 * @return Negative if error (sets errno) or number of processed characters.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_string(H3270 *h, const unsigned char *str);
+	LIB3270_EXPORT int lib3270_set_string(H3270 *h, const unsigned char *text, int length);
 
-	#define lib3270_set_text_at(h,r,c,t) lib3270_set_string_at(h,r,c,t)
+	#define lib3270_set_text_at(h,r,c,t) lib3270_set_string_at(h,r,c,t,-1)
 
 	/**
 	 * @brief Set string at defined row/column.
@@ -713,11 +714,12 @@
 	 * @param row		Row for the first character.
 	 * @param col		Col for the first character.
 	 * @param str		String to set.
+	 * @param length	Length of the string (-1 for auto-detect).
 	 *
 	 * @return Negative if error or number of processed characters.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str);
+	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str, int length);
 
 	/**
 	 * @brief Set string at defined adress.

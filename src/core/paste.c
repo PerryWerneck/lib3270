@@ -227,18 +227,8 @@ static int set_string(H3270 *hSession, const unsigned char *str, int length)
 	return data.qtd;
 }
 
-/**
- * @brief Set string at defined position.
- *
- * @param hSession	Session handle.
- * @param row		Row for the first character.
- * @param col		Col for the first character.
- * @param str		String to set.
- *
- * @return negative if error (sets errno) or number of processed characters.
- *
- */
-LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str)
+/// @brief Set string at defined position.
+LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str, int length)
 {
     int rc = 0;
 
@@ -263,7 +253,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 		hSession->cbk.suspend(hSession);
 
 		hSession->cursor_addr = (row * hSession->cols) + col;
-		rc += set_string(hSession, str, -1);
+		rc += set_string(hSession, str, length);
 
 		hSession->cbk.resume(hSession);
 	}
@@ -302,16 +292,8 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	return rc;
 }
 
-/**
- * @brief Set string at cursor position.
- *
- * @param hSession		Session handle.
- * @param str			String to set
- *
- * @return negative if error (sets errno) or number of processed characters.
- *
- */
-LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str)
+/// @brief Set string at cursor position.
+LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str, int length)
 {
 	int rc;
 
@@ -325,7 +307,7 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str)
 		return - (errno = EPERM);
 
 	hSession->cbk.suspend(hSession);
-	rc = set_string(hSession, str, -1);
+	rc = set_string(hSession, str, length);
 	hSession->cbk.resume(hSession);
 
 	return rc;
@@ -349,7 +331,7 @@ LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
 		h->paste_buffer = NULL;
 	}
 
-	sz = lib3270_set_string(h,str);
+	sz = lib3270_set_string(h,str,-1);
 	if(sz < 0)
 	{
 		// Can´t paste

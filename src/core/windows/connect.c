@@ -394,6 +394,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 			case LIB3270_CONNECTED_INITIAL_E:
 			case LIB3270_CONNECTED_NVT:
 			case LIB3270_CONNECTED_SSCP:
+			case LIB3270_RESOLVING:
 				break;
 
 			case LIB3270_NOT_CONNECTED:

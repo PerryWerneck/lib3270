@@ -51,7 +51,7 @@
 		lib3270_set_url(hSession,url);
 	}
 
-	return lib3270_reconnect(hSession, wait);
+	return lib3270_reconnect(hSession, seconds);
 
  }
 

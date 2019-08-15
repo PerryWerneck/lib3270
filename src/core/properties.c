@@ -56,11 +56,6 @@
 	return hSession->starting != 0;
  }
 
- int lib3270_get_formatted(H3270 *hSession)
- {
-	return hSession->formatted != 0;
- }
-
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
  {
 
@@ -173,7 +168,7 @@
 		{
 			"formatted",										//  Property name.
 			N_( "Formatted screen" ),							//  Property description.
-			lib3270_get_formatted,								//  Get value.
+			lib3270_get_is_formatted,							//  Get value.
 			NULL												//  Set value.
 		},
 
@@ -212,7 +207,7 @@
 		},
 
 		{
-			"width",//  Property name.
+			"width",									//  Property name.
 			N_( "Current screen width in columns" ),	//  Property description.
 			lib3270_get_width,							//  Get value.
 			NULL										//  Set value.

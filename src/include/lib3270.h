@@ -296,6 +296,7 @@
 	 */
 	 typedef enum lib3270_field_attribute
 	 {
+		LIB3270_FIELD_ATTRIBUTE_INVALID			= 0x00,	///< @brief Attribute is invalid.
 		LIB3270_FIELD_ATTRIBUTE_PRINTABLE		= 0xc0,	///< @brief these make the character "printable"
 		LIB3270_FIELD_ATTRIBUTE_PROTECT			= 0x20,	///< @brief unprotected (0) / protected (1)
 		LIB3270_FIELD_ATTRIBUTE_NUMERIC			= 0x10,	///< @brief alphanumeric (0) / numeric (1)
@@ -309,15 +310,14 @@
 	} LIB3270_FIELD_ATTRIBUTE;
 
 	/**
-	 * @brief Host options
+	 * @brief Host types.
 	 *
 	 */
 	typedef enum lib3270_host_type
 	{
-		// Host types
-		LIB3270_HOST_AS400		= 0x0001,	///< AS400 host - Prefix every PF with PA1
-		LIB3270_HOST_TSO		= 0x0002,	///< Host is TSO?
-		LIB3270_HOST_S390		= 0x0006,	///< Host is S390? (TSO included)
+		LIB3270_HOST_AS400		= 0x0001,	///< @brief AS400 host - Prefix every PF with PA1
+		LIB3270_HOST_TSO		= 0x0002,	///< @brief Host is TSO
+		LIB3270_HOST_S390		= 0x0006,	///< @brief Host is S390 (TSO included)
 
 	} LIB3270_HOST_TYPE;
 
@@ -332,7 +332,7 @@
 	} LIB3270_HOST_TYPE_ENTRY;
 
 	/**
-	 * SSL state
+	 * @brief SSL state
 	 *
 	 */
 	typedef enum lib3270_ssl_state
@@ -1147,6 +1147,16 @@
 	LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_is_protected(H3270 *h, unsigned int baddr));
 
 	/**
+	 * @brief Check if the screen is formatted.
+	 *
+	 * @param hSession	Session handle.
+     *
+     * @return -1 when failed 1 if the session is formatted and 0 if not.
+     *
+	 */
+	LIB3270_EXPORT int lib3270_get_is_formatted(H3270 *hSession);
+
+	/**
 	 * @brief Get Check if the screen position is protected.
 	 *
 	 * @param h			Session Handle.
@@ -1186,7 +1196,7 @@
 	 * @param hSession	Session handle.
 	 * @param addr		Buffer address of the field (-1 to use the cursor address).
 	 *
-	 * @return field attribute or 0 when failed (sets errno).
+	 * @return field attribute or LIB3270_FIELD_ATTRIBUTE_INVALID when failed (sets errno).
 	 */
 	LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr);
 

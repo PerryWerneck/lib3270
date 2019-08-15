@@ -429,6 +429,14 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	hSession->crm_nattr = 0;
 }
 
+LIB3270_EXPORT int lib3270_get_is_formatted(H3270 *hSession)
+{
+	if(check_online_session(hSession))
+		return -1;
+
+	return hSession->formatted ? 1 : 0;
+}
+
 /**
  * @brief Get field address.
  *
@@ -531,7 +539,7 @@ LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSessi
 	if(!hSession->formatted)
 	{
 		errno = ENOTCONN;
-		return (LIB3270_FIELD_ATTRIBUTE) 0;
+		return LIB3270_FIELD_ATTRIBUTE_INVALID;
 	}
 
 	if(baddr < 0)
@@ -547,7 +555,7 @@ LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSessi
 	} while (baddr != sbaddr);
 
 	errno = EINVAL;
-	return (LIB3270_FIELD_ATTRIBUTE) 0;
+	return LIB3270_FIELD_ATTRIBUTE_INVALID;
 
 }
 
@@ -646,24 +654,7 @@ LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr)
 LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
 {
 	return lib3270_get_is_protected(h, baddr);
-
-	/*
-	unsigned char fa;
-
-	FAIL_IF_NOT_ONLINE(h);
-
-	if(baddr > (h->rows * h->cols))
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
-	fa = get_field_attribute(h,baddr);
-
-	return FA_IS_PROTECTED(fa);
-	*/
 }
-
 
 
 /**

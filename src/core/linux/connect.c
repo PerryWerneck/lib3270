@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
+#include "kybdc.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -282,13 +283,16 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 			case LIB3270_CONNECTED_INITIAL_E:
 			case LIB3270_CONNECTED_NVT:
 			case LIB3270_CONNECTED_SSCP:
+			case LIB3270_RESOLVING:
 				break;
 
 			case LIB3270_NOT_CONNECTED:
 				return errno = ENOTCONN;
 
 			case LIB3270_CONNECTED_TN3270E:
-				return 0;
+				if(!hSession->starting)
+					return 0;
+				break;
 
 			default:
 				lib3270_write_log(hSession,"connect", "%s: State changed to unexpected state %d",__FUNCTION__,hSession->cstate);

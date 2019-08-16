@@ -1032,6 +1032,14 @@
 	LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds);
 
 	/**
+	 * @brief Wait for keyboard unlock.
+	 * @param seconds	Number of seconds to wait.
+	 *
+	 * @return keyboard lock status or -1 on error.
+	 */
+	LIB3270_EXPORT int lib3270_wait_for_unlock(H3270 *hSession, int seconds);
+
+	/**
 	 * "beep" to notify user.
 	 *
 	 * If available play a sound signal do alert user.

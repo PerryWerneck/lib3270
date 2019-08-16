@@ -101,7 +101,7 @@
 
 
 	LIB3270_INTERNAL void kybd_inhibit(H3270 *session, Boolean inhibit);
-	LIB3270_INTERNAL int kybd_prime(H3270 *hSession);
+	LIB3270_INTERNAL int  kybd_prime(H3270 *hSession);
 	LIB3270_INTERNAL void kybd_scroll_lock(Boolean lock);
 	LIB3270_INTERNAL void kybd_connect(H3270 *session, int connected, void *dunno);
 	LIB3270_INTERNAL void kybd_in3270(H3270 *session, int in3270, void *dunno);

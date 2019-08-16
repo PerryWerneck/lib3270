@@ -56,6 +56,11 @@
 	return hSession->starting != 0;
  }
 
+ unsigned int lib3270_get_kybdlock(H3270 *hSession)
+ {
+	return hSession->kybdlock;
+ }
+
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
  {
 
@@ -232,6 +237,13 @@
 			N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
 			lib3270_get_unlock_delay,																//  Get value.
 			lib3270_set_unlock_delay																//  Set value.
+		},
+
+		{
+			"kybdlock",																				//  Property name.
+			N_( "Keyboard lock status" ),															//  Property description.
+			lib3270_get_kybdlock,																	//  Get value.
+			NULL																					//  Set value.
 		},
 
 		/*

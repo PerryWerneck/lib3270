@@ -116,9 +116,8 @@ static const unsigned char code_table[64] =
 	} \
     }
 
-
-/*
- * Initialize the emulated 3270 hardware.
+/**
+ * @brief Initialize the emulated 3270 hardware.
  */
 void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask))
 {
@@ -127,8 +126,9 @@ void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask))
 	lib3270_register_schange(session,LIB3270_STATE_CONNECT, ctlr_connect, 0);
 	lib3270_register_schange(session,LIB3270_STATE_3270_MODE, ctlr_connect, 0);
 }
-/*
- * Reinitialize the emulated 3270 hardware.
+
+/**
+ * @brief Reinitialize the emulated 3270 hardware.
  */
 void ctlr_reinit(H3270 *session, unsigned cmask)
 {
@@ -153,7 +153,7 @@ void ctlr_reinit(H3270 *session, unsigned cmask)
 }
 
  /**
-  * Parse the model number.
+  * @brief Parse the model number.
   *
   * @param session	Session Handle.
   * @param m		Model number.
@@ -231,7 +231,7 @@ static int parse_model_number(H3270 *session, const char *m)
 }
 
 /**
- * Get current 3270 model.
+ * @brief Get current 3270 model.
  *
  * @param hSession selected 3270 session.
  * @return Current model number.
@@ -366,7 +366,7 @@ static void set_formatted(H3270 *hSession, int state)
 }
 
 /**
- * Update the formatted screen flag.
+ * @brief Update the formatted screen flag.
  *
  * A formatted screen is a screen that has at least one field somewhere on it.
  *
@@ -787,8 +787,8 @@ enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen)
 	}
 }
 
-/*
- * Functions to insert SA attributes into the inbound data stream.
+/**
+ * @brief Functions to insert SA attributes into the inbound data stream.
  */
 static void insert_sa1(H3270 *hSession, unsigned char attr, unsigned char value, unsigned char *currentp, Boolean *anyp)
 {
@@ -805,11 +805,10 @@ static void insert_sa1(H3270 *hSession, unsigned char attr, unsigned char value,
 	*anyp = False;
 }
 
-/*
- * Translate an internal character set number to a 3270DS characte set number.
+/**
+ * @brief Translate an internal character set number to a 3270DS characte set number.
  */
-static unsigned char
-host_cs(unsigned char cs)
+static unsigned char host_cs(unsigned char cs)
 {
 	switch (cs & CS_MASK) {
 	case CS_APL:
@@ -851,7 +850,7 @@ static void insert_sa(H3270 *hSession, int baddr, unsigned char *current_fgp, un
 
 
 /**
- * Process a 3270 Read-Modified command and transmit the data back to the host.
+ * @brief Process a 3270 Read-Modified command and transmit the data back to the host.
  */
 void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 {

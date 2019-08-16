@@ -478,6 +478,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code)
 	{
 		if (hSession->kybdlock & KL_OIA_MINUS)
 			return;
+
 		if (aid_code != AID_ENTER && aid_code != AID_CLEAR)
 		{
 			status_changed(hSession,LIB3270_MESSAGE_MINUS);
@@ -499,6 +500,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code)
 		lib3270_set_toggle(hSession,LIB3270_TOGGLE_INSERT,0);
 		kybdlock_set(hSession,KL_OIA_TWAIT | KL_OIA_LOCKED);
 	}
+
 	hSession->aid = aid_code;
 	ctlr_read_modified(hSession, hSession->aid, False);
 	ticking_start(hSession,False);

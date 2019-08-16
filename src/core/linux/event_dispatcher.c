@@ -126,8 +126,8 @@ retry:
 	}
 	else
 	{
-		twait.tv_sec  = 1;
-		twait.tv_usec = 0L;
+		twait.tv_sec  = 0;
+		twait.tv_usec = 10L;
 		tp = &twait;
 
 		if(!events)

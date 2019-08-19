@@ -56,7 +56,7 @@
 	return hSession->starting != 0;
  }
 
- unsigned int lib3270_get_kybdlock(H3270 *hSession)
+ unsigned int lib3270_get_kybdlock_as_int(H3270 *hSession)
  {
 	return hSession->kybdlock;
  }
@@ -242,7 +242,7 @@
 		{
 			"kybdlock",																				//  Property name.
 			N_( "Keyboard lock status" ),															//  Property description.
-			lib3270_get_kybdlock,																	//  Get value.
+			lib3270_get_kybdlock_as_int,															//  Get value.
 			NULL																					//  Set value.
 		},
 

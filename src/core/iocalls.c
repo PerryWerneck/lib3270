@@ -478,33 +478,6 @@ LIB3270_EXPORT int lib3270_wait_for_update(H3270 *hSession, int seconds)
 	return errno = ENOTSUP;
 }
 
-LIB3270_EXPORT int lib3270_wait_for_unlock(H3270 *hSession, int seconds)
-{
-	time_t end = time(0)+seconds;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	event_dispatcher(hSession,0);
-
-	do
-	{
-		if(!lib3270_connected(hSession))
-		{
-			errno = ENOTCONN;
-			return -1;
-		}
-
-		if(KYBDLOCK_IS_OERR(hSession))
-			break;
-
-		event_dispatcher(hSession,1);
-
-	}
-	while(hSession->kybdlock && time(0) < end);
-
-	return hSession->kybdlock;
-}
-
 LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 {
 	time_t end = time(0)+seconds;

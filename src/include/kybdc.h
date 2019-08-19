@@ -19,6 +19,7 @@
 #ifndef KYBDC_H_INCLUDED
 
 	#define KYBDC_H_INCLUDED
+	#include <lib3270/keyboard.h>
 
 	/// @brief Element in typeahead queue.
 	struct ta
@@ -56,26 +57,6 @@
 
 	};
 
-
-	/* keyboard lock states */
-	typedef enum lib3270_kl_state
-	{
-		LIB3270_KL_OERR_MASK		= 0x000f,
-		LIB3270_KL_OERR_PROTECTED	= 0x0001,
-		LIB3270_KL_OERR_NUMERIC		= 0x0002,
-		LIB3270_KL_OERR_OVERFLOW	= 0x0003,
-		LIB3270_KL_OERR_DBCS		= 0x0004,
-		LIB3270_KL_NOT_CONNECTED	= 0x0010,
-		LIB3270_KL_AWAITING_FIRST	= 0x0020,
-		LIB3270_KL_OIA_TWAIT		= 0x0040,
-		LIB3270_KL_OIA_LOCKED		= 0x0080,
-		LIB3270_KL_DEFERRED_UNLOCK	= 0x0100,
-		LIB3270_KL_ENTER_INHIBIT	= 0x0200,
-		LIB3270_KL_SCROLLED			= 0x0400,
-		LIB3270_KL_OIA_MINUS		= 0x0800
-
-	} LIB3270_KL_STATE;
-
 	#define KL_OERR_MASK		LIB3270_KL_OERR_MASK
 	#define KL_OERR_PROTECTED	LIB3270_KL_OERR_PROTECTED
 	#define KL_OERR_NUMERIC		LIB3270_KL_OERR_NUMERIC
@@ -97,8 +78,7 @@
 	LIB3270_INTERNAL void clear_xks(void);
 	LIB3270_INTERNAL void do_reset(H3270 *session, Boolean explicit);
 
-	LIB3270_INTERNAL void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KL_STATE bits);
-
+	LIB3270_INTERNAL void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KEYBOARD_LOCK_STATE bits);
 
 	LIB3270_INTERNAL void kybd_inhibit(H3270 *session, Boolean inhibit);
 	LIB3270_INTERNAL int  kybd_prime(H3270 *hSession);

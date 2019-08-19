@@ -36,6 +36,7 @@
  #include <string.h>
  #include <lib3270.h>
  #include <lib3270/properties.h>
+ #include <lib3270/keyboard.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
@@ -58,7 +59,7 @@
 
  unsigned int lib3270_get_kybdlock_as_int(H3270 *hSession)
  {
-	return hSession->kybdlock;
+	return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
  }
 
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)

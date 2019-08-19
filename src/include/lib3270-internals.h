@@ -750,8 +750,8 @@ LIB3270_INTERNAL int	lib3270_check_for_auto_reconnect(H3270 *hSession);
 	LIB3270_INTERNAL void check_session_handle(H3270 **hSession);
 #endif // DEBUG
 
-LIB3270_INTERNAL int check_online_session(H3270 *hSession);
-LIB3270_INTERNAL int check_offline_session(H3270 *hSession);
+LIB3270_INTERNAL int check_online_session(const H3270 *hSession);
+LIB3270_INTERNAL int check_offline_session(const H3270 *hSession);
 
 /// @brief Returns -1 if the session is invalid or not online (sets errno).
 #define FAIL_IF_NOT_ONLINE(x) if(check_online_session(x)) return errno;

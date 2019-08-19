@@ -467,7 +467,7 @@ void check_session_handle(H3270 **hSession)
 #endif // ANDROID
 }
 
-LIB3270_INTERNAL int check_online_session(H3270 *hSession) {
+LIB3270_INTERNAL int check_online_session(const H3270 *hSession) {
 
 	// Is the session valid?
 	if(!hSession)
@@ -480,7 +480,7 @@ LIB3270_INTERNAL int check_online_session(H3270 *hSession) {
 	return 0;
 }
 
-LIB3270_INTERNAL int check_offline_session(H3270 *hSession) {
+LIB3270_INTERNAL int check_offline_session(const H3270 *hSession) {
 
 	// Is the session valid?
 	if(!hSession)

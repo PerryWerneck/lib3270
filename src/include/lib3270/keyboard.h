@@ -67,7 +67,9 @@
 	 *
 	 * @return keyboard lock status.
 	 */
-	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_unlock(H3270 *hSession, int seconds);
+	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H3270 *hSession, int seconds);
+
+	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(H3270 *hSession);
 
 #ifdef __cplusplus
 	}

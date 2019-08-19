@@ -38,6 +38,8 @@
 	 */
 	typedef enum lib3270_keyboard_lock_state
 	{
+		LIB3270_KL_UNLOCKED			= 0x0000,	///< @brief Keyboard is unlocked.
+
 		// Operator errors
 		LIB3270_KL_OERR_MASK		= 0x000f,
 		LIB3270_KL_OERR_PROTECTED	= 0x0001,
@@ -45,7 +47,7 @@
 		LIB3270_KL_OERR_OVERFLOW	= 0x0003,
 		LIB3270_KL_OERR_DBCS		= 0x0004,
 
-		LIB3270_KL_NOT_CONNECTED	= 0x0010,
+		LIB3270_KL_NOT_CONNECTED	= 0x0010,	///< @brief Not connected to host.
 		LIB3270_KL_AWAITING_FIRST	= 0x0020,
 		LIB3270_KL_OIA_TWAIT		= 0x0040,
 		LIB3270_KL_OIA_LOCKED		= 0x0080,

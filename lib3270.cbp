@@ -122,7 +122,19 @@
 		<Unit filename="src/core/printer.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/properties.c">
+		<Unit filename="src/core/properties/boolean.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/properties/properties.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/properties/signed.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/properties/string.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/properties/unsigned.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/resources.c">

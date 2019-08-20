@@ -36,6 +36,7 @@ SOURCES= \
 	$(wildcard src/core/ft/*.c) \
 	$(wildcard src/core/@OSNAME@/*.rc) \
 	$(wildcard src/core/@OSNAME@/*.c) \
+	$(wildcard src/core/properties/*.c) \
 	$(wildcard src/selection/*.c) \
 	$(wildcard src/ssl/*.c) \
 	$(wildcard src/ssl/@OSNAME@/*.c) \

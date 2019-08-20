@@ -1273,11 +1273,18 @@
 
 	/**
 	 *
-	 * @brief Overrides the default value for the unlock delay.
+	 * @brief Set the unlock delay in milliseconds.
 	 *
-	 * Overrides the default value for the unlock delay (the delay between the host unlocking the
-	 * keyboard and lib3270 actually performing the unlock).
-	 * The value is in milliseconds; use 0 to turn off the delay completely.
+	 * When lib3270 sends the host an AID (the Enter, Clear, PF or PA actions),
+	 * it locks the keyboard until the host sends a reply to unlock it. Some
+	 * hosts unlock the keyboard before they are actually finished processing
+	 * the command, which can cause scripts to malfunction subtly.
+	 *
+	 * To avoid this, lib3270 implements a hack to briefly delay actually
+	 * unlocking the keyboard. When the unlock delay is not 0, the keyboard
+	 * unlock will be delayed for the number of milliseconds set by this call.
+	 *
+	 * Setting the delay to 0 disables the hack.
 	 *
 	 * @param session	lib3270 session.
 	 * @param delay		Delay in milliseconds.

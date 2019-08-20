@@ -365,11 +365,11 @@ struct _h3270
 	int 					  extended					: 1;
 	int						  typeahead					: 1;
 	int						  numeric_lock				: 1;
-	int						  oerr_lock					: 1;
-	int						  unlock_delay				: 1;
+	int						  oerr_lock					: 1;	///< @brief If true, operator errors will lock the keyboard.
+	int						  unlock_delay				: 1;	///< @brief If true the unlock delay feature is enabled. @see lib3270_set_unlock_delay
 	int			 			  auto_reconnect_inprogress	: 1;
 	unsigned int			  colors					: 5;
-	int						  apl_mode					: 1;
+	int						  apl_mode					: 1;	///< @brief If true enables APL mode.
 	int						  icrnl						: 1;
 	int						  inlcr						: 1;
 	int						  onlcr						: 1;

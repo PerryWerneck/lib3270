@@ -420,6 +420,8 @@ void kybd_in3270(H3270 *hSession, int GNUC_UNUSED(in3270), void GNUC_UNUSED(*dun
 
 /**
  * @brief Lock the keyboard because of an operator error.
+ *
+ * @see lib3270_set_lock_on_operator_error
  */
 void operator_error(H3270 *hSession, int error_type)
 {
@@ -2258,3 +2260,7 @@ LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H327
 	return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
 }
 
+LIB3270_EXPORT void lib3270_set_lock_on_operator_error(H3270 *hSession, int enable)
+{
+	hSession->oerr_lock = (enable ? 1 : 0);
+}

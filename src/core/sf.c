@@ -1018,3 +1018,4 @@ static void query_reply_end(H3270 *hSession)
 	net_output(hSession);
 	kybd_inhibit(hSession,True);
 }
+

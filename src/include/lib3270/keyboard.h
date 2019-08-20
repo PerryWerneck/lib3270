@@ -71,6 +71,19 @@
 
 	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(H3270 *hSession);
 
+	/**
+	 * @brief Set te operator error lock.
+	 *
+	 * If lock is enabled (the default), operator errors (typing into protected fields, insert overflow, etc.)
+	 * will cause the keyboard to lock with an error message in the OIA (status line). If disabled, these errors
+	 * will simply cause the terminal bell will ring, without any keyboard lock or message.
+	 *
+	 * @param hSession	Session handle.
+	 * @param enable	Non zero to enable operator lock, zero to disable.
+	 *
+	 */
+	LIB3270_EXPORT void lib3270_set_lock_on_operator_error(H3270 *hSession, int enable);
+
 #ifdef __cplusplus
 	}
 #endif

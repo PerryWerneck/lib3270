@@ -92,6 +92,9 @@
 		<Unit filename="src/core/keyboard/kybd.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/keyboard/properties.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -263,6 +266,9 @@
 		</Unit>
 		<Unit filename="src/ssl/linux/private.h" />
 		<Unit filename="src/ssl/negotiate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/state.c">

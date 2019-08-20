@@ -38,10 +38,6 @@
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
 
-#if defined(HAVE_LIBSSL)
-	#include <openssl/ssl.h>
-#endif
-
  static int lib3270_get_connection_state_as_int(H3270 *hSession)
  {
 	return (int) lib3270_get_connection_state(hSession);
@@ -176,6 +172,13 @@
 			N_( "Formatted screen" ),							//  Property description.
 			lib3270_get_is_formatted,							//  Get value.
 			NULL												//  Set value.
+		},
+
+		{
+			"oerrlock",											//  Property name.
+			N_( "Lock keyboard on operator error" ),			//  Property description.
+			lib3270_get_lock_on_operator_error,					//  Get value.
+			lib3270_set_lock_on_operator_error					//  Set value.
 		},
 
 		/*
@@ -341,64 +344,6 @@
  {
 	return lib3270_get_revision();
  }
-
- #pragma GCC diagnostic push
- #pragma GCC diagnostic ignored "-Wunused-parameter"
- const char * lib3270_get_crl_url(H3270 *hSession)
- {
-#ifdef SSL_ENABLE_CRL_CHECK
-	if(hSession->ssl.crl.url)
-		return hSession->ssl.crl.url;
-
-#ifdef SSL_DEFAULT_CRL_URL
-	return SSL_DEFAULT_CRL_URL;
-#else
-	return getenv("LIB3270_DEFAULT_CRL");
-#endif // SSL_DEFAULT_CRL_URL
-
-#else
-	errno = ENOTSUP;
-	return "";
-#endif
- }
- #pragma GCC diagnostic pop
-
- #pragma GCC diagnostic push
- #pragma GCC diagnostic ignored "-Wunused-parameter"
- int lib3270_set_crl_url(H3270 *hSession, const char *crl)
- {
-
-    FAIL_IF_ONLINE(hSession);
-
-#ifdef SSL_ENABLE_CRL_CHECK
-
-	if(hSession->ssl.crl.url)
-	{
-		free(hSession->ssl.crl.url);
-		hSession->ssl.crl.url = NULL;
-	}
-
-	if(hSession->ssl.crl.cert)
-	{
-		X509_CRL_free(hSession->ssl.crl.cert);
-		hSession->ssl.crl.cert = NULL;
-	}
-
-	if(crl)
-	{
-		hSession->ssl.crl.url = strdup(crl);
-	}
-
-	return 0;
-
-#else
-
-	return errno = ENOTSUP;
-
-#endif // SSL_ENABLE_CRL_CHECK
-
- }
- #pragma GCC diagnostic pop
 
  LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void)
  {
@@ -647,106 +592,5 @@ int lib3270_set_string_property(H3270 *hSession, const char *name, const char * 
 	errno = ENOENT;
 	return -1;
 
-}
-
-/**
- * @brief Get SSL host option.
- *
- * @return Non zero if the host URL has SSL scheme.
- *
- */
-LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-
-    // TODO: Find a better way!
-	if(!hSession->host.current)
-		lib3270_set_url(hSession,NULL);
-
-#ifdef HAVE_LIBSSL
-	return hSession->ssl.enabled ? 1 : 0;
-#else
-	return 0;
-#endif // HAVE_LIBSSL
-
-}
-
-#ifdef SSL_ENABLE_CRL_CHECK
-LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession)
-{
-
-	if(hSession->ssl.crl.cert)
-	{
-
-		BIO				* out = BIO_new(BIO_s_mem());
-		unsigned char	* data;
-		unsigned char	* text;
-		int				  n;
-
-		X509_CRL_print(out,hSession->ssl.crl.cert);
-
-		n		= BIO_get_mem_data(out, &data);
-		text	= (unsigned char *) lib3270_malloc(n+1);
-		text[n]	='\0';
-
-		memcpy(text,data,n);
-		BIO_free(out);
-
-		return (char *) text;
-
-	}
-
-	return NULL;
-
-}
-#else
-LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 GNUC_UNUSED(*hSession))
-{
-	return NULL;
-}
-#endif // SSL_ENABLE_CRL_CHECK
-
-
-LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(H3270 *hSession)
-{
-#ifdef HAVE_LIBSSL
-	if(hSession->ssl.con)
-	{
-		X509 * peer = SSL_get_peer_certificate(hSession->ssl.con);
-		if(peer)
-		{
-			BIO				* out	= BIO_new(BIO_s_mem());
-			unsigned char	* data;
-			unsigned char	* text;
-			int				  n;
-
-			X509_print(out,peer);
-
-			n		= BIO_get_mem_data(out, &data);
-			text	= (unsigned char *) lib3270_malloc(n+1);
-			text[n]	='\0';
-			memcpy(text,data,n);
-			BIO_free(out);
-
-			return (char *) text;
-		}
-	}
-#endif // HAVE_LIBSSL
-
-	return NULL;
-}
-
-LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *hSession, unsigned int delay)
-{
-	CHECK_SESSION_HANDLE(hSession);
-	hSession->unlock_delay		= (delay == 0 ? 0 : 1);
-	hSession->unlock_delay_ms 	= (unsigned short) delay;
-	return 0;
-}
-
-LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-	return (unsigned int) hSession->unlock_delay_ms;
 }
 

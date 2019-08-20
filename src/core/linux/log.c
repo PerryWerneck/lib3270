@@ -47,7 +47,7 @@
 #ifdef HAVE_SYSLOG
 	if(use_syslog)
 	{
-		vsyslog(LOG_USER, fmt, arg_ptr);
+		vsyslog(LOG_INFO, fmt, arg_ptr);
 	}
 	else
 	{
@@ -71,7 +71,7 @@
 	{
 		if(!use_syslog)
 		{
-			openlog(LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), LOG_NDELAY, LOG_USER);
+			openlog(LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), LOG_CONS, LOG_USER);
 			use_syslog = 1;
 		}
 	}

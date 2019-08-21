@@ -288,10 +288,13 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 		return NULL;
 	}
 
+	if(offset < 0)
+		offset = lib3270_get_cursor_address(h);
+
 	maxlen = (h->rows * (h->cols+ (lf ? 1 : 0) )) - offset;
 	if(maxlen <= 0 || offset < 0)
 	{
-		errno = EINVAL;
+		errno = EOVERFLOW;
 		return NULL;
 	}
 
@@ -331,19 +334,28 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	return buffer;
 }
 
-LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, int row, int col, int len, char lf)
+LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf)
 {
 	CHECK_SESSION_HANDLE(h);
-	return lib3270_get_string_at_address(h, ((row-1) * h->cols) + (col-1), len, lf);
+
+	int baddr = lib3270_translate_to_address(h,row,col);
+	if(baddr < 0)
+		return NULL;
+
+	return lib3270_get_string_at_address(h, baddr, len, lf);
 }
 
-LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, int row, int col, const char *text, char lf)
+LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf)
 {
 	int		  rc;
 	size_t	  sz		= strlen(text);
 	char	* contents;
 
-	contents = lib3270_get_string_at(h,row,col,sz,lf);
+	int baddr = lib3270_translate_to_address(h,row,col);
+	if(baddr < 0)
+		return -1;
+
+	contents = lib3270_get_string_at_address(h,baddr,sz,lf);
 	if(!contents)
 		return -1;
 

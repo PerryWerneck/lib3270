@@ -1094,11 +1094,14 @@
 	 * @brief Get all text inside the terminal.
 	 *
 	 * @param h			Session Handle.
-	 * @param offset	Start position.
+	 * @param offset	Start position (-1 to current cursor position).
 	 * @param len		Text length or -1 to all text.
 	 * @param lf		Line break char (0 to disable line breaks).
 	 *
-	 * @return Contents at position if available, or NULL. Release it with lib3270_free()
+	 * @return Contents at position if available, or NULL if error (sets errno). Release it with lib3270_free()
+	 *
+	 * @exception ENOTCONN	Not connected to host.
+	 * @exception EOVERFLOW	Invalid offset.
 	 *
 	 */
 	LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf);
@@ -1109,13 +1112,16 @@
 	 * @param h			Session Handle.
 	 * @param row		Desired row.
 	 * @param col		Desired col.
-	 * @param length	Text length
+	 * @param len		Text length or -1 to all text.
 	 * @param lf		Line break char (0 to disable line breaks).
 	 *
-	 * @return Contents at position if available, or NULL. Release it with lib3270_free()
+	 * @return Contents at position if available, or NULL if error (sets errno). Release it with lib3270_free()
+	 *
+	 * @exception ENOTCONN	Not connected to host.
+	 * @exception EOVERFLOW	Invalid position.
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, int row, int col, int len, char lf);
+	LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf);
 
 	/**
 	 * @brief Check for text at requested position
@@ -1129,7 +1135,7 @@
 	 * @return Test result from strcmp
 	 *
 	 */
-	 LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, int row, int col, const char *text, char lf);
+	 LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf);
 
 
 	/**
@@ -1138,7 +1144,10 @@
 	 * @param h			Session Handle.
 	 * @param baddr		Reference position.
 	 *
-	 * @return NULL if failed, contents of the entire field if suceeds (release it with lib3270_free()).
+	 * @return NULL if failed (sets errno), contents of the entire field if suceeds (release it with lib3270_free()).
+	 *
+	 * @exception ENOTCONN	Not connected to host.
+	 * @exception EOVERFLOW	Invalid position.
 	 *
 	 */
 	LIB3270_EXPORT char * lib3270_get_field_text_at(H3270 *h, int baddr);
@@ -1206,7 +1215,12 @@
 	 * @param hSession	Session handle.
 	 * @param addr		Buffer address of the field.
 	 *
-	 * @return field address or -1 if the screen isn't formatted (sets errno).
+	 * @return field address or negative if the screen isn't formatted (sets errno).
+	 *
+	 * @exception -ENOTCONN		Not connected to host.
+	 * @exception -EOVERFLOW	Invalid position.
+	 * @exception -ENOTSUP		Screen is not formatted.
+	 * @exception -ENODATA		No field at the address.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr);

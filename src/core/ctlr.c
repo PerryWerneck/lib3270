@@ -451,7 +451,7 @@ LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr)
 		return - errno;
 
 	if (!hSession->formatted)
-		return - (errno = ENOTCONN);
+		return - (errno = ENOTSUP);
 
     if(baddr < 0)
 		baddr = hSession->cursor_addr;
@@ -474,18 +474,18 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 	int addr;
 	int width = 0;
 
-	CHECK_SESSION_HANDLE(hSession);
+	if(check_online_session(hSession))
+		return - errno;
 
 	if (!hSession->formatted)
-		return errno = ENOTCONN;
+		return - (errno = ENOTSUP);
 
 	if(baddr < 0)
 		baddr = hSession->cursor_addr;
 
 	addr = lib3270_field_addr(hSession,baddr);
-
 	if(addr < 0)
-		return -1;
+		return addr;
 
 	saddr = addr;
 	INC_BA(addr);
@@ -497,26 +497,24 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 		width++;
 	} while (addr != saddr);
 
-	return -1;
+	return -(errno = ENODATA);
 }
 
-/**
- * @brief Find the buffer address of the field attribute for a given buffer address.
- *
- * @param hSession	Session handle.
- * @param addr		Buffer address of the field.
- *
- * @return field address or -1 if the screen isn't formatted (sets errno).
- *
- */
 LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 {
 	int sbaddr;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	if(!lib3270_is_connected(hSession))
+		return -(errno = ENOTCONN);
 
 	if(!hSession->formatted)
-		return errno = ENOTCONN;
+		return -(errno = ENOTSUP);
+
+	if(baddr < 0)
+		baddr = lib3270_get_cursor_address(hSession);
+
+	if(baddr > lib3270_get_length(hSession))
+		return -(errno = EOVERFLOW);
 
 	sbaddr = baddr;
 	do
@@ -526,8 +524,7 @@ LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
 		DEC_BA(baddr);
 	} while (baddr != sbaddr);
 
-	errno = EINVAL;
-	return -1;
+	return -(errno = ENODATA);
 }
 
 LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr)
@@ -565,7 +562,7 @@ LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSessi
  * @param hSession	Session handle.
  * @param addr		Buffer address of the field.
  *
- * @return field length or -1 if invalid or not connected (sets errno).
+ * @return field length or negative if invalid or not connected (sets errno).
  *
  */
 int lib3270_field_length(H3270 *hSession, int baddr)
@@ -575,9 +572,8 @@ int lib3270_field_length(H3270 *hSession, int baddr)
 	int width = 0;
 
 	addr = lib3270_field_addr(hSession,baddr);
-
 	if(addr < 0)
-		return -1;
+		return addr;
 
 	saddr = addr;
 	INC_BA(addr);
@@ -589,17 +585,22 @@ int lib3270_field_length(H3270 *hSession, int baddr)
 		width++;
 	} while (addr != saddr);
 
-	return errno = EINVAL;
+	return -(errno = EINVAL);
 
 }
 
-/*
- * Find the field attribute for the given buffer address.  Return its address
- * rather than its value.
+/**
+ * @brief Find the field attribute for the given buffer address.
+ *
+ * @return Field attribute.
+ *
  */
 unsigned char get_field_attribute(H3270 *hSession, int baddr)
 {
-	return hSession->ea_buf[lib3270_field_addr(hSession,baddr)].fa;
+	baddr = lib3270_field_addr(hSession,baddr);
+	if(baddr < 0)
+		return 0;
+	return hSession->ea_buf[baddr].fa;
 }
 
 /**
@@ -608,7 +609,7 @@ unsigned char get_field_attribute(H3270 *hSession, int baddr)
  * @param hSession	Session handle.
  * @param baddr0	Search start addr (-1 to use current cursor position).
  *
- * @return address following the unprotected attribute byte, or 0 if no nonzero-width unprotected field can be found, -1 if not connected.
+ * @return address following the unprotected attribute byte, or 0 if no nonzero-width unprotected field can be found, negative if failed.
  *
  */
 LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
@@ -618,7 +619,7 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!hSession->formatted)
-		return errno = ENOTCONN;
+		return -(errno = ENOTSUP);
 
 	if(baddr0 < 0)
 		baddr0 = hSession->cursor_addr;

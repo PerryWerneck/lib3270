@@ -52,7 +52,7 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *sta
 	first = lib3270_field_addr(hSession,baddr);
 
 	if(first < 0)
-		return errno = (errno == 0 ? EINVAL : errno);
+		return -first;
 
 	first++;
 

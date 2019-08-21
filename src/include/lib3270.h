@@ -685,7 +685,9 @@
 	 * @param row		Row inside the screen.
 	 * @param col		Col inside the screen.
 	 *
-	 * @return Current address or -1 if invalid (sets errno).
+	 * @return Current address or negative if invalid (sets errno).
+	 *
+	 * @retval -EOVERFLOW	The coordinates are out of the screen.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, unsigned int row, unsigned int col);
@@ -710,13 +712,19 @@
 	/**
 	 * @brief Set string at defined row/column.
 	 *
+	 * Set the string in the defined row/column; returns number of processed caracter if succeeds or negative value if not.
+	 *
 	 * @param hSession	Session handle.
 	 * @param row		Row for the first character.
 	 * @param col		Col for the first character.
 	 * @param str		String to set.
 	 * @param length	Length of the string (-1 for auto-detect).
 	 *
-	 * @return Negative if error or number of processed characters.
+	 * @return Negative if error or number (sets errno) of processed characters.
+	 *
+	 * @retval -EPERM		The keyboard is locked.
+	 * @retval -EOVERFLOW	The row or col is bigger than the screen size.
+	 * @retval -ENOTCONN	Disconnected from host.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str, int length);
@@ -731,6 +739,10 @@
 	 *
 	 * @return Negative if error or number of processed characters.
 	 *
+	 * @retval -EPERM		The keyboard is locked.
+	 * @retval -EOVERFLOW	The address is beyond the screen length.
+	 * @retval -ENOTCONN	Disconnected from host.
+	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str, int length);
 
@@ -741,7 +753,10 @@
 	 * @param str		Text to insert.
 	 * @param length	Length of the string (-1 for auto-detect).
 	 *
-	 * @return 0 if success, non zero if failed.
+	 * @return 0 if success, non zero if failed (sets errno).
+	 *
+	 * @retval EPERM		The keyboard is locked.
+	 * @retval ENOTCONN		Disconnected from host.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *str, int length);
@@ -754,7 +769,11 @@
 	 * @param hSession	TN3270 session.
 	 * @param baddr		New cursor position.
 	 *
-	 * @return Old cursor address or -1 in case of error (sets errno).
+	 * @return Old cursor address or negative in case of error (sets errno).
+	 *
+	 * @retval -EOVERFLOW	The address is beyond the screen length.
+	 * @retval -ENOTCONN	Disconnected from host.
+	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int baddr);
 
@@ -765,8 +784,10 @@
 	 * @param row	New cursor row.
 	 * @param col	New cursor col.
 	 *
-	 * @return last cursor address or -1 if invalid (sets errno).
+	 * @return Old cursor address or negative in case of error (sets errno).
 	 *
+	 * @retval -EOVERFLOW	The address is beyond the screen length.
+	 * @retval -ENOTCONN	Disconnected from host.
 	 */
 	LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *h, unsigned int row, unsigned int col);
 

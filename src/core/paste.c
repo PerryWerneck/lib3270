@@ -248,15 +248,14 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 	row--;
 	col--;
 
-	if(row <= hSession->rows && col <= hSession->cols)
-	{
-		hSession->cbk.suspend(hSession);
+	if(row > hSession->rows || col > hSession->cols)
+		return - (errno = EOVERFLOW);
 
-		hSession->cursor_addr = (row * hSession->cols) + col;
-		rc += set_string(hSession, str, length);
+	hSession->cbk.suspend(hSession);
 
-		hSession->cbk.resume(hSession);
-	}
+	hSession->cursor_addr = (row * hSession->cols) + col;
+	rc = set_string(hSession, str, length);
+	hSession->cbk.resume(hSession);
 
 	trace("%s rc=%d",__FUNCTION__,rc);
 
@@ -279,8 +278,12 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	if(hSession->kybdlock)
 		return - (errno = EPERM);
 
-	if(baddr >= 0 && lib3270_set_cursor_address(hSession,baddr) < 0)
-		return -1;
+	if(baddr >= 0)
+	{
+		rc = lib3270_set_cursor_address(hSession,baddr);
+		if(rc < 0)
+			return rc;
+	}
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
 		lib3270_unselect(hSession);
@@ -305,6 +308,9 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str,
 
 	if(hSession->kybdlock)
 		return - (errno = EPERM);
+
+	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
+		lib3270_unselect(hSession);
 
 	hSession->cbk.suspend(hSession);
 	rc = set_string(hSession, str, length);

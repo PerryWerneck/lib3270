@@ -64,6 +64,7 @@ GENMARSHAL=@GENMARSHAL@
 CONVERT=@CONVERT@
 OPTIPNG=@OPTIPNG@
 ZIP=@ZIP@
+DOXYGEN=@DOXYGEN@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -351,6 +352,8 @@ $(POTDIR)/lib3270.pot: \
 locale: \
 	$(POTDIR)/lib3270.pot
 
+doc:
+	@$(DOXYGEN) ./doxygen/doxyfile
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 

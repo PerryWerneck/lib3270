@@ -182,7 +182,6 @@ LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cu
 
 		if(baddr < 0)
 		{
-			errno = EINVAL;
 			lib3270_free(selection);
 			return NULL;
 		}

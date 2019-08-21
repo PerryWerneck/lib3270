@@ -431,27 +431,12 @@ LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, unsigned int ro
 	col--;
 
 	if(row > hSession->rows || col > hSession->cols)
-	{
-		// Invalid coordinates
-		errno = EINVAL;
-		return -1;
-	}
+		return - (errno = EOVERFLOW);
 
 	return (row * hSession->cols) + col;
 }
 
 
-/**
- * @brief Move cursor to a new position.
- *
- * @see lib3270_set_cursor_position
- *
- * @param hSession	TN3270 session.
- * @param baddr		New cursor position.
- *
- * @return Old cursor address or -1 in case of error (sets errno).
- *
- */
 LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int baddr)
 {
     FAIL_IF_NOT_ONLINE(hSession);
@@ -459,10 +444,7 @@ LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int badd
 	trace("%s(%d)",__FUNCTION__,baddr);
 
 	if(baddr > (hSession->rows * hSession->cols))
-	{
-		errno = EINVAL;
-		return -1;
-	}
+		return - (errno = EOVERFLOW);
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
 		lib3270_unselect(hSession);
@@ -470,46 +452,13 @@ LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int badd
 	return cursor_move(hSession,baddr);
 }
 
-/**
- * @brief Move cursor to a new position.
- *
- * @see lib3270_set_cursor_position
- *
- * @param hSession	TN3270 session.
- * @param row		New cursor row.
- * @parma col		New cursor column.
- *
- * @return Old cursor address or -1 in case of error (sets errno).
- *
- */
 LIB3270_EXPORT int lib3270_set_cursor_position(H3270 *hSession, unsigned int row, unsigned int col)
 {
-	return lib3270_set_cursor_address(hSession,lib3270_translate_to_address(hSession, row, col));
+	int baddr = lib3270_translate_to_address(hSession, row, col);
+	if(baddr < 0)
+		return -errno;
 
-	/*
-    int baddr = -1;
-
-    CHECK_SESSION_HANDLE(h);
-
-	if(h->selected && !lib3270_get_toggle(h,LIB3270_TOGGLE_KEEP_SELECTED))
-		lib3270_unselect(h);
-
-	row--;
-	col--;
-
-	if(row >= 0 && col >= 0 && row <= h->rows && col <= h->cols)
-	{
-		baddr = (row * h->cols) + col;
-
-		if(baddr != h->cursor_addr)
-		{
-			h->cursor_addr = baddr;
-			h->cbk.update_cursor(h,(unsigned short) row,(unsigned short) col,h->text[baddr].chr,h->text[baddr].attr);
-		}
-	}
-
-	return baddr;
-	*/
+	return lib3270_set_cursor_address(hSession,baddr);
 }
 
 /**
@@ -527,10 +476,7 @@ int cursor_move(H3270 *hSession, int baddr)
 {
     int ret = hSession->cursor_addr;
 
-	if(ret == baddr)
-		return ret;
-
-	if(baddr >= 0)
+	if(ret != baddr && baddr >= 0)
 	{
 		hSession->cursor_addr = baddr;
 		hSession->cbk.update_cursor(
@@ -545,15 +491,13 @@ int cursor_move(H3270 *hSession, int baddr)
     return ret;
 }
 
-/* Status line stuff. */
-
+/**
+ * @brief Status line stuff.
+ */
 void set_status(H3270 *session, LIB3270_FLAG id, Boolean on)
 {
-	CHECK_SESSION_HANDLE(session);
-
 	session->oia.flag[id] = (on != 0);
 	session->cbk.update_oia(session,id,session->oia.flag[id]);
-
 }
 
 void status_ctlr_done(H3270 *session)

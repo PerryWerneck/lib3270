@@ -67,7 +67,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 	return errno = ETIMEDOUT;
 }
 
-int lib3270_wait_for_text(H3270 *hSession, const char *key, int seconds)
+int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds)
 {
 	time_t end = time(0)+seconds;
 

@@ -67,6 +67,42 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 	return errno = ETIMEDOUT;
 }
 
+int lib3270_wait_for_text(H3270 *hSession, const char *key, int seconds)
+{
+	time_t end = time(0)+seconds;
+
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	lib3270_main_iterate(hSession,0);
+
+	do
+	{
+		// Keyboard is locked by operator error, fails!
+		if(hSession->kybdlock && KYBDLOCK_IS_OERR(hSession))
+			return errno = EPERM;
+
+		if(!lib3270_connected(hSession))
+			return errno = ENOTCONN;
+
+		char * contents = lib3270_get_string_at_address(hSession, 0, -1, 0);
+		if(!contents)
+			return errno;
+
+		if(strstr(contents,key)) {
+			lib3270_free(contents);
+			return 0;
+		}
+
+		lib3270_free(contents);
+
+		lib3270_main_iterate(hSession,1);
+
+	}
+	while(time(0) < end);
+
+	return errno = ETIMEDOUT;
+}
+
 int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *key, int seconds)
 {
 	time_t end = time(0)+seconds;
@@ -87,7 +123,7 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 		if(!lib3270_connected(hSession))
 			return errno = ENOTCONN;
 
-		if(lib3270_cmp_text_at_address(hSession, baddr, key, 0) == 0)
+		if(lib3270_cmp_string_at_address(hSession, baddr, key, 0) == 0)
 			return 0;
 
 		lib3270_main_iterate(hSession,1);

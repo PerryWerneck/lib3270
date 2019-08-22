@@ -434,7 +434,7 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 
 #endif /*]*/
 
-int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const char *title, const char *summary, const char *body)
+int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const char GNUC_UNUSED(*title), const char *summary, const char *body)
 {
 #ifdef _WIN32
 

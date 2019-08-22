@@ -345,16 +345,16 @@ LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned
 	return lib3270_get_string_at_address(h, baddr, len, lf);
 }
 
-LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf)
+LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf)
 {
 	int baddr = lib3270_translate_to_address(h,row,col);
 	if(baddr < 0)
 		return -1;
 
-	return lib3270_cmp_text_at_address(h,baddr,text,lf);
+	return lib3270_cmp_string_at_address(h,baddr,text,lf);
 }
 
- LIB3270_EXPORT int lib3270_cmp_text_at_address(H3270 *h, int baddr, const char *text, char lf)
+ LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf)
  {
 	int		  rc;
 	size_t	  sz		= strlen(text);
@@ -380,7 +380,7 @@ LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int 
  *
  * @return String with the field contents (release it with lib3270_free()
  */
-LIB3270_EXPORT char * lib3270_get_field_text_at(H3270 *session, int baddr)
+LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr)
 {
 	int first = lib3270_field_addr(session,baddr);
 

@@ -705,9 +705,7 @@
 	 * @return Negative if error (sets errno) or number of processed characters.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_string(H3270 *h, const unsigned char *text, int length);
-
-	#define lib3270_set_text_at(h,r,c,t) lib3270_set_string_at(h,r,c,t,-1)
+	LIB3270_EXPORT int lib3270_set_text(H3270 *h, const unsigned char *text, int length);
 
 	/**
 	 * @brief Set string at defined row/column.
@@ -1135,9 +1133,9 @@
 	 * @return Test result from strcmp
 	 *
 	 */
-	 LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf);
+	 LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf);
 
-	 LIB3270_EXPORT int lib3270_cmp_text_at_address(H3270 *h, int baddr, const char *text, char lf);
+	 LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf);
 
 	/**
 	 * @brief Get contents of the field at position.
@@ -1151,7 +1149,7 @@
 	 * @exception EOVERFLOW	Invalid position.
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_get_field_text_at(H3270 *h, int baddr);
+	LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *h, int baddr);
 
 	/**
 	 * @brief Find the next unprotected field.
@@ -1479,6 +1477,22 @@
 
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
 	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);
+
+	/**
+	 * @brief Wait for string at screen.
+	 *
+	 * @param hSession	TN3270 Session.
+	 * @param key		The string to wait for.
+	 * @param seconds	Maximum wait time.
+	 *
+	 * @return 0 if the string was found, error code if not (sets errno).
+	 *
+	 * @retval ENOTCONN		Not connected to host.
+	 * @retval ETIMEDOUT	Timeout.
+	 * @retval EPERM		The keyboard is locked.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds);
 
 	/**
 	 * @brief Wait for string at position.

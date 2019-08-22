@@ -347,13 +347,18 @@ LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned
 
 LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf)
 {
-	int		  rc;
-	size_t	  sz		= strlen(text);
-	char	* contents;
-
 	int baddr = lib3270_translate_to_address(h,row,col);
 	if(baddr < 0)
 		return -1;
+
+	return lib3270_cmp_text_at_address(h,baddr,text,lf);
+}
+
+ LIB3270_EXPORT int lib3270_cmp_text_at_address(H3270 *h, int baddr, const char *text, char lf)
+ {
+	int		  rc;
+	size_t	  sz		= strlen(text);
+	char	* contents;
 
 	contents = lib3270_get_string_at_address(h,baddr,sz,lf);
 	if(!contents)
@@ -364,7 +369,7 @@ LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int 
 	lib3270_free(contents);
 
 	return rc;
-}
+ }
 
 
 /**

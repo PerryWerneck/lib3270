@@ -473,40 +473,6 @@ LIB3270_EXPORT int lib3270_wait(H3270 *hSession, int seconds)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_wait_for_update(H3270 *hSession, int seconds)
-{
-	return errno = ENOTSUP;
-}
-
-LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
-{
-	time_t end = time(0)+seconds;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	event_dispatcher(hSession,0);
-
-	// Keyboard is locked by operator error, fails!
-	if(hSession->kybdlock && KYBDLOCK_IS_OERR(hSession))
-		return -1;
-
-	do
-	{
-		if(!lib3270_lock_status(hSession))
-			return 0;
-
-		if(!lib3270_connected(hSession))
-			return ENOTCONN;
-
-		event_dispatcher(hSession,1);
-
-	}
-	while(time(0) < end);
-
-	return ETIMEDOUT;
-}
-
-
 LIB3270_EXPORT void lib3270_ring_bell(H3270 *session)
 {
 	CHECK_SESSION_HANDLE(session);

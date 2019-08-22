@@ -1137,6 +1137,7 @@
 	 */
 	 LIB3270_EXPORT int lib3270_cmp_text_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf);
 
+	 LIB3270_EXPORT int lib3270_cmp_text_at_address(H3270 *h, int baddr, const char *text, char lf);
 
 	/**
 	 * @brief Get contents of the field at position.
@@ -1478,6 +1479,43 @@
 
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
 	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);
+
+	/**
+	 * @brief Wait for string at position.
+	 *
+	 * @param hSession	TN3270 Session.
+	 * @param row		Row inside the screen.
+	 * @param col		Col inside the screen.
+	 * @param key		The string to wait for.
+	 * @param seconds	Maximum wait time.
+	 *
+	 * @return 0 if the string was found, error code if not (sets errno).
+	 *
+	 * @retval ENOTCONN		Not connected to host.
+	 * @retval EOVERFLOW	Invalid position.
+	 * @retval ETIMEDOUT	Timeout.
+	 * @retval EPERM		The keyboard is locked.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_wait_for_string_at(H3270 *hSession, unsigned int row, unsigned int col, const char *key, int seconds);
+
+	/**
+	 * @brief Wait for string at addrress.
+	 *
+	 * @param hSession	TN3270 Session.
+	 * @param baddr		Start position (-1 to current cursor position).
+	 * @param key		The string to wait for.
+	 * @param seconds	Maximum wait time.
+	 *
+	 * @return 0 if the string was found, error code if not (sets errno).
+	 *
+	 * @retval ENOTCONN	Not connected to host.
+	 * @retval EOVERFLOW	Invalid position.
+	 * @retval ETIMEDOUT	Timeout.
+	 * @retval EPERM		The keyboard is locked.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *key, int seconds);
 
 #ifdef __cplusplus
 	}

@@ -34,12 +34,12 @@
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
 
- static const char * get_version(H3270 GNUC_UNUSED(*hSession))
+ static const char * get_version(const H3270 GNUC_UNUSED(*hSession))
  {
 	return lib3270_get_version();
  }
 
- static const char * get_revision(H3270 GNUC_UNUSED(*hSession))
+ static const char * get_revision(const H3270 GNUC_UNUSED(*hSession))
  {
 	return lib3270_get_revision();
  }

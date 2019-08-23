@@ -511,7 +511,7 @@
 	 *
 	 * @return URL of the predefined host in the format tn3270://hostname:service or tn3270s://hostname:service
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_default_host(H3270 *hSession);
+	 LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 *hSession);
 
 	/**
 	 * @brief Set URL for the certificate revocation list.
@@ -524,7 +524,7 @@
 	 */
 	 LIB3270_EXPORT int lib3270_set_crl_url(H3270 *hSession, const char *crl);
 
-	 LIB3270_EXPORT const char * lib3270_get_crl_url(H3270 *hSession);
+	 LIB3270_EXPORT const char * lib3270_get_crl_url(const H3270 *hSession);
 
 	/**
 	 * @brief Get hostname for the connect/reconnect operations.
@@ -534,9 +534,9 @@
 	 * @return Pointer to host id set (internal data, do not change it)
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_hostname(H3270 *h);
+	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_hostname(const H3270 *h));
 
-	 LIB3270_EXPORT void lib3270_set_hostname(H3270 *h, const char *hostname);
+	 LIB3270_EXPORT void LIB3270_DEPRECATED(lib3270_set_hostname(H3270 *h, const char *hostname));
 
 	/**
 	 * @brief Get SSL host option.
@@ -544,32 +544,32 @@
 	 * @return Non zero if the host URL has SSL scheme.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_secure_host(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_get_secure_host(const H3270 *hSession);
 
 	/**
 	 * @brief Get security state.
 	 *
 	 */
-	LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(H3270 *session);
+	LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *session);
 
-	LIB3270_EXPORT long 				lib3270_get_SSL_verify_result(H3270 *session);
+	LIB3270_EXPORT long 				lib3270_get_SSL_verify_result(const H3270 *session);
 
 	/**
 	 * @brief Get security state as text.
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_message(H3270 *hSession);
+	LIB3270_EXPORT const char * lib3270_get_ssl_state_message(const H3270 *hSession);
 
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(H3270 *hSession);
+	LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(const H3270 *hSession);
 
 	/**
 	 * @brief Get security state message.
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(H3270 *hSession);
+	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSession);
 
-	LIB3270_EXPORT char * lib3270_get_ssl_crl_text(H3270 *hSession);
-	LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(H3270 *hSession);
+	LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession);
+	LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession);
 
 
 	/**
@@ -580,9 +580,9 @@
 	 * @return Pointer to service name (internal data, do not change it)
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_srvcname(H3270 *h);
+	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_srvcname(const H3270 *h));
 
-	 LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc);
+	 LIB3270_EXPORT void LIB3270_DEPRECATED(lib3270_set_srvcname(H3270 *h, const char *srvc));
 
 	/**
 	 * @brief Get HOST URL.
@@ -590,7 +590,7 @@
 	 * @return TN3270 Connection URL.
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession);
+	 LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession);
 
 	/**
 	 * @brief Get session options.
@@ -598,9 +598,9 @@
 	 * @param h		Session handle.
 	 *
 	 */
-	LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(H3270 *hSession);
+	LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(const H3270 *hSession);
 
-	LIB3270_EXPORT const char * lib3270_get_host_type_name(H3270 *hSession);
+	LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession);
 
 	/**
 	 * @brief Get URL of the hostname for the connect/reconnect operations.
@@ -610,7 +610,7 @@
 	 * @return Pointer to host URL set (internal data, do not change it)
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_host(H3270 *h);
+	 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h);
 
 
 	/**
@@ -655,7 +655,7 @@
 	 * @return Connection state.
 	 *
 	 */
-	LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(H3270 *h);
+	LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(const H3270 *h);
 
 	/**
 	 * @brief Pretend that a sequence of keys was entered at the keyboard.
@@ -690,7 +690,7 @@
 	 * @retval -EOVERFLOW	The coordinates are out of the screen.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, unsigned int row, unsigned int col);
+	LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col);
 
 	/**
 	 * @brief Set string at current cursor position.
@@ -979,30 +979,30 @@
 	 * @return conected LU name or NULL if not connected.
 	 *
 	 */
-	LIB3270_EXPORT const char		* lib3270_get_luname(H3270 *hSession);
+	LIB3270_EXPORT const char		* lib3270_get_luname(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname);
 
-	LIB3270_EXPORT int lib3270_has_active_script(H3270 *h);
-	LIB3270_EXPORT int lib3270_get_typeahead(H3270 *h);
-	LIB3270_EXPORT int lib3270_get_undera(H3270 *h);
-	LIB3270_EXPORT int lib3270_get_oia_box_solid(H3270 *h);
-	LIB3270_EXPORT int lib3270_pconnected(H3270 *h);
-	LIB3270_EXPORT int lib3270_half_connected(H3270 *h);
-	LIB3270_EXPORT int lib3270_connected(H3270 *h);
-	LIB3270_EXPORT int lib3270_disconnected(H3270 *h);
-	LIB3270_EXPORT int lib3270_in_neither(H3270 *h);
-	LIB3270_EXPORT int lib3270_in_ansi(H3270 *h);
-	LIB3270_EXPORT int lib3270_in_3270(H3270 *h);
-	LIB3270_EXPORT int lib3270_in_sscp(H3270 *h);
-	LIB3270_EXPORT int lib3270_in_tn3270e(H3270 *h);
-	LIB3270_EXPORT int lib3270_in_e(H3270 *h);
+	LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h);
+	LIB3270_EXPORT int lib3270_get_typeahead(const H3270 *h);
+	LIB3270_EXPORT int lib3270_get_undera(const H3270 *h);
+	LIB3270_EXPORT int lib3270_get_oia_box_solid(const H3270 *h);
+	LIB3270_EXPORT int lib3270_pconnected(const H3270 *h);
+	LIB3270_EXPORT int lib3270_half_connected(const H3270 *h);
+	LIB3270_EXPORT int lib3270_connected(const H3270 *h);
+	LIB3270_EXPORT int lib3270_disconnected(const H3270 *h);
+	LIB3270_EXPORT int lib3270_in_neither(const H3270 *h);
+	LIB3270_EXPORT int lib3270_in_ansi(const H3270 *h);
+	LIB3270_EXPORT int lib3270_in_3270(const H3270 *h);
+	LIB3270_EXPORT int lib3270_in_sscp(const H3270 *h);
+	LIB3270_EXPORT int lib3270_in_tn3270e(const H3270 *h);
+	LIB3270_EXPORT int lib3270_in_e(const H3270 *h);
 
-	LIB3270_EXPORT int lib3270_is_ready(H3270 *h);
-	LIB3270_EXPORT int lib3270_is_connected(H3270 *h);
-	LIB3270_EXPORT int lib3270_is_secure(H3270 *h);
+	LIB3270_EXPORT int lib3270_is_ready(const H3270 *h);
+	LIB3270_EXPORT int lib3270_is_connected(const H3270 *h);
+	LIB3270_EXPORT int lib3270_is_secure(const H3270 *h);
 
-	LIB3270_EXPORT LIB3270_MESSAGE		lib3270_lock_status(H3270 *h);
+	LIB3270_EXPORT LIB3270_MESSAGE		lib3270_get_lock_status(const H3270 *h);
 
 	/**
 	 * Run main iteration.
@@ -1071,7 +1071,7 @@
 	 * @return String with current encoding.
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_display_charset(H3270 *session);
+	 LIB3270_EXPORT const char * lib3270_get_display_charset(const H3270 *session);
 
 	 #define lib3270_get_charset(s) lib3270_get_display_charset(s)
 
@@ -1303,7 +1303,7 @@
 
 	LIB3270_EXPORT int lib3270_set_model(H3270 *hSession, const char *name);
 
-	LIB3270_EXPORT const char	* lib3270_get_model(H3270 *session);
+	LIB3270_EXPORT const char	* lib3270_get_model(const H3270 *session);
 	LIB3270_EXPORT int			  lib3270_get_model_number(H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);
@@ -1398,7 +1398,7 @@
 
 
 	LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype);
-	LIB3270_EXPORT int lib3270_get_color_type(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_get_color_type(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *name);
 	LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt);
@@ -1430,7 +1430,7 @@
 	 * @return Non zero if the host is TSO.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_is_tso(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_is_tso(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on);
 
@@ -1442,7 +1442,7 @@
 	 * @return Non zero if the host is AS400.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_is_as400(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_is_as400(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on);
 

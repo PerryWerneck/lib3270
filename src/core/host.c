@@ -315,10 +315,8 @@ LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
 	return 0;
 }
 
-LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
+LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
-
 	if(hSession->host.full)
 		return hSession->host.full;
 
@@ -330,7 +328,7 @@ LIB3270_EXPORT const char * lib3270_get_url(H3270 *hSession)
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_default_host(H3270 GNUC_UNUSED(*hSession))
+LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hSession))
 {
 #ifdef LIB3270_DEFAULT_HOST
 	return LIB3270_DEFAULT_HOST;
@@ -461,14 +459,8 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	return 0;
 }
 
-LIB3270_EXPORT const char * lib3270_get_hostname(H3270 *h)
+LIB3270_EXPORT const char * lib3270_get_hostname(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
-
-    // TODO: Find a better way!
-	if(!h->host.current)
-		lib3270_set_url(h,NULL);
-
 	if(h->host.current)
 		return h->host.current;
 
@@ -482,14 +474,8 @@ LIB3270_EXPORT void lib3270_set_hostname(H3270 *h, const char *hostname)
 	update_host(h);
 }
 
-LIB3270_EXPORT const char * lib3270_get_srvcname(H3270 *h)
+LIB3270_EXPORT const char * lib3270_get_srvcname(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
-
-    // TODO: Find a better way!
-	if(!h->host.srvc)
-		lib3270_set_url(h,NULL);
-
     if(h->host.srvc)
 		return h->host.srvc;
 	return "telnet";
@@ -502,38 +488,32 @@ LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc)
 	update_host(h);
 }
 
-LIB3270_EXPORT const char * lib3270_get_host(H3270 *h)
+LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
 	return h->host.full;
 }
 
-LIB3270_EXPORT const char * lib3270_get_luname(H3270 *h)
+LIB3270_EXPORT const char * lib3270_get_luname(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
 	return h->connected_lu;
 }
 
-LIB3270_EXPORT int lib3270_has_active_script(H3270 *h)
+LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
 	return (h->oia.flag[LIB3270_FLAG_SCRIPT] != 0);
 }
 
-LIB3270_EXPORT int lib3270_get_typeahead(H3270 *h)
+LIB3270_EXPORT int lib3270_get_typeahead(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
 	return (h->oia.flag[LIB3270_FLAG_TYPEAHEAD] != 0);
 }
 
-LIB3270_EXPORT int lib3270_get_undera(H3270 *h)
+LIB3270_EXPORT int lib3270_get_undera(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
 	return (h->oia.flag[LIB3270_FLAG_UNDERA] != 0);
 }
 
-LIB3270_EXPORT int lib3270_get_oia_box_solid(H3270 *h)
+LIB3270_EXPORT int lib3270_get_oia_box_solid(const H3270 *h)
 {
-    CHECK_SESSION_HANDLE(h);
 	return (h->oia.flag[LIB3270_FLAG_BOXSOLID] != 0);
 }

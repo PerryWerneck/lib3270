@@ -34,12 +34,12 @@
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
 
- const char * lib3270_get_oversize(H3270 *hSession)
+ const char * lib3270_get_oversize(const H3270 *hSession)
  {
  	return hSession->oversize.str;
  }
 
- int lib3270_set_oversize(H3270 *hSession, const char GNUC_UNUSED(*value))
+ int lib3270_set_oversize(H3270 *hSession, const char *value)
  {
 	if(hSession->cstate != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
@@ -47,10 +47,34 @@
 	if(!hSession->extended)
 		return errno = ENOTSUP;
 
-	// TODO: Implement it!
- 	// Replace(hSession->oversize.str,value);
+	if(hSession->oversize.str)
+	{
+		// Do nothing if it's the same value!
+		if(value && !strcasecmp(hSession->oversize.str,value))
+			return 0;
 
-	return errno = ENOTSUP;
+		lib3270_free(hSession->oversize.str);
+		hSession->oversize.str = NULL;
+	}
+
+	int ovc = 0, ovr = 0;
+
+	if(value)
+	{
+		char junk;
+
+		if(sscanf(value, "%dx%d%c", &ovc, &ovr, &junk) != 2)
+			return errno = EINVAL;
+
+		hSession->oversize.str = lib3270_strdup(value);
+
+	}
+
+	ctlr_set_rows_cols(hSession, hSession->model_num, ovc, ovr);
+	ctlr_reinit(hSession,MODEL_CHANGE);
+	screen_update(hSession,0,hSession->view.rows*hSession->view.cols);
+
+	return 0;
 
  }
 
@@ -62,13 +86,11 @@
  */
 int lib3270_get_model_number(H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return hSession->model_num;
 }
 
-const char * lib3270_get_model(H3270 *hSession)
+const char * lib3270_get_model(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return hSession->model_name;
 }
 
@@ -152,9 +174,7 @@ static int parse_model_number(H3270 *session, const char *m)
 
 int lib3270_set_model(H3270 *hSession, const char *model)
 {
-	int 	ovc, ovr;
-	char	junk;
-	int		model_number;
+	int	model_number;
 
 	if(hSession->cstate != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
@@ -200,13 +220,6 @@ int lib3270_set_model(H3270 *hSession, const char *model)
 
 	trace("Model_number: %d",model_number);
 
-	if (!hSession->extended || hSession->oversize.str == CN || sscanf(hSession->oversize.str, "%dx%d%c", &ovc, &ovr, &junk) != 2)
-	{
-		ovc = 0;
-		ovr = 0;
-	}
-	ctlr_set_rows_cols(hSession, model_number, ovc, ovr);
-
 	if (hSession->termname != CN)
 		hSession->termtype = hSession->termname;
 	else
@@ -214,6 +227,18 @@ int lib3270_set_model(H3270 *hSession, const char *model)
 
 	trace("Termtype: %s",hSession->termtype);
 
+
+	// Check for oversize
+	char junk;
+	int ovc, ovr;
+
+	if (!hSession->extended || hSession->oversize.str == CN || sscanf(hSession->oversize.str, "%dx%d%c", &ovc, &ovr, &junk) != 2)
+	{
+		ovc = 0;
+		ovr = 0;
+	}
+
+	ctlr_set_rows_cols(hSession, model_number, ovc, ovr);
 	ctlr_reinit(hSession,MODEL_CHANGE);
 	screen_update(hSession,0,hSession->view.rows*hSession->view.cols);
 

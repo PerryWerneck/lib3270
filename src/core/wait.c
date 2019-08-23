@@ -53,7 +53,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 
 	do
 	{
-		if(!lib3270_lock_status(hSession))
+		if(!lib3270_get_lock_status(hSession))
 			return 0;
 
 		if(!lib3270_connected(hSession))

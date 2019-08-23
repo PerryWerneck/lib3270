@@ -73,9 +73,8 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(H3270 *hSession)
+LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return hSession->host_type;
 }
 
@@ -86,9 +85,8 @@ LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_get_color_type(H3270 *hSession)
+LIB3270_EXPORT int lib3270_get_color_type(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return (int) (hSession->mono ? 2 : hSession->colors);
 }
 
@@ -134,9 +132,8 @@ LIB3270_EXPORT const LIB3270_HOST_TYPE_ENTRY * lib3270_get_option_list(void)
 	return host_type;
 }
 
-LIB3270_EXPORT int lib3270_is_tso(H3270 *hSession)
+LIB3270_EXPORT int lib3270_is_tso(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return (hSession->host_type & LIB3270_HOST_TSO) != 0;
 }
 
@@ -152,9 +149,8 @@ LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_is_as400(H3270 *hSession)
+LIB3270_EXPORT int lib3270_is_as400(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return (hSession->host_type & LIB3270_HOST_AS400) != 0;
 }
 
@@ -202,7 +198,7 @@ LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *na
 	return errno = EINVAL;
 }
 
-LIB3270_EXPORT const char * lib3270_get_host_type_name(H3270 *hSession)
+LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession)
 {
 	size_t f;
 

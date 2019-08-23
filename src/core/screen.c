@@ -423,7 +423,7 @@ LIB3270_EXPORT unsigned int lib3270_get_cursor_address(H3270 *hSession)
  * @return Current address or -1 if invalid (sets errno).
  *
  */
-LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, unsigned int row, unsigned int col)
+LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
@@ -600,11 +600,12 @@ LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(H3270 *session)
  *
  * @return 0 if the terminal is ready (no message, keyboard unlocked), LIB3270_MESSAGE if not
  *
+ * @retval LIB3270_MESSAGE_KYBDLOCK	Keyboard is locked.
+ * @retval LIB3270_MESSAGE_NONE		Terminal is ready.
+ *
  */
-LIB3270_EXPORT LIB3270_MESSAGE lib3270_lock_status(H3270 *hSession)
+LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_lock_status(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
-
 	if(hSession->oia.status)
 		return hSession->oia.status;
 
@@ -623,9 +624,9 @@ LIB3270_EXPORT LIB3270_MESSAGE lib3270_lock_status(H3270 *hSession)
  * @return Non zero if terminal is ready for commands.
  *
  */
-LIB3270_EXPORT int lib3270_is_ready(H3270 *hSession)
+LIB3270_EXPORT int lib3270_is_ready(const H3270 *hSession)
 {
-	return lib3270_lock_status(hSession) == LIB3270_MESSAGE_NONE;
+	return lib3270_get_lock_status(hSession) == LIB3270_MESSAGE_NONE;
 }
 
 

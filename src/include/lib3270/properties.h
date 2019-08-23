@@ -64,7 +64,7 @@
 	{
 		const char		* name;								///< @brief Property name.
 		const char		* description;						///< @brief Property description.
-		const char * (*get)(H3270 *hSession);				///< @brief Get value.
+		const char * (*get)(const H3270 *hSession);			///< @brief Get value.
 		int (*set)(H3270 *hSession, const char * value);	///< @brief Set value.
 
 	} LIB3270_STRING_PROPERTY;
@@ -147,7 +147,7 @@
 	 * @return Oversize definition (NULL if not set).
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_oversize(H3270 *hSession);
+	LIB3270_EXPORT const char * lib3270_get_oversize(const H3270 *hSession);
 
 	 /**
 	  * @brief Set oversize.

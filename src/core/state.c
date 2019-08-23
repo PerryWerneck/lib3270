@@ -31,136 +31,63 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(H3270 *h)
+LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return h->cstate;
 }
 
-LIB3270_EXPORT int lib3270_pconnected(H3270 *h)
+LIB3270_EXPORT int lib3270_pconnected(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (((int) h->cstate) >= (int)LIB3270_RESOLVING);
 }
 
-LIB3270_EXPORT int lib3270_half_connected(H3270 *h)
+LIB3270_EXPORT int lib3270_half_connected(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_RESOLVING || h->cstate == LIB3270_PENDING);
 }
 
-LIB3270_EXPORT int lib3270_connected(H3270 *h)
+LIB3270_EXPORT int lib3270_connected(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return ((int) h->cstate >= (int)LIB3270_CONNECTED_INITIAL);
 }
 
-LIB3270_EXPORT int lib3270_disconnected(H3270 *h)
+LIB3270_EXPORT int lib3270_disconnected(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return ((int) h->cstate == (int)LIB3270_NOT_CONNECTED);
 }
 
-
-LIB3270_EXPORT int lib3270_in_neither(H3270 *h)
+LIB3270_EXPORT int lib3270_in_neither(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_CONNECTED_INITIAL);
 }
 
-LIB3270_EXPORT int lib3270_in_ansi(H3270 *h)
+LIB3270_EXPORT int lib3270_in_ansi(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_CONNECTED_ANSI || h->cstate == LIB3270_CONNECTED_NVT);
 }
 
-LIB3270_EXPORT int lib3270_in_3270(H3270 *h)
+LIB3270_EXPORT int lib3270_in_3270(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_CONNECTED_3270 || h->cstate == LIB3270_CONNECTED_TN3270E || h->cstate == LIB3270_CONNECTED_SSCP);
 }
 
-LIB3270_EXPORT int lib3270_in_sscp(H3270 *h)
+LIB3270_EXPORT int lib3270_in_sscp(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_CONNECTED_SSCP);
 }
 
-LIB3270_EXPORT int lib3270_in_tn3270e(H3270 *h)
+LIB3270_EXPORT int lib3270_in_tn3270e(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_CONNECTED_TN3270E);
 }
 
-LIB3270_EXPORT int lib3270_is_connected(H3270 *h)
+LIB3270_EXPORT int lib3270_is_connected(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate == LIB3270_CONNECTED_TN3270E);
 }
 
-LIB3270_EXPORT int lib3270_in_e(H3270 *h)
+LIB3270_EXPORT int lib3270_in_e(const H3270 *h)
 {
-	if(!h)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-
 	return (h->cstate >= LIB3270_CONNECTED_INITIAL_E);
 }
 

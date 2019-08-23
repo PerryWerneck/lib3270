@@ -45,24 +45,24 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_is_secure(H3270 *hSession)
+LIB3270_EXPORT int lib3270_is_secure(const H3270 *hSession)
 {
 	return lib3270_get_ssl_state(hSession) == LIB3270_SSL_SECURE;
 }
 
-LIB3270_EXPORT long lib3270_get_SSL_verify_result(H3270 *hSession)
+LIB3270_EXPORT long lib3270_get_SSL_verify_result(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 #if defined(HAVE_LIBSSL)
 	if(hSession->ssl.con)
 		return SSL_get_verify_result(hSession->ssl.con);
+#else
+	errno = ENOTSUP;
 #endif // HAVE_LIBSSL
 	return -1;
 }
 
-LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(H3270 *hSession)
+LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession)
 {
-	CHECK_SESSION_HANDLE(hSession);
 	return hSession->ssl.state;
 }
 
@@ -358,12 +358,12 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	return NULL;
  }
 
- static const struct ssl_status_msg * get_ssl_status_msg(H3270 *hSession)
+ static const struct ssl_status_msg * get_ssl_status_msg(const H3270 *hSession)
  {
  	return ssl_get_status_from_error_code(lib3270_get_SSL_verify_result(hSession));
  }
 
- const char	* lib3270_get_ssl_state_message(H3270 *hSession)
+ const char	* lib3270_get_ssl_state_message(const H3270 *hSession)
  {
 	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
@@ -376,7 +376,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
  }
 
- const char	* lib3270_get_ssl_state_icon_name(H3270 *hSession)
+ const char	* lib3270_get_ssl_state_icon_name(const H3270 *hSession)
  {
 	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
@@ -390,7 +390,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
  }
 
 
- const char * lib3270_get_ssl_state_description(H3270 *hSession)
+ const char * lib3270_get_ssl_state_description(const H3270 *hSession)
  {
 	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{
@@ -406,7 +406,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	return _( "Unexpected or unknown security status");
  }
 
- LIB3270_NOTIFY lib3270_get_ssl_state_icon(H3270 *hSession)
+ LIB3270_NOTIFY lib3270_get_ssl_state_icon(const H3270 *hSession)
  {
 	if(lib3270_get_ssl_state(hSession) != LIB3270_SSL_UNSECURE)
 	{

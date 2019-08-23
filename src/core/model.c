@@ -33,6 +33,7 @@
  #include "popupsc.h"
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
+ #include <lib3270/properties.h>
 
  const char * lib3270_get_oversize(const H3270 *hSession)
  {

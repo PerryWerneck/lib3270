@@ -34,7 +34,7 @@
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
 
- int lib3270_is_starting(H3270 *hSession)
+ int lib3270_is_starting(const H3270 *hSession)
  {
 	return hSession->starting != 0;
  }

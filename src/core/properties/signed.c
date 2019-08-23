@@ -34,17 +34,17 @@
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
 
- static int lib3270_get_connection_state_as_int(H3270 *hSession)
+ static int lib3270_get_connection_state_as_int(const H3270 *hSession)
  {
 	return (int) lib3270_get_connection_state(hSession);
  }
 
- static int lib3270_get_program_message_as_int(H3270 *hSession)
+ static int lib3270_get_program_message_as_int(const H3270 *hSession)
  {
 	return (int) lib3270_get_program_message(hSession);
  }
 
- static int lib3270_get_ssl_state_as_int(H3270 * hSession)
+ static int lib3270_get_ssl_state_as_int(const H3270 * hSession)
  {
  	return (int) lib3270_get_ssl_state(hSession);
  }

@@ -69,7 +69,7 @@
 	 */
 	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H3270 *hSession, int seconds);
 
-	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(H3270 *hSession);
+	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(const H3270 *hSession);
 
 	/**
 	 * @brief Set te operator error lock.
@@ -83,7 +83,7 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_lock_on_operator_error(H3270 *hSession, int enable);
-	LIB3270_EXPORT int lib3270_get_lock_on_operator_error(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_get_lock_on_operator_error(const H3270 *hSession);
 
 #ifdef __cplusplus
 	}

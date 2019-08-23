@@ -84,7 +84,7 @@
  * @param hSession selected 3270 session.
  * @return Current model number.
  */
-int lib3270_get_model_number(H3270 *hSession)
+int lib3270_get_model_number(const H3270 *hSession)
 {
 	return hSession->model_num;
 }

@@ -34,7 +34,7 @@
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
 
- unsigned int lib3270_get_kybdlock_as_int(H3270 *hSession)
+ unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession)
  {
 	return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
  }

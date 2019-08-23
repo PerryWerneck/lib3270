@@ -245,31 +245,24 @@ static unsigned short calc_attrs(H3270 *session, int baddr, int fa_addr, int fa)
 	return a;
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_length(const H3270 *h)
 {
-	CHECK_SESSION_HANDLE(h);
 	return h->view.rows * h->view.cols;
 }
 
-LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, unsigned int *r, unsigned int *c)
+LIB3270_EXPORT void lib3270_get_screen_size(const H3270 *h, unsigned int *r, unsigned int *c)
 {
-	CHECK_SESSION_HANDLE(h);
 	*r = h->view.rows;
 	*c = h->view.cols;
-
-//	trace("%s: %d - %d",__FUNCTION__, h->rows, h->cols);
-
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_width(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_width(const H3270 *h)
 {
-	CHECK_SESSION_HANDLE(h);
 	return h->view.cols;
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_height(H3270 *h)
+LIB3270_EXPORT unsigned int lib3270_get_height(const H3270 *h)
 {
-	CHECK_SESSION_HANDLE(h);
 	return h->view.rows;
 }
 
@@ -405,7 +398,7 @@ void screen_update(H3270 *session, int bstart, int bend)
 
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_cursor_address(H3270 *hSession)
+LIB3270_EXPORT unsigned int lib3270_get_cursor_address(const H3270 *hSession)
 {
 	if(check_online_session(hSession))
 		return 0;
@@ -587,9 +580,8 @@ void status_reset(H3270 *session)
  *
  * @see LIB3270_MESSAGE
  */
-LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(H3270 *session)
+LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(const H3270 *session)
 {
-	CHECK_SESSION_HANDLE(session);
 	return session->oia.status;
 }
 

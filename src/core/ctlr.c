@@ -318,7 +318,7 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	hSession->crm_nattr = 0;
 }
 
-LIB3270_EXPORT int lib3270_get_is_formatted(H3270 *hSession)
+LIB3270_EXPORT int lib3270_get_is_formatted(const H3270 *hSession)
 {
 	if(check_online_session(hSession))
 		return -1;
@@ -389,7 +389,7 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 	return -(errno = ENODATA);
 }
 
-LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr)
+LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr)
 {
 	int sbaddr;
 
@@ -525,11 +525,11 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, unsigned int row, unsigned int col) {
-	return lib3270_get_is_protected(h, ((row-1) * h->view.cols) + (col-1));
+LIB3270_EXPORT int lib3270_get_is_protected_at(const H3270 *h, unsigned int row, unsigned int col) {
+	return lib3270_get_is_protected(h, lib3270_translate_to_address(h,row,col));
 }
 
-LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr)
+LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr)
 {
 	FAIL_IF_NOT_ONLINE(hSession);
 

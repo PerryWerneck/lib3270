@@ -425,7 +425,7 @@
 	 * @param c Pointer to screen columns.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, unsigned int *r, unsigned int *c);
+	LIB3270_EXPORT void lib3270_get_screen_size(const H3270 *h, unsigned int *r, unsigned int *c);
 
 	/**
 	 * Get current screen width in columns.
@@ -435,7 +435,7 @@
 	 * @return screen width.
 	 *
 	 */
-	LIB3270_EXPORT unsigned int lib3270_get_width(H3270 *h);
+	LIB3270_EXPORT unsigned int lib3270_get_width(const H3270 *h);
 
 	/**
 	 * Get current screen width in rows.
@@ -445,9 +445,9 @@
 	 * @return screen rows.
 	 *
 	 */
-	LIB3270_EXPORT unsigned int lib3270_get_height(H3270 *h);
+	LIB3270_EXPORT unsigned int lib3270_get_height(const H3270 *h);
 
-	LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h);
+	LIB3270_EXPORT unsigned int lib3270_get_length(const H3270 *h);
 
 	/**
 	 * @brief Creates an empty TN3270 session.
@@ -800,7 +800,7 @@
 	 * @return Cursor address or 0 if invalid (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT unsigned int lib3270_get_cursor_address(H3270 *hSession);
+	LIB3270_EXPORT unsigned int lib3270_get_cursor_address(const H3270 *hSession);
 
 	/**
 	 * @brief Move cursor
@@ -966,7 +966,7 @@
 	 * @return Latest program message.
 	 *
 	 */
-	LIB3270_EXPORT LIB3270_MESSAGE	  lib3270_get_program_message(H3270 *h);
+	LIB3270_EXPORT LIB3270_MESSAGE	  lib3270_get_program_message(const H3270 *h);
 
 	/**
 	 * Get connected LU name.
@@ -1089,7 +1089,7 @@
 
 	LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession);
 
-	LIB3270_EXPORT int	  lib3270_has_selection(H3270 *hSession);
+	LIB3270_EXPORT int	  lib3270_has_selection(const H3270 *hSession);
 
 	/**
 	 * @brief Get all text inside the terminal.
@@ -1174,7 +1174,7 @@
      * @return -1 when failed 1 if the addr is protected and 0 if not.
      *
 	 */
-	LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr0);
+	LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr0);
 
 	LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_is_protected(H3270 *h, unsigned int baddr));
 
@@ -1185,8 +1185,11 @@
      *
      * @return -1 when failed 1 if the session is formatted and 0 if not.
      *
+     * @retval -1	Failed (check errno for error code).
+     * @retval  0	Screen is not formatted.
+     * @retval  1	Screen is formatted.
 	 */
-	LIB3270_EXPORT int lib3270_get_is_formatted(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_get_is_formatted(const H3270 *hSession);
 
 	/**
 	 * @brief Get Check if the screen position is protected.
@@ -1196,7 +1199,7 @@
 	 * @param col		Desired col.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, unsigned int row, unsigned int col);
+	LIB3270_EXPORT int lib3270_get_is_protected_at(const H3270 *h, unsigned int row, unsigned int col);
 
 	/**
 	 * @brief Get address of the first blank.
@@ -1225,7 +1228,7 @@
 	 * @exception -ENODATA		No field at the address.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_field_addr(H3270 *hSession, int baddr);
+	LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr);
 
 	/**
 	 * @brief Get field attribute for a given buffer address.
@@ -1304,7 +1307,7 @@
 	LIB3270_EXPORT int lib3270_set_model(H3270 *hSession, const char *name);
 
 	LIB3270_EXPORT const char	* lib3270_get_model(const H3270 *session);
-	LIB3270_EXPORT int			  lib3270_get_model_number(H3270 *hSession);
+	LIB3270_EXPORT int			  lib3270_get_model_number(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);
 
@@ -1328,7 +1331,7 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *session, unsigned int delay);
-	LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(H3270 *session);
+	LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *session);
 
 	/**
 	 * @brief Alloc/Realloc memory buffer.

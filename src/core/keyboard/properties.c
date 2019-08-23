@@ -31,7 +31,7 @@
 #include <lib3270/keyboard.h>
 #include <lib3270/properties.h>
 
-LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(H3270 *hSession)
+LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(const H3270 *hSession)
 {
 	if(check_online_session(hSession))
 		return LIB3270_KL_NOT_CONNECTED;
@@ -45,7 +45,7 @@ LIB3270_EXPORT int lib3270_set_lock_on_operator_error(H3270 *hSession, int enabl
 	return 0;
 }
 
-int lib3270_get_lock_on_operator_error(H3270 *hSession)
+int lib3270_get_lock_on_operator_error(const H3270 *hSession)
 {
  	return (int) hSession->oerr_lock;
 }
@@ -57,7 +57,7 @@ LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *hSession, unsigned int delay)
 	return 0;
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(H3270 *hSession)
+LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *hSession)
 {
 	return (unsigned int) hSession->unlock_delay_ms;
 }

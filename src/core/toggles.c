@@ -126,8 +126,8 @@ toggle_info[LIB3270_TOGGLE_COUNT] =
 		{
 			"eventtrace",
 			False,
-			N_( "Interface" ),
-			N_( "Trace interface events" ),
+			N_( "Events" ),
+			N_( "Trace interface and application events" ),
 			""
 		},
 		{

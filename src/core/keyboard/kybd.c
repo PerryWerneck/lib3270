@@ -574,7 +574,7 @@ static Boolean ins_prep(H3270 *hSession, int faddr, int baddr, int count)
 	if (faddr == -1)
 	{
 		/* Unformatted.  Use the end of the line. */
-		next_faddr = (((baddr / hSession->cols) + 1) * hSession->cols) % (hSession->rows*hSession->cols);
+		next_faddr = (((baddr / hSession->view.cols) + 1) * hSession->view.cols) % (hSession->view.rows*hSession->view.cols);
 	}
 	else
 	{
@@ -639,8 +639,8 @@ static Boolean ins_prep(H3270 *hSession, int faddr, int baddr, int count)
 			/* Shift right n_nulls worth. */
 			copy_len = first_null - baddr;
 			if (copy_len < 0)
-				copy_len += hSession->rows*hSession->cols;
-			to = (baddr + n_nulls) % (hSession->rows*hSession->cols);
+				copy_len += hSession->view.rows * hSession->view.cols;
+			to = (baddr + n_nulls) % (hSession->view.rows * hSession->view.cols);
 /*
 #if defined(_ST)
 			printf("found %d NULLs at %d\n", n_nulls, first_null);
@@ -876,7 +876,7 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 		while (baddr_fill != faddr) {
 
 			/* Check for backward line wrap. */
-			if ((baddr_fill % hSession->cols) == hSession->cols - 1)
+			if ((baddr_fill % hSession->view.cols) == hSession->view.cols - 1)
 			{
 				Boolean aborted = True;
 				register int baddr_scan = baddr_fill;
@@ -891,7 +891,7 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 						aborted = False;
 						break;
 					}
-					if (!(baddr_scan % hSession->cols))
+					if (!(baddr_scan % hSession->view.cols))
 						break;
 					DEC_BA(baddr_scan);
 				}
@@ -947,7 +947,7 @@ LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *st
 	for(pos = 0; pos < length && str[pos] && !rc; pos++)
 		rc = key_ACharacter(hSession,(str[pos] & 0xff), KT_STD, IA_KEY, NULL);
 
-	screen_update(hSession,0,hSession->rows*hSession->cols);
+	screen_update(hSession,0,hSession->view.rows * hSession->view.cols);
 
 	return rc;
 }
@@ -1228,8 +1228,8 @@ LIB3270_EXPORT int lib3270_newline(H3270 *hSession)
 		return 0;
 	}
 #endif /*]*/
-	baddr = (hSession->cursor_addr + hSession->cols) % (hSession->cols * hSession->rows);	/* down */
-	baddr = (baddr / hSession->cols) * hSession->cols;			/* 1st col */
+	baddr = (hSession->cursor_addr + hSession->view.cols) % (hSession->view.cols * hSession->view.rows);	/* down */
+	baddr = (baddr / hSession->view.cols) * hSession->view.cols;			/* 1st col */
 	faddr = lib3270_field_addr(hSession,baddr);
 	fa = hSession->ea_buf[faddr].fa;
 	if (faddr != baddr && !FA_IS_PROTECTED(fa))

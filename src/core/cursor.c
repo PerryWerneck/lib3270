@@ -263,9 +263,9 @@ static int cursor_up(H3270 *hSession)
 	}
 #endif /*]*/
 
-	baddr = hSession->cursor_addr - hSession->cols;
+	baddr = hSession->cursor_addr - hSession->view.cols;
 	if (baddr < 0)
-		baddr = (hSession->cursor_addr + (hSession->rows * hSession->cols)) - hSession->cols;
+		baddr = (hSession->cursor_addr + (hSession->view.rows * hSession->view.cols)) - hSession->view.cols;
 	cursor_move(hSession,baddr);
 	return 0;
 }
@@ -294,7 +294,7 @@ static int cursor_down(H3270 *hSession)
 		return 0;
 	}
 #endif /*]*/
-	baddr = (hSession->cursor_addr + hSession->cols) % (hSession->cols * hSession->rows);
+	baddr = (hSession->cursor_addr + hSession->view.cols) % (hSession->view.cols * hSession->view.rows);
 	cursor_move(hSession,baddr);
 	return 0;
 }

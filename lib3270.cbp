@@ -110,6 +110,9 @@
 		<Unit filename="src/core/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/model.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/options.c">
 			<Option compilerVar="CC" />
 		</Unit>

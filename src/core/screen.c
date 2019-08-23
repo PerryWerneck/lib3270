@@ -99,9 +99,9 @@ LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, un
 	if(check_online_session(hSession))
 		return (LIB3270_ATTR) -1;
 
-	if(!hSession->text ||baddr > (hSession->rows*hSession->cols))
+	if(!hSession->text ||baddr > (hSession->view.rows*hSession->view.cols))
 	{
-		errno = EINVAL;
+		errno = EOVERFLOW;
 		return (LIB3270_ATTR) -1;
 	}
 
@@ -112,9 +112,9 @@ LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, unsigned int baddr)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!hSession->text || baddr > (hSession->rows*hSession->cols))
+	if(!hSession->text || baddr > (hSession->view.rows * hSession->view.cols))
 	{
-		errno = EINVAL;
+		errno = EOVERFLOW;
 		return -1;
 	}
 
@@ -125,9 +125,9 @@ LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, unsigned int baddr, unsi
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!hSession->text || baddr > (hSession->rows*hSession->cols))
+	if(!hSession->text || baddr > (hSession->view.rows * hSession->view.cols))
 	{
-		errno = EINVAL;
+		errno = EOVERFLOW;
 		return -1;
 	}
 
@@ -248,14 +248,14 @@ static unsigned short calc_attrs(H3270 *session, int baddr, int fa_addr, int fa)
 LIB3270_EXPORT unsigned int lib3270_get_length(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
-	return h->rows * h->cols;
+	return h->view.rows * h->view.cols;
 }
 
 LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, unsigned int *r, unsigned int *c)
 {
 	CHECK_SESSION_HANDLE(h);
-	*r = h->rows;
-	*c = h->cols;
+	*r = h->view.rows;
+	*c = h->view.cols;
 
 //	trace("%s: %d - %d",__FUNCTION__, h->rows, h->cols);
 
@@ -264,22 +264,22 @@ LIB3270_EXPORT void lib3270_get_screen_size(H3270 *h, unsigned int *r, unsigned 
 LIB3270_EXPORT unsigned int lib3270_get_width(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
-	return h->cols;
+	return h->view.cols;
 }
 
 LIB3270_EXPORT unsigned int lib3270_get_height(H3270 *h)
 {
 	CHECK_SESSION_HANDLE(h);
-	return h->rows;
+	return h->view.rows;
 }
 
 void update_model_info(H3270 *session, unsigned int model, unsigned int cols, unsigned int rows)
 {
-	if(model == session->model_num && session->maxROWS == rows && session->maxCOLS == cols)
+	if(model == session->model_num && session->max.rows == rows && session->max.cols == cols)
 		return;
 
-	session->maxCOLS   	= cols;
-	session->maxROWS   	= rows;
+	session->max.cols  	= cols;
+	session->max.rows  	= rows;
 	session->model_num	= model;
 
 	/* Update the model name. */
@@ -296,7 +296,7 @@ LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned 
 
     CHECK_SESSION_HANDLE(h);
 
-	len = h->rows * h->cols;
+	len = h->view.rows * h->view.cols;
 
 	if(first > len || last > len || first < 0 || last < 0)
 		return EFAULT;
@@ -377,7 +377,7 @@ void screen_update(H3270 *session, int bstart, int bend)
 
 		for(f=first;f<last;f++)
 		{
-			if(f%session->cols == 0)
+			if(f%session->view.cols == 0)
 				len++;
 		}
 
@@ -430,10 +430,10 @@ LIB3270_EXPORT int lib3270_translate_to_address(H3270 *hSession, unsigned int ro
 	row--;
 	col--;
 
-	if(row > hSession->rows || col > hSession->cols)
+	if(row > hSession->view.rows || col > hSession->view.cols)
 		return - (errno = EOVERFLOW);
 
-	return (row * hSession->cols) + col;
+	return (row * hSession->view.cols) + col;
 }
 
 
@@ -443,7 +443,7 @@ LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int badd
 
 	trace("%s(%d)",__FUNCTION__,baddr);
 
-	if(baddr > (hSession->rows * hSession->cols))
+	if(baddr > (hSession->view.rows * hSession->view.cols))
 		return - (errno = EOVERFLOW);
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
@@ -481,8 +481,8 @@ int cursor_move(H3270 *hSession, int baddr)
 		hSession->cursor_addr = baddr;
 		hSession->cbk.update_cursor(
 			hSession,
-			(unsigned short) (baddr/hSession->cols),
-			(unsigned short) (baddr%hSession->cols),
+			(unsigned short) (baddr/hSession->view.cols),
+			(unsigned short) (baddr%hSession->view.cols),
 			hSession->text[baddr].chr,
 			hSession->text[baddr].attr
 		);
@@ -652,16 +652,16 @@ void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols)
 {
 	CHECK_SESSION_HANDLE(session);
 
-	if(rows == session->rows && session->cols == cols)
+	if(rows == session->view.rows && session->view.cols == cols)
 		return;
 
-	session->rows = rows;
-	session->cols = cols;
+	session->view.rows = rows;
+	session->view.cols = cols;
 
 	trace("View size changes to %dx%d",rows,cols);
 
 	if(session->cbk.configure)
-		session->cbk.configure(session,session->rows,session->cols);
+		session->cbk.configure(session,session->view.rows,session->view.cols);
 
 }
 
@@ -896,7 +896,7 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 
 	FAIL_IF_ONLINE(hSession);
 
-	max = (hSession->maxROWS * hSession->maxCOLS);
+	max = (hSession->max.rows * hSession->max.cols);
 	for(f=0;f<max;f++)
 	{
 		if(!pat[row].cc[pos])

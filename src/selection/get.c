@@ -53,7 +53,7 @@ LIB3270_EXPORT char * lib3270_get_selected_text(H3270 *hSession, char tok, LIB32
 {
 	int				  row, col, baddr;
 	char 			* ret;
-	size_t			  buflen	= (hSession->rows * (hSession->cols+1))+1;
+	size_t			  buflen	= (hSession->view.rows * (hSession->view.cols+1))+1;
 	size_t			  sz		= 0;
     unsigned short	  attr		= 0xFFFF;
     char			  cut		= (options & LIB3270_SELECTION_CUT) != 0;
@@ -73,11 +73,11 @@ LIB3270_EXPORT char * lib3270_get_selected_text(H3270 *hSession, char tok, LIB32
 	baddr = 0;
 	unsigned char fa = 0;
 
-	for(row=0;row < ((int) hSession->rows);row++)
+	for(row=0;row < ((int) hSession->view.rows);row++)
 	{
 		int cr = 0;
 
-		for(col = 0; col < ((int) hSession->cols);col++)
+		for(col = 0; col < ((int) hSession->view.cols);col++)
 		{
 			if(hSession->ea_buf[baddr].fa) {
 				fa = hSession->ea_buf[baddr].fa;

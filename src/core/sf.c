@@ -552,14 +552,14 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 		GET16(h, &buf[6]);
 		trace_ds(hSession,",h=%d", h);
 	} else
-		h = hSession->maxROWS;
+		h = hSession->max.rows;
 
 	if (buflen > 9)
 	{
 		GET16(w, &buf[8]);
 		trace_ds(hSession,",w=%d", w);
 	} else
-		w = hSession->maxCOLS;
+		w = hSession->max.cols;
 
 	if (buflen > 11)
 	{
@@ -579,14 +579,14 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 		GET16(hv, &buf[14]);
 		trace_ds(hSession,",hv=%d", hv);
 	} else
-		hv = (h > hSession->maxROWS)? hSession->maxROWS: h;
+		hv = (h > hSession->max.rows)? hSession->max.rows: h;
 
 	if (buflen > 17)
 	{
 		GET16(wv, &buf[16]);
 		trace_ds(hSession,",wv=%d", wv);
 	} else
-		wv = (w > hSession->maxCOLS)? hSession->maxCOLS: w;
+		wv = (w > hSession->max.cols)? hSession->max.cols: w;
 
 	if (buflen > 19)
 	{
@@ -787,8 +787,8 @@ static void do_qr_usable_area(H3270 *hSession)
 	space3270out(hSession,19);
 	*hSession->obptr++ = 0x01;					/* 12/14-bit addressing */
 	*hSession->obptr++ = 0x00;					/* no special character features */
-	SET16(hSession->obptr, hSession->maxCOLS);	/* usable width */
-	SET16(hSession->obptr, hSession->maxROWS);	/* usable height */
+	SET16(hSession->obptr, hSession->max.cols);	/* usable width */
+	SET16(hSession->obptr, hSession->max.rows);	/* usable height */
 	*hSession->obptr++ = 0x01;					/* units (mm) */
 	num = display_widthMM();
 	denom = display_width();
@@ -810,7 +810,7 @@ static void do_qr_usable_area(H3270 *hSession)
 	SET16(hSession->obptr, (int)denom); 	/* Yr denominator */
 	*hSession->obptr++ = *char_width;		/* AW */
 	*hSession->obptr++ = *char_height;		/* AH */
-	SET16(hSession->obptr, hSession->maxCOLS * hSession->maxROWS);	/* buffer, questionable */
+	SET16(hSession->obptr, hSession->max.cols * hSession->max.cols);	/* buffer, questionable */
 }
 
 static void do_qr_color(H3270 *hSession)
@@ -897,7 +897,7 @@ static void do_qr_alpha_part(H3270 *hSession)
 	trace_ds(hSession,"> QueryReply(AlphanumericPartitions)\n");
 	space3270out(hSession,4);
 	*hSession->obptr++ = 0;		/* 1 partition */
-	SET16(hSession->obptr, hSession->maxROWS * hSession->maxCOLS);	/* buffer space */
+	SET16(hSession->obptr, hSession->max.cols * hSession->max.rows);	/* buffer space */
 	*hSession->obptr++ = 0;		/* no special features */
 }
 
@@ -1009,8 +1009,8 @@ static void do_qr_imp_part(H3270 *hSession)
 	*hSession->obptr++ = 0x00;				/* reserved */
 	SET16(hSession->obptr, 80);				/* implicit partition width */
 	SET16(hSession->obptr, 24);				/* implicit partition height */
-	SET16(hSession->obptr, hSession->maxCOLS);	/* alternate height */
-	SET16(hSession->obptr, hSession->maxROWS);	/* alternate width */
+	SET16(hSession->obptr, hSession->max.cols);	/* alternate height */
+	SET16(hSession->obptr, hSession->max.rows);	/* alternate width */
 }
 
 static void query_reply_end(H3270 *hSession)

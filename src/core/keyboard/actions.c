@@ -201,7 +201,8 @@ LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession)
 		cursor_move(hSession,0);
 		return 0;
 	}
-	cursor_move(hSession,lib3270_get_next_unprotected(hSession,hSession->rows*hSession->cols-1));
+
+	cursor_move(hSession,lib3270_get_next_unprotected(hSession,hSession->view.rows * hSession->view.cols-1));
 
 	return 0;
 }
@@ -288,9 +289,9 @@ static Boolean do_delete(H3270 *hSession)
 	}
 	else
 	{
-		if ((baddr % hSession->cols) == hSession->cols - ndel)
+		if ((baddr % hSession->view.cols) == hSession->view.cols - ndel)
 			return True;
-		end_baddr = baddr + (hSession->cols - (baddr % hSession->cols)) - 1;
+		end_baddr = baddr + (hSession->view.cols - (baddr % hSession->view.cols)) - 1;
 	}
 
 	/* Shift the remainder of the field left. */
@@ -301,8 +302,8 @@ static Boolean do_delete(H3270 *hSession)
 	else if (end_baddr != baddr)
 	{
 		/* XXX: Need to verify this. */
-		ctlr_bcopy(hSession,baddr + ndel, baddr,((hSession->rows * hSession->cols) - 1) - (baddr + ndel) + 1, 0);
-		ctlr_bcopy(hSession,0, (hSession->rows * hSession->cols) - ndel, ndel, 0);
+		ctlr_bcopy(hSession,baddr + ndel, baddr,((hSession->view.rows * hSession->view.cols) - 1) - (baddr + ndel) + 1, 0);
+		ctlr_bcopy(hSession,0, (hSession->view.rows * hSession->view.cols) - ndel, ndel, 0);
 		ctlr_bcopy(hSession,ndel, 0, end_baddr - ndel + 1, 0);
 	}
 

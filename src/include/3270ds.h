@@ -141,11 +141,11 @@
 #define QR_IMP_PART	0xa6	/* implicit partition */
 #define QR_NULL		0xff	/* null */
 
-#define BA_TO_ROW(ba)		((ba) / hSession->cols)
-#define BA_TO_COL(ba)		((ba) % hSession->cols)
-#define ROWCOL_TO_BA(r,c)	(((r) * hSession->cols) + c)
-#define INC_BA(ba)		{ (ba) = ((ba) + 1) % (hSession->cols * hSession->rows); }
-#define DEC_BA(ba)		{ (ba) = (ba) ? (ba - 1) : (((int) (hSession->cols*hSession->rows)) - 1); }
+#define BA_TO_ROW(ba)		((ba) / hSession->view.cols)
+#define BA_TO_COL(ba)		((ba) % hSession->view.cols)
+#define ROWCOL_TO_BA(r,c)	(((r) * hSession->view.cols) + c)
+#define INC_BA(ba)		{ (ba) = ((ba) + 1) % (hSession->view.cols * hSession->view.rows); }
+#define DEC_BA(ba)		{ (ba) = (ba) ? (ba - 1) : (((int) (hSession->view.cols*hSession->view.rows)) - 1); }
 
 /** Field attributes. */
 #define FA_PRINTABLE		0xc0	///< @brief these make the character "printable" */

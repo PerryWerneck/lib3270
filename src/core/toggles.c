@@ -338,7 +338,7 @@ LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE ix)
 static void toggle_altscreen(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	if(!session->screen_alt)
-		set_viewsize(session,t->value ? 24 : session->maxROWS,80);
+		set_viewsize(session,t->value ? 24 : session->max.rows,80);
 }
 
 static void toggle_redraw(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))

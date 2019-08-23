@@ -65,10 +65,10 @@ static void update_selected_rectangle(H3270 *session)
 	get_selected_addr(session,&begin,&end);
 
 	// Get start & end posision
-	p[0].row = (begin/session->cols);
-	p[0].col = (begin%session->cols);
-	p[1].row = (end/session->cols);
-	p[1].col = (end%session->cols);
+	p[0].row = (begin/session->view.cols);
+	p[0].col = (begin%session->view.cols);
+	p[1].row = (end/session->view.cols);
+	p[1].col = (end%session->view.cols);
 
 	if(p[0].row > p[1].row)
 	{
@@ -86,9 +86,9 @@ static void update_selected_rectangle(H3270 *session)
 
 	// First remove unselected areas
 	baddr = 0;
-	for(row=0;row < ((int) session->rows);row++)
+	for(row=0;row < ((int) session->view.rows);row++)
 	{
-		for(col = 0; col < ((int) session->cols);col++)
+		for(col = 0; col < ((int) session->view.cols);col++)
 		{
 			if(!(row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && (session->text[baddr].attr & LIB3270_ATTR_SELECTED))
 			{
@@ -101,9 +101,9 @@ static void update_selected_rectangle(H3270 *session)
 
 	// Then, draw selected ones
 	baddr = 0;
-	for(row=0;row < ((int) session->rows);row++)
+	for(row=0;row < ((int) session->view.rows);row++)
 	{
-		for(col = 0; col < ((int) session->cols);col++)
+		for(col = 0; col < ((int) session->view.cols);col++)
 		{
 			if((row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && !(session->text[baddr].attr & LIB3270_ATTR_SELECTED))
 			{
@@ -119,7 +119,7 @@ static void update_selected_rectangle(H3270 *session)
 static void update_selected_region(H3270 *session)
 {
 	int baddr,begin,end;
-	int len = session->rows*session->cols;
+	int len = session->view.rows * session->view.cols;
 
 	get_selected_addr(session,&begin,&end);
 
@@ -167,7 +167,7 @@ void toggle_rectselect(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LI
 
 void do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect)
 {
-	if(end > (h->rows * h->cols))
+	if(end > (h->view.rows * h->view.cols))
 		return;
 
 	// Do we really need to change selection?
@@ -209,11 +209,11 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 	if(!(lib3270_connected(hSession) && (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)))
 		return rc;
 
-	row = baddr / hSession->cols;
-	col = baddr % hSession->cols;
+	row = baddr / hSession->view.cols;
+	col = baddr % hSession->view.cols;
 	rc |= SELECTION_ACTIVE;
 
-	if( (hSession->select.start % hSession->cols) == (hSession->select.end % hSession->cols) )
+	if( (hSession->select.start % hSession->view.cols) == (hSession->select.end % hSession->view.cols) )
 	{
 		rc |= SELECTION_SINGLE_COL;
 	}
@@ -224,20 +224,20 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 
 		/// FIXME: It should test if baddr is the last element before the +1.
 
-		if( (col == ((int) hSession->cols)) || !(hSession->text[baddr+1].attr & LIB3270_ATTR_SELECTED) )
+		if( (col == ((int) hSession->view.cols)) || !(hSession->text[baddr+1].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_RIGHT;
 	}
 
-	if( (hSession->select.start / hSession->cols) == (hSession->select.end / hSession->cols) )
+	if( (hSession->select.start / hSession->view.cols) == (hSession->select.end / hSession->view.cols) )
 	{
 		rc |= SELECTION_SINGLE_ROW;
 	}
 	else
 	{
-		if( (row == 0) || !(hSession->text[baddr-hSession->cols].attr & LIB3270_ATTR_SELECTED) )
+		if( (row == 0) || !(hSession->text[baddr-hSession->view.cols].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_TOP;
 
-		if( (row == ((int) hSession->rows)) || !(hSession->text[baddr+hSession->cols].attr & LIB3270_ATTR_SELECTED) )
+		if( (row == ((int) hSession->view.rows)) || !(hSession->text[baddr+hSession->view.cols].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_BOTTOM;
 	}
 
@@ -254,7 +254,7 @@ LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, u
 	if(check_online_session(h))
 		return NULL;
 
-	maxlen = h->rows * (h->cols+1);
+	maxlen = h->view.rows * (h->view.cols+1);
 
 	if(start_pos < 0 || start_pos > maxlen || end_pos < 0 || end_pos > maxlen || end_pos < start_pos)
 		return NULL;
@@ -266,7 +266,7 @@ LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, u
 		if(all || h->text[baddr].attr & LIB3270_ATTR_SELECTED)
 			text[sz++] = (h->text[baddr].attr & LIB3270_ATTR_CG) ? ' ' : h->text[baddr].chr;
 
-		if((baddr%h->cols) == 0 && sz > 0)
+		if((baddr%h->view.cols) == 0 && sz > 0)
 			text[sz++] = '\n';
 	}
 	text[sz++] = 0;
@@ -291,7 +291,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	if(offset < 0)
 		offset = lib3270_get_cursor_address(h);
 
-	maxlen = (h->rows * (h->cols+ (lf ? 1 : 0) )) - offset;
+	maxlen = (h->view.rows * (h->view.cols+ (lf ? 1 : 0) )) - offset;
 	if(maxlen <= 0 || offset < 0)
 	{
 		errno = EOVERFLOW;
@@ -321,7 +321,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 		offset++;
 		len--;
 
-		if(lf && (offset%h->cols) == 0 && len > 0)
+		if(lf && (offset%h->view.cols) == 0 && len > 0)
 		{
 			*(ptr++) = lf;
 			len--;
@@ -408,16 +408,16 @@ LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int
 	if(!hSession->selected || hSession->select.start == hSession->select.end)
 		return errno = ENOENT;
 
-	minRow = hSession->rows;
-	minCol = hSession->cols;
+	minRow = hSession->view.rows;
+	minCol = hSession->view.cols;
 	maxRow = 0;
 	maxCol = 0;
 	baddr  = 0;
 	count  = 0;
 
-	for(r=0;r < hSession->rows;r++)
+	for(r=0;r < hSession->view.rows;r++)
 	{
-		for(c = 0; c < hSession->cols;c++)
+		for(c = 0; c < hSession->view.cols;c++)
 		{
 			if(hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)
 			{

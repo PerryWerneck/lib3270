@@ -362,7 +362,7 @@ struct _h3270
 	int						  modified_sel				: 1;
 	int						  mono						: 1;	///< @brief Forces monochrome display
 	int						  m3279						: 1;
-	int 					  extended					: 1;
+	int 					  extended					: 1;	///< @brief Extended data stream.
 	int						  typeahead					: 1;
 	int						  numeric_lock				: 1;
 	int						  oerr_lock					: 1;	///< @brief If true, operator errors will lock the keyboard.
@@ -384,8 +384,6 @@ struct _h3270
 //		int						  auto_keymap				: 1;
 	int						  formatted					: 1;	/**< @brief Formatted screen flag */
 	int						  starting					: 1;	/**< @brief Is starting (no first screen)? */
-
-	char					* oversize;
 
 	struct lib3270_toggle
 	{
@@ -428,12 +426,28 @@ struct _h3270
 	H3270FT					* ft;					/**< @brief Active file transfer data */
 
 	// screen info
-	unsigned int			  ov_rows;
-	unsigned int			  ov_cols;
-	unsigned int			  maxROWS;
-	unsigned int			  maxCOLS;
-	unsigned int			  rows;
-	unsigned int			  cols;
+
+	// Oversize.
+	struct
+	{
+		char				* str;
+		unsigned int		  rows;
+		unsigned int		  cols;
+	} oversize;
+
+	// Maximum screen size.
+	struct
+	{
+		unsigned int		  rows;
+		unsigned int		  cols;
+	} max;
+
+	// View size
+	struct {
+		unsigned int		  rows;
+		unsigned int		  cols;
+	} view;
+
 	LIB3270_POINTER			  pointer;				/**< @brief Current pointer. */
 	int						  cursor_addr;
 	int						  buffer_addr;

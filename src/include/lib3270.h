@@ -1196,7 +1196,7 @@
 	 * @param col		Desired col.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, int row, int col);
+	LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, unsigned int row, unsigned int col);
 
 	/**
 	 * @brief Get address of the first blank.

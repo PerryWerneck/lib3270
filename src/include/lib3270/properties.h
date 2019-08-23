@@ -128,6 +128,7 @@
 	/**
 	 * @brief Set lib3270 integer property by name.
 	 *
+	 * @param hSession	Session handle.
 	 * @param name		Nome of the property.
 	 * @param value		New property value.
 	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
@@ -136,6 +137,31 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_string_property(H3270 * hSession, const char *name, const char * value, int seconds);
+
+
+	/**
+	 * @brief Get Oversize.
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 * @return Oversize definition (NULL if not set).
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_get_oversize(H3270 *hSession);
+
+	 /**
+	  * @brief Set oversize.
+	  *
+	  * @param hSession	Session handle.
+	  * @param value	Oversize value.
+	  *
+	  * @return 0 if success, error code if not (sets errno)
+	  *
+	  * @retval EISCONN	Already connected to host.
+	  * @retval ENOTSUP	Oversize is not supported.
+	  *
+	  */
+	LIB3270_EXPORT int lib3270_set_oversize(H3270 *hSession, const char *value);
 
 #ifdef __cplusplus
 	}

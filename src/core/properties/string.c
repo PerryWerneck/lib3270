@@ -132,6 +132,13 @@
 			NULL												//  Set value.
 		},
 
+		{
+			"oversize",												//  Property name.
+			N_( "Screen oversize if larger than the chosen model"),	//  Property description.
+			lib3270_get_oversize,									//  Get value.
+			lib3270_set_oversize									//  Set value.
+		},
+
 		/*
 		{
 			"",											//  Property name.

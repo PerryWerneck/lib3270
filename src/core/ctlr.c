@@ -97,7 +97,7 @@ static const unsigned char code_table[64] =
 #define IsBlank(c)	((c == EBC_null) || (c == EBC_space))
 
 
-#define ALL_CHANGED(h)	if(lib3270_in_ansi(h)) (h)->cbk.changed(h,0,(h)->rows*(h)->cols);
+#define ALL_CHANGED(h)	if(lib3270_in_ansi(h)) (h)->cbk.changed(h,0,(h)->view.rows*(h)->view.cols);
 #define REGION_CHANGED(h, f, l) if(lib3270_in_ansi(h)) (h)->cbk.changed(h,f,l)
 #define ONE_CHANGED(h,n)	if(lib3270_in_ansi(h)) (h)->cbk.changed(h,n,n+1);
 
@@ -136,7 +136,7 @@ void ctlr_reinit(H3270 *session, unsigned cmask)
 	{
 		/* Allocate buffers */
 		struct lib3270_ea *tmp;
-		size_t sz = (session->maxROWS * session->maxCOLS);
+		size_t sz = (session->max.rows * session->max.cols);
 
 		session->buffer[0] = tmp = lib3270_calloc(sizeof(struct lib3270_ea), sz+1, session->buffer[0]);
 		session->ea_buf = tmp + 1;
@@ -150,168 +150,6 @@ void ctlr_reinit(H3270 *session, unsigned cmask)
 		session->cursor_addr = 0;
 		session->buffer_addr = 0;
 	}
-}
-
- /**
-  * @brief Parse the model number.
-  *
-  * @param session	Session Handle.
-  * @param m		Model number.
-  *
-  * @return -1 (error), 0 (default), or the specified number.
-  */
-static int parse_model_number(H3270 *session, const char *m)
-{
-	int sl;
-	int n;
-
-	if(!m)
-		return 0;
-
-	sl = strlen(m);
-
-	/* An empty model number is no good. */
-	if (!sl)
-		return 0;
-
-	if (sl > 1) {
-		/*
-		 * If it's longer than one character, it needs to start with
-		 * '327[89]', and it sets the m3279 resource.
-		 */
-		if (!strncmp(m, "3278", 4))
-		{
-			session->m3279 = 0;
-		}
-		else if (!strncmp(m, "3279", 4))
-		{
-			session->m3279 = 1;
-		}
-		else
-		{
-			return -1;
-		}
-		m += 4;
-		sl -= 4;
-
-		/* Check more syntax.  -E is allowed, but ignored. */
-		switch (m[0]) {
-		case '\0':
-			/* Use default model number. */
-			return 0;
-		case '-':
-			/* Model number specified. */
-			m++;
-			sl--;
-			break;
-		default:
-			return -1;
-		}
-		switch (sl) {
-		case 1: /* n */
-			break;
-		case 3:	/* n-E */
-			if (strcasecmp(m + 1, "-E")) {
-				return -1;
-			}
-			break;
-		default:
-			return -1;
-		}
-	}
-
-	/* Check the numeric model number. */
-	n = atoi(m);
-	if (n >= 2 && n <= 5) {
-		return n;
-	} else {
-		return -1;
-	}
-
-}
-
-/**
- * @brief Get current 3270 model.
- *
- * @param hSession selected 3270 session.
- * @return Current model number.
- */
-int lib3270_get_model_number(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-	return hSession->model_num;
-}
-
-const char * lib3270_get_model(H3270 *hSession)
-{
-	CHECK_SESSION_HANDLE(hSession);
-	return hSession->model_name;
-}
-
-int lib3270_set_model(H3270 *hSession, const char *model)
-{
-	int 	ovc, ovr;
-	char	junk;
-	int		model_number;
-
-	if(hSession->cstate != LIB3270_NOT_CONNECTED)
-		return errno = EISCONN;
-
-	strncpy(hSession->full_model_name,"IBM-",LIB3270_FULL_MODEL_NAME_LENGTH);
-	hSession->model_name = &hSession->full_model_name[4];
-
-	if(!*model)
-		model = "2";	// No model, use the default one
-
-	model_number = parse_model_number(hSession,model);
-	if (model_number < 0)
-	{
-		popup_an_error(hSession,"Invalid model number: %s", model);
-		model_number = 0;
-	}
-
-	if (!model_number)
-	{
-#if defined(RESTRICT_3279)
-		model_number = 3;
-#else
-		model_number = 4;
-#endif
-	}
-
-	if(hSession->mono)
-		hSession->m3279 = 0;
-	else
-		hSession->m3279 = 1;
-
-	if(!hSession->extended)
-		hSession->oversize = CN;
-
-#if defined(RESTRICT_3279)
-	if (hSession->m3279 && model_number == 4)
-		model_number = 3;
-#endif
-
-	trace("Model_number: %d",model_number);
-
-	if (!hSession->extended || hSession->oversize == CN || sscanf(hSession->oversize, "%dx%d%c", &ovc, &ovr, &junk) != 2)
-	{
-		ovc = 0;
-		ovr = 0;
-	}
-	ctlr_set_rows_cols(hSession, model_number, ovc, ovr);
-
-	if (hSession->termname != CN)
-		hSession->termtype = hSession->termname;
-	else
-		hSession->termtype = hSession->full_model_name;
-
-	trace("Termtype: %s",hSession->termtype);
-
-	ctlr_reinit(hSession,MODEL_CHANGE);
-	screen_update(hSession,0,hSession->rows*hSession->cols);
-
-	return 0;
 }
 
 void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
@@ -340,23 +178,74 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 	update_model_info(session,mn,sz[idx].cols,sz[idx].rows);
 
 	// Apply oversize.
-	session->ov_cols = 0;
-	session->ov_rows = 0;
+	session->oversize.cols = 0;
+	session->oversize.rows = 0;
 	if (ovc != 0 || ovr != 0)
 	{
 		if (ovc <= 0 || ovr <= 0)
-			popup_an_error(session,"Invalid %s %dx%d:\nNegative or zero",ResOversize, ovc, ovr);
+		{
+			lib3270_popup_dialog(
+					session,
+					LIB3270_NOTIFY_ERROR,
+					_( "Invalid oversize" ),
+					_( "The oversize values are invalid." ), \
+					_( "%dx%d is negative or zero" ),
+					ovc, ovr
+			);
+
+			// popup_an_error(session,"Invalid %s %dx%d:\nNegative or zero",ResOversize, ovc, ovr);
+
+		}
 		else if (ovc * ovr >= 0x4000)
-			popup_an_error(session,"Invalid %s %dx%d:\nToo big",ResOversize, ovc, ovr);
-		else if (ovc > 0 && ovc < session->maxCOLS)
-			popup_an_error(session,"Invalid %s cols (%d):\nLess than model %d cols (%d)",ResOversize, ovc, session->model_num, session->maxCOLS);
-		else if (ovr > 0 && ovr < session->maxROWS)
-			popup_an_error(session,"Invalid %s rows (%d):\nLess than model %d rows (%d)",ResOversize, ovr, session->model_num, session->maxROWS);
+		{
+			lib3270_popup_dialog(
+					session,
+					LIB3270_NOTIFY_ERROR,
+					_( "Invalid oversize" ),
+					_( "The oversize values are too big." ), \
+					_( "%dx%d screen size is bigger than the maximum size" ),
+					ovc, ovr
+			);
+
+//			popup_an_error(session,"Invalid %s %dx%d:\nToo big",ResOversize, ovc, ovr);
+
+		}
+		else if (ovc > 0 && ovc < session->max.cols)
+		{
+
+			lib3270_popup_dialog(
+					session,
+					LIB3270_NOTIFY_ERROR,
+					_( "Invalid oversize" ),
+					_( "The oversize width is too small." ), \
+					_( "The width %d is less than model %d columns (%d)" ),
+					ovc, session->model_num, session->max.cols
+			);
+
+//			popup_an_error(session,"Invalid %s cols (%d):\nLess than model %d cols (%d)",ResOversize, ovc, session->model_num, session->maxCOLS);
+		}
+		else if (ovr > 0 && ovr < session->max.rows)
+		{
+
+			lib3270_popup_dialog(
+					session,
+					LIB3270_NOTIFY_ERROR,
+					_( "Invalid oversize" ),
+					_( "The oversize height is too small." ), \
+					_( "The height %d is less than model %d rows (%d)" ),
+					ovr, session->model_num, session->max.rows
+			);
+
+//			popup_an_error(session,"Invalid %s rows (%d):\nLess than model %d rows (%d)",ResOversize, ovr, session->model_num, session->maxROWS);
+
+		}
 		else
-			update_model_info(session,mn,session->ov_cols = ovc,session->ov_rows = ovr);
+		{
+			update_model_info(session,mn,session->oversize.cols = ovc,session->oversize.rows = ovr);
+		}
 	}
 
-	set_viewsize(session,sz[idx].rows,sz[idx].cols);
+	set_viewsize(session,session->max.rows,session->max.cols);
 
 }
 
@@ -636,8 +525,8 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, int row, int col) {
-	return lib3270_get_is_protected(h, ((row-1) * h->cols) + (col-1));
+LIB3270_EXPORT int lib3270_get_is_protected_at(H3270 *h, unsigned int row, unsigned int col) {
+	return lib3270_get_is_protected(h, ((row-1) * h->view.cols) + (col-1));
 }
 
 LIB3270_EXPORT int lib3270_get_is_protected(H3270 *hSession, int baddr)
@@ -659,7 +548,7 @@ LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
 
 
 /**
- * Perform an erase command, which may include changing the (virtual) screen size.
+ * @brief Perform an erase command, which may include changing the (virtual) screen size.
  *
  */
 void ctlr_erase(H3270 *session, int alt)
@@ -677,13 +566,12 @@ void ctlr_erase(H3270 *session, int alt)
 	{
 		// Going from 24x80 to maximum.
 		session->cbk.display(session);
-
-		set_viewsize(session,session->maxROWS,session->maxCOLS);
+		set_viewsize(session,session->max.rows,session->max.cols);
 	}
 	else
 	{
 		// Going from maximum to 24x80.
-		if (session->maxROWS > 24 || session->maxCOLS > 80)
+		if (session->max.rows > 24 || session->max.cols > 80)
 		{
 			if(session->vcontrol)
 			{
@@ -694,7 +582,7 @@ void ctlr_erase(H3270 *session, int alt)
 			if(lib3270_get_toggle(session,LIB3270_TOGGLE_ALTSCREEN))
 				set_viewsize(session,24,80);
 			else
-				set_viewsize(session,session->maxROWS,80);
+				set_viewsize(session,session->max.rows,80);
 		}
 	}
 
@@ -702,8 +590,8 @@ void ctlr_erase(H3270 *session, int alt)
 
 }
 
-/*
- * Interpret an incoming 3270 command.
+/**
+ * @brief Interpret an incoming 3270 command.
  */
 enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen)
 {
@@ -943,7 +831,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 				space3270out(hSession,3);
 				*hSession->obptr++ = ORDER_SBA;
 				ENCODE_BADDR(hSession->obptr, baddr);
-				trace_ds(hSession," SetBufferAddress%s (Cols: %d Rows: %d)", rcba(hSession,baddr), hSession->cols, hSession->rows);
+				trace_ds(hSession," SetBufferAddress%s (Cols: %d Rows: %d)", rcba(hSession,baddr), hSession->view.cols, hSession->view.rows);
 				while (!hSession->ea_buf[baddr].fa)
 				{
 
@@ -1357,7 +1245,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			END_TEXT("SetBufferAddress");
 			previous = SBA;
 			trace_ds(hSession,"%s",rcba(hSession,hSession->buffer_addr));
-			if(hSession->buffer_addr >= hSession->cols * hSession->rows)
+			if(hSession->buffer_addr >= hSession->view.cols * hSession->view.rows)
 			{
 				ABORT_WRITE("invalid SBA address");
 			}
@@ -1508,7 +1396,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 					trace_ds(hSession,"'");
 
 			}
-			if (baddr >= hSession->cols * hSession->rows)
+			if (baddr >= hSession->view.cols * hSession->view.rows)
 			{
 				ABORT_WRITE("invalid RA address");
 			}
@@ -1556,7 +1444,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				trace_ds(hSession,"%s",rcba(hSession,baddr));
 
 			previous = ORDER;
-			if (baddr >= hSession->cols * hSession->rows)
+			if (baddr >= hSession->view.cols * hSession->view.rows)
 			{
 				ABORT_WRITE("invalid EUA address");
 			}
@@ -1861,7 +1749,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			DEC_BA(baddr);
 			while (!aborted &&
 			       ((fa_addr >= 0 && baddr != fa_addr) ||
-			        (fa_addr < 0 && baddr != hSession->rows*hSession->cols - 1))) {
+			        (fa_addr < 0 && baddr != hSession->view.rows*hSession->view.cols - 1))) {
 				if (hSession->ea_buf[baddr].cc == FCORDER_SI) {
 					ABORT_WRITE("double SI");
 				}
@@ -2069,8 +1957,8 @@ void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen)
 			 * Insert NULLs to the end of the line and advance to
 			 * the beginning of the next line.
 			 */
-			s_row = hSession->buffer_addr / hSession->cols;
-			while ((hSession->buffer_addr / hSession->cols) == s_row)
+			s_row = hSession->buffer_addr / hSession->view.cols;
+			while ((hSession->buffer_addr / hSession->view.cols) == s_row)
 			{
 				ctlr_add(hSession,hSession->buffer_addr, EBC_null, hSession->default_cs);
 				ctlr_add_fg(hSession,hSession->buffer_addr, hSession->default_fg);
@@ -2450,7 +2338,7 @@ int ctlr_any_data(H3270 *session)
 {
 	register int i;
 
-	for(i = 0; i < session->rows*session->cols; i++)
+	for(i = 0; i < session->view.rows * session->view.cols; i++)
 	{
 		if (!IsBlank(session->ea_buf[i].cc))
 			return 1;
@@ -2477,7 +2365,7 @@ void ctlr_clear(H3270 *session, Boolean can_snap)
 #endif
 
 	/* Clear the screen. */
-	(void) memset((char *)session->ea_buf, 0, session->rows*session->cols*sizeof(struct lib3270_ea));
+	(void) memset((char *)session->ea_buf, 0, session->view.rows * session->view.cols * sizeof(struct lib3270_ea));
 	cursor_move(session,0);
 	session->buffer_addr = 0;
 
@@ -2506,7 +2394,7 @@ static void ctlr_blanks(H3270 *session)
 {
 	int baddr;
 
-	for (baddr = 0; baddr < session->rows*session->cols; baddr++)
+	for (baddr = 0; baddr < session->view.rows * session->view.cols; baddr++)
 	{
 		if (!session->ea_buf[baddr].fa)
 			session->ea_buf[baddr].cc = EBC_space;
@@ -2634,8 +2522,8 @@ static void ctlr_add_ic(H3270 *hSession, int baddr, unsigned char ic)
 	hSession->ea_buf[baddr].ic = ic;
 }
 
-/*
- * Wrapping bersion of ctlr_bcopy.
+/**
+ * @brief Wrapping bersion of ctlr_bcopy.
  */
 void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int count)
 {
@@ -2647,8 +2535,8 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
 	 * It's faster to figure out if none of this is true, then do a slow
 	 * location-at-a-time version only if it happens.
 	 */
-	if (baddr_from + count <= hSession->rows*hSession->cols &&
-	    baddr_to + count <= hSession->rows*hSession->cols) {
+	if (baddr_from + count <= hSession->view.rows * hSession->view.cols &&
+	    baddr_to + count <= hSession->view.rows * hSession->view.cols) {
 		ctlr_bcopy(hSession,baddr_from, baddr_to, count, True);
 	} else {
 		int i, from, to;
@@ -2656,12 +2544,12 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
 		for (i = 0; i < count; i++) {
 		    if (baddr_to > baddr_from) {
 			/* Shifting right, move left. */
-			to = (baddr_to + count - 1 - i) % hSession->rows*hSession->cols;
-			from = (baddr_from + count - 1 - i) % hSession->rows*hSession->cols;
+			to = (baddr_to + count - 1 - i) % hSession->view.rows * hSession->view.cols;
+			from = (baddr_from + count - 1 - i) % hSession->view.rows * hSession->view.cols;
 		    } else {
 			/* Shifting left, move right. */
-			to = (baddr_to + i) % hSession->rows*hSession->cols;
-			from = (baddr_from + i) % hSession->rows*hSession->cols;
+			to = (baddr_to + i) % hSession->view.rows * hSession->view.cols;
+			from = (baddr_from + i) % hSession->view.rows * hSession->view.cols;
 		    }
 		    ctlr_bcopy(hSession,from, to, 1, True);
 		}
@@ -2714,7 +2602,7 @@ void ctlr_aclear(H3270 *hSession, int baddr, int count, int GNUC_UNUSED(clear_ea
  */
 void ctlr_scroll(H3270 *hSession)
 {
-	int qty = (hSession->rows - 1) * hSession->cols;
+	int qty = (hSession->view.rows - 1) * hSession->view.cols;
 
 	/* Make sure nothing is selected. (later this can be fixed) */
 	// unselect(0, ROWS*COLS);
@@ -2722,10 +2610,10 @@ void ctlr_scroll(H3270 *hSession)
 	/* Synchronize pending changes prior to this. */
 
 	/* Move ea_buf. */
-	(void) memmove(&hSession->ea_buf[0], &hSession->ea_buf[hSession->cols],qty * sizeof(struct lib3270_ea));
+	(void) memmove(&hSession->ea_buf[0], &hSession->ea_buf[hSession->view.cols],qty * sizeof(struct lib3270_ea));
 
 	/* Clear the last line. */
-	(void) memset((char *) &hSession->ea_buf[qty], 0, hSession->cols * sizeof(struct lib3270_ea));
+	(void) memset((char *) &hSession->ea_buf[qty], 0, hSession->view.cols * sizeof(struct lib3270_ea));
 
 	hSession->cbk.display(hSession);
 

@@ -246,9 +246,8 @@ static const char *trsp_flag[2] = { "POSITIVE-RESPONSE", "NEGATIVE-RESPONSE" };
 #endif /*]*/
 #endif /*]*/
 
-#define XMIT_ROWS	hSession->maxROWS
-#define XMIT_COLS	hSession->maxCOLS
-
+#define XMIT_ROWS	hSession->max.rows
+#define XMIT_COLS	hSession->max.cols
 
 #if defined(_WIN32) /*[*/
 	#define socket_errno()	WSAGetLastError()

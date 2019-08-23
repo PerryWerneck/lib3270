@@ -51,7 +51,7 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
 	{
 		hSession->selected = 0;
 
-		for(a = 0; a < ((int) (hSession->rows*hSession->cols)); a++)
+		for(a = 0; a < ((int) (hSession->view.rows * hSession->view.cols)); a++)
 		{
 			if(hSession->text[a].attr & LIB3270_ATTR_SELECTED)
 			{
@@ -94,7 +94,7 @@ LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
 	if(!lib3270_connected(h))
 		return ENOTCONN;
 
-	maxlen = (h->rows * h->cols);
+	maxlen = (h->view.rows * h->view.cols);
 
 	// Check bounds
 	if(start < 0 || start > maxlen || end < 0 || end > maxlen || start > end)
@@ -143,7 +143,7 @@ LIB3270_EXPORT int lib3270_select_all(H3270 * hSession)
 {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	do_select(hSession,0,(hSession->rows*hSession->cols)-1,0);
+	do_select(hSession,0,(hSession->view.rows * hSession->view.cols)-1,0);
 
 	return 0;
 }
@@ -200,28 +200,28 @@ LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to)
 	if(!lib3270_get_selection_bounds(hSession,&pos[0],&pos[1]))
 		return from;
 
-	rows = (to / hSession->cols) - (from / hSession->cols);
-	cols = (to % hSession->cols) - (from % hSession->cols);
+	rows = (to / hSession->view.cols) - (from / hSession->view.cols);
+	cols = (to % hSession->view.cols) - (from % hSession->view.cols);
 
 	for(f=0;f<2;f++)
 	{
-		int row  = (pos[f] / hSession->cols) + rows;
-		int col  = (pos[f] % hSession->cols) + cols;
+		int row  = (pos[f] / hSession->view.cols) + rows;
+		int col  = (pos[f] % hSession->view.cols) + cols;
 
 		if(row < 0)
-			rows = - (pos[f] / hSession->cols);
+			rows = - (pos[f] / hSession->view.cols);
 
 		if(col < 0)
-			cols = - (pos[f] % hSession->cols);
+			cols = - (pos[f] % hSession->view.cols);
 
-		if(row >= ((int) hSession->rows))
-			rows = hSession->rows - ((pos[f] / hSession->cols)+1);
+		if(row >= ((int) hSession->view.rows))
+			rows = hSession->view.rows - ((pos[f] / hSession->view.cols)+1);
 
-		if(col >= ((int) hSession->cols))
-			cols = hSession->cols - ((pos[f] % hSession->cols)+1);
+		if(col >= ((int) hSession->view.cols))
+			cols = hSession->view.cols - ((pos[f] % hSession->view.cols)+1);
 	}
 
-	step = (rows * hSession->cols) + cols;
+	step = (rows * hSession->view.cols) + cols;
 
 	do_select(hSession,hSession->select.start + step,hSession->select.end + step,hSession->rectsel);
 	cursor_move(hSession,hSession->select.end);
@@ -251,20 +251,20 @@ LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int orig
 	else if((flag&0x8F) == SELECTION_ACTIVE)
 		return lib3270_move_selected_area(h,origin,baddr);
 
-	row = baddr/h->cols;
-	col = baddr%h->cols;
+	row = baddr/h->view.cols;
+	col = baddr%h->view.cols;
 
 	if(flag & SELECTION_LEFT)		// Update left margin
-		origin = first = ((first/h->cols)*h->cols) + col;
+		origin = first = ((first/h->view.cols)*h->view.cols) + col;
 
 	if(flag & SELECTION_TOP)		// Update top margin
-		origin = first = (row*h->cols) + (first%h->cols);
+		origin = first = (row*h->view.cols) + (first%h->view.cols);
 
 	if(flag & SELECTION_RIGHT) 		// Update right margin
-		origin = last = ((last/h->cols)*h->cols) + col;
+		origin = last = ((last/h->view.cols)*h->view.cols) + col;
 
 	if(flag & SELECTION_BOTTOM)		// Update bottom margin
-		origin = last = (row*h->cols) + (last%h->cols);
+		origin = last = (row*h->view.cols) + (last%h->view.cols);
 
 	trace("origin=%d first=%d last=%d",origin,first,last);
 
@@ -291,28 +291,28 @@ LIB3270_EXPORT int lib3270_move_selection(H3270 *hSession, LIB3270_DIRECTION dir
 	switch(dir)
 	{
 	case LIB3270_DIR_UP:
-		if(start <= ((int) hSession->cols))
+		if(start <= ((int) hSession->view.cols))
 			return EINVAL;
-		start -= hSession->cols;
-		end   -= hSession->cols;
+		start -= hSession->view.cols;
+		end   -= hSession->view.cols;
 		break;
 
 	case LIB3270_DIR_DOWN:
-		if(end >= ((int) (hSession->cols * (hSession->rows-1))))
+		if(end >= ((int) (hSession->view.cols * (hSession->view.rows-1))))
 			return EINVAL;
-		start += hSession->cols;
-		end   += hSession->cols;
+		start += hSession->view.cols;
+		end   += hSession->view.cols;
 		break;
 
 	case LIB3270_DIR_LEFT:
-		if( (start % hSession->cols) < 1)
+		if( (start % hSession->view.cols) < 1)
 			return EINVAL;
 		start--;
 		end--;
 		break;
 
 	case LIB3270_DIR_RIGHT:
-		if( (end % hSession->cols) >= (hSession->cols-1))
+		if( (end % hSession->view.cols) >= (hSession->view.cols-1))
 			return EINVAL;
 		start++;
 		end++;

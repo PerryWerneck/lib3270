@@ -61,7 +61,7 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *sta
 
 	if(end)
 	{
-		int maxlen = (hSession->rows * hSession->cols)-1;
+		int maxlen = (hSession->view.rows * hSession->view.cols)-1;
 		*end	= first + lib3270_field_length(hSession,first);
 		if(*end > maxlen)
 			*end = maxlen;
@@ -88,7 +88,7 @@ LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start
 
 	if(end)
 	{
-		int maxlen = session->rows * session->cols;
+		int maxlen = session->view.rows * session->view.cols;
 		for(pos = baddr; pos < maxlen && !isspace(session->text[pos].chr);pos++);
 
 		*end = pos < maxlen ? pos-1 : maxlen;

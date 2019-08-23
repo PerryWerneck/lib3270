@@ -533,10 +533,10 @@ static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int GNUC_UNUSED(ig1
 {
 	int nc;
 
-	cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->cols));
-	nc = hSession->cursor_addr + hSession->cols;
+	cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->view.cols));
+	nc = hSession->cursor_addr + hSession->view.cols;
 
-	if (nc < hSession->scroll_bottom * hSession->cols)
+	if (nc < hSession->scroll_bottom * hSession->view.cols)
 		cursor_move(hSession,nc);
 	else
 		ansi_scroll(hSession);
@@ -552,11 +552,11 @@ ansi_cursor_up(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 
 	if (nn < 1)
 		nn = 1;
-	rr = hSession->cursor_addr / hSession->cols;
+	rr = hSession->cursor_addr / hSession->view.cols;
 	if (rr - nn < 0)
-		cursor_move(hSession, hSession->cursor_addr % hSession->cols);
+		cursor_move(hSession, hSession->cursor_addr % hSession->view.cols);
 	else
-		cursor_move(hSession, hSession->cursor_addr - (nn * hSession->cols));
+		cursor_move(hSession, hSession->cursor_addr - (nn * hSession->view.cols));
 	hSession->held_wrap = 0;
 	return DATA;
 }
@@ -607,17 +607,17 @@ static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1),
 	hSession->saved_altbuffer = 0;
 
 	hSession->scroll_top = 1;
-	hSession->scroll_bottom = hSession->rows;
+	hSession->scroll_bottom = hSession->view.rows;
 
-	Replace(hSession->tabs, (unsigned char *)lib3270_malloc((hSession->cols+7)/8));
-	for (i = 0; i < (hSession->cols+7)/8; i++)
+	Replace(hSession->tabs, (unsigned char *)lib3270_malloc((hSession->view.cols+7)/8));
+	for (i = 0; i < (hSession->view.cols+7)/8; i++)
 		hSession->tabs[i] = 0x01;
 
 	hSession->held_wrap = 0;
 	if (!hSession->ansi_reset)
 	{
 		ctlr_altbuffer(hSession,True);
-		ctlr_aclear(hSession, 0, hSession->rows * hSession->cols, 1);
+		ctlr_aclear(hSession, 0, hSession->view.rows * hSession->view.cols, 1);
 		ctlr_altbuffer(hSession,False);
 		ctlr_clear(hSession,False);
 		hSession->cbk.set_width(hSession,80);
@@ -630,8 +630,8 @@ static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1),
 static enum lib3270_ansi_state
 ansi_insert_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
-	int cc = hSession->cursor_addr % hSession->cols;	/* current col */
-	int mc = hSession->cols - cc;		/* max chars that can be inserted */
+	int cc = hSession->cursor_addr % hSession->view.cols;	/* current col */
+	int mc = hSession->view.cols - cc;		/* max chars that can be inserted */
 	int ns;				/* chars that are shifting */
 
 	if (nn < 1)
@@ -656,11 +656,11 @@ ansi_cursor_down(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 
 	if (nn < 1)
 		nn = 1;
-	rr = hSession->cursor_addr / hSession->cols;
-	if (rr + nn >= hSession->cols)
-		cursor_move(hSession,(hSession->cols-1)*hSession->cols + (hSession->cursor_addr%hSession->cols));
+	rr = hSession->cursor_addr / hSession->view.cols;
+	if (rr + nn >= hSession->view.cols)
+		cursor_move(hSession,(hSession->view.cols-1)*hSession->view.cols + (hSession->cursor_addr % hSession->view.cols));
 	else
-		cursor_move(hSession,hSession->cursor_addr + (nn * hSession->cols));
+		cursor_move(hSession,hSession->cursor_addr + (nn * hSession->view.cols));
 	hSession->held_wrap = 0;
 	return DATA;
 }
@@ -671,11 +671,11 @@ static enum lib3270_ansi_state ansi_cursor_right(H3270 *hSession, int nn, int GN
 
 	if (nn < 1)
 		nn = 1;
-	cc = hSession->cursor_addr % hSession->cols;
-	if (cc == hSession->cols-1)
+	cc = hSession->cursor_addr % hSession->view.cols;
+	if (cc == hSession->view.cols-1)
 		return DATA;
-	if (cc + nn >= hSession->cols)
-		nn = hSession->cols - 1 - cc;
+	if (cc + nn >= hSession->view.cols)
+		nn = hSession->view.cols - 1 - cc;
 	cursor_move(hSession,hSession->cursor_addr + nn);
 	hSession->held_wrap = 0;
 	return DATA;
@@ -693,7 +693,7 @@ ansi_cursor_left(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 	}
 	if (nn < 1)
 		nn = 1;
-	cc = hSession->cursor_addr % hSession->cols;
+	cc = hSession->cursor_addr % hSession->view.cols;
 	if (!cc)
 		return DATA;
 	if (nn > cc)
@@ -706,10 +706,10 @@ static enum lib3270_ansi_state
 ansi_cursor_motion(H3270 *hSession, int n1, int n2)
 {
 	if (n1 < 1) n1 = 1;
-	if (n1 > hSession->rows) n1 = hSession->rows;
+	if (n1 > hSession->view.rows) n1 = hSession->view.rows;
 	if (n2 < 1) n2 = 1;
-	if (n2 > hSession->cols) n2 = hSession->cols;
-	cursor_move(hSession,(n1 - 1) * hSession->cols + (n2 - 1));
+	if (n2 > hSession->view.cols) n2 = hSession->view.cols;
+	cursor_move(hSession,(n1 - 1) * hSession->view.cols + (n2 - 1));
 	hSession->held_wrap = 0;
 	return DATA;
 }
@@ -719,14 +719,14 @@ ansi_erase_in_display(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
 	switch (nn) {
 	    case 0:	/* below */
-		ctlr_aclear(hSession, hSession->cursor_addr, (hSession->rows * hSession->cols) - hSession->cursor_addr, 1);
+		ctlr_aclear(hSession, hSession->cursor_addr, (hSession->view.rows * hSession->view.cols) - hSession->cursor_addr, 1);
 		break;
 	    case 1:	/* above */
 		ctlr_aclear(hSession, 0, hSession->cursor_addr + 1, 1);
 		break;
 	    case 2:	/* all (without moving cursor) */
 //		if (hSession->cursor_addr == 0 && !hSession->is_altbuffer) scroll_save(hSession->rows, True);
-		ctlr_aclear(hSession, 0, hSession->rows * hSession->cols, 1);
+		ctlr_aclear(hSession, 0, hSession->view.rows * hSession->view.cols, 1);
 		break;
 	}
 	return DATA;
@@ -735,17 +735,17 @@ ansi_erase_in_display(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 static enum lib3270_ansi_state
 ansi_erase_in_line(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
-	int nc = hSession->cursor_addr % hSession->cols;
+	int nc = hSession->cursor_addr % hSession->view.cols;
 
 	switch (nn) {
 	    case 0:	/* to right */
-		ctlr_aclear(hSession, hSession->cursor_addr, hSession->cols - nc, 1);
+		ctlr_aclear(hSession, hSession->cursor_addr, hSession->view.cols - nc, 1);
 		break;
 	    case 1:	/* to left */
 		ctlr_aclear(hSession, hSession->cursor_addr - nc, nc+1, 1);
 		break;
 	    case 2:	/* all */
-		ctlr_aclear(hSession, hSession->cursor_addr - nc, hSession->cols, 1);
+		ctlr_aclear(hSession, hSession->cursor_addr - nc, hSession->view.cols, 1);
 		break;
 	}
 	return DATA;
@@ -754,7 +754,7 @@ ansi_erase_in_line(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 static enum lib3270_ansi_state
 ansi_insert_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
-	int rr = hSession->cursor_addr / hSession->cols;	/* current row */
+	int rr = hSession->cursor_addr / hSession->view.cols;	/* current row */
 	int mr = hSession->scroll_bottom - rr;		/* rows left at and below this one */
 	int ns;										/* rows that are shifting */
 
@@ -770,17 +770,17 @@ ansi_insert_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 	/* Move the victims down */
 	ns = mr - nn;
 	if (ns)
-		ctlr_bcopy(hSession,rr * hSession->cols, (rr + nn) * hSession->cols, ns * hSession->cols, 1);
+		ctlr_bcopy(hSession,rr * hSession->view.cols, (rr + nn) * hSession->view.cols, ns * hSession->view.cols, 1);
 
 	/* Clear the middle of the screen */
-	ctlr_aclear(hSession, rr * hSession->cols, nn * hSession->cols, 1);
+	ctlr_aclear(hSession, rr * hSession->view.cols, nn * hSession->view.cols, 1);
 	return DATA;
 }
 
 static enum lib3270_ansi_state
 ansi_delete_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
-	int rr = hSession->cursor_addr / hSession->cols;	/* current row */
+	int rr = hSession->cursor_addr / hSession->view.cols;	/* current row */
 	int mr = hSession->scroll_bottom - rr;				/* max rows that can be deleted */
 	int ns;												/* rows that are shifting */
 
@@ -796,19 +796,19 @@ ansi_delete_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 	/* Move the surviving rows up */
 	ns = mr - nn;
 	if (ns)
-		ctlr_bcopy(hSession,(rr + nn) * hSession->cols, rr * hSession->cols, ns * hSession->cols, 1);
+		ctlr_bcopy(hSession,(rr + nn) * hSession->view.cols, rr * hSession->view.cols, ns * hSession->view.cols, 1);
 
 	/* Clear the rest of the screen */
-	ctlr_aclear(hSession, (rr + ns) * hSession->cols, nn * hSession->cols, 1);
+	ctlr_aclear(hSession, (rr + ns) * hSession->view.cols, nn * hSession->view.cols, 1);
 	return DATA;
 }
 
 static enum lib3270_ansi_state
 ansi_delete_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 {
-	int cc = hSession->cursor_addr % hSession->cols;	/* current col */
-	int mc = hSession->cols - cc;						/* max chars that can be deleted */
-	int ns;												/* chars that are shifting */
+	int cc = hSession->cursor_addr % hSession->view.cols;	/* current col */
+	int mc = hSession->view.cols - cc;						/* max chars that can be deleted */
+	int ns;													/* chars that are shifting */
 
 	if (nn < 1)
 		nn = 1;
@@ -947,12 +947,12 @@ static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int GNUC_UNUSED(i
 
 	if (hSession->rev_wraparound_mode)
 	{
-		if (hSession->cursor_addr > (hSession->scroll_top - 1) * hSession->cols)
+		if (hSession->cursor_addr > (hSession->scroll_top - 1) * hSession->view.cols)
 			cursor_move(hSession,hSession->cursor_addr - 1);
 	}
 	else
 	{
-		if (hSession->cursor_addr % hSession->cols)
+		if (hSession->cursor_addr % hSession->view.cols)
 			cursor_move(hSession,hSession->cursor_addr - 1);
 	}
 	return DATA;
@@ -960,8 +960,8 @@ static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int GNUC_UNUSED(i
 
 static enum lib3270_ansi_state ansi_cr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
-	if (hSession->cursor_addr % hSession->cols)
-		cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->cols));
+	if (hSession->cursor_addr % hSession->view.cols)
+		cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->view.cols));
 
 	if (hSession->auto_newline_mode)
 		(void) ansi_lf(hSession, 0, 0);
@@ -972,19 +972,19 @@ static enum lib3270_ansi_state ansi_cr(H3270 *hSession, int GNUC_UNUSED(ig1), in
 
 static enum lib3270_ansi_state ansi_lf(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
-	int nc = hSession->cursor_addr + hSession->cols;
+	int nc = hSession->cursor_addr + hSession->view.cols;
 
 	hSession->held_wrap = 0;
 
 	// If we're below the scrolling region, don't scroll.
-	if((hSession->cursor_addr / hSession->cols) >= hSession->scroll_bottom)
+	if((hSession->cursor_addr / hSession->view.cols) >= hSession->scroll_bottom)
 	{
-		if (nc < hSession->rows * hSession->cols)
+		if (nc < hSession->view.rows * hSession->view.cols)
 			cursor_move(hSession,nc);
 		return DATA;
 	}
 
-	if (nc < hSession->scroll_bottom * hSession->cols)
+	if (nc < hSession->scroll_bottom * hSession->view.cols)
 		cursor_move(hSession,nc);
 	else
 		ansi_scroll(hSession);
@@ -993,13 +993,13 @@ static enum lib3270_ansi_state ansi_lf(H3270 *hSession, int GNUC_UNUSED(ig1), in
 
 static enum lib3270_ansi_state ansi_htab(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
-	int col = hSession->cursor_addr % hSession->cols;
+	int col = hSession->cursor_addr % hSession->view.cols;
 	int i;
 
 	hSession->held_wrap = 0;
-	if (col == hSession->cols-1)
+	if (col == hSession->view.cols-1)
 		return DATA;
-	for (i = col+1; i < hSession->cols-1; i++)
+	for (i = col+1; i < hSession->view.cols-1; i++)
 		if (hSession->tabs[i/8] & 1<<(i%8))
 			break;
 	cursor_move(hSession,hSession->cursor_addr - col + i);
@@ -1018,14 +1018,14 @@ static enum lib3270_ansi_state ansi_nop(H3270 GNUC_UNUSED(*hSession), int GNUC_U
 
 #define PWRAP { \
     nc = hSession->cursor_addr + 1; \
-    if (nc < hSession->scroll_bottom * hSession->cols) \
+    if (nc < hSession->scroll_bottom * hSession->view.cols) \
 	    cursor_move(hSession,nc); \
     else { \
-	    if (hSession->cursor_addr / hSession->cols >= hSession->scroll_bottom) \
-		    cursor_move(hSession,hSession->cursor_addr / hSession->cols * hSession->cols); \
+	    if (hSession->cursor_addr / hSession->view.cols >= hSession->scroll_bottom) \
+		    cursor_move(hSession,hSession->cursor_addr / hSession->view.cols * hSession->view.cols); \
 	    else { \
 		    ansi_scroll(hSession); \
-		    cursor_move(hSession,nc - hSession->cols); \
+		    cursor_move(hSession,nc - hSession->view.cols); \
 	    } \
     } \
 }
@@ -1198,13 +1198,13 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 		 * In my opinion, very strange, but among other things, 'vi'
 		 * depends on it!
 		 */
-		if (!((hSession->cursor_addr + 1) % hSession->cols)) {
+		if (!((hSession->cursor_addr + 1) % hSession->view.cols)) {
 			hSession->held_wrap = 1;
 		} else {
 			PWRAP;
 		}
 	} else {
-		if ((hSession->cursor_addr % hSession->cols) != (hSession->cols - 1))
+		if ((hSession->cursor_addr % hSession->view.cols) != (hSession->view.cols - 1))
 			cursor_move(hSession,hSession->cursor_addr + 1);
 	}
 	return DATA;
@@ -1277,10 +1277,10 @@ static enum lib3270_ansi_state ansi_digit(H3270 *hSession, int GNUC_UNUSED(ig1),
 
 static enum lib3270_ansi_state ansi_reverse_index(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
-	int rr = hSession->cursor_addr / hSession->cols;	/* current row */
-	int np = (hSession->scroll_top - 1) - rr;			/* number of rows in the scrolling region, above this line */
-	int ns;												/* number of rows to scroll */
-	int nn = 1;											/* number of rows to index */
+	int rr = hSession->cursor_addr / hSession->view.cols;	/* current row */
+	int np = (hSession->scroll_top - 1) - rr;				/* number of rows in the scrolling region, above this line */
+	int ns;													/* number of rows to scroll */
+	int nn = 1;												/* number of rows to index */
 
 	hSession->held_wrap = 0;
 
@@ -1360,7 +1360,7 @@ static enum lib3270_ansi_state ansi_status_report(H3270 *hSession, int nn, int G
 		break;
 
 	case 6:
-		(void) snprintf(cpr, 22, "\033[%d;%dR",(hSession->cursor_addr/hSession->cols) + 1, (hSession->cursor_addr%hSession->cols) + 1);
+		(void) snprintf(cpr, 22, "\033[%d;%dR",(hSession->cursor_addr/hSession->view.cols) + 1, (hSession->cursor_addr%hSession->view.cols) + 1);
 		net_sends(hSession,cpr);
 		break;
 	}
@@ -1564,10 +1564,10 @@ dec_scrolling_region(H3270 *hSession, int top, int bottom)
 {
 	if (top < 1)
 		top = 1;
-	if (bottom > hSession->rows)
-		bottom = hSession->rows;
+	if (bottom > hSession->view.rows)
+		bottom = hSession->view.rows;
 
-	if (top <= bottom && (top > 1 || bottom < hSession->rows))
+	if (top <= bottom && (top > 1 || bottom < hSession->view.rows))
 	{
 		hSession->scroll_top = top;
 		hSession->scroll_bottom = bottom;
@@ -1576,7 +1576,7 @@ dec_scrolling_region(H3270 *hSession, int top, int bottom)
 	else
 	{
 		hSession->scroll_top = 1;
-		hSession->scroll_bottom = hSession->rows;
+		hSession->scroll_bottom = hSession->view.rows;
 	}
 	return DATA;
 }
@@ -1651,7 +1651,7 @@ xterm_text_do(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSE
 static enum lib3270_ansi_state
 ansi_htab_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 {
-	register int col = hSession->cursor_addr % hSession->cols;
+	register int col = hSession->cursor_addr % hSession->view.cols;
 
 	hSession->tabs[col/8] |= 1<<(col%8);
 	return DATA;
@@ -1665,11 +1665,11 @@ ansi_htab_clear(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 	switch (nn)
 	{
 	case 0:
-		col = hSession->cursor_addr % hSession->cols;
+		col = hSession->cursor_addr % hSession->view.cols;
 		hSession->tabs[col/8] &= ~(1<<(col%8));
 		break;
 	case 3:
-		for (i = 0; i < (hSession->cols+7)/8; i++)
+		for (i = 0; i < (hSession->view.cols+7)/8; i++)
 			hSession->tabs[i] = 0;
 		break;
 	}
@@ -1684,7 +1684,7 @@ static void ansi_scroll(H3270 *hSession)
 	hSession->held_wrap = 0;
 
 	/* Save the top line */
-	if (hSession->scroll_top == 1 && hSession->scroll_bottom == hSession->rows)
+	if (hSession->scroll_top == 1 && hSession->scroll_bottom == hSession->view.rows)
 	{
 //		if (!hSession->is_altbuffer)
 //			scroll_save(1, False);
@@ -1694,13 +1694,13 @@ static void ansi_scroll(H3270 *hSession)
 
 	/* Scroll all but the last line up */
 	if (hSession->scroll_bottom > hSession->scroll_top)
-		ctlr_bcopy(hSession,hSession->scroll_top * hSession->cols,
-		    (hSession->scroll_top - 1) * hSession->cols,
-		    (hSession->scroll_bottom - hSession->scroll_top) * hSession->cols,
+		ctlr_bcopy(hSession,hSession->scroll_top * hSession->view.cols,
+		    (hSession->scroll_top - 1) * hSession->view.cols,
+		    (hSession->scroll_bottom - hSession->scroll_top) * hSession->view.cols,
 		    1);
 
 	/* Clear the last line */
-	ctlr_aclear(hSession, (hSession->scroll_bottom - 1) * hSession->cols, hSession->cols, 1);
+	ctlr_aclear(hSession, (hSession->scroll_bottom - 1) * hSession->view.cols, hSession->view.cols, 1);
 }
 
 /* Callback for when we enter ANSI mode. */

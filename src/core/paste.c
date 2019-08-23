@@ -193,8 +193,8 @@ static int set_string(H3270 *hSession, const unsigned char *str, int length)
 				int faddr;
 				unsigned char fa;
 
-				baddr = (hSession->cursor_addr + hSession->cols) % (hSession->cols * hSession->rows);   /* down */
-				baddr = (baddr / hSession->cols) * hSession->cols;               /* 1st col */
+				baddr = (hSession->cursor_addr + hSession->view.cols) % (hSession->view.cols * hSession->view.rows);   /* down */
+				baddr = (baddr / hSession->view.cols) * hSession->view.cols;               /* 1st col */
 				faddr = lib3270_field_addr(hSession,baddr);
 				fa = hSession->ea_buf[faddr].fa;
 				if (faddr != baddr && !FA_IS_PROTECTED(fa))
@@ -248,12 +248,12 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 	row--;
 	col--;
 
-	if(row > hSession->rows || col > hSession->cols)
+	if(row > hSession->view.rows || col > hSession->view.cols)
 		return - (errno = EOVERFLOW);
 
 	hSession->cbk.suspend(hSession);
 
-	hSession->cursor_addr = (row * hSession->cols) + col;
+	hSession->cursor_addr = (row * hSession->view.cols) + col;
 	rc = set_string(hSession, str, length);
 	hSession->cbk.resume(hSession);
 

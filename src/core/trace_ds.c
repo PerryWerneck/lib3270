@@ -77,7 +77,7 @@ static void	wtrace(H3270 *session, const char *fmt, ...);
 const char * rcba(H3270 *hSession, int baddr)
 {
 	static char buf[48];
-	(void) snprintf(buf, 48, "(%d,%d)", baddr/hSession->cols + 1, baddr%hSession->cols + 1);
+	(void) snprintf(buf, 48, "(%d,%d)", baddr/hSession->view.cols + 1, baddr%hSession->view.cols + 1);
 	return buf;
 }
 
@@ -262,12 +262,12 @@ void trace_screen(H3270 *session)
 	{
 		unsigned int row, baddr;
 
-		for(row=baddr=0;row < session->rows;row++)
+		for(row=baddr=0;row < session->view.rows;row++)
 		{
 			unsigned int col;
 			wtrace(session,"%02d ",row+1);
 
-			for(col = 0; col < session->cols;col++)
+			for(col = 0; col < session->view.cols;col++)
 			{
 				if(session->text[baddr].attr & LIB3270_ATTR_CG)
 					wtrace(session,"%c",'.');
@@ -305,7 +305,7 @@ void trace_ansi_disc(H3270 *hSession)
 	unsigned int i;
 
 	wtrace(hSession,"%c",'\n');
-	for (i = 0; i < hSession->cols; i++)
+	for (i = 0; i < hSession->view.cols; i++)
 		wtrace(hSession,"%c",'=');
 	wtrace(hSession,"%c",'\n');
 

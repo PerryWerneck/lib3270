@@ -273,7 +273,7 @@ static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on)
 static void screen_disp(H3270 *session)
 {
 	CHECK_SESSION_HANDLE(session);
-	screen_update(session,0,session->rows*session->cols);
+	screen_update(session,0,session->view.rows*session->view.cols);
 }
 
 static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width))

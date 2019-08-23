@@ -295,7 +295,6 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	return rc;
 }
 
-/// @brief Set string at cursor position.
 LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str, int length)
 {
 	int rc;
@@ -344,7 +343,7 @@ LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
 		lib3270_popup_dialog(h,LIB3270_NOTIFY_WARNING,
 										_( "Action failed" ),
 										_( "Unable to paste text" ),
-										"%s", sz == -EINVAL ? _( "Keyboard is locked" ) : _( "Unexpected error" ) );
+										"%s", sz == -EPERM ? _( "Keyboard is locked" ) : _( "Unexpected error" ) );
 		return 0;
 	}
 

@@ -696,16 +696,19 @@
 	 * @brief Set string at current cursor position.
 	 *
 	 * Returns are ignored; newlines mean "move to beginning of next line";
-	 * tabs and formfeeds become spaces.  Backslashes are not special
+	 * tabs and formfeeds become spaces.  Backslashes are not special.
 	 *
 	 * @param hSession	Session handle.
 	 * @param text		String to input.
 	 * @param length	Length of the string (-1 for auto-detect).
 	 *
-	 * @return Negative if error (sets errno) or number of processed characters.
+	 * @return Negative if error or number (sets errno) of processed characters.
+	 *
+	 * @retval -EPERM		The keyboard is locked.
+	 * @retval -ENOTCONN	Disconnected from host.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_text(H3270 *h, const unsigned char *text, int length);
+	LIB3270_EXPORT int lib3270_set_string(H3270 *h, const unsigned char *text, int length);
 
 	/**
 	 * @brief Set string at defined row/column.

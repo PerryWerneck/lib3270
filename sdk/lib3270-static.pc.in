@@ -6,10 +6,12 @@ includedir=@includedir@
 version_major=@PACKAGE_MAJOR_VERSION@
 version_minor=@PACKAGE_MINOR_VERSION@
 sdk_version=@LIB3270_SDK_VERSION@
+library_name=@LIB3270_NAME@
+product_name=@PRODUCT_NAME@
 
 Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)
 Version: @PACKAGE_VERSION@
-Libs: -L\@libdir@ -l@LIB3270_NAME@.static @LIBS@ @LIBSSL_LIBS@ @LIBICONV@ @INTL_LIBS@ @LDAP_LIBS@ @LIBCURL_LIBS@
+Libs: -l@LIB3270_NAME@.static @LIBS@ @LIBSSL_LIBS@ @LIBICONV@ @INTL_LIBS@ @LDAP_LIBS@ @LIBCURL_LIBS@
 Cflags: -DLIB3270_NAME=@LIB3270_NAME@
 

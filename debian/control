@@ -14,7 +14,7 @@ Description: TN3270 Access library.
 
 Package: lib3270-dev
 Architecture: any
-Provides: lib3270-5.2-dev
+Provides: lib3270-dev (= ${binary:Version}), lib3270-5.2-dev (= ${binary:Version})
 Section: libdevel
 Depends: ${misc:Depends}, pkg-config, lib3270-5.2 (= ${binary:Version})
 Description: TN3270 Access library development files.

@@ -171,8 +171,8 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 	{
 		"insert",
 		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
+		"Insert",			// Default keycode
+		"insert-text",		// Icon name
 		N_( "Insert" ),
 		N_( "Set insert mode" ),
 		""
@@ -189,8 +189,8 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 	{
 		"bold",
 		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
+		NULL,					// Default keycode
+		"format-text-bold",		// Icon name
 		N_( "Bold" ),
 		N_( "Bold" ),
 		""
@@ -207,8 +207,8 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 	{
 		"underline",
 		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
+		NULL,							// Default keycode
+		"format-text-underline",		// Icon name
 		N_( "Underline" ),
 		N_( "Show Underline" ),
 		""
@@ -297,6 +297,11 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 	}
 
 };
+
+LIB3270_EXPORT const LIB3270_TOGGLE_ENTRY * lib3270_get_toggle_list()
+{
+	return toggle_descriptor;
+}
 
 LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE ix)
 {

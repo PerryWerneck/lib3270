@@ -48,6 +48,13 @@
 		const char *description;	///< @brief Toggle description.
 	} LIB3270_TOGGLE_ENTRY;
 
+
+	/**
+	 * @brief Get the toggle description table.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_TOGGLE_ENTRY * lib3270_get_toggle_list();
+
 	/**
 	 * @brief get toggle state.
 	 *

@@ -66,6 +66,14 @@
 	LIB3270_EXPORT const char	* lib3270_ebc2asc(H3270 *hSession, unsigned char *buffer, int sz);
 	LIB3270_EXPORT const char	* lib3270_asc2ebc(H3270 *hSession, unsigned char *buffer, int sz);
 
+	/**
+	 * @brief Get character code from string definition.
+	 *
+	 * @param id	The character definition (id or 0x[code]).
+	 *
+	 * @return Character code if ok, 0 if not (sets errno).
+	 */
+	LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id);
 
 #ifdef __cplusplus
 	}

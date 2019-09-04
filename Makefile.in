@@ -35,6 +35,7 @@ SOURCES= \
 	$(wildcard src/core/keyboard/*.c) \
 	$(wildcard src/core/actions/*.c) \
 	$(wildcard src/core/toggles/*.c) \
+	$(wildcard src/core/charset/*.c) \
 	$(wildcard src/core/ft/*.c) \
 	$(wildcard src/core/@OSNAME@/*.rc) \
 	$(wildcard src/core/@OSNAME@/*.c) \

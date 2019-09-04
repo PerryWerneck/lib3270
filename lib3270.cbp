@@ -53,7 +53,22 @@
 		<Unit filename="src/core/bounds.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/charset.c">
+		<Unit filename="src/core/charset/charset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/charset/convert.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/charset/getset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/charset/remap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/charset/utf8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/charset/view.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/connect.c">
@@ -180,9 +195,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/trace_ds.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/core/utf8.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/util.c">

@@ -46,13 +46,15 @@ LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 	const LIB3270_ACTION_ENTRY *actions = lib3270_get_action_table();
 	size_t f;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	for(f=0; actions[f].name; f++)
 	{
 		if(!strcasecmp(name,actions[f].name))
 		{
-			lib3270_trace_event(hSession,"Action: %s\n",actions[f].name);
+			lib3270_trace_event(hSession,"Action(%s): %s\n",actions[f].name, (actions[f].label ? actions[f].label : ""));
+
+			if(!actions[f].enabled(hSession))
+				return errno = EPERM;
+
 			return actions[f].call(hSession);
 		}
 

@@ -151,7 +151,7 @@
 		{
 			"formatted",										//  Property name.
 			N_( "Formatted screen" ),							//  Property description.
-			lib3270_get_is_formatted,							//  Get value.
+			lib3270_is_formatted,							//  Get value.
 			NULL												//  Set value.
 		},
 

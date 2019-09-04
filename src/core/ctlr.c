@@ -318,10 +318,10 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	hSession->crm_nattr = 0;
 }
 
-LIB3270_EXPORT int lib3270_get_is_formatted(const H3270 *hSession)
+LIB3270_EXPORT int lib3270_is_formatted(const H3270 *hSession)
 {
 	if(check_online_session(hSession))
-		return -1;
+		return 0;
 
 	return hSession->formatted ? 1 : 0;
 }

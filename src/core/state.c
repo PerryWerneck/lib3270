@@ -51,7 +51,7 @@ LIB3270_EXPORT int lib3270_connected(const H3270 *h)
 	return ((int) h->cstate >= (int)LIB3270_CONNECTED_INITIAL);
 }
 
-LIB3270_EXPORT int lib3270_disconnected(const H3270 *h)
+LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h)
 {
 	return ((int) h->cstate == (int)LIB3270_NOT_CONNECTED);
 }

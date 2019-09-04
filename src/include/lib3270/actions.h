@@ -35,12 +35,13 @@
 
  typedef struct _lib3270_action_entry
  {
-    const char *name;					///< @brief Action name.
-    const char *key;					///< @brief Default key (or NULL if no default).
-	const char *icon;					///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-    const char *label;					///< @brief Label (or NULL).
-    const char *tooltip;				///< @brief Description (or NULL).
-    int (*call)(H3270 *hSession);		///< @brief lib3270 associated method.
+    const char *name;						///< @brief Action name.
+    const char *key;						///< @brief Default key (or NULL if no default).
+	const char *icon;						///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
+    const char *label;						///< @brief Button label (or NULL).
+    const char *summary;					///< @brief Short description (or NULL).
+    int (*call)(H3270 *hSession);			///< @brief lib3270 associated method.
+    int (*enabled)(const H3270 *hSession);	///< @brief Is the action enabled?
  } LIB3270_ACTION_ENTRY;
 
 /**
@@ -456,6 +457,10 @@
  *
  * @param hSession	TN3270 Session handle.
  * @param name	Name of the action to call.
+ *
+ * @return The action return code.
+ *
+ * @retval EPERM	Action is disabled.
  *
  */
  LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);

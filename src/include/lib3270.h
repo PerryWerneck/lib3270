@@ -983,14 +983,15 @@
 
 	LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname);
 
+	LIB3270_EXPORT int lib3270_is_connected(const H3270 *h);
+	LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h);
+
 	LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h);
 	LIB3270_EXPORT int lib3270_get_typeahead(const H3270 *h);
 	LIB3270_EXPORT int lib3270_get_undera(const H3270 *h);
 	LIB3270_EXPORT int lib3270_get_oia_box_solid(const H3270 *h);
 	LIB3270_EXPORT int lib3270_pconnected(const H3270 *h);
 	LIB3270_EXPORT int lib3270_half_connected(const H3270 *h);
-	LIB3270_EXPORT int lib3270_connected(const H3270 *h);
-	LIB3270_EXPORT int lib3270_disconnected(const H3270 *h);
 	LIB3270_EXPORT int lib3270_in_neither(const H3270 *h);
 	LIB3270_EXPORT int lib3270_in_ansi(const H3270 *h);
 	LIB3270_EXPORT int lib3270_in_3270(const H3270 *h);
@@ -1189,7 +1190,7 @@
      * @retval  0	Screen is not formatted.
      * @retval  1	Screen is formatted.
 	 */
-	LIB3270_EXPORT int lib3270_get_is_formatted(const H3270 *hSession);
+	LIB3270_EXPORT int lib3270_is_formatted(const H3270 *hSession);
 
 	/**
 	 * @brief Get Check if the screen position is protected.

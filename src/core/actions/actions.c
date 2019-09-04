@@ -31,39 +31,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/actions.h>
 
-/*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
-
-/*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
-
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
-
-/**
- * @brief Get LIB3270 action table;
- *
- */
- LIB3270_EXPORT const LIB3270_ACTION_ENTRY * lib3270_get_action_table()
- {
-	#undef DECLARE_LIB3270_ACTION
-	#undef DECLARE_LIB3270_CLEAR_SELECTION_ACTION
-	#undef DECLARE_LIB3270_KEY_ACTION
-	#undef DECLARE_LIB3270_CURSOR_ACTION
-	#undef DECLARE_LIB3270_FKEY_ACTION
-
-	#define DECLARE_LIB3270_ACTION( name, description )						{ #name, description, lib3270_ ## name			},
-	#define DECLARE_LIB3270_CLEAR_SELECTION_ACTION( name, description )		{ #name, description, lib3270_ ## name			},
-	#define DECLARE_LIB3270_KEY_ACTION( name, description )					{ #name, description, lib3270_ ## name			},
-	#define DECLARE_LIB3270_CURSOR_ACTION( name, description )				{ #name, description, lib3270_cursor_ ## name	},
-	#define DECLARE_LIB3270_FKEY_ACTION( name, description )				// name
-
-	static const LIB3270_ACTION_ENTRY actions[] =
-	{
-		#include <lib3270/action_table.h>
-		{ NULL, NULL, NULL }
-	};
-
-	return actions;
- }
-
 
 /**
  * @brief Launch an action by name.

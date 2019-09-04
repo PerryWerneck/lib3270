@@ -318,7 +318,7 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str,
 	return rc;
 }
 
-LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
+LIB3270_EXPORT int lib3270_paste_text(H3270 *h, const unsigned char *str)
 {
 	int sz;
 	CHECK_SESSION_HANDLE(h);
@@ -356,7 +356,7 @@ LIB3270_EXPORT int lib3270_paste(H3270 *h, const unsigned char *str)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_pastenext(H3270 *hSession)
+LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession)
 {
 	char	* ptr;
 	int		  rc;
@@ -372,7 +372,7 @@ LIB3270_EXPORT int lib3270_pastenext(H3270 *hSession)
 	ptr = hSession->paste_buffer;
 	hSession->paste_buffer = NULL;
 
-	rc = lib3270_paste(hSession,(unsigned char *) ptr);
+	rc = lib3270_paste_text(hSession,(unsigned char *) ptr);
 
 	lib3270_free(ptr);
 	return rc;

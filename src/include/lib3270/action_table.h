@@ -29,6 +29,8 @@
  *
  */
 
+	#error Deprecated
+
 	/*
 	 * Action call table.
 	 *

@@ -35,7 +35,7 @@
  */
 
 #include <lib3270-internals.h>
-#include <lib3270/X11keysym.h>
+#include <X11keysym.h>
 #include <lib3270/charset.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>

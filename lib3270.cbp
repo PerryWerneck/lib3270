@@ -41,7 +41,10 @@
 		<Unit filename="README.md" />
 		<Unit filename="configure.ac" />
 		<Unit filename="gitsync.sh" />
-		<Unit filename="src/core/actions.c">
+		<Unit filename="src/core/actions/actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/actions/table.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/ansi.c">
@@ -213,6 +216,7 @@
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/X11keysym.h" />
 		<Unit filename="src/include/lib3270/action_table.h" />
+		<Unit filename="src/include/lib3270/actions.h" />
 		<Unit filename="src/include/lib3270/charset.h" />
 		<Unit filename="src/include/lib3270/filetransfer.h" />
 		<Unit filename="src/include/lib3270/html.h" />

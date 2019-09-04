@@ -237,15 +237,12 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 		X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN,
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 		LIB3270_NOTIFY_ERROR,
-		"security-medium",
-		N_( "The SSL certificate for this host is not trusted." ),
-		N_( "The security certificate presented by this host was not issued by a trusted certificate authority." )
 #else
 		LIB3270_NOTIFY_WARNING,
+#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 		"security-medium",
 		N_( "Self signed certificate in certificate chain" ),
 		N_( "The certificate chain could be built up using the untrusted certificates but the root could not be found locally." )
-#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 	},
 
 	{

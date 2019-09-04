@@ -164,7 +164,7 @@ struct toggle_name {
 /// @brief State macros
 #define PCONNECTED		lib3270_pconnected(hSession)
 #define HALF_CONNECTED	lib3270_half_connected(hSession)
-#define CONNECTED		lib3270_connected(hSession)
+#define CONNECTED		lib3270_is_connected(hSession)
 
 #define IN_NEITHER		lib3270_in_neither(hSession)
 #define IN_ANSI			lib3270_in_ansi(hSession)

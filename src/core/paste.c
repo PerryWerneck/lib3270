@@ -323,7 +323,7 @@ LIB3270_EXPORT int lib3270_paste_text(H3270 *h, const unsigned char *str)
 	int sz;
 	CHECK_SESSION_HANDLE(h);
 
-	if(!lib3270_connected(h))
+	if(!lib3270_is_connected(h))
 	{
 		lib3270_ring_bell(h);
 		errno = ENOTCONN;
@@ -363,7 +363,7 @@ LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession)
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!(lib3270_connected(hSession) && hSession->paste_buffer))
+	if(!(lib3270_is_connected(hSession) && hSession->paste_buffer))
 	{
 		lib3270_ring_bell(hSession);
 		return 0;

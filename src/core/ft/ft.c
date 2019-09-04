@@ -262,7 +262,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 // 	unsigned long		  length		= 0L;
 
 //	trace("%s(%s)",__FUNCTION__,local);
-	if(!lib3270_connected(session))
+	if(!lib3270_is_connected(session))
 	{
 		return ft_creation_failed(session,ENOTCONN,message,_( "Disconnected from host." ));
 	}

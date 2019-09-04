@@ -76,7 +76,7 @@ LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start
 
 	CHECK_SESSION_HANDLE(session);
 
-	if(!lib3270_connected(session) || isspace(session->text[baddr].chr))
+	if(!lib3270_is_connected(session) || isspace(session->text[baddr].chr))
 		return -1;
 
 	if(start)

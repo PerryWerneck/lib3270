@@ -70,7 +70,7 @@ void lib3270_session_free(H3270 *h)
 		return;
 
 	// Terminate session
-	if(lib3270_connected(h))
+	if(lib3270_is_connected(h))
 		lib3270_disconnect(h);
 
 	shutdown_toggles(h);

@@ -206,7 +206,7 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 
 	CHECK_SESSION_HANDLE(hSession);
 
-	if(!(lib3270_connected(hSession) && (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)))
+	if(!(lib3270_is_connected(hSession) && (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)))
 		return rc;
 
 	row = baddr / hSession->view.cols;
@@ -282,7 +282,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 
 	CHECK_SESSION_HANDLE(h);
 
-	if(!lib3270_connected(h))
+	if(!lib3270_is_connected(h))
 	{
 		errno = ENOTCONN;
 		return NULL;

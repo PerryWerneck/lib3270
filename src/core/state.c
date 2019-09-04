@@ -46,11 +46,6 @@ LIB3270_EXPORT int lib3270_half_connected(const H3270 *h)
 	return (h->cstate == LIB3270_RESOLVING || h->cstate == LIB3270_PENDING);
 }
 
-LIB3270_EXPORT int lib3270_connected(const H3270 *h)
-{
-	return ((int) h->cstate >= (int)LIB3270_CONNECTED_INITIAL);
-}
-
 LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h)
 {
 	return ((int) h->cstate == (int)LIB3270_NOT_CONNECTED);
@@ -83,7 +78,7 @@ LIB3270_EXPORT int lib3270_in_tn3270e(const H3270 *h)
 
 LIB3270_EXPORT int lib3270_is_connected(const H3270 *h)
 {
-	return (h->cstate == LIB3270_CONNECTED_TN3270E);
+	return ((int) h->cstate >= (int)LIB3270_CONNECTED_INITIAL);
 }
 
 LIB3270_EXPORT int lib3270_in_e(const H3270 *h)

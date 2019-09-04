@@ -167,7 +167,16 @@
 		<Unit filename="src/core/telnet.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/toggles.c">
+		<Unit filename="src/core/toggles/getset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/toggles/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/toggles/listener.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/toggles/table.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/trace_ds.c">

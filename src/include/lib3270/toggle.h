@@ -37,6 +37,17 @@
 	extern "C" {
 #endif
 
+	typedef struct _lib3270_toggle_entry
+	{
+		const char *name;			///< @brief Toggle name.
+		const char  def;			///< @brief Default value.
+		const char *key;			///< @brief Default key (or NULL if no default).
+		const char *icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
+		const char *label;			///< @brief Button label (or NULL).
+		const char *summary;		///< @brief Short description (or NULL).
+		const char *description;	///< @brief Toggle description.
+	} LIB3270_TOGGLE_ENTRY;
+
 	/**
 	 * @brief get toggle state.
 	 *
@@ -56,6 +67,9 @@
 	 * @param value	New toggle state (non zero for true).
 	 *
 	 * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
+	 *
+	 * @retval -EINVAL	Invalid toggle id.
+	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_toggle(H3270 *h, LIB3270_TOGGLE ix, int value);
 
@@ -64,7 +78,7 @@
 	 *
 	 * @param name	Toggle name.
 	 *
-	 * @return Toggle ID or -1 if it's invalid.
+	 * @return Toggle ID or negative if it's invalid.
 	 *
 	 */
 	LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name);

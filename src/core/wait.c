@@ -56,7 +56,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 		if(!lib3270_get_lock_status(hSession))
 			return 0;
 
-		if(!lib3270_connected(hSession))
+		if(!lib3270_is_connected(hSession))
 			return errno = ENOTCONN;
 
 		lib3270_main_iterate(hSession,1);
@@ -81,7 +81,7 @@ int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds)
 		if(hSession->kybdlock && KYBDLOCK_IS_OERR(hSession))
 			return errno = EPERM;
 
-		if(!lib3270_connected(hSession))
+		if(!lib3270_is_connected(hSession))
 			return errno = ENOTCONN;
 
 		char * contents = lib3270_get_string_at_address(hSession, 0, -1, 0);
@@ -120,7 +120,7 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 		if(hSession->kybdlock && KYBDLOCK_IS_OERR(hSession))
 			return errno = EPERM;
 
-		if(!lib3270_connected(hSession))
+		if(!lib3270_is_connected(hSession))
 			return errno = ENOTCONN;
 
 		if(lib3270_cmp_string_at_address(hSession, baddr, key, 0) == 0)

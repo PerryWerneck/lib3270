@@ -135,7 +135,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 	struct ta *ta;
 
 	// If no connection, forget it.
-	if (!lib3270_connected(hSession))
+	if (!lib3270_is_connected(hSession))
 	{
 		lib3270_ring_bell(hSession);
 		lib3270_trace_event(hSession,"typeahead action dropped (not connected)\n");
@@ -2241,7 +2241,7 @@ LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H327
 
 	do
 	{
-		if(!lib3270_connected(hSession))
+		if(!lib3270_is_connected(hSession))
 			return LIB3270_KL_NOT_CONNECTED;
 
 		if(KYBDLOCK_IS_OERR(hSession))

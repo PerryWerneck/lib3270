@@ -74,7 +74,7 @@ LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr)
 
 	CHECK_SESSION_HANDLE(session);
 
-	if(!lib3270_connected(session))
+	if(!lib3270_is_connected(session))
 		return;
 
 	start = session->selected ? session->select.start : session->cursor_addr;
@@ -91,7 +91,7 @@ LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
 
 	CHECK_SESSION_HANDLE(h);
 
-	if(!lib3270_connected(h))
+	if(!lib3270_is_connected(h))
 		return ENOTCONN;
 
 	maxlen = (h->view.rows * h->view.cols);

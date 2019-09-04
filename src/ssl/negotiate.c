@@ -161,85 +161,12 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	}
 
+	//
 	// Success.
-	X509 * peer = NULL;
-	rv = SSL_get_verify_result(hSession->ssl.con);
+	//
 
-	debug("SSL Verify result was %d", rv);
-
-	const struct ssl_status_msg * msg = ssl_get_status_from_error_code((long) rv);
-
-	if(!msg)
-	{
-		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
-
-#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
-		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
-		return EACCES;
-#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
-
-	}
-	else
-	{
-		switch(rv)
-		{
-		case X509_V_OK:
-			peer = SSL_get_peer_certificate(hSession->ssl.con);
-			trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
-			break;
-
-		case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
-
-			peer = SSL_get_peer_certificate(hSession->ssl.con);
-
-			trace_ssl(hSession,"TLS/SSL negotiated connection complete with self signed certificate in certificate chain (rc=%d)\n",rv);
-
-	#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-			((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
-			((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
-			return EACCES;
-	#else
-			break;
-	#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-
-		default:
-			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->description);
-
-			debug("message: %s",msg->message);
-			debug("description: %s",msg->description);
-
-			((SSL_ERROR_MESSAGE *) message)->text = gettext(msg->message);
-			((SSL_ERROR_MESSAGE *) message)->description = gettext(msg->description);
-
-			if(msg->icon == LIB3270_NOTIFY_ERROR)
-			{
-				((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-				return EACCES;
-			}
-
-			((SSL_ERROR_MESSAGE *) message)->title = _( "Security warning" );
-
-		}
-
-	}
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-	{
-		char				  buffer[4096];
-		int 				  alg_bits		= 0;
-		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(hSession->ssl.con);
-
-		trace_ssl(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
-		SSL_CIPHER_get_bits(cipher, &alg_bits);
-		trace_ssl(hSession,"%s version %s with %d bits\n",
-						SSL_CIPHER_get_name(cipher),
-						SSL_CIPHER_get_version(cipher),
-						alg_bits);
-	}
-
+	// Get peer certificate, notify application before validation.
+	X509 * peer = SSL_get_peer_certificate(hSession->ssl.con);
 
 	if(peer)
 	{
@@ -266,8 +193,88 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		hSession->cbk.set_peer_certificate(peer);
 
-		set_ssl_state(hSession,LIB3270_SSL_SECURE);
 		X509_free(peer);
+	}
+
+
+	// Validate certificate.
+	rv = SSL_get_verify_result(hSession->ssl.con);
+
+	debug("SSL Verify result was %d", rv);
+	const struct ssl_status_msg * msg = ssl_get_status_from_error_code((long) rv);
+
+	if(!msg)
+	{
+		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
+		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+
+#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
+		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
+		return EACCES;
+#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
+
+	}
+	else
+	{
+		switch(rv)
+		{
+		case X509_V_OK:
+			trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
+			set_ssl_state(hSession,LIB3270_SSL_SECURE);
+			break;
+
+		case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
+
+			trace_ssl(hSession,"TLS/SSL negotiated connection complete with self signed certificate in certificate chain (rc=%d)\n",rv);
+
+			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+
+	#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+			((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
+			((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
+			return EACCES;
+	#else
+			break;
+	#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+
+		default:
+			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->description);
+
+			debug("message: %s",msg->message);
+			debug("description: %s",msg->description);
+
+			((SSL_ERROR_MESSAGE *) message)->text = gettext(msg->message);
+			((SSL_ERROR_MESSAGE *) message)->description = gettext(msg->description);
+
+			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+
+			if(msg->icon == LIB3270_NOTIFY_ERROR)
+			{
+				((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+				return EACCES;
+			}
+
+			((SSL_ERROR_MESSAGE *) message)->title = _( "Security warning" );
+
+		}
+
+	}
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+	{
+		char				  buffer[4096];
+		int 				  alg_bits		= 0;
+		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(hSession->ssl.con);
+
+		trace_ssl(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
+		SSL_CIPHER_get_bits(cipher, &alg_bits);
+		trace_ssl(hSession,"%s version %s with %d bits\n",
+						SSL_CIPHER_get_name(cipher),
+						SSL_CIPHER_get_version(cipher),
+						alg_bits);
 	}
 
 	return 0;

@@ -43,7 +43,8 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 {
 	time_t end = time(0)+seconds;
 
-	FAIL_IF_NOT_ONLINE(hSession);
+	if(lib3270_is_disconnected(hSession))
+		return errno = ENOTCONN;
 
 	lib3270_main_iterate(hSession,0);
 
@@ -56,7 +57,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 		if(!lib3270_get_lock_status(hSession))
 			return 0;
 
-		if(!lib3270_is_connected(hSession))
+		if(lib3270_is_disconnected(hSession))
 			return errno = ENOTCONN;
 
 		lib3270_main_iterate(hSession,1);

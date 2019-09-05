@@ -105,8 +105,9 @@ DEPENDS= \
 CFLAGS= \
 	@CFLAGS@ \
 	-g \
-	-I$(BASEDIR)/src/include
-	-DBUILD_DATE=`date +%Y%m%d` \
+	-I$(BASEDIR)/src/include \
+	-DDATADIR=$(datarootdir)/@PRODUCT_NAME@ \
+	-DCONFDIR=$(sysconfdir)/@PRODUCT_NAME@ \
 	@LIBSSL_CFLAGS@ \
 	@LDAP_CFLAGS@ \
 	@LIBCURL_CFLAGS@

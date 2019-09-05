@@ -269,6 +269,12 @@ LIB3270_EXPORT char * lib3270_build_data_filename(const char *name)
 
 }
 
+char * lib3270_build_config_filename(const char *name)
+{
+	// On windows the data and config path are the same.
+	return lib3270_build_data_filename(name);
+}
+
 LIB3270_EXPORT char	* lib3270_get_installation_path()
 {
 	char lpFilename[4096];

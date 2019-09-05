@@ -1475,12 +1475,14 @@
 #endif // WIn32
 
 	/**
-	 * @brief Build filename on "LIB3270_DATADIR".
+	 * @brief Build filename on "DATADIR".
 	 *
 	 * @return Full path for the file (release it with lib3270_free).
 	 *
 	 */
 	LIB3270_EXPORT char * lib3270_build_data_filename(const char *name);
+
+	LIB3270_EXPORT char * lib3270_build_config_filename(const char *name);
 
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
 	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);

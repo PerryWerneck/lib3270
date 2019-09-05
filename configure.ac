@@ -103,8 +103,6 @@ case "$host" in
  	s390x-*)
 		CFLAGS="$CFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_datadir="/usr/share/pw3270"
-		app_cv_confdir="/etc"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 
@@ -115,8 +113,6 @@ case "$host" in
  	*)
 		CFLAGS="$CFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_datadir="/usr/share/pw3270"
-		app_cv_confdir="/etc"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
@@ -125,10 +121,6 @@ case "$host" in
 
 esac
 
-AC_DEFINE_UNQUOTED(LIB3270_DATADIR,$app_cv_datadir)
-AC_SUBST(LIB3270_DATADIR,$app_cv_datadir)
-
-AC_SUBST(CONFDIR,$app_cv_confdir)
 AC_SUBST(OSNAME,$app_cv_osname)
 AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)

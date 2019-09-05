@@ -77,7 +77,7 @@
 		// Network actions
 		//
 		{
-			"connect",
+			"reconnect",
 			NULL,
 			"connect",
 			NULL,

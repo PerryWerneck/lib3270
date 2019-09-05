@@ -81,6 +81,8 @@ datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
+datadir=$(datarootdir)/@PRODUCT_NAME@
+confdir=$(sysconfdir)/@PRODUCT_NAME@
 
 BASEDIR=@BASEDIR@
 
@@ -106,8 +108,6 @@ CFLAGS= \
 	@CFLAGS@ \
 	-g \
 	-I$(BASEDIR)/src/include \
-	-DDATADIR=$(datarootdir)/@PRODUCT_NAME@ \
-	-DCONFDIR=$(sysconfdir)/@PRODUCT_NAME@ \
 	@LIBSSL_CFLAGS@ \
 	@LDAP_CFLAGS@ \
 	@LIBCURL_CFLAGS@

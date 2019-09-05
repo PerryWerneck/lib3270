@@ -108,10 +108,11 @@ case "$host" in
 
 		app_cv_static='no'
 
+		CFLAGS="$CFLAGS -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir)"
 		;;
 
  	*)
-		CFLAGS="$CFLAGS -pthread"
+		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir)"
 		LDFLAGS="$LDFLAGS -pthread"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"

@@ -305,8 +305,8 @@ install-dev: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270.pc
 
 	# Install translation files
-	@$(MKDIR) $(DESTDIR)$(datarootdir)/pw3270/pot
-	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datarootdir)/pw3270/pot/lib3270.pot
+	@$(MKDIR) $(DESTDIR)$(datadir)/pot
+	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datadir)/pot/lib3270.pot
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

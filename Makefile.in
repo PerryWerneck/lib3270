@@ -82,8 +82,6 @@ datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
-datadir=$(datarootdir)/$(PRODUCT_NAME)
-confdir=$(sysconfdir)/$(PRODUCT_NAME)
 
 BASEDIR=@BASEDIR@
 
@@ -306,8 +304,8 @@ install-dev: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270.pc
 
 	# Install translation files
-	@$(MKDIR) $(DESTDIR)$(datadir)/pot
-	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datadir)/pot/lib3270.pot
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/lib3270.pot
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

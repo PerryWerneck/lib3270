@@ -24,8 +24,6 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
 
@@ -565,12 +563,13 @@ void ctlr_erase(H3270 *session, int alt)
 	if (alt)
 	{
 		// Going from 24x80 to maximum.
-		session->cbk.display(session);
+		lib3270_write_screen_trace(session,"Going from 24x80 to %dx%d",session->max.rows,session->max.cols);
 		set_viewsize(session,session->max.rows,session->max.cols);
 	}
 	else
 	{
 		// Going from maximum to 24x80.
+		lib3270_write_screen_trace(session,"Going from %dx%d to 24x80",session->max.rows,session->max.cols);
 		if (session->max.rows > 24 || session->max.cols > 80)
 		{
 			if(session->vcontrol)
@@ -587,6 +586,7 @@ void ctlr_erase(H3270 *session, int alt)
 	}
 
 	session->screen_alt = alt;
+	session->cbk.display(session);
 
 }
 

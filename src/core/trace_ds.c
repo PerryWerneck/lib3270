@@ -236,6 +236,17 @@ LIB3270_EXPORT void lib3270_write_nettrace(H3270 *session, const char *fmt, ...)
 	va_end(args);
 }
 
+LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *session, const char *fmt, ...)
+{
+	va_list args;
+
+	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE))
+		return;
+
+	va_start(args, fmt);
+	session->trace.handler(session,session->trace.userdata,fmt, args);
+	va_end(args);
+}
 
 LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...)
 {

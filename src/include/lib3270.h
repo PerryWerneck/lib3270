@@ -437,6 +437,8 @@
 	 */
 	LIB3270_EXPORT unsigned int lib3270_get_width(const H3270 *h);
 
+	LIB3270_EXPORT unsigned int lib3270_get_max_width(const H3270 *h);
+
 	/**
 	 * Get current screen width in rows.
 	 *
@@ -446,6 +448,8 @@
 	 *
 	 */
 	LIB3270_EXPORT unsigned int lib3270_get_height(const H3270 *h);
+
+	LIB3270_EXPORT unsigned int lib3270_get_max_height(const H3270 *h);
 
 	LIB3270_EXPORT unsigned int lib3270_get_length(const H3270 *h);
 

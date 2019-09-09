@@ -266,6 +266,16 @@ LIB3270_EXPORT unsigned int lib3270_get_height(const H3270 *h)
 	return h->view.rows;
 }
 
+LIB3270_EXPORT unsigned int lib3270_get_max_width(const H3270 *h)
+{
+	return h->max.cols;
+}
+
+LIB3270_EXPORT unsigned int lib3270_get_max_height(const H3270 *h)
+{
+	return h->max.rows;
+}
+
 void update_model_info(H3270 *session, unsigned int model, unsigned int cols, unsigned int rows)
 {
 	if(model == session->model_num && session->max.rows == rows && session->max.cols == cols)

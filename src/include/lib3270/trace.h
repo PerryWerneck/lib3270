@@ -97,6 +97,17 @@
 	 */
 	LIB3270_EXPORT void lib3270_write_nettrace(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
 
+		/**
+	 * @brief Write on trace file.
+	 *
+	 * Write text on trace file, if screen trace is enabled.
+	 *
+	 * @param fmt 	String format.
+	 * @param ...	Arguments.
+	 *
+	 */
+	LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
+
 	/**
 	 * @brief Write on trace file.
 	 *

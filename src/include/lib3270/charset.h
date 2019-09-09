@@ -37,6 +37,9 @@
 	extern "C" {
 #endif
 
+	#define LIB3270_DEFAULT_CGEN			0x02b90000
+	#define LIB3270_DEFAULT_CSET			0x00000025
+
 	struct lib3270_charset
 	{
 		char			* host;

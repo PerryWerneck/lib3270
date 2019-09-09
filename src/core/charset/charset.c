@@ -219,6 +219,12 @@ LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, co
 
 	#define replace_pointer(x,v) if(x) { lib3270_free(x); }; x = strdup(v)
 
+	if(!host)
+		host = "us";
+
+	if(!display)
+		display = "ISO-8859-1";
+
 	replace_pointer(hSession->charset.host, host);
 	replace_pointer(hSession->charset.display,display);
 

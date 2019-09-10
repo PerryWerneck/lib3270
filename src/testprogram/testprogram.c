@@ -92,12 +92,13 @@ int main(int argc, char *argv[])
 		lib3270_wait_for_ready(h,10);
 		printf("Waiting ends %u\n\n",(unsigned int) time(NULL));
 
-		lib3270_autoptr(char) text = lib3270_get_string_at_address(h,0,-1,0);
+		lib3270_enter(h);
+		lib3270_wait(h,5);
+
+		lib3270_autoptr(char) text = lib3270_get_string_at_address(h,0,-1,'\n');
 		if(text)
 			printf("Screen:\n[%s]\n",text);
 
-		lib3270_enter(h);
-		lib3270_wait_for_ready(h,10);
 	}
 
 	lib3270_session_free(h);

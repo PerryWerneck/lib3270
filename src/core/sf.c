@@ -37,17 +37,16 @@
  */
 
 #include <lib3270-internals.h>
+#include <lib3270/trace.h>
+
 #include <errno.h>
 #if !defined(_WIN32) /*[*/
-#include <netinet/in.h>
+	#include <netinet/in.h>
 #endif /*]*/
-#include "3270ds.h"
-// #include "appres.h"
-#include "screen.h"
-// #include "ctlr.h"
-#include "resources.h"
 
-// #include "charsetc.h"
+#include "3270ds.h"
+#include "screen.h"
+//#include "resources.h"
 #include "ctlrc.h"
 
 #if defined(X3270_FT)
@@ -58,28 +57,20 @@
 #include "screenc.h"
 #include "seec.h"
 #include "sf.h"
-// #include "tablesc.h"
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
 
-// #include "api.h"
-
-// Externals
-// extern unsigned char reply_mode;
-// extern int      crm_nattr;
-// extern unsigned char crm_attr[];
-
 /* Screen globals. */
-static int		  cw = 7;
-int 			* char_width = &cw;
+static const int	  cw = 7;
+static const int 	* char_width = &cw;
 
-static int		  ch = 7;
-int 			* char_height = &ch;
+static const int	  ch = 7;
+static const int 	* char_height = &ch;
 
 /* Globals */
-static Boolean	  sfont = False;
-static Boolean	* standard_font = &sfont;
+static const Boolean	  sfont = False;
+static const Boolean	* standard_font = &sfont;
 
 
 /* Statics */
@@ -751,6 +742,11 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 			obptr_len = hSession->output.buf + obptr0;
 			len = (hSession->output.ptr - hSession->output.buf) - obptr0;
 			SET16(obptr_len, len);
+
+#ifdef DEBUG
+			lib3270_trace_data(hSession,see_qcode(replies[i].code),hSession->output.buf + obptr0, len);
+#endif // DEBUG
+
 		} else {
 			/* Back over the header. */
 			hSession->output.ptr -= 4;
@@ -818,6 +814,7 @@ static void do_qr_usable_area(H3270 *hSession)
 	*hSession->output.ptr++ = *char_width;									/* AW */
 	*hSession->output.ptr++ = *char_height;									/* AH */
 	SET16(hSession->output.ptr, hSession->max.cols * hSession->max.cols);	/* buffer, questionable */
+
 }
 
 static void do_qr_color(H3270 *hSession)

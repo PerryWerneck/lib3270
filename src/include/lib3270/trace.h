@@ -129,7 +129,7 @@
 	 * @param datalen	Length of the data block.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_trace_data(H3270 *hSession, const char *msg, const char *data, size_t datalen);
+	LIB3270_EXPORT void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
 
 
 #ifdef __cplusplus

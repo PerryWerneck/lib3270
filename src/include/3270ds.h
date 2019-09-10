@@ -127,19 +127,19 @@
 #define SF_TRANSFER_DATA 0xd0   /* file transfer open request */
 
 /* Query replies */
-#define QR_SUMMARY	0x80	/* summary */
-#define QR_USABLE_AREA	0x81	/* usable area */
-#define QR_ALPHA_PART	0x84	/* alphanumeric partitions */
-#define QR_CHARSETS	0x85	/* character sets */
-#define QR_COLOR	0x86	/* color */
-#define QR_HIGHLIGHTING	0x87	/* highlighting */
-#define QR_REPLY_MODES	0x88	/* reply modes */
-#define QR_DBCS_ASIA	0x91	/* DBCS-Asia */
-#define QR_PC3270	0x93    /* PC3270 */
-#define QR_DDM    	0x95    /* distributed data management */
-#define QR_RPQNAMES	0xa1	/* RPQ names */
-#define QR_IMP_PART	0xa6	/* implicit partition */
-#define QR_NULL		0xff	/* null */
+#define QR_SUMMARY		0x80		///< @brief summary
+#define QR_USABLE_AREA	0x81		///< @brief usable area
+#define QR_ALPHA_PART	0x84		///< @brief alphanumeric partitions
+#define QR_CHARSETS		0x85		///< @brief character sets
+#define QR_COLOR		0x86		///< @brief color
+#define QR_HIGHLIGHTING	0x87		///< @brief highlighting
+#define QR_REPLY_MODES	0x88		///< @brief reply modes
+#define QR_DBCS_ASIA	0x91		///< @brief DBCS-Asia
+#define QR_PC3270		0x93    	///< @brief PC3270
+#define QR_DDM    		0x95    	///< @brief distributed data management
+#define QR_RPQNAMES		0xa1		///< @brief RPQ names
+#define QR_IMP_PART		0xa6		///< @brief implicit partition
+#define QR_NULL			0xff		///< @brief null
 
 #define BA_TO_ROW(ba)		((ba) / hSession->view.cols)
 #define BA_TO_COL(ba)		((ba) % hSession->view.cols)

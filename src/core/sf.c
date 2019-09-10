@@ -793,6 +793,7 @@ static void do_qr_usable_area(H3270 *hSession)
 	SET16(hSession->output.ptr, hSession->max.cols);						/* usable width */
 	SET16(hSession->output.ptr, hSession->max.rows);						/* usable height */
 	*hSession->output.ptr++ = 0x01;											/* units (mm) */
+
 	num = display_widthMM();
 	denom = display_width();
 	while (!(num %2) && !(denom % 2))
@@ -802,6 +803,7 @@ static void do_qr_usable_area(H3270 *hSession)
 	}
 	SET16(hSession->output.ptr, (int)num);									/* Xr numerator */
 	SET16(hSession->output.ptr, (int)denom); 								/* Xr denominator */
+
 	num = display_heightMM();
 	denom = display_height();
 	while (!(num %2) && !(denom % 2))
@@ -809,11 +811,14 @@ static void do_qr_usable_area(H3270 *hSession)
 		num /= 2;
 		denom /= 2;
 	}
+
 	SET16(hSession->output.ptr, (int)num);									/* Yr numerator */
 	SET16(hSession->output.ptr, (int)denom); 								/* Yr denominator */
+
 	*hSession->output.ptr++ = *char_width;									/* AW */
 	*hSession->output.ptr++ = *char_height;									/* AH */
-	SET16(hSession->output.ptr, hSession->max.cols * hSession->max.cols);	/* buffer, questionable */
+
+	SET16(hSession->output.ptr, hSession->max.cols * hSession->max.rows);	/* buffer, questionable */
 
 }
 

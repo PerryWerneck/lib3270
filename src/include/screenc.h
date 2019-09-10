@@ -41,7 +41,6 @@
 #define display_width()		1
 
 LIB3270_INTERNAL int		screen_init(H3270 *session);
-// LIB3270_INTERNAL Boolean	screen_new_display_charsets(char *cslist, char *csname);
 LIB3270_INTERNAL void		mcursor_set(H3270 *session,LIB3270_POINTER m);
 
 #define mcursor_locked(x) mcursor_set(x,LIB3270_POINTER_LOCKED)

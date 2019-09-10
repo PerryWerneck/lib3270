@@ -66,6 +66,20 @@
 		},
 
 		{
+			"max_width",								//  Property name.
+			N_( "Maximum screen width in columns" ),	//  Property description.
+			lib3270_get_max_width,						//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
+			"max_height",								//  Property name.
+			N_( "Maximum screen height in rows" ),		//  Property description.
+			lib3270_get_max_height,						//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
 			"length",									//  Property name.
 			N_( "Screen buffer length in bytes" ),		//  Property description.
 			lib3270_get_length,							//  Get value.

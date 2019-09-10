@@ -488,8 +488,6 @@ struct _h3270
 	// Telnet.c
 	unsigned char 			* ibuf;
 	int      				  ibuf_size;			/**< @brief size of ibuf */
-	unsigned char			* obuf;					/**< @brief 3270 output buffer */
-	unsigned char			* obptr;
 	time_t          		  ns_time;
 	int             		  ns_brcvd;
 	int             		  ns_rrcvd;
@@ -529,8 +527,15 @@ struct _h3270
 
 	// 3270 input buffer
 	unsigned char 			* ibptr;
-	unsigned char 			* obuf_base;
-	int						  obuf_size;
+
+	// Output buffer.
+	struct
+	{
+		unsigned char		* buf;				///< @brief 3270 output buffer */
+		unsigned char 		* base;
+		int					  length;			///< @brief Length of the output buffer.
+		unsigned char		* ptr;
+	} output;
 
 	// network input buffer
 	unsigned char 			* sbbuf;

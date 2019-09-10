@@ -344,9 +344,9 @@ doc:
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/$(LIBNAME)@EXEEXT@
+	$(BINDBG)/lib3270@EXEEXT@
 
-$(BINDBG)/$(LIBNAME)@EXEEXT@: \
+$(BINDBG)/lib3270@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(BINDBG)/$(SONAME)
 
@@ -361,19 +361,19 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 		$(LIBS)
 
 run: \
-	$(BINDBG)/$(LIBNAME)@EXEEXT@
+	$(BINDBG)/lib3270@EXEEXT@
 
 ifeq ($(VALGRIND),no)
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(BINDBG)/$(LIBNAME)@EXEEXT@
+		$(BINDBG)/lib3270@EXEEXT@
 
 else
 	@touch valgrind.suppression
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
 		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
-			$(BINDBG)/$(LIBNAME)@EXEEXT@
+			$(BINDBG)/lib3270@EXEEXT@
 endif
 
 $(BINDBG)/$(SONAME): \

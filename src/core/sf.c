@@ -93,12 +93,19 @@ static void query_reply_start(H3270 *hSession);
 static void do_query_reply(H3270 *hSession, unsigned char code);
 static void query_reply_end(H3270 *hSession);
 
+//static void qr_single_fn_t(H3270 *hSession);
+
+static void do_qr_summary(H3270 *hSession);
+static void do_qr_usable_area(H3270 *hSession);
+static void do_qr_alpha_part(H3270 *hSession);
+static void do_qr_charsets(H3270 *hSession);
+static void do_qr_color(H3270 *hSession);
+static void do_qr_highlighting(H3270 *hSession);
+static void do_qr_reply_modes(H3270 *hSession);
+static void do_qr_imp_part(H3270 *hSession);
+static void do_qr_null(H3270 *hSession);
+
 typedef Boolean qr_multi_fn_t(H3270 *hSession, unsigned *subindex, Boolean *more);
-
-static qr_single_fn_t do_qr_summary, do_qr_usable_area, do_qr_alpha_part,
-	do_qr_charsets, do_qr_color, do_qr_highlighting, do_qr_reply_modes,
-	do_qr_imp_part, do_qr_null;
-
 
 #if defined(X3270_DBCS) /*[*/
 static qr_single_fn_t do_qr_dbcs_asia;
@@ -692,9 +699,9 @@ static enum pds sf_outbound_ds(H3270 *hSession, unsigned char buf[], int buflen)
 
 static void query_reply_start(H3270 *hSession)
 {
-	hSession->obptr = hSession->obuf;
+	hSession->output.ptr = hSession->output.buf;
 	space3270out(hSession,1);
-	*hSession->obptr++ = AID_SF;
+	*hSession->output.ptr++ = AID_SF;
 	qr_in_progress = True;
 }
 
@@ -721,13 +728,13 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 
 	do
 	{
-		int obptr0 = hSession->obptr - hSession->obuf;
+		int obptr0 = hSession->output.ptr - hSession->output.buf;
 		Boolean full = True;
 
 		space3270out(hSession,4);
-		hSession->obptr += 2;	/* skip length for now */
-		*hSession->obptr++ = SFID_QREPLY;
-		*hSession->obptr++ = code;
+		hSession->output.ptr += 2;	/* skip length for now */
+		*hSession->output.ptr++ = SFID_QREPLY;
+		*hSession->output.ptr++ = code;
 
 		more = False;
 		if (replies[i].single_fn)
@@ -741,12 +748,12 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 			unsigned char *obptr_len;
 
 			/* Fill in the length. */
-			obptr_len = hSession->obuf + obptr0;
-			len = (hSession->obptr - hSession->obuf) - obptr0;
+			obptr_len = hSession->output.buf + obptr0;
+			len = (hSession->output.ptr - hSession->output.buf) - obptr0;
 			SET16(obptr_len, len);
 		} else {
 			/* Back over the header. */
-			hSession->obptr -= 4;
+			hSession->output.ptr -= 4;
 		}
 	} while (more);
 }
@@ -771,7 +778,7 @@ static void do_qr_summary(H3270 *hSession)
 #endif /*]*/
 			trace_ds(hSession,"%s%s", comma, see_qcode(replies[i].code));
 			comma = ",";
-			*hSession->obptr++ = replies[i].code;
+			*hSession->output.ptr++ = replies[i].code;
 #if defined(X3270_DBCS) /*[*/
 		}
 #endif /*]*/
@@ -785,11 +792,11 @@ static void do_qr_usable_area(H3270 *hSession)
 
 	trace_ds(hSession,"> QueryReply(UsableArea)\n");
 	space3270out(hSession,19);
-	*hSession->obptr++ = 0x01;					/* 12/14-bit addressing */
-	*hSession->obptr++ = 0x00;					/* no special character features */
-	SET16(hSession->obptr, hSession->max.cols);	/* usable width */
-	SET16(hSession->obptr, hSession->max.rows);	/* usable height */
-	*hSession->obptr++ = 0x01;					/* units (mm) */
+	*hSession->output.ptr++ = 0x01;											/* 12/14-bit addressing */
+	*hSession->output.ptr++ = 0x00;											/* no special character features */
+	SET16(hSession->output.ptr, hSession->max.cols);						/* usable width */
+	SET16(hSession->output.ptr, hSession->max.rows);						/* usable height */
+	*hSession->output.ptr++ = 0x01;											/* units (mm) */
 	num = display_widthMM();
 	denom = display_width();
 	while (!(num %2) && !(denom % 2))
@@ -797,8 +804,8 @@ static void do_qr_usable_area(H3270 *hSession)
 		num /= 2;
 		denom /= 2;
 	}
-	SET16(hSession->obptr, (int)num);	/* Xr numerator */
-	SET16(hSession->obptr, (int)denom); /* Xr denominator */
+	SET16(hSession->output.ptr, (int)num);									/* Xr numerator */
+	SET16(hSession->output.ptr, (int)denom); 								/* Xr denominator */
 	num = display_heightMM();
 	denom = display_height();
 	while (!(num %2) && !(denom % 2))
@@ -806,11 +813,11 @@ static void do_qr_usable_area(H3270 *hSession)
 		num /= 2;
 		denom /= 2;
 	}
-	SET16(hSession->obptr, (int)num);		/* Yr numerator */
-	SET16(hSession->obptr, (int)denom); 	/* Yr denominator */
-	*hSession->obptr++ = *char_width;		/* AW */
-	*hSession->obptr++ = *char_height;		/* AH */
-	SET16(hSession->obptr, hSession->max.cols * hSession->max.cols);	/* buffer, questionable */
+	SET16(hSession->output.ptr, (int)num);									/* Yr numerator */
+	SET16(hSession->output.ptr, (int)denom); 								/* Yr denominator */
+	*hSession->output.ptr++ = *char_width;									/* AW */
+	*hSession->output.ptr++ = *char_height;									/* AH */
+	SET16(hSession->output.ptr, hSession->max.cols * hSession->max.cols);	/* buffer, questionable */
 }
 
 static void do_qr_color(H3270 *hSession)
@@ -823,17 +830,17 @@ static void do_qr_color(H3270 *hSession)
 	color_max = (hSession->colors == 8) ? 8: 16; 	/* report on 8 or 16 colors */
 
 	space3270out(hSession,4 + 2*15);
-	*hSession->obptr++ = 0x00;						/* no options */
-	*hSession->obptr++ = color_max; 				/* report on 8 or 16 colors */
-	*hSession->obptr++ = 0x00;						/* default color: */
-	*hSession->obptr++ = 0xf0 + COLOR_GREEN;		/*  green */
+	*hSession->output.ptr++ = 0x00;						/* no options */
+	*hSession->output.ptr++ = color_max; 				/* report on 8 or 16 colors */
+	*hSession->output.ptr++ = 0x00;						/* default color: */
+	*hSession->output.ptr++ = 0xf0 + COLOR_GREEN;		/*  green */
 	for (i = 0xf1; i < 0xf1 + color_max - 1; i++)
 	{
-		*hSession->obptr++ = i;
+		*hSession->output.ptr++ = i;
 		if (hSession->m3279)
-			*hSession->obptr++ = i;
+			*hSession->output.ptr++ = i;
 		else
-			*hSession->obptr++ = 0x00;
+			*hSession->output.ptr++ = 0x00;
 	}
 
 /*
@@ -841,10 +848,10 @@ static void do_qr_color(H3270 *hSession)
 	// Add background color.
 	if (hSession->m3279) {
 		space3270out(4);
-		*hSession->obptr++ = 4;		// length
-		*hSession->obptr++ = 0x02;	// background color
-		*hSession->obptr++ = 0x00;	// attribute
-		*hSession->obptr++ = 0xf0;	// default color
+		*hSession->output.ptr++ = 4;		// length
+		*hSession->output.ptr++ = 0x02;	// background color
+		*hSession->output.ptr++ = 0x00;	// attribute
+		*hSession->output.ptr++ = 0xf0;	// default color
 	}
 #endif
 */
@@ -854,26 +861,26 @@ static void do_qr_highlighting(H3270 *hSession)
 {
 	trace_ds(hSession,"> QueryReply(Highlighting)\n");
 	space3270out(hSession,11);
-	*hSession->obptr++ = 5;					/* report on 5 pairs */
-	*hSession->obptr++ = XAH_DEFAULT;		/* default: */
-	*hSession->obptr++ = XAH_NORMAL;		/*  normal */
-	*hSession->obptr++ = XAH_BLINK;			/* blink: */
-	*hSession->obptr++ = XAH_BLINK;			/*  blink */
-	*hSession->obptr++ = XAH_REVERSE;		/* reverse: */
-	*hSession->obptr++ = XAH_REVERSE;		/*  reverse */
-	*hSession->obptr++ = XAH_UNDERSCORE;	/* underscore: */
-	*hSession->obptr++ = XAH_UNDERSCORE;	/*  underscore */
-	*hSession->obptr++ = XAH_INTENSIFY;		/* intensify: */
-	*hSession->obptr++ = XAH_INTENSIFY;		/*  intensify */
+	*hSession->output.ptr++ = 5;					/* report on 5 pairs */
+	*hSession->output.ptr++ = XAH_DEFAULT;		/* default: */
+	*hSession->output.ptr++ = XAH_NORMAL;		/*  normal */
+	*hSession->output.ptr++ = XAH_BLINK;			/* blink: */
+	*hSession->output.ptr++ = XAH_BLINK;			/*  blink */
+	*hSession->output.ptr++ = XAH_REVERSE;		/* reverse: */
+	*hSession->output.ptr++ = XAH_REVERSE;		/*  reverse */
+	*hSession->output.ptr++ = XAH_UNDERSCORE;	/* underscore: */
+	*hSession->output.ptr++ = XAH_UNDERSCORE;	/*  underscore */
+	*hSession->output.ptr++ = XAH_INTENSIFY;		/* intensify: */
+	*hSession->output.ptr++ = XAH_INTENSIFY;		/*  intensify */
 }
 
 static void do_qr_reply_modes(H3270 *hSession)
 {
 	trace_ds(hSession,"> QueryReply(ReplyModes)\n");
 	space3270out(hSession,3);
-	*hSession->obptr++ = SF_SRM_FIELD;
-	*hSession->obptr++ = SF_SRM_XFIELD;
-	*hSession->obptr++ = SF_SRM_CHAR;
+	*hSession->output.ptr++ = SF_SRM_FIELD;
+	*hSession->output.ptr++ = SF_SRM_XFIELD;
+	*hSession->output.ptr++ = SF_SRM_CHAR;
 }
 
 #if defined(X3270_DBCS) /*[*/
@@ -882,13 +889,13 @@ static void do_qr_dbcs_asia(H3270 *hSession)
 	/* XXX: Should we support this, even when not in DBCS mode? */
 	trace_ds(hSession,"> QueryReply(DbcsAsia)\n");
 	space3270out(hSession,7);
-	*hSession->obptr++ = 0x00;	/* flags (none) */
-	*hSession->obptr++ = 0x03;	/* field length 3 */
-	*hSession->obptr++ = 0x01;	/* SI/SO supported */
-	*hSession->obptr++ = 0x80;	/* character set ID 0x80 */
-	*hSession->obptr++ = 0x03;	/* field length 3 */
-	*hSession->obptr++ = 0x02;	/* input control */
-	*hSession->obptr++ = 0x01;	/* creation supported */
+	*hSession->output.ptr++ = 0x00;	/* flags (none) */
+	*hSession->output.ptr++ = 0x03;	/* field length 3 */
+	*hSession->output.ptr++ = 0x01;	/* SI/SO supported */
+	*hSession->output.ptr++ = 0x80;	/* character set ID 0x80 */
+	*hSession->output.ptr++ = 0x03;	/* field length 3 */
+	*hSession->output.ptr++ = 0x02;	/* input control */
+	*hSession->output.ptr++ = 0x01;	/* creation supported */
 }
 #endif /*]*/
 
@@ -896,9 +903,9 @@ static void do_qr_alpha_part(H3270 *hSession)
 {
 	trace_ds(hSession,"> QueryReply(AlphanumericPartitions)\n");
 	space3270out(hSession,4);
-	*hSession->obptr++ = 0;		/* 1 partition */
-	SET16(hSession->obptr, hSession->max.cols * hSession->max.rows);	/* buffer space */
-	*hSession->obptr++ = 0;		/* no special features */
+	*hSession->output.ptr++ = 0;		/* 1 partition */
+	SET16(hSession->output.ptr, hSession->max.cols * hSession->max.rows);	/* buffer space */
+	*hSession->output.ptr++ = 0;		/* no special features */
 }
 
 static void do_qr_charsets(H3270 *hSession)
@@ -907,79 +914,79 @@ static void do_qr_charsets(H3270 *hSession)
 	space3270out(hSession,64);
 #if defined(X3270_DBCS) /*[*/
 	if (dbcs)
-		*hSession->obptr++ = 0x8e;			/* flags: GE, CGCSGID, DBCS */
+		*hSession->output.ptr++ = 0x8e;			/* flags: GE, CGCSGID, DBCS */
 	else
 #endif /*]*/
-		*hSession->obptr++ = 0x82;			/* flags: GE, CGCSGID present */
+		*hSession->output.ptr++ = 0x82;			/* flags: GE, CGCSGID present */
 
-	*hSession->obptr++ = 0x00;				/* more flags */
-	*hSession->obptr++ = *char_width;		/* SDW */
-	*hSession->obptr++ = *char_height;		/* SDW */
-	*hSession->obptr++ = 0x00;				/* no load PS */
-	*hSession->obptr++ = 0x00;
-	*hSession->obptr++ = 0x00;
-	*hSession->obptr++ = 0x00;
+	*hSession->output.ptr++ = 0x00;				/* more flags */
+	*hSession->output.ptr++ = *char_width;		/* SDW */
+	*hSession->output.ptr++ = *char_height;		/* SDW */
+	*hSession->output.ptr++ = 0x00;				/* no load PS */
+	*hSession->output.ptr++ = 0x00;
+	*hSession->output.ptr++ = 0x00;
+	*hSession->output.ptr++ = 0x00;
 #if defined(X3270_DBCS) /*[*/
 	if (dbcs)
-		*hSession->obptr++ = 0x0b;	/* DL (11 bytes) */
+		*hSession->output.ptr++ = 0x0b;	/* DL (11 bytes) */
 	else
 #endif /*]*/
-		*hSession->obptr++ = 0x07;	/* DL (7 bytes) */
+		*hSession->output.ptr++ = 0x07;	/* DL (7 bytes) */
 
-	*hSession->obptr++ = 0x00;		/* SET 0: */
+	*hSession->output.ptr++ = 0x00;		/* SET 0: */
 #if defined(X3270_DBCS) /*[*/
 	if (dbcs)
-		*hSession->obptr++ = 0x00;	/*  FLAGS: non-load, single-
+		*hSession->output.ptr++ = 0x00;	/*  FLAGS: non-load, single-
 					    plane, single-bute */
 	else
 #endif /*]*/
-		*hSession->obptr++ = 0x10;	/*  FLAGS: non-loadable,
+		*hSession->output.ptr++ = 0x10;	/*  FLAGS: non-loadable,
 					    single-plane, single-byte,
 					    no compare */
-	*hSession->obptr++ = 0x00;		/*  LCID 0 */
+	*hSession->output.ptr++ = 0x00;		/*  LCID 0 */
 #if defined(X3270_DBCS) /*[*/
 	if (dbcs) {
-		*hSession->obptr++ = 0x00;	/*  SW 0 */
-		*hSession->obptr++ = 0x00;	/*  SH 0 */
-		*hSession->obptr++ = 0x00;	/*  SUBSN */
-		*hSession->obptr++ = 0x00;	/*  SUBSN */
+		*hSession->output.ptr++ = 0x00;	/*  SW 0 */
+		*hSession->output.ptr++ = 0x00;	/*  SH 0 */
+		*hSession->output.ptr++ = 0x00;	/*  SUBSN */
+		*hSession->output.ptr++ = 0x00;	/*  SUBSN */
 	}
 #endif /*]*/
-	SET32(hSession->obptr, hSession->charset.cgcsgid);		/*  CGCSGID */
+	SET32(hSession->output.ptr, hSession->charset.cgcsgid);		/*  CGCSGID */
 	if (!*standard_font)
 	{
 		/* special 3270 font, includes APL */
-		*hSession->obptr++ = 0x01;/* SET 1: */
+		*hSession->output.ptr++ = 0x01;/* SET 1: */
 		if (hSession->apl_mode)
-		    *hSession->obptr++ = 0x00;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
+		    *hSession->output.ptr++ = 0x00;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
 		else
-		    *hSession->obptr++ = 0x10;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
-		*hSession->obptr++ = 0xf1;/*  LCID */
+		    *hSession->output.ptr++ = 0x10;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
+		*hSession->output.ptr++ = 0xf1;/*  LCID */
 #if defined(X3270_DBCS) /*[*/
 		if (dbcs)
 		{
-			*hSession->obptr++ = 0x00;/*  SW 0 */
-			*hSession->obptr++ = 0x00;/*  SH 0 */
-			*hSession->obptr++ = 0x00;/*  SUBSN */
-			*hSession->obptr++ = 0x00;/*  SUBSN */
+			*hSession->output.ptr++ = 0x00;/*  SW 0 */
+			*hSession->output.ptr++ = 0x00;/*  SH 0 */
+			*hSession->output.ptr++ = 0x00;/*  SUBSN */
+			*hSession->output.ptr++ = 0x00;/*  SUBSN */
 		}
 #endif /*]*/
-		*hSession->obptr++ = 0x03;/*  CGCSGID: 3179-style APL2 */
-		*hSession->obptr++ = 0xc3;
-		*hSession->obptr++ = 0x01;
-		*hSession->obptr++ = 0x36;
+		*hSession->output.ptr++ = 0x03;/*  CGCSGID: 3179-style APL2 */
+		*hSession->output.ptr++ = 0xc3;
+		*hSession->output.ptr++ = 0x01;
+		*hSession->output.ptr++ = 0x36;
 	}
 #if defined(X3270_DBCS) /*[*/
 	if (dbcs)
 	{
-		*hSession->obptr++ = 0x80;	/* SET 0x80: */
-		*hSession->obptr++ = 0x20;	/*  FLAGS: DBCS */
-		*hSession->obptr++ = 0xf8;	/*  LCID: 0xf8 */
-		*hSession->obptr++ = *char_width * 2; /* SW */
-		*hSession->obptr++ = *char_height; /* SH */
-		*hSession->obptr++ = 0x41;	/*  SUBSN */
-		*hSession->obptr++ = 0x7f;	/*  SUBSN */
-		SET32(hSession->obptr, cgcsgid_dbcs); /* CGCSGID */
+		*hSession->output.ptr++ = 0x80;	/* SET 0x80: */
+		*hSession->output.ptr++ = 0x20;	/*  FLAGS: DBCS */
+		*hSession->output.ptr++ = 0xf8;	/*  LCID: 0xf8 */
+		*hSession->output.ptr++ = *char_width * 2; /* SW */
+		*hSession->output.ptr++ = *char_height; /* SH */
+		*hSession->output.ptr++ = 0x41;	/*  SUBSN */
+		*hSession->output.ptr++ = 0x7f;	/*  SUBSN */
+		SET32(hSession->output.ptr, cgcsgid_dbcs); /* CGCSGID */
 	}
 #endif /*]*/
 }
@@ -991,10 +998,10 @@ static void do_qr_ddm(H3270 *hSession)
 
 	trace_ds(hSession,"> QueryReply(DistributedDataManagement)\n");
 	space3270out(hSession,8);
-	SET16(hSession->obptr,0);						/* set reserved field to 0 */
-	SET16(hSession->obptr, hSession->dft_buffersize);	/* set inbound length limit INLIM */
-	SET16(hSession->obptr, hSession->dft_buffersize);	/* set outbound length limit OUTLIM */
-	SET16(hSession->obptr, 0x0101);					/* NSS=01, DDMSS=01 */
+	SET16(hSession->output.ptr,0);						/* set reserved field to 0 */
+	SET16(hSession->output.ptr, hSession->dft_buffersize);	/* set inbound length limit INLIM */
+	SET16(hSession->output.ptr, hSession->dft_buffersize);	/* set outbound length limit OUTLIM */
+	SET16(hSession->output.ptr, 0x0101);					/* NSS=01, DDMSS=01 */
 }
 #endif /*]*/
 
@@ -1002,15 +1009,15 @@ static void do_qr_imp_part(H3270 *hSession)
 {
 	trace_ds(hSession,"> QueryReply(ImplicitPartition)\n");
 	space3270out(hSession,13);
-	*hSession->obptr++ = 0x0;				/* reserved */
-	*hSession->obptr++ = 0x0;
-	*hSession->obptr++ = 0x0b;				/* length of display size */
-	*hSession->obptr++ = 0x01;				/* "implicit partition size" */
-	*hSession->obptr++ = 0x00;				/* reserved */
-	SET16(hSession->obptr, 80);				/* implicit partition width */
-	SET16(hSession->obptr, 24);				/* implicit partition height */
-	SET16(hSession->obptr, hSession->max.cols);	/* alternate height */
-	SET16(hSession->obptr, hSession->max.rows);	/* alternate width */
+	*hSession->output.ptr++ = 0x0;				/* reserved */
+	*hSession->output.ptr++ = 0x0;
+	*hSession->output.ptr++ = 0x0b;				/* length of display size */
+	*hSession->output.ptr++ = 0x01;				/* "implicit partition size" */
+	*hSession->output.ptr++ = 0x00;				/* reserved */
+	SET16(hSession->output.ptr, 80);				/* implicit partition width */
+	SET16(hSession->output.ptr, 24);				/* implicit partition height */
+	SET16(hSession->output.ptr, hSession->max.cols);	/* alternate height */
+	SET16(hSession->output.ptr, hSession->max.rows);	/* alternate width */
 }
 
 static void query_reply_end(H3270 *hSession)

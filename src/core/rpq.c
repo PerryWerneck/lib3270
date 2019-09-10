@@ -146,14 +146,14 @@ void do_qr_rpqnames(H3270 *hSession)
 	 */
 	space3270out(hSession,4+4+1+remaining);	/* Maximum space for an RPQNAME item */
 
-	SET32(hSession->obptr, 0);		/* Device number, 0 = All */
-	SET32(hSession->obptr, 0);		/* Model number, 0 = All */
+	SET32(hSession->output.ptr, 0);		/* Device number, 0 = All */
+	SET32(hSession->output.ptr, 0);		/* Model number, 0 = All */
 
-	rpql = hSession->obptr++;			/* Save address to place data length. */
+	rpql = hSession->output.ptr++;			/* Save address to place data length. */
 
 	/* Create fixed length portion - program id: x3270 */
 	for (j = 0; j < 5; j++) {
-		*hSession->obptr++ = hSession->charset.asc2ebc[(int)"x3270"[j]];
+		*hSession->output.ptr++ = hSession->charset.asc2ebc[(int)"x3270"[j]];
 		remaining--;
 	}
 
@@ -168,9 +168,9 @@ void do_qr_rpqnames(H3270 *hSession)
 
 		term_id = rpq_keywords[j].id;
 
-		p_term = hSession->obptr;		/* save starting address (to insert length later) */
-		hSession->obptr++;				/* skip length of term, fill in later */
-		*hSession->obptr++ = term_id;	/* identify this term */
+		p_term = hSession->output.ptr;		/* save starting address (to insert length later) */
+		hSession->output.ptr++;				/* skip length of term, fill in later */
+		*hSession->output.ptr++ = term_id;	/* identify this term */
 
 		/*
 		 * Adjust remaining space by the term prefix size so each case
@@ -183,18 +183,18 @@ void do_qr_rpqnames(H3270 *hSession)
 		switch (term_id) /* build the term based on id */
 		{
 		case RPQ_USER:		/* User text from env. vars */
-			hSession->obptr += get_rpq_user(hSession,hSession->obptr, remaining);
+			hSession->output.ptr += get_rpq_user(hSession,hSession->output.ptr, remaining);
 			break;
 
 		case RPQ_TIMEZONE:	/* UTC time offset */
 			omit_due_space_limit = (remaining < 2);
 			if (!omit_due_space_limit)
-				SET16(hSession->obptr, get_rpq_timezone(hSession));
+				SET16(hSession->output.ptr, get_rpq_timezone(hSession));
 			break;
 
 		case RPQ_ADDRESS:	/* Workstation address */
 #if !defined(_WIN32) /*[*/
-			hSession->obptr += get_rpq_address(hSession, hSession->obptr, remaining);
+			hSession->output.ptr += get_rpq_address(hSession, hSession->output.ptr, remaining);
 #endif /*]*/
 			break;
 
@@ -205,7 +205,7 @@ void do_qr_rpqnames(H3270 *hSession)
 			{
 				for (i = 0; i < x; i++)
 				{
-					*hSession->obptr++ = hSession->charset.asc2ebc[(int)(*(build_rpq_version+i) & 0xff)];
+					*hSession->output.ptr++ = hSession->charset.asc2ebc[(int)(*(build_rpq_version+i) & 0xff)];
 				}
 			}
 			break;
@@ -217,7 +217,7 @@ void do_qr_rpqnames(H3270 *hSession)
 			{
 				for (i=0; i < x; i+=2)
 				{
-					*hSession->obptr++ = ((*(build_rpq_timestamp+i) - '0') << 4)
+					*hSession->output.ptr++ = ((*(build_rpq_timestamp+i) - '0') << 4)
 						+ (*(build_rpq_timestamp+i+1) - '0');
 				}
 			}
@@ -239,14 +239,14 @@ void do_qr_rpqnames(H3270 *hSession)
 		 * adjust space remaining.
 		 * obptr now points at "next available byte".
 		 */
-		x = hSession->obptr-p_term;
+		x = hSession->output.ptr-p_term;
 		if (x > TERM_PREFIX_SIZE) {
 			*p_term = x;
 			remaining -= x;	/* This includes length and id fields,
 					   correction below */
 		} else {
 			/* We didn't add an item after all, reset pointer. */
-			hSession->obptr = p_term;
+			hSession->output.ptr = p_term;
 		}
 		/*
 		 * When we calculated the length of the term, a few lines
@@ -268,7 +268,7 @@ void do_qr_rpqnames(H3270 *hSession)
 	}
 
 	/* Fill in overall length of RPQNAME info */
-	*rpql = (hSession->obptr - rpql);
+	*rpql = (hSession->output.ptr - rpql);
 
 	rpq_dump_warnings(hSession);
 }

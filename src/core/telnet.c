@@ -2144,20 +2144,20 @@ void space3270out(H3270 *hSession, int n)
 	unsigned nc = 0;	/* amount of data currently in obuf */
 	unsigned more = 0;
 
-	if (hSession->obuf_size)
-		nc = hSession->obptr - hSession->obuf;
+	if (hSession->output.length)
+		nc = hSession->output.ptr - hSession->output.buf;
 
-	while ((nc + n + EH_SIZE) > (hSession->obuf_size + more))
+	while ((nc + n + EH_SIZE) > (hSession->output.length + more))
 	{
 		more += BUFSIZ;
 	}
 
 	if (more)
 	{
-		hSession->obuf_size += more;
-		hSession->obuf_base = (unsigned char *)Realloc((char *) hSession->obuf_base,hSession->obuf_size);
-		hSession->obuf = hSession->obuf_base + EH_SIZE;
-		hSession->obptr = hSession->obuf + nc;
+		hSession->output.length += more;
+		hSession->output.base = (unsigned char *)Realloc((char *) hSession->output.base,hSession->output.length);
+		hSession->output.buf = hSession->output.base + EH_SIZE;
+		hSession->output.ptr = hSession->output.buf + nc;
 	}
 }
 
@@ -2342,7 +2342,7 @@ void net_output(H3270 *hSession)
 	unsigned char *nxoptr, *xoptr;
 
 #if defined(X3270_TN3270E)
-	#define BSTART	((IN_TN3270E || IN_SSCP) ? hSession->obuf_base : hSession->obuf)
+	#define BSTART	((IN_TN3270E || IN_SSCP) ? hSession->output.base : hSession->output.buf)
 #else
 	#define BSTART	obuf
 #endif
@@ -2351,7 +2351,7 @@ void net_output(H3270 *hSession)
 	/* Set the TN3720E header. */
 	if (IN_TN3270E || IN_SSCP)
 	{
-		tn3270e_header *h = (tn3270e_header *) hSession->obuf_base;
+		tn3270e_header *h = (tn3270e_header *) hSession->output.base;
 
 		/* Check for sending a TN3270E response. */
 		if (hSession->response_required == TN3270E_RSF_ALWAYS_RESPONSE)
@@ -2374,7 +2374,7 @@ void net_output(H3270 *hSession)
 #endif /*]*/
 
 	/* Reallocate the expanded output buffer. */
-	while (xobuf_len <  (hSession->obptr - BSTART + 1) * 2)
+	while (xobuf_len <  (hSession->output.ptr - BSTART + 1) * 2)
 	{
 		xobuf_len += BUFSZ;
 		need_resize++;
@@ -2388,7 +2388,7 @@ void net_output(H3270 *hSession)
 	/* Copy and expand IACs. */
 	xoptr = xobuf;
 	nxoptr = BSTART;
-	while (nxoptr < hSession->obptr)
+	while (nxoptr < hSession->output.ptr)
 	{
 		if ((*xoptr++ = *nxoptr++) == IAC)
 		{

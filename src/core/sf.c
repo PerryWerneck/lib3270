@@ -62,11 +62,18 @@
 #include "utilc.h"
 
 /* Screen globals. */
-static const int	  cw = 7;
+/*
+static const int	  cw = 0x09;
 static const int 	* char_width = &cw;
 
-static const int	  ch = 7;
+static const int	  ch = 0x0C;
 static const int 	* char_height = &ch;
+*/
+
+#define SW_3279_2       0x09
+#define SH_3279_2       0x0c
+#define Xr_3279_2       0x000a02e5
+#define Yr_3279_2       0x0002006f
 
 /* Globals */
 static const Boolean	  sfont = False;
@@ -610,13 +617,14 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 		GET16(pw, &buf[26]);
 		trace_ds(hSession,",pw=%d", pw);
 	} else
-		pw = *char_width;
+		pw = SW_3279_2;
 
 	if (buflen > 29) {
 		GET16(ph, &buf[28]);
 		trace_ds(hSession,",ph=%d", ph);
 	} else
-		ph = *char_height;
+		ph = SH_3279_2;
+
 	trace_ds(hSession,")\n");
 
 	cursor_move(hSession,0);
@@ -784,39 +792,24 @@ static void do_qr_summary(H3270 *hSession)
 
 static void do_qr_usable_area(H3270 *hSession)
 {
-	unsigned short num, denom;
-
 	trace_ds(hSession,"> QueryReply(UsableArea)\n");
 	space3270out(hSession,19);
 	*hSession->output.ptr++ = 0x01;											/* 12/14-bit addressing */
 	*hSession->output.ptr++ = 0x00;											/* no special character features */
 	SET16(hSession->output.ptr, hSession->max.cols);						/* usable width */
 	SET16(hSession->output.ptr, hSession->max.rows);						/* usable height */
+
 	*hSession->output.ptr++ = 0x01;											/* units (mm) */
 
-	num = display_widthMM();
-	denom = display_width();
-	while (!(num %2) && !(denom % 2))
-	{
-		num /= 2;
-		denom /= 2;
-	}
-	SET16(hSession->output.ptr, (int)num);									/* Xr numerator */
-	SET16(hSession->output.ptr, (int)denom); 								/* Xr denominator */
+	//
+	// Got from C3270 source code.
+	//
 
-	num = display_heightMM();
-	denom = display_height();
-	while (!(num %2) && !(denom % 2))
-	{
-		num /= 2;
-		denom /= 2;
-	}
+	SET32(hSession->output.ptr, Xr_3279_2); // Xr, canned from 3279-2
+	SET32(hSession->output.ptr, Yr_3279_2); // Yr, canned from 3279-2
 
-	SET16(hSession->output.ptr, (int)num);									/* Yr numerator */
-	SET16(hSession->output.ptr, (int)denom); 								/* Yr denominator */
-
-	*hSession->output.ptr++ = *char_width;									/* AW */
-	*hSession->output.ptr++ = *char_height;									/* AH */
+	*hSession->output.ptr++ = SW_3279_2;	// AW, canned from 3279-2
+	*hSession->output.ptr++ = SH_3279_2;	// AH, canned from 3279-2
 
 	SET16(hSession->output.ptr, hSession->max.cols * hSession->max.rows);	/* buffer, questionable */
 
@@ -922,8 +915,8 @@ static void do_qr_charsets(H3270 *hSession)
 		*hSession->output.ptr++ = 0x82;			/* flags: GE, CGCSGID present */
 
 	*hSession->output.ptr++ = 0x00;				/* more flags */
-	*hSession->output.ptr++ = *char_width;		/* SDW */
-	*hSession->output.ptr++ = *char_height;		/* SDW */
+	*hSession->output.ptr++ = SW_3279_2;		/* SDW */
+	*hSession->output.ptr++ = SH_3279_2;		/* SDW */
 	*hSession->output.ptr++ = 0x00;				/* no load PS */
 	*hSession->output.ptr++ = 0x00;
 	*hSession->output.ptr++ = 0x00;

@@ -125,6 +125,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
  static int background_connect(H3270 *hSession, void *host)
  {
+
 	struct addrinfo	  hints;
  	struct addrinfo * result	= NULL;
 	struct addrinfo * rp		= NULL;
@@ -176,6 +177,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	struct resolver		  host;
 	memset(&host,0,sizeof(host));
 
+	// Connect to host
 	if(lib3270_run_task(hSession, background_connect, &host) || hSession->sock < 0)
 	{
 		char buffer[4096];

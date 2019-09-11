@@ -276,20 +276,28 @@ LIB3270_EXPORT unsigned int lib3270_get_max_height(const H3270 *h)
 	return h->max.rows;
 }
 
-void update_model_info(H3270 *session, unsigned int model, unsigned int cols, unsigned int rows)
+void update_model_info(H3270 *hSession, unsigned int model, unsigned int cols, unsigned int rows)
 {
-	if(model == session->model_num && session->max.rows == rows && session->max.cols == cols)
+	if(model == hSession->model_num && hSession->max.rows == rows && hSession->max.cols == cols)
 		return;
 
-	session->max.cols  	= cols;
-	session->max.rows  	= rows;
-	session->model_num	= model;
+	hSession->max.cols  	= cols;
+	hSession->max.rows  	= rows;
+	hSession->model_num	= model;
 
 	/* Update the model name. */
-	(void) sprintf(session->model_name, "327%c-%d%s",session->m3279 ? '9' : '8',session->model_num,session->extended ? "-E" : "");
+	(void) sprintf(hSession->model_name, "327%c-%d%s",hSession->m3279 ? '9' : '8',hSession->model_num,hSession->extended ? "-E" : "");
 
-	trace("%s: %p",__FUNCTION__,session->cbk.update_model);
-	session->cbk.update_model(session, session->model_name,session->model_num,rows,cols);
+	if (hSession->termname != CN)
+		hSession->termtype = hSession->termname;
+	else if(hSession->oversize.rows || hSession->oversize.cols)
+		hSession->termtype = "IBM-DYNAMIC";
+	else
+		hSession->termtype = hSession->full_model_name;
+
+	trace("Termtype: %s",hSession->termtype);
+
+	hSession->cbk.update_model(hSession, hSession->model_name,hSession->model_num,rows,cols);
 }
 
 LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr)

@@ -566,8 +566,10 @@ void net_disconnect(H3270 *session)
 	trace_dsn(session,"SENT disconnect\n");
 
 	/* Restore terminal type to its default. */
+	/*
 	if (session->termname == CN)
 		session->termtype = session->full_model_name;
+	*/
 
 	/* We're not connected to an LU any more. */
 	session->connected_lu = CN;
@@ -1193,11 +1195,16 @@ static void tn3270e_request(H3270 *hSession)
 
 	net_rawout(hSession, (unsigned char *)tt_out, tb_len);
 
-	trace_dsn(hSession,"SENT %s %s DEVICE-TYPE REQUEST %.*s%s%s %s\n",
-	    cmd(SB), opt(TELOPT_TN3270E), (int) strlen(hSession->termtype), tt_out + 5,
-	    (hSession->try_lu != CN && *hSession->try_lu) ? " CONNECT " : "",
-	    (hSession->try_lu != CN && *hSession->try_lu) ? hSession->try_lu : "",
-	    cmd(SE));
+	trace_dsn(
+		hSession,"SENT %s %s DEVICE-TYPE REQUEST %.*s%s%s %s\n",
+			cmd(SB),
+			opt(TELOPT_TN3270E),
+			(int) strlen(hSession->termtype),
+			tt_out + 5,
+			(hSession->try_lu != CN && *hSession->try_lu) ? " CONNECT " : "",
+			(hSession->try_lu != CN && *hSession->try_lu) ? hSession->try_lu : "",
+			cmd(SE)
+	);
 
 	lib3270_free(tt_out);
 }

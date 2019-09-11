@@ -221,14 +221,6 @@ int lib3270_set_model(H3270 *hSession, const char *model)
 
 	trace("Model_number: %d",model_number);
 
-	if (hSession->termname != CN)
-		hSession->termtype = hSession->termname;
-	else
-		hSession->termtype = hSession->full_model_name;
-
-	trace("Termtype: %s",hSession->termtype);
-
-
 	// Check for oversize
 	char junk;
 	int ovc, ovr;

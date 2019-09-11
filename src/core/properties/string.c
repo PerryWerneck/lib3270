@@ -44,6 +44,16 @@
 	return lib3270_get_revision();
  }
 
+ static const char * lib3270_get_termtype(const H3270 *hSession)
+ {
+ 	return hSession->termtype;
+ }
+
+ static const char * lib3270_get_termname(const H3270 *hSession)
+ {
+ 	return hSession->termname;
+ }
+
  LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void)
  {
 	 static const LIB3270_STRING_PROPERTY properties[] = {
@@ -70,10 +80,24 @@
 		},
 
 		{
-			"host_type",								//  Property name.
+			"hosttype",									//  Property name.
 			N_( "Host type name" ),						//  Property description.
 			lib3270_get_host_type_name,					//  Get value.
 			lib3270_set_host_type_by_name				//  Set value.
+		},
+
+		{
+			"termtype",									//  Property name.
+			N_( "Terminal type" ),						//  Property description.
+			lib3270_get_termtype,						//  Get value.
+			NULL										//  Set value.
+		},
+
+		{
+			"termname",									//  Property name.
+			N_( "Terminal name" ),						//  Property description.
+			lib3270_get_termname,						//  Get value.
+			NULL										//  Set value.
 		},
 
 		{

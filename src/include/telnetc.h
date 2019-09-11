@@ -41,7 +41,7 @@ LIB3270_INTERNAL void net_abort(H3270 *hSession);
 LIB3270_INTERNAL void net_add_eor(unsigned char *buf, int len);
 LIB3270_INTERNAL void net_break(H3270 *hSession);
 
-LIB3270_INTERNAL int net_connect(H3270 *session, const char *, char *, Boolean, Boolean *, Boolean *);
+// LIB3270_INTERNAL int net_connect(H3270 *session, const char *, char *, Boolean, Boolean *, Boolean *);
 LIB3270_INTERNAL int net_reconnect(H3270 *hSession, int seconds);
 
 LIB3270_INTERNAL void net_disconnect(H3270 *session);

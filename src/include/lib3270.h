@@ -51,18 +51,22 @@
 
 		#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
 		#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
+		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
 
 	#elif defined(_WIN32)
 
 		#define LIB3270_DEPRECATED(func) __declspec(deprecated) func
+		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
 
 	#elif defined(__LCLINT__)
 
 		#define LIB3270_DEPRECATED(func) func
+		#define LIB3270_GNUC_NULL_TERMINATED
 
 	#else
 
 		#define LIB3270_DEPRECATED(func) func
+		#define LIB3270_GNUC_NULL_TERMINATED
 
 	#endif
 
@@ -1484,9 +1488,9 @@
 	 * @return Full path for the file (release it with lib3270_free).
 	 *
 	 */
-	LIB3270_EXPORT char * lib3270_build_data_filename(const char *name);
+	LIB3270_EXPORT char * lib3270_build_data_filename(const char *str, ...) LIB3270_GNUC_NULL_TERMINATED;
 
-	LIB3270_EXPORT char * lib3270_build_config_filename(const char *name);
+	LIB3270_EXPORT char * lib3270_build_config_filename(const char *str, ...) LIB3270_GNUC_NULL_TERMINATED;
 
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
 	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);

@@ -82,6 +82,8 @@ datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
+datadir=$(datarootdir)/$(PRODUCT_NAME)
+confdir=$(sysconfdir)/$(PRODUCT_NAME)
 
 BASEDIR=@BASEDIR@
 

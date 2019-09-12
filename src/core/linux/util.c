@@ -34,14 +34,59 @@
 
 
 #include <config.h>
+#include <stdarg.h>
 #include <lib3270-internals.h>
 
-char * lib3270_build_data_filename(const char *name)
+static char * build_filename(const char *root, const char *str, va_list args)
 {
-	return lib3270_strdup_printf(LIB3270_STRINGIZE_VALUE_OF(DATADIR) "/%s",name);
+	size_t szFilename = 1024 + strlen(root);
+	char * filename = (char *) lib3270_malloc(szFilename);
+
+	strcpy(filename,root);
+
+	while(str) {
+
+		size_t szCurrent = strlen(filename);
+
+		if(filename[szCurrent-1] != '/')
+			strcat(filename,"/");
+
+		szCurrent += strlen(str);
+
+		if(szCurrent >= szFilename)
+		{
+			szFilename += (szCurrent + 1024);
+			filename = lib3270_realloc(filename,szFilename);
+		}
+
+		strcat(filename,str);
+
+		str = va_arg(args, const char *);
+	}
+
+	return (char *) lib3270_realloc(filename,strlen(filename)+1);
 }
 
-char * lib3270_build_config_filename(const char *name)
+char * lib3270_build_data_filename(const char *str, ...)
 {
-	return lib3270_strdup_printf(LIB3270_STRINGIZE_VALUE_OF(CONFDIR) "/%s",name);
+	va_list args;
+	va_start (args, str);
+
+	char *filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
+
+	va_end (args);
+
+	return filename;
+}
+
+char * lib3270_build_config_filename(const char *str, ...)
+{
+	va_list args;
+	va_start (args, str);
+
+	char *filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(CONFDIR), str, args);
+
+	va_end (args);
+
+	return filename;
 }

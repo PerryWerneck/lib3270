@@ -249,32 +249,6 @@ int gettimeofday(struct timeval *tv, void GNUC_UNUSED(*ignored))
 	return 0;
 }
 
-LIB3270_EXPORT char * lib3270_build_data_filename(const char *name)
-{
-	// https://github.com/GNOME/glib/blob/master/glib/gwin32.c
-
-	char *p;
-	char wc_fn[MAX_PATH];
-
-	if (!GetModuleFileName(NULL, wc_fn, MAX_PATH))
-		return NULL;
-
-	if((p = strrchr(wc_fn, '\\')) != NULL)
-		*p = '\0';
-
-	if((p = strrchr(wc_fn, '/')) != NULL)
-		*p = '\0';
-
-	return lib3270_strdup_printf("%s\\%s",wc_fn,name);
-
-}
-
-char * lib3270_build_config_filename(const char *name)
-{
-	// On windows the data and config path are the same.
-	return lib3270_build_data_filename(name);
-}
-
 LIB3270_EXPORT char	* lib3270_get_installation_path()
 {
 	char lpFilename[4096];
@@ -300,5 +274,105 @@ char * lib3270_get_user_name()
 
 	return strdup(username);
 
+}
+
+/*
+LIB3270_EXPORT char * lib3270_build_data_filename(const char *name)
+{
+	// https://github.com/GNOME/glib/blob/master/glib/gwin32.c
+
+	char *p;
+	char wc_fn[MAX_PATH];
+
+	if (!GetModuleFileName(NULL, wc_fn, MAX_PATH))
+		return NULL;
+
+	if((p = strrchr(wc_fn, '\\')) != NULL)
+		*p = '\0';
+
+	if((p = strrchr(wc_fn, '/')) != NULL)
+		*p = '\0';
+
+	return lib3270_strdup_printf("%s\\%s",wc_fn,name);
+
+}
+
+char * lib3270_build_config_filename(const char *name)
+{
+	// On windows the data and config path are the same.
+	return lib3270_build_data_filename(name);
+}
+*/
+
+static char * build_filename(const char *str, va_list args)
+{
+	size_t szFilename = MAX_PATH;
+	char *ptr;
+	char * filename = (char *) lib3270_malloc(szFilename);
+
+	memset(filename,0,szFilename);
+
+#ifdef DEBUG
+	filename[0] = '.';
+#else
+	DWORD szPath = GetModuleFileName(hModule,filename,szFilename);
+	filename[szPath] = 0;
+#endif // DEBUG
+
+	ptr = strrchr(filename,'\\');
+	if(ptr)
+		ptr[1] = 0;
+
+	while(str) {
+
+		size_t szCurrent = strlen(filename);
+
+		for(ptr=filename;*ptr;ptr++)
+		{
+			if(*ptr == '/')
+				*ptr = '\\';
+		}
+
+		if(filename[szCurrent-1] != '\\')
+			strcat(filename,"\\");
+
+		szCurrent += strlen(str);
+
+		if(szCurrent >= szFilename)
+		{
+			szFilename += (szCurrent + 1024);
+			filename = lib3270_realloc(filename,szFilename);
+		}
+
+		strcat(filename,str);
+
+		str = va_arg(args, const char *);
+	}
+
+	return (char *) lib3270_realloc(filename,strlen(filename)+1);
+}
+
+char * lib3270_build_data_filename(const char *str, ...)
+{
+	va_list args;
+	va_start (args, str);
+
+	char *filename = build_filename(str, args);
+
+	va_end (args);
+
+	return filename;
+}
+
+char * lib3270_build_config_filename(const char *str, ...)
+{
+	va_list args;
+	va_start (args, str);
+
+	char *filename = build_filename(str, args);
+
+	va_end (args);
+
+	return filename;
 }
 

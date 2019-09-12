@@ -38,10 +38,9 @@ int main(int argc, char *argv[])
 	};
 //	#pragma GCC diagnostic pop
 
-	H3270		* h;
+	H3270		* h		= lib3270_session_new("");
 	int			  rc	= 0;
 
-	h = lib3270_session_new("");
 	printf("3270 session %p created\n]",h);
 
 	lib3270_set_url(h,NULL);
@@ -75,6 +74,17 @@ int main(int argc, char *argv[])
 	}
 #endif // _WIN32
 
+	{
+		lib3270_autoptr(char) datafile = lib3270_build_data_filename("data","file.txt",NULL);
+		printf("Datafile: \"%s\"\n",datafile);
+	}
+
+	{
+		lib3270_autoptr(char) datafile = lib3270_build_config_filename("test","file.conf",NULL);
+		printf("Configfile: \"%s\"\n",datafile);
+	}
+
+	/*
 	if(lib3270_set_url(h,NULL))
 		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
 
@@ -100,6 +110,8 @@ int main(int argc, char *argv[])
 			printf("Screen:\n[%s]\n",text);
 
 	}
+
+	*/
 
 	lib3270_session_free(h);
 

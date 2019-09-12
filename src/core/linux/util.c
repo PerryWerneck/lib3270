@@ -36,6 +36,27 @@
 #include <config.h>
 #include <stdarg.h>
 #include <lib3270-internals.h>
+#include <unistd.h>
+
+static char * concat(char *path, const char *name, size_t *length)
+{
+	size_t szCurrent = strlen(path);
+
+	if(szCurrent > 1 && path[szCurrent-1] != '/')
+		strcat(path,"/");
+
+	szCurrent += strlen(name);
+
+	if(szCurrent >= *length)
+	{
+		*length += (szCurrent + 1024);
+		path = lib3270_realloc(path,*length);
+	}
+
+	strcat(path,name);
+
+	return path;
+}
 
 static char * build_filename(const char *root, const char *str, va_list args)
 {
@@ -45,22 +66,7 @@ static char * build_filename(const char *root, const char *str, va_list args)
 	strcpy(filename,root);
 
 	while(str) {
-
-		size_t szCurrent = strlen(filename);
-
-		if(filename[szCurrent-1] != '/')
-			strcat(filename,"/");
-
-		szCurrent += strlen(str);
-
-		if(szCurrent >= szFilename)
-		{
-			szFilename += (szCurrent + 1024);
-			filename = lib3270_realloc(filename,szFilename);
-		}
-
-		strcat(filename,str);
-
+		filename = concat(filename,str,&szFilename);
 		str = va_arg(args, const char *);
 	}
 
@@ -90,3 +96,54 @@ char * lib3270_build_config_filename(const char *str, ...)
 
 	return filename;
 }
+
+char * lib3270_build_filename(const char *str, ...)
+{
+	size_t szFilename = 1024;
+	char * filename = (char *) lib3270_malloc(szFilename);
+	char * tempname;
+
+	// First build the base filename
+	memset(filename,0,szFilename);
+
+	va_list args;
+	va_start (args, str);
+	while(str) {
+		filename = concat(filename,str,&szFilename);
+		str = va_arg(args, const char *);
+	}
+	va_end (args);
+
+	// Check paths
+	size_t ix;
+
+	static const char * paths[] =
+	{
+		LIB3270_STRINGIZE_VALUE_OF(DATADIR),
+		LIB3270_STRINGIZE_VALUE_OF(CONFDIR),
+		"."
+	};
+
+	for(ix = 0; ix < (sizeof(paths)/sizeof(paths[0])); ix++)
+	{
+		tempname = lib3270_strdup_printf("%s/%s",paths[ix],filename);
+
+		if(access(tempname, F_OK) == 0)
+		{
+			lib3270_free(filename);
+			return tempname;
+		}
+
+		lib3270_free(tempname);
+
+	}
+
+	// Not found! Force the standard data dir
+
+	tempname = lib3270_strdup_printf("%s/%s",paths[0],filename);
+	lib3270_free(filename);
+
+	return tempname;
+
+}
+

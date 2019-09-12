@@ -1483,14 +1483,30 @@
 #endif // WIn32
 
 	/**
-	 * @brief Build filename on "DATADIR".
+	 * @brief Build filename on application data dir.
 	 *
 	 * @return Full path for the file (release it with lib3270_free).
 	 *
 	 */
 	LIB3270_EXPORT char * lib3270_build_data_filename(const char *str, ...) LIB3270_GNUC_NULL_TERMINATED;
 
+	/**
+	 * @brief Build filename on application configuration dir.
+	 *
+	 * @return Full path for the file (release it with lib3270_free).
+	 *
+	 */
 	LIB3270_EXPORT char * lib3270_build_config_filename(const char *str, ...) LIB3270_GNUC_NULL_TERMINATED;
+
+	/**
+	 * @brief Build and search for filename.
+	 *
+	 * Build filename and search for it on current, configuration and data dirs.
+	 *
+	 * @return Full path for the file (release it with lib3270_free).
+	 *
+	 */
+	LIB3270_EXPORT char * lib3270_build_filename(const char *str, ...) LIB3270_GNUC_NULL_TERMINATED;
 
 	LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id);
 	LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession);

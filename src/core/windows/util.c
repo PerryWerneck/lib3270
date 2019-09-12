@@ -276,33 +276,32 @@ char * lib3270_get_user_name()
 
 }
 
-/*
-LIB3270_EXPORT char * lib3270_build_data_filename(const char *name)
+static char * concat(char *path, const char *name, size_t *length)
 {
-	// https://github.com/GNOME/glib/blob/master/glib/gwin32.c
+	char *ptr;
+    size_t szCurrent = strlen(path);
 
-	char *p;
-	char wc_fn[MAX_PATH];
+	for(ptr=path;*ptr;ptr++)
+	{
+		if(*ptr == '/')
+			*ptr = '\\';
+	}
 
-	if (!GetModuleFileName(NULL, wc_fn, MAX_PATH))
-		return NULL;
+	if(szCurrent > 1 && path[szCurrent-1] != '\\')
+		strcat(path,"\\");
 
-	if((p = strrchr(wc_fn, '\\')) != NULL)
-		*p = '\0';
+	szCurrent += strlen(name);
 
-	if((p = strrchr(wc_fn, '/')) != NULL)
-		*p = '\0';
+	if(szCurrent >= *length)
+	{
+		*length += (szCurrent + 1024);
+		path = lib3270_realloc(path,*length);
+	}
 
-	return lib3270_strdup_printf("%s\\%s",wc_fn,name);
+	strcat(path,name);
 
+	return path;
 }
-
-char * lib3270_build_config_filename(const char *name)
-{
-	// On windows the data and config path are the same.
-	return lib3270_build_data_filename(name);
-}
-*/
 
 static char * build_filename(const char *str, va_list args)
 {
@@ -314,6 +313,7 @@ static char * build_filename(const char *str, va_list args)
 
 #ifdef DEBUG
 	filename[0] = '.';
+	filename[1] = '\\';
 #else
 	DWORD szPath = GetModuleFileName(hModule,filename,szFilename);
 	filename[szPath] = 0;
@@ -324,28 +324,7 @@ static char * build_filename(const char *str, va_list args)
 		ptr[1] = 0;
 
 	while(str) {
-
-		size_t szCurrent = strlen(filename);
-
-		for(ptr=filename;*ptr;ptr++)
-		{
-			if(*ptr == '/')
-				*ptr = '\\';
-		}
-
-		if(filename[szCurrent-1] != '\\')
-			strcat(filename,"\\");
-
-		szCurrent += strlen(str);
-
-		if(szCurrent >= szFilename)
-		{
-			szFilename += (szCurrent + 1024);
-			filename = lib3270_realloc(filename,szFilename);
-		}
-
-		strcat(filename,str);
-
+		filename = concat(filename,str,&szFilename);
 		str = va_arg(args, const char *);
 	}
 
@@ -365,6 +344,18 @@ char * lib3270_build_data_filename(const char *str, ...)
 }
 
 char * lib3270_build_config_filename(const char *str, ...)
+{
+	va_list args;
+	va_start (args, str);
+
+	char *filename = build_filename(str, args);
+
+	va_end (args);
+
+	return filename;
+}
+
+char * lib3270_build_filename(const char *str, ...)
 {
 	va_list args;
 	va_start (args, str);

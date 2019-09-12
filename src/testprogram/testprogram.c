@@ -84,6 +84,12 @@ int main(int argc, char *argv[])
 		printf("Configfile: \"%s\"\n",datafile);
 	}
 
+	{
+		lib3270_autoptr(char) datafile = lib3270_build_filename("Makefile",NULL);
+		printf("Custom file: \"%s\"\n",datafile);
+	}
+
+
 	/*
 	if(lib3270_set_url(h,NULL))
 		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");

@@ -669,7 +669,7 @@ void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols)
 	session->view.rows = rows;
 	session->view.cols = cols;
 
-	trace("View size changes to %dx%d",rows,cols);
+	trace("View size changes to %dx%d (configure=%p)",rows,cols,session->cbk.configure);
 
 	if(session->cbk.configure)
 		session->cbk.configure(session,session->view.rows,session->view.cols);

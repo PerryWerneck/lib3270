@@ -107,37 +107,23 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	if(hFind == INVALID_HANDLE_VALUE)
 	{
-		lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't read SSL certificates from \"%s\"" ), certpath);
+		message->title = N_( "Security error" );
+		message->text = N_( "Cant open custom certificate directory." );
 
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			N_( "Security error" ),
-			message,
-			_("The windows error code was %d"), (int) GetLastError()
-		);
-
+		trace_ssl(hSession, _( "Can't open \"%s\" (The Windows error code was %ld)" ), certpath, (long) GetLastError());
 	}
 	else
 	{
         do
 		{
-			char * filename = lib3270_build_data_filename("certs",ffd.cFileName,NULL);
+			char * filename = lib3270_build_data_filename("certs", ffd.cFileName, NULL);
 
 			debug("Loading \"%s\"",filename);
 
 			FILE *fp = fopen(filename,"r");
 			if(!fp) {
 
-				lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't open \"%s\"" ), filename);
-
-				lib3270_popup_dialog(
-					hSession,
-					LIB3270_NOTIFY_ERROR,
-					N_( "Security error" ),
-					message,
-					"%s", strerror(errno)
-				);
+				trace_ssl(hSession, _( "Can't open \"%s\": %s" ), filename, strerror(errno));
 
 			}
 			else
@@ -146,36 +132,22 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 				if(!cert)
 				{
-					int ssl_error = ERR_get_error();
+					message->error = hSession->ssl.error = ERR_get_error();
+					message->title = N_( "Security error" );
+					message->text = N_( "Cant read custom certificate file." );
 
-					lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't read \"%s\"" ), filename);
-
-					lib3270_popup_dialog(
-						hSession,
-						LIB3270_NOTIFY_ERROR,
-						N_( "Security error" ),
-						message,
-						"%s", ERR_lib_error_string(ssl_error)
-					);
-
+					trace_ssl(hSession, _( "Can't read \"%s\": %s" ), filename, ERR_lib_error_string(hSession->ssl.error));
 				}
 				else
 				{
-					trace_ssl(hSession,"Loading %s\n",filename);
 
 					if(X509_STORE_add_cert(store, cert) != 1)
 					{
-						int ssl_error = ERR_get_error();
+						message->error = hSession->ssl.error = ERR_get_error();
+						message->title = N_( "Security error" );
+						message->text = N_( "Cant load custom certificate file." );
 
-						lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't load \"%s\"" ), filename);
-
-						lib3270_popup_dialog(
-							hSession,
-							LIB3270_NOTIFY_ERROR,
-							N_( "Security error" ),
-							message,
-							"%s", ERR_lib_error_string(ssl_error)
-						);
+						trace_ssl(hSession, _( "Can't load \"%s\": %s" ), filename, ERR_lib_error_string(hSession->ssl.error));
 					}
 
 					X509_free(cert);
@@ -190,8 +162,6 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		while (FindNextFile(hFind, &ffd) != 0);
 
 	}
-
-	// lib3270_build_lib3270_strdup_printf("%s\\certs",appdir);
 
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 

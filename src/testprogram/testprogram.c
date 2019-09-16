@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
 	}
 
 
-	/*
 	if(lib3270_set_url(h,NULL))
 		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
 
@@ -116,8 +115,6 @@ int main(int argc, char *argv[])
 			printf("Screen:\n[%s]\n",text);
 
 	}
-
-	*/
 
 	lib3270_session_free(h);
 

@@ -293,13 +293,13 @@
 		<Unit filename="src/selection/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/ssl/ctx_init.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/ssl/linux/curl.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/linux/getcrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/linux/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/linux/ldap.c">
@@ -319,6 +319,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/windows/getcrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/windows/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/windows/ldap.c">

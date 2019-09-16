@@ -39,6 +39,7 @@
  */
 
 #include <config.h>
+
 #if defined(HAVE_LIBSSL)
 
 #include <openssl/ssl.h>
@@ -55,49 +56,13 @@
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
+#include <dirent.h>
+
 #include "trace_dsc.h"
 
-#ifdef SSL_ENABLE_CRL_CHECK
-	#include <openssl/x509.h>
-#endif // SSL_ENABLE_CRL_CHECK
+#include <openssl/x509.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
-
-/*
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsequence-point"
-
-// https://stackoverflow.com/questions/10975542/asn1-time-to-time-t-conversion
-static time_t ASN1_GetTimeT(const ASN1_TIME* time)
-{
-    struct tm t;
-    const char* str = (const char*) time->data;
-    size_t i = 0;
-
-    memset(&t, 0, sizeof(t));
-
-    if (time->type == V_ASN1_UTCTIME) // two digit year
-    {
-        t.tm_year = (str[i++] - '0') * 10 + (str[++i] - '0');
-        if (t.tm_year < 70)
-        t.tm_year += 100;
-    }
-    else if (time->type == V_ASN1_GENERALIZEDTIME) // four digit year
-    {
-        t.tm_year = (str[i++] - '0') * 1000 + (str[++i] - '0') * 100 + (str[++i] - '0') * 10 + (str[++i] - '0');
-        t.tm_year -= 1900;
-    }
-    t.tm_mon = ((str[i++] - '0') * 10 + (str[++i] - '0')) - 1; // -1 since January is 0 not 1.
-    t.tm_mday = (str[i++] - '0') * 10 + (str[++i] - '0');
-    t.tm_hour = (str[i++] - '0') * 10 + (str[++i] - '0');
-    t.tm_min  = (str[i++] - '0') * 10 + (str[++i] - '0');
-    t.tm_sec  = (str[i++] - '0') * 10 + (str[++i] - '0');
-
-    // Note: we did not adjust the time based on time zone information
-    return mktime(&t);
-}
-#pragma GCC diagnostic pop
-*/
 
 /**
  * @brief Initialize openssl library.
@@ -129,44 +94,110 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
 	SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
 
-	SSL_CTX_set_default_verify_paths(ssl_ctx);
+	// SSL_CTX_set_default_verify_paths(ssl_ctx);
 
-#ifdef _WIN32
+	// Load certs
+	// https://stackoverflow.com/questions/9507184/can-openssl-on-windows-use-the-system-certificate-store
+	X509_STORE * store = SSL_CTX_get_cert_store(ssl_ctx);
+
+	lib3270_autoptr(char) certpath = lib3270_build_data_filename("certs","*.der",NULL);
+
+	WIN32_FIND_DATA ffd;
+	HANDLE hFind = FindFirstFile(certpath, &ffd);
+
+	if(hFind == INVALID_HANDLE_VALUE)
 	{
-		lib3270_autoptr(char) appdir = lib3270_get_installation_path();
-		lib3270_autoptr(char) certpath = lib3270_strdup_printf("%s\\certs",appdir);
+		lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't read SSL certificates from \"%s\"" ), certpath);
 
-		debug("Searching certs from \"%s\".", certpath);
-
-		if(SSL_CTX_load_verify_locations(ssl_ctx,NULL,certpath))
-		{
-			trace_ssl(hSession,"Searching certs from \"%s\".\n", certpath);
-		}
-		else
-		{
-			int ssl_error = ERR_get_error();
-
-			lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't read SSL certificates from \"%s\"" ), certpath);
-
-			lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_ERROR,
-				N_( "Security error" ),
-				message,
-				"%s", ERR_lib_error_string(ssl_error)
-			);
-
-		}
+		lib3270_popup_dialog(
+			hSession,
+			LIB3270_NOTIFY_ERROR,
+			N_( "Security error" ),
+			message,
+			_("The windows error code was %d"), (int) GetLastError()
+		);
 
 	}
-#endif // _WIN32
+	else
+	{
+        do
+		{
+			char * filename = lib3270_build_data_filename("certs",ffd.cFileName,NULL);
+
+			debug("Loading \"%s\"",filename);
+
+			FILE *fp = fopen(filename,"r");
+			if(!fp) {
+
+				lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't open \"%s\"" ), filename);
+
+				lib3270_popup_dialog(
+					hSession,
+					LIB3270_NOTIFY_ERROR,
+					N_( "Security error" ),
+					message,
+					"%s", strerror(errno)
+				);
+
+			}
+			else
+			{
+				X509 * cert = d2i_X509_fp(fp, NULL);
+
+				if(!cert)
+				{
+					int ssl_error = ERR_get_error();
+
+					lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't read \"%s\"" ), filename);
+
+					lib3270_popup_dialog(
+						hSession,
+						LIB3270_NOTIFY_ERROR,
+						N_( "Security error" ),
+						message,
+						"%s", ERR_lib_error_string(ssl_error)
+					);
+
+				}
+				else
+				{
+					trace_ssl(hSession,"Loading %s\n",filename);
+
+					if(X509_STORE_add_cert(store, cert) != 1)
+					{
+						int ssl_error = ERR_get_error();
+
+						lib3270_autoptr(char) message = lib3270_strdup_printf( _( "Can't load \"%s\"" ), filename);
+
+						lib3270_popup_dialog(
+							hSession,
+							LIB3270_NOTIFY_ERROR,
+							N_( "Security error" ),
+							message,
+							"%s", ERR_lib_error_string(ssl_error)
+						);
+					}
+
+					X509_free(cert);
+				}
+
+				fclose(fp);
+			}
+
+			lib3270_free(filename);
+
+		}
+		while (FindNextFile(hFind, &ffd) != 0);
+
+	}
+
+	// lib3270_build_lib3270_strdup_printf("%s\\certs",appdir);
 
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
 #ifdef SSL_ENABLE_CRL_CHECK
 
 	// Enable CRL check
-	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
 	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
 	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
 	X509_STORE_set1_param(store, param);

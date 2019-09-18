@@ -41,14 +41,15 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT unsigned char lib3270_get_toggle(H3270 *session, LIB3270_TOGGLE ix)
+LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE ix)
 {
-	CHECK_SESSION_HANDLE(session);
 
-	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT)
+	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT) {
+		errno = EINVAL;
 		return 0;
+	}
 
-	return session->toggle[ix].value != 0;
+	return hSession->toggle[ix].value != 0;
 }
 
 /**
@@ -107,8 +108,9 @@ LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE ix)
 
 	CHECK_SESSION_HANDLE(session);
 
-	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT)
-		return 0;
+	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT) {
+		return -(errno = EINVAL);
+	}
 
 	t = &session->toggle[ix];
 

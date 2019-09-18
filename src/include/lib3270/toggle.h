@@ -58,27 +58,27 @@
 	/**
 	 * @brief get toggle state.
 	 *
-	 * @param h		Session handle.
-	 * @param ix	Toggle id.
+	 * @param hSession		Session handle.
+	 * @param ix			Toggle id.
 	 *
 	 * @return 0 if the toggle is disabled, non zero if enabled.
 	 *
 	 */
-	LIB3270_EXPORT unsigned char lib3270_get_toggle(H3270 *h, LIB3270_TOGGLE ix);
+	LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE ix);
 
 	/**
 	 * @brief Set toggle state.
 	 *
-	 * @param h		Session handle.
-	 * @param ix	Toggle id.
-	 * @param value	New toggle state (non zero for true).
+	 * @param hSession	Session handle.
+	 * @param ix		Toggle id.
+	 * @param value		New toggle state (non zero for true).
 	 *
 	 * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
 	 *
 	 * @retval -EINVAL	Invalid toggle id.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_toggle(H3270 *h, LIB3270_TOGGLE ix, int value);
+	LIB3270_EXPORT int lib3270_set_toggle(H3270 *hSession, LIB3270_TOGGLE ix, int value);
 
 	/**
 	 * @brief Translate a string toggle name to the corresponding value.
@@ -127,12 +127,14 @@
 	/**
 	 * @brief Revert toggle status.
 	 *
-	 * @param h		Session handle.
-	 * @param ix	Toggle id.
+	 * @param hSession	Session handle.
+	 * @param ix		Toggle id.
 	 *
-	 * @return Toggle status.
+	 * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
+	 *
+	 * @retval -EINVAL	Invalid toggle id.
 	 */
-	LIB3270_EXPORT int lib3270_toggle(H3270 *h, LIB3270_TOGGLE ix);
+	LIB3270_EXPORT int lib3270_toggle(H3270 *hSession, LIB3270_TOGGLE ix);
 
 	LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, char, void *),void *data);
 	LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, const void *id);

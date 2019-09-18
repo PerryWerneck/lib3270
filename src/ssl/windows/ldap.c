@@ -244,7 +244,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 		lib3270_trace_data(
 			hSession,
 			"CRL Data received from LDAP server",
-			(const char *) value[0]->bv_val,
+			(const unsigned char *) value[0]->bv_val,
 			value[0]->bv_len
 		);
 	}

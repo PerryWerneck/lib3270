@@ -39,15 +39,15 @@
 
 	typedef struct _lib3270_toggle_entry
 	{
-		const char *name;			///< @brief Toggle name.
-		const char  def;			///< @brief Default value.
-		const char *key;			///< @brief Default key (or NULL if no default).
-		const char *icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-		const char *label;			///< @brief Button label (or NULL).
-		const char *summary;		///< @brief Short description (or NULL).
-		const char *description;	///< @brief Toggle description.
+		LIB3270_TOGGLE	  id;			///< @brief Toggle ID.
+		const char		* name;			///< @brief Toggle name.
+		const char		  def;			///< @brief Default value.
+		const char		* key;			///< @brief Default key (or NULL if no default).
+		const char		* icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
+		const char		* label;		///< @brief Button label (or NULL).
+		const char		* summary;		///< @brief Short description (or NULL).
+		const char		* description;	///< @brief Toggle description.
 	} LIB3270_TOGGLE_ENTRY;
-
 
 	/**
 	 * @brief Get the toggle description table.

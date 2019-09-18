@@ -43,6 +43,7 @@
 const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 {
 	{
+		LIB3270_TOGGLE_MONOCASE,
 		"monocase",
 		False,
 		NULL,		// Default keycode
@@ -52,6 +53,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, the terminal operates in uppercase-only mode" )
 	},
 	{
+		LIB3270_TOGGLE_CURSOR_BLINK,
 		"cursorblink",
 		True,
 		NULL,		// Default keycode
@@ -61,6 +63,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, the cursor blinks" )
 	},
 	{
+		LIB3270_TOGGLE_SHOW_TIMING,
 		"showtiming",
 		True,
 		NULL,		// Default keycode
@@ -70,6 +73,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, the time taken by the host to process an AID is displayed on the status line" )
 	},
 	{
+		LIB3270_TOGGLE_CURSOR_POS,
 		"cursorpos",
 		True,
 		NULL,		// Default keycode
@@ -79,6 +83,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Display the cursor location in the OIA (the status line)" )
 	},
 	{
+		LIB3270_TOGGLE_DS_TRACE,
 		"dstrace",
 		False,
 		NULL,		// Default keycode
@@ -88,6 +93,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_LINE_WRAP,
 		"linewrap",
 		False,
 		NULL,		// Default keycode
@@ -97,6 +103,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_("If set, the NVT terminal emulator automatically assumes a NEWLINE character when it reaches the end of a line.")
 	},
 	{
+		LIB3270_TOGGLE_BLANK_FILL,
 		"blankfill",
 		False,
 		NULL,		// Default keycode
@@ -106,6 +113,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Automatically convert trailing blanks in a field to NULLs in order to insert a character, and will automatically convert leading NULLs to blanks so that input data is not squeezed to the left" )
 	},
 	{
+		LIB3270_TOGGLE_SCREEN_TRACE,
 		"screentrace",
 		False,
 		NULL,		// Default keycode
@@ -115,6 +123,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_EVENT_TRACE,
 		"eventtrace",
 		False,
 		NULL,		// Default keycode
@@ -124,6 +133,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_MARGINED_PASTE,
 		"marginedpaste",
 		False,
 		NULL,		// Default keycode
@@ -133,6 +143,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, puts restrictions on how pasted text is placed on the screen. The position of the cursor at the time the paste operation is begun is used as a left margin. No pasted text will fill any area of the screen to the left of that position. This option is useful for pasting into certain IBM editors that use the left side of the screen for control information" )
 	},
 	{
+		LIB3270_TOGGLE_RECTANGLE_SELECT,
 		"rectselect",
 		False,
 		NULL,		// Default keycode
@@ -142,6 +153,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, the terminal will always select rectangular areas of the screen. Otherwise, it selects continuous regions of the screen" )
 	},
 	{
+		LIB3270_TOGGLE_CROSSHAIR,
 		"crosshair",
 		False,
 		"<alt>x",		// Default keycode
@@ -151,6 +163,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, the terminal will display a crosshair over the cursor: lines extending the full width and height of the screen, centered over the cursor position. This makes locating the cursor on the screen much easier" )
 	},
 	{
+		LIB3270_TOGGLE_FULL_SCREEN,
 		"fullscreen",
 		False,
 		"<alt>Home",		// Default keycode
@@ -160,6 +173,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "If set, asks to place the toplevel window in the fullscreen state" )
 	},
 	{
+		LIB3270_TOGGLE_RECONNECT,
 		"reconnect",
 		False,
 		NULL,		// Default keycode
@@ -169,6 +183,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Automatically reconnect to the host if it ever disconnects" )
 	},
 	{
+		LIB3270_TOGGLE_INSERT,
 		"insert",
 		False,
 		"Insert",			// Default keycode
@@ -178,6 +193,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_SMART_PASTE,
 		"smartpaste",
 		False,
 		NULL,		// Default keycode
@@ -187,6 +203,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_BOLD,
 		"bold",
 		False,
 		NULL,					// Default keycode
@@ -196,6 +213,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_KEEP_SELECTED,
 		"keepselected",
 		False,
 		NULL,		// Default keycode
@@ -205,8 +223,9 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_UNDERLINE,
 		"underline",
-		False,
+		True,
 		NULL,							// Default keycode
 		"format-text-underline",		// Icon name
 		N_( "Underline" ),
@@ -214,6 +233,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_CONNECT_ON_STARTUP,
 		"autoconnect",
 		False,
 		NULL,		// Default keycode
@@ -223,6 +243,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_KP_ALTERNATIVE,
 		"kpalternative",
 		False,
 		NULL,		// Default keycode
@@ -232,6 +253,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Use the keys +/- from keypad to select editable fields" )
 	},
 	{
+		LIB3270_TOGGLE_BEEP,
 		"beep",
 		True,
 		NULL,		// Default keycode
@@ -241,6 +263,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Beep on errors" )
 	},
 	{
+		LIB3270_TOGGLE_VIEW_FIELD,
 		"fieldattr",
 		False,
 		NULL,		// Default keycode
@@ -250,6 +273,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		""
 	},
 	{
+		LIB3270_TOGGLE_ALTSCREEN,
 		"altscreen",
 		True,
 		NULL,		// Default keycode
@@ -259,6 +283,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Auto resize on altscreen" )
 	},
 	{
+		LIB3270_TOGGLE_KEEP_ALIVE,
 		"keepalive",
 		True,
 		NULL,		// Default keycode
@@ -268,6 +293,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Enable network keep-alive with SO_KEEPALIVE" )
 	},
 	{
+		LIB3270_TOGGLE_NETWORK_TRACE,
 		"nettrace",
 		False,
 		NULL,		// Default keycode
@@ -277,6 +303,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		N_( "Enable network in/out trace" )
 	},
 	{
+		LIB3270_TOGGLE_SSL_TRACE,
 		"ssltrace",
 		False,
 		NULL,		// Default keycode
@@ -287,6 +314,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 	},
 
 	{
+		LIB3270_TOGGLE_COUNT,
 		NULL,
 		0,
 		NULL,

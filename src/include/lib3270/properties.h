@@ -38,14 +38,16 @@
 
 	#define LIB3270_PROPERTIES_H_INCLUDED
 
+	#include <lib3270.h>
+
 #ifdef __cplusplus
 	extern "C" {
 #endif
 
 	typedef struct _lib3270_int_property
 	{
-		const char		* name;											///< @brief Property name.
-		const char		* description;									///< @brief Property description.
+		LIB3270_PROPERTY_HEAD
+
 		int (*get)(const H3270 *hSession);								///< @brief Get value.
 		int (*set)(H3270 *hSession, int value);							///< @brief Set value.
 
@@ -53,8 +55,8 @@
 
 	typedef struct _lib3270_uint_property
 	{
-		const char		* name;											///< @brief Property name.
-		const char		* description;									///< @brief Property description.
+		LIB3270_PROPERTY_HEAD
+
 		unsigned int (*get)(const H3270 *hSession);						///< @brief Get value.
 		int (*set)(H3270 *hSession, unsigned int value);				///< @brief Set value.
 
@@ -62,8 +64,8 @@
 
 	typedef struct _lib3270_string_property
 	{
-		const char		* name;								///< @brief Property name.
-		const char		* description;						///< @brief Property description.
+		LIB3270_PROPERTY_HEAD
+
 		const char * (*get)(const H3270 *hSession);			///< @brief Get value.
 		int (*set)(H3270 *hSession, const char * value);	///< @brief Set value.
 

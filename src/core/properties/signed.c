@@ -55,54 +55,45 @@
 	static const LIB3270_INT_PROPERTY properties[] = {
 
 		{
-			"model_number",								//  Property name.
-			N_( "The model number" ),					//  Property description.
-			lib3270_get_model_number,					//  Get value.
-			NULL										//  Set value.
+			.name = "model_number",								//  Property name.
+			.description = N_( "The model number" ),			//  Property description.
+			.get = lib3270_get_model_number,					//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"color_type",								//  Property name.
-			N_( "The color type" ),						//  Property description.
-			lib3270_get_color_type,						//  Get value.
-			lib3270_set_color_type						//  Set value.
+			.name = "color_type",								//  Property name.
+			.description = N_( "The color type" ),				//  Property description.
+			.get = lib3270_get_color_type,						//  Get value.
+			.set = lib3270_set_color_type						//  Set value.
 		},
 
 		{
-			"cstate",									//  Property name.
-			N_( "Connection state" ),					//  Property description.
-			lib3270_get_connection_state_as_int,		//  Get value.
-			NULL										//  Set value.
+			.name = "cstate",									//  Property name.
+			.description = N_( "Connection state" ),			//  Property description.
+			.get = lib3270_get_connection_state_as_int,			//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"program_message",							//  Property name.
-			N_( "Latest program message" ),				//  Property description.
-			lib3270_get_program_message_as_int,			//  Get value.
-			NULL										//  Set value.
+			.name = "program_message",							//  Property name.
+			.description = N_( "Latest program message" ),		//  Property description.
+			.get = lib3270_get_program_message_as_int,			//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"ssl_state",								//  Property name.
-			N_( "ID of the session security state" ),	//  Property description.
-			lib3270_get_ssl_state_as_int,				//  Get value.
-			NULL										//  Set value.
+			.name = "ssl_state",										//  Property name.
+			.description = N_( "ID of the session security state" ),	//  Property description.
+			.get = lib3270_get_ssl_state_as_int,						//  Get value.
+			.set = NULL													//  Set value.
 		},
 
-		/*
 		{
-			"",						//  Property name.
-			"",						//  Property description.
-			NULL,					//  Get value.
-			NULL					//  Set value.
-		},
-		*/
-
-		{
-			NULL,
-			NULL,
-			NULL,
-			NULL
+			.name = NULL,
+			.description = NULL,
+			.get = NULL,
+			.set = NULL
 		}
 	 };
 

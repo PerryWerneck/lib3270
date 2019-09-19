@@ -135,43 +135,6 @@
 
 	} LIB3270_ATTR;
 
-	/**
-	 * @brief Toogles.
-	 */
-	typedef enum _lib3270_toggle
-	{
-		LIB3270_TOGGLE_MONOCASE,
-		LIB3270_TOGGLE_CURSOR_BLINK,
-		LIB3270_TOGGLE_SHOW_TIMING,
-		LIB3270_TOGGLE_CURSOR_POS,
-		LIB3270_TOGGLE_DS_TRACE,
-		LIB3270_TOGGLE_LINE_WRAP,
-		LIB3270_TOGGLE_BLANK_FILL,
-		LIB3270_TOGGLE_SCREEN_TRACE,
-		LIB3270_TOGGLE_EVENT_TRACE,
-		LIB3270_TOGGLE_MARGINED_PASTE,
-		LIB3270_TOGGLE_RECTANGLE_SELECT,
-		LIB3270_TOGGLE_CROSSHAIR,
-		LIB3270_TOGGLE_FULL_SCREEN,
-		LIB3270_TOGGLE_RECONNECT,
-		LIB3270_TOGGLE_INSERT,
-		LIB3270_TOGGLE_SMART_PASTE,
-		LIB3270_TOGGLE_BOLD,
-		LIB3270_TOGGLE_KEEP_SELECTED,
-		LIB3270_TOGGLE_UNDERLINE,					/**< @brief Show underline ? */
-		LIB3270_TOGGLE_CONNECT_ON_STARTUP,
-		LIB3270_TOGGLE_KP_ALTERNATIVE,              /**< @brief Keypad +/- move to next/previous field */
-		LIB3270_TOGGLE_BEEP,						/**< @brief Beep on errors */
-		LIB3270_TOGGLE_VIEW_FIELD,					/**< @brief View Field attribute */
-		LIB3270_TOGGLE_ALTSCREEN,					/**< @brief auto resize on altscreen */
-		LIB3270_TOGGLE_KEEP_ALIVE,					/**< @brief Enable network keep-alive with SO_KEEPALIVE */
-		LIB3270_TOGGLE_NETWORK_TRACE,				/**< @brief Enable network in/out trace */
-		LIB3270_TOGGLE_SSL_TRACE,					/**< @brief Enable security traces */
-
-		LIB3270_TOGGLE_COUNT
-
-	} LIB3270_TOGGLE;
-
 	typedef enum _lib3270_direction
 	{
 		LIB3270_DIR_UP,
@@ -184,23 +147,6 @@
 		LIB3270_DIR_COUNT						/**< @brief Nº máximo de direções. */
 
 	} LIB3270_DIRECTION;
-
-	/**
-	 * @brief Toggle types.
-	 *
-	 */
-	typedef enum _LIB3270_TOGGLE_TYPE
-	{
-		LIB3270_TOGGLE_TYPE_INITIAL,
-		LIB3270_TOGGLE_TYPE_INTERACTIVE,
-		LIB3270_TOGGLE_TYPE_ACTION,
-		LIB3270_TOGGLE_TYPE_FINAL,
-		LIB3270_TOGGLE_TYPE_UPDATE,
-
-		LIB3270_TOGGLE_TYPE_USER
-
-	} LIB3270_TOGGLE_TYPE;
-
 
 	/**
 	 * @brief OIA Status indicators.
@@ -394,6 +340,19 @@
 		#define LIB3270_EXPORT		__attribute__((visibility("default"))) extern
 
 	#endif
+
+	/**
+	 * @brief Head for property descriptors.
+	 *
+	 */
+	#define LIB3270_PROPERTY_HEAD	\
+		const char * name; \
+		const char * summary; \
+		const char * description;
+
+	typedef struct _lib3270_property {
+		LIB3270_PROPERTY_HEAD
+	} LIB3270_PROPERTY;
 
 	/**
 	 * @brief State change IDs.

@@ -45,75 +45,66 @@
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
 		{
-			"cursor_address",							//  Property name.
-			N_( "Cursor address" ),						//  Property description.
-			lib3270_get_cursor_address,					//  Get value.
-			lib3270_set_cursor_address					//  Set value.
+			.name = "cursor_address",								//  Property name.
+			.description = N_( "Cursor address" ),					//  Property description.
+			.get = lib3270_get_cursor_address,						//  Get value.
+			.set = lib3270_set_cursor_address						//  Set value.
 		},
 
 		{
-			"width",									//  Property name.
-			N_( "Current screen width in columns" ),	//  Property description.
-			lib3270_get_width,							//  Get value.
-			NULL										//  Set value.
+			.name = "width",										//  Property name.
+			.description = N_( "Current screen width in columns" ),	//  Property description.
+			.get = lib3270_get_width,								//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			"height",									//  Property name.
-			N_( "Current screen height in rows" ),		//  Property description.
-			lib3270_get_height,							//  Get value.
-			NULL										//  Set value.
+			.name = "height",										//  Property name.
+			.description = N_( "Current screen height in rows" ),	//  Property description.
+			.get = lib3270_get_height,								//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			"max_width",								//  Property name.
-			N_( "Maximum screen width in columns" ),	//  Property description.
-			lib3270_get_max_width,						//  Get value.
-			NULL										//  Set value.
+			.name = "max_width",									//  Property name.
+			.description = N_( "Maximum screen width in columns" ),	//  Property description.
+			.get = lib3270_get_max_width,							//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			"max_height",								//  Property name.
-			N_( "Maximum screen height in rows" ),		//  Property description.
-			lib3270_get_max_height,						//  Get value.
-			NULL										//  Set value.
+			.name = "max_height",									//  Property name.
+			.description = N_( "Maximum screen height in rows" ),	//  Property description.
+			.get = lib3270_get_max_height,							//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			"length",									//  Property name.
-			N_( "Screen buffer length in bytes" ),		//  Property description.
-			lib3270_get_length,							//  Get value.
-			NULL										//  Set value.
+			.name = "length",										//  Property name.
+			.description = N_( "Screen buffer length in bytes" ),	//  Property description.
+			.get = lib3270_get_length,								//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			"unlock_delay",																			//  Property name.
-			N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
-			lib3270_get_unlock_delay,																//  Get value.
-			lib3270_set_unlock_delay																//  Set value.
+			.name = "unlock_delay",																				//  Property name.
+			.description = N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
+			.get = lib3270_get_unlock_delay,																	//  Get value.
+			.set = lib3270_set_unlock_delay																		//  Set value.
 		},
 
 		{
-			"kybdlock",																				//  Property name.
-			N_( "Keyboard lock status" ),															//  Property description.
-			lib3270_get_kybdlock_as_int,															//  Get value.
-			NULL																					//  Set value.
+			.name = "kybdlock",																					//  Property name.
+			.description = N_( "Keyboard lock status" ),														//  Property description.
+			.get = lib3270_get_kybdlock_as_int,																	//  Get value.
+			.set = NULL																							//  Set value.
 		},
 
-		/*
 		{
-			"",						//  Property name.
-			"",				//  Property description.
-			NULL,					//  Get value.
-			NULL					//  Set value.
-		},
-		*/
-
-		{
-			NULL,
-			NULL,
-			NULL,
-			NULL
+			.name = NULL,
+			.description = NULL,
+			.get = NULL,
+			.set = NULL
 		}
 	};
 

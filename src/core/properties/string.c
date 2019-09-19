@@ -59,124 +59,115 @@
 	 static const LIB3270_STRING_PROPERTY properties[] = {
 
 		{
-			"luname",									//  Property name.
-			N_( "The name of the active LU" ),			//  Property description.
-			lib3270_get_luname,							//  Get value.
-			lib3270_set_luname							//  Set value.
+			.name = "luname",									//  Property name.
+			.description = N_( "The name of the active LU" ),	//  Property description.
+			.get = lib3270_get_luname,							//  Get value.
+			.set = lib3270_set_luname							//  Set value.
 		},
 
 		{
-			"url",										//  Property name.
-			N_( "URL of the current host" ),			//  Property description.
-			lib3270_get_url,							//  Get value.
-			lib3270_set_url								//  Set value.
+			.name = "url",										//  Property name.
+			.description = N_( "URL of the current host" ),		//  Property description.
+			.get = lib3270_get_url,								//  Get value.
+			.set = lib3270_set_url								//  Set value.
 		},
 
 		{
-			"model",									//  Property name.
-			N_( "Model name" ),							//  Property description.
-			lib3270_get_model,							//  Get value.
-			lib3270_set_model							//  Set value.
+			.name = "model",									//  Property name.
+			.description = N_( "Model name" ),					//  Property description.
+			.get = lib3270_get_model,							//  Get value.
+			.set = lib3270_set_model							//  Set value.
 		},
 
 		{
-			"hosttype",									//  Property name.
-			N_( "Host type name" ),						//  Property description.
-			lib3270_get_host_type_name,					//  Get value.
-			lib3270_set_host_type_by_name				//  Set value.
+			.name = "hosttype",									//  Property name.
+			.description = N_( "Host type name" ),				//  Property description.
+			.get = lib3270_get_host_type_name,					//  Get value.
+			.set = lib3270_set_host_type_by_name				//  Set value.
 		},
 
 		{
-			"termtype",									//  Property name.
-			N_( "Terminal type" ),						//  Property description.
-			lib3270_get_termtype,						//  Get value.
-			NULL										//  Set value.
+			.name = "termtype",									//  Property name.
+			.description = N_( "Terminal type" ),				//  Property description.
+			.get = lib3270_get_termtype,						//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"termname",									//  Property name.
-			N_( "Terminal name" ),						//  Property description.
-			lib3270_get_termname,						//  Get value.
-			NULL										//  Set value.
+			.name = "termname",									//  Property name.
+			.description = N_( "Terminal name" ),				//  Property description.
+			.get = lib3270_get_termname,						//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"host_charset",								//  Property name.
-			N_( "Host charset" ),						//  Property description.
-			lib3270_get_host_charset,					//  Get value.
-			lib3270_set_host_charset					//  Set value.
+			.name = "host_charset",								//  Property name.
+			.description = N_( "Host charset" ),				//  Property description.
+			.get = lib3270_get_host_charset,					//  Get value.
+			.set = lib3270_set_host_charset						//  Set value.
 		},
 
 		{
-			"display_charset",							//  Property name.
-			N_( "Display charset" ),					//  Property description.
-			lib3270_get_display_charset,				//  Get value.
-			NULL										//  Set value.
+			.name = "display_charset",							//  Property name.
+			.description = N_( "Display charset" ),				//  Property description.
+			.get = lib3270_get_display_charset,					//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"version",									//  Property name.
-			N_( "lib3270 version" ),					//  Property description.
-			get_version,								//  Get value.
-			NULL										//  Set value.
+			.name = "version",									//  Property name.
+			.description = N_( "lib3270 version" ),				//  Property description.
+			.get = get_version,									//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"revision",									//  Property name.
-			N_( "lib3270 revision" ),					//  Property description.
-			get_revision,								//  Get value.
-			NULL										//  Set value.
+			.name = "revision",									//  Property name.
+			.description = N_( "lib3270 revision" ),			//  Property description.
+			.get = get_revision,								//  Get value.
+			.set = NULL											//  Set value.
 		},
 
 		{
-			"crlpath",											//  Property name.
-			N_( "URL for the certificate revocation list" ),	//  Property description.
-			lib3270_get_crl_url,								//  Get value.
-			lib3270_set_crl_url,								//  Set value.
+			.name = "crlpath",													//  Property name.
+			.description = N_( "URL for the certificate revocation list" ),		//  Property description.
+			.get = lib3270_get_crl_url,											//  Get value.
+			.set = lib3270_set_crl_url,											//  Set value.
 		},
 
 		{
-			"default_host",										//  Property name.
-			N_( "Default host URL" ),							//  Property description.
-			lib3270_get_default_host,							//  Get value.
-			NULL												//  Set value.
+			.name = "default_host",										//  Property name.
+			.description = N_( "Default host URL" ),					//  Property description.
+			.get = lib3270_get_default_host,							//  Get value.
+			.set = NULL													//  Set value.
 		},
 
 		{
-			"sslmessage",										//  Property name.
-			N_( "The security state" ),							//  Property description.
-			lib3270_get_ssl_state_message,						//  Get value.
-			NULL												//  Set value.
+			.name = "sslmessage",										//  Property name.
+			.description = N_( "The security state" ),					//  Property description.
+			.get = lib3270_get_ssl_state_message,						//  Get value.
+			.set = NULL													//  Set value.
 		},
 
 		{
-			"ssldescription",									//  Property name.
-			N_( "Description of the current security state" ),	//  Property description.
-			lib3270_get_ssl_state_description,					//  Get value.
-			NULL												//  Set value.
+			.name = "ssldescription",											//  Property name.
+			.description = N_( "Description of the current security state" ),	//  Property description.
+			.get = lib3270_get_ssl_state_description,							//  Get value.
+			.set = NULL															//  Set value.
 		},
 
 		{
-			"oversize",												//  Property name.
-			N_( "Screen oversize if larger than the chosen model"),	//  Property description.
-			lib3270_get_oversize,									//  Get value.
-			lib3270_set_oversize									//  Set value.
+			.name = "oversize",														//  Property name.
+			.description = N_( "Screen oversize if larger than the chosen model"),	//  Property description.
+			.get = lib3270_get_oversize,											//  Get value.
+			.set = lib3270_set_oversize												//  Set value.
 		},
 
-		/*
 		{
-			"",											//  Property name.
-			"",									//  Property description.
-			,											//  Get value.
-			NULL										//  Set value.
-		},
-		*/
-
-		{
-			NULL,
-			NULL,
-			NULL,
-			NULL
+			.name = NULL,
+			.description = NULL,
+			.get = NULL,
+			.set = NULL
 		}
 
 	 };

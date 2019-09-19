@@ -43,285 +43,287 @@
 const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 {
 	{
-		LIB3270_TOGGLE_MONOCASE,
-		"monocase",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Monocase" ),
-		N_( "Uppercase only" ),
-		N_( "If set, the terminal operates in uppercase-only mode" )
-	},
-	{
-		LIB3270_TOGGLE_CURSOR_BLINK,
-		"cursorblink",
-		True,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Blinking Cursor" ),
-		N_( "Blinking Cursor" ),
-		N_( "If set, the cursor blinks" )
-	},
-	{
-		LIB3270_TOGGLE_SHOW_TIMING,
-		"showtiming",
-		True,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Show timer when processing" ),
-		N_( "Show timer when processing" ),
-		N_( "If set, the time taken by the host to process an AID is displayed on the status line" )
-	},
-	{
-		LIB3270_TOGGLE_CURSOR_POS,
-		"cursorpos",
-		True,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Track Cursor" ),
-		N_( "Track Cursor" ),
-		N_( "Display the cursor location in the OIA (the status line)" )
-	},
-	{
-		LIB3270_TOGGLE_DS_TRACE,
-		"dstrace",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Data Stream" ),
-		N_( "Trace Data Stream" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_LINE_WRAP,
-		"linewrap",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_("Wrap around"),
-		N_("Wrap around"),
-		N_("If set, the NVT terminal emulator automatically assumes a NEWLINE character when it reaches the end of a line.")
-	},
-	{
-		LIB3270_TOGGLE_BLANK_FILL,
-		"blankfill",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Blank Fill" ),
-		N_( "Blank Fill" ),
-		N_( "Automatically convert trailing blanks in a field to NULLs in order to insert a character, and will automatically convert leading NULLs to blanks so that input data is not squeezed to the left" )
-	},
-	{
-		LIB3270_TOGGLE_SCREEN_TRACE,
-		"screentrace",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Screens" ),
-		N_( "Trace screen contents" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_EVENT_TRACE,
-		"eventtrace",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Events" ),
-		N_( "Trace interface and application events" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_MARGINED_PASTE,
-		"marginedpaste",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Paste with left margin" ),
-		N_( "Paste with left margin" ),
-		N_( "If set, puts restrictions on how pasted text is placed on the screen. The position of the cursor at the time the paste operation is begun is used as a left margin. No pasted text will fill any area of the screen to the left of that position. This option is useful for pasting into certain IBM editors that use the left side of the screen for control information" )
-	},
-	{
-		LIB3270_TOGGLE_RECTANGLE_SELECT,
-		"rectselect",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Select by rectangles" ),
-		N_( "Select by rectangles" ),
-		N_( "If set, the terminal will always select rectangular areas of the screen. Otherwise, it selects continuous regions of the screen" )
-	},
-	{
-		LIB3270_TOGGLE_CROSSHAIR,
-		"crosshair",
-		False,
-		"<alt>x",		// Default keycode
-		NULL,			// Icon name
-		N_( "Cross hair cursor" ),
-		N_( "Cross hair cursor" ),
-		N_( "If set, the terminal will display a crosshair over the cursor: lines extending the full width and height of the screen, centered over the cursor position. This makes locating the cursor on the screen much easier" )
-	},
-	{
-		LIB3270_TOGGLE_FULL_SCREEN,
-		"fullscreen",
-		False,
-		"<alt>Home",		// Default keycode
-		NULL,				// Icon name
-		N_( "Full Screen" ),
-		N_( "Full Screen" ),
-		N_( "If set, asks to place the toplevel window in the fullscreen state" )
-	},
-	{
-		LIB3270_TOGGLE_RECONNECT,
-		"reconnect",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Auto-Reconnect" ),
-		N_( "Auto-Reconnect" ),
-		N_( "Automatically reconnect to the host if it ever disconnects" )
-	},
-	{
-		LIB3270_TOGGLE_INSERT,
-		"insert",
-		False,
-		"Insert",			// Default keycode
-		"insert-text",		// Icon name
-		N_( "Insert" ),
-		N_( "Set insert mode" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_SMART_PASTE,
-		"smartpaste",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Smart paste" ),
-		N_( "Smart paste" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_BOLD,
-		"bold",
-		False,
-		NULL,					// Default keycode
-		"format-text-bold",		// Icon name
-		N_( "Bold" ),
-		N_( "Bold" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_KEEP_SELECTED,
-		"keepselected",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Keep selected" ),
-		N_( "Keep selected" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_UNDERLINE,
-		"underline",
-		True,
-		NULL,							// Default keycode
-		"format-text-underline",		// Icon name
-		N_( "Underline" ),
-		N_( "Show Underline" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_CONNECT_ON_STARTUP,
-		"autoconnect",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Auto connect" ),
-		N_( "Connect on startup" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_KP_ALTERNATIVE,
-		"kpalternative",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Use +/- for field navigation" ),
-		N_( "Use +/- for field navigation" ),
-		N_( "Use the keys +/- from keypad to select editable fields" )
-	},
-	{
-		LIB3270_TOGGLE_BEEP,
-		"beep",
-		True,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Sound" ),
-		N_( "Alert sound" ),
-		N_( "Beep on errors" )
-	},
-	{
-		LIB3270_TOGGLE_VIEW_FIELD,
-		"fieldattr",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Show Field" ),
-		N_( "Show Field attributes" ),
-		""
-	},
-	{
-		LIB3270_TOGGLE_ALTSCREEN,
-		"altscreen",
-		True,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Alternate screen" ),
-		N_( "Resize on alternate screen" ),
-		N_( "Auto resize on altscreen" )
-	},
-	{
-		LIB3270_TOGGLE_KEEP_ALIVE,
-		"keepalive",
-		True,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Network keep alive" ),
-		N_( "Network keep alive" ),
-		N_( "Enable network keep-alive with SO_KEEPALIVE" )
-	},
-	{
-		LIB3270_TOGGLE_NETWORK_TRACE,
-		"nettrace",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "Network data" ),
-		N_( "Trace network data flow" ),
-		N_( "Enable network in/out trace" )
-	},
-	{
-		LIB3270_TOGGLE_SSL_TRACE,
-		"ssltrace",
-		False,
-		NULL,		// Default keycode
-		NULL,		// Icon name
-		N_( "SSL negotiation" ),
-		N_( "Trace SSL negotiation" ),
-		N_( "Enable security negotiation trace" )
+		.id = LIB3270_TOGGLE_MONOCASE,
+		.name = "monocase",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Monocase" ),
+		.summary = N_( "Uppercase only" ),
+		.description = N_( "If set, the terminal operates in uppercase-only mode" )
 	},
 
 	{
-		LIB3270_TOGGLE_COUNT,
-		NULL,
-		0,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL
+		.id = LIB3270_TOGGLE_CURSOR_BLINK,
+		.name = "cursorblink",
+		.def = True,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Blinking Cursor" ),
+		.summary = N_( "Blinking Cursor" ),
+		.description = N_( "If set, the cursor blinks" )
+	},
+	{
+		.id = LIB3270_TOGGLE_SHOW_TIMING,
+		.name = "showtiming",
+		.def = True,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Show timer when processing" ),
+		.summary = N_( "Show timer when processing" ),
+		.description = N_( "If set, the time taken by the host to process an AID is displayed on the status line" )
+	},
+	{
+		.id = LIB3270_TOGGLE_CURSOR_POS,
+		.name = "cursorpos",
+		.def = True,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Track Cursor" ),
+		.summary = N_( "Track Cursor" ),
+		.description = N_( "Display the cursor location in the OIA (the status line)" )
+	},
+	{
+		.id = LIB3270_TOGGLE_DS_TRACE,
+		.name = "dstrace",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Data Stream" ),
+		.summary = N_( "Trace Data Stream" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_LINE_WRAP,
+		.name = "linewrap",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_("Wrap around"),
+		.summary = N_("Wrap around"),
+		.description = N_("If set, the NVT terminal emulator automatically assumes a NEWLINE character when it reaches the end of a line.")
+	},
+	{
+		.id = LIB3270_TOGGLE_BLANK_FILL,
+		.name = "blankfill",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Blank Fill" ),
+		.summary = N_( "Blank Fill" ),
+		.description = N_( "Automatically convert trailing blanks in a field to NULLs in order to insert a character, and will automatically convert leading NULLs to blanks so that input data is not squeezed to the left" )
+	},
+	{
+		.id = LIB3270_TOGGLE_SCREEN_TRACE,
+		.name = "screentrace",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Screens" ),
+		.summary = N_( "Trace screen contents" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_EVENT_TRACE,
+		.name = "eventtrace",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Events" ),
+		.summary = N_( "Trace interface and application events" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_MARGINED_PASTE,
+		.name = "marginedpaste",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Paste with left margin" ),
+		.summary = N_( "Paste with left margin" ),
+		.description = N_( "If set, puts restrictions on how pasted text is placed on the screen. The position of the cursor at the time the paste operation is begun is used as a left margin. No pasted text will fill any area of the screen to the left of that position. This option is useful for pasting into certain IBM editors that use the left side of the screen for control information" )
+	},
+	{
+		.id = LIB3270_TOGGLE_RECTANGLE_SELECT,
+		.name = "rectselect",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Select by rectangles" ),
+		.summary = N_( "Select by rectangles" ),
+		.description = N_( "If set, the terminal will always select rectangular areas of the screen. Otherwise, it selects continuous regions of the screen" )
+	},
+	{
+		.id = LIB3270_TOGGLE_CROSSHAIR,
+		.name = "crosshair",
+		.def = False,
+		.key = "<alt>x",		// Default keycode
+		.icon = NULL,			// Icon name
+		.label = N_( "Cross hair cursor" ),
+		.summary = N_( "Cross hair cursor" ),
+		.description = N_( "If set, the terminal will display a crosshair over the cursor: lines extending the full width and height of the screen, centered over the cursor position. This makes locating the cursor on the screen much easier" )
+	},
+	{
+		.id = LIB3270_TOGGLE_FULL_SCREEN,
+		.name = "fullscreen",
+		.def = False,
+		.key = "<alt>Home",		// Default keycode
+		.icon = NULL,				// Icon name
+		.label = N_( "Full Screen" ),
+		.summary = N_( "Full Screen" ),
+		.description = N_( "If set, asks to place the toplevel window in the fullscreen state" )
+	},
+	{
+		.id = LIB3270_TOGGLE_RECONNECT,
+		.name = "reconnect",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Auto-Reconnect" ),
+		.summary = N_( "Auto-Reconnect" ),
+		.description = N_( "Automatically reconnect to the host if it ever disconnects" )
+	},
+	{
+		.id = LIB3270_TOGGLE_INSERT,
+		.name = "insert",
+		.def = False,
+		.key = "Insert",			// Default keycode
+		.icon = "insert-text",		// Icon name
+		.label = N_( "Insert" ),
+		.summary = N_( "Set insert mode" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_SMART_PASTE,
+		.name = "smartpaste",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Smart paste" ),
+		.summary = N_( "Smart paste" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_BOLD,
+		.name = "bold",
+		.def = False,
+		.key = NULL,					// Default keycode
+		.icon = "format-text-bold",		// Icon name
+		.label = N_( "Bold" ),
+		.summary = N_( "Bold" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_KEEP_SELECTED,
+		.name = "keepselected",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Keep selected" ),
+		.summary = N_( "Keep selected" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_UNDERLINE,
+		.name = "underline",
+		.def = True,
+		.key = NULL,							// Default keycode
+		.icon = "format-text-underline",		// Icon name
+		.label = N_( "Underline" ),
+		.summary = N_( "Show Underline" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
+		.name = "autoconnect",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Auto connect" ),
+		.summary = N_( "Connect on startup" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_KP_ALTERNATIVE,
+		.name = "kpalternative",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Use +/- for field navigation" ),
+		.summary = N_( "Use +/- for field navigation" ),
+		.description = N_( "Use the keys +/- from keypad to select editable fields" )
+	},
+	{
+		.id = LIB3270_TOGGLE_BEEP,
+		.name = "beep",
+		.def = True,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Sound" ),
+		.summary = N_( "Alert sound" ),
+		.description = N_( "Beep on errors" )
+	},
+	{
+		.id = LIB3270_TOGGLE_VIEW_FIELD,
+		.name = "fieldattr",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Show Field" ),
+		.summary = N_( "Show Field attributes" ),
+		.description = ""
+	},
+	{
+		.id = LIB3270_TOGGLE_ALTSCREEN,
+		.name = "altscreen",
+		.def = True,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Alternate screen" ),
+		.summary = N_( "Resize on alternate screen" ),
+		.description = N_( "Auto resize on altscreen" )
+	},
+	{
+		.id = LIB3270_TOGGLE_KEEP_ALIVE,
+		.name = "keepalive",
+		.def = True,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Network keep alive" ),
+		.summary = N_( "Network keep alive" ),
+		.description = N_( "Enable network keep-alive with SO_KEEPALIVE" )
+	},
+	{
+		.id = LIB3270_TOGGLE_NETWORK_TRACE,
+		.name = "nettrace",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Network data" ),
+		.summary = N_( "Trace network data flow" ),
+		.description = N_( "Enable network in/out trace" )
+	},
+	{
+		.id = LIB3270_TOGGLE_SSL_TRACE,
+		.name = "ssltrace",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "SSL negotiation" ),
+		.summary = N_( "Trace SSL negotiation" ),
+		.description = N_( "Enable security negotiation trace" )
+	},
+
+	{
+		.id = LIB3270_TOGGLE_COUNT,
+		.name = NULL,
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = NULL,
+		.summary = NULL,
+		.description = NULL
+
 	}
 
 };

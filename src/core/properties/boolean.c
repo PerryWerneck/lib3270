@@ -44,138 +44,129 @@
 
 	static const LIB3270_INT_PROPERTY properties[] = {
 		{
-			"ready",											//  Property name.
-			N_( "Is terminal ready" ),							//  Property description.
-			lib3270_is_ready,									//  Get value.
-			NULL												//  Set value.
+			.name = "ready",												//  Property name.
+			.description = N_( "Is terminal ready" ),						//  Property description.
+			.get = lib3270_is_ready,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"connected",										//  Property name.
-			N_( "Is terminal connected" ),						//  Property description.
-			lib3270_is_connected,								//  Get value.
-			NULL												//  Set value.
+			.name = "connected",											//  Property name.
+			.description = N_( "Is terminal connected" ),					//  Property description.
+			.get = lib3270_is_connected,									//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"secure",											//  Property name.
-			N_( "Is connection secure" ),						//  Property description.
-			lib3270_is_secure,									//  Get value.
-			NULL												//  Set value.
+			.name = "secure",												//  Property name.
+			.description = N_( "Is connection secure" ),					//  Property description.
+			.get = lib3270_is_secure,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"tso",												//  Property name.
-			N_( "Non zero if the host is TSO." ),				//  Property description.
-			lib3270_is_tso,										//  Get value.
-			lib3270_set_tso										//  Set value.
+			.name = "tso",													//  Property name.
+			.description = N_( "Non zero if the host is TSO." ),			//  Property description.
+			.get = lib3270_is_tso,											//  Get value.
+			.set = lib3270_set_tso											//  Set value.
 		},
 
 		{
-			"as400",											//  Property name.
-			N_( "Non zero if the host is AS400." ),				//  Property description.
-			lib3270_is_as400,									//  Get value.
-			lib3270_set_as400									//  Set value.
+			.name = "as400",												//  Property name.
+			.description = N_( "Non zero if the host is AS400." ),			//  Property description.
+			.get = lib3270_is_as400,										//  Get value.
+			.set = lib3270_set_as400										//  Set value.
 		},
 
 		{
-			"pconnected",										//  Property name.
-			"",													//  Property description.
-			lib3270_pconnected,									//  Get value.
-			NULL												//  Set value.
+			.name = "pconnected",											//  Property name.
+			.description = "",												//  Property description.
+			.get = lib3270_pconnected,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"half_connected",									//  Property name.
-			"",													//  Property description.
-			lib3270_half_connected,								//  Get value.
-			NULL												//  Set value.
+			.name = "half_connected",										//  Property name.
+			.description = "",												//  Property description.
+			.get = lib3270_half_connected,									//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"neither",											//  Property name.
-			"",													//  Property description.
-			lib3270_in_neither,									//  Get value.
-			NULL												//  Set value.
+			.name = "neither",												//  Property name.
+			.description = "",												//  Property description.
+			.get = lib3270_in_neither,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"ansi",												//  Property name.
-			"",													//  Property description.
-			lib3270_in_ansi,									//  Get value.
-			NULL												//  Set value.
+			.name = "ansi",													//  Property name.
+			.description = "",												//  Property description.
+			.get = lib3270_in_ansi,											//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"tn3270",											//  Property name.
-			N_( "State is 3270, TN3270e or SSCP" ),				//  Property description.
-			lib3270_in_3270,									//  Get value.
-			NULL												//  Set value.
+			.name = "tn3270",												//  Property name.
+			.description = N_( "State is 3270, TN3270e or SSCP" ),			//  Property description.
+			.get = lib3270_in_3270,											//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"sscp",												//  Property name.
-			"",													//  Property description.
-			lib3270_in_sscp,									//  Get value.
-			NULL												//  Set value.
+			.name = "sscp",													//  Property name.
+			.description = "",												//  Property description.
+			.get = lib3270_in_sscp,											//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"tn3270e",											//  Property name.
-			"",													//  Property description.
-			lib3270_in_tn3270e,									//  Get value.
-			NULL												//  Set value.
+			.name = "tn3270e",												//  Property name.
+			.description = "",												//  Property description.
+			.get = lib3270_in_tn3270e,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"e",												//  Property name.
-			N_( "Is terminal in the INITIAL_E state?" ),		//  Property description.
-			lib3270_in_e,										//  Get value.
-			NULL												//  Set value.
+			.name = "e",													//  Property name.
+			.description = N_( "Is terminal in the INITIAL_E state?" ),		//  Property description.
+			.get = lib3270_in_e,											//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"has_selection",									//  Property name.
-			N_( "Has selected area" ),							//  Property description.
-			lib3270_has_selection,								//  Get value.
-			NULL												//  Set value.
+			.name = "has_selection",										//  Property name.
+			.description = N_( "Has selected area" ),						//  Property description.
+			.get = lib3270_has_selection,									//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"starting",											//  Property name.
-			N_( "Is starting (no first screen)?" ),				//  Property description.
-			lib3270_is_starting,								//  Get value.
-			NULL												//  Set value.
+			.name = "starting",												//  Property name.
+			.description = N_( "Is starting (no first screen)?" ),			//  Property description.
+			.get = lib3270_is_starting,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"formatted",										//  Property name.
-			N_( "Formatted screen" ),							//  Property description.
-			lib3270_is_formatted,							//  Get value.
-			NULL												//  Set value.
+			.name = "formatted",											//  Property name.
+			.description = N_( "Formatted screen" ),						//  Property description.
+			.get = lib3270_is_formatted,									//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{
-			"oerrlock",											//  Property name.
-			N_( "Lock keyboard on operator error" ),			//  Property description.
-			lib3270_get_lock_on_operator_error,					//  Get value.
-			lib3270_set_lock_on_operator_error					//  Set value.
+			.name = "oerrlock",												//  Property name.
+			.description = N_( "Lock keyboard on operator error" ),			//  Property description.
+			.get = lib3270_get_lock_on_operator_error,						//  Get value.
+			.set = lib3270_set_lock_on_operator_error						//  Set value.
 		},
 
-		/*
 		{
-			"",						//  Property name.
-			"",						//  Property description.
-			NULL,					//  Get value.
-			NULL					//  Set value.
-		},
-		*/
-
-		{
-			NULL,
-			NULL,
-			NULL,
-			NULL
+			.name = NULL,
+			.description = NULL,
+			.get = NULL,
+			.set = NULL
 		}
 
 	};

@@ -1,5 +1,5 @@
 #
-# spec file for package mingw32-lib3279
+# spec file for package mingw32-lib3270
 #
 # Copyright (c) 2014 SUSE LINUX Products GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -16,11 +16,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define MAJOR_VERSION 5
-%define MINOR_VERSION 2
-
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-
 %define __strip %{_mingw32_strip}
 %define __objdump %{_mingw32_objdump}
 %define _use_internal_dependency_generator 0
@@ -32,10 +27,15 @@
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		TN3270 Access library
-Name:           mingw32-lib3270-%{_libvrs}
-Version:        5.2
-Release:        0
-License:        GPL-2.0
+Name:			mingw32-lib3270
+Version:		5.2
+
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+
+Release:		0
+License:		GPL-2.0
 
 Source:			lib3270-%{version}.tar.xz
 
@@ -45,7 +45,6 @@ Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
 Provides:		mingw32(lib:3270) = %{version}
-Provides:		mingw32(lib:3270-%{_libvrs}) = %{version}
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -75,9 +74,6 @@ Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
 Requires:	%{name} = %{version}
 
-Provides:	mingw32-lib3270-devel = %{version}
-Conflicts:	otherproviders(mingw32-lib3270-devel)
-
 %description devel
 
 TN3270 access library for C development files.
@@ -93,8 +89,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 NOCONFIGURE=1 ./autogen.sh
 
-%{_mingw32_configure} \
-	--with-sdk-version=%{version}
+%{_mingw32_configure}
 
 %build
 make clean

@@ -16,11 +16,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define MAJOR_VERSION 5
-%define MINOR_VERSION 2
-
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-
 %define __strip %{_mingw64_strip}
 %define __objdump %{_mingw64_objdump}
 %define _use_internal_dependency_generator 0
@@ -32,8 +27,14 @@
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		TN3270 Access library
-Name:			mingw64-lib3270-%{_libvrs}
+Name:			mingw64-lib3270
 Version:		5.2
+
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+
+
 Release:		0
 License:		GPL-2.0
 

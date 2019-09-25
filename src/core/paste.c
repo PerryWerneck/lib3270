@@ -295,6 +295,59 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	return rc;
 }
 
+LIB3270_EXPORT int lib3270_set_field(H3270 *hSession, const char *text, int length)
+{
+	int addr;
+	int numchars = 0;
+
+	if(!text)
+		return - (errno = EINVAL);
+
+	if(check_online_session(hSession))
+		return - errno;
+
+	if(hSession->kybdlock)
+		return - (errno = EPERM);
+
+	if (!hSession->formatted)
+		return - (errno = ENOTSUP);
+
+	if(length < 0)
+		length = (int) strlen((const char *) text);
+
+	addr = lib3270_field_addr(hSession,hSession->cursor_addr);
+	if(addr < 0)
+		return addr;
+
+	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
+		lib3270_unselect(hSession);
+
+	hSession->cbk.suspend(hSession);
+	hSession->cursor_addr = addr;
+	numchars = set_string(hSession, (const unsigned char *) text, length);
+	hSession->cbk.resume(hSession);
+
+	if(numchars < 0)
+		return numchars;
+
+	// Find the end of the field.
+	addr = lib3270_get_field_end(hSession,addr);
+	if(addr < 0)
+		return addr;
+
+	addr = lib3270_get_next_unprotected(hSession, addr);
+
+	if(addr > 0) {
+		addr = lib3270_set_cursor_address(hSession,addr);
+		if(addr < 0)
+			return addr;
+	}
+
+    return hSession->cursor_addr;
+
+}
+
+
 LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str, int length)
 {
 	int rc;

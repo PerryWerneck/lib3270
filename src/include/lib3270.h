@@ -660,6 +660,26 @@
 	LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col);
 
 	/**
+	 * @brief Set field contents, jump to the next one.
+	 *
+	 * Set the string inside the corrent field, jump to the next one.
+	 *
+	 * @param hSession	Session handle.
+	 * @param text		String to input.
+	 * @param length	Length of the string (-1 for auto-detect).
+	 *
+	 * @return address of the cursor, negative if failed.
+	 *
+	 * @retval 0			No next field.
+	 * @retval -EPERM		The keyboard is locked.
+	 * @retval -ENOTCONN	Disconnected from host.
+ 	 * @retval -ENODATA		No field at the current cursor position.
+ 	 * @retval -ENOTSUP		The screen is not formatted.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_field(H3270 *hSession, const char *text, int length);
+
+	/**
 	 * @brief Set string at current cursor position.
 	 *
 	 * Returns are ignored; newlines mean "move to beginning of next line";
@@ -1178,7 +1198,10 @@
 	 * @param hSession	Session handle.
 	 * @param baddr		Field address.
 	 *
-	 * @return address of the first blank or -1 if invalid.
+	 * @return address of the first blank or negative if invalid.
+	 *
+	 * @retval -ENOTSUP		Screen is not formatted.
+	 * @retval -EPERM		Current cursor position is protected.
 	 */
 	LIB3270_EXPORT int lib3270_get_field_end(H3270 *hSession, int baddr);
 
@@ -1190,10 +1213,10 @@
 	 *
 	 * @return field address or negative if the screen isn't formatted (sets errno).
 	 *
-	 * @exception -ENOTCONN		Not connected to host.
-	 * @exception -EOVERFLOW	Invalid position.
-	 * @exception -ENOTSUP		Screen is not formatted.
-	 * @exception -ENODATA		No field at the address.
+	 * @retval -ENOTCONN	Not connected to host.
+	 * @retval -EOVERFLOW	Invalid position.
+	 * @retval -ENOTSUP		Screen is not formatted.
+	 * @retval -ENODATA		No field at the address.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr);

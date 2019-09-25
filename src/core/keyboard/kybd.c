@@ -1631,17 +1631,17 @@ int lib3270_get_field_end(H3270 *hSession, int baddr)
 #if defined(X3270_ANSI) /*[*/
 	if (IN_ANSI)
 	{
-		return errno = EINVAL;
+		return -(errno = ENOTSUP);
 	}
 #endif /*]*/
 
 	if (!hSession->formatted)
-		return errno = EINVAL;
+		return -(errno = ENOTSUP);
 
 	faddr = lib3270_field_addr(hSession,baddr);
 	fa = hSession->ea_buf[faddr].fa;
 	if (faddr == baddr || FA_IS_PROTECTED(fa))
-		return errno = EPERM;
+		return -(errno = EPERM);
 
 	baddr = faddr;
 	while (True)

@@ -33,34 +33,39 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-/**
- * @brief Launch an action by name.
- *
- * @param name	Name of the action to launch.
- *
- * @return 0 if ok, error code if not (sets errno).
- *
- */
-LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
+LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_action(const char *name)
 {
-	const LIB3270_ACTION_ENTRY *actions = lib3270_get_action_table();
+	const LIB3270_ACTION * actions = lib3270_get_actions();
 	size_t f;
 
 	for(f=0; actions[f].name; f++)
 	{
 		if(!strcasecmp(name,actions[f].name))
-		{
-			lib3270_trace_event(hSession,"Action(%s): %s\n",actions[f].name, (actions[f].label ? actions[f].label : ""));
-
-			if(!actions[f].enabled(hSession))
-				return errno = EPERM;
-
-			return actions[f].call(hSession);
-		}
-
+			return actions+f;
 	}
 
-	lib3270_trace_event(hSession,"Unknown action %s\n",name);
-	return errno = ENOENT;
+	errno = ENOTSUP;
+	return NULL;
+}
+
+LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
+{
+	const LIB3270_ACTION *action = lib3270_get_action(name);
+
+	if(!action)
+	{
+		lib3270_trace_event(hSession,"Unknown action \"%s\"\n",name);
+		return errno;
+	}
+
+	if(!action->enabled(hSession))
+	{
+		lib3270_trace_event(hSession,"Action \"%s\" is disabled\n",action->name);
+		return errno = EPERM;
+	}
+
+	lib3270_trace_event(hSession,"Activating action \"%s\"\n",action->name);
+
+	return action->activate(hSession);
 
 }

@@ -33,16 +33,18 @@
 	extern "C" {
 #endif
 
- typedef struct _lib3270_action_entry
+ typedef struct _lib3270_action
  {
-    const char *name;						///< @brief Action name.
+ 	LIB3270_PROPERTY_HEAD
+
+    int (*activate)(H3270 *hSession);		///< @brief lib3270 associated method.
+    int (*enabled)(const H3270 *hSession);	///< @brief Is the action enabled?
+
     const char *key;						///< @brief Default key (or NULL if no default).
 	const char *icon;						///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
     const char *label;						///< @brief Button label (or NULL).
-    const char *summary;					///< @brief Short description (or NULL).
-    int (*call)(H3270 *hSession);			///< @brief lib3270 associated method.
-    int (*enabled)(const H3270 *hSession);	///< @brief Is the action enabled?
- } LIB3270_ACTION_ENTRY;
+
+ } LIB3270_ACTION;
 
 /**
  *
@@ -442,6 +444,13 @@
  */
  LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession);
 
+/**
+ * @brief Get lib3270 action by name.
+ *
+ * @return Action descriptor or NULL if failed (sets errno).
+ *
+ */
+ LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_action(const char *name);
 
 /**
  *
@@ -449,7 +458,7 @@
  *
  * @return Array with all the supported actions.
  */
- LIB3270_EXPORT const LIB3270_ACTION_ENTRY * lib3270_get_action_table();
+ LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_actions();
 
 /**
  *
@@ -461,6 +470,7 @@
  * @return The action return code.
  *
  * @retval EPERM	Action is disabled.
+ * @retval ENOTSUP	Action name is invalid.
  *
  */
  LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);

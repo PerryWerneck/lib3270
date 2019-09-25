@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
 			" *\n"
 			" * @return Array with all the supported actions.\n"
 			" */\n"
-			" LIB3270_EXPORT const LIB3270_ACTION_ENTRY * lib3270_get_action_table();\n"
+			" LIB3270_EXPORT const LIB3270_ACTION_ENTRY * lib3270_get_actions();\n"
 			"\n"
 			"/**\n"
 			" *\n"

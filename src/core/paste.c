@@ -323,7 +323,7 @@ LIB3270_EXPORT int lib3270_set_field(H3270 *hSession, const char *text, int leng
 		lib3270_unselect(hSession);
 
 	hSession->cbk.suspend(hSession);
-	hSession->cursor_addr = addr;
+	hSession->cursor_addr = ++addr;
 	numchars = set_string(hSession, (const unsigned char *) text, length);
 	hSession->cbk.resume(hSession);
 

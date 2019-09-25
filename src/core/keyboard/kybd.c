@@ -1666,6 +1666,7 @@ int lib3270_get_field_end(H3270 *hSession, int baddr)
 		if (hSession->ea_buf[baddr].fa)
 			baddr = last_nonblank;
 	}
+
 	return baddr;
 }
 

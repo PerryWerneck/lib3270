@@ -110,9 +110,24 @@ int main(int argc, char *argv[])
 		lib3270_enter(h);
 		lib3270_wait(h,5);
 
-		lib3270_autoptr(char) text = lib3270_get_string_at_address(h,0,-1,'\n');
-		if(text)
-			printf("Screen:\n[%s]\n",text);
+		{
+			lib3270_autoptr(char) text = lib3270_get_string_at_address(h,0,-1,'\n');
+			if(text)
+				printf("Screen:\n[%s]\n",text);
+
+			lib3270_wait(h,2);
+
+		}
+
+		{
+			printf("\n\nSet field exits with %d\n",lib3270_set_field(h,"aaa",-1));
+			printf("\n\nSet field exits with %d\n",lib3270_set_field(h,"bbb",-1));
+			printf("\n\nSet field exits with %d\n",lib3270_set_field(h,"ccc",-1));
+
+			lib3270_autoptr(char) text = lib3270_get_string_at_address(h,0,-1,'\n');
+			if(text)
+				printf("Screen:\n[%s]\n",text);
+		}
 
 	}
 

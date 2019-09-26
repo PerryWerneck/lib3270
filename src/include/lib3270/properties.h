@@ -165,6 +165,18 @@
 	  */
 	LIB3270_EXPORT int lib3270_set_oversize(H3270 *hSession, const char *value);
 
+	/**
+	 * @brief Get property description.
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_property_get_description(const LIB3270_PROPERTY * property);
+
+	/**
+	 * @brief Get property summary.
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_property_get_summary(const LIB3270_PROPERTY * property);
+
 #ifdef __cplusplus
 	}
 #endif

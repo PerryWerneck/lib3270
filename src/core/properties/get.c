@@ -27,14 +27,29 @@
  *
  */
 
-/**
- *	@brief This module handles the properties get/set methods.
- */
-
  #include <config.h>
  #include <lib3270-internals.h>
  #include <string.h>
  #include <lib3270.h>
  #include <lib3270/properties.h>
- #include <lib3270/keyboard.h>
 
+ LIB3270_EXPORT const char * lib3270_property_get_description(const LIB3270_PROPERTY * property) {
+
+	if(property->description)
+		return property->description;
+
+	if(property->summary)
+		return property->summary;
+
+	return property->name;
+
+ }
+
+ LIB3270_EXPORT const char * lib3270_property_get_summary(const LIB3270_PROPERTY * property) {
+
+	if(property->summary)
+		return property->summary;
+
+	return property->name;
+
+ }

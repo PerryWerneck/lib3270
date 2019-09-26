@@ -146,7 +146,7 @@
 		<Unit filename="src/core/properties/boolean.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/properties/properties.c">
+		<Unit filename="src/core/properties/get.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/properties/signed.c">

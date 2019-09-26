@@ -48,17 +48,15 @@ LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_action(const char *name)
 	return NULL;
 }
 
-LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
+LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H3270 *hSession)
 {
-	const LIB3270_ACTION *action = lib3270_get_action(name);
+	return action->activatable(hSession);
+}
 
-	if(!action)
-	{
-		lib3270_trace_event(hSession,"Unknown action \"%s\"\n",name);
-		return errno;
-	}
+LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *hSession)
+{
 
-	if(!action->enabled(hSession))
+	if(!action->activatable(hSession))
 	{
 		lib3270_trace_event(hSession,"Action \"%s\" is disabled\n",action->name);
 		return errno = EPERM;
@@ -68,4 +66,22 @@ LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 
 	return action->activate(hSession);
 
+}
+
+LIB3270_EXPORT int lib3270_action_activate_by_name(const char *name, H3270 *hSession)
+{
+	const LIB3270_ACTION *action = lib3270_get_action(name);
+
+	if(!action)
+	{
+		lib3270_trace_event(hSession,"Can't find action \"%s\"\n",name);
+		return errno;
+	}
+
+	return lib3270_action_activate(action, hSession);
+}
+
+LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
+{
+	return lib3270_action_activate_by_name(name,hSession);
 }

@@ -37,14 +37,68 @@
  {
  	LIB3270_PROPERTY_HEAD
 
-    int (*activate)(H3270 *hSession);		///< @brief lib3270 associated method.
-    int (*enabled)(const H3270 *hSession);	///< @brief Is the action enabled?
+    int (*activate)(H3270 *hSession);			///< @brief lib3270 associated method.
+    int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?
 
-    const char *key;						///< @brief Default key (or NULL if no default).
-	const char *icon;						///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-    const char *label;						///< @brief Button label (or NULL).
+    const char *key;							///< @brief Default key (or NULL if no default).
+	const char *icon;							///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
+    const char *label;							///< @brief Button label (or NULL).
 
  } LIB3270_ACTION;
+
+/**
+ *
+ * @brief Call lib3270 action by name.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param name	Name of the action to call.
+ *
+ * @return The action return code.
+ *
+ * @retval EPERM	Action is disabled.
+ * @retval ENOTSUP	Action name is invalid.
+ *
+ */
+ LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_action(H3270 *hSession, const char *name));
+
+/**
+ *
+ * @brief Call lib3270 action by name.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param name	Name of the action to call.
+ *
+ * @return The action return code.
+ *
+ * @retval EPERM	Action is disabled.
+ * @retval ENOTSUP	Action name is invalid.
+ *
+ */
+ LIB3270_EXPORT int lib3270_action_activate_by_name(const char *name, H3270 *hSession);
+
+/**
+ * @brief activate an action.
+ *
+ * @param action	Pointer to the action descriptor
+ * @param hSession	TN3270 Session handle.
+ *
+ * @return The action return code.
+ *
+ * @retval EPERM	Action is disabled.
+ *
+ */
+ LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *hSession);
+
+/**
+ * @brief Check if the action is activatable
+ *
+ * @param action	Pointer to the action descriptor
+ * @param hSession	TN3270 Session handle.
+ *
+ * @return Non zero if action is activatable.
+ *
+ */
+ LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H3270 *hSession);
 
 /**
  *
@@ -459,21 +513,6 @@
  * @return Array with all the supported actions.
  */
  LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_actions();
-
-/**
- *
- * @brief Call lib3270 action by name.
- *
- * @param hSession	TN3270 Session handle.
- * @param name	Name of the action to call.
- *
- * @return The action return code.
- *
- * @retval EPERM	Action is disabled.
- * @retval ENOTSUP	Action name is invalid.
- *
- */
- LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);
 
 #ifdef __cplusplus
 	}

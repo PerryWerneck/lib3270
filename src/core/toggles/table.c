@@ -175,7 +175,7 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 	},
 	{
 		.id = LIB3270_TOGGLE_RECONNECT,
-		.name = "reconnect",
+		.name = "autoreconnect",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name

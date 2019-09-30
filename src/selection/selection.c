@@ -396,7 +396,7 @@ LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession)
 	if(check_online_session(hSession))
 		return 0;
 
-	return (hSession->selected != 0);
+	return hSession->selected;
 }
 
 LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height)

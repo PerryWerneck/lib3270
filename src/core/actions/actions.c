@@ -33,7 +33,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_action(const char *name)
+const LIB3270_ACTION * lib3270_get_action(const char *name)
 {
 	const LIB3270_ACTION * actions = lib3270_get_actions();
 	size_t f;
@@ -50,7 +50,7 @@ LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_action(const char *name)
 
 LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H3270 *hSession)
 {
-	return action->activatable(hSession);
+	return action->activatable(hSession) > 0;
 }
 
 LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *hSession)

@@ -614,7 +614,7 @@ LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession)
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
-	if(lib3270_has_selection(hSession))
+	if(hSession->selected)
 		return hSession->cbk.print(hSession,LIB3270_CONTENT_SELECTED);
 
 	return errno = ENODATA;
@@ -651,7 +651,7 @@ LIB3270_EXPORT int lib3270_save_all(H3270 *hSession, const char *filename)
 
 LIB3270_EXPORT int lib3270_save_selected(H3270 *hSession, const char *filename)
 {
-	if(lib3270_has_selection(hSession))
+	if(hSession->selected)
 		return lib3270_save(hSession,LIB3270_CONTENT_SELECTED,filename);
 
 	return errno = ENODATA;

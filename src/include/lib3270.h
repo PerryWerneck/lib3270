@@ -1082,7 +1082,7 @@
 	 *
 	 * @param hSession	Session handle.
 	 *
-	 * @return Non zero if the terminal has selected area, 0 if not.
+	 * @return Greater than zero if the terminal has selected area, 0 if not.
 	 *
 	 */
 	LIB3270_EXPORT int	  lib3270_has_selection(const H3270 *hSession);

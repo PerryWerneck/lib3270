@@ -68,7 +68,7 @@
  * @brief Get LIB3270 action table;
  *
  */
- LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_actions()
+ const LIB3270_ACTION * lib3270_get_actions()
  {
 
 	static const LIB3270_ACTION actions[] =

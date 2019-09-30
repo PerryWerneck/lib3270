@@ -1308,8 +1308,6 @@
 	LIB3270_EXPORT const char	* lib3270_get_model(const H3270 *session);
 	LIB3270_EXPORT int			  lib3270_get_model_number(const H3270 *hSession);
 
-	LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name);
-
 	/**
 	 *
 	 * @brief Set the unlock delay in milliseconds.

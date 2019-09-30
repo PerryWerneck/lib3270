@@ -504,7 +504,9 @@
  * @return Action descriptor or NULL if failed (sets errno).
  *
  */
- LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_action(const char *name);
+ LIB3270_EXPORT const LIB3270_ACTION * lib3270_action_get_by_name(const char *name);
+
+ LIB3270_EXPORT const LIB3270_ACTION * LIB3270_DEPRECATED(lib3270_get_action(const char *name));
 
 /**
  *

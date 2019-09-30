@@ -392,10 +392,11 @@ LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr)
 
 LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession)
 {
+	errno = 0;
 	if(check_online_session(hSession))
 		return 0;
 
-	return hSession->selected != 0;
+	return (hSession->selected != 0);
 }
 
 LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height)

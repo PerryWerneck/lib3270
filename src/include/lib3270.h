@@ -1066,7 +1066,7 @@
 	 LIB3270_EXPORT const char * lib3270_get_default_charset(void);
 
 	/**
-	 * Get selected area.
+	 * @brief Get selected area.
 	 *
 	 * @param h	Session Handle.
 	 *
@@ -1077,6 +1077,14 @@
 
 	LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession);
 
+	/**
+	 * @brief Check if the terminal has selected area (allways sets errno).
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 * @return Non zero if the terminal has selected area, 0 if not.
+	 *
+	 */
 	LIB3270_EXPORT int	  lib3270_has_selection(const H3270 *hSession);
 
 	/**

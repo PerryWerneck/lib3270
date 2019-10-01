@@ -16,41 +16,20 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-#---[ Versions ]------------------------------------------------------------------------------------------------------
-
-%define MAJOR_VERSION 5
-%define MINOR_VERSION 2
-
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-
-#Compat macro for new _fillupdir macro introduced in Nov 2017
-%if ! %{defined _fillupdir}
-  %define _fillupdir /var/adm/fillup-templates
-%endif
-
-#---[ Macros ]--------------------------------------------------------------------------------------------------------
-
-%if ! %{defined _release}
-  %define _release suse%{suse_version}
-%endif
-
-#---[ Main package ]--------------------------------------------------------------------------------------------------
+#---[ Package header ]------------------------------------------------------------------------------------------------
 
 Summary:		TN3270 Access library
-Name:			lib3270-%{_libvrs}
+Name:			lib3270
 Version:		5.2
 Release:		0
 License:		LGPL-3.0
 
-Source:			lib3270-%{version}.tar.xz
+Source:			%{name}-%{version}.tar.xz
 
-Url:			https://github.com/PerryWerneck/lib3270.git
+URL:			https://github.com/PerryWerneck/lib3270
 
-Group:			Development/Libraries/C and C++
+Group:			System/Libraries
 BuildRoot:		/var/tmp/%{name}-%{version}
-
-Provides:		lib3270_%{_libvrs}
-Conflicts:		otherproviders(lib3270_%{_libvrs})
 
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake
@@ -62,8 +41,7 @@ BuildRequires:	m4
 BuildRequires:	pkgconfig
 BuildRequires:	fdupes
 
-%if 0%{?
-fedora} ||  0%{?suse_version} > 1200
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
 
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libssl)
@@ -76,50 +54,59 @@ BuildRequires:	xz
 
 %endif
 
+%if 0%{?centos_version}
+# CENTOS Requires gdb for debuginfo
+BuildRequires:	gdb
+%endif
+
 %description
+TN3270 access library, originally designed as part of the pw3270 application.
 
-TN3270 access library originally designed as part of the pw3270 application.
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+#---[ Library ]-------------------------------------------------------------------------------------------------------
 
-#---[ Development ]---------------------------------------------------------------------------------------------------
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-%package -n lib3270-devel
+%package -n %{name}-%{_libvrs}
+Summary:		TN3270 Access library
+Group:			Development/Libraries/C and C++
 
-Summary:	TN3270 Access library development files
-Group:		Development/Libraries/C and C++
+%description -n %{name}-%{_libvrs}
+TN3270 access library, originally designed as part of the pw3270 application.
 
-Requires:	%{name} = %{version}
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-%description -n lib3270-devel
+%package devel
 
-TN3270 access library for C/C++ development files.
+Summary:		TN3270 Access library development files
+Group:			Development/Libraries/C and C++
+Requires:		%{name}-%{_libvrs} = %{version}
 
-Originally designed as part of the pw3270 application.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
+%description devel
+Header files for the TN3270 access library.
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup -n lib3270-%{version}
+%setup
 
-NOCONFIGURE=1 ./autogen.sh
+NOCONFIGURE=1 \
+	./autogen.sh
 
-%configure \
-	--with-sdk-version=%{version} \
-	--disable-static
+%configure
 
 %build
-make clean
-make all
+make all %{?_smp_mflags}
 
 %install
 
-%makeinstall
-%fdupes %{buildroot}
+%make_install
+%fdupes %{buildroot}/%{_prefix}
 
-%files
+%files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
 
 # https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
@@ -132,32 +119,24 @@ make all
 
 %dir %{_datadir}/pw3270
 
-%{_libdir}/lib3270.so.%{MAJOR_VERSION}
-%{_libdir}/lib3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_libdir}/%{name}.so.%{MAJOR_VERSION}
+%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files -n lib3270-devel
+%files devel
 %defattr(-,root,root)
 
-%{_libdir}/lib3270.so
+%{_libdir}/%{name}.so
 
 %{_includedir}/*.h
-%{_includedir}/lib3270
+%{_includedir}/%{name}
 
 %{_libdir}/pkgconfig/*.pc
 
 %dir %{_datadir}/pw3270/pot
 %{_datadir}/pw3270/pot/*.pot
 
-%pre
-/sbin/ldconfig
-exit 0
+%post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
-%post
-/sbin/ldconfig
-exit 0
-
-%postun
-/sbin/ldconfig
-exit 0
+%postun -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
 %changelog

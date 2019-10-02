@@ -153,7 +153,10 @@ void lib3270_set_disconnected(H3270 *hSession)
 
 	hSession->cstate	= LIB3270_NOT_CONNECTED;
 	hSession->starting	= 0;
+
+#if defined(HAVE_LIBSSL)
 	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;
+#endif // HAVE_LIBSSL
 
 	set_status(hSession,LIB3270_FLAG_UNDERA,False);
 
@@ -164,7 +167,9 @@ void lib3270_set_disconnected(H3270 *hSession)
 	if(hSession->cbk.update_connect)
 		hSession->cbk.update_connect(hSession,0);
 
+#if defined(HAVE_LIBSSL)
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
+#endif // HAVE_LIBSSL
 
 }
 
@@ -303,8 +308,6 @@ static void update_host(H3270 *h)
 					h->host.current,
 					h->host.srvc
 		));
-
-	trace("hosturl=[%s] ssl=%s",h->host.full,h->ssl.enabled ? "yes" : "no");
 
 }
 

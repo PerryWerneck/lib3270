@@ -435,15 +435,18 @@ static int net_connected(H3270 *hSession)
 	}
 	*/
 
-	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host? " using SSL": "");
-
 #if defined(HAVE_LIBSSL)
 	/* Set up SSL. */
+	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host? " using SSL": "");
+
 	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
 	{
 		if(ssl_negotiate(hSession))
 			return -1;
 	}
+#else
+	trace_dsn(hSession,"Connected to %s.\n", hSession->host.current);
+
 #endif
 
 	lib3270_setup_session(hSession);

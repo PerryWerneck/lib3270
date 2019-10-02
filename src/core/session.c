@@ -287,7 +287,7 @@ static void set_peer_certificate(const X509 GNUC_UNUSED(*cert))
 
 }
 #else
-static void set_peer_certificate)(const void GNUC_UNUSED(*cert))
+static void set_peer_certificate(const void GNUC_UNUSED(*cert))
 {
 
 }

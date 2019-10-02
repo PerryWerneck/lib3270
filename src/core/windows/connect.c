@@ -308,9 +308,10 @@ int net_reconnect(H3270 *hSession, int seconds)
 	}
 
 	hSession->ever_3270 = False;
-	hSession->ssl.host  = 0;
 
 #if defined(HAVE_LIBSSL)
+	hSession->ssl.host  = 0;
+
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;

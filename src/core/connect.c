@@ -233,6 +233,7 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 
 #if defined(HAVE_LIBSSL)
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+	hSession->ssl.host  = 0;
 #endif // HAVE_LIBSSL
 
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
@@ -240,7 +241,6 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 	lib3270_trace_event(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
 
 	hSession->ever_3270	= False;
-	hSession->ssl.host  = 0;
 
 	return net_reconnect(hSession,seconds);
 

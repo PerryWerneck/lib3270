@@ -63,15 +63,16 @@ LIB3270_EXPORT long lib3270_get_SSL_verify_result(const H3270 *hSession)
 
 LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession)
 {
+#if defined(HAVE_LIBSSL)
 	return hSession->ssl.state;
+#else
+	return LIB3270_SSL_UNDEFINED;
+#endif // HAVE_LIBSSL
 }
 
+#if defined(HAVE_LIBSSL)
 void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 {
-	CHECK_SESSION_HANDLE(hSession);
-
-	debug("%s: %d -> %d",__FUNCTION__,hSession->ssl.state,state);
-
 	if(state == hSession->ssl.state)
 		return;
 
@@ -81,9 +82,8 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 }
 
-#ifdef HAVE_LIBSSL
- static const struct ssl_status_msg status_msg[] =
- {
+static const struct ssl_status_msg status_msg[] =
+{
 	// http://www.openssl.org/docs/apps/verify.html
 	{
 		X509_V_OK,
@@ -417,22 +417,22 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
 #else
 
- const char	* lib3270_get_ssl_state_message(H3270 *hSession)
+ const char	* lib3270_get_ssl_state_message(const H3270 *hSession)
  {
 	return lib3270_get_hostname(hSession);
  }
 
- const char * lib3270_get_ssl_state_description(H3270 *hSession)
+ const char * lib3270_get_ssl_state_description(const H3270 *hSession)
  {
 	return _( "The connection is insecure" );
  }
 
- LIB3270_NOTIFY lib3270_get_ssl_state_icon(H3270 *hSession)
+ LIB3270_NOTIFY lib3270_get_ssl_state_icon(const H3270 *hSession)
  {
  	return LIB3270_NOTIFY_ERROR;
  }
 
- const char	* lib3270_get_ssl_state_icon_name(H3270 *hSession)
+ const char	* lib3270_get_ssl_state_icon_name(const H3270 *hSession)
  {
  	return "dialog-error";
  }

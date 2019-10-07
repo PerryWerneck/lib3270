@@ -131,6 +131,10 @@ rm -rf %{buildroot}
 %{_mingw64_includedir}/*.h
 %{_mingw64_libdir}/pkgconfig/*.pc
 %{_mingw64_libdir}/*.a
+%{_mingw64_libdir}/*.lib
+
+%dir %{_mingw64_datadir}/pw3270/def
+%{_mingw64_datadir}/pw3270/def/*.def
 
 %dir %{_mingw64_datadir}/pw3270/pot
 %{_mingw64_datadir}/pw3270/pot/*.pot

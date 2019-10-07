@@ -125,10 +125,13 @@ rm -rf %{buildroot}
 %{_mingw32_includedir}/*.h
 %{_mingw32_libdir}/pkgconfig/*.pc
 %{_mingw32_libdir}/*.a
+%{_mingw32_libdir}/*.lib
+
+%dir %{_mingw32_datadir}/pw3270/def
+%{_mingw32_datadir}/pw3270/def/*.def
 
 %dir %{_mingw32_datadir}/pw3270/pot
 %{_mingw32_datadir}/pw3270/pot/*.pot
-
 
 %changelog
 

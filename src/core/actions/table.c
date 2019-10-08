@@ -79,7 +79,7 @@
 		{
 			.name = "reconnect",
 			.key = NULL,
-			.icon = "connect",
+			.icon = "gtk-connect",
 			.label = N_( "_Connect" ) ,
 			.summary = N_( "Connect to host." ),
 			.activate = connect_host,
@@ -89,7 +89,7 @@
 		{
 			.name = "disconnect",
 			.key = NULL,
-			.icon = "disconnect",
+			.icon = "gtk-disconnect",
 			.label = N_( "_Disconnect" ),
 			.summary = N_( "Disconnect from host." ),
 			.activate = lib3270_disconnect,

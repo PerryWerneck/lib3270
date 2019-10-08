@@ -80,7 +80,7 @@
 			.name = "reconnect",
 			.key = NULL,
 			.icon = "connect",
-			.label = NULL,
+			.label = N_( "_Connect" ) ,
 			.summary = N_( "Connect to host." ),
 			.activate = connect_host,
 			.activatable = lib3270_is_disconnected
@@ -90,7 +90,7 @@
 			.name = "disconnect",
 			.key = NULL,
 			.icon = "disconnect",
-			.label = NULL,
+			.label = N_( "_Disconnect" ),
 			.summary = N_( "Disconnect from host." ),
 			.activate = lib3270_disconnect,
 			.activatable = lib3270_is_connected
@@ -219,7 +219,7 @@
 			.name = "select_all",
 			.key = "<ctrl>a",
 			.icon = "edit-select-all",
-			.label = NULL,
+			.label = N_( "Select all" ),
 			.summary = NULL,
 			.activate = lib3270_select_all,
 			.activatable = lib3270_is_connected
@@ -229,7 +229,7 @@
 			.name = "unselect",
 			.key = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_( "Remove selection" ),
 			.summary = N_( "Remove selection" ),
 			.activate = lib3270_unselect,
 			.activatable = lib3270_has_selection
@@ -239,7 +239,7 @@
 			.name = "reselect",
 			.key = "<Ctrl>r",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_( "Reselect" ),
 			.summary = N_( "Reselect"),
 			.activate = lib3270_reselect,
 			.activatable = lib3270_is_connected
@@ -252,7 +252,7 @@
 			.name = "select_field",
 			.key = "<Ctrl>f",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_( "Select field" ),
 			.summary = N_( "Select Field" ),
 			.activate = lib3270_select_field,
 			.activatable = lib3270_is_formatted

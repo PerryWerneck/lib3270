@@ -68,7 +68,7 @@ APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared -Wl,-soname,\$(@F)"
 STATIC_LDFLAGS=""
-INSTALL_PACKAGES="shared dev"
+INSTALL_PACKAGES="dev"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -82,9 +82,10 @@ case "$host" in
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
 		LDFLAGS="$LDFLAGS -pthread"
-		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def,--out-implib,\$(@D)/\$(LIBNAME).dll.a"
+		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"
-		INSTALL_PACKAGES="${INSTALL_PACKAGES} winlib"
+
+		INSTALL_PACKAGES="windows-lib ${INSTALL_PACKAGES}"
 
 		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
@@ -101,23 +102,14 @@ case "$host" in
 
 		;;
 
- 	s390x-*)
-		CFLAGS="$CFLAGS -pthread"
-		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_osname="linux"
-		LOGDIR="/var/log"
-
-		app_cv_static='no'
-
-		CFLAGS="$CFLAGS -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir)"
-		;;
-
  	*)
 		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir)"
 		LDFLAGS="$LDFLAGS -pthread"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+
+		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
 
 		app_cv_static='no'
 

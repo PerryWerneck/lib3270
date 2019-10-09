@@ -187,6 +187,14 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	@$(MKDIR) $(dir $@)
 	@touch $@
 
+%.dll.a: \
+	%.def
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/$(LIBNAME).def \
+		--dllname $(LIBNAME).dll \
+		--kill-at \
+		--output-lib $@
 
 #---[ Release Targets ]------------------------------------------------------------------
 
@@ -237,7 +245,7 @@ $(BINRLS)/$(LIBNAME).a: \
 install: \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
-install-shared: \
+install-linux-lib: \
 	$(BINRLS)/$(SONAME)
 
 	# Install library
@@ -258,6 +266,31 @@ install-shared: \
 
 	# Install default configs
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
+
+install-windows-lib: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(bindir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(bindir)/$(SONAME)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).dll.a \
+		$(DESTDIR)$(libdir)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-static: \
 	$(BINRLS)/$(LIBNAME).a
@@ -313,29 +346,6 @@ install-dev: \
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/lib3270.pot
-
-
-install-winlib: \
-	$(BINRLS)/$(SONAME)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).dll.a \
-		$(DESTDIR)$(libdir)
-
-	@$(DLLTOOL) \
-		--input-def $(BINRLS)/$(LIBNAME).def \
-		--dllname $(LIBNAME).dll \
-		--output-lib $(DESTDIR)$(libdir)/$(LIBNAME).lib
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

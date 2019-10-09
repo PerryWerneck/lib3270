@@ -75,8 +75,6 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* cd lib3270
 	* make clean
 	* make all
-	* make install
-
 
 Compiling for Windows (With MSYS2)
 ----------------------------------
@@ -100,5 +98,9 @@ Compiling for Windows (With MSYS2)
 	* cd lib3270
 	* ./autogen.sh
 	* make all
+
+5. Install
+
+	* make install
 
 

@@ -75,6 +75,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* cd lib3270
 	* make clean
 	* make all
+	* make install
 
 
 Compiling for Windows (With MSYS2)

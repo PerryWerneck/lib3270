@@ -36,5 +36,5 @@
 
  LIB3270_INTERNAL void initialize_toggles(H3270 *session);
  LIB3270_INTERNAL void shutdown_toggles(H3270 *session);
- LIB3270_INTERNAL const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1];
+ LIB3270_INTERNAL const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1];
 

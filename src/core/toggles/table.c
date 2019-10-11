@@ -40,7 +40,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
+const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 {
 	{
 		.id = LIB3270_TOGGLE_MONOCASE,
@@ -328,7 +328,12 @@ const LIB3270_TOGGLE_ENTRY toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 
 };
 
-LIB3270_EXPORT const LIB3270_TOGGLE_ENTRY * lib3270_get_toggle_list()
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggles()
+{
+	return toggle_descriptor;
+}
+
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggle_list()
 {
 	return toggle_descriptor;
 }

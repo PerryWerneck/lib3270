@@ -91,7 +91,7 @@
 	} LIB3270_TOGGLE_TYPE;
 
 
-	typedef struct _lib3270_toggle_entry
+	typedef struct _lib3270_toggle
 	{
 		LIB3270_PROPERTY_HEAD
 
@@ -99,15 +99,19 @@
 		const char			  def;			///< @brief Default value.
 		const char			* key;			///< @brief Default key (or NULL if no default).
 		const char			* icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-		const char			* label;		///< @brief Button label (or NULL).
+		const char			* label;		///< @brief Label for button or menu (NULL if isn't available).
 
-	} LIB3270_TOGGLE_ENTRY;
+	} LIB3270_TOGGLE;
 
 	/**
-	 * @brief Get the toggle description table.
+	 * @brief Get the toggle descriptors.
+	 *
+	 * @return Pointer to all available toggles.
 	 *
 	 */
-	LIB3270_EXPORT const LIB3270_TOGGLE_ENTRY * lib3270_get_toggle_list();
+	LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggles();
+
+	LIB3270_EXPORT const LIB3270_TOGGLE * LIB3270_DEPRECATED(lib3270_get_toggle_list());
 
 	/**
 	 * @brief get toggle state.

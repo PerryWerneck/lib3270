@@ -332,7 +332,7 @@ struct lib3270_toggle_callback
 {
 	struct lib3270_toggle_callback	* next;						/**< @brief Next callback in chain */
 	void							* data;						/**< @brief User data */
-	void (*func)(H3270 *, LIB3270_TOGGLE, char, void *);		/**< @brief Function to call */
+	void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *);		/**< @brief Function to call */
 };
 
 /**

@@ -127,7 +127,7 @@ void initialize_toggles(H3270 *session)
 void shutdown_toggles(H3270 *session)
 {
 #if defined(X3270_TRACE)
-	static const LIB3270_TOGGLE disable_on_shutdown[] = {LIB3270_TOGGLE_DS_TRACE, LIB3270_TOGGLE_EVENT_TRACE, LIB3270_TOGGLE_SCREEN_TRACE};
+	static const LIB3270_TOGGLE_ID disable_on_shutdown[] = {LIB3270_TOGGLE_DS_TRACE, LIB3270_TOGGLE_EVENT_TRACE, LIB3270_TOGGLE_SCREEN_TRACE};
 
 	size_t f;
 

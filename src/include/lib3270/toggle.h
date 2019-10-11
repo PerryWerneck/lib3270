@@ -40,7 +40,7 @@
 	/**
 	 * @brief Toogles.
 	 */
-	typedef enum _lib3270_toggle
+	typedef enum _lib3270_toggle_id
 	{
 		LIB3270_TOGGLE_MONOCASE,
 		LIB3270_TOGGLE_CURSOR_BLINK,
@@ -72,7 +72,7 @@
 
 		LIB3270_TOGGLE_COUNT
 
-	} LIB3270_TOGGLE;
+	} LIB3270_TOGGLE_ID;
 
 	/**
 	 * @brief Toggle types.
@@ -95,11 +95,11 @@
 	{
 		LIB3270_PROPERTY_HEAD
 
-		LIB3270_TOGGLE	  id;			///< @brief Toggle ID.
-		const char		  def;			///< @brief Default value.
-		const char		* key;			///< @brief Default key (or NULL if no default).
-		const char		* icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-		const char		* label;		///< @brief Button label (or NULL).
+		LIB3270_TOGGLE_ID	  id;			///< @brief Toggle ID.
+		const char			  def;			///< @brief Default value.
+		const char			* key;			///< @brief Default key (or NULL if no default).
+		const char			* icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
+		const char			* label;		///< @brief Button label (or NULL).
 
 	} LIB3270_TOGGLE_ENTRY;
 
@@ -118,7 +118,7 @@
 	 * @return 0 if the toggle is disabled, non zero if enabled.
 	 *
 	 */
-	LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE ix);
+	LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE_ID ix);
 
 	/**
 	 * @brief Set toggle state.
@@ -132,7 +132,7 @@
 	 * @retval -EINVAL	Invalid toggle id.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_toggle(H3270 *hSession, LIB3270_TOGGLE ix, int value);
+	LIB3270_EXPORT int lib3270_set_toggle(H3270 *hSession, LIB3270_TOGGLE_ID ix, int value);
 
 	/**
 	 * @brief Translate a string toggle name to the corresponding value.
@@ -142,7 +142,7 @@
 	 * @return Toggle ID or negative if it's invalid.
 	 *
 	 */
-	LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name);
+	LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name);
 
 	/**
 	 * @brief Get the toggle name as string.
@@ -152,7 +152,7 @@
 	 * @return Constant string with the toggle name or "" if invalid.
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE ix);
+	LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix);
 
 	/**
 	 * @brief Get a long description of the toggle.
@@ -160,7 +160,7 @@
 	 * @return Constant string with the toggle description.
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE ix);
+	LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix);
 
 	/**
 	 * @brief Get a summary description of the toggle (for menus).
@@ -168,7 +168,7 @@
 	 * @return Constant string with the toggle summary.
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE ix);
+	LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE_ID ix);
 
 	/**
 	 * @brief Get a short description of the toggle (for buttons).
@@ -176,7 +176,7 @@
 	 * @return Constant string with the toggle label.
 	 *
 	 */
-	LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE ix);
+	LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix);
 
 	/**
 	 * @brief Revert toggle status.
@@ -188,10 +188,10 @@
 	 *
 	 * @retval -EINVAL	Invalid toggle id.
 	 */
-	LIB3270_EXPORT int lib3270_toggle(H3270 *hSession, LIB3270_TOGGLE ix);
+	LIB3270_EXPORT int lib3270_toggle(H3270 *hSession, LIB3270_TOGGLE_ID ix);
 
-	LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, char, void *),void *data);
-	LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, const void *id);
+	LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *),void *data);
+	LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, const void *id);
 
 #ifdef __cplusplus
 	}

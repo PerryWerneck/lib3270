@@ -44,7 +44,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, void (*func)(H3270 *, LIB3270_TOGGLE, char, void *),void *data)
+LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *),void *data)
 {
 	struct lib3270_toggle_callback *st;
 
@@ -65,7 +65,7 @@ LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LI
 
 }
 
-LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE tx, const void *id)
+LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, const void *id)
 {
 	struct lib3270_toggle_callback *st;
 	struct lib3270_toggle_callback *prev = (struct lib3270_toggle_callback *) NULL;

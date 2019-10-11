@@ -47,7 +47,7 @@ LIB3270_INTERNAL void		mcursor_set(H3270 *session,LIB3270_POINTER m);
 #define mcursor_normal(x) mcursor_set(x,LIB3270_POINTER_UNLOCKED)
 #define mcursor_waiting(x) mcursor_set(x,LIB3270_POINTER_WAITING)
 
-LIB3270_INTERNAL void notify_toggle_changed(H3270 *session, LIB3270_TOGGLE ix, unsigned char value, LIB3270_TOGGLE_TYPE reason);
+LIB3270_INTERNAL void notify_toggle_changed(H3270 *session, LIB3270_TOGGLE_ID ix, unsigned char value, LIB3270_TOGGLE_TYPE reason);
 LIB3270_INTERNAL void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols);
 
 // LIB3270_INTERNAL Boolean escaped;

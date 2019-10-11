@@ -41,7 +41,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE ix)
+LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE_ID ix)
 {
 
 	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT) {
@@ -55,7 +55,7 @@ LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_T
 /**
  * @brief Call the internal update routine and listeners.
  */
-static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE ix)
+static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_ID ix)
 {
 	struct lib3270_toggle_callback * st;
 
@@ -81,7 +81,7 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
  *
  * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
  */
-LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE ix, int value)
+LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int value)
 {
 	char v = value ? True : False;
 	struct lib3270_toggle * t;
@@ -102,7 +102,7 @@ LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE ix, int val
 	return 1;
 }
 
-LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE ix)
+LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE_ID ix)
 {
 	struct lib3270_toggle	*t;
 

@@ -333,14 +333,14 @@ LIB3270_EXPORT const LIB3270_TOGGLE_ENTRY * lib3270_get_toggle_list()
 	return toggle_descriptor;
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_descriptor[ix].summary;
 	return "";
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_descriptor[ix].label;
@@ -348,21 +348,21 @@ LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE ix)
 }
 
 
-LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_descriptor[ix].description;
 	return "";
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE ix)
+LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return toggle_descriptor[ix].name;
 	return "";
 }
 
-LIB3270_EXPORT LIB3270_TOGGLE lib3270_get_toggle_id(const char *name)
+LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name)
 {
 	if(name)
 	{

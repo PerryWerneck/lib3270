@@ -85,6 +85,10 @@
 	LIB3270_EXPORT int lib3270_set_lock_on_operator_error(H3270 *hSession, int enable);
 	LIB3270_EXPORT int lib3270_get_lock_on_operator_error(const H3270 *hSession);
 
+	LIB3270_EXPORT int lib3270_set_numeric_lock(H3270 *hSession, int enable);
+	LIB3270_EXPORT int lib3270_get_numeric_lock(const H3270 *hSession);
+
+
 #ifdef __cplusplus
 	}
 #endif

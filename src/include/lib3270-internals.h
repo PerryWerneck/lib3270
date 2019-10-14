@@ -32,9 +32,9 @@
 	#include <windows.h>
 #endif // WIN32
 
-/* Autoconf settings. */
 #include <config.h>				/* autoconf settings */
 #include <lib3270.h>			/* lib3270 API calls and defs */
+#include <linkedlist.h>
 #include <lib3270/charset.h>
 #include <lib3270/session.h>
 // #include "api.h"
@@ -323,15 +323,15 @@ typedef struct _input_t
 
 struct lib3270_state_callback
 {
-	struct lib3270_state_callback	* next;			/**< @brief Next callback in chain */
-	void							* data;			/**< @brief User data */
-	void (*func)(H3270 *, int, void *);				/**< @brief Function to call */
+	LIB3270_LINKED_LIST_HEAD;
+
+	void (*func)(H3270 *, int, void *);							/**< @brief Function to call */
 };
 
 struct lib3270_toggle_callback
 {
-	struct lib3270_toggle_callback	* next;						/**< @brief Next callback in chain */
-	void							* data;						/**< @brief User data */
+	LIB3270_LINKED_LIST_HEAD;
+
 	void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *);		/**< @brief Function to call */
 };
 
@@ -695,22 +695,14 @@ struct _h3270
 		void *userdata;
 	} trace;
 
-	// Listeners.
+	/// @brief Event Listeners.
 	struct
 	{
-		// State.
-		struct
-		{
-			struct lib3270_state_callback	* callbacks[LIB3270_STATE_USER];
-			struct lib3270_state_callback	* last[LIB3270_STATE_USER];
-		} state;
+		/// @brief State listeners.
+		struct lib3270_linked_list_head state[LIB3270_STATE_USER];
 
-		// Toggle change listeners
-		struct
-		{
-			struct lib3270_toggle_callback	* callbacks[LIB3270_TOGGLE_COUNT];
-			struct lib3270_toggle_callback	* last[LIB3270_TOGGLE_COUNT];
-		} toggle;
+		/// @brief Toggle listeners.
+		struct lib3270_linked_list_head toggle[LIB3270_TOGGLE_COUNT];
 
 	} listeners;
 

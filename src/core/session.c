@@ -91,25 +91,12 @@ void lib3270_session_free(H3270 *h)
 
 	// Release state change callbacks
 	for(f=0;f<LIB3270_STATE_USER;f++)
-	{
-		while(h->listeners.state.callbacks[f])
-		{
-			struct lib3270_state_callback *next = h->listeners.state.callbacks[f]->next;
-			lib3270_free(h->listeners.state.callbacks[f]);
-			h->listeners.state.callbacks[f] = next;
-		}
-	}
+		lib3270_linked_list_free(&h->listeners.state[f]);
+
 
 	// Release toggle change listeners.
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
-	{
-		while(h->listeners.toggle.callbacks[f])
-		{
-			struct lib3270_toggle_callback *next = h->listeners.toggle.callbacks[f]->next;
-			lib3270_free(h->listeners.toggle.callbacks[f]);
-			h->listeners.toggle.callbacks[f] = next;
-		}
-	}
+		lib3270_linked_list_free(&h->listeners.toggle[f]);
 
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;

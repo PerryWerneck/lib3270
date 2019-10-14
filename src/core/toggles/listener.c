@@ -46,20 +46,9 @@
 
 LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *),void *data)
 {
-	struct lib3270_toggle_callback *st;
+	struct lib3270_toggle_callback *st = (struct lib3270_toggle_callback *) lib3270_linked_list_append_node(&hSession->listeners.toggle[tx], sizeof(struct lib3270_toggle_callback), data);
 
-    CHECK_SESSION_HANDLE(hSession);
-
-	st 			= (struct lib3270_toggle_callback *) lib3270_malloc(sizeof(struct lib3270_toggle_callback));
-	st->func	= func;
-	st->data	= data;
-
-	if (hSession->listeners.toggle.last[tx])
-		hSession->listeners.toggle.last[tx]->next = st;
-	else
-		hSession->listeners.toggle.callbacks[tx] = st;
-
-	hSession->listeners.toggle.last[tx] = st;
+	st->func = func;
 
 	return (void *) st;
 
@@ -67,33 +56,33 @@ LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LI
 
 LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, const void *id)
 {
-	struct lib3270_toggle_callback *st;
-	struct lib3270_toggle_callback *prev = (struct lib3270_toggle_callback *) NULL;
-
-	for (st = hSession->listeners.toggle.callbacks[tx]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
-	{
-		if (st == (struct lib3270_toggle_callback *)id)
-			break;
-
-		prev = st;
-	}
-
-	if (st == (struct lib3270_toggle_callback *)NULL)
-	{
-		lib3270_write_log(hSession,"lib3270","Invalid call to (%s): %p wasnt found in the list",__FUNCTION__,id);
-		return errno = ENOENT;
-	}
-
-	if (prev != (struct lib3270_toggle_callback *) NULL)
-		prev->next = st->next;
-	else
-		hSession->listeners.toggle.callbacks[tx] = (struct lib3270_toggle_callback *) st->next;
-
-	for(st = hSession->listeners.toggle.callbacks[tx]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
-		hSession->listeners.toggle.last[tx] = st;
-
-	lib3270_free((void *) id);
-
-	return 0;
-
+	return lib3270_linked_list_delete_node(&hSession->listeners.toggle[tx], id);
 }
+
+/**
+ * @brief Register a function interested in a state change.
+ *
+ * @param hSession	Session handle.
+ * @param tx		State ID
+ * @param func		Callback
+ * @param data		Data
+ *
+ * @return State change identifier.
+ *
+ */
+LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data)
+{
+	struct lib3270_state_callback * st = (struct lib3270_state_callback *) lib3270_linked_list_append_node(&hSession->listeners.state[tx], sizeof(struct lib3270_state_callback), data);
+
+	st->func = func;
+
+	return (void *) st;
+}
+
+LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, const void * id)
+{
+	return lib3270_linked_list_delete_node(&hSession->listeners.state[tx], id);
+}
+
+
+

@@ -163,6 +163,13 @@
 		},
 
 		{
+			.name = "numericlock",											//  Property name.
+			.description = N_( "numeric lock" ),							//  Property description.
+			.get = lib3270_get_numeric_lock,								//  Get value.
+			.set = lib3270_set_numeric_lock									//  Set value.
+		},
+
+		{
 			.name = NULL,
 			.description = NULL,
 			.get = NULL,

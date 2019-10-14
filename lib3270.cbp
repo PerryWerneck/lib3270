@@ -113,6 +113,9 @@
 		<Unit filename="src/core/keyboard/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linkelist.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -248,6 +251,7 @@
 		<Unit filename="src/include/lib3270/session.h" />
 		<Unit filename="src/include/lib3270/toggle.h" />
 		<Unit filename="src/include/lib3270/trace.h" />
+		<Unit filename="src/include/linkedlist.h" />
 		<Unit filename="src/include/localdefs.h" />
 		<Unit filename="src/include/popupsc.h" />
 		<Unit filename="src/include/proxyc.h" />

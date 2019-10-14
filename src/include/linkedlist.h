@@ -27,49 +27,36 @@
  *
  */
 
-#include <lib3270-internals.h>
-#include <lib3270/keyboard.h>
-#include <lib3270/properties.h>
+/**
+ *	@file linkedlist.h
+ *	@brief Global declarations for linkedlist.c.
+ */
 
-LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(const H3270 *hSession)
-{
-	if(check_online_session(hSession))
-		return LIB3270_KL_NOT_CONNECTED;
+#ifndef LIB3270_LINKED_LIST_H_INCLUDED
 
-	return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
-}
+	#define LIB3270_LINKED_LIST_H_INCLUDED
 
-LIB3270_EXPORT int lib3270_set_lock_on_operator_error(H3270 *hSession, int enable)
-{
-	hSession->oerr_lock = (enable ? 1 : 0);
-	return 0;
-}
+	#include <stddef.h>
+	#include <lib3270.h>
 
-LIB3270_EXPORT int lib3270_set_numeric_lock(H3270 *hSession, int enable)
-{
-	hSession->numeric_lock = (enable ? 1 : 0);
-	return 0;
-}
+	#define LIB3270_LINKED_LIST_HEAD	\
+		struct lib3270_linked_list_node * prev; \
+		struct lib3270_linked_list_node * next; \
+		void * userdata;
 
-int lib3270_get_lock_on_operator_error(const H3270 *hSession)
-{
- 	return (int) hSession->oerr_lock;
-}
+	struct lib3270_linked_list_node
+	{
+		LIB3270_LINKED_LIST_HEAD
+	};
 
-int lib3270_get_numeric_lock(const H3270 *hSession)
-{
- 	return (int) hSession->numeric_lock;
-}
+	struct lib3270_linked_list_head
+	{
+		struct lib3270_linked_list_node * first;
+		struct lib3270_linked_list_node * last;
+	};
 
-LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *hSession, unsigned int delay)
-{
-	hSession->unlock_delay		= (delay == 0 ? 0 : 1);
-	hSession->unlock_delay_ms 	= (unsigned short) delay;
-	return 0;
-}
+	LIB3270_INTERNAL void	* lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, size_t szBlock, void *userdata);
+	LIB3270_INTERNAL int	  lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const void *node);
+	LIB3270_INTERNAL void	  lib3270_linked_list_free(struct lib3270_linked_list_head *head);
 
-LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *hSession)
-{
-	return (unsigned int) hSession->unlock_delay_ms;
-}
-
+#endif // LIB3270_LINKED_LIST_H_INCLUDED

@@ -161,7 +161,7 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 #endif /*]*/
 
 	/* Find where to insert this item. */
-	for (t = (timeout_t *) session->timeouts.first; t != TN; t = t->next)
+	for (t = (timeout_t *) session->timeouts.first; t != TN; t = (timeout_t *) t->next)
 	{
 #if defined(_WIN32)
 		if (t->ts > t_new->ts)
@@ -177,20 +177,20 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 	if (prev == TN)
 	{
 		// t_new is Front.
-		t_new->next = (timeout_t *) session->timeouts.first;
-		session->timeouts.first = t_new;
+		t_new->next = session->timeouts.first;
+		session->timeouts.first = (struct lib3270_linked_list_node *) t_new;
 	}
 	else if (t == TN)
 	{
 		// t_new is Rear.
-		t_new->next = TN;
-		prev->next = t_new;
-		session->timeouts.last = (timeout_t *) t_new;
+		t_new->next = NULL;
+		prev->next = (struct lib3270_linked_list_node *) t_new;
+		session->timeouts.last = (struct lib3270_linked_list_node *) t_new;
 	}
 	else
 	{	// t_new is Middle.
-		t_new->next = t;
-		prev->next = t_new;
+		t_new->next = (struct lib3270_linked_list_node *) t;
+		prev->next = (struct lib3270_linked_list_node *) t_new;
 	}
 
 	trace("Timer %p added with value %ld",t_new,interval_ms);
@@ -314,11 +314,11 @@ LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled
 	}
 }
 
-LIB3270_EXPORT void	 lib3270_remove_poll_fd(H3270 *session, int fd)
+LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd)
 {
 	input_t *ip;
 
-	for (ip = (input_t *) session->input.list.first; ip; ip = ip->next)
+	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next)
 	{
 		if(ip->fd == fd)
 		{
@@ -331,11 +331,11 @@ LIB3270_EXPORT void	 lib3270_remove_poll_fd(H3270 *session, int fd)
 
 }
 
-LIB3270_EXPORT void	 lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag)
+LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag)
 {
 	input_t *ip;
 
-	for (ip = (input_t *) session->input.list.first; ip; ip = ip->next)
+	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next)
 	{
 		if(ip->fd == fd)
 		{

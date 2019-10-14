@@ -370,10 +370,10 @@ static void setup_lus(H3270 *hSession)
 	int n_lus = 1;
 	int i;
 
-	hSession->connected_lu = CN;
+	hSession->lu.connected = CN;
 	hSession->connected_type = CN;
 
-	if (!hSession->luname[0])
+	if (!hSession->lu.name[0])
 	{
 		Replace(hSession->lus, NULL);
 		hSession->curr_lu = (char **)NULL;
@@ -385,7 +385,7 @@ static void setup_lus(H3270 *hSession)
 	 * Count the commas in the LU name.  That plus one is the
 	 * number of LUs to try.
 	 */
-	lu = hSession->luname;
+	lu = hSession->lu.name;
 	while ((comma = strchr(lu, ',')) != CN)
 	{
 		n_lus++;
@@ -396,11 +396,11 @@ static void setup_lus(H3270 *hSession)
 	 * Allocate enough memory to construct an argv[] array for
 	 * the LUs.
 	 */
-	Replace(hSession->lus,(char **)lib3270_malloc((n_lus+1) * sizeof(char *) + strlen(hSession->luname) + 1));
+	Replace(hSession->lus,(char **)lib3270_malloc((n_lus+1) * sizeof(char *) + strlen(hSession->lu.name) + 1));
 
 	/* Copy each LU into the array. */
 	lu = (char *)(hSession->lus + n_lus + 1);
-	(void) strcpy(lu, hSession->luname);
+	(void) strcpy(lu, hSession->lu.name);
 
 	i = 0;
 	do
@@ -575,7 +575,7 @@ void net_disconnect(H3270 *session)
 	*/
 
 	/* We're not connected to an LU any more. */
-	session->connected_lu = CN;
+	session->lu.connected = CN;
 	status_lu(session,CN);
 
 }
@@ -1094,12 +1094,12 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 				if (hSession->try_lu != CN && *hSession->try_lu)
 				{
 					tt_len += strlen(hSession->try_lu) + 1;
-					hSession->connected_lu = hSession->try_lu;
+					hSession->lu.connected = hSession->try_lu;
 				}
 				else
-					hSession->connected_lu = CN;
+					hSession->lu.connected = CN;
 
-				status_lu(hSession,hSession->connected_lu);
+				status_lu(hSession,hSession->lu.connected);
 
 				tb_len = 4 + tt_len + 2;
 				tt_out = lib3270_malloc(tb_len + 1);
@@ -1304,10 +1304,10 @@ static int tn3270e_negotiate(H3270 *hSession)
 			if (snlen) {
 				if (snlen > LIB3270_LU_MAX)
 					snlen = LIB3270_LU_MAX;
-				(void)strncpy(hSession->reported_lu,(char *)&hSession->sbbuf[3+tnlen+1], snlen);
-				hSession->reported_lu[snlen] = '\0';
-				hSession->connected_lu = hSession->reported_lu;
-				status_lu(hSession,hSession->connected_lu);
+				(void)strncpy(hSession->lu.reported,(char *)&hSession->sbbuf[3+tnlen+1], snlen);
+				hSession->lu.reported[snlen] = '\0';
+				hSession->lu.connected = hSession->lu.reported;
+				status_lu(hSession,hSession->lu.connected);
 			}
 
 			/* Tell them what we can do. */

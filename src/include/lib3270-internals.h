@@ -94,8 +94,6 @@
 //
 #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
 
-//	#define unused __attribute__((__unused__))
-
 	#define GNUC_UNUSED \
 		__attribute__((__unused__))
 
@@ -131,7 +129,9 @@
 #define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
 #define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
 
-/* types of internal actions */
+/**
+ * @brief types of internal actions
+ */
 enum iaction {
 	IA_STRING, IA_PASTE, IA_REDRAW,
 	IA_KEYPAD, IA_DEFAULT, IA_KEY,
@@ -231,7 +231,9 @@ struct toggle_name {
 	#define PT_ON_THE_SPOT		"OnTheSpot"
 #endif /*]*/
 
-/** input key type */
+/**
+ * @brief input key type
+ */
 enum keytype
 {
 	KT_STD,
@@ -250,7 +252,9 @@ LIB3270_INTERNAL struct _ansictl
 	char     vlnext;
 } ansictl;
 
-/** @brief Extended attributes */
+/**
+ * @brief Extended attributes
+ */
 struct lib3270_ea
 {
 	unsigned char cc;		///< @brief EBCDIC or ASCII character code
@@ -389,9 +393,6 @@ struct _h3270
 
 	// Network & Termtype
 	char					* connected_type;
-	char					* connected_lu;
-	char					  luname[LIB3270_LUNAME_LENGTH+1];
-
 	char					  full_model_name[LIB3270_FULL_MODEL_NAME_LENGTH+1];
 	char					* model_name;
 	unsigned int			  model_num;
@@ -492,25 +493,39 @@ struct _h3270
 	int             		  ns_bsent;
 	int             		  ns_rsent;
 	struct timeval 			  ds_ts;
-	unsigned long			  e_funcs;				/**< @brief negotiated TN3270E functions */
 	unsigned short			  e_xmit_seq;			/**< @brief transmit sequence number */
 	int						  response_required;
-	int						  tn3270e_bound;
-	int						  tn3270e_negotiated;
 	int						  ansi_data;
 	int						  lnext;
 	int						  backslashed;
 	char					  plu_name[LIB3270_BIND_PLU_NAME_MAX+1];
-	char					**lus;
+
+	/*
+	/// @brief Proxy
+	struct
+	{
+		int						  type;
+		char					* host;
+		char					* portname;
+		unsigned short			  port;
+	} proxy;
+	*/
+
+	/// @brief LU
 	char					**curr_lu;
 	char					* try_lu;
-	int						  proxy_type;
-	char					* proxy_host;
-	char					* proxy_portname;
-	unsigned short			  proxy_port;
-	char					  reported_lu[LIB3270_LU_MAX+1];
+	char					**lus;			///< @brief Array with the LU names to try.
+	struct
+	{
+		char	  reported[LIB3270_LU_MAX+1];
+		char	* connected;
+		char	  name[LIB3270_LUNAME_LENGTH+1];
+
+	} lu;
+
 	char					  reported_type[LIB3270_LU_MAX+1];
 
+	// TN3270e
 	enum
 	{
 		E_NONE,
@@ -519,9 +534,13 @@ struct _h3270
 		E_SSCP
 	}						  tn3270e_submode;
 
+	unsigned long			  e_funcs;				/**< @brief negotiated TN3270E functions */
+	int						  tn3270e_bound;
+	int						  tn3270e_negotiated;
+
+	// Line mode
 	unsigned char 			* lbuf;					/**< @brief line-mode input buffer */
 	unsigned char 			* lbptr;
-
 
 	// 3270 input buffer
 	unsigned char 			* ibptr;

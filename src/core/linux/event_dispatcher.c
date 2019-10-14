@@ -63,7 +63,7 @@ int lib3270_default_event_dispatcher(H3270 *hSession, int block)
 
 retry:
 
-	hSession->inputs_changed = 0;
+	hSession->input.changed = 0;
 
 	// If we've processed any input, then don't block again.
 	if(processed_any)
@@ -75,7 +75,7 @@ retry:
 	FD_ZERO(&wfds);
 	FD_ZERO(&xfds);
 
-	for (ip = hSession->inputs; ip != (input_t *)NULL; ip = (input_t *) ip->next)
+	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next)
 	{
 		if(!ip->enabled)
 		{
@@ -147,13 +147,13 @@ retry:
 	}
 	else
 	{
-		for (ip = hSession->inputs; ip != (input_t *) NULL; ip = (input_t *) ip->next)
+		for (ip = (input_t *) hSession->input.list.first; ip != (input_t *) NULL; ip = (input_t *) ip->next)
 		{
 			if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds))
 			{
 				(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
 				processed_any = True;
-				if (hSession->inputs_changed)
+				if (hSession->input.changed)
 					goto retry;
 			}
 
@@ -161,7 +161,7 @@ retry:
 			{
 				(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
 				processed_any = True;
-				if (hSession->inputs_changed)
+				if (hSession->input.changed)
 					goto retry;
 			}
 
@@ -169,7 +169,7 @@ retry:
 			{
 				(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
 				processed_any = True;
-				if (hSession->inputs_changed)
+				if (hSession->input.changed)
 					goto retry;
 			}
 		}
@@ -195,7 +195,7 @@ retry:
 		}
 	}
 
-	if (hSession->inputs_changed)
+	if (hSession->input.changed)
 		goto retry;
 
 	return processed_any;

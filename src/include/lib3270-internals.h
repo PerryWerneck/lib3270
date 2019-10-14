@@ -310,14 +310,14 @@ typedef struct timeout
  */
 typedef struct _input_t
 {
-		unsigned char	  enabled;
-        struct _input_t	* next;
-        H3270			* session;
-        int 			  fd;
-        LIB3270_IO_FLAG	  flag;
-        void			* userdata;
+	LIB3270_LINKED_LIST_HEAD;
 
-        void (*call)(H3270 *, int, LIB3270_IO_FLAG, void *);
+	unsigned char	  enabled;
+	H3270			* session;
+	int 			  fd;
+	LIB3270_IO_FLAG	  flag;
+
+	void (*call)(H3270 *, int, LIB3270_IO_FLAG, void *);
 
 } input_t;
 
@@ -685,8 +685,12 @@ struct _h3270
 #endif // HAVE_LIBSSL
 
 	timeout_t				* timeouts;
-	input_t 				* inputs;
-	int						  inputs_changed : 1;
+
+	struct
+	{
+		struct lib3270_linked_list_head	list;
+		int changed : 1;
+	} input;
 
 	// Trace methods.
 	struct

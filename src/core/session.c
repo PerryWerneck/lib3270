@@ -142,12 +142,7 @@ void lib3270_session_free(H3270 *h)
 	}
 
 	// Release inputs;
-	while(h->inputs)
-	{
-		input_t *ip = h->inputs;
-		h->inputs = (input_t *) ip->next;
-		lib3270_free(ip);
-	}
+	lib3270_linked_list_free(&h->input.list);
 
 	trace("Releasing session %p",h);
 	lib3270_free(h);

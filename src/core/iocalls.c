@@ -223,25 +223,26 @@ static void internal_remove_timer(H3270 *session, void * timer)
 
 static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata )
 {
-	input_t *ip = (input_t *) lib3270_malloc(sizeof(input_t));
+	input_t *ip = (input_t *) lib3270_linked_list_append_node(&session->input.list,sizeof(input_t), userdata);
 
 	ip->session					= session;
 	ip->enabled					= 1;
 	ip->fd						= fd;
 	ip->flag					= flag;
-	ip->userdata				= userdata;
 	ip->call					= call;
 
-	ip->next					= (input_t *) session->inputs;
-
-	session->inputs 			= ip;
-	session->inputs_changed 	= 1;
+	session->input.changed = 1;
 
 	return ip;
 }
 
 static void internal_remove_poll(H3270 *session, void *id)
 {
+	lib3270_linked_list_delete_node(&session->input.list,id);
+
+	session->input.changed = 1;
+
+	/*
 	input_t *ip;
 	input_t *prev = (input_t *)NULL;
 
@@ -266,18 +267,19 @@ static void internal_remove_poll(H3270 *session, void *id)
 
 	lib3270_free(ip);
 	session->inputs_changed = 1;
+	*/
 }
 
  static void internal_set_poll_state(H3270 *session, void *id, int enabled)
  {
 	input_t *ip;
 
-	for (ip = session->inputs; ip != (input_t *) NULL; ip = (input_t *) ip->next)
+	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next)
 	{
 		if (ip == (input_t *)id)
 		{
 			ip->enabled = enabled ? 1 : 0;
-			session->inputs_changed = 1;
+			session->input.changed = 1;
 			break;
 		}
 
@@ -303,10 +305,9 @@ LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled
 
 LIB3270_EXPORT void	 lib3270_remove_poll_fd(H3270 *session, int fd)
 {
-
 	input_t *ip;
 
-	for (ip = session->inputs; ip != (input_t *)NULL; ip = ip->next)
+	for (ip = (input_t *) session->input.list.first; ip; ip = ip->next)
 	{
 		if(ip->fd == fd)
 		{
@@ -321,10 +322,9 @@ LIB3270_EXPORT void	 lib3270_remove_poll_fd(H3270 *session, int fd)
 
 LIB3270_EXPORT void	 lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag)
 {
-
 	input_t *ip;
 
-	for (ip = session->inputs; ip != (input_t *)NULL; ip = (input_t *) ip->next)
+	for (ip = (input_t *) session->input.list.first; ip; ip = ip->next)
 	{
 		if(ip->fd == fd)
 		{

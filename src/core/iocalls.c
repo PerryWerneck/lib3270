@@ -139,12 +139,13 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 	t_new = (timeout_t *) lib3270_malloc(sizeof(timeout_t));
 
 	t_new->proc = proc;
-	t_new->session = session;
 	t_new->in_play = False;
 
 #if defined(_WIN32)
+
 	ms_ts(&t_new->ts);
 	t_new->ts += interval_ms;
+
 #else
 
 	gettimeofday(&t_new->tv, NULL);
@@ -156,10 +157,11 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 		t_new->tv.tv_sec += t_new->tv.tv_usec / MILLION;
 		t_new->tv.tv_usec %= MILLION;
 	}
+
 #endif /*]*/
 
 	/* Find where to insert this item. */
-	for (t = session->timeouts; t != TN; t = t->next)
+	for (t = (timeout_t *) session->timeouts.first; t != TN; t = t->next)
 	{
 #if defined(_WIN32)
 		if (t->ts > t_new->ts)
@@ -173,17 +175,20 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 
 	// Insert it.
 	if (prev == TN)
-	{	// Front.
-		t_new->next = session->timeouts;
-		session->timeouts = t_new;
+	{
+		// t_new is Front.
+		t_new->next = (timeout_t *) session->timeouts.first;
+		session->timeouts.first = t_new;
 	}
 	else if (t == TN)
-	{	// Rear.
+	{
+		// t_new is Rear.
 		t_new->next = TN;
 		prev->next = t_new;
+		session->timeouts.last = (timeout_t *) t_new;
 	}
 	else
-	{	// Middle.
+	{	// t_new is Middle.
 		t_new->next = t;
 		prev->next = t_new;
 	}
@@ -196,10 +201,16 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 static void internal_remove_timer(H3270 *session, void * timer)
 {
 	timeout_t *st = (timeout_t *)timer;
+
+	trace("Removing timeout: %p",st);
+
+	if(!st->in_play)
+		lib3270_linked_list_delete_node(&session->timeouts,timer);
+
+	/*
 	timeout_t *t;
 	timeout_t *prev = TN;
 
-	trace("Removing timeout: %p",st);
 
 	if (st->in_play)
 		return;
@@ -217,6 +228,7 @@ static void internal_remove_timer(H3270 *session, void * timer)
 		}
 		prev = t;
 	}
+	*/
 }
 
 /* I/O events. */
@@ -225,7 +237,6 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 {
 	input_t *ip = (input_t *) lib3270_linked_list_append_node(&session->input.list,sizeof(input_t), userdata);
 
-	ip->session					= session;
 	ip->enabled					= 1;
 	ip->fd						= fd;
 	ip->flag					= flag;

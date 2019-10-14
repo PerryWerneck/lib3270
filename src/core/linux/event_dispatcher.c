@@ -104,11 +104,11 @@ retry:
 
 	if (block)
 	{
-		if (hSession->timeouts != TN)
+		if (hSession->timeouts.first)
 		{
 			(void) gettimeofday(&now, (void *)NULL);
-			twait.tv_sec = hSession->timeouts->tv.tv_sec - now.tv_sec;
-			twait.tv_usec = hSession->timeouts->tv.tv_usec - now.tv_usec;
+			twait.tv_sec = ((timeout_t *) hSession->timeouts.first)->tv.tv_sec - now.tv_sec;
+			twait.tv_usec = ((timeout_t *) hSession->timeouts.first)->tv.tv_usec - now.tv_usec;
 			if (twait.tv_usec < 0L) {
 				twait.tv_sec--;
 				twait.tv_usec += MILLION;
@@ -151,7 +151,7 @@ retry:
 		{
 			if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds))
 			{
-				(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
+				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
 				processed_any = True;
 				if (hSession->input.changed)
 					goto retry;
@@ -159,7 +159,7 @@ retry:
 
 			if((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds))
 			{
-				(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
+				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
 				processed_any = True;
 				if (hSession->input.changed)
 					goto retry;
@@ -167,7 +167,7 @@ retry:
 
 			if((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds))
 			{
-				(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
+				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
 				processed_any = True;
 				if (hSession->input.changed)
 					goto retry;
@@ -176,23 +176,51 @@ retry:
 	}
 
 	// See what's expired.
-	if (hSession->timeouts != TN)
+	if (hSession->timeouts.first)
 	{
 		struct timeout *t;
 		(void) gettimeofday(&now, (void *)NULL);
 
-		while ((t = hSession->timeouts) != TN)
+		while(hSession->timeouts.first)
+		{
+            t = (struct timeout *) hSession->timeouts.first;
+
+			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec))
+			{
+				t->in_play = True;
+				(*t->proc)(hSession);
+				processed_any = True;
+
+				lib3270_linked_list_delete_node(&hSession->timeouts,t);
+
+			}
+			else
+			{
+				break;
+			}
+
+		}
+
+		/*
+
+		while ((t = ((timeout_t *) hSession->timeouts.first)) != TN)
 		{
 			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec))
 			{
-				hSession->timeouts = t->next;
 				t->in_play = True;
 				(*t->proc)(t->session);
 				processed_any = True;
-				lib3270_free(t);
-			} else
+
+				lib3270_linked_list_delete_node(&hSession->timeouts,t);
+
+			}
+			else
+			{
 				break;
+			}
 		}
+
+		*/
 	}
 
 	if (hSession->input.changed)

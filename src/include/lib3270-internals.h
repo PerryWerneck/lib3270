@@ -287,7 +287,9 @@ struct lib3270_text
  */
 typedef struct timeout
 {
-	struct timeout *next;
+	LIB3270_LINKED_LIST_HEAD;
+
+	unsigned char in_play;
 
 #if defined(_WIN32) /*[*/
 	unsigned long long ts;
@@ -297,9 +299,6 @@ typedef struct timeout
 
 	int (*proc)(H3270 *session);
 
-	H3270 *session;
-
-	unsigned char in_play;
 } timeout_t;
 
 
@@ -313,7 +312,6 @@ typedef struct _input_t
 	LIB3270_LINKED_LIST_HEAD;
 
 	unsigned char	  enabled;
-	H3270			* session;
 	int 			  fd;
 	LIB3270_IO_FLAG	  flag;
 
@@ -684,7 +682,7 @@ struct _h3270
 	} ssl;
 #endif // HAVE_LIBSSL
 
-	timeout_t				* timeouts;
+	struct lib3270_linked_list_head timeouts;
 
 	struct
 	{

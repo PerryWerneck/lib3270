@@ -34,6 +34,7 @@
 
 
 #include <config.h>
+#include <lib3270-internals.h>
 
 #if defined(HAVE_LIBSSL)
 
@@ -49,7 +50,6 @@
 
 #endif
 
-#include <lib3270-internals.h>
 #include <errno.h>
 #include <lib3270.h>
 #include <lib3270/internals.h>

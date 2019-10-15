@@ -28,10 +28,10 @@
  */
 
 #include <config.h>
+#include <lib3270-internals.h>
 #include <lib3270.h>
 #include <lib3270/log.h>
 #include <trace_dsc.h>
-#include <lib3270-internals.h>
 #include <array.h>
 
 #ifdef HAVE_LIBSSL
@@ -120,7 +120,11 @@ int lib3270_get_crl_from_dist_points(H3270 *hSession, CRL_DIST_POINTS * dist_poi
 			ASN1_STRING *uri = GENERAL_NAME_get0_value(gen, &gtype);
 			if(uri)
 			{
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000L) // OpenSSL 1.1.0+
 				const unsigned char * data = ASN1_STRING_get0_data(uri);
+#else
+				const unsigned char * data = ASN1_STRING_data(uri); // ASN1_STRING_get0_data(uri);
+#endif // OpenSSL 1.1.0+
 				if(data)
 				{
 					lib3270_string_array_append(uris,(char *) data);

@@ -73,7 +73,7 @@ int lib3270_default_event_dispatcher(H3270 *hSession, int block)
 
 retry:
 
-	hSession->inputs_changed = 0;
+	hSession->input.changed = 0;
 
 	// If we've processed any input, then don't block again.
 	if(processed_any)
@@ -85,7 +85,7 @@ retry:
 	FD_ZERO(&wfds);
 	FD_ZERO(&xfds);
 
-	for (ip = hSession->inputs; ip != (input_t *)NULL; ip = ip->next)
+	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next)
 	{
 		if(!ip->enabled)
 		{
@@ -114,13 +114,13 @@ retry:
 
 	if (block)
 	{
-		if (hSession->timeouts != TN)
+		if (hSession->timeouts.first)
 		{
 			ms_ts(&now);
-			if (now > hSession->timeouts->ts)
+			if (now > ((timeout_t *) hSession->timeouts.first)->ts)
 				tmo = 0;
 			else
-				tmo = hSession->timeouts->ts - now;
+				tmo = ((timeout_t *) hSession->timeouts.first)->ts - now;
 		}
 		else
 		{
@@ -152,29 +152,29 @@ retry:
 		}
 		else
 		{
-			for (ip = hSession->inputs; ip != (input_t *) NULL; ip = ip->next)
+			for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next)
 			{
 				if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds))
 				{
-					(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
+					(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
 					processed_any = True;
-					if (hSession->inputs_changed)
+					if (hSession->input.changed)
 						goto retry;
 				}
 
 				if ((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds))
 				{
-					(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
+					(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
 					processed_any = True;
-					if (hSession->inputs_changed)
+					if (hSession->input.changed)
 						goto retry;
 				}
 
 				if ((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds))
 				{
-					(*ip->call)(ip->session,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
+					(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
 					processed_any = True;
-					if (hSession->inputs_changed)
+					if (hSession->input.changed)
 						goto retry;
 				}
 			}
@@ -186,26 +186,33 @@ retry:
 	}
 
 	// See what's expired.
-	if (hSession->timeouts != TN)
+	if (hSession->timeouts.first)
 	{
 		struct timeout *t;
 		ms_ts(&now);
 
-		while ((t = hSession->timeouts) != TN)
+		while(hSession->timeouts.first)
 		{
+            t = (struct timeout *) hSession->timeouts.first;
+
 			if (t->ts <= now)
 			{
-				hSession->timeouts = t->next;
+
 				t->in_play = True;
-				(*t->proc)(t->session);
+				(*t->proc)(hSession);
 				processed_any = True;
-				lib3270_free(t);
-			} else
+
+				lib3270_linked_list_delete_node(&hSession->timeouts,t);
+
+			}
+			else
+			{
 				break;
+			}
 		}
 	}
 
-	if (hSession->inputs_changed)
+	if (hSession->input.changed)
 		goto retry;
 
 	return processed_any;

@@ -83,6 +83,8 @@
 			.label = N_( "_Connect" ) ,
 			.summary = N_( "Connect to host." ),
 			.activate = connect_host,
+
+			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.activatable = lib3270_is_disconnected
 		},
 
@@ -93,6 +95,8 @@
 			.label = N_( "_Disconnect" ),
 			.summary = N_( "Disconnect from host." ),
 			.activate = lib3270_disconnect,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -106,6 +110,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor up 1 position." ),
 			.activate = lib3270_cursor_up,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -116,6 +122,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor down 1 position." ),
 			.activate = lib3270_cursor_down,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -126,6 +134,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor left 1 position." ),
 			.activate = lib3270_cursor_left,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -136,6 +146,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor right 1 position." ),
 			.activate = lib3270_cursor_right,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -146,6 +158,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor to first field on next line or any lines after that." ),
 			.activate = lib3270_newline,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -156,6 +170,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor to previous word." ),
 			.activate = lib3270_previousword,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -166,6 +182,8 @@
 			.label = NULL,
 			.summary = N_( "Cursor to next unprotected word." ),
 			.activate = lib3270_nextword,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -179,6 +197,8 @@
 			.label = NULL,
 			.summary = N_( "Save screen." ),
 			.activate = save_all,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -189,6 +209,8 @@
 			.label = NULL,
 			.summary = N_( "Save selected area." ),
 			.activate = save_selected,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.activatable = lib3270_has_selection
 		},
 
@@ -199,6 +221,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = save_copy,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -209,6 +233,8 @@
 			.label = NULL,
 			.summary = N_( "Paste file." ),
 			.activate = paste_file,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -222,6 +248,8 @@
 			.label = N_( "Select all" ),
 			.summary = NULL,
 			.activate = lib3270_select_all,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -232,6 +260,8 @@
 			.label = N_( "Remove selection" ),
 			.summary = N_( "Remove selection" ),
 			.activate = lib3270_unselect,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_has_selection
 		},
 
@@ -242,6 +272,8 @@
 			.label = N_( "Reselect" ),
 			.summary = N_( "Reselect"),
 			.activate = lib3270_reselect,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -255,6 +287,8 @@
 			.label = N_( "Select field" ),
 			.summary = N_( "Select Field" ),
 			.activate = lib3270_select_field,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -266,6 +300,8 @@
 			.label = NULL,
 			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field." ),
 			.activate = lib3270_fieldend,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -276,6 +312,8 @@
 			.label = NULL,
 			.summary = N_( "Move to first unprotected field on screen." ),
 			.activate = lib3270_firstfield,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -286,6 +324,8 @@
 			.label = NULL,
 			.summary = N_( "Tab forward to next field." ),
 			.activate = lib3270_nextfield,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -296,6 +336,8 @@
 			.label = NULL,
 			.summary = N_( "Tab backward to previous field." ),
 			.activate = lib3270_previousfield,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -310,6 +352,8 @@
 			.label = NULL,
 			.summary = N_( "Backspaces the cursor until it hits the front of a word." ),
 			.activate = lib3270_deleteword,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -320,6 +364,8 @@
 			.label = NULL,
 			.summary = N_( "Delete field" ),
 			.activate = lib3270_deletefield,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -331,6 +377,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_eraseinput,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -341,6 +389,8 @@
 			.label = NULL,
 			.summary = N_( "Erase End Of Field Key." ),
 			.activate = lib3270_eraseeof,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -351,6 +401,8 @@
 			.label = NULL,
 			.summary = N_( "Erase End Of Line Key." ),
 			.activate = lib3270_eraseeol,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -361,6 +413,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_erase,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -374,6 +428,8 @@
 			.label = NULL,
 			.summary = N_( "Send an \"Enter\" action." ),
 			.activate = lib3270_enter,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -385,6 +441,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_kybdreset,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -395,6 +453,8 @@
 			.label = NULL,
 			.summary = N_( "Clear AID key" ),
 			.activate = lib3270_clear,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -406,6 +466,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_delete,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -416,6 +478,8 @@
 			.label = NULL,
 			.summary = N_( "DUP key" ),
 			.activate = lib3270_dup,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -426,6 +490,8 @@
 			.label = NULL,
 			.summary = N_( "FM key" ),
 			.activate = lib3270_fieldmark,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -436,6 +502,8 @@
 			.label = NULL,
 			.summary = N_( "3270-style backspace." ),
 			.activate = lib3270_backspace,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -446,6 +514,8 @@
 			.label = NULL,
 			.summary = N_( "ATTN key, per RFC 2355.  Sends IP, regardless." ),
 			.activate = lib3270_attn,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -456,6 +526,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_break,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -466,6 +538,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_paste_next,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -476,6 +550,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_sysreq,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -490,6 +566,8 @@
 			.summary  = N_("Send to print"),
 			.description = N_("If the terminal has selected area print it, if not, print all contents."),
 			.activate = lib3270_print,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -500,6 +578,8 @@
 			.label = NULL,
 			.summary = N_("Print screen contents"),
 			.activate = lib3270_print_all,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -510,6 +590,8 @@
 			.label = NULL,
 			.summary = N_( "Print selected area." ),
 			.activate = lib3270_print_selected,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.activatable = lib3270_has_selection
 		},
 
@@ -520,6 +602,8 @@
 			.label = NULL,
 			.summary = N_("Print copy (if available)"),
 			.activate = lib3270_print_copy,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
 
@@ -534,6 +618,8 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_testpattern,
+
+			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.activatable = lib3270_is_disconnected
 		},
 
@@ -544,17 +630,13 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_charsettable,
+
+			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.activatable = lib3270_is_disconnected
 		},
 
 		{
 			.name = NULL,
-			.key = NULL,
-			.icon = NULL,
-			.label = NULL,
-			.summary = NULL,
-			.activate = NULL,
-			.activatable = NULL
 		}
 	};
 

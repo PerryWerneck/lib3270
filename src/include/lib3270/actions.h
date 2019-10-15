@@ -33,9 +33,20 @@
 	extern "C" {
 #endif
 
+ typedef enum _lib3270_action_group
+ {
+ 	LIB3270_ACTION_GROUP_NONE,					///< @brief Simple action, no signals os special treatment.
+ 	LIB3270_ACTION_GROUP_ONLINE,				///< @brief Action requires online state.
+ 	LIB3270_ACTION_GROUP_OFFLINE,				///< @brief Action requires offline state.
+ 	LIB3270_ACTION_GROUP_SELECTION,				///< @brief Action requires an active selection.
+ 	LIB3270_ACTION_GROUP_UNSELECTED,			///< @brief Action fails if there has a selection.
+ } LIB3270_ACTION_GROUP;
+
  typedef struct _lib3270_action
  {
  	LIB3270_PROPERTY_HEAD
+
+	LIB3270_ACTION_GROUP group;					///< @brief Action group.
 
     int (*activate)(H3270 *hSession);			///< @brief lib3270 associated method.
     int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?

@@ -50,6 +50,9 @@
 		<Unit filename="src/core/ansi.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/array.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/bounds.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -225,6 +228,7 @@
 		<Unit filename="src/include/3270ds.h" />
 		<Unit filename="src/include/ansic.h" />
 		<Unit filename="src/include/arpa_telnet.h" />
+		<Unit filename="src/include/array.h" />
 		<Unit filename="src/include/cg.h" />
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />

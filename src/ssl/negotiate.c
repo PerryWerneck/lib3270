@@ -41,6 +41,7 @@
 	#include <openssl/err.h>
 	#include <openssl/x509_vfy.h>
 	#include <openssl/x509v3.h>
+	#include <array.h>
 
 	#ifndef SSL_ST_OK
 		#define SSL_ST_OK 3
@@ -134,16 +135,60 @@ static int background_ssl_init(H3270 *hSession, void *message)
 
 #if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
 
-static int getCRLFromDistPoints(CRL_DIST_POINTS * dist_points, SSL_ERROR_MESSAGE *message)
+static int getCRLFromDistPoints(H3270 *hSession, CRL_DIST_POINTS * dist_points, SSL_ERROR_MESSAGE *message)
 {
-	int ix;
+	int ix, i, gtype;
+	lib3270_autoptr(LIB3270_STRING_ARRAY) uris = lib3270_string_array_new();
+
+	// https://nougat.cablelabs.com/DLNA-RUI/openssl/commit/57912ed329f870b237f2fd9f2de8dec3477d1729
 
 	for(ix = 0; ix < sk_DIST_POINT_num(dist_points); ix++) {
 
-		debug("CRL(%d):", ix);
+		DIST_POINT *dp = sk_DIST_POINT_value(dist_points, ix);
 
+		if(!dp->distpoint || dp->distpoint->type != 0)
+			continue;
+
+		GENERAL_NAMES *gens = dp->distpoint->name.fullname;
+
+		for (i = 0; i < sk_GENERAL_NAME_num(gens); i++)
+		{
+			GENERAL_NAME *gen = sk_GENERAL_NAME_value(gens, i);
+			ASN1_STRING *uri = GENERAL_NAME_get0_value(gen, &gtype);
+			if(uri)
+			{
+				const unsigned char * data = ASN1_STRING_get0_data(uri);
+				if(data)
+				{
+					lib3270_string_array_append(uris,(char *) data);
+				}
+			}
+
+		}
 
 	}
+
+#ifdef DEBUG
+	{
+		for(ix = 0; ix < uris->length; ix++)
+		{
+			debug("%u: %s", (unsigned int) ix, uris->str[ix]);
+		}
+	}
+#endif // DEBUG
+
+	/*
+	if(hSession->ssl.crl.url)
+	{
+		// Check if we already have the URL.
+
+
+		// The URL is invalid or not to this cert, remove it!
+		lib3270_free(hSession->ssl.crl.url);
+		hSession->ssl.crl.url = NULL;
+	}
+	*/
+
 
 	return 0;
 }
@@ -247,7 +292,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 			return EACCES;
 		}
 
-		if(getCRLFromDistPoints(dist_points, (SSL_ERROR_MESSAGE *) message))
+		if(getCRLFromDistPoints(hSession, dist_points, (SSL_ERROR_MESSAGE *) message))
 			return EACCES;
 
 #endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK

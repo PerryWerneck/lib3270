@@ -40,6 +40,7 @@
 	#include <openssl/ssl.h>
 	#include <openssl/err.h>
 	#include <openssl/x509_vfy.h>
+	#include <openssl/x509v3.h>
 
 	#ifndef SSL_ST_OK
 		#define SSL_ST_OK 3
@@ -73,6 +74,24 @@
  */
  SSL_CTX * ssl_ctx = NULL;
 
+ /**
+  * @brief X509 auto-cleanup.
+  */
+static inline void lib3270_autoptr_cleanup_X509(X509 **ptr)
+{
+	if(*ptr)
+		X509_free(*ptr);
+}
+
+ /**
+  * @brief Dist points auto-cleanup.
+  */
+static inline void lib3270_autoptr_cleanup_CRL_DIST_POINTS(CRL_DIST_POINTS **ptr)
+{
+	if(*ptr)
+		CRL_DIST_POINTS_free(*ptr);
+}
+
 /**
  * @brief Initialize openssl session.
  *
@@ -81,7 +100,6 @@
  * @return 0 if ok, non zero if fails.
  *
  */
-
 static int background_ssl_init(H3270 *hSession, void *message)
 {
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
@@ -113,6 +131,24 @@ static int background_ssl_init(H3270 *hSession, void *message)
 
 	return 0;
 }
+
+#if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
+
+static int getCRLFromDistPoints(CRL_DIST_POINTS * dist_points, SSL_ERROR_MESSAGE *message)
+{
+	int ix;
+
+	for(ix = 0; ix < sk_DIST_POINT_num(dist_points); ix++) {
+
+		debug("CRL(%d):", ix);
+
+
+	}
+
+	return 0;
+}
+
+#endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK
 
 static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
@@ -166,7 +202,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	//
 
 	// Get peer certificate, notify application before validation.
-	X509 * peer = SSL_get_peer_certificate(hSession->ssl.con);
+	lib3270_autoptr(X509) peer = SSL_get_peer_certificate(hSession->ssl.con);
 
 	if(peer)
 	{
@@ -193,7 +229,29 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		hSession->cbk.set_peer_certificate(peer);
 
-		X509_free(peer);
+#if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
+		//
+		// No default CRL, try to download from the peer
+		//
+		// References:
+		//
+		// http://www.zedwood.com/article/cpp-check-crl-for-revocation
+		//
+
+		lib3270_autoptr(CRL_DIST_POINTS) dist_points = (CRL_DIST_POINTS *) X509_get_ext_d2i(peer, NID_crl_distribution_points, NULL, NULL);
+		if(!dist_points)
+		{
+			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+			((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
+			((SSL_ERROR_MESSAGE *) message)->description = _( "The host certificate doesn't have CRL distribution points" );
+			return EACCES;
+		}
+
+		if(getCRLFromDistPoints(dist_points, (SSL_ERROR_MESSAGE *) message))
+			return EACCES;
+
+#endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK
+
 	}
 
 

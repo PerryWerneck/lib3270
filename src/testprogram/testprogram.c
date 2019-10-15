@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
 		lib3270_wait_for_ready(h,10);
 		printf("Waiting ends %u\n\n",(unsigned int) time(NULL));
 
+		/*
 		lib3270_enter(h);
 		lib3270_wait(h,5);
 
@@ -128,6 +129,9 @@ int main(int argc, char *argv[])
 			if(text)
 				printf("Screen:\n[%s]\n",text);
 		}
+		*/
+
+		lib3270_disconnect(h);
 
 	}
 

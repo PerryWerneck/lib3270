@@ -176,7 +176,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
  #pragma GCC diagnostic push
  #pragma GCC diagnostic ignored "-Wunused-parameter"
- const char * lib3270_get_crl_prefered_protocol(H3270 *hSession)
+ const char * lib3270_get_crl_prefered_protocol(const H3270 *hSession)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
 	if(hSession->ssl.crl.prefer)
@@ -198,13 +198,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
 	if(hSession->ssl.crl.prefer)
 	{
-		free(hSession->ssl.crl.prefer);
-		hSession->ssl.crl.prefer = NULL;
-	}
-
-	if(hSession->ssl.crl.prefer)
-	{
-		X509_CRL_free(hSession->ssl.crl.prefer);
+		lib3270_free(hSession->ssl.crl.prefer);
 		hSession->ssl.crl.prefer = NULL;
 	}
 

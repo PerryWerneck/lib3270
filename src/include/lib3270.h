@@ -493,7 +493,7 @@
 	 LIB3270_EXPORT const char * lib3270_get_crl_url(const H3270 *hSession);
 
 	 LIB3270_EXPORT int lib3270_set_crl_prefered_protocol(H3270 *hSession, const char *protocol);
-	 LIB3270_EXPORT const char * lib3270_get_crl_prefered_protocol(H3270 *hSession);
+	 LIB3270_EXPORT const char * lib3270_get_crl_prefered_protocol(const H3270 *hSession);
 
 	/**
 	 * @brief Get hostname for the connect/reconnect operations.

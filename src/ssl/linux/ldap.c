@@ -39,6 +39,8 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 
+#include "utilc.h"
+
 #if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LDAP)
 
 #include <openssl/ssl.h>

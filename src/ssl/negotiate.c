@@ -134,7 +134,7 @@ static int background_ssl_init(H3270 *hSession, void *message)
 }
 
 #if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
-int x509_store_ctx_error_callback(int ok, X509_STORE_CTX *ctx)
+int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 {
 	debug("%s(%d)",__FUNCTION__,ok);
 
@@ -265,6 +265,8 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 			rv = X509_STORE_CTX_get_error(csc);
 		else
 			rv = X509_V_OK;
+
+		SSL_set_verify_result(hSession->ssl.con, rv);
 
 		X509_STORE_CTX_free(csc);
 

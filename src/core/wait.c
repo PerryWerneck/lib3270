@@ -34,7 +34,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_wait_for_update(H3270 *hSession, int seconds)
+LIB3270_EXPORT int lib3270_wait_for_update(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(seconds))
 {
 	return errno = ENOTSUP;
 }

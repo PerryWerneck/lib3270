@@ -88,7 +88,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAG
 	X509_CRL * x509_crl = NULL;
 
 	int	rc;
-	lib3270_autoptr(char) url = strdup(consturl);
+	lib3270_autoptr(char) url = lib3270_unescape(consturl);
 	char * base = strchr(url+7,'/');
 	char * attrs[] = { NULL, NULL };
 

@@ -134,66 +134,26 @@ static int background_ssl_init(H3270 *hSession, void *message)
 }
 
 #if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
-
-static int getCRLFromDistPoints(H3270 *hSession, CRL_DIST_POINTS * dist_points, SSL_ERROR_MESSAGE *message)
+int x509_store_ctx_error_callback(int ok, X509_STORE_CTX *ctx)
 {
-	int ix, i, gtype;
-	lib3270_autoptr(LIB3270_STRING_ARRAY) uris = lib3270_string_array_new();
+	debug("%s(%d)",__FUNCTION__,ok);
 
-	// https://nougat.cablelabs.com/DLNA-RUI/openssl/commit/57912ed329f870b237f2fd9f2de8dec3477d1729
-
-	for(ix = 0; ix < sk_DIST_POINT_num(dist_points); ix++) {
-
-		DIST_POINT *dp = sk_DIST_POINT_value(dist_points, ix);
-
-		if(!dp->distpoint || dp->distpoint->type != 0)
-			continue;
-
-		GENERAL_NAMES *gens = dp->distpoint->name.fullname;
-
-		for (i = 0; i < sk_GENERAL_NAME_num(gens); i++)
-		{
-			GENERAL_NAME *gen = sk_GENERAL_NAME_value(gens, i);
-			ASN1_STRING *uri = GENERAL_NAME_get0_value(gen, &gtype);
-			if(uri)
-			{
-				const unsigned char * data = ASN1_STRING_get0_data(uri);
-				if(data)
-				{
-					lib3270_string_array_append(uris,(char *) data);
-				}
-			}
-
-		}
-
-	}
-
-#ifdef DEBUG
-	{
-		for(ix = 0; ix < uris->length; ix++)
-		{
-			debug("%u: %s", (unsigned int) ix, uris->str[ix]);
-		}
-	}
-#endif // DEBUG
-
-	/*
-	if(hSession->ssl.crl.url)
-	{
-		// Check if we already have the URL.
-
-
-		// The URL is invalid or not to this cert, remove it!
-		lib3270_free(hSession->ssl.crl.url);
-		hSession->ssl.crl.url = NULL;
-	}
-	*/
-
-
-	return 0;
+/*
+  55     {
+  56         if (!ok) {
+  57             Category::getInstance("OpenSSL").error(
+  58                 "path validation failure at depth(%d): %s",
+  59                 X509_STORE_CTX_get_error_depth(ctx),
+  60                 X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx))
+  61                 );
+  62         }
+  63         return ok;
+  64     }
+*/
+	return ok;
 }
-
 #endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK
+
 
 static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
@@ -225,7 +185,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	if (rv != 1)
 	{
-		const char	* msg 		= "";
+		const char * msg = "";
 
 		((SSL_ERROR_MESSAGE *) message)->error = SSL_get_error(hSession->ssl.con,rv);
 		if(((SSL_ERROR_MESSAGE *) message)->error == SSL_ERROR_SYSCALL && hSession->ssl.error)
@@ -292,16 +252,38 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 			return EACCES;
 		}
 
-		if(getCRLFromDistPoints(hSession, dist_points, (SSL_ERROR_MESSAGE *) message))
+		if(lib3270_get_crl_from_dist_points(hSession, dist_points, (SSL_ERROR_MESSAGE *) message))
 			return EACCES;
+
+		// Got CRL, verify it!
+		// Reference: https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
+		X509_STORE_CTX *csc = X509_STORE_CTX_new();
+
+		X509_STORE_CTX_set_verify_cb(csc,x509_store_ctx_error_callback);
+
+		X509_STORE_CTX_init(csc, SSL_CTX_get_cert_store(ssl_ctx), peer, NULL);
+
+		if(X509_verify_cert(csc) != 1)
+			rv = X509_STORE_CTX_get_error(csc);
+		else
+			rv = X509_V_OK;
+
+		X509_STORE_CTX_free(csc);
+
+#else
+		// No CRL download, use the standard verification.
+		rv = SSL_get_verify_result(hSession->ssl.con);
 
 #endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK
 
 	}
+	else
+	{
+		rv = SSL_get_verify_result(hSession->ssl.con);
+	}
 
 
 	// Validate certificate.
-	rv = SSL_get_verify_result(hSession->ssl.con);
 
 	debug("SSL Verify result was %d", rv);
 	const struct ssl_status_msg * msg = ssl_get_status_from_error_code((long) rv);

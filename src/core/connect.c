@@ -55,7 +55,6 @@
 
  }
 
-#ifdef SSL_ENABLE_CRL_CHECK
 static int background_ssl_crl_get(H3270 *hSession, void *ssl_error)
 {
 	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) ssl_error)) {
@@ -105,39 +104,11 @@ static int background_ssl_crl_get(H3270 *hSession, void *ssl_error)
 	//
 	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
 	//
-	trace_ssl(hSession,"Getting CRL from %s\n",lib3270_get_crl_url(hSession));
-
-	hSession->ssl.crl.cert = lib3270_get_crl(hSession,(SSL_ERROR_MESSAGE *) ssl_error,lib3270_get_crl_url(hSession));
-	if(hSession->ssl.crl.cert)
-	{
-		// Got CRL, add it to ssl store
-		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-		{
-			lib3270_autoptr(char) text = lib3270_get_ssl_crl_text(hSession);
-
-			if(text)
-				trace_ssl(hSession,"\n%s\n",text);
-
-		}
-
-		// Add CRL in the store.
-		X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
-		if(X509_STORE_add_crl(store, hSession->ssl.crl.cert))
-		{
-			trace_ssl(hSession,"CRL was added to cert store\n");
-		}
-		else
-		{
-			trace_ssl(hSession,"CRL was not added to cert store\n");
-		}
-
-
-	}
-
-	return 0;
+	return lib3270_get_crl_from_url(hSession, ssl_error, lib3270_get_crl_url(hSession));
 
 }
 
+#ifdef SSL_ENABLE_CRL_CHECK
 static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *message)
 {
 	lib3270_write_log(
@@ -181,7 +152,6 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 
 	return 0;
 }
-
 #endif // SSL_ENABLE_CRL_CHECK
 
  int lib3270_reconnect(H3270 *hSession, int seconds)

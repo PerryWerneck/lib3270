@@ -301,6 +301,9 @@
 		<Unit filename="src/selection/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/ssl/crl.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/ssl/linux/curl.c">
 			<Option compilerVar="CC" />
 		</Unit>

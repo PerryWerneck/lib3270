@@ -41,6 +41,8 @@
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
+	#include <openssl/x509v3.h>
+
 #endif // HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) && !defined(X3270_ANSI) /*[*/
@@ -693,8 +695,9 @@ struct _h3270
 #ifdef SSL_ENABLE_CRL_CHECK
 		struct
 		{
-			char			* url;
-			X509_CRL 		* cert;
+			char			* prefer;	///< @brief Prefered protocol for CRL.
+			char			* url;		///< @brief URL for CRL download.
+			X509_CRL 		* cert;		///< @brief Loaded CRL (can be null).
 		} crl;
 #endif // SSL_ENABLE_CRL_CHECK
 		SSL 				* con;
@@ -848,6 +851,8 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	#ifdef SSL_ENABLE_CRL_CHECK
 		LIB3270_INTERNAL X509_CRL * lib3270_get_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *url);
+		LIB3270_INTERNAL int lib3270_get_crl_from_url(H3270 *hSession, void *ssl_error, const char *url);
+		LIB3270_INTERNAL int lib3270_get_crl_from_dist_points(H3270 *hSession, CRL_DIST_POINTS * dist_points, void *ssl_error);
 	#endif // SSL_ENABLE_CRL_CHECK
 
 #endif
@@ -861,5 +866,4 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
 
 	LIB3270_INTERNAL char * lib3270_get_user_name();
-
 

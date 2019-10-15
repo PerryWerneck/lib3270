@@ -136,6 +136,13 @@
 		},
 
 		{
+			.name = "crlprefer",										//  Property name.
+			.description = N_( "Prefered protocol for CRL" ),			//  Property description.
+			.get = lib3270_get_crl_prefered_protocol,					//  Get value.
+			.set = lib3270_set_crl_prefered_protocol,					//  Set value.
+		},
+
+		{
 			.name = "default_host",										//  Property name.
 			.description = N_( "Default host URL" ),					//  Property description.
 			.get = lib3270_get_default_host,							//  Get value.

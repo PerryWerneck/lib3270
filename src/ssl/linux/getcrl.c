@@ -59,8 +59,6 @@ LIB3270_INTERNAL X509_CRL * lib3270_get_crl(H3270 *hSession, SSL_ERROR_MESSAGE *
 		return NULL;
 	}
 
-	trace_ssl(hSession, "Getting CRL from \"%s\"\n",consturl);
-
 	if(strncasecmp(consturl,"file://",7) == 0)
 	{
 		lib3270_autoptr(FILE) hCRL = fopen(consturl+7,"r");

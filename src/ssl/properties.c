@@ -174,3 +174,52 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
  }
  #pragma GCC diagnostic pop
 
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wunused-parameter"
+ const char * lib3270_get_crl_prefered_protocol(H3270 *hSession)
+ {
+#ifdef SSL_ENABLE_CRL_CHECK
+	if(hSession->ssl.crl.prefer)
+		return hSession->ssl.crl.prefer;
+#endif
+	errno = ENODATA;
+	return "";
+ }
+ #pragma GCC diagnostic pop
+
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wunused-parameter"
+ int lib3270_set_crl_prefered_protocol(H3270 *hSession, const char *protocol)
+ {
+
+    FAIL_IF_ONLINE(hSession);
+
+#ifdef SSL_ENABLE_CRL_CHECK
+
+	if(hSession->ssl.crl.prefer)
+	{
+		free(hSession->ssl.crl.prefer);
+		hSession->ssl.crl.prefer = NULL;
+	}
+
+	if(hSession->ssl.crl.prefer)
+	{
+		X509_CRL_free(hSession->ssl.crl.prefer);
+		hSession->ssl.crl.prefer = NULL;
+	}
+
+	if(protocol)
+	{
+		hSession->ssl.crl.prefer = strdup(protocol);
+	}
+
+	return 0;
+
+#else
+
+	return errno = ENOTSUP;
+
+#endif // SSL_ENABLE_CRL_CHECK
+
+ }
+ #pragma GCC diagnostic pop

@@ -82,6 +82,12 @@ void lib3270_session_free(H3270 *h)
 		h->ssl.crl.url = NULL;
 	}
 
+	if(h->ssl.crl.prefer)
+	{
+		free(h->ssl.crl.prefer);
+		h->ssl.crl.prefer = NULL;
+	}
+
 	if(h->ssl.crl.cert)
 	{
 		X509_CRL_free(h->ssl.crl.cert);

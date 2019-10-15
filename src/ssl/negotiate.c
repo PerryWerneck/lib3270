@@ -258,9 +258,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		// Got CRL, verify it!
 		// Reference: https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
 		X509_STORE_CTX *csc = X509_STORE_CTX_new();
-
 		X509_STORE_CTX_set_verify_cb(csc,x509_store_ctx_error_callback);
-
 		X509_STORE_CTX_init(csc, SSL_CTX_get_cert_store(ssl_ctx), peer, NULL);
 
 		if(X509_verify_cert(csc) != 1)

@@ -61,7 +61,7 @@ void lib3270_string_array_free(LIB3270_STRING_ARRAY *array)
 	}
 }
 
-LIB3270_INTERNAL void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str)
+void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str)
 {
 	if(array->str)
 	{
@@ -75,5 +75,10 @@ LIB3270_INTERNAL void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, c
 
 	array->str[array->length++] = strdup(str);
 
+}
+
+void lib3270_autoptr_cleanup_LIB3270_STRING_ARRAY(LIB3270_STRING_ARRAY **ptr)
+{
+	lib3270_string_array_free(*ptr);
 }
 

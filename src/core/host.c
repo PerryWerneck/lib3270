@@ -220,7 +220,7 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 
 static void update_url(H3270 *hSession)
 {
-	Replace(hSession->host.full,
+	Replace(hSession->host.url,
 			lib3270_strdup_printf(
 				"%s%s:%s",
 #ifdef HAVE_LIBSSL
@@ -236,7 +236,7 @@ static void update_url(H3270 *hSession)
 	lib3270_crl_free(hSession);
 #endif // SSL_ENABLE_CRL_CHECK
 
-	hSession->cbk.update_url(hSession, hSession->host.full);
+	hSession->cbk.update_url(hSession, hSession->host.url);
 
 }
 
@@ -249,8 +249,8 @@ LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
 
 LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession)
 {
-	if(hSession->host.full)
-		return hSession->host.full;
+	if(hSession->host.url)
+		return hSession->host.url;
 
 #ifdef LIB3270_DEFAULT_HOST
 	return LIB3270_DEFAULT_HOST;
@@ -422,7 +422,7 @@ LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc)
 
 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h)
 {
-	return h->host.full;
+	return h->host.url;
 }
 
 LIB3270_EXPORT const char * lib3270_get_luname(const H3270 *h)

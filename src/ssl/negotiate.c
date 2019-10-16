@@ -239,55 +239,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	}
 
-	/*
-	if(peer)
-	{
-
-#if !defined(SSL_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
-		//
-		// No default CRL, try to download from the peer
-		//
-
-		lib3270_autoptr(CRL_DIST_POINTS) dist_points = (CRL_DIST_POINTS *) X509_get_ext_d2i(peer, NID_crl_distribution_points, NULL, NULL);
-		if(!dist_points)
-		{
-			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-			((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
-			((SSL_ERROR_MESSAGE *) message)->description = _( "The host certificate doesn't have CRL distribution points" );
-			return EACCES;
-		}
-
-		if(lib3270_get_crl_from_dist_points(hSession, dist_points, (SSL_ERROR_MESSAGE *) message))
-			return EACCES;
-
-		// Got CRL, verify it!
-		// Reference: https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
-		X509_STORE_CTX *csc = X509_STORE_CTX_new();
-		X509_STORE_CTX_set_verify_cb(csc,x509_store_ctx_error_callback);
-		X509_STORE_CTX_init(csc, SSL_CTX_get_cert_store(ssl_ctx), peer, NULL);
-
-		if(X509_verify_cert(csc) != 1)
-			rv = X509_STORE_CTX_get_error(csc);
-		else
-			rv = X509_V_OK;
-
-		SSL_set_verify_result(hSession->ssl.con, rv);
-
-		X509_STORE_CTX_free(csc);
-
-#else
-		// No CRL download, use the standard verification.
-		rv = SSL_get_verify_result(hSession->ssl.con);
-
-#endif // !SSL_CRL_URL && SSL_ENABLE_CRL_CHECK
-
-	}
-	else
-	{
-		rv = SSL_get_verify_result(hSession->ssl.con);
-	}
-	*/
-
+#ifdef SSL_ENABLE_CRL_CHECK
 	if(SSL_get_verify_result(hSession->ssl.con) == X509_V_ERR_UNABLE_TO_GET_CRL && hSession->ssl.crl.cert && peer)
 	{
 		//
@@ -318,6 +270,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		X509_STORE_CTX_free(csc);
 
 	}
+#endif // SSL_ENABLE_CRL_CHECK
 
 	// Check validation state.
 	rv = SSL_get_verify_result(hSession->ssl.con);

@@ -325,7 +325,6 @@
 		<Unit filename="src/ssl/notify.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/ssl/private.h" />
 		<Unit filename="src/ssl/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>

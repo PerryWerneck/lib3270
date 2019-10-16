@@ -114,7 +114,7 @@ void lib3270_session_free(H3270 *h)
 
 	// Release hostname info
 	release_pointer(h->host.current);
-	release_pointer(h->host.full);
+	release_pointer(h->host.url);
 	release_pointer(h->host.srvc);
 	release_pointer(h->host.qualified);
 

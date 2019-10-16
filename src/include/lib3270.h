@@ -579,7 +579,7 @@
 	 * @return Pointer to host URL set (internal data, do not change it)
 	 *
 	 */
-	 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h);
+	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h));
 
 
 	/**

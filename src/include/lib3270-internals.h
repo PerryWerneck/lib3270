@@ -402,13 +402,12 @@ struct _h3270
 
 	struct
 	{
+		char 	   	    	* url;				/**< The host URL, for use in reconnecting */
 		char				* current;			/**< The hostname part, stripped of qualifiers, luname and port number */
-		char 	   	    	* full;				/**< The entire string, for use in reconnecting */
 		char				* srvc;				/**< The service name */
 		char	   	    	* qualified;
 	} host;
 
-	// char					* proxy;			/**< Proxy server (type:host[:port]) */
 	char					* termname;
 
 	struct lib3270_charset	  charset;
@@ -506,6 +505,7 @@ struct _h3270
 	/// @brief Proxy
 	struct
 	{
+		char					* proxy;			///< Proxy server (type:host[:port])
 		int						  type;
 		char					* host;
 		char					* portname;

@@ -99,6 +99,10 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 
 	}
 #endif // HAVE_LDAP
+	else if(strncasecmp(consturl,"http://",7) == 0 && strlen(consturl) > 8)
+	{
+		return get_crl_using_http(hSession, message, consturl);
+	}
 	else
 	{
 #ifdef HAVE_LIBCURL

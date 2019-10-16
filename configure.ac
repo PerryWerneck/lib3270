@@ -447,16 +447,29 @@ AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])],
 AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname)
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
+dnl ---------------------------------------------------------------------------
+dnl OS Defs
+dnl ---------------------------------------------------------------------------
+
 case "$host" in
 	*-mingw32|*-pc-msys)
+
 		AC_SUBST(SONAME,lib$app_cv_libname.dll)
+
+		if test "$app_cv_enable_crl_check" == "yes"; then
+			LIBS="$LIBS -lwinhttp"
+		fi
+
 		;;
 
  	s390x-*)
+
 		AC_SUBST(SONAME,lib$app_cv_libname.so)
+
 		;;
 
  	*)
+
 		AC_SUBST(SONAME,lib$app_cv_libname.so.$app_vrs_major.$app_vrs_minor)
 
 esac

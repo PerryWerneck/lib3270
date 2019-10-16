@@ -43,7 +43,10 @@ int main(int argc, char *argv[])
 
 	printf("3270 session %p created\n]",h);
 
+#ifdef HAVE_LDAP
 	lib3270_set_crl_prefered_protocol(h,"ldap");
+#endif // HAVE_LDAP
+
 	lib3270_set_url(h,NULL);
 
 	int long_index =0;

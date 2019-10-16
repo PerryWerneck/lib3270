@@ -39,10 +39,8 @@
 
 #include <malloc.h>
 #include <lib3270-internals.h>
-// #include "appres.h"
 #include "resources.h"
 
-//#include "actionsc.h"
 #include "hostc.h"
 #include "statusc.h"
 #include "popupsc.h"
@@ -50,6 +48,7 @@
 #include "trace_dsc.h"
 #include "utilc.h"
 #include "xioc.h"
+#include "../ssl/crl.h"
 
 #include <errno.h>
 #include <lib3270/internals.h>
@@ -232,6 +231,10 @@ static void update_url(H3270 *hSession)
 					hSession->host.current,
 					hSession->host.srvc
 		));
+
+#ifdef SSL_ENABLE_CRL_CHECK
+	lib3270_crl_free(hSession);
+#endif // SSL_ENABLE_CRL_CHECK
 
 	hSession->cbk.update_url(hSession, hSession->host.full);
 

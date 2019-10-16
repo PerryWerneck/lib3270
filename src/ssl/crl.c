@@ -50,6 +50,12 @@ void lib3270_crl_free(H3270 *hSession)
 		hSession->ssl.crl.cert = NULL;
 	}
 
+	if(hSession->ssl.crl.url)
+	{
+		free(hSession->ssl.crl.url);
+		hSession->ssl.crl.url = NULL;
+	}
+
 }
 
 void lib3270_crl_free_if_expired(H3270 *hSession)

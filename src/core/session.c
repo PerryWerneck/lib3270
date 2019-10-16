@@ -77,12 +77,6 @@ void lib3270_session_free(H3270 *h)
 	shutdown_toggles(h);
 
 #ifdef SSL_ENABLE_CRL_CHECK
-	if(h->ssl.crl.url)
-	{
-		free(h->ssl.crl.url);
-		h->ssl.crl.url = NULL;
-	}
-
 	if(h->ssl.crl.prefer)
 	{
 		free(h->ssl.crl.prefer);

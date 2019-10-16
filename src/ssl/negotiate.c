@@ -164,8 +164,11 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 #ifdef SSL_CRL_URL
 
 	// Load CRL from pre-defined URL
-	if(lib3270_crl_new_from_url(hSession, message, SSL_CRL_URL))
-		return EACCES;
+	if(!hSession->ssl.crl.cert)
+	{
+		if(lib3270_crl_new_from_url(hSession, message, SSL_CRL_URL))
+			return EACCES;
+	}
 
 #endif // SSL_CRL_URL
 

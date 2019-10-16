@@ -45,7 +45,7 @@ static inline void lib3270_autoptr_cleanup_FILE(FILE **file)
 		fclose(*file);
 }
 
-LIB3270_INTERNAL X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
+X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
 	X509_CRL * x509_crl = NULL;
 

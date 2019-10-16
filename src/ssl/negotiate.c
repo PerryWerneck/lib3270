@@ -282,12 +282,10 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
-#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
 		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
 		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
 		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
 		return EACCES;
-#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
 
 	}
 	else

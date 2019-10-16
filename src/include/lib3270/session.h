@@ -66,6 +66,7 @@
 		void (*update_model)(H3270 *session, const char *name, int model, int rows, int cols);
 		void (*update_selection)(H3270 *session, int start, int end);
 		void (*update_ssl)(H3270 *session, LIB3270_SSL_STATE state);
+		void (*update_url)(H3270 *session, const char *url);
 
 		void (*set_timer)(H3270 *session, unsigned char on);
 		void (*erase)(H3270 *session);

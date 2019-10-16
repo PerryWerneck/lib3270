@@ -276,6 +276,11 @@ static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_U
 {
 }
 
+static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*url))
+{
+}
+
+
 void lib3270_reset_callbacks(H3270 *hSession)
 {
 	// Default calls
@@ -309,6 +314,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.load					= load;
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
+	hSession->cbk.update_url			= default_update_url;
 }
 
 static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)

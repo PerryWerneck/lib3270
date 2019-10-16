@@ -219,19 +219,21 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 	trace("%s ends",__FUNCTION__);
 }
 
-static void update_host(H3270 *h)
+static void update_url(H3270 *hSession)
 {
-	Replace(h->host.full,
+	Replace(hSession->host.full,
 			lib3270_strdup_printf(
 				"%s%s:%s",
 #ifdef HAVE_LIBSSL
-					(h->ssl.enabled ? "tn3270s://" : "tn3270://"),
+					(hSession->ssl.enabled ? "tn3270s://" : "tn3270://"),
 #else
 					"tn3270://",
 #endif // HAVE_LIBSSL
-					h->host.current,
-					h->host.srvc
+					hSession->host.current,
+					hSession->host.srvc
 		));
+
+	hSession->cbk.update_url(hSession, hSession->host.full);
 
 }
 
@@ -381,7 +383,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	}
 
 	// Notifica atualização
-	update_host(h);
+	update_url(h);
 
 	return 0;
 }
@@ -398,7 +400,7 @@ LIB3270_EXPORT void lib3270_set_hostname(H3270 *h, const char *hostname)
 {
     CHECK_SESSION_HANDLE(h);
 	Replace(h->host.current,strdup(hostname));
-	update_host(h);
+	update_url(h);
 }
 
 LIB3270_EXPORT const char * lib3270_get_srvcname(const H3270 *h)
@@ -412,7 +414,7 @@ LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc)
 {
     CHECK_SESSION_HANDLE(h);
 	Replace(h->host.srvc,strdup(srvc));
-	update_host(h);
+	update_url(h);
 }
 
 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h)

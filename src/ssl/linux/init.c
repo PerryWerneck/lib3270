@@ -106,6 +106,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
 	X509_STORE_set1_param(store, param);
 	X509_VERIFY_PARAM_free(param);
+
 	trace_ssl(hSession,"CRL CHECK was enabled\n");
 
 #endif // SSL_ENABLE_CRL_CHECK

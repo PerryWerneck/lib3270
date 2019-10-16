@@ -849,11 +849,11 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	 */
 	LIB3270_INTERNAL int popup_ssl_error(H3270 *session, int rc, const char *title, const char *summary, const char *body);
 
-	#ifdef SSL_ENABLE_CRL_CHECK
-		LIB3270_INTERNAL X509_CRL * lib3270_get_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *url);
-		LIB3270_INTERNAL int lib3270_get_crl_from_url(H3270 *hSession, void *ssl_error, const char *url);
-		LIB3270_INTERNAL int lib3270_get_crl_from_dist_points(H3270 *hSession, CRL_DIST_POINTS * dist_points, void *ssl_error);
-	#endif // SSL_ENABLE_CRL_CHECK
+	/**
+	 * @brief Emite popup on SSL error.
+	 *
+	 */
+	LIB3270_INTERNAL int notify_ssl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *message);
 
 #endif
 

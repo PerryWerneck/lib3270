@@ -48,6 +48,8 @@
 		#define SSL_ST_OK 3
 	#endif // !SSL_ST_OK
 
+	#include "crl.h"
+
 #endif
 
 #include <errno.h>
@@ -133,7 +135,7 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	return 0;
 }
 
-#if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
+#if !defined(SSL_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
 int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 {
 	debug("%s(%d)",__FUNCTION__,ok);
@@ -152,8 +154,26 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 */
 	return ok;
 }
-#endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK
+#endif // !SSL_CRL_URL && SSL_ENABLE_CRL_CHECK
 
+static int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
+{
+	debug("%s(%d)",__FUNCTION__,ok);
+
+/*
+  55     {
+  56         if (!ok) {
+  57             Category::getInstance("OpenSSL").error(
+  58                 "path validation failure at depth(%d): %s",
+  59                 X509_STORE_CTX_get_error_depth(ctx),
+  60                 X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx))
+  61                 );
+  62         }
+  63         return ok;
+  64     }
+*/
+	return ok;
+}
 
 static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
@@ -234,7 +254,21 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		hSession->cbk.set_peer_certificate(peer);
 
-#if !defined(SSL_DEFAULT_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
+#ifdef SSL_CRL_URL
+
+		// Load CRL from pre-defined URL
+		if(lib3270_crl_new_from_url(hSession, message, SSL_CRL_URL))
+			return EACCES;
+
+#endif // SSL_CRL_URL
+
+	}
+
+	/*
+	if(peer)
+	{
+
+#if !defined(SSL_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
 		//
 		// No default CRL, try to download from the peer
 		//
@@ -274,17 +308,60 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		// No CRL download, use the standard verification.
 		rv = SSL_get_verify_result(hSession->ssl.con);
 
-#endif // !SSL_DEFAULT_CRL_URL && SSL_ENABLE_CRL_CHECK
+#endif // !SSL_CRL_URL && SSL_ENABLE_CRL_CHECK
 
 	}
 	else
 	{
 		rv = SSL_get_verify_result(hSession->ssl.con);
 	}
+	*/
 
+	if(SSL_get_verify_result(hSession->ssl.con) == X509_V_ERR_UNABLE_TO_GET_CRL && hSession->ssl.crl.cert)
+	{
+		// Verify CRL
+		//
+		// References:
+		//
+		// http://www.zedwood.com/article/cpp-check-crl-for-revocation
+		//
 
-	// Validate certificate.
+		trace_ssl(hSession,"Doing CRL check using %s\n",hSession->ssl.crl.url);
 
+		// Got CRL, verify it!
+		// Reference: https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
+		X509_STORE_CTX *csc = X509_STORE_CTX_new();
+		X509_STORE_CTX_set_verify_cb(csc, x509_store_ctx_error_callback);
+		X509_STORE_CTX_init(csc, SSL_CTX_get_cert_store(ssl_ctx), peer, NULL);
+
+/*
+#ifdef SSL_ENABLE_CRL_CHECK
+		// Enable CRL check
+		X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+		X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
+		X509_STORE_CTX_set0_param(csc, param);
+#endif // SSL_ENABLE_CRL_CHECK
+*/
+
+		if(X509_verify_cert(csc) != 1)
+			rv = X509_STORE_CTX_get_error(csc);
+		else
+			rv = X509_V_OK;
+
+		debug("CRL Check response was %d", rv);
+
+		SSL_set_verify_result(hSession->ssl.con, rv);
+
+		X509_STORE_CTX_free(csc);
+
+#ifdef SSL_ENABLE_CRL_CHECK
+//		X509_VERIFY_PARAM_free(param);
+#endif // SSL_ENABLE_CRL_CHECK
+
+	}
+
+	// Check validation state.
+	rv = SSL_get_verify_result(hSession->ssl.con);
 	debug("SSL Verify result was %d", rv);
 	const struct ssl_status_msg * msg = ssl_get_status_from_error_code((long) rv);
 
@@ -526,45 +603,3 @@ void ssl_info_callback(INFO_CONST SSL *s, int where, int ret)
 
 #endif /*]*/
 
-int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const char GNUC_UNUSED(*title), const char *summary, const char *body)
-{
-#ifdef _WIN32
-
-	lib3270_autoptr(char) rcMessage = lib3270_strdup_printf("The error code was %d",rc);
-
-	const char *outMsg[] = {
-		title,
-		summary,
-		(body ? body : ""),
-		rcMessage
-	};
-
-	ReportEvent(
-		hEventLog,
-		EVENTLOG_ERROR_TYPE,
-		1,
-		0,
-		NULL,
-		(sizeof(outMsg)/sizeof(outMsg[0])),
-		0,
-		outMsg,
-		NULL
-	);
-
-#else
-
-	lib3270_write_log(hSession, "SSL", "%s %s (rc=%d)", summary, (body ? body : ""), rc);
-
-#endif // _WIN32
-
-#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
-
-	return hSession->cbk.popup_ssl_error(hSession,rc,title,summary,body);
-
-#else
-
-	return 0;
-
-#endif // SSL_ENABLE_NOTIFICATION_WHEN_FAILED
-
-}

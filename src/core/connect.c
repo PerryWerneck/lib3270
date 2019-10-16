@@ -36,9 +36,7 @@
 #include <lib3270/toggle.h>
 #include <trace_dsc.h>
 
-#if defined(HAVE_LIBSSL)
-	#include <openssl/err.h>
-#endif
+#include "../ssl/crl.h"
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
@@ -55,104 +53,22 @@
 
  }
 
-static int background_ssl_crl_get(H3270 *hSession, void *ssl_error)
-{
-	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) ssl_error)) {
+
+#if defined(HAVE_LIBSSL)
+
+ static int background_ssl_init(H3270 *hSession, void *ssl_error)
+ {
+	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) ssl_error))
 		return -1;
-	}
 
-	// Do I have X509 CRL?
-	if(hSession->ssl.crl.cert)
-	{
-		// Ok, have it. Is it valid?
-
-		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
-		// X509_CRL_get_nextUpdate is deprecated in openssl 1.1.0
-		#if OPENSSL_VERSION_NUMBER < 0x10100000L
-			const ASN1_TIME * next_update = X509_CRL_get_nextUpdate(hSession->ssl.crl.cert);
-		#else
-			const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(hSession->ssl.crl.cert);
-		#endif
-
-		if(X509_cmp_current_time(next_update) == 1)
-		{
-			int day, sec;
-			if(ASN1_TIME_diff(&day, &sec, NULL, next_update))
-			{
-				trace_ssl(hSession,"CRL Certificate is valid for %d day(s) and %d second(s)\n",day,sec);
-				return 0;
-			}
-			else
-			{
-				trace_ssl(hSession,"Can't get CRL next update, releasing it\n");
-			}
-
-		}
-		else
-		{
-			trace_ssl(hSession,"CRL Certificate is no longer valid\n");
-		}
-
-		// Certificate is no longer valid, release it.
-		X509_CRL_free(hSession->ssl.crl.cert);
-		hSession->ssl.crl.cert = NULL;
-
-	}
-
-	//
-	// Get CRL
-	//
-	// https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
-	//
-	return lib3270_get_crl_from_url(hSession, ssl_error, lib3270_get_crl_url(hSession));
-
-}
-
-#ifdef SSL_ENABLE_CRL_CHECK
-static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *message)
-{
-	lib3270_write_log(
-		hSession,
-		"SSL-CRL-GET",
-		"CRL GET error: %s (rc=%d ssl_error=%d)",
-			message->title,
-			rc,
-			message->error
-	);
-
-	if(message->description)
-	{
-		if(popup_ssl_error(hSession,rc,message->title,message->text,message->description))
-			return rc;
-	}
-#ifdef _WIN32
-	else if(message->lasterror)
-	{
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(message->lasterror);
-		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "Windows error was \"%s\" (%u)" ), windows_error,(unsigned int) message->lasterror);
-
-		if(popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
-			return rc;
-
-	}
-#endif // WIN32
-	else if(message->error)
-	{
-		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "%s (SSL error %d)" ),ERR_reason_error_string(message->error),message->error);
-		lib3270_write_log(hSession,"SSL-CRL-GET","%s",formatted_error);
-
-		if(popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
-			return rc;
-	}
-	else
-	{
-		if(popup_ssl_error(hSession,rc,message->title,message->text,""))
-			return rc;
-	}
+#if defined(SSL_ENABLE_CRL_CHECK)
+	lib3270_crl_free_if_expired(hSession);
+#endif // defined(SSL_ENABLE_CRL_CHECK)
 
 	return 0;
-}
-#endif // SSL_ENABLE_CRL_CHECK
+ }
+
+#endif // HAVE_LIBSSL
 
  int lib3270_reconnect(H3270 *hSession, int seconds)
  {
@@ -186,24 +102,20 @@ static int notify_crl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *me
 		}
 	}
 
-#ifdef SSL_ENABLE_CRL_CHECK
-
-	SSL_ERROR_MESSAGE ssl_error;
-	memset(&ssl_error,0,sizeof(ssl_error));
-
-	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
-	int rc = lib3270_run_task(hSession, background_ssl_crl_get, &ssl_error);
-
-	debug("CRL check returns %d",rc);
-
-	if(rc && notify_crl_error(hSession, rc,&ssl_error))
-		return errno = rc;
-
-#endif // SSL_ENABLE_CRL_CHECK
-
 #if defined(HAVE_LIBSSL)
-	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-	hSession->ssl.host  = 0;
+	{
+		SSL_ERROR_MESSAGE ssl_error;
+		memset(&ssl_error,0,sizeof(ssl_error));
+
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
+		int rc = lib3270_run_task(hSession, background_ssl_init, &ssl_error);
+
+		if(rc && notify_ssl_error(hSession, rc, &ssl_error))
+			return errno = rc;
+
+		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+		hSession->ssl.host  = 0;
+	}
 #endif // HAVE_LIBSSL
 
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);

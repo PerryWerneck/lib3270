@@ -44,6 +44,7 @@
 #include "kybdc.h"
 #include "3270ds.h"
 #include "popupsc.h"
+#include "../ssl/crl.h"
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 
@@ -88,11 +89,7 @@ void lib3270_session_free(H3270 *h)
 		h->ssl.crl.prefer = NULL;
 	}
 
-	if(h->ssl.crl.cert)
-	{
-		X509_CRL_free(h->ssl.crl.cert);
-		h->ssl.crl.cert = NULL;
-	}
+	lib3270_crl_free(h);
 #endif // SSL_ENABLE_CRL_CHECK
 
 	// Release state change callbacks

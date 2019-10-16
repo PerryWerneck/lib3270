@@ -72,7 +72,7 @@
 	#undef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 
 	/* If defined uses a hardcoded CRL path */
-	#undef SSL_DEFAULT_CRL_URL
+	#undef SSL_CRL_URL
 
 	/* Optional parts. */
 	#undef X3270_DBCS

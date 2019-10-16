@@ -388,10 +388,10 @@ if test "$app_cv_enable_crl_check" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
 fi
 
-AC_ARG_WITH([default-crl-url],
-	[AS_HELP_STRING([--with-default-crl-url], [Set lib3270 default crl url])],
+AC_ARG_WITH([crl-url],
+	[AS_HELP_STRING([--with-crl-url], [Set a hardcoded URL for CRL download])],
 [
-	AC_DEFINE_UNQUOTED(SSL_DEFAULT_CRL_URL,"$withval")
+	AC_DEFINE_UNQUOTED(SSL_CRL_URL,"$withval")
 ],[
 	AC_MSG_NOTICE(No default crl url)
 ])

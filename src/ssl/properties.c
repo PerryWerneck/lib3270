@@ -124,11 +124,11 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 	if(hSession->ssl.crl.url)
 		return hSession->ssl.crl.url;
 
-#ifdef SSL_DEFAULT_CRL_URL
-	return SSL_DEFAULT_CRL_URL;
+#ifdef SSL_CRL_URL
+	return SSL_CRL_URL;
 #else
 	return getenv("LIB3270_DEFAULT_CRL");
-#endif // SSL_DEFAULT_CRL_URL
+#endif // SSL_CRL_URL
 
 #else
 	errno = ENOTSUP;

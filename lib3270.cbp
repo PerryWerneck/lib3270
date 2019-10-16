@@ -232,6 +232,7 @@
 		<Unit filename="src/include/cg.h" />
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
+		<Unit filename="src/include/crl.h" />
 		<Unit filename="src/include/ctlrc.h" />
 		<Unit filename="src/include/ft_cut_ds.h" />
 		<Unit filename="src/include/ft_cutc.h" />
@@ -304,6 +305,7 @@
 		<Unit filename="src/ssl/crl.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/ssl/crl.h" />
 		<Unit filename="src/ssl/linux/curl.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -320,6 +322,10 @@
 		<Unit filename="src/ssl/negotiate.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/ssl/notify.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ssl/private.h" />
 		<Unit filename="src/ssl/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>

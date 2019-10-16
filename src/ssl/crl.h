@@ -49,10 +49,32 @@
 	/// @brief Load CRL from URL.
 	LIB3270_INTERNAL int lib3270_crl_new_from_url(H3270 *hSession, void *ssl_error, const char *url);
 
+	/// @brief Load CRL from X509 certificate.
+	LIB3270_INTERNAL int lib3270_crl_new_from_x509(H3270 *hSession, void *ssl_error, X509 *cert);
+
+	/// @brief Load CRL from distribution points.
+	LIB3270_INTERNAL int lib3270_crl_new_from_dist_points(H3270 *hSession, void *ssl_error, CRL_DIST_POINTS * dist_points);
 
 	LIB3270_INTERNAL X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *url);
-//		LIB3270_INTERNAL int lib3270_get_crl_from_url(H3270 *hSession, void *ssl_error, const char *url);
-//		LIB3270_INTERNAL int lib3270_get_crl_from_dist_points(H3270 *hSession, CRL_DIST_POINTS * dist_points, void *ssl_error);
+
+	/**
+	 * @brief X509 auto-cleanup.
+	 */
+	static inline void lib3270_autoptr_cleanup_X509(X509 **ptr)
+	{
+		if(*ptr)
+			X509_free(*ptr);
+	}
+
+	/**
+	 * @brief Dist points auto-cleanup.
+	 */
+	static inline void lib3270_autoptr_cleanup_CRL_DIST_POINTS(CRL_DIST_POINTS **ptr)
+	{
+		if(*ptr)
+			CRL_DIST_POINTS_free(*ptr);
+	}
+
 
 #endif // SSL_ENABLE_CRL_CHECK && HAVE_LIBSSL
 

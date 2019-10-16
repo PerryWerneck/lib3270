@@ -34,6 +34,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <trace_dsc.h>
+#include <array.h>
 
 #include "crl.h"
 
@@ -135,6 +136,128 @@ int lib3270_crl_new_from_url(H3270 *hSession, void *ssl_error, const char *url)
 		}
 
 		return 0;
+	}
+
+	return -1;
+
+}
+
+/// @brief Load CRL from X509 certificate.
+int lib3270_crl_new_from_x509(H3270 *hSession, void *ssl_error, X509 *cert)
+{
+	// References:
+	//
+	// http://www.zedwood.com/article/cpp-check-crl-for-revocation
+	//
+	lib3270_autoptr(CRL_DIST_POINTS) dist_points = (CRL_DIST_POINTS *) X509_get_ext_d2i(cert, NID_crl_distribution_points, NULL, NULL);
+
+	if(!dist_points)
+	{
+		((SSL_ERROR_MESSAGE *) ssl_error)->title = _( "Security error" );
+		((SSL_ERROR_MESSAGE *) ssl_error)->text = _( "Can't verify." );
+		((SSL_ERROR_MESSAGE *) ssl_error)->description = _( "The host certificate doesn't have CRL distribution points" );
+		return EACCES;
+	}
+
+	if(lib3270_crl_new_from_dist_points(hSession, ssl_error, dist_points))
+		return EACCES;
+
+	return 0;
+}
+
+int lib3270_crl_new_from_dist_points(H3270 *hSession, void *ssl_error, CRL_DIST_POINTS * dist_points)
+{
+	//
+	// Reference:
+	//
+	// https://nougat.cablelabs.com/DLNA-RUI/openssl/commit/57912ed329f870b237f2fd9f2de8dec3477d1729
+	//
+	size_t ix;
+	int i, gtype;
+
+	lib3270_autoptr(LIB3270_STRING_ARRAY) uris = lib3270_string_array_new();
+
+	for(ix = 0; ix < (size_t) sk_DIST_POINT_num(dist_points); ix++) {
+
+		DIST_POINT *dp = sk_DIST_POINT_value(dist_points, ix);
+
+		if(!dp->distpoint || dp->distpoint->type != 0)
+			continue;
+
+		GENERAL_NAMES *gens = dp->distpoint->name.fullname;
+
+		for (i = 0; i < sk_GENERAL_NAME_num(gens); i++)
+		{
+			GENERAL_NAME *gen = sk_GENERAL_NAME_value(gens, i);
+			ASN1_STRING *uri = GENERAL_NAME_get0_value(gen, &gtype);
+			if(uri)
+			{
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000L) // OpenSSL 1.1.0+
+				const unsigned char * data = ASN1_STRING_get0_data(uri);
+#else
+				const unsigned char * data = ASN1_STRING_data(uri); // ASN1_STRING_get0_data(uri);
+#endif // OpenSSL 1.1.0+
+				if(data)
+				{
+					lib3270_string_array_append(uris,(char *) data);
+				}
+			}
+
+		}
+
+	}
+
+#ifdef DEBUG
+	{
+		for(ix = 0; ix < uris->length; ix++)
+		{
+			debug("%u: %s", (unsigned int) ix, uris->str[ix]);
+		}
+	}
+#endif // DEBUG
+
+	if(hSession->ssl.crl.url)
+	{
+		// Check if the current URL is still valid.
+		for(ix = 0; ix < uris->length; ix++)
+		{
+			if(!strcmp(hSession->ssl.crl.url,uris->str[ix]))
+			{
+				trace_ssl(hSession,"Keeping CRL from %s\n",hSession->ssl.crl.url);
+				return 0;
+			}
+		}
+
+		trace_ssl(hSession,"Discarding invalid CRL from %s\n",hSession->ssl.crl.url);
+
+		// The URL is invalid or not to this cert, remove it!
+		lib3270_free(hSession->ssl.crl.url);
+		hSession->ssl.crl.url = NULL;
+	}
+
+	if(hSession->ssl.crl.prefer && *hSession->ssl.crl.prefer)
+	{
+		size_t length = strlen(hSession->ssl.crl.prefer);
+
+		for(ix = 0; ix < uris->length; ix++)
+		{
+			if(!strncmp(uris->str[ix],hSession->ssl.crl.prefer,length))
+			{
+				trace_ssl(hSession,"Trying preferred URL %s\n",uris->str[ix]);
+				if(lib3270_crl_new_from_url(hSession, ssl_error, uris->str[ix]) == 0)
+					return 0;
+			}
+
+		}
+
+	}
+
+	// Can't load, try all of them.
+	for(ix = 0; ix < uris->length; ix++)
+	{
+		trace_ssl(hSession,"Trying CRL from %s\n",uris->str[ix]);
+		if(lib3270_crl_new_from_url(hSession, ssl_error, uris->str[ix]) == 0)
+			return 0;
 	}
 
 	return -1;

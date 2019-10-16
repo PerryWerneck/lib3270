@@ -42,7 +42,6 @@
 	#include <openssl/err.h>
 	#include <openssl/x509_vfy.h>
 	#include <openssl/x509v3.h>
-	#include <array.h>
 
 	#ifndef SSL_ST_OK
 		#define SSL_ST_OK 3
@@ -76,24 +75,6 @@
  *
  */
  SSL_CTX * ssl_ctx = NULL;
-
- /**
-  * @brief X509 auto-cleanup.
-  */
-static inline void lib3270_autoptr_cleanup_X509(X509 **ptr)
-{
-	if(*ptr)
-		X509_free(*ptr);
-}
-
- /**
-  * @brief Dist points auto-cleanup.
-  */
-static inline void lib3270_autoptr_cleanup_CRL_DIST_POINTS(CRL_DIST_POINTS **ptr)
-{
-	if(*ptr)
-		CRL_DIST_POINTS_free(*ptr);
-}
 
 /**
  * @brief Initialize openssl session.
@@ -135,7 +116,7 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	return 0;
 }
 
-#if !defined(SSL_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
+#if defined(SSL_ENABLE_CRL_CHECK)
 int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 {
 	debug("%s(%d)",__FUNCTION__,ok);
@@ -154,26 +135,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 */
 	return ok;
 }
-#endif // !SSL_CRL_URL && SSL_ENABLE_CRL_CHECK
-
-static int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
-{
-	debug("%s(%d)",__FUNCTION__,ok);
-
-/*
-  55     {
-  56         if (!ok) {
-  57             Category::getInstance("OpenSSL").error(
-  58                 "path validation failure at depth(%d): %s",
-  59                 X509_STORE_CTX_get_error_depth(ctx),
-  60                 X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx))
-  61                 );
-  62         }
-  63         return ok;
-  64     }
-*/
-	return ok;
-}
+#endif // SSL_ENABLE_CRL_CHECK
 
 static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
@@ -198,6 +160,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		return -1;
 	}
+
+#ifdef SSL_CRL_URL
+
+	// Load CRL from pre-defined URL
+	if(lib3270_crl_new_from_url(hSession, message, SSL_CRL_URL))
+		return EACCES;
+
+#endif // SSL_CRL_URL
 
 	trace_ssl(hSession, "%s","Running SSL_connect\n");
 	rv = SSL_connect(hSession->ssl.con);
@@ -254,13 +224,15 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		hSession->cbk.set_peer_certificate(peer);
 
-#ifdef SSL_CRL_URL
+#ifdef SSL_ENABLE_CRL_CHECK
 
-		// Load CRL from pre-defined URL
-		if(lib3270_crl_new_from_url(hSession, message, SSL_CRL_URL))
-			return EACCES;
+		if(!hSession->ssl.crl.cert)
+		{
+			if(lib3270_crl_new_from_x509(hSession, message, peer))
+				return EACCES;
+		}
 
-#endif // SSL_CRL_URL
+#endif // SSL_ENABLE_CRL_CHECK
 
 	}
 
@@ -271,10 +243,6 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 #if !defined(SSL_CRL_URL) && defined(SSL_ENABLE_CRL_CHECK)
 		//
 		// No default CRL, try to download from the peer
-		//
-		// References:
-		//
-		// http://www.zedwood.com/article/cpp-check-crl-for-revocation
 		//
 
 		lib3270_autoptr(CRL_DIST_POINTS) dist_points = (CRL_DIST_POINTS *) X509_get_ext_d2i(peer, NID_crl_distribution_points, NULL, NULL);
@@ -317,8 +285,9 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	}
 	*/
 
-	if(SSL_get_verify_result(hSession->ssl.con) == X509_V_ERR_UNABLE_TO_GET_CRL && hSession->ssl.crl.cert)
+	if(SSL_get_verify_result(hSession->ssl.con) == X509_V_ERR_UNABLE_TO_GET_CRL && hSession->ssl.crl.cert && peer)
 	{
+		//
 		// Verify CRL
 		//
 		// References:
@@ -334,29 +303,16 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		X509_STORE_CTX_set_verify_cb(csc, x509_store_ctx_error_callback);
 		X509_STORE_CTX_init(csc, SSL_CTX_get_cert_store(ssl_ctx), peer, NULL);
 
-/*
-#ifdef SSL_ENABLE_CRL_CHECK
-		// Enable CRL check
-		X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-		X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
-		X509_STORE_CTX_set0_param(csc, param);
-#endif // SSL_ENABLE_CRL_CHECK
-*/
-
 		if(X509_verify_cert(csc) != 1)
 			rv = X509_STORE_CTX_get_error(csc);
 		else
 			rv = X509_V_OK;
 
-		debug("CRL Check response was %d", rv);
+		trace_ssl(hSession, "X509_verify_cert error code was %d", rv);
 
 		SSL_set_verify_result(hSession->ssl.con, rv);
 
 		X509_STORE_CTX_free(csc);
-
-#ifdef SSL_ENABLE_CRL_CHECK
-//		X509_VERIFY_PARAM_free(param);
-#endif // SSL_ENABLE_CRL_CHECK
 
 	}
 
@@ -393,14 +349,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
-	#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
 			((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
 			((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
 			return EACCES;
-	#else
+#else
 			break;
-	#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 
 		default:
 			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->description);

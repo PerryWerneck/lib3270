@@ -363,30 +363,30 @@ if test "$app_cv_self_signed_certs" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_SELF_SIGNED_CERT_CHECK)
 fi
 
+AC_ARG_ENABLE([ssl-crl-check],
+	[AS_HELP_STRING([--disable-ssl-crl-check], [Disable use of SSL Certificate Revocation List])],
+[
+	app_cv_enable_crl_check="$enableval"
+],[
+	app_cv_enable_crl_check="yes"
+])
+
+if test "$app_cv_enable_crl_check" == "yes"; then
+	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
+fi
+
 AC_ARG_ENABLE([crl-expiration-check],
-	[AS_HELP_STRING([--enable-crl-expiration-check], [Reject SSL connection when host presents an expired certificate revocation list])],
+	[AS_HELP_STRING([--disable-crl-expiration-check], [Reject SSL connection when host presents an expired certificate revocation list])],
 [
 	app_cv_expired_crl="$enableval"
 ],[
-	app_cv_expired_crl="no"
+	app_cv_expired_crl="yes"
 ])
 
 if test "$app_cv_expired_crl" == "yes"; then
 	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK)
 fi
 
-
-AC_ARG_ENABLE([ssl-crl-check],
-	[AS_HELP_STRING([--enable-ssl-crl-check], [Enable use of SSL Certificate Revocation List])],
-[
-	app_cv_enable_crl_check="$enableval"
-],[
-	app_cv_enable_crl_check="no"
-])
-
-if test "$app_cv_enable_crl_check" == "yes"; then
-	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
-fi
 
 AC_ARG_WITH([crl-url],
 	[AS_HELP_STRING([--with-crl-url], [Set a hardcoded URL for CRL download])],

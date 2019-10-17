@@ -55,18 +55,29 @@ static void lib3270_autoptr_cleanup_HINTERNET(HINTERNET **hInternet)
 
 X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
-	// Strip URL.
-	lib3270_autoptr(char) urldup = lib3270_unescape(consturl);
+	wchar_t wHostname[4096];
+	wchar_t wPath[4096];
 
-	char *hostname = strstr(urldup,"://");
-	if(!hostname)
-		hostname = urldup;
-	else
-		hostname += 3;
+	{
+		// Strip URL
+		char * url = lib3270_unescape(consturl);
 
-	char *path = strchr(hostname,'/');
-	if(path)
-		*(path++) = 0;
+		char *hostname = strstr(url,"://");
+		if(!hostname)
+			hostname = url;
+		else
+			hostname += 3;
+
+		char *path = strchr(hostname,'/');
+		if(path)
+			*(path++) = 0;
+
+		mbstowcs(wHostname, hostname, strlen(hostname)+1);
+		mbstowcs(wPath, path, strlen(path)+1);
+
+		lib3270_free(url);
+
+	}
 
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winhttp/nf-winhttp-winhttpopenrequest
 
@@ -90,9 +101,6 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	}
 
 	// Connect to server
-	debug("Hostname: \"%s\"",hostname);
-	wchar_t wHostname[4096];
-	mbstowcs(wHostname, hostname, strlen(hostname)+1);
 	lib3270_autoptr(HINTERNET) hConnect = WinHttpConnect(httpSession, wHostname, INTERNET_DEFAULT_HTTP_PORT, 0);
 	if(!hConnect)
 	{
@@ -108,9 +116,6 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	}
 
 	// Create request.
-	debug("Path: \"%s\"",path);
-	wchar_t wPath[4096];
-	mbstowcs(wPath, path, strlen(path)+1);
 	lib3270_autoptr(HINTERNET) hRequest = WinHttpOpenRequest(hConnect, L"GET", wPath, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_ESCAPE_PERCENT);
 	if(!hConnect)
 	{
@@ -160,7 +165,8 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	lib3270_autoptr(char) httpText = lib3270_malloc(szResponse+1);
 	memset(httpText,0,szResponse+1);
 
-	debug("Response length: %u", (unsigned int) szResponse);
+	debug("Data block: %p",httpText);
+	debug("Response before: %u", (unsigned int) szResponse);
 
 	if(!WinHttpReadData(hRequest,httpText,szResponse,&szResponse)){
 		message->error = hSession->ssl.error = 0;
@@ -171,12 +177,17 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 		return NULL;
 	}
 
+	debug("Response after: %u", (unsigned int) szResponse);
+
 	//
 	// Parse CRL
 	//
 	X509_CRL * x509_crl = NULL;
 
-	if(!d2i_X509_CRL(&x509_crl, (const unsigned char **) &httpText, szResponse))
+	// Copy the pointer because d2i_X509_CRL changes the value!!!
+	const unsigned char *crl_data = (const unsigned char *) httpText;
+
+	if(!d2i_X509_CRL(&x509_crl,&crl_data, szResponse))
 	{
 		message->error = hSession->ssl.error = ERR_get_error();
 		message->title = _( "Security error" );
@@ -185,6 +196,7 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 		return NULL;
 	}
 
+	debug("**************URL:[%s]*********************",consturl);
 	return x509_crl;
 
 }

@@ -507,9 +507,11 @@ LIB3270_EXPORT void * lib3270_free(void *p)
 
 LIB3270_EXPORT void lib3270_autoptr_cleanup_char(char **ptr)
 {
-	if(*ptr)
-		free(*ptr);
-	*ptr = NULL;
+	if(ptr && *ptr)
+	{
+		free((void *) *ptr);
+		*ptr = NULL;
+	}
 }
 
 LIB3270_EXPORT void * lib3270_realloc(void *p, int len)

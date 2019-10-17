@@ -47,26 +47,39 @@
 		#define ENOTCONN 126
 	#endif // !ENOTCONN
 
-	#if defined(__GNUC__)
+	#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1) || defined (__clang__)
 
-		#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
 		#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
-		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
 
 	#elif defined(_WIN32)
 
 		#define LIB3270_DEPRECATED(func) __declspec(deprecated) func
-		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
-
-	#elif defined(__LCLINT__)
-
-		#define LIB3270_DEPRECATED(func) func
-		#define LIB3270_GNUC_NULL_TERMINATED
 
 	#else
 
 		#define LIB3270_DEPRECATED(func) func
+
+	#endif /* __GNUC__ */
+
+	#if defined(__GNUC__)
+
+		#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
+		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
+
+	#elif defined(_WIN32)
+
+		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
+		#define LIB3270_GNUC_FORMAT(s,f)
+
+	#elif defined(__LCLINT__)
+
 		#define LIB3270_GNUC_NULL_TERMINATED
+		#define LIB3270_GNUC_FORMAT(s,f)
+
+	#else
+
+		#define LIB3270_GNUC_NULL_TERMINATED
+		#define LIB3270_GNUC_FORMAT(s,f)
 
 	#endif
 
@@ -322,9 +335,7 @@
 		#define LIB3270_INTERNAL	extern __attribute__((visibility("hidden")))
 		#define LIB3270_EXPORT		extern __attribute__((visibility("hidden")))
 
-	#elif defined(_WIN32)
-
-		#include <windows.h>
+	#elif defined(_WIN32) || defined(_MSC_VER)
 
 		#define LIB3270_INTERNAL	extern
 		#define LIB3270_EXPORT		extern __declspec (dllexport)
@@ -334,10 +345,15 @@
 		#define LIB3270_INTERNAL	__hidden extern
 		#define LIB3270_EXPORT		extern
 
-	#else
+	#elif defined(__GNUC__) || defined(HAVE_GNUC_VISIBILITY)
 
 		#define LIB3270_INTERNAL	__attribute__((visibility("hidden"))) extern
 		#define LIB3270_EXPORT		__attribute__((visibility("default"))) extern
+
+	#else
+
+		#define LIB3270_INTERNAL
+		#define LIB3270_EXPORT
 
 	#endif
 

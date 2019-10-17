@@ -38,6 +38,8 @@
  *
  */
 
+#include <winsock2.h>
+#include <windows.h>
 #include <config.h>
 
 #if defined(HAVE_LIBSSL)

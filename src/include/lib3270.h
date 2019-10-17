@@ -51,7 +51,7 @@
 
 		#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
 
-	#elif defined(_WIN32)
+	#elif defined(_WIN32) && !defined(_MSC_VER)
 
 		#define LIB3270_DEPRECATED(func) __declspec(deprecated) func
 
@@ -66,14 +66,9 @@
 		#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
 		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
 
-	#elif defined(_WIN32)
+	#elif defined(_WIN32) && !defined(_MSC_VER)
 
 		#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
-		#define LIB3270_GNUC_FORMAT(s,f)
-
-	#elif defined(__LCLINT__)
-
-		#define LIB3270_GNUC_NULL_TERMINATED
 		#define LIB3270_GNUC_FORMAT(s,f)
 
 	#else

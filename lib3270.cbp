@@ -122,6 +122,9 @@
 		<Unit filename="src/core/linux/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/curl.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -308,9 +311,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/crl.h" />
-		<Unit filename="src/ssl/linux/curl.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/ssl/linux/getcrl.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -321,6 +321,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/linux/private.h" />
+		<Unit filename="src/ssl/linux/url.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/ssl/negotiate.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -331,9 +334,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/state.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/windows/curl.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/windows/getcrl.c">

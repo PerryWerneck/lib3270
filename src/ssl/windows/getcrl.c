@@ -107,7 +107,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 	{
 #ifdef HAVE_LIBCURL
 
-		return get_crl_using_curl(hSession, message, consturl);
+		return get_crl_using_url(hSession, message, consturl);
 
 #else
 		// Can't get CRL.

@@ -25,21 +25,17 @@
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
  *
- *
- * References:
- *
- * http://www.openssl.org/docs/ssl/
- * https://stackoverflow.com/questions/4389954/does-openssl-automatically-handle-crls-certificate-revocation-lists-now
- *
  */
 
 #include <config.h>
 
-#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBCURL)
+#if defined(HAVE_LIBCURL)
 
-#include "private.h"
+#include <lib3270-internals.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 #include <curl/curl.h>
-#include <lib3270/toggle.h>
 
 #define CRL_DATA_LENGTH 2048
 
@@ -57,7 +53,6 @@ typedef struct _curldata
 {
 	size_t		  		  length;
 	H3270				* hSession;
-	SSL_ERROR_MESSAGE	* message;
 	char 				  errbuf[CURL_ERROR_SIZE];
 	struct {
 		size_t			  length;
@@ -78,14 +73,6 @@ static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
 		}
 		lib3270_free(cdata);
 	}
-	*ptr = NULL;
-}
-
-static inline void lib3270_autoptr_cleanup_BIO(BIO **ptr)
-{
-	debug("%s(%p)",__FUNCTION__,*ptr);
-	if(*ptr)
-		BIO_free_all(*ptr);
 	*ptr = NULL;
 }
 
@@ -113,7 +100,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 		lib3270_trace_data(
 			data->hSession,
 			"Received",
-			(const char *) contents,
+			(const unsigned char *) contents,
 			realsize
 		);
 	}
@@ -169,38 +156,36 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 	lib3270_trace_data(
 		((CURLDATA *) userp)->hSession,
 		text,
-		data,
+		(const unsigned char *) data,
 		size
 	);
 
 	return 0;
 }
 
-LIB3270_INTERNAL X509_CRL * get_crl_using_curl(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
+char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message)
 {
-	X509_CRL * x509_crl = NULL;
+	lib3270_trace_event(hSession,"Getting data from %s",url);
 
 	// Use CURL to download the CRL
 	lib3270_autoptr(CURLDATA)	crl_data		= lib3270_malloc(sizeof(CURLDATA));
 	lib3270_autoptr(CURL)		hCurl			= curl_easy_init();
 
 	memset(crl_data,0,sizeof(CURLDATA));
-	crl_data->message		= message;
 	crl_data->hSession		= hSession;
 	crl_data->data.length	= CRL_DATA_LENGTH;
 	crl_data->data.contents = lib3270_malloc(crl_data->data.length);
 
 	if(!hCurl)
 	{
-		message->title			= _( "Security error" );
-		message->text			= _( "Error loading certificate revocation list" );
-		message->description	= _( "Can't initialize curl operation" );
+		*error_message= _( "Can't initialize curl operation" );
+		errno = EINVAL;
 		return NULL;
 	}
 
 	CURLcode res;
 
-	curl_easy_setopt(hCurl, CURLOPT_URL, consturl);
+	curl_easy_setopt(hCurl, CURLOPT_URL, url);
 	curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
 
 	curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data->errbuf);
@@ -221,105 +206,26 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_curl(H3270 *hSession, SSL_ERROR_MESSAG
 
 	if(res != CURLE_OK)
 	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-
 		if(crl_data->errbuf[0])
-		{
-			message->text = curl_easy_strerror(res);
-			message->description =  crl_data->errbuf;
-		}
-		else
-		{
-			message->text = _( "Error loading certificate revocation list" );
-			message->description =  curl_easy_strerror(res);
-		}
+			lib3270_write_log(hSession,"curl","%s: %s",url, crl_data->errbuf);
 
-		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
+		*error_message = curl_easy_strerror(res);
+
+		lib3270_write_log(hSession,"curl","%s: %s",url, *error_message);
 		errno = EINVAL;
 		return NULL;
 
 	}
 
-	char *ct = NULL;
-	res = curl_easy_getinfo(hCurl, CURLINFO_CONTENT_TYPE, &ct);
-	if(res != CURLE_OK)
-	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Error loading certificate revocation list" );
-		message->description =  curl_easy_strerror(res);
-		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
-		errno = EINVAL;
-		return NULL;
-	}
+	if(length)
+		*length = (size_t) crl_data->length;
 
-	if(lib3270_get_toggle(crl_data->hSession,LIB3270_TOGGLE_SSL_TRACE))
-		lib3270_trace_data(crl_data->hSession,"CRL Data",(const char *) crl_data->data.contents, (unsigned int) crl_data->length);
+	char * httpText = lib3270_malloc(crl_data->length+1);
+	memset(httpText,0,crl_data->length+1);
+	memcpy(httpText,crl_data->data.contents,crl_data->length);
 
-	if(ct)
-	{
-		const unsigned char * data = crl_data->data.contents;
-
-
-		if(strcasecmp(ct,"application/pkix-crl") == 0)
-		{
-			// CRL File, convert it
-			if(!d2i_X509_CRL(&x509_crl, &data, crl_data->length))
-			{
-				message->error = hSession->ssl.error = ERR_get_error();
-				message->title = _( "Security error" );
-				message->text = _( "Can't decode certificate revocation list" );
-				lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
-				return NULL;
-			}
-		}
-		else
-		{
-			message->error = hSession->ssl.error = ERR_get_error();
-			message->title = _( "Security error" );
-			message->text = _( "Got an invalid certificate revocation list from server" );
-			lib3270_write_log(hSession,"ssl","%s: content-type unexpected: \"%s\"",consturl, ct);
-			errno = EINVAL;
-			return NULL;
-		}
-	}
-	else if(strncasecmp(consturl,"ldap://",7) == 0)
-	{
-		// It's an LDAP query, assumes a base64 data.
-		char * data = strstr((char *) crl_data->data.contents,":: ");
-		if(!data)
-		{
-			message->error = hSession->ssl.error = ERR_get_error();
-			message->title = _( "Security error" );
-			message->text = _( "Got a bad formatted certificate revocation list from LDAP server" );
-			lib3270_write_log(hSession,"ssl","%s: invalid format:\n%s\n",consturl, crl_data->data.contents);
-			errno = EINVAL;
-			return NULL;
-		}
-		data += 3;
-
-		lib3270_autoptr(BIO) bio = BIO_new_mem_buf(data,-1);
-
-		BIO * b64 = BIO_new(BIO_f_base64());
-		bio = BIO_push(b64, bio);
-
-		BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
-
-		if(!d2i_X509_CRL_bio(bio, &x509_crl))
-		{
-			message->error = hSession->ssl.error = ERR_get_error();
-			message->title = _( "Security error" );
-			message->text = _( "Can't decode certificate revocation list got from LDAP server" );
-			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
-			errno = EINVAL;
-			return NULL;
-		}
-
-	}
-
-	return x509_crl;
+	return httpText;
 
 }
 
-#endif // HAVE_LIBSSL && SSL_ENABLE_CRL_CHECK && HAVE_LIBCURL
+#endif // HAVE_LIBCURL

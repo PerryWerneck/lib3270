@@ -63,7 +63,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE
 	if(!httpText)
 	{
 		message->title			= _( "Security error" );
-		message->text			= _( "Error loading certificate revocation list" );
+		message->text			= _( "Error getting certificate revocation list" );
 		return NULL;
 	}
 

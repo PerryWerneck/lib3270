@@ -867,3 +867,13 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	LIB3270_INTERNAL char * lib3270_get_user_name();
 
+	/// @brief Query data from URL.
+	///
+	/// @param hSession			Handle of the TN3270 Session.
+	/// @param url				The url to get.
+	/// @param length			Pointer to the response lenght (can be NULL).
+	/// @param error_message	Pointer to the error message.
+	///
+	/// @return The data from URL (release it with lib3270_free) or NULL on error.
+	///
+	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message);

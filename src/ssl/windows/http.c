@@ -46,148 +46,23 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void lib3270_autoptr_cleanup_HINTERNET(HINTERNET **hInternet)
-{
-	if(*hInternet)
-		WinHttpCloseHandle(*hInternet);
-	*hInternet = 0;
-}
-
 X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
-	wchar_t wHostname[4096];
-	wchar_t wPath[4096];
+	size_t szResponse = 0;
+	lib3270_autoptr(char) httpText = lib3270_get_from_url(hSession, consturl, &szResponse, &message->text);
 
-	{
-		// Strip URL
-		char * url = lib3270_unescape(consturl);
-
-		char *hostname = strstr(url,"://");
-		if(!hostname)
-			hostname = url;
-		else
-			hostname += 3;
-
-		char *path = strchr(hostname,'/');
-		if(path)
-			*(path++) = 0;
-
-		mbstowcs(wHostname, hostname, strlen(hostname)+1);
-		mbstowcs(wPath, path, strlen(path)+1);
-
-		lib3270_free(url);
-
-	}
-
-	// https://docs.microsoft.com/en-us/windows/desktop/api/winhttp/nf-winhttp-winhttpopenrequest
-
-	// Open HTTP session
-	// https://docs.microsoft.com/en-us/windows/desktop/api/winhttp/nf-winhttp-winhttpopenrequest
-	static const char * userAgent = PACKAGE_NAME "/" PACKAGE_VERSION;
-	wchar_t wUserAgent[256];
-	mbstowcs(wUserAgent, userAgent, strlen(userAgent)+1);
-	lib3270_autoptr(HINTERNET) httpSession = WinHttpOpen(wUserAgent, WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0 );
-	if(!httpSession)
-	{
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
-		lib3270_write_log(hSession,"ssl","%s: %s",consturl, windows_error);
-
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Can't open HTTP session" );
-		debug("%s",message->text);
-		errno = EINVAL;
-		return NULL;
-	}
-
-	// Connect to server
-	lib3270_autoptr(HINTERNET) hConnect = WinHttpConnect(httpSession, wHostname, INTERNET_DEFAULT_HTTP_PORT, 0);
-	if(!hConnect)
-	{
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
-		lib3270_write_log(hSession,"ssl","%s: %s",consturl, windows_error);
-
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Can't connect to HTTP server." );
-		debug("%s",message->text);
-		errno = EINVAL;
-		return NULL;
-	}
-
-	// Create request.
-	lib3270_autoptr(HINTERNET) hRequest = WinHttpOpenRequest(hConnect, L"GET", wPath, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_ESCAPE_PERCENT);
-	if(!hConnect)
+	if(!httpText)
 	{
 		message->error = hSession->ssl.error = 0;
 		message->title = _( "Security error" );
-		message->text = _( "Can't create HTTP request." );
-		debug("%s",message->text);
-		errno = EINVAL;
 		return NULL;
 	}
-
-	WinHttpSetOption(hRequest, WINHTTP_OPTION_CLIENT_CERT_CONTEXT, WINHTTP_NO_CLIENT_CERT_CONTEXT, 0);
-
-	// Send request.
-	if(!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0))
-	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Can't send HTTP request." );
-		debug("%s",message->text);
-		errno = EINVAL;
-		return NULL;
-	}
-
-	// Get response
-	if(!WinHttpReceiveResponse(hRequest, NULL))
-	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Can't receive HTTP response." );
-		debug("%s",message->text);
-		errno = EINVAL;
-		return NULL;
-	}
-
-	DWORD szResponse = 0;
-	if(!WinHttpQueryDataAvailable(hRequest, &szResponse))
-	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Empty response from HTTP server." );
-		debug("%s",message->text);
-		errno = EINVAL;
-		return NULL;
-	}
-
-	lib3270_autoptr(char) httpText = lib3270_malloc(szResponse+1);
-	memset(httpText,0,szResponse+1);
-
-	debug("Data block: %p",httpText);
-	debug("Response before: %u", (unsigned int) szResponse);
-
-	if(!WinHttpReadData(hRequest,httpText,szResponse,&szResponse)){
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Can't read HTTP response." );
-		debug("%s",message->text);
-		errno = EINVAL;
-		return NULL;
-	}
-
-	debug("Response after: %u", (unsigned int) szResponse);
-
-	//
-	// Parse CRL
-	//
-	X509_CRL * x509_crl = NULL;
 
 	// Copy the pointer because d2i_X509_CRL changes the value!!!
 	const unsigned char *crl_data = (const unsigned char *) httpText;
 
-	if(!d2i_X509_CRL(&x509_crl,&crl_data, szResponse))
+	X509_CRL * x509_crl = NULL;
+	if(!d2i_X509_CRL(&x509_crl,&crl_data, (DWORD) szResponse))
 	{
 		message->error = hSession->ssl.error = ERR_get_error();
 		message->title = _( "Security error" );
@@ -196,7 +71,6 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 		return NULL;
 	}
 
-	debug("**************URL:[%s]*********************",consturl);
 	return x509_crl;
 
 }

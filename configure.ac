@@ -80,7 +80,7 @@ case "$host" in
 	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
-		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
+		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lwinhttp"
 		LDFLAGS="$LDFLAGS -pthread"
 		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"

@@ -218,6 +218,9 @@
 		<Unit filename="src/core/windows/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/http.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/windows/log.c">
 			<Option compilerVar="CC" />
 		</Unit>

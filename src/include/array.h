@@ -36,6 +36,7 @@
 
 	#define LIB3270_ARRAY_H_INCLUDED
 
+	#include <stddef.h>
 	#include <lib3270.h>
 
 	typedef struct _lib3270_string_array

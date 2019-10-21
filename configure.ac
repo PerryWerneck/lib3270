@@ -604,17 +604,20 @@ dnl Check for CURL
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE([curl],
-        AS_HELP_STRING([--enable-curl],[Enable optional CURL support]),
+        AS_HELP_STRING([--disable-curl],[Disable use of libcurl]),
                 [case "${enableval}" in
                         yes) have_curl=yes ;;
                         no) have_curl=no ;;
                         *) AC_MSG_ERROR(bad value ${enableval} for --disable-curl);;
                 esac],
-                [have_curl=no])
+                [case "$host" in
+			*-mingw32|*-pc-msys) have_curl=no ;;
+			*) have_curl=yes;;
+		esac])
 
 
 if test "x${have_curl}" != xno ; then
-	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL), AC_MSG_NOTICE([libcurl not present.]) )
+	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL), AC_MSG_ERROR([libcurl not present.]) )
 fi
 
 AC_SUBST(LIBCURL_LIBS)

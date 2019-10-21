@@ -179,7 +179,7 @@ int lib3270_crl_new_from_dist_points(H3270 *hSession, void *ssl_error, CRL_DIST_
 	// https://nougat.cablelabs.com/DLNA-RUI/openssl/commit/57912ed329f870b237f2fd9f2de8dec3477d1729
 	//
 	size_t ix;
-	int i, gtype;
+	int i;
 
 	lib3270_autoptr(LIB3270_STRING_ARRAY) uris = lib3270_string_array_new();
 
@@ -194,19 +194,23 @@ int lib3270_crl_new_from_dist_points(H3270 *hSession, void *ssl_error, CRL_DIST_
 
 		for (i = 0; i < sk_GENERAL_NAME_num(gens); i++)
 		{
+			int gtype;
 			GENERAL_NAME *gen = sk_GENERAL_NAME_value(gens, i);
 			ASN1_STRING *uri = GENERAL_NAME_get0_value(gen, &gtype);
-			if(uri)
+
+			if(uri && gtype == GEN_URI)
 			{
+				int length = ASN1_STRING_length(uri);
+
 #if (OPENSSL_VERSION_NUMBER >= 0x10100000L) // OpenSSL 1.1.0+
 				const unsigned char * data = ASN1_STRING_get0_data(uri);
 #else
-				const unsigned char * data = ASN1_STRING_data(uri); // ASN1_STRING_get0_data(uri);
+				const unsigned char * data = ASN1_STRING_data(uri);
 #endif // OpenSSL 1.1.0+
-				if(data)
-				{
-					lib3270_string_array_append_with_length(uris,(char *) data, (size_t) ASN1_STRING_length(uri));
-				}
+
+				if(data && length > 0)
+					lib3270_string_array_append_with_length(uris,(char *) data, (size_t) length);
+
 			}
 
 		}

@@ -61,7 +61,7 @@ void lib3270_string_array_free(LIB3270_STRING_ARRAY *array)
 	}
 }
 
-void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str)
+static void lib3270_string_array_realloc(LIB3270_STRING_ARRAY *array)
 {
 	if(array->str)
 	{
@@ -73,8 +73,23 @@ void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str)
 		array->length = 0; // Just in case.
 	}
 
-	array->str[array->length++] = strdup(str);
+}
 
+void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str)
+{
+	lib3270_string_array_realloc(array);
+	array->str[array->length++] = strdup(str);
+}
+
+void lib3270_string_array_append_with_length(LIB3270_STRING_ARRAY *array, const char *str, size_t length)
+{
+	lib3270_string_array_realloc(array);
+
+	char * buffer = lib3270_malloc(length+1);
+	memcpy(buffer,str,length);
+	buffer[length] = 0;
+
+	array->str[array->length++] = buffer;
 }
 
 void lib3270_autoptr_cleanup_LIB3270_STRING_ARRAY(LIB3270_STRING_ARRAY **ptr)

@@ -205,7 +205,7 @@ int lib3270_crl_new_from_dist_points(H3270 *hSession, void *ssl_error, CRL_DIST_
 #endif // OpenSSL 1.1.0+
 				if(data)
 				{
-					lib3270_string_array_append(uris,(char *) data);
+					lib3270_string_array_append_with_length(uris,(char *) data, (size_t) ASN1_STRING_length(uri));
 				}
 			}
 

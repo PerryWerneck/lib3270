@@ -48,6 +48,8 @@
 	LIB3270_INTERNAL LIB3270_STRING_ARRAY * lib3270_string_array_new(void);
 	LIB3270_INTERNAL void lib3270_string_array_free(LIB3270_STRING_ARRAY *object);
 	LIB3270_INTERNAL void lib3270_string_array_append(LIB3270_STRING_ARRAY *object, const char *str);
+	LIB3270_INTERNAL void lib3270_string_array_append_with_length(LIB3270_STRING_ARRAY *array, const char *str, size_t length);
+
 	LIB3270_INTERNAL void lib3270_autoptr_cleanup_LIB3270_STRING_ARRAY(LIB3270_STRING_ARRAY **ptr);
 
 #endif // LIB3270_ARRAY_H_INCLUDED

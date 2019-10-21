@@ -113,9 +113,6 @@
 		<Unit filename="src/core/keyboard/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/linkelist.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/core/linux/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>

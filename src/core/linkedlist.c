@@ -58,6 +58,7 @@ void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, si
 
 	head->last = node;
 
+	/*
 #ifdef DEBUG
 	{
 		struct lib3270_linked_list_node * dCurrent;
@@ -71,6 +72,7 @@ void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, si
 
 	}
 #endif // DEBUG
+	*/
 
 	return (void *) node;
 
@@ -99,6 +101,7 @@ int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const
 
 			lib3270_free(current);
 
+			/*
 #ifdef DEBUG
 			{
 				struct lib3270_linked_list_node * dCurrent;
@@ -112,6 +115,7 @@ int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const
 
 			}
 #endif // DEBUG
+		*/
 
 			return 0;
 

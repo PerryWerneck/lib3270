@@ -107,16 +107,25 @@
 
 #endif
 
+#if defined(_WIN32) || defined(_MSC_VER)
+
+	#include <winsock2.h>
+	#include <windows.h>
+
+#else
+
+	#include <unistd.h>				/* Unix system calls */
+	#include <sys/time.h>			/* System time-related data types */
+
+#endif // _WIN32
 
 /*
  * Prerequisite #includes.
  */
 #include <stdio.h>				/* Unix standard I/O library */
-#include <unistd.h>				/* Unix system calls */
 #include <ctype.h>				/* Character classes */
 #include <string.h>				/* String manipulations */
 #include <sys/types.h>			/* Basic system data types */
-#include <sys/time.h>			/* System time-related data types */
 #include <time.h>				/* C library time functions */
 #include "localdefs.h"			/* {s,tcl,c}3270-specific defines */
 
@@ -293,7 +302,7 @@ struct lib3270_text
  */
 typedef struct timeout
 {
-	LIB3270_LINKED_LIST_HEAD;
+	LIB3270_LINKED_LIST_HEAD
 
 	unsigned char in_play;
 
@@ -315,7 +324,7 @@ typedef struct timeout
  */
 typedef struct _input_t
 {
-	LIB3270_LINKED_LIST_HEAD;
+	LIB3270_LINKED_LIST_HEAD
 
 	unsigned char	  enabled;
 	int 			  fd;
@@ -327,14 +336,14 @@ typedef struct _input_t
 
 struct lib3270_state_callback
 {
-	LIB3270_LINKED_LIST_HEAD;
+	LIB3270_LINKED_LIST_HEAD
 
 	void (*func)(H3270 *, int, void *);							/**< @brief Function to call */
 };
 
 struct lib3270_toggle_callback
 {
-	LIB3270_LINKED_LIST_HEAD;
+	LIB3270_LINKED_LIST_HEAD
 
 	void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *);		/**< @brief Function to call */
 };

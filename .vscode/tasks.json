@@ -1,22 +1,26 @@
+// See https://go.microsoft.com/fwlink/?LinkId=733558 
+// for the documentation about the tasks.json format
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "msvc build",
             "type": "shell",
-            "label": "Make Debug",
-            "command": "make",
+            "command": "cl.exe",
             "args": [
-                "Debug"
-            ],
-            "problemMatcher": [
-                "$gcc"
+                "/favor:AMD64",
+                "/c",
+                "/I ${workspaceFolder}/src/include",
+                "${file}"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
-}
+  }

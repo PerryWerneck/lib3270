@@ -31,13 +31,13 @@
 
 	#define LIB3270_SESSION_H_INCLUDED 1
 
-	#ifdef WIN32
+	#if defined(_WIN32) || defined(_MSC_VER)
 		#include <winsock2.h>
 		#include <windows.h>
 		#include <ws2tcpip.h>
 	#else
 		#include <sys/socket.h>
-	#endif // WIN32
+	#endif // _WIN32
 
 #ifdef HAVE_LIBSSL
 	#include <openssl/ssl.h>

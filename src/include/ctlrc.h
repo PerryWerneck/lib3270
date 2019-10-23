@@ -54,7 +54,7 @@ LIB3270_INTERNAL void ctlr_erase_all_unprotected(H3270 *hSession);
 LIB3270_INTERNAL void ctlr_init(H3270 *session, unsigned cmask);
 LIB3270_INTERNAL void ctlr_read_buffer(H3270 *session, unsigned char aid_byte);
 LIB3270_INTERNAL void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all);
-LIB3270_INTERNAL void ctlr_reinit(H3270 *session, unsigned cmask);
+LIB3270_INTERNAL void ctlr_model_changed(H3270 *session);
 LIB3270_INTERNAL void ctlr_scroll(H3270 *hSession);
 LIB3270_INTERNAL void ctlr_wrapping_memmove(H3270 *session, int baddr_to, int baddr_from, int count);
 LIB3270_INTERNAL enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean erase);

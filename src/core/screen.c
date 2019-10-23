@@ -154,7 +154,7 @@ int screen_init(H3270 *session)
 
 	/* Set up the controller. */
 	ctlr_init(session,-1);
-	ctlr_reinit(session,-1);
+	ctlr_model_changed(session);
 
 	/* Finish screen initialization. */
 	session->cbk.suspend(session);

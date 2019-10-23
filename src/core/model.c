@@ -72,7 +72,7 @@
 	}
 
 	ctlr_set_rows_cols(hSession, hSession->model_num, ovc, ovr);
-	ctlr_reinit(hSession,MODEL_CHANGE);
+	ctlr_model_changed(hSession);
 	screen_update(hSession,0,hSession->view.rows*hSession->view.cols);
 
 	return 0;
@@ -232,7 +232,7 @@ int lib3270_set_model(H3270 *hSession, const char *model)
 	}
 
 	ctlr_set_rows_cols(hSession, model_number, ovc, ovr);
-	ctlr_reinit(hSession,MODEL_CHANGE);
+	ctlr_model_changed(hSession);
 	screen_update(hSession,0,hSession->view.rows*hSession->view.cols);
 
 	return 0;

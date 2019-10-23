@@ -126,28 +126,25 @@ void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask))
 }
 
 /**
- * @brief Reinitialize the emulated 3270 hardware.
+ * @brief Reinitialize the emulated 3270 hardware on model change
  */
-void ctlr_reinit(H3270 *session, unsigned cmask)
+void ctlr_model_changed(H3270 *session)
 {
-	if (cmask & MODEL_CHANGE)
-	{
-		/* Allocate buffers */
-		struct lib3270_ea *tmp;
-		size_t sz = (session->max.rows * session->max.cols);
+	// Allocate buffers
+	struct lib3270_ea *tmp;
+	size_t sz = (session->max.rows * session->max.cols);
 
-		session->buffer[0] = tmp = lib3270_calloc(sizeof(struct lib3270_ea), sz+1, session->buffer[0]);
-		session->ea_buf = tmp + 1;
+	session->buffer[0] = tmp = lib3270_calloc(sizeof(struct lib3270_ea), sz+1, session->buffer[0]);
+	session->ea_buf = tmp + 1;
 
-		session->buffer[1] = tmp = lib3270_calloc(sizeof(struct lib3270_ea),sz+1,session->buffer[1]);
-		session->aea_buf = tmp + 1;
+	session->buffer[1] = tmp = lib3270_calloc(sizeof(struct lib3270_ea),sz+1,session->buffer[1]);
+	session->aea_buf = tmp + 1;
 
-		session->text 		= lib3270_calloc(sizeof(struct lib3270_text),sz,session->text);
-		session->zero_buf	= lib3270_calloc(sizeof(struct lib3270_ea),sz,session->zero_buf);
+	session->text 		= lib3270_calloc(sizeof(struct lib3270_text),sz,session->text);
+	session->zero_buf	= lib3270_calloc(sizeof(struct lib3270_ea),sz,session->zero_buf);
 
-		session->cursor_addr = 0;
-		session->buffer_addr = 0;
-	}
+	session->cursor_addr = 0;
+	session->buffer_addr = 0;
 }
 
 void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)

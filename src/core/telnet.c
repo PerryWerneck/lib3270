@@ -41,6 +41,10 @@
 	#include <windows.h>
 #endif
 
+#ifdef __MINGW32__
+	#include <sys/time.h>
+#endif
+
 #ifndef ANDROID
 	#include <stdlib.h>
 #endif // !ANDROID
@@ -2312,6 +2316,7 @@ void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, in
 		double tdiff;
 
 		(void) gettimeofday(&ts, (struct timezone *)NULL);
+
 		if (IN_3270)
 		{
 			tdiff = ((1.0e6 * (double)(ts.tv_sec - hSession->ds_ts.tv_sec)) +

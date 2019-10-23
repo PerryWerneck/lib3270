@@ -166,11 +166,11 @@ LIB3270_INTERNAL const char * build_rpq_revision;
 
 /**
  * @brief toggle names
- */
+ */ /*
 struct toggle_name {
 	const char *name;
 	int index;
-};
+}; */
 
 /// @brief State macros
 #define PCONNECTED		lib3270_pconnected(hSession)
@@ -205,13 +205,13 @@ struct toggle_name {
 #define Replace(var, value) { lib3270_free(var); var = (value); };
 
 /// @brief Configuration change masks.
-#define NO_CHANGE		0x0000	/// @brief no change
-#define MODEL_CHANGE	0x0001	/// @brief screen dimensions changed
-#define FONT_CHANGE		0x0002	/// @brief emulator font changed
-#define COLOR_CHANGE	0x0004	/// @brief color scheme or 3278/9 mode changed
-#define SCROLL_CHANGE	0x0008	/// @brief scrollbar snapped on or off
-#define CHARSET_CHANGE	0x0010	/// @brief character set changed
-#define ALL_CHANGE		0xffff	/// @brief everything changed
+//#define NO_CHANGE		0x0000	/// @brief no change
+// #define MODEL_CHANGE	0x0001	/// @brief screen dimensions changed
+//#define FONT_CHANGE		0x0002	/// @brief emulator font changed
+//#define COLOR_CHANGE	0x0004	/// @brief color scheme or 3278/9 mode changed
+//#define SCROLL_CHANGE	0x0008	/// @brief scrollbar snapped on or off
+//#define CHARSET_CHANGE	0x0010	/// @brief character set changed
+// #define ALL_CHANGE		0xffff	/// @brief everything changed
 
 /* Portability macros */
 
@@ -234,13 +234,13 @@ struct toggle_name {
 	#define DFT_BUF		(4 * 1024)
 #endif /*]*/
 
-/* DBCS Preedit Types */
-#if defined(X3270_DBCS) /*[*/
+/* DBCS Preedit Types */ /*
+#if defined(X3270_DBCS)
 	#define PT_ROOT				"Root"
 	#define PT_OVER_THE_SPOT	"OverTheSpot"
 	#define PT_OFF_THE_SPOT		"OffTheSpot"
 	#define PT_ON_THE_SPOT		"OnTheSpot"
-#endif /*]*/
+#endif */
 
 /**
  * @brief input key type

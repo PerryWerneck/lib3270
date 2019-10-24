@@ -46,11 +46,13 @@ BuildRequires:	fdupes
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libssl)
 BuildRequires:	pkgconfig(libcrypto)
+BuildRequires:	pkgconfig(libcurl)
 
 %else
 
 BuildRequires:	openssl-devel
 BuildRequires:	xz
+BuildRequires:	libcurl-devel
 
 %endif
 
@@ -119,7 +121,6 @@ make all %{?_smp_mflags}
 
 %dir %{_datadir}/pw3270
 
-%{_libdir}/%{name}.so.%{MAJOR_VERSION}
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %files devel

@@ -4,7 +4,7 @@ Version: 5.2-0
 Binary: lib3270
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
 Architecture: any
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, pkg-config, gettext, libssl-dev
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, pkg-config, gettext, libssl-dev, libcurl4-openssl-dev
 Standards-Version: 3.9.1.0
 DEBTRANSFORM-RELEASE: 0
 Files: 

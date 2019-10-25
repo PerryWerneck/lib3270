@@ -48,8 +48,10 @@
  {
 	LIB3270_ACTION_TYPE_GENERIC,				///< @brief Generic action.
 	LIB3270_ACTION_TYPE_NAVIGATION,				///< @brief Cursor and field navigation.
-	LIB3270_ACTION_CONNECTION,					///< @brief Connection action.
-	LIB3270_ACTION_CLIPBOARD,					///< @brief Clipboard action.
+	LIB3270_ACTION_TYPE_NETWORK,				///< @brief Connection action.
+	LIB3270_ACTION_TYPE_SELECTION,				///< @brief Clipboard action.
+	LIB3270_ACTION_TYPE_FILE,					///< @brief File load/save.
+	LIB3270_ACTION_TYPE_PRINTER,				///< @brief Printer actions.
 
 	LIB3270_ACTION_CUSTOM						///< @brief Custom action/Number of actions.
  } LIB3270_ACTION_TYPE;

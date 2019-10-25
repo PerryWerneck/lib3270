@@ -78,6 +78,8 @@
 		//
 		{
 			.name = "reconnect",
+			.type = LIB3270_ACTION_TYPE_NETWORK,
+
 			.key = NULL,
 			.icon = "gtk-connect",
 			.label = N_( "_Connect" ) ,
@@ -90,6 +92,8 @@
 
 		{
 			.name = "disconnect",
+			.type = LIB3270_ACTION_TYPE_NETWORK,
+
 			.key = NULL,
 			.icon = "gtk-disconnect",
 			.label = N_( "_Disconnect" ),
@@ -105,6 +109,8 @@
 		//
 		{
 			.name = "up",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Up",
 			.icon = NULL,
 			.label = NULL,
@@ -117,6 +123,8 @@
 
 		{
 			.name = "down",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Down",
 			.icon = NULL,
 			.label = NULL,
@@ -129,6 +137,8 @@
 
 		{
 			.name = "left",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Left",
 			.icon = NULL,
 			.label = NULL,
@@ -141,6 +151,8 @@
 
 		{
 			.name = "right",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Right",
 			.icon = NULL,
 			.label = NULL,
@@ -153,6 +165,8 @@
 
 		{
 			.name = "newline",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Control_R",
 			.icon = NULL,
 			.label = NULL,
@@ -165,6 +179,8 @@
 
 		{
 			.name = "previousword",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -177,6 +193,8 @@
 
 		{
 			.name = "nextword",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -192,6 +210,8 @@
 		//
 		{
 			.name = "saveall",
+			.type = LIB3270_ACTION_TYPE_FILE,
+
 			.key = NULL,
 			.icon = "document-save",
 			.label = NULL,
@@ -204,6 +224,8 @@
 
 		{
 			.name = "saveselected",
+			.type = LIB3270_ACTION_TYPE_FILE,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -216,6 +238,8 @@
 
 		{
 			.name = "savecopy",
+			.type = LIB3270_ACTION_TYPE_FILE,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -228,6 +252,8 @@
 
 		{
 			.name = "loadfile",
+			.type = LIB3270_ACTION_TYPE_FILE,
+
 			.key = NULL,
 			.icon = "document-load",
 			.label = NULL,
@@ -243,6 +269,8 @@
 		//
 		{
 			.name = "select_all",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
 			.key = "<ctrl>a",
 			.icon = "edit-select-all",
 			.label = N_( "Select all" ),
@@ -255,6 +283,8 @@
 
 		{
 			.name = "unselect",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = N_( "Remove selection" ),
@@ -267,6 +297,8 @@
 
 		{
 			.name = "reselect",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
 			.key = "<Ctrl>r",
 			.icon = NULL,
 			.label = N_( "Reselect" ),
@@ -282,6 +314,8 @@
 		//
 		{
 			.name = "select_field",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
 			.key = "<Ctrl>f",
 			.icon = NULL,
 			.label = N_( "Select field" ),
@@ -295,6 +329,8 @@
 
 		{
 			.name = "fieldend",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -307,6 +343,8 @@
 
 		{
 			.name = "firstfield",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Home",
 			.icon = "go-first",
 			.label = NULL,
@@ -319,6 +357,8 @@
 
 		{
 			.name = "nextfield",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "Tab",
 			.icon = "go-next",
 			.label = NULL,
@@ -331,6 +371,8 @@
 
 		{
 			.name = "previousfield",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "ISO_Left_Tab",
 			.icon = "go-previous",
 			.label = NULL,
@@ -347,6 +389,8 @@
 		//
 		{
 			.name = "deleteword",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "<Ctrl>w",
 			.icon = NULL,
 			.label = NULL,
@@ -359,6 +403,8 @@
 
 		{
 			.name = "deletefield",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = "<Ctrl>u",
 			.icon = NULL,
 			.label = NULL,
@@ -372,6 +418,8 @@
 
 		{
 			.name = "eraseinput",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -384,6 +432,8 @@
 
 		{
 			.name = "eraseeof",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "End",
 			.icon = NULL,
 			.label = NULL,
@@ -396,6 +446,8 @@
 
 		{
 			.name = "eraseeol",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -408,6 +460,8 @@
 
 		{
 			.name = "erase",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "BackSpace",
 			.icon = NULL,
 			.label = NULL,
@@ -423,6 +477,8 @@
 		//
 		{
 			.name = "enter",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -436,6 +492,8 @@
 
 		{
 			.name = "kybdreset",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "Escape",
 			.icon = NULL,
 			.label = NULL,
@@ -448,6 +506,8 @@
 
 		{
 			.name = "clear",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -461,6 +521,8 @@
 
 		{
 			.name = "delete",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "Delete",
 			.icon = NULL,
 			.label = NULL,
@@ -473,6 +535,8 @@
 
 		{
 			.name = "dup",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "<Shift>KP_Multiply",
 			.icon = NULL,
 			.label = NULL,
@@ -485,6 +549,8 @@
 
 		{
 			.name = "fieldmark",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -497,6 +563,8 @@
 
 		{
 			.name = "backspace",
+			.type = LIB3270_ACTION_TYPE_NAVIGATION,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -509,6 +577,8 @@
 
 		{
 			.name = "attn",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "<shift>Escape",
 			.icon = NULL,
 			.label = NULL,
@@ -521,6 +591,8 @@
 
 		{
 			.name = "break",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -533,6 +605,8 @@
 
 		{
 			.name = "pastenext",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
 			.key = "<shift><ctrl>v",
 			.icon = NULL,
 			.label = NULL,
@@ -545,6 +619,8 @@
 
 		{
 			.name = "sysreq",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = "<shift>Print",
 			.icon = NULL,
 			.label = NULL,
@@ -560,6 +636,8 @@
 		//
 		{
 			.name = "print",
+			.type = LIB3270_ACTION_TYPE_PRINTER,
+
 			.key = "Print",
 			.icon = "document-print",
 			.label = NULL,
@@ -573,6 +651,8 @@
 
 		{
 			.name = "printall",
+			.type = LIB3270_ACTION_TYPE_PRINTER,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -585,6 +665,8 @@
 
 		{
 			.name = "printselected",
+			.type = LIB3270_ACTION_TYPE_PRINTER,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -597,6 +679,8 @@
 
 		{
 			.name = "printcopy",
+			.type = LIB3270_ACTION_TYPE_PRINTER,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -613,6 +697,8 @@
 
 		{
 			.name = "testpattern",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,
@@ -625,6 +711,8 @@
 
 		{
 			.name = "charsettable",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
 			.key = NULL,
 			.icon = NULL,
 			.label = NULL,

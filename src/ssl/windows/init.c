@@ -52,7 +52,7 @@
 	#define SSL_ST_OK 3
 #endif // !SSL_ST_OK
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <errno.h>
 #include <lib3270.h>
 #include <lib3270/internals.h>

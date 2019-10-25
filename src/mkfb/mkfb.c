@@ -384,7 +384,7 @@ main(int argc, char *argv[])
 	fprintf(t, "/* This file was created automatically from %s by mkfb. */\n\n",
 	    filename);
 	if (cmode) {
-		fprintf(t, "#include \"lib3270-internals.h\"\n");
+		fprintf(t, "#include \"internals.h\"\n");
 		fprintf(t, "static unsigned char fsd[] = {\n");
 	} else {
 		fprintf(t, "unsigned char common_fallbacks[] = {\n");

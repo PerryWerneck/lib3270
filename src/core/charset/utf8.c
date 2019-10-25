@@ -35,7 +35,7 @@
  *	@brief 3270 Terminal Emulator UTF-8 conversions
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 // #include "api.h"
 
 #include "popupsc.h"

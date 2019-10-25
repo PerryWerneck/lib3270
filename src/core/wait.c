@@ -27,7 +27,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include "kybdc.h"

@@ -34,7 +34,7 @@
 
 
 #include <config.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 
 #if defined(HAVE_LIBSSL)
 
@@ -150,7 +150,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	}
 
 	/* Set up the TLS/SSL connection. */
-	if(SSL_set_fd(hSession->ssl.con, hSession->sock) != 1)
+	if(SSL_set_fd(hSession->ssl.con, hSession->connection.sock) != 1)
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 

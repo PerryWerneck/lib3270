@@ -27,7 +27,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 
 /*
 #if defined(X3270_DISPLAY)

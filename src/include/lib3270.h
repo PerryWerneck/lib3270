@@ -1000,7 +1000,6 @@
 	LIB3270_EXPORT int lib3270_in_e(const H3270 *h);
 
 	LIB3270_EXPORT int lib3270_is_ready(const H3270 *h);
-	LIB3270_EXPORT int lib3270_is_connected(const H3270 *h);
 	LIB3270_EXPORT int lib3270_is_secure(const H3270 *h);
 
 	LIB3270_EXPORT LIB3270_MESSAGE		lib3270_get_lock_status(const H3270 *h);

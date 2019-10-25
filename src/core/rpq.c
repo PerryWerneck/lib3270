@@ -37,7 +37,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <errno.h>
 #if !defined(_WIN32) /*[*/
 #include <netinet/in.h>

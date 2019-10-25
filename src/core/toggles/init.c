@@ -46,7 +46,7 @@
 
 #include <config.h>
 #include <lib3270/toggle.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 
 #include "ansic.h"
 #include "ctlrc.h"
@@ -79,12 +79,12 @@ static void toggle_nop(H3270 GNUC_UNUSED(*session), struct lib3270_toggle GNUC_U
 
 static void toggle_keepalive(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
-	if(session->sock > 0)
+	if(session->connection.sock > 0)
 	{
 		// Update keep-alive option
 		int optval = t->value ? 1 : 0;
 
-		if (setsockopt(session->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
+		if (setsockopt(session->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
 		{
 			popup_a_sockerr(session, N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 		}

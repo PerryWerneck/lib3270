@@ -35,7 +35,7 @@
  *	@brief This module handles get/set the terminal character set.
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <X11keysym.h>
 #include <lib3270/charset.h>
 #include <lib3270/log.h>

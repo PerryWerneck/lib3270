@@ -29,7 +29,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include "xioc.h"
@@ -301,7 +301,7 @@ static void internal_remove_poll(H3270 *session, void *id)
 
 LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id)
 {
-	debug("%s(%d,%p)",__FUNCTION__,session->sock,id);
+	debug("%s(%d,%p)",__FUNCTION__,session->connection.sock,id);
 	remove_poll(session, id);
 }
 
@@ -309,7 +309,7 @@ LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled
 {
 	if(id)
 	{
-		debug("%s: Polling on %d (%p) is %s",__FUNCTION__,session->sock,id,(enabled ? "enabled" : "disabled"));
+		debug("%s: Polling on %d (%p) is %s",__FUNCTION__,session->connection.sock,id,(enabled ? "enabled" : "disabled"));
 		set_poll_state(session, id, enabled);
 	}
 }
@@ -349,7 +349,7 @@ LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FL
 }
 
 LIB3270_EXPORT void	 * lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
-	debug("%s(%d)",__FUNCTION__,session->sock);
+	debug("%s(%d)",__FUNCTION__,session->connection.sock);
 	return add_poll(session,fd,flag,call,userdata);
 }
 
@@ -400,10 +400,10 @@ void x_except_on(H3270 *h)
 	if(reading)
 		lib3270_remove_poll(h,h->xio.read);
 
-	h->xio.except = lib3270_add_poll_fd(h,h->sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	h->xio.except = lib3270_add_poll_fd(h,h->connection.sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 
 	if(reading)
-		h->xio.read = lib3270_add_poll_fd(h,h->sock,LIB3270_IO_FLAG_READ,net_input,0);
+		h->xio.read = lib3270_add_poll_fd(h,h->connection.sock,LIB3270_IO_FLAG_READ,net_input,0);
 	debug("%s",__FUNCTION__);
 
 }
@@ -523,7 +523,7 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, vo
 int non_blocking(H3270 *hSession, Boolean on)
 {
 
-	if(hSession->sock < 0)
+	if(hSession->connection.sock < 0)
 		return 0;
 
 #ifdef WIN32
@@ -545,7 +545,7 @@ int non_blocking(H3270 *hSession, Boolean on)
 
 	int f;
 
-	if ((f = fcntl(hSession->sock, F_GETFL, 0)) == -1)
+	if ((f = fcntl(hSession->connection.sock, F_GETFL, 0)) == -1)
 	{
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,
@@ -562,7 +562,7 @@ int non_blocking(H3270 *hSession, Boolean on)
 	else
 		f &= ~O_NDELAY;
 
-	if (fcntl(hSession->sock, F_SETFL, f) < 0)
+	if (fcntl(hSession->connection.sock, F_SETFL, f) < 0)
 	{
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,

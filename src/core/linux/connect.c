@@ -28,7 +28,7 @@
  */
 
 #include <config.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <errno.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
@@ -46,7 +46,7 @@
 //	#include <iconv.h>
 // #endif // HAVE_ICONV
 
-#define SOCK_CLOSE(s)	close(s->sock); s->sock = -1;
+#define SOCK_CLOSE(s)	close(s->connection.sock); s->connection.sock = -1;
 
 #include <stdlib.h>
 
@@ -73,7 +73,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		hSession->xio.write = NULL;
 	}
 
-	if(getsockopt(hSession->sock, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
+	if(getsockopt(hSession->connection.sock, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
 	{
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(
@@ -102,8 +102,8 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		return;
 	}
 
-	hSession->xio.except	= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
-	hSession->xio.read		= lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_READ,net_input,0);
+	hSession->xio.except	= lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	hSession->xio.read		= lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,net_input,0);
 
 #if defined(HAVE_LIBSSL)
 	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
@@ -147,17 +147,17 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	status_connecting(hSession);
 
-	for(rp = result; hSession->sock < 0 && rp != NULL; rp = rp->ai_next)
+	for(rp = result; hSession->connection.sock < 0 && rp != NULL; rp = rp->ai_next)
 	{
-		hSession->sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-		if(hSession->sock < 0)
+		hSession->connection.sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+		if(hSession->connection.sock < 0)
 		{
 			((struct resolver *) host)->message = strerror(errno);
 			continue;
 		}
 
 		// Connected!
-		if(connect(hSession->sock, rp->ai_addr, rp->ai_addrlen))
+		if(connect(hSession->connection.sock, rp->ai_addr, rp->ai_addrlen))
 		{
 			SOCK_CLOSE(hSession);
 			((struct resolver *) host)->message = strerror(errno);
@@ -178,7 +178,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	memset(&host,0,sizeof(host));
 
 	// Connect to host
-	if(lib3270_run_task(hSession, background_connect, &host) || hSession->sock < 0)
+	if(lib3270_run_task(hSession, background_connect, &host) || hSession->connection.sock < 0)
 	{
 		char buffer[4096];
 		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
@@ -195,7 +195,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 
 	/* don't share the socket with our children */
-	(void) fcntl(hSession->sock, F_SETFD, 1);
+	(void) fcntl(hSession->connection.sock, F_SETFD, 1);
 
 	hSession->ever_3270 = False;
 
@@ -212,7 +212,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	// set options for inline out-of-band data and keepalives
 	int optval = 1;
-	if (setsockopt(hSession->sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
+	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
 	{
 		int rc = errno;
 		lib3270_popup_dialog(	hSession,
@@ -226,7 +226,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
-	if (setsockopt(hSession->sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
+	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
 	{
 		int rc = errno;
 
@@ -260,10 +260,10 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	*/
 
 	// Connecting, set callbacks, wait for connection
-	hSession->cstate = LIB3270_PENDING;
+	lib3270_set_cstate(hSession, LIB3270_PENDING);
 	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
-	hSession->xio.write = lib3270_add_poll_fd(hSession,hSession->sock,LIB3270_IO_FLAG_WRITE,net_connected,0);
+	hSession->xio.write = lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_WRITE,net_connected,0);
 	// hSession->ns_write_id = AddOutput(hSession->sock, hSession, net_connected);
 
 	trace("%s: Connection in progress",__FUNCTION__);
@@ -276,7 +276,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		{
 			lib3270_main_iterate(hSession,1);
 
-			switch(hSession->cstate)
+			switch(hSession->connection.state)
 			{
 			case LIB3270_PENDING:
 			case LIB3270_CONNECTED_INITIAL:
@@ -297,7 +297,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 				break;
 
 			default:
-				lib3270_write_log(hSession,"connect", "%s: State changed to unexpected state %d",__FUNCTION__,hSession->cstate);
+				lib3270_write_log(hSession,"connect", "%s: State changed to unexpected state %d",__FUNCTION__,hSession->connection.state);
 				return errno = EINVAL;
 			}
 

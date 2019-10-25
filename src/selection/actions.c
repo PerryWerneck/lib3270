@@ -27,7 +27,7 @@
  *
  */
 
- #include <lib3270-internals.h>
+ #include <internals.h>
  #include <lib3270.h>
  #include <lib3270/actions.h>
  #include <lib3270/session.h>
@@ -63,6 +63,8 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
 
 		hSession->cbk.set_selection(hSession,0);
 		hSession->cbk.update_selection(hSession,-1,-1);
+		lib3270_notify_actions(hSession,LIB3270_ACTION_GROUP_UNSELECTED);
+
 	}
 
 	return 0;

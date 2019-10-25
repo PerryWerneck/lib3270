@@ -27,7 +27,7 @@
  *
  */
 
- #include <lib3270-internals.h>
+ #include <internals.h>
  #include "screen.h"
  #include "ctlrc.h"
  #include "popupsc.h"
@@ -42,7 +42,7 @@
 
  int lib3270_set_oversize(H3270 *hSession, const char *value)
  {
-	if(hSession->cstate != LIB3270_NOT_CONNECTED)
+	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
 
 	if(!hSession->extended)
@@ -177,7 +177,7 @@ int lib3270_set_model(H3270 *hSession, const char *model)
 {
 	int	model_number;
 
-	if(hSession->cstate != LIB3270_NOT_CONNECTED)
+	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
 
 	strncpy(hSession->full_model_name,"IBM-",LIB3270_FULL_MODEL_NAME_LENGTH);

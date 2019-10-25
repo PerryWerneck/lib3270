@@ -35,4 +35,4 @@
  *		Screen printing functions.
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>

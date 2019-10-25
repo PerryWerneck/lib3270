@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/trace.h>
@@ -22,6 +22,11 @@ static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata)
 		vfprintf(out,fmt,args);
 		fclose(out);
 	}
+}
+
+static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_UNUSED(*dunno))
+{
+	printf("\n\n%s\n\n",__FUNCTION__);
 }
 
 int main(int argc, char *argv[])
@@ -102,6 +107,8 @@ int main(int argc, char *argv[])
 
 	printf("\nConnecting to %s\n",lib3270_get_url(h));
 
+	const void * online_listener = lib3270_register_action_group_listener(h,LIB3270_ACTION_GROUP_ONLINE,online_group_state_changed,NULL);
+
 	rc = lib3270_reconnect(h,120);
 	printf("\n\nConnect exits with rc=%d (%s)\n\n",rc,strerror(rc));
 
@@ -138,6 +145,8 @@ int main(int argc, char *argv[])
 		lib3270_disconnect(h);
 
 	}
+
+	lib3270_unregister_action_group_listener(h,LIB3270_ACTION_GROUP_ONLINE,online_listener);
 
 	lib3270_session_free(h);
 

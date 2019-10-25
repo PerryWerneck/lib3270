@@ -35,7 +35,7 @@
 
 #include <config.h>
 #include <stdarg.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <unistd.h>
 
 static char * concat(char *path, const char *name, size_t *length)

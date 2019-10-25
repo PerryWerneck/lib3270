@@ -27,7 +27,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <config.h>

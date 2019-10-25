@@ -32,7 +32,7 @@
   *
   */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <lib3270/log.h>

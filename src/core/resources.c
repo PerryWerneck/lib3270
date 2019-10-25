@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include "utilc.h"
 #include <lib3270/log.h>
 

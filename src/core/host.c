@@ -38,7 +38,7 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
 #include <malloc.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 #include "resources.h"
 
 #include "hostc.h"
@@ -122,6 +122,36 @@ int host_disconnect(H3270 *hSession, int failed)
 
 }
 
+int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate)
+{
+	if(hSession->connection.state != cstate)
+	{
+		// Salve old states.
+		int connected = lib3270_is_connected(hSession);
+		int disconnected = lib3270_is_disconnected(hSession);
+
+		// Cstate has changed.
+		hSession->connection.state = cstate;
+
+		// Do I need to send notifications?
+
+		if(connected != lib3270_is_connected(hSession)) {
+			// Online state has changed, fire LIB3270_ACTION_GROUP_ONLINE
+			lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_ONLINE);
+		}
+
+		if(disconnected != lib3270_is_disconnected(hSession)) {
+			// Offline state has changed, fire LIB3270_ACTION_GROUP_OFFLINE
+			lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_OFFLINE);
+		}
+
+		return 1;
+	}
+
+	return 0;
+
+}
+
 /**
  * @brief The host has entered 3270 or ANSI mode, or switched between them.
  */
@@ -131,14 +161,15 @@ void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate)
 			   new_cstate == LIB3270_CONNECTED_SSCP ||
 			   new_cstate == LIB3270_CONNECTED_TN3270E);
 
-	hSession->cstate = new_cstate;
+	lib3270_set_cstate(hSession,new_cstate);
 	hSession->ever_3270 = now3270;
 	lib3270_st_changed(hSession, LIB3270_STATE_3270_MODE, now3270);
 }
 
 void lib3270_set_connected_initial(H3270 *hSession)
 {
-	hSession->cstate	= LIB3270_CONNECTED_INITIAL;
+	lib3270_set_cstate(hSession,LIB3270_CONNECTED_INITIAL);
+
 	hSession->starting	= 1;	// Enable autostart
 
 	lib3270_st_changed(hSession, LIB3270_STATE_CONNECT, True);
@@ -150,7 +181,7 @@ void lib3270_set_disconnected(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
 
-	hSession->cstate	= LIB3270_NOT_CONNECTED;
+	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
 	hSession->starting	= 0;
 
 #if defined(HAVE_LIBSSL)
@@ -201,19 +232,6 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 	{
 		((struct lib3270_state_callback *) node)->func(h,mode,node->userdata);
 	}
-
-	/*
-	struct lib3270_state_callback *st;
-
-    CHECK_SESSION_HANDLE(h);
-
-	trace("%s is %d on session %p",state_name[tx],mode,h);
-
-	for(st = h->listeners.state.callbacks[tx];st;st = st->next)
-	{
-		st->func(h,mode,st->data);
-	}
-	*/
 
 	trace("%s ends",__FUNCTION__);
 }

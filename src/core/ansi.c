@@ -40,7 +40,7 @@
 	#pragma GCC diagnostic ignored "-Wstringop-truncation"
 #endif // _WIN32
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <lib3270/toggle.h>
 
 #if defined(X3270_ANSI) /*[*/

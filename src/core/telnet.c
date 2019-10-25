@@ -55,7 +55,7 @@
 	#include <openssl/err.h>
 #endif
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <errno.h>
 
 #if defined(_WIN32)
@@ -550,17 +550,17 @@ LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
 		hSession->xio.write = 0;
 	}
 
-	if(hSession->sock >= 0)
+	if(hSession->connection.sock >= 0)
 	{
-		shutdown(hSession->sock, 2);
-		SOCK_CLOSE(hSession->sock);
-		hSession->sock = -1;
+		shutdown(hSession->connection.sock, 2);
+		SOCK_CLOSE(hSession->connection.sock);
+		hSession->connection.sock = -1;
 	}
+
 }
 
-/*
- * net_disconnect
- *	Shut down the socket.
+/**
+ *	@brief Shut down the socket.
  */
 void net_disconnect(H3270 *session)
 {
@@ -641,7 +641,7 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
  	for (;;)
 #endif
 	{
-		if (hSession->sock < 0)
+		if (hSession->connection.sock < 0)
 			return;
 
 #if defined(X3270_ANSI)
@@ -652,9 +652,9 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		if (hSession->ssl.con != NULL)
 			nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
 		else
-			nr = recv(hSession->sock, (char *) buffer, BUFSZ, 0);
+			nr = recv(hSession->connection.sock, (char *) buffer, BUFSZ, 0);
 #else
-			nr = recv(hSession->sock, (char *) buffer, BUFSZ, 0);
+			nr = recv(hSession->connection.sock, (char *) buffer, BUFSZ, 0);
 #endif // HAVE_LIBSSL
 
 		if (nr < 0)
@@ -1638,9 +1638,9 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	if(hSession->ssl.con != NULL)
 		rc = SSL_write(hSession->ssl.con, (const char *) buf, len);
 	else
-		rc = send(hSession->sock, (const char *) buf, len, 0);
+		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
 #else
-		rc = send(hSession->sock, (const char *) buf, len, 0);
+		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
 #endif // HAVE_LIBSSL
 
 	if(rc > 0)
@@ -2076,14 +2076,14 @@ static void check_in3270(H3270 *hSession)
 	           hSession->hisopts[TELOPT_BINARY] &&
 	           hSession->hisopts[TELOPT_EOR]) {
 		new_cstate = LIB3270_CONNECTED_3270;
-	} else if (hSession->cstate == LIB3270_CONNECTED_INITIAL) {
+	} else if (hSession->connection.state == LIB3270_CONNECTED_INITIAL) {
 		/* Nothing has happened, yet. */
 		return;
 	} else {
 		new_cstate = LIB3270_CONNECTED_ANSI;
 	}
 
-	if (new_cstate != hSession->cstate) {
+	if (new_cstate != hSession->connection.state) {
 #if defined(X3270_TN3270E) /*[*/
 		int was_in_e = IN_E;
 #endif /*]*/
@@ -2658,7 +2658,7 @@ void net_abort(H3270 *hSession)
 /* Return the local address for the socket. */
 int net_getsockname(const H3270 *session, void *buf, int *len)
 {
-	if (session->sock < 0)
+	if (session->connection.sock < 0)
 		return -1;
-	return getsockname(session->sock, buf, (socklen_t *)(void *)len);
+	return getsockname(session->connection.sock, buf, (socklen_t *)(void *)len);
 }

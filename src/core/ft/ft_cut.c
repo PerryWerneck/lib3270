@@ -37,7 +37,7 @@
 
 #include <errno.h>
 
-#include <lib3270-internals.h>
+#include <internals.h>
 
 #include <lib3270.h>
 #include <lib3270/actions.h>

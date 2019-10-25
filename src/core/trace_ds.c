@@ -36,7 +36,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <lib3270/trace.h>
 
 #if defined(X3270_TRACE) /*[*/

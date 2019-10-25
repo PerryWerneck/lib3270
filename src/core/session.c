@@ -33,7 +33,7 @@
 	#include <stdlib.h>
 #endif // !ANDROID
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include "kybdc.h"
 #include "ansic.h"
 #include "togglesc.h"
@@ -94,6 +94,10 @@ void lib3270_session_free(H3270 *h)
 	// Release toggle change listeners.
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 		lib3270_linked_list_free(&h->listeners.toggle[f]);
+
+	// Release action listeners.
+	for(f=0;f<LIB3270_ACTION_GROUP_CUSTOM;f++)
+		lib3270_linked_list_free(&h->listeners.actions[f]);
 
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;
@@ -331,9 +335,9 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->unlock_delay			=  1;
 	hSession->icrnl 				=  1;
 	hSession->onlcr					=  1;
-	hSession->sock					= -1;
+	hSession->connection.sock		= -1;
 	hSession->model_num				= -1;
-	hSession->cstate				= LIB3270_NOT_CONNECTED;
+	hSession->connection.state		= LIB3270_NOT_CONNECTED;
 	hSession->oia.status			= -1;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;
@@ -453,7 +457,7 @@ LIB3270_INTERNAL int check_online_session(const H3270 *hSession) {
 		return errno = EINVAL;
 
 	// Is it connected?
-	if((int) hSession->cstate < (int)LIB3270_CONNECTED_INITIAL)
+	if((int) hSession->connection.state < (int)LIB3270_CONNECTED_INITIAL)
 		return errno = ENOTCONN;
 
 	return 0;
@@ -466,7 +470,7 @@ LIB3270_INTERNAL int check_offline_session(const H3270 *hSession) {
 		return errno = EINVAL;
 
 	// Is it connected?
-	if((int) hSession->cstate >= (int)LIB3270_CONNECTED_INITIAL)
+	if((int) hSession->connection.state >= (int)LIB3270_CONNECTED_INITIAL)
 		return errno = EISCONN;
 
 	return 0;

@@ -27,9 +27,16 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
+#include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/actions.h>
+
+struct lib3270_action_callback
+{
+	LIB3270_LINKED_LIST_HEAD
+	void (*func)(H3270 *, void *);							/**< @brief Function to call */
+};
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
@@ -88,4 +95,41 @@ LIB3270_EXPORT int lib3270_action_activate_by_name(const char *name, H3270 *hSes
 LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 {
 	return lib3270_action_activate_by_name(name,hSession);
+}
+
+LIB3270_INTERNAL void lib3270_notify_actions(H3270 *hSession, LIB3270_ACTION_GROUP group)
+{
+
+	if(group < (sizeof(hSession->listeners.actions)/sizeof(hSession->listeners.actions[0])))
+	{
+		struct lib3270_linked_list_node * node;
+
+		for(node = hSession->listeners.actions[group].first; node; node = node->next)
+		{
+			((struct lib3270_action_callback *) node)->func(hSession,node->userdata);
+		}
+
+	}
+
+}
+
+LIB3270_EXPORT const void * lib3270_register_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, void (*func)(H3270 *, void *),void *data)
+{
+
+	if(group < (sizeof(hSession->listeners.actions)/sizeof(hSession->listeners.actions[0])))
+	{
+		struct lib3270_action_callback *st = (struct lib3270_action_callback *) lib3270_linked_list_append_node(&hSession->listeners.actions[group], sizeof(struct lib3270_action_callback), data);
+		st->func = func;
+		return (void *) st;
+	}
+
+	return NULL;
+}
+
+LIB3270_EXPORT int lib3270_unregister_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, const void *id)
+{
+	if(group < (sizeof(hSession->listeners.actions)/sizeof(hSession->listeners.actions[0])))
+		return lib3270_linked_list_delete_node(&hSession->listeners.actions[group], id);
+
+	return errno = EINVAL;
 }

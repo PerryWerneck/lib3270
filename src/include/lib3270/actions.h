@@ -38,15 +38,28 @@
  	LIB3270_ACTION_GROUP_NONE,					///< @brief Simple action, no signals os special treatment.
  	LIB3270_ACTION_GROUP_ONLINE,				///< @brief Action requires online state.
  	LIB3270_ACTION_GROUP_OFFLINE,				///< @brief Action requires offline state.
- 	LIB3270_ACTION_GROUP_SELECTION,				///< @brief Action requires an active selection.
+ 	LIB3270_ACTION_GROUP_SELECTED,				///< @brief Action requires an active selection.
  	LIB3270_ACTION_GROUP_UNSELECTED,			///< @brief Action fails if there has a selection.
+
+ 	LIB3270_ACTION_GROUP_CUSTOM					///< @brief Custom group/Number of groups.
  } LIB3270_ACTION_GROUP;
+
+ typedef enum _lib3270_action_type
+ {
+	LIB3270_ACTION_TYPE_GENERIC,				///< @brief Generic action.
+	LIB3270_ACTION_TYPE_NAVIGATION,				///< @brief Cursor and field navigation.
+	LIB3270_ACTION_CONNECTION,					///< @brief Connection action.
+	LIB3270_ACTION_CLIPBOARD,					///< @brief Clipboard action.
+
+	LIB3270_ACTION_CUSTOM						///< @brief Custom action/Number of actions.
+ } LIB3270_ACTION_TYPE;
 
  typedef struct _lib3270_action
  {
  	LIB3270_PROPERTY_HEAD
 
 	LIB3270_ACTION_GROUP group;					///< @brief Action group.
+	LIB3270_ACTION_TYPE type;					///< @brief Action type.
 
     int (*activate)(H3270 *hSession);			///< @brief lib3270 associated method.
     int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?
@@ -56,6 +69,32 @@
     const char *label;							///< @brief Button label (or NULL).
 
  } LIB3270_ACTION;
+
+
+/**
+ * @brief Register an action group listener.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param group		The group to listen.
+ * @param func		Callback for group events.
+ * @param data		Argument data for callback.
+ *
+ * @return Listener ID (for removal) or NULL if error.
+ *
+ */
+ LIB3270_EXPORT const void * lib3270_register_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, void (*func)(H3270 *, void *),void *data);
+
+/**
+ * @brief Unregister an action group listener.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param group		The group to listen.
+ * @param id		ID of the listener to remove.
+ *
+ * @return 0 if ok, error code if not.
+ *
+ */
+ LIB3270_EXPORT int lib3270_unregister_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, const void *id);
 
 /**
  *

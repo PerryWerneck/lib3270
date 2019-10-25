@@ -52,7 +52,7 @@
 #endif // _WIN32
 
 #include <lib3270/log.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 
 #ifdef HAVE_SYSLOG
 	#include <syslog.h>

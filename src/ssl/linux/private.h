@@ -38,7 +38,7 @@
 	#include <openssl/x509_vfy.h>
 	#include <openssl/x509.h>
 
-	#include <lib3270-internals.h>
+	#include <internals.h>
 	#include <trace_dsc.h>
 	#include <errno.h>
 	#include <lib3270.h>

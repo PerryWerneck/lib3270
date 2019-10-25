@@ -27,7 +27,7 @@
  *
  */
 
- #include <lib3270-internals.h>
+ #include <internals.h>
  #include <lib3270.h>
  #include <lib3270/actions.h>
  #include <lib3270/session.h>
@@ -165,37 +165,38 @@ void toggle_rectselect(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LI
 		update_selected_region(session);
 }
 
-void do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect)
+void do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned int rect)
 {
-	if(end > (h->view.rows * h->view.cols))
+	if(end > (hSession->view.rows * hSession->view.cols))
 		return;
 
 	// Do we really need to change selection?
-	if( ((int) start) == h->select.start && ((int) end) == h->select.end && h->selected)
+	if( ((int) start) == hSession->select.start && ((int) end) == hSession->select.end && hSession->selected)
 		return;
 
 	// Start address is inside the screen?
-	h->select.start		= start;
-	h->select.end 		= end;
+	hSession->select.start		= start;
+	hSession->select.end 		= end;
 
 	if(rect)
 	{
-		h->rectsel = 1;
-		update_selected_rectangle(h);
+		hSession->rectsel = 1;
+		update_selected_rectangle(hSession);
 	}
 	else
 	{
-		h->rectsel = 0;
-		update_selected_region(h);
+		hSession->rectsel = 0;
+		update_selected_region(hSession);
 	}
 
-	if(!h->selected)
+	if(!hSession->selected)
 	{
-		h->selected = 1;
-		h->cbk.set_selection(h,1);
+		hSession->selected = 1;
+		hSession->cbk.set_selection(hSession,1);
+		lib3270_notify_actions(hSession,LIB3270_ACTION_GROUP_SELECTED);
 	}
 
-	h->cbk.update_selection(h,start,end);
+	hSession->cbk.update_selection(hSession,start,end);
 
 }
 

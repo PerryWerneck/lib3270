@@ -32,7 +32,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <lib3270/trace.h>
 #include <lib3270/actions.h>
 #include <lib3270/toggle.h>
@@ -210,7 +210,7 @@
 			.summary = N_( "Save selected area." ),
 			.activate = save_selected,
 
-			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.group = LIB3270_ACTION_GROUP_SELECTED,
 			.activatable = lib3270_has_selection
 		},
 
@@ -591,7 +591,7 @@
 			.summary = N_( "Print selected area." ),
 			.activate = lib3270_print_selected,
 
-			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.group = LIB3270_ACTION_GROUP_SELECTED,
 			.activatable = lib3270_has_selection
 		},
 

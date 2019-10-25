@@ -37,7 +37,7 @@
 #include <linkedlist.h>
 #include <lib3270/charset.h>
 #include <lib3270/session.h>
-// #include "api.h"
+#include <lib3270/actions.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
@@ -71,23 +71,6 @@
 #endif // HAVE_LIBINTL
 
 #define action_name(x)  #x
-
-/*
- * OS-specific #defines.  Except for the blocking-connect workarounds, these
- * should be replaced with autoconf probes as soon as possible.
- */
-
-/*
- * BLOCKING_CONNECT_ONLY
- *   Use only blocking sockets.
- */
-#if defined(sco) /*[*/
-	#define BLOCKING_CONNECT_ONLY	1
-#endif /*]*/
-
-#if defined(apollo) /*[*/
-	#define BLOCKING_CONNECT_ONLY	1
-#endif /*]*/
 
 //
 // Compiler-specific #defines.
@@ -361,8 +344,10 @@ struct _h3270
 	char					  id;								///< @brief Session Identifier.
 
 	// Connection info
-	int						  sock;								///< @brief Network socket.
-	LIB3270_CSTATE			  cstate;							///< @brief Connection state.
+	struct {
+		int					  sock;								///< @brief Network socket.
+		LIB3270_CSTATE		  state;							///< @brief Connection state.
+	} connection;
 
 	// flags
 	LIB3270_HOST_TYPE		  host_type;						///< @brief Host type.
@@ -737,6 +722,9 @@ struct _h3270
 		/// @brief Toggle listeners.
 		struct lib3270_linked_list_head toggle[LIB3270_TOGGLE_COUNT];
 
+		/// @brief Action listeners.
+		struct lib3270_linked_list_head actions[LIB3270_ACTION_GROUP_CUSTOM];
+
 	} listeners;
 
 
@@ -886,3 +874,9 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	/// @return The data from URL (release it with lib3270_free) or NULL on error.
 	///
 	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message);
+
+	/// @brief Fire CState change.
+	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
+
+	/// @brief Notify actions.
+	LIB3270_INTERNAL void lib3270_notify_actions(H3270 *hSession, LIB3270_ACTION_GROUP group);

@@ -37,7 +37,7 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <errno.h>
 #include <lib3270/trace.h>
 #include <lib3270/log.h>

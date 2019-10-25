@@ -38,7 +38,7 @@ struct ta;
 
 #define LIB3270_TA struct ta
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <lib3270/trace.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>

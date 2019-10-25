@@ -28,7 +28,7 @@
  */
 
 #include <config.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 #include "telnetc.h"
 #include <errno.h>
 #include <lib3270/log.h>
@@ -83,7 +83,7 @@
 	if(hSession->auto_reconnect_inprogress || hSession->popups)
 		return errno = EAGAIN;
 
-	if(hSession->sock > 0)
+	if(hSession->connection.sock > 0)
 		return errno = EISCONN;
 
 	if(!(hSession->host.current && hSession->host.srvc))

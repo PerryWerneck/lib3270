@@ -34,7 +34,7 @@
 
 #define _GNU_SOURCE
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include "utilc.h"
 #include "popupsc.h"
 #include <lib3270/selection.h>
@@ -705,12 +705,12 @@ LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, s
 
  	memset(addr,0,*addrlen);
 
- 	if(hSession->sock < 0) {
+ 	if(hSession->connection.sock < 0) {
 		errno = ENOTCONN;
 		return -1;
  	}
 
-	return getpeername(hSession->sock, addr, addrlen);
+	return getpeername(hSession->connection.sock, addr, addrlen);
 
 }
 
@@ -720,12 +720,12 @@ LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, s
 
  	memset(addr,0,*addrlen);
 
- 	if(hSession->sock < 0) {
+ 	if(hSession->connection.sock < 0) {
 		errno = ENOTCONN;
 		return -1;
  	}
 
-	return getsockname(hSession->sock, addr, addrlen);
+	return getsockname(hSession->connection.sock, addr, addrlen);
 }
 
 static int xdigit_value(const char scanner)

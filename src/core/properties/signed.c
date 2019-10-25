@@ -28,7 +28,7 @@
  */
 
  #include <config.h>
- #include <lib3270-internals.h>
+ #include <internals.h>
  #include <string.h>
  #include <lib3270.h>
  #include <lib3270/properties.h>

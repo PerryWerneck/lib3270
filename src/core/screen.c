@@ -34,7 +34,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 #include <signal.h>
 #include "3270ds.h"
 #include "resources.h"
@@ -550,7 +550,7 @@ void status_oerr(H3270 *session, int error_type)
  */
 void status_resolving(H3270 *hSession)
 {
-	hSession->cstate = LIB3270_RESOLVING;
+	lib3270_set_cstate(hSession,LIB3270_RESOLVING);
 	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 
 	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
@@ -559,7 +559,7 @@ void status_resolving(H3270 *hSession)
 
 void status_connecting(H3270 *hSession)
 {
-	hSession->cstate = LIB3270_RESOLVING;
+	lib3270_set_cstate(hSession,LIB3270_RESOLVING);
 	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
 
 	mcursor_set(hSession,LIB3270_POINTER_LOCKED);

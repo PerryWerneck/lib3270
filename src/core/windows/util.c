@@ -35,7 +35,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <lmcons.h>
-#include <lib3270-internals.h>
+#include <internals.h>
 
 #include "winversc.h"
 #include <ws2tcpip.h>

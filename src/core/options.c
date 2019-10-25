@@ -29,7 +29,7 @@
  *
  */
 
-#include <lib3270-internals.h>
+#include <internals.h>
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -94,7 +94,7 @@ LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype)
 {
 	CHECK_SESSION_HANDLE(hSession);
 
-	if(hSession->cstate != LIB3270_NOT_CONNECTED)
+	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
 
 	switch(colortype)

@@ -116,6 +116,9 @@
 		<Unit filename="src/core/keyboard/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linkedlist.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -242,8 +245,8 @@
 		<Unit filename="src/include/ft_dftc.h" />
 		<Unit filename="src/include/ftc.h" />
 		<Unit filename="src/include/hostc.h" />
+		<Unit filename="src/include/internals.h" />
 		<Unit filename="src/include/kybdc.h" />
-		<Unit filename="src/include/lib3270-internals.h" />
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/actions.h" />
 		<Unit filename="src/include/lib3270/charset.h" />

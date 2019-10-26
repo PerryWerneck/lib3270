@@ -19,6 +19,7 @@ static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata)
 	FILE *out = fopen(trace_file,"a");
 	if(out)
 	{
+		
 		vfprintf(out,fmt,args);
 		fclose(out);
 	}

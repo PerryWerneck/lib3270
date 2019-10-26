@@ -10,7 +10,9 @@
             "args": [
                 "/favor:AMD64",
                 "/c",
-                "/I ${workspaceFolder}/src/include",
+                "/I","${workspaceFolder}/src/include",
+                "/I","${env:VCPKG_ROOT}/x64-windows/include",
+                "/I","${env:VCPKG_ROOT}/x64-windows-static/include",
                 "${file}"
             ],
             "group": {

@@ -47,6 +47,13 @@
 		#define ENOTCONN 126
 	#endif // !ENOTCONN
 
+	#if defined (__GNUC__) || defined (__clang__)
+
+		#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
+		#define lib3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
+	
+	#endif // __GNUC__
+
 	#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1) || defined (__clang__)
 
 		#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
@@ -1359,14 +1366,6 @@
 	LIB3270_EXPORT void * lib3270_malloc(int len);
 	LIB3270_EXPORT void * lib3270_realloc(void *p, int len);
 	LIB3270_EXPORT void * lib3270_strdup(const char *str);
-
-	#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
-
-	/**
-	 * @brief Declare an auto-cleanup pointer.
-	 *
-	 */
-	#define lib3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
 
 	/**
 	 * @brief Release allocated memory.

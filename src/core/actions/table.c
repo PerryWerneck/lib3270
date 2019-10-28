@@ -421,8 +421,8 @@
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = NULL,
-			.icon = NULL,
-			.label = NULL,
+			.icon = "edit-clear",
+			.label = N_("Erase input"),
 			.summary = NULL,
 			.activate = lib3270_eraseinput,
 
@@ -640,7 +640,7 @@
 
 			.key = "Print",
 			.icon = "document-print",
-			.label = NULL,
+			.label = N_("Print"),
 			.summary  = N_("Send to print"),
 			.description = N_("If the terminal has selected area print it, if not, print all contents."),
 			.activate = lib3270_print,

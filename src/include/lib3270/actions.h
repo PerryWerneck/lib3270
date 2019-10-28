@@ -38,8 +38,7 @@
  	LIB3270_ACTION_GROUP_NONE,					///< @brief Simple action, no signals os special treatment.
  	LIB3270_ACTION_GROUP_ONLINE,				///< @brief Action requires online state.
  	LIB3270_ACTION_GROUP_OFFLINE,				///< @brief Action requires offline state.
- 	LIB3270_ACTION_GROUP_SELECTED,				///< @brief Action requires an active selection.
- 	LIB3270_ACTION_GROUP_UNSELECTED,			///< @brief Action fails if there has a selection.
+ 	LIB3270_ACTION_GROUP_SELECTION,				///< @brief Action depends on selection.
 
  	LIB3270_ACTION_GROUP_CUSTOM					///< @brief Custom group/Number of groups.
  } LIB3270_ACTION_GROUP;

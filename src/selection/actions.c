@@ -63,7 +63,8 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
 
 		hSession->cbk.set_selection(hSession,0);
 		hSession->cbk.update_selection(hSession,-1,-1);
-		lib3270_notify_actions(hSession,LIB3270_ACTION_GROUP_UNSELECTED);
+
+		lib3270_notify_actions(hSession,LIB3270_ACTION_GROUP_SELECTION);
 
 	}
 

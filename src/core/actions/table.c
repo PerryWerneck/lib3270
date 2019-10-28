@@ -232,7 +232,7 @@
 			.summary = N_( "Save selected area." ),
 			.activate = save_selected,
 
-			.group = LIB3270_ACTION_GROUP_SELECTED,
+			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.activatable = lib3270_has_selection
 		},
 
@@ -673,7 +673,7 @@
 			.summary = N_( "Print selected area." ),
 			.activate = lib3270_print_selected,
 
-			.group = LIB3270_ACTION_GROUP_SELECTED,
+			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.activatable = lib3270_has_selection
 		},
 

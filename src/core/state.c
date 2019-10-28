@@ -86,4 +86,9 @@ LIB3270_EXPORT int lib3270_in_e(const H3270 *h)
 	return (h->connection.state >= LIB3270_CONNECTED_INITIAL_E);
 }
 
+LIB3270_EXPORT int lib3270_is_unlocked(const H3270 *h)
+{
+	return h->pointer == LIB3270_POINTER_UNLOCKED;
+}
+
 

@@ -325,7 +325,7 @@ static void kybdlock_set(H3270 *hSession, unsigned int bits)
 #endif
 		if ((hSession->kybdlock ^ bits) & KL_DEFERRED_UNLOCK)
 		{
-			/* Turned on deferred unlock. */
+			// Turned on deferred unlock.
 			hSession->unlock_delay_time = time(NULL);
 		}
 		hSession->kybdlock = n;
@@ -498,7 +498,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code)
 	if (!IN_SSCP || aid_code != AID_CLEAR)
 	{
 		status_twait(hSession);
-		mcursor_waiting(hSession);
+		mcursor_set(hSession,LIB3270_POINTER_WAITING);
 		lib3270_set_toggle(hSession,LIB3270_TOGGLE_INSERT,0);
 		kybdlock_set(hSession,KL_OIA_TWAIT | KL_OIA_LOCKED);
 	}
@@ -1073,7 +1073,7 @@ void do_reset(H3270 *hSession, Boolean explicit)
 
 	/* Clean up other modes. */
 	status_reset(hSession);
-	mcursor_normal(hSession);
+	mcursor_set(hSession,LIB3270_POINTER_UNLOCKED);
 
 }
 

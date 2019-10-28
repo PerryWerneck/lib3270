@@ -260,8 +260,8 @@
 			.summary = N_( "Paste file." ),
 			.activate = paste_file,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
+			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
+			.activatable = lib3270_is_unlocked
 		},
 
 		//
@@ -397,8 +397,8 @@
 			.summary = N_( "Backspaces the cursor until it hits the front of a word." ),
 			.activate = lib3270_deleteword,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
+			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
+			.activatable = lib3270_is_unlocked
 		},
 
 		{
@@ -411,8 +411,8 @@
 			.summary = N_( "Delete field" ),
 			.activate = lib3270_deletefield,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_formatted
+			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
+			.activatable = lib3270_is_unlocked
 		},
 
 
@@ -613,8 +613,8 @@
 			.summary = NULL,
 			.activate = lib3270_paste_next,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
+			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
+			.activatable = lib3270_is_unlocked
 		},
 
 		{

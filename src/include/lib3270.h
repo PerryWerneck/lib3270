@@ -51,7 +51,7 @@
 
 		#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
 		#define lib3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
-	
+
 	#endif // __GNUC__
 
 	#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1) || defined (__clang__)
@@ -218,9 +218,9 @@
 	 */
 	typedef enum _LIB3270_POINTER
 	{
-		LIB3270_POINTER_UNLOCKED,				/**< @brief Ready for user actions */
-		LIB3270_POINTER_WAITING,				/**< @brief Waiting for host */
-		LIB3270_POINTER_LOCKED,					/**< @brief Locked, can't receive user actions */
+		LIB3270_POINTER_UNLOCKED,				///< @brief Ready for user actions
+		LIB3270_POINTER_WAITING,				///< @brief Waiting for host
+		LIB3270_POINTER_LOCKED,					///< @brief Locked, can't receive user actions
 
 		LIB3270_POINTER_PROTECTED,
 		LIB3270_POINTER_MOVE_SELECTION,
@@ -992,6 +992,8 @@
 
 	LIB3270_EXPORT int lib3270_is_connected(const H3270 *h);
 	LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h);
+
+	LIB3270_EXPORT int lib3270_is_unlocked(const H3270 *h);
 
 	LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h);
 	LIB3270_EXPORT int lib3270_get_typeahead(const H3270 *h);

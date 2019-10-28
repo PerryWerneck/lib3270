@@ -830,15 +830,16 @@ void popup_system_error(H3270 *session, const char *title, const char *message, 
 	va_end(args);
 }
 
-void mcursor_set(H3270 *session,LIB3270_POINTER m)
+void mcursor_set(H3270 *hSession,LIB3270_POINTER m)
 {
-	CHECK_SESSION_HANDLE(session);
-
-	if(session->pointer != ((unsigned short) m)) {
+	if(hSession->pointer != ((unsigned short) m)) {
 
 		// Pointer changed
-		session->pointer = (unsigned short) m;
-		session->cbk.cursor(session,m & 0x03);
+		hSession->pointer = (unsigned short) m;
+		hSession->cbk.cursor(hSession,m & 0x03);
+
+		// Notify lock state change.
+		lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_LOCK_STATE);
 
 	}
 }

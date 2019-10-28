@@ -39,6 +39,7 @@
  	LIB3270_ACTION_GROUP_ONLINE,				///< @brief Action requires online state.
  	LIB3270_ACTION_GROUP_OFFLINE,				///< @brief Action requires offline state.
  	LIB3270_ACTION_GROUP_SELECTION,				///< @brief Action depends on selection.
+ 	LIB3270_ACTION_GROUP_LOCK_STATE,			///< @brief Action depends on keyboard lock state.
 
  	LIB3270_ACTION_GROUP_CUSTOM					///< @brief Custom group/Number of groups.
  } LIB3270_ACTION_GROUP;

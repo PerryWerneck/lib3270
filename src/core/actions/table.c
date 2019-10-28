@@ -178,7 +178,7 @@
 		},
 
 		{
-			.name = "previousword",
+			.name = "previous_word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = NULL,
@@ -192,7 +192,7 @@
 		},
 
 		{
-			.name = "nextword",
+			.name = "next_word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = NULL,
@@ -209,7 +209,7 @@
 		// Save/load actions
 		//
 		{
-			.name = "saveall",
+			.name = "save_all",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -223,7 +223,7 @@
 		},
 
 		{
-			.name = "saveselected",
+			.name = "save_selected",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -237,7 +237,7 @@
 		},
 
 		{
-			.name = "savecopy",
+			.name = "save_copy",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -251,7 +251,7 @@
 		},
 
 		{
-			.name = "loadfile",
+			.name = "paste_from_file",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -328,7 +328,7 @@
 
 
 		{
-			.name = "fieldend",
+			.name = "field_end",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = NULL,
@@ -342,7 +342,7 @@
 		},
 
 		{
-			.name = "firstfield",
+			.name = "first_field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "Home",
@@ -356,7 +356,7 @@
 		},
 
 		{
-			.name = "nextfield",
+			.name = "next_field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "Tab",
@@ -370,7 +370,7 @@
 		},
 
 		{
-			.name = "previousfield",
+			.name = "previous_field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "ISO_Left_Tab",
@@ -388,7 +388,7 @@
 		// Erase actions.
 		//
 		{
-			.name = "deleteword",
+			.name = "delete_word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "<Ctrl>w",
@@ -402,7 +402,7 @@
 		},
 
 		{
-			.name = "deletefield",
+			.name = "delete_field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "<Ctrl>u",
@@ -417,7 +417,7 @@
 
 
 		{
-			.name = "eraseinput",
+			.name = "erase_input",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = NULL,
@@ -431,7 +431,7 @@
 		},
 
 		{
-			.name = "eraseeof",
+			.name = "erase_eof",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = "End",
@@ -445,7 +445,7 @@
 		},
 
 		{
-			.name = "eraseeol",
+			.name = "erase_eol",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = NULL,
@@ -510,7 +510,7 @@
 
 			.key = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Clear"),
 			.summary = N_( "Clear AID key" ),
 			.activate = lib3270_clear,
 
@@ -604,7 +604,7 @@
 		},
 
 		{
-			.name = "pastenext",
+			.name = "paste_next",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
 			.key = "<shift><ctrl>v",
@@ -650,7 +650,7 @@
 		},
 
 		{
-			.name = "printall",
+			.name = "print_all",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.key = NULL,
@@ -664,7 +664,7 @@
 		},
 
 		{
-			.name = "printselected",
+			.name = "print_selected",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.key = NULL,
@@ -678,7 +678,7 @@
 		},
 
 		{
-			.name = "printcopy",
+			.name = "print_copy",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.key = NULL,

@@ -246,7 +246,11 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 
 static void set_formatted(H3270 *hSession, int state)
 {
-	hSession->formatted = state;
+	if(state != hSession->formatted)
+	{
+		hSession->formatted = state;
+		lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_LOCK_STATE);
+	}
 }
 
 /**

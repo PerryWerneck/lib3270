@@ -839,7 +839,7 @@ void mcursor_set(H3270 *hSession,LIB3270_POINTER m)
 		hSession->cbk.cursor(hSession,m & 0x03);
 
 		// Notify lock state change.
-		lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_LOCK_STATE);
+		lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_FORMATTED);
 
 	}
 }

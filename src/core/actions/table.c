@@ -291,7 +291,7 @@
 			.summary = N_( "Remove selection" ),
 			.activate = lib3270_unselect,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.activatable = lib3270_has_selection
 		},
 
@@ -322,7 +322,7 @@
 			.summary = N_( "Select Field" ),
 			.activate = lib3270_select_field,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -337,7 +337,7 @@
 			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field." ),
 			.activate = lib3270_fieldend,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -351,7 +351,7 @@
 			.summary = N_( "Move to first unprotected field on screen." ),
 			.activate = lib3270_firstfield,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -365,7 +365,7 @@
 			.summary = N_( "Tab forward to next field." ),
 			.activate = lib3270_nextfield,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -379,7 +379,7 @@
 			.summary = N_( "Tab backward to previous field." ),
 			.activate = lib3270_previousfield,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_formatted
 		},
 
@@ -411,8 +411,8 @@
 			.summary = N_( "Delete field" ),
 			.activate = lib3270_deletefield,
 
-			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
-			.activatable = lib3270_is_unlocked
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
+			.activatable = lib3270_is_formatted
 		},
 
 
@@ -440,7 +440,7 @@
 			.summary = N_( "Erase End Of Field Key." ),
 			.activate = lib3270_eraseeof,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_formatted
 		},
 

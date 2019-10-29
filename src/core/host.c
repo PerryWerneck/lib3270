@@ -49,6 +49,7 @@
 #include "utilc.h"
 #include "xioc.h"
 #include "../ssl/crl.h"
+#include "screenc.h"
 
 #include <errno.h>
 #include <lib3270/internals.h>
@@ -182,6 +183,8 @@ void lib3270_set_disconnected(H3270 *hSession)
 	CHECK_SESSION_HANDLE(hSession);
 
 	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
+	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+
 	hSession->starting	= 0;
 
 #if defined(HAVE_LIBSSL)

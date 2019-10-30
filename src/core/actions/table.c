@@ -731,3 +731,30 @@
 	return actions;
  }
 
+ static int default_activatable_state(const H3270 *hSession)
+ {
+ 	return hSession == NULL ? 0 : 1;
+ }
+
+ LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group)
+ {
+	static const struct
+	{
+		int (*get)(const H3270 *);
+	} activatable[LIB3270_ACTION_CUSTOM] =
+	{
+		{ default_activatable_state	},	// LIB3270_ACTION_GROUP_NONE
+ 		{ lib3270_is_connected		},	// LIB3270_ACTION_GROUP_ONLINE
+ 		{ lib3270_is_disconnected	},	// LIB3270_ACTION_GROUP_OFFLINE
+ 		{ lib3270_has_selection		},	// LIB3270_ACTION_GROUP_SELECTION
+ 		{ lib3270_is_unlocked		},	// LIB3270_ACTION_GROUP_LOCK_STATE
+ 		{ lib3270_is_formatted		},	// LIB3270_ACTION_GROUP_FORMATTED
+ 	};
+
+ 	if(group < (sizeof(activatable)/sizeof(activatable[0]))) {
+		return activatable[group].get(hSession);
+ 	}
+
+ 	return default_activatable_state(hSession);
+
+ }

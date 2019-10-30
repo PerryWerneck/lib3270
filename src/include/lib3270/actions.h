@@ -73,6 +73,16 @@
 
  } LIB3270_ACTION;
 
+/**
+ * @brief Query if the action group can be activated.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param group		The group to listen.
+ *
+ * @return The current state of the group.
+ *
+ */
+ LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group);
 
 /**
  * @brief Register an action group listener.

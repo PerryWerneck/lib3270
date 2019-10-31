@@ -178,7 +178,7 @@
 		},
 
 		{
-			.name = "previous_word",
+			.name = "previous-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = NULL,
@@ -192,7 +192,7 @@
 		},
 
 		{
-			.name = "next_word",
+			.name = "next-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = NULL,
@@ -209,7 +209,7 @@
 		// Save/load actions
 		//
 		{
-			.name = "save_all",
+			.name = "save-all",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -223,7 +223,7 @@
 		},
 
 		{
-			.name = "save_selected",
+			.name = "save-selected",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -237,7 +237,7 @@
 		},
 
 		{
-			.name = "save_copy",
+			.name = "save-copy",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -251,7 +251,7 @@
 		},
 
 		{
-			.name = "paste_from_file",
+			.name = "paste-from-file",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.key = NULL,
@@ -268,7 +268,7 @@
 		// Selection actions
 		//
 		{
-			.name = "select_all",
+			.name = "select-all",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
 			.key = "<ctrl>a",
@@ -313,7 +313,7 @@
 		// Field actions.
 		//
 		{
-			.name = "select_field",
+			.name = "select-field",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
 			.key = "<Ctrl>f",
@@ -328,7 +328,7 @@
 
 
 		{
-			.name = "field_end",
+			.name = "field-end",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = NULL,
@@ -342,7 +342,7 @@
 		},
 
 		{
-			.name = "first_field",
+			.name = "first-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "Home",
@@ -356,7 +356,7 @@
 		},
 
 		{
-			.name = "next_field",
+			.name = "next-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "Tab",
@@ -370,7 +370,7 @@
 		},
 
 		{
-			.name = "previous_field",
+			.name = "previous-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "ISO_Left_Tab",
@@ -388,7 +388,7 @@
 		// Erase actions.
 		//
 		{
-			.name = "delete_word",
+			.name = "delete-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "<Ctrl>w",
@@ -402,7 +402,7 @@
 		},
 
 		{
-			.name = "delete_field",
+			.name = "delete-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.key = "<Ctrl>u",
@@ -417,7 +417,7 @@
 
 
 		{
-			.name = "erase_input",
+			.name = "erase-input",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = NULL,
@@ -431,7 +431,7 @@
 		},
 
 		{
-			.name = "erase_eof",
+			.name = "erase-eof",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = "End",
@@ -445,7 +445,7 @@
 		},
 
 		{
-			.name = "erase_eol",
+			.name = "erase-eol",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.key = NULL,
@@ -604,7 +604,7 @@
 		},
 
 		{
-			.name = "paste_next",
+			.name = "paste-next",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
 			.key = "<shift><ctrl>v",
@@ -650,7 +650,7 @@
 		},
 
 		{
-			.name = "print_all",
+			.name = "print-all",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.key = NULL,
@@ -664,7 +664,7 @@
 		},
 
 		{
-			.name = "print_selected",
+			.name = "print-selected",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.key = NULL,
@@ -678,7 +678,7 @@
 		},
 
 		{
-			.name = "print_copy",
+			.name = "print-copy",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.key = NULL,

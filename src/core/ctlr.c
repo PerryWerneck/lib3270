@@ -2313,12 +2313,10 @@ int ctlr_dbcs_postprocess(H3270 *hSession)
  */
 void ps_process(H3270 *hSession)
 {
-	while(run_ta(hSession))
-		;
+	while(run_ta(hSession));
 
-//	sms_continue();
+	screen_update(hSession,0,hSession->view.rows * hSession->view.cols);
 
-#if defined(X3270_FT)
 	/* Process file transfers. */
 	if (lib3270_get_ft_state(hSession) != LIB3270_FT_STATE_NONE &&		/* transfer in progress */
 	    hSession->formatted &&          								/* screen is formatted */
@@ -2329,7 +2327,7 @@ void ps_process(H3270 *hSession)
 	{
 		ft_cut_data(hSession);
 	}
-#endif
+
 }
 
 /*

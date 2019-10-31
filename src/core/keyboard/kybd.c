@@ -935,17 +935,23 @@ LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *st
 	int rc = 0;
 
 	if(check_online_session(hSession))
+	{
+		trace("%s: %s",__FUNCTION__,strerror(errno));
 		return errno;
+	}
 
 	if(length < 0)
 		length = strlen((char *) str);
 
-	if(hSession->kybdlock)
-		return (errno = EPERM);
-
 	int pos;
 	for(pos = 0; pos < length && str[pos] && !rc; pos++)
+	{
+		if (KYBDLOCK_IS_OERR(hSession))
+			return (errno = EPERM);
+
 		rc = key_ACharacter(hSession,(str[pos] & 0xff), KT_STD, IA_KEY, NULL);
+		trace("%s: key_ACharacter(%c)=%d",__FUNCTION__,str[pos] & 0xff,rc);
+	}
 
 	screen_update(hSession,0,hSession->view.rows * hSession->view.cols);
 

@@ -307,7 +307,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 
 	memset(buffer,0,len+1);
 
-	trace("len=%d buffer=%p",len,buffer);
+	// trace("len=%d buffer=%p",len,buffer);
 
 	while(len > 0)
 	{

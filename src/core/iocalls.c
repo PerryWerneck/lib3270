@@ -531,7 +531,7 @@ int non_blocking(H3270 *hSession, Boolean on)
 		WSASetLastError(0);
 		u_long iMode= on ? 1 : 0;
 
-		if(ioctlsocket(hSession->sock,FIONBIO,&iMode))
+		if(ioctlsocket(hSession->connection.sock,FIONBIO,&iMode))
 		{
 			lib3270_popup_dialog(	hSession,
 									LIB3270_NOTIFY_ERROR,

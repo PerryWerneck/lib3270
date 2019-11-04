@@ -55,13 +55,6 @@
 	static const LIB3270_INT_PROPERTY properties[] = {
 
 		{
-			.name = "model_number",								//  Property name.
-			.description = N_( "The model number" ),			//  Property description.
-			.get = lib3270_get_model_number,					//  Get value.
-			.set = NULL											//  Set value.
-		},
-
-		{
 			.name = "color_type",								//  Property name.
 			.description = N_( "The color type" ),				//  Property description.
 			.get = lib3270_get_color_type,						//  Get value.

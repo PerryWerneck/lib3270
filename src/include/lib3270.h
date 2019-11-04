@@ -1324,10 +1324,23 @@
 
 	LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *hSession, int baddr, int *start, int *end);
 
-	LIB3270_EXPORT int lib3270_set_model(H3270 *hSession, const char *name);
+	LIB3270_EXPORT int 			  LIB3270_DEPRECATED(lib3270_set_model(H3270 *hSession, const char *model_name));
+	LIB3270_EXPORT const char	* LIB3270_DEPRECATED(lib3270_get_model(const H3270 *session));
 
-	LIB3270_EXPORT const char	* lib3270_get_model(const H3270 *session);
-	LIB3270_EXPORT int			  lib3270_get_model_number(const H3270 *hSession);
+	LIB3270_EXPORT const char	* lib3270_get_model_name(const H3270 *session);
+	LIB3270_EXPORT int			  lib3270_set_model_name(H3270 *hSession, const char *model_name);
+
+	LIB3270_EXPORT unsigned int	  lib3270_get_model_number(const H3270 *hSession);
+
+	/**
+	 * @brief Set TN3270 model number.
+	 *
+	 * @param hSession	Session handle.
+	 * @param model_number	The new model number (2-5).
+	 *
+	 * @return
+	 */
+	LIB3270_EXPORT int			  lib3270_set_model_number(H3270 *hSession, unsigned int model_number);
 
 	/**
 	 *

@@ -75,8 +75,8 @@
 		{
 			.name = "model",									//  Property name.
 			.description = N_( "Model name" ),					//  Property description.
-			.get = lib3270_get_model,							//  Get value.
-			.set = lib3270_set_model							//  Set value.
+			.get = lib3270_get_model_name,						//  Get value.
+			.set = lib3270_set_model_name						//  Set value.
 		},
 
 		{

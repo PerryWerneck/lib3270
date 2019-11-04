@@ -39,16 +39,40 @@
 	return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
  }
 
+ const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name)
+ {
+ 	size_t ix;
+	const LIB3270_UINT_PROPERTY * list = lib3270_get_unsigned_properties_list();
+
+ 	for(ix = 0;list[ix].name;ix++)
+	{
+		if(!strcasecmp(list[ix].name,name))
+			return &list[ix];
+	}
+
+	errno = ENOENT;
+    return NULL;
+ }
+
  const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void)
  {
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
 		{
-			.name = "cursor_address",								//  Property name.
-			.description = N_( "Cursor address" ),					//  Property description.
-			.get = lib3270_get_cursor_address,						//  Get value.
-			.set = lib3270_set_cursor_address						//  Set value.
+			.name = "model_number",									// Property name.
+			.description = N_( "The model number" ),				// Property description.
+			.min = 2,												// Minimum allowable value.
+			.max = 5,												// Maximum allowable value.
+			.get = lib3270_get_model_number,						// Get value.
+			.set = lib3270_set_model_number							// Set value.
+		},
+
+		{
+			.name = "cursor_address",								// Property name.
+			.description = N_( "Cursor address" ),					// Property description.
+			.get = lib3270_get_cursor_address,						// Get value.
+			.set = lib3270_set_cursor_address						// Set value.
 		},
 
 		{

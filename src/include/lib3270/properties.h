@@ -60,6 +60,9 @@
 		unsigned int (*get)(const H3270 *hSession);						///< @brief Get value.
 		int (*set)(H3270 *hSession, unsigned int value);				///< @brief Set value.
 
+		unsigned int min;												///< @brief Minimum allowable value.
+		unsigned int max;												///< @brief Maximum allowable value.
+
 	} LIB3270_UINT_PROPERTY;
 
 	typedef struct _lib3270_string_property
@@ -176,6 +179,16 @@
 	 *
 	 */
 	LIB3270_EXPORT const char * lib3270_property_get_summary(const LIB3270_PROPERTY * property);
+
+	/**
+	 * @brief Get unsigned int property by name.
+	 *
+	 * @param name	Property name.
+	 *
+	 * @return Property descriptor, or NULL if failed.
+	 *
+	 */
+	const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name);
 
 #ifdef __cplusplus
 	}

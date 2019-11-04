@@ -368,7 +368,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	// Initialize toggles
 	initialize_toggles(hSession);
 
-	lib3270_set_model(hSession,model);
+	lib3270_set_model_name(hSession,model);
 
 }
 

@@ -85,7 +85,7 @@
  * @param hSession selected 3270 session.
  * @return Current model number.
  */
-int lib3270_get_model_number(const H3270 *hSession)
+unsigned int lib3270_get_model_number(const H3270 *hSession)
 {
 	return hSession->model_num;
 }
@@ -95,11 +95,16 @@ const char * lib3270_get_model(const H3270 *hSession)
 	return hSession->model_name;
 }
 
+const char * lib3270_get_model_name(const H3270 *hSession)
+{
+	return hSession->model_name;
+}
+
  /**
   * @brief Parse the model number.
   *
   * @param session	Session Handle.
-  * @param m		Model number.
+  * @param m		Model number (NULL for "2").
   *
   * @return -1 (error), 0 (default), or the specified number.
   */
@@ -109,19 +114,19 @@ static int parse_model_number(H3270 *session, const char *m)
 	int n;
 
 	if(!m)
-		return 0;
+		m = "2";
 
 	sl = strlen(m);
 
-	/* An empty model number is no good. */
+	// An empty model number is no good.
 	if (!sl)
 		return 0;
 
 	if (sl > 1) {
-		/*
-		 * If it's longer than one character, it needs to start with
-		 * '327[89]', and it sets the m3279 resource.
-		 */
+
+		// If it's longer than one character, it needs to start with
+		// '327[89]', and it sets the m3279 resource.
+
 		if (!strncmp(m, "3278", 4))
 		{
 			session->m3279 = 0;
@@ -137,13 +142,13 @@ static int parse_model_number(H3270 *session, const char *m)
 		m += 4;
 		sl -= 4;
 
-		/* Check more syntax.  -E is allowed, but ignored. */
+		// Check more syntax.  -E is allowed, but ignored.
 		switch (m[0]) {
 		case '\0':
-			/* Use default model number. */
+			// Use default model number.
 			return 0;
 		case '-':
-			/* Model number specified. */
+			// Model number specified.
 			m++;
 			sl--;
 			break;
@@ -151,9 +156,9 @@ static int parse_model_number(H3270 *session, const char *m)
 			return -1;
 		}
 		switch (sl) {
-		case 1: /* n */
+		case 1: // n
 			break;
-		case 3:	/* n-E */
+		case 3:	// n-E
 			if (strcasecmp(m + 1, "-E")) {
 				return -1;
 			}
@@ -163,7 +168,7 @@ static int parse_model_number(H3270 *session, const char *m)
 		}
 	}
 
-	/* Check the numeric model number. */
+	// Check the numeric model number.
 	n = atoi(m);
 	if (n >= 2 && n <= 5) {
 		return n;
@@ -173,25 +178,23 @@ static int parse_model_number(H3270 *session, const char *m)
 
 }
 
-int lib3270_set_model(H3270 *hSession, const char *model)
+int lib3270_set_model_name(H3270 *hSession, const char *model_name)
 {
-	int	model_number;
+	return lib3270_set_model_number(hSession,parse_model_number(hSession, model_name));
+}
 
+int lib3270_set_model(H3270 *hSession, const char *model_name)
+{
+	return lib3270_set_model_number(hSession,parse_model_number(hSession, model_name));
+}
+
+int lib3270_set_model_number(H3270 *hSession, unsigned int model_number)
+{
 	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
 
 	strncpy(hSession->full_model_name,"IBM-",LIB3270_FULL_MODEL_NAME_LENGTH);
 	hSession->model_name = &hSession->full_model_name[4];
-
-	if(!*model)
-		model = "2";	// No model, use the default one
-
-	model_number = parse_model_number(hSession,model);
-	if (model_number < 0)
-	{
-		popup_an_error(hSession,"Invalid model number: %s", model);
-		model_number = 0;
-	}
 
 	if (!model_number)
 	{

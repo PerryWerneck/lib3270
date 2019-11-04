@@ -64,6 +64,7 @@
 			.description = N_( "The model number" ),				// Property description.
 			.min = 2,												// Minimum allowable value.
 			.max = 5,												// Maximum allowable value.
+			.default_value = 2,										// Default value for the property.
 			.get = lib3270_get_model_number,						// Get value.
 			.set = lib3270_set_model_number							// Set value.
 		},

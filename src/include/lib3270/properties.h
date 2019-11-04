@@ -62,6 +62,7 @@
 
 		unsigned int min;												///< @brief Minimum allowable value.
 		unsigned int max;												///< @brief Maximum allowable value.
+		unsigned int default_value;										///< @brief Default value for the property.
 
 	} LIB3270_UINT_PROPERTY;
 

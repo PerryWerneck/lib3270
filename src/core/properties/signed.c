@@ -55,13 +55,6 @@
 	static const LIB3270_INT_PROPERTY properties[] = {
 
 		{
-			.name = "color_type",								//  Property name.
-			.description = N_( "The color type" ),				//  Property description.
-			.get = lib3270_get_color_type,						//  Get value.
-			.set = lib3270_set_color_type						//  Set value.
-		},
-
-		{
 			.name = "cstate",									//  Property name.
 			.description = N_( "Connection state" ),			//  Property description.
 			.get = lib3270_get_connection_state_as_int,			//  Get value.

@@ -85,17 +85,14 @@ LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_get_color_type(const H3270 *hSession)
+LIB3270_EXPORT unsigned int lib3270_get_color_type(const H3270 *hSession)
 {
-	return (int) (hSession->mono ? 2 : hSession->colors);
+	return (unsigned int) (hSession->mono ? 2 : hSession->colors);
 }
 
-LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype)
+LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned int colortype)
 {
-	CHECK_SESSION_HANDLE(hSession);
-
-	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
-		return errno = EISCONN;
+	FAIL_IF_ONLINE(hSession);
 
 	switch(colortype)
 	{
@@ -121,7 +118,6 @@ LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype)
 	default:
 		return errno = EINVAL;
 	}
-
 
 	return 0;
 }

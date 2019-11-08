@@ -1412,7 +1412,7 @@
 	/**
 	 * Get source code revision.
 	 *
-	 * @return SVN revision of the current source code.
+	 * @return The revision of the current source code.
 	 *
 	 */
 	LIB3270_EXPORT const char * lib3270_get_revision(void);
@@ -1422,9 +1422,21 @@
 
 	LIB3270_EXPORT int lib3270_clear_operator_error(H3270 *hSession);
 
+	/**
+	 * @brief Set the terminal color type.
+	 *
+	 * @param hSession	Session handle.
+	 * @param colortype	The color type for the emulator (2, 8, 16 or 0 to lib3270's default).
+	 *
+	 * @return 0 if ok, error code if failed (sets errno).
+	 *
+	 * @retval EINVAL	Invalid color type value.
+	 * @retval EISCONN	The session is active.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned int colortype);
 
-	LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, int colortype);
-	LIB3270_EXPORT int lib3270_get_color_type(const H3270 *hSession);
+	LIB3270_EXPORT unsigned int lib3270_get_color_type(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *name);
 	LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt);

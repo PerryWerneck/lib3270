@@ -60,6 +60,13 @@
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
 		{
+			.name = "color_type",								//  Property name.
+			.description = N_( "The color type" ),				//  Property description.
+			.get = lib3270_get_color_type,						//  Get value.
+			.set = lib3270_set_color_type						//  Set value.
+		},
+
+		{
 			.name = "model_number",									// Property name.
 			.description = N_( "The model number" ),				// Property description.
 			.min = 2,												// Minimum allowable value.

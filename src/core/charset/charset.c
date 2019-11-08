@@ -225,6 +225,8 @@ LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, co
 	if(!display)
 		display = "ISO-8859-1";
 
+	debug("%s(%s,%s)",__FUNCTION__,host,display);
+
 	replace_pointer(hSession->charset.host, host);
 	replace_pointer(hSession->charset.display,display);
 
@@ -244,14 +246,25 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name)
 {
 	int f;
 
-	if(!name)
+	debug("%s(%s)",__FUNCTION__,name);
+
+	if(name && hSession->charset.host && !strcasecmp(name,hSession->charset.host))
 	{
-		lib3270_reset_charset(hSession,"us","ISO-8859-1", LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET);
+		debug("Charset is \"%s\", returning",hSession->charset.host);
 		return 0;
 	}
 
-	if(hSession->charset.host && !strcasecmp(name,hSession->charset.host))
+	if(!name)
+	{
+		name = hSession->charset.host;
+		debug("Resetting to charset \"%s\"",name);
+	}
+
+	if(!name)
+	{
+		lib3270_reset_charset(hSession, NULL, NULL, LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET);
 		return 0;
+	}
 
 	for(f=0;charset[f].name != NULL;f++)
 	{
@@ -267,10 +280,12 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name)
 			for(c=0;charset[f].chr[c];c+=2)
 				lib3270_remap_char(hSession,charset[f].chr[c],charset[f].chr[c+1], BOTH, 0);
 
+			debug("Charset is now \"%s\"",charset[f].name);
 			return 0;
 		}
 	}
 
+	debug("%s: %s",__FUNCTION__,strerror(EINVAL));
 	return errno = EINVAL;
 
 }

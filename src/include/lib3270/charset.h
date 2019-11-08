@@ -61,7 +61,19 @@
 		BOTH
 	} lib3270_remap_scope;
 
+	/**
+	 * @brief Set host charset.
+	 *
+	 * @param hSession	Session Handle.
+	 * @param name		Charset name (us, bracket, cp500) or NULL to lib3270's default.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 * @retval EINVAL	Invalid charset name.
+	 *
+	 */
 	LIB3270_EXPORT int			  lib3270_set_host_charset(H3270 *hSession, const char *name);
+
 	LIB3270_EXPORT const char	* lib3270_get_host_charset(const H3270 *hSession);
 	LIB3270_EXPORT void 		  lib3270_reset_charset(H3270 *hSession, const char * host, const char * display, unsigned long cgcsgid);
 
@@ -75,6 +87,8 @@
 	 * @param id	The character definition (id or 0x[code]).
 	 *
 	 * @return Character code if ok, 0 if not (sets errno).
+	 *
+	 * @retval EINVAL	Invalid character id.
 	 */
 	LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id);
 

@@ -271,7 +271,11 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name)
 		}
 	}
 
-	return ENOENT;
+	return errno = EINVAL;
 
 }
 
+LIB3270_EXPORT const char * lib3270_get_host_charset(const H3270 *hSession)
+{
+	return hSession->charset.host;
+}

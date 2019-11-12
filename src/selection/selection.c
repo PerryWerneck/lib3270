@@ -154,7 +154,7 @@ static void update_selected_region(H3270 *session)
 
 }
 
-void toggle_rectselect(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+void toggle_rectselect(H3270 *session, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	if(!session->selected)
 		return;

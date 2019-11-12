@@ -59,13 +59,13 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-static void toggle_altscreen(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+static void toggle_altscreen(H3270 *session, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	if(!session->screen_alt)
 		set_viewsize(session,t->value ? 24 : session->max.rows,80);
 }
 
-static void toggle_redraw(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+static void toggle_redraw(H3270 *session, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	session->cbk.display(session);
 }
@@ -73,11 +73,11 @@ static void toggle_redraw(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t),
 /**
  * @brief No-op toggle.
  */
-static void toggle_nop(H3270 GNUC_UNUSED(*session), struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+static void toggle_nop(H3270 GNUC_UNUSED(*session), const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 }
 
-static void toggle_keepalive(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+static void toggle_keepalive(H3270 *session, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
 	if(session->connection.sock > 0)
 	{
@@ -96,21 +96,65 @@ static void toggle_keepalive(H3270 *session, struct lib3270_toggle GNUC_UNUSED(*
 	}
 }
 
+static void toggle_connect(H3270 *hSession, const struct lib3270_toggle *toggle, LIB3270_TOGGLE_TYPE tt)
+{
+	if(tt != LIB3270_TOGGLE_TYPE_INITIAL && lib3270_is_disconnected(hSession) && !hSession->popups && toggle->value)
+	{
+		if(lib3270_reconnect(hSession,0))
+			lib3270_write_log(hSession,"3270","Auto-connect fails: %s",strerror(errno));
+	}
+
+}
+
 /**
  * @brief Called from system initialization code to handle initial toggle settings.
  */
 void initialize_toggles(H3270 *session)
 {
-	int f;
+	static const struct _upcalls
+	{
+		LIB3270_TOGGLE_ID	id;
+		void (*upcall)(H3270 *session, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt);
+	}
+	upcalls[] =
+	{
+		{
+			LIB3270_TOGGLE_RECTANGLE_SELECT,
+			toggle_rectselect
+
+		},
+		{
+			LIB3270_TOGGLE_MONOCASE,
+			toggle_redraw
+		},
+		{
+			LIB3270_TOGGLE_UNDERLINE,
+			toggle_redraw
+
+		},
+		{
+			LIB3270_TOGGLE_ALTSCREEN,
+			toggle_altscreen
+
+		},
+		{
+			LIB3270_TOGGLE_KEEP_ALIVE,
+			toggle_keepalive
+		},
+		{
+			LIB3270_TOGGLE_CONNECT_ON_STARTUP,
+			toggle_connect
+		}
+
+	};
+
+	unsigned int f;
 
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 		session->toggle[f].upcall = toggle_nop;
 
-	session->toggle[LIB3270_TOGGLE_RECTANGLE_SELECT].upcall	= toggle_rectselect;
-	session->toggle[LIB3270_TOGGLE_MONOCASE].upcall 		= toggle_redraw;
-	session->toggle[LIB3270_TOGGLE_UNDERLINE].upcall 		= toggle_redraw;
-	session->toggle[LIB3270_TOGGLE_ALTSCREEN].upcall 		= toggle_altscreen;
-	session->toggle[LIB3270_TOGGLE_KEEP_ALIVE].upcall		= toggle_keepalive;
+	for(f=0;f<(sizeof(upcalls)/sizeof(upcalls[0]));f++)
+		session->toggle[upcalls[f].id].upcall = upcalls[f].upcall;
 
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 	{

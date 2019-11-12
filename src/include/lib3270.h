@@ -976,17 +976,17 @@
 	LIB3270_EXPORT LIB3270_MESSAGE	  lib3270_get_program_message(const H3270 *h);
 
 	/**
-	 * Get connected LU name.
+	 * Get the LU name associated with the session, if there is one.
 	 *
-	 * Get the name of the connected LU; the value is internal to lib3270 and
-	 * should not be changed ou freed.
+	 * Get the name LU associated with the session; the value is
+	 * internal to lib3270 and should not be changed ou freed.
 	 *
-	 * @param h	Session handle.
+	 * @param hSession	Session handle.
 	 *
-	 * @return conected LU name or NULL if not connected.
+	 * @return The associated LU name or NULL if not available.
 	 *
 	 */
-	LIB3270_EXPORT const char		* lib3270_get_luname(const H3270 *hSession);
+	LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname);
 

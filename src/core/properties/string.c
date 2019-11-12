@@ -59,73 +59,73 @@
 	 static const LIB3270_STRING_PROPERTY properties[] = {
 
 		{
-			.name = "luname",									//  Property name.
-			.description = N_( "The name of the active LU" ),	//  Property description.
-			.get = lib3270_get_luname,							//  Get value.
-			.set = lib3270_set_luname							//  Set value.
+			.name = "associated_lu",												//  Property name.
+			.description = N_( "The name of the LU associated with the session" ),	//  Property description.
+			.get = lib3270_get_associated_luname,									//  Get value.
+			.set = NULL																//  Set value.
 		},
 
 		{
-			.name = "url",										//  Property name.
-			.description = N_( "URL of the current host" ),		//  Property description.
-			.get = lib3270_get_url,								//  Get value.
-			.set = lib3270_set_url								//  Set value.
+			.name = "url",											//  Property name.
+			.description = N_( "URL of the current host" ),			//  Property description.
+			.get = lib3270_get_url,									//  Get value.
+			.set = lib3270_set_url									//  Set value.
 		},
 
 		{
-			.name = "model",									//  Property name.
-			.description = N_( "Model name" ),					//  Property description.
-			.get = lib3270_get_model_name,						//  Get value.
-			.set = lib3270_set_model_name						//  Set value.
+			.name = "model",										//  Property name.
+			.description = N_( "Model name" ),						//  Property description.
+			.get = lib3270_get_model_name,							//  Get value.
+			.set = lib3270_set_model_name							//  Set value.
 		},
 
 		{
-			.name = "hosttype",									//  Property name.
-			.description = N_( "Host type name" ),				//  Property description.
-			.get = lib3270_get_host_type_name,					//  Get value.
-			.set = lib3270_set_host_type_by_name				//  Set value.
+			.name = "hosttype",										//  Property name.
+			.description = N_( "Host type name" ),					//  Property description.
+			.get = lib3270_get_host_type_name,						//  Get value.
+			.set = lib3270_set_host_type_by_name					//  Set value.
 		},
 
 		{
-			.name = "termtype",									//  Property name.
-			.description = N_( "Terminal type" ),				//  Property description.
-			.get = lib3270_get_termtype,						//  Get value.
-			.set = NULL											//  Set value.
+			.name = "termtype",										//  Property name.
+			.description = N_( "Terminal type" ),					//  Property description.
+			.get = lib3270_get_termtype,							//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			.name = "termname",									//  Property name.
-			.description = N_( "Terminal name" ),				//  Property description.
-			.get = lib3270_get_termname,						//  Get value.
-			.set = NULL											//  Set value.
+			.name = "termname",										//  Property name.
+			.description = N_( "Terminal name" ),					//  Property description.
+			.get = lib3270_get_termname,							//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			.name = "host_charset",								//  Property name.
-			.description = N_( "Host charset" ),				//  Property description.
-			.get = lib3270_get_host_charset,					//  Get value.
-			.set = lib3270_set_host_charset						//  Set value.
+			.name = "host_charset",									//  Property name.
+			.description = N_( "Host charset" ),					//  Property description.
+			.get = lib3270_get_host_charset,						//  Get value.
+			.set = lib3270_set_host_charset							//  Set value.
 		},
 
 		{
-			.name = "display_charset",							//  Property name.
-			.description = N_( "Display charset" ),				//  Property description.
-			.get = lib3270_get_display_charset,					//  Get value.
-			.set = NULL											//  Set value.
+			.name = "display_charset",								//  Property name.
+			.description = N_( "Display charset" ),					//  Property description.
+			.get = lib3270_get_display_charset,						//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			.name = "version",									//  Property name.
-			.description = N_( "lib3270 version" ),				//  Property description.
-			.get = get_version,									//  Get value.
-			.set = NULL											//  Set value.
+			.name = "version",										//  Property name.
+			.description = N_( "lib3270 version" ),					//  Property description.
+			.get = get_version,										//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
-			.name = "revision",									//  Property name.
-			.description = N_( "lib3270 revision" ),			//  Property description.
-			.get = get_revision,								//  Get value.
-			.set = NULL											//  Set value.
+			.name = "revision",										//  Property name.
+			.description = N_( "lib3270 revision" ),				//  Property description.
+			.get = get_revision,									//  Get value.
+			.set = NULL												//  Set value.
 		},
 
 		{
@@ -136,24 +136,24 @@
 		},
 
 		{
-			.name = "crlprefer",										//  Property name.
-			.description = N_( "Prefered protocol for CRL" ),			//  Property description.
-			.get = lib3270_get_crl_prefered_protocol,					//  Get value.
-			.set = lib3270_set_crl_prefered_protocol,					//  Set value.
+			.name = "crlprefer",												//  Property name.
+			.description = N_( "Prefered protocol for CRL" ),					//  Property description.
+			.get = lib3270_get_crl_prefered_protocol,							//  Get value.
+			.set = lib3270_set_crl_prefered_protocol,							//  Set value.
 		},
 
 		{
-			.name = "default_host",										//  Property name.
-			.description = N_( "Default host URL" ),					//  Property description.
-			.get = lib3270_get_default_host,							//  Get value.
-			.set = NULL													//  Set value.
+			.name = "default_host",												//  Property name.
+			.description = N_( "Default host URL" ),							//  Property description.
+			.get = lib3270_get_default_host,									//  Get value.
+			.set = NULL															//  Set value.
 		},
 
 		{
-			.name = "sslmessage",										//  Property name.
-			.description = N_( "The security state" ),					//  Property description.
-			.get = lib3270_get_ssl_state_message,						//  Get value.
-			.set = NULL													//  Set value.
+			.name = "sslmessage",												//  Property name.
+			.description = N_( "The security state" ),							//  Property description.
+			.get = lib3270_get_ssl_state_message,								//  Get value.
+			.set = NULL															//  Set value.
 		},
 
 		{

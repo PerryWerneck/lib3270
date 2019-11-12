@@ -264,8 +264,16 @@ static void update_url(H3270 *hSession)
 LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
 {
     FAIL_IF_ONLINE(hSession);
-	strncpy(hSession->lu.name,luname,LIB3270_LUNAME_LENGTH);
+	strncpy(hSession->lu.names,luname,LIB3270_LUNAME_LENGTH);
 	return 0;
+}
+
+LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession)
+{
+	if(check_online_session(hSession))
+		return NULL;
+
+	return hSession->lu.associated;
 }
 
 LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession)
@@ -444,11 +452,6 @@ LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc)
 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h)
 {
 	return h->host.url;
-}
-
-LIB3270_EXPORT const char * lib3270_get_luname(const H3270 *h)
-{
-	return h->lu.connected;
 }
 
 LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h)

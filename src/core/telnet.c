@@ -366,7 +366,7 @@ void popup_a_sockerr(H3270 *hSession, char *fmt, ...)
 
 }
 
-/* Set up the LU list. */
+// Set up the LU list.
 static void setup_lus(H3270 *hSession)
 {
 	char *lu;
@@ -374,10 +374,10 @@ static void setup_lus(H3270 *hSession)
 	int n_lus = 1;
 	int i;
 
-	hSession->lu.connected = CN;
+	hSession->lu.associated = CN;
 	hSession->connected_type = CN;
 
-	if (!hSession->lu.name[0])
+	if (!hSession->lu.names[0])
 	{
 		Replace(hSession->lus, NULL);
 		hSession->curr_lu = (char **)NULL;
@@ -385,26 +385,26 @@ static void setup_lus(H3270 *hSession)
 		return;
 	}
 
-	/*
-	 * Count the commas in the LU name.  That plus one is the
-	 * number of LUs to try.
-	 */
-	lu = hSession->lu.name;
+	//
+	// Count the commas in the LU names.  That plus one is the
+	// number of LUs to try.
+	//
+	lu = hSession->lu.names;
 	while ((comma = strchr(lu, ',')) != CN)
 	{
 		n_lus++;
 		lu++;
 	}
 
-	/*
-	 * Allocate enough memory to construct an argv[] array for
-	 * the LUs.
-	 */
-	Replace(hSession->lus,(char **)lib3270_malloc((n_lus+1) * sizeof(char *) + strlen(hSession->lu.name) + 1));
+	//
+	// Allocate enough memory to construct an argv[] array for
+	// the LUs.
+	//
+	Replace(hSession->lus,(char **)lib3270_malloc((n_lus+1) * sizeof(char *) + strlen(hSession->lu.names) + 1));
 
-	/* Copy each LU into the array. */
+	// Copy each LU into the array.
 	lu = (char *)(hSession->lus + n_lus + 1);
-	(void) strcpy(lu, hSession->lu.name);
+	(void) strcpy(lu, hSession->lu.names);
 
 	i = 0;
 	do
@@ -471,19 +471,19 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 	(void) memset((char *) hSession->myopts, 0, sizeof(hSession->myopts));
 	(void) memset((char *) hSession->hisopts, 0, sizeof(hSession->hisopts));
 
-#if defined(X3270_TN3270E) /*[*/
+#if defined(X3270_TN3270E)
 	hSession->e_funcs = E_OPT(TN3270E_FUNC_BIND_IMAGE) | E_OPT(TN3270E_FUNC_RESPONSES) | E_OPT(TN3270E_FUNC_SYSREQ);
 	hSession->e_xmit_seq = 0;
 	hSession->response_required = TN3270E_RSF_NO_RESPONSE;
-#endif /*]*/
+#endif
 
-#if defined(HAVE_LIBSSL) /*[*/
+#if defined(HAVE_LIBSSL)
 	hSession->need_tls_follows = 0;
-#endif /*]*/
+#endif
 	hSession->telnet_state = TNS_DATA;
 	hSession->ibptr = hSession->ibuf;
 
-	/* clear statistics and flags */
+	// clear statistics and flags
 	time(&hSession->ns_time);
 	hSession->ns_brcvd  = 0;
 	hSession->ns_rrcvd  = 0;
@@ -498,7 +498,7 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 
 	check_linemode(hSession,True);
 
-	/* write out the passthru hostname and port nubmer */
+	// write out the passthru hostname and port nubmer
 	/*
 	if (hSession->passthru_host)
 	{
@@ -578,8 +578,8 @@ void net_disconnect(H3270 *session)
 		session->termtype = session->full_model_name;
 	*/
 
-	/* We're not connected to an LU any more. */
-	session->lu.connected = CN;
+	// We're not connected to an LU any more.
+	session->lu.associated = CN;
 	status_lu(session,CN);
 
 }
@@ -1070,13 +1070,13 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 		}
 		hSession->telnet_state = TNS_DATA;
 		break;
-	    case TNS_SB:	/* telnet sub-option string command */
+	    case TNS_SB:	// telnet sub-option string command
 		if (c == IAC)
 			hSession->telnet_state = TNS_SB_IAC;
 		else
 			*hSession->sbptr++ = c;
 		break;
-	    case TNS_SB_IAC:	/* telnet sub-option string command */
+	    case TNS_SB_IAC:	// telnet sub-option string command
 		*hSession->sbptr++ = c;
 		if (c == SE) {
 			hSession->telnet_state = TNS_DATA;
@@ -1089,7 +1089,7 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 
 				if (hSession->lus != (char **)NULL && hSession->try_lu == CN)
 				{
-					/* None of the LUs worked. */
+					// None of the LUs worked.
 					popup_an_error(hSession, _( "Cannot connect to specified LU" ) );
 					return -1;
 				}
@@ -1098,12 +1098,14 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 				if (hSession->try_lu != CN && *hSession->try_lu)
 				{
 					tt_len += strlen(hSession->try_lu) + 1;
-					hSession->lu.connected = hSession->try_lu;
+					hSession->lu.associated = hSession->try_lu;
 				}
 				else
-					hSession->lu.connected = CN;
+				{
+					hSession->lu.associated = CN;
+				}
 
-				status_lu(hSession,hSession->lu.connected);
+				status_lu(hSession,hSession->lu.associated);
 
 				tb_len = 4 + tt_len + 2;
 				tt_out = lib3270_malloc(tb_len + 1);
@@ -1310,8 +1312,8 @@ static int tn3270e_negotiate(H3270 *hSession)
 					snlen = LIB3270_LU_MAX;
 				(void)strncpy(hSession->lu.reported,(char *)&hSession->sbbuf[3+tnlen+1], snlen);
 				hSession->lu.reported[snlen] = '\0';
-				hSession->lu.connected = hSession->lu.reported;
-				status_lu(hSession,hSession->lu.connected);
+				hSession->lu.associated = hSession->lu.reported;
+				status_lu(hSession,hSession->lu.associated);
 			}
 
 			/* Tell them what we can do. */
@@ -2088,19 +2090,19 @@ static void check_in3270(H3270 *hSession)
 		int was_in_e = IN_E;
 #endif /*]*/
 
-#if defined(X3270_TN3270E) /*[*/
-		/*
-		 * If we've now switched between non-TN3270E mode and
-		 * TN3270E mode, reset the LU list so we can try again
-		 * in the new mode.
-		 */
+#if defined(X3270_TN3270E)
+		//
+		// If we've now switched between non-TN3270E mode and
+		// TN3270E mode, reset the LU list so we can try again
+		// in the new mode.
+		//
 		if (hSession->lus != (char **)NULL && was_in_e != IN_E) {
 			hSession->curr_lu = hSession->lus;
 			hSession->try_lu = *hSession->curr_lu;
 		}
-#endif /*]*/
+#endif
 
-		/* Allocate the initial 3270 input buffer. */
+		// Allocate the initial 3270 input buffer.
 		if(new_cstate >= LIB3270_CONNECTED_INITIAL && !(hSession->ibuf_size && hSession->ibuf))
 		{
 			hSession->ibuf 		= (unsigned char *) lib3270_malloc(BUFSIZ);
@@ -2108,21 +2110,21 @@ static void check_in3270(H3270 *hSession)
 			hSession->ibptr		= hSession->ibuf;
 		}
 
-#if defined(X3270_ANSI) /*[*/
-		/* Reinitialize line mode. */
+#if defined(X3270_ANSI)
+		// Reinitialize line mode.
 		if ((new_cstate == LIB3270_CONNECTED_ANSI && hSession->linemode) ||
 		    new_cstate == LIB3270_CONNECTED_NVT)
 			cooked_init(hSession);
-#endif /*]*/
+#endif
 
-#if defined(X3270_TN3270E) /*[*/
-		/* If we fell out of TN3270E, remove the state. */
+#if defined(X3270_TN3270E)
+		// If we fell out of TN3270E, remove the state.
 		if (!hSession->myopts[TELOPT_TN3270E]) {
 			hSession->tn3270e_negotiated = 0;
 			hSession->tn3270e_submode = E_NONE;
 			hSession->tn3270e_bound = 0;
 		}
-#endif /*]*/
+#endif
 		trace_dsn(hSession,"Now operating in %s mode.\n",state_name[new_cstate]);
 		host_in3270(hSession,new_cstate);
 	}

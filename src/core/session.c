@@ -99,6 +99,14 @@ void lib3270_session_free(H3270 *h)
 	for(f=0;f<LIB3270_ACTION_GROUP_CUSTOM;f++)
 		lib3270_linked_list_free(&h->listeners.actions[f]);
 
+	// Release Lu names
+    if(h->lu.names)
+	{
+		lib3270_free(h->lu.names);
+		h->lu.names = NULL;
+	}
+
+
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;
 

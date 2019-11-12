@@ -369,13 +369,26 @@ void popup_a_sockerr(H3270 *hSession, char *fmt, ...)
 // Set up the LU list.
 static void setup_lus(H3270 *hSession)
 {
+	hSession->lu.associated = CN;
+	hSession->connected_type = CN;
+
+	if(hSession->lu.names)
+	{
+		hSession->lu.curr	= hSession->lu.names;
+		hSession->lu.try	= * hSession->lu.curr;
+	}
+	else
+	{
+		hSession->lu.curr	= (char **)NULL;
+		hSession->lu.try	= CN;
+	}
+
+	/*
 	char *lu;
 	char *comma;
 	int n_lus = 1;
 	int i;
 
-	hSession->lu.associated = CN;
-	hSession->connected_type = CN;
 
 	if (!hSession->lu.names[0])
 	{
@@ -419,8 +432,8 @@ static void setup_lus(H3270 *hSession)
 	} while (comma != CN);
 
 	hSession->lus[i]	= CN;
-	hSession->curr_lu	= hSession->lus;
-	hSession->try_lu	= *hSession->curr_lu;
+	*/
+
 }
 
 static int net_connected(H3270 *hSession)
@@ -775,11 +788,13 @@ static void send_naws(H3270 *hSession)
 
 
 
-/* Advance 'try_lu' to the next desired LU name. */
+///
+/// @brief Advance 'try_lu' to the next desired LU name.
+///
 static void next_lu(H3270 *hSession)
 {
-	if (hSession->curr_lu != (char **)NULL && (hSession->try_lu = *++hSession->curr_lu) == CN)
-		hSession->curr_lu = (char **)NULL;
+	if (hSession->lu.curr != (char **)NULL && (hSession->lu.try = *++hSession->lu.curr) == CN)
+		hSession->lu.curr = (char **)NULL;
 }
 
 /*
@@ -1087,7 +1102,7 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 
 				trace_dsn(hSession,"%s %s\n", opt(hSession->sbbuf[0]),telquals[hSession->sbbuf[1]]);
 
-				if (hSession->lus != (char **)NULL && hSession->try_lu == CN)
+				if (hSession->lu.names != (char **)NULL && hSession->lu.try == CN)
 				{
 					// None of the LUs worked.
 					popup_an_error(hSession, _( "Cannot connect to specified LU" ) );
@@ -1095,10 +1110,10 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 				}
 
 				tt_len = strlen(hSession->termtype);
-				if (hSession->try_lu != CN && *hSession->try_lu)
+				if (hSession->lu.try != CN && *hSession->lu.try)
 				{
-					tt_len += strlen(hSession->try_lu) + 1;
-					hSession->lu.associated = hSession->try_lu;
+					tt_len += strlen(hSession->lu.try) + 1;
+					hSession->lu.associated = hSession->lu.try;
 				}
 				else
 				{
@@ -1112,8 +1127,8 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 				(void) sprintf(tt_out, "%c%c%c%c%s%s%s%c%c",
 				    IAC, SB, TELOPT_TTYPE, TELQUAL_IS,
 				    hSession->termtype,
-				    (hSession->try_lu != CN && *hSession->try_lu) ? "@" : "",
-				    (hSession->try_lu != CN && *hSession->try_lu) ? hSession->try_lu : "",
+				    (hSession->lu.try != CN && *hSession->lu.try) ? "@" : "",
+				    (hSession->lu.try != CN && *hSession->lu.try) ? hSession->lu.try : "",
 				    IAC, SE);
 				net_rawout(hSession, (unsigned char *)tt_out, tb_len);
 
@@ -1175,7 +1190,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len)
 #endif // HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) /*[*/
-/* Send a TN3270E terminal type request. */
+/// @brief Send a TN3270E terminal type request.
 static void tn3270e_request(H3270 *hSession)
 {
 	int tt_len, tb_len;
@@ -1183,8 +1198,8 @@ static void tn3270e_request(H3270 *hSession)
 	char *t;
 
 	tt_len = strlen(hSession->termtype);
-	if (hSession->try_lu != CN && *hSession->try_lu)
-		tt_len += strlen(hSession->try_lu) + 1;
+	if (hSession->lu.try != CN && *hSession->lu.try)
+		tt_len += strlen(hSession->lu.try) + 1;
 
 	tb_len = 5 + tt_len + 2;
 	tt_out = lib3270_malloc(tb_len + 1);
@@ -1197,8 +1212,8 @@ static void tn3270e_request(H3270 *hSession)
 	if (tt_out[12] == '9')
 		tt_out[12] = '8';
 
-	if (hSession->try_lu != CN && *hSession->try_lu)
-		t += sprintf(t, "%c%s", TN3270E_OP_CONNECT, hSession->try_lu);
+	if (hSession->lu.try != CN && *hSession->lu.try)
+		t += sprintf(t, "%c%s", TN3270E_OP_CONNECT, hSession->lu.try);
 
 	(void) sprintf(t, "%c%c", IAC, SE);
 
@@ -1210,8 +1225,8 @@ static void tn3270e_request(H3270 *hSession)
 			opt(TELOPT_TN3270E),
 			(int) strlen(hSession->termtype),
 			tt_out + 5,
-			(hSession->try_lu != CN && *hSession->try_lu) ? " CONNECT " : "",
-			(hSession->try_lu != CN && *hSession->try_lu) ? hSession->try_lu : "",
+			(hSession->lu.try != CN && *hSession->lu.try) ? " CONNECT " : "",
+			(hSession->lu.try != CN && *hSession->lu.try) ? hSession->lu.try : "",
 			cmd(SE)
 	);
 
@@ -1332,14 +1347,14 @@ static int tn3270e_negotiate(H3270 *hSession)
 			}
 
 			next_lu(hSession);
-			if (hSession->try_lu != CN)
+			if (hSession->lu.try != CN)
 			{
-				/* Try the next LU. */
+				// Try the next LU.
 				tn3270e_request(hSession);
 			}
-			else if (hSession->lus != (char **)NULL)
+			else if (hSession->lu.names != (char **)NULL)
 			{
-				/* No more LUs to try.  Give up. */
+				// No more LUs to try.  Give up.
 				backoff_tn3270e(hSession,_("Host rejected resource(s)"));
 			}
 			else
@@ -2096,9 +2111,9 @@ static void check_in3270(H3270 *hSession)
 		// TN3270E mode, reset the LU list so we can try again
 		// in the new mode.
 		//
-		if (hSession->lus != (char **)NULL && was_in_e != IN_E) {
-			hSession->curr_lu = hSession->lus;
-			hSession->try_lu = *hSession->curr_lu;
+		if (hSession->lu.names != (char **)NULL && was_in_e != IN_E) {
+			hSession->lu.curr = hSession->lu.names;
+			hSession->lu.try = *hSession->lu.curr;
 		}
 #endif
 

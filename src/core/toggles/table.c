@@ -239,8 +239,8 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Auto connect" ),
-		.summary = N_( "Connect on startup" ),
+		.label = N_( "Connect on startup" ),
+		.summary = N_( "Automatically connect to host on startup" ),
 		.description = ""
 	},
 	{

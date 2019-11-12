@@ -9,6 +9,7 @@
 #include <lib3270/actions.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
+#include <lib3270/log.h>
 
 #define MAX_ARGS 10
 
@@ -19,7 +20,7 @@ static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata)
 	FILE *out = fopen(trace_file,"a");
 	if(out)
 	{
-		
+
 		vfprintf(out,fmt,args);
 		fclose(out);
 	}
@@ -148,6 +149,21 @@ int main(int argc, char *argv[])
 	}
 
 	lib3270_unregister_action_group_listener(h,LIB3270_ACTION_GROUP_ONLINE,online_listener);
+
+	lib3270_disconnect(h);
+
+	{
+		lib3270_set_lunames(h,"a,b,c,d,e");
+
+		const char ** names = lib3270_get_lunames(h);
+
+		size_t i;
+		for(i=0;names[i];i++)
+		{
+			debug("[%s]",names[i]);
+		}
+
+	}
 
 	lib3270_session_free(h);
 

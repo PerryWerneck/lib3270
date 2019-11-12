@@ -261,13 +261,6 @@ static void update_url(H3270 *hSession)
 
 }
 
-LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
-{
-    FAIL_IF_ONLINE(hSession);
-	strncpy(hSession->lu.names,luname,LIB3270_LUNAME_LENGTH);
-	return 0;
-}
-
 LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession)
 {
 	if(check_online_session(hSession))

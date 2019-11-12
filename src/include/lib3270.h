@@ -964,7 +964,7 @@
 	LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
 
 	/**
-	 * Get program message.
+	 * @brief Get program message.
 	 *
 	 * @see LIB3270_MESSAGE
 	 *
@@ -976,7 +976,7 @@
 	LIB3270_EXPORT LIB3270_MESSAGE	  lib3270_get_program_message(const H3270 *h);
 
 	/**
-	 * Get the LU name associated with the session, if there is one.
+	 * @brief Get the LU name associated with the session, if there is one.
 	 *
 	 * Get the name LU associated with the session; the value is
 	 * internal to lib3270 and should not be changed ou freed.
@@ -988,7 +988,21 @@
 	 */
 	LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession);
 
-	LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname);
+	/**
+	 * @brief Set the LU names.
+	 *
+	 * @param hSession	Session handle.
+	 * @param lunames	Comma separated list of the LU names to set.
+	 *
+	 * @return 0 if the list was set, non zero if not (sets errno)
+	 *
+	 * @retval EISCONN	The session is online.
+	 * @retval EINVAL	Invalid session handle.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *luname);
+
+	LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_is_connected(const H3270 *h);
 	LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h);

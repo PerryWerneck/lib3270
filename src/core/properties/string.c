@@ -33,6 +33,7 @@
  #include <lib3270.h>
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
+ #include <lib3270/log.h>
 
  static const char * get_version(const H3270 GNUC_UNUSED(*hSession))
  {
@@ -287,5 +288,75 @@ int lib3270_set_string_property(H3270 *hSession, const char *name, const char * 
 	errno = ENOENT;
 	return -1;
 
+}
+
+/*
+LIB3270_EXPORT int lib3270_set_luname(H3270 *hSession, const char *luname)
+{
+    FAIL_IF_ONLINE(hSession);
+	strncpy(hSession->lu.names,luname,LIB3270_LUNAME_LENGTH);
+	return 0;
+}
+*/
+
+LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *lunames)
+{
+    FAIL_IF_ONLINE(hSession);
+
+    if(hSession->lu.names)
+	{
+		lib3270_free(hSession->lu.names);
+		hSession->lu.names = NULL;
+	}
+
+	// Do I have lunames to set? If not just return.
+	if(!lunames)
+		return 0;
+
+	//
+	// Count the commas in the LU names.  That plus one is the
+	// number of LUs to try.
+	//
+	char *comma;
+	char *lu;
+	int n_lus = 1;
+
+	lu = (char *) lunames;
+	while ((comma = strchr(lu, ',')) != CN)
+	{
+		n_lus++;
+		lu++;
+	}
+
+	//
+	// Allocate enough memory to construct an argv[] array for
+	// the LUs.
+	//
+	Replace(hSession->lu.names,(char **)lib3270_malloc((n_lus+1) * sizeof(char *) + strlen(lunames) + 1));
+
+	// Copy each LU into the array.
+	lu = (char *)(hSession->lu.names + n_lus + 1);
+	(void) strcpy(lu, lunames);
+
+	size_t i = 0;
+	do
+	{
+		hSession->lu.names[i++] = lu;
+		comma = strchr(lu, ',');
+		if (comma != CN)
+		{
+			*comma = '\0';
+			lu = comma + 1;
+		}
+	} while (comma != CN);
+
+	hSession->lu.names[i]	= CN;
+
+    return 0;
+}
+
+LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession)
+{
+	return (const char **) hSession->lu.names;
 }
 

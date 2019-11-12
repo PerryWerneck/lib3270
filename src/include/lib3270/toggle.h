@@ -188,7 +188,7 @@
 	 * @param hSession	Session handle.
 	 * @param ix		Toggle id.
 	 *
-	 * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
+	 * @return 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
 	 *
 	 * @retval -EINVAL	Invalid toggle id.
 	 */
@@ -196,6 +196,17 @@
 
 	LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *),void *data);
 	LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, const void *id);
+
+
+	/**
+	 * @brief Get toggle descriptor from ID.
+	 *
+	 * @param id	Toggle.id.
+	 *
+	 * @return The toggle descriptor or NULL if the ID is invalid.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_from_id(LIB3270_TOGGLE_ID id);
 
 #ifdef __cplusplus
 	}

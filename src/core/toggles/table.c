@@ -380,3 +380,10 @@ LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name)
 	}
 	return -1;
 }
+
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_from_id(LIB3270_TOGGLE_ID id)
+{
+	if(id < LIB3270_TOGGLE_COUNT)
+		return &toggle_descriptor[id];
+	return NULL;
+}

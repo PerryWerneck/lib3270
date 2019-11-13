@@ -371,39 +371,42 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str,
 	return rc;
 }
 
-LIB3270_EXPORT int lib3270_paste_text(H3270 *h, const unsigned char *str)
+LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str)
 {
-	int sz;
-	CHECK_SESSION_HANDLE(h);
+	if(check_online_session(hSession))
+		return -errno;
 
-	if(!lib3270_is_connected(h))
+	if(!str)
 	{
-		lib3270_ring_bell(h);
-		errno = ENOTCONN;
-		return 0;
+		lib3270_ring_bell(hSession);
+		return -(errno = EINVAL);
 	}
 
-	if(h->paste_buffer)
+	if(hSession->paste_buffer)
 	{
-		lib3270_free(h->paste_buffer);
-		h->paste_buffer = NULL;
+		lib3270_free(hSession->paste_buffer);
+		hSession->paste_buffer = NULL;
 	}
 
-	sz = lib3270_set_string(h,str,-1);
+	int sz = lib3270_set_string(hSession,str,-1);
 	if(sz < 0)
 	{
 		// Can´t paste
-		lib3270_popup_dialog(h,LIB3270_NOTIFY_WARNING,
-										_( "Action failed" ),
-										_( "Unable to paste text" ),
-										"%s", sz == -EPERM ? _( "Keyboard is locked" ) : _( "Unexpected error" ) );
-		return 0;
+		lib3270_popup_dialog(
+				hSession,
+				LIB3270_NOTIFY_WARNING,
+				_( "Action failed" ),
+				_( "Unable to paste text" ),
+				"%s", sz == -EPERM ? _( "Keyboard is locked" ) : _( "Unexpected error" )
+		);
+
+		return sz;
 	}
 
 	if((int) strlen((char *) str) > sz)
 	{
-		h->paste_buffer = strdup((char *) (str+sz));
-		return 1;
+		hSession->paste_buffer = strdup((char *) (str+sz));
+		return strlen(hSession->paste_buffer);
 	}
 
 	return 0;

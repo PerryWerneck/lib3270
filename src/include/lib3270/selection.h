@@ -105,10 +105,14 @@
 	 *
 	 * @see lib3270_paste_next.
 	 *
-	 * @return Non 0 if there's more to paste with lib3270_pastenext.
+	 * @return 0 if suceeded, negative if faile, > 0 if there's more data.
+	 *
+	 * @retval 0		The entire string was pasted.
+	 * @retval -EINVAL	Invalid argument.
+	 * @retval -EPERM	Keyboard is locked.
 	 *
 	 */
-	 LIB3270_EXPORT int lib3270_paste_text(H3270 *h, const unsigned char *str);
+	 LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str);
 
 	/**
 	 * @brief Paste remaining string.

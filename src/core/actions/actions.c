@@ -31,6 +31,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/actions.h>
+#include <utilc.h>
 
 struct lib3270_action_callback
 {
@@ -39,33 +40,6 @@ struct lib3270_action_callback
 };
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
-
-static int compare_alnum(const char *s1, const char *s2)
-{
-	while(*s1 && *s2) {
-
-		char c1 = toupper(*s1);
-		if(!isalnum(c1)) {
-			s1++;
-			continue;
-		}
-
-		char c2 = toupper(*s2);
-		if(!isalnum(c2)) {
-			s2++;
-			continue;
-		}
-
-		if(c1 != c2)
-			return 1;
-
-		s1++;
-		s2++;
-
-	}
-
-	return 0;
-}
 
 const LIB3270_ACTION * lib3270_action_get_by_name(const char *name)
 {
@@ -81,7 +55,7 @@ const LIB3270_ACTION * lib3270_action_get_by_name(const char *name)
 	// Check only alphabetic and numeric (for compatibility)
 	for(f=0; actions[f].name; f++)
 	{
-		if(!compare_alnum(name,actions[f].name))
+		if(!lib3270_compare_alnum(name,actions[f].name))
 			return actions+f;
 	}
 

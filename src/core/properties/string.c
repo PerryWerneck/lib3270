@@ -67,10 +67,11 @@
 		},
 
 		{
-			.name = "url",											//  Property name.
-			.description = N_( "URL of the current host" ),			//  Property description.
-			.get = lib3270_get_url,									//  Get value.
-			.set = lib3270_set_url									//  Set value.
+			.name = "url",											// Property name.
+			.icon = "network-server",								// Property icon.
+			.description = N_( "URL of the current host" ),			// Property description.
+			.get = lib3270_get_url,									// Get value.
+			.set = lib3270_set_url									// Set value.
 		},
 
 		{

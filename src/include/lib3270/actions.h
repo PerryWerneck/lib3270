@@ -68,8 +68,6 @@
     int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?
 
     const char *key;							///< @brief Default key (or NULL if no default).
-	const char *icon;							///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-    const char *label;							///< @brief Button label (or NULL).
 
  } LIB3270_ACTION;
 

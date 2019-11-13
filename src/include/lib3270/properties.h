@@ -107,6 +107,13 @@
 	 */
 	LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void);
 
+	/**
+	 * @brief Get property descriptor by name.
+	 *
+	 * @return Property descriptor or NULL if failed.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_PROPERTY * lib3270_property_get_by_name(const char *name);
 
 	/**
 	 * @brief Get lib3270 integer property by name.

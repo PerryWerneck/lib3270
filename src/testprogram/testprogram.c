@@ -10,6 +10,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <lib3270/log.h>
+#include <lib3270/properties.h>
 
 #define MAX_ARGS 10
 
@@ -152,6 +153,7 @@ int main(int argc, char *argv[])
 
 	lib3270_disconnect(h);
 
+	/*
 	{
 		lib3270_set_lunames(h,"a,b,c,d,e");
 
@@ -162,6 +164,14 @@ int main(int argc, char *argv[])
 		{
 			debug("[%s]",names[i]);
 		}
+
+	}
+	*/
+
+	{
+		const LIB3270_PROPERTY * property = lib3270_property_get_by_name("model-number");
+
+		debug("Model-number=%p",property);
 
 	}
 

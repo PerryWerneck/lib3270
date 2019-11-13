@@ -365,6 +365,8 @@
 	 */
 	#define LIB3270_PROPERTY_HEAD	\
 		const char * name; \
+		const char * label; \
+		const char * icon; \
 		const char * summary; \
 		const char * description;
 

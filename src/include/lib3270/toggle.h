@@ -98,8 +98,6 @@
 		LIB3270_TOGGLE_ID	  id;			///< @brief Toggle ID.
 		const char			  def;			///< @brief Default value.
 		const char			* key;			///< @brief Default key (or NULL if no default).
-		const char			* icon;			///< @brief Icon name (from https://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html)
-		const char			* label;		///< @brief Label for button or menu (NULL if isn't available).
 
 	} LIB3270_TOGGLE;
 

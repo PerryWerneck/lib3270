@@ -32,6 +32,7 @@
  #include <string.h>
  #include <lib3270.h>
  #include <lib3270/properties.h>
+ #include <utilc.h>
 
  LIB3270_EXPORT const char * lib3270_property_get_description(const LIB3270_PROPERTY * property) {
 
@@ -52,4 +53,41 @@
 
 	return property->name;
 
+ }
+
+ LIB3270_EXPORT const LIB3270_PROPERTY * lib3270_property_get_by_name(const char *name) {
+
+	// Search string properties
+	{
+		 const LIB3270_STRING_PROPERTY * property = lib3270_get_string_properties_list();
+
+		 while(property->name) {
+
+			if(!lib3270_compare_alnum(name,property->name))
+				return (const LIB3270_PROPERTY *) property;
+
+			property++;
+
+		 }
+
+	}
+
+	// Search unsigned int properties.
+	{
+		const LIB3270_UINT_PROPERTY * property = lib3270_get_unsigned_properties_list();
+
+		 while(property->name) {
+
+			if(!lib3270_compare_alnum(name,property->name))
+				return (const LIB3270_PROPERTY *) property;
+
+			property++;
+
+		 }
+
+	}
+
+	// Not found!
+	errno = ENOENT;
+	return NULL;
  }

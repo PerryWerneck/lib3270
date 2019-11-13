@@ -68,6 +68,8 @@
 
 		{
 			.name = "model_number",									// Property name.
+			.icon = "video-display",								// Property Icon.
+			.label = N_("Terminal model"),							// Property label.
 			.description = N_( "The model number" ),				// Property description.
 			.min = 2,												// Minimum allowable value.
 			.max = 5,												// Maximum allowable value.

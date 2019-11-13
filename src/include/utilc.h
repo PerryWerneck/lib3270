@@ -69,3 +69,15 @@ LIB3270_INTERNAL void rpf_free(rpf_t *r);
  *
  */
 LIB3270_INTERNAL char * lib3270_unescape(const char *text);
+
+/**
+ * @brief Compare strings ignoring non alfanumeric chars.
+ *
+ * @param s1	First string.
+ * @param s2	Second string.
+ *
+ * @return 0 if equal, non zero if not.
+ *
+ */
+LIB3270_INTERNAL int lib3270_compare_alnum(const char *s1, const char *s2);
+

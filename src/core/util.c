@@ -807,3 +807,31 @@ char * lib3270_unescape(const char *text)
 
 	return outString;
 }
+
+int lib3270_compare_alnum(const char *s1, const char *s2)
+{
+	while(*s1 && *s2) {
+
+		char c1 = toupper(*s1);
+		if(!isalnum(c1)) {
+			s1++;
+			continue;
+		}
+
+		char c2 = toupper(*s2);
+		if(!isalnum(c2)) {
+			s2++;
+			continue;
+		}
+
+		if(c1 != c2)
+			return 1;
+
+		s1++;
+		s2++;
+
+	}
+
+	return 0;
+}
+

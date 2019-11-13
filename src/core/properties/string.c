@@ -67,46 +67,50 @@
 		},
 
 		{
-			.name = "url",											// Property name.
-			.icon = "network-server",								// Property icon.
-			.description = N_( "URL of the current host" ),			// Property description.
-			.get = lib3270_get_url,									// Get value.
-			.set = lib3270_set_url									// Set value.
+			.name = "url",															// Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
+			.icon = "network-server",												// Property icon.
+			.description = N_( "URL of the current host" ),							// Property description.
+			.get = lib3270_get_url,													// Get value.
+			.set = lib3270_set_url													// Set value.
 		},
 
 		{
-			.name = "model",										//  Property name.
-			.description = N_( "Model name" ),						//  Property description.
-			.get = lib3270_get_model_name,							//  Get value.
-			.set = lib3270_set_model_name							//  Set value.
+			.name = "model",														//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
+			.description = N_( "Model name" ),										//  Property description.
+			.get = lib3270_get_model_name,											//  Get value.
+			.set = lib3270_set_model_name											//  Set value.
 		},
 
 		{
-			.name = "hosttype",										//  Property name.
-			.description = N_( "Host type name" ),					//  Property description.
-			.get = lib3270_get_host_type_name,						//  Get value.
-			.set = lib3270_set_host_type_by_name					//  Set value.
+			.name = "hosttype",														//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
+			.description = N_( "Host type name" ),									//  Property description.
+			.get = lib3270_get_host_type_name,										//  Get value.
+			.set = lib3270_set_host_type_by_name									//  Set value.
 		},
 
 		{
-			.name = "termtype",										//  Property name.
-			.description = N_( "Terminal type" ),					//  Property description.
-			.get = lib3270_get_termtype,							//  Get value.
-			.set = NULL												//  Set value.
+			.name = "termtype",														//  Property name.
+			.description = N_( "Terminal type" ),									//  Property description.
+			.get = lib3270_get_termtype,											//  Get value.
+			.set = NULL																//  Set value.
 		},
 
 		{
-			.name = "termname",										//  Property name.
-			.description = N_( "Terminal name" ),					//  Property description.
-			.get = lib3270_get_termname,							//  Get value.
-			.set = NULL												//  Set value.
+			.name = "termname",														//  Property name.
+			.description = N_( "Terminal name" ),									//  Property description.
+			.get = lib3270_get_termname,											//  Get value.
+			.set = NULL																//  Set value.
 		},
 
 		{
-			.name = "host_charset",									//  Property name.
-			.description = N_( "Host charset" ),					//  Property description.
-			.get = lib3270_get_host_charset,						//  Get value.
-			.set = lib3270_set_host_charset							//  Set value.
+			.name = "host_charset",													//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
+			.description = N_( "Host charset" ),									//  Property description.
+			.get = lib3270_get_host_charset,										//  Get value.
+			.set = lib3270_set_host_charset											//  Set value.
 		},
 
 		{
@@ -132,6 +136,7 @@
 
 		{
 			.name = "crlpath",													//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
 			.description = N_( "URL for the certificate revocation list" ),		//  Property description.
 			.get = lib3270_get_crl_url,											//  Get value.
 			.set = lib3270_set_crl_url,											//  Set value.
@@ -139,6 +144,7 @@
 
 		{
 			.name = "crlprefer",												//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
 			.description = N_( "Prefered protocol for CRL" ),					//  Property description.
 			.get = lib3270_get_crl_prefered_protocol,							//  Get value.
 			.set = lib3270_set_crl_prefered_protocol,							//  Set value.
@@ -167,6 +173,7 @@
 
 		{
 			.name = "oversize",														//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
 			.description = N_( "Screen oversize if larger than the chosen model"),	//  Property description.
 			.get = lib3270_get_oversize,											//  Get value.
 			.set = lib3270_set_oversize												//  Set value.

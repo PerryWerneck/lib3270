@@ -359,12 +359,27 @@
 
 	#endif
 
+	/// @brief Action/property groups.
+	typedef enum _lib3270_action_group
+	{
+		LIB3270_ACTION_GROUP_NONE,					///< @brief Simple action, no signals os special treatment.
+		LIB3270_ACTION_GROUP_ONLINE,				///< @brief Action requires online state.
+		LIB3270_ACTION_GROUP_OFFLINE,				///< @brief Action requires offline state.
+		LIB3270_ACTION_GROUP_SELECTION,				///< @brief Action depends on selection.
+		LIB3270_ACTION_GROUP_LOCK_STATE,			///< @brief Action depends on keyboard lock state.
+		LIB3270_ACTION_GROUP_FORMATTED,				///< @brief Action depends on a formatted screen.
+
+		LIB3270_ACTION_GROUP_CUSTOM					///< @brief Custom group/Number of groups.
+	} LIB3270_ACTION_GROUP;
+
+
 	/**
 	 * @brief Head for property descriptors.
 	 *
 	 */
 	#define LIB3270_PROPERTY_HEAD	\
 		const char * name; \
+		LIB3270_ACTION_GROUP group; \
 		const char * label; \
 		const char * icon; \
 		const char * summary; \

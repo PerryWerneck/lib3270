@@ -27,6 +27,11 @@
  *
  */
 
+ /**
+  * @brief Implements the boolean properties.
+  *
+  */
+
  #include <config.h>
  #include <internals.h>
  #include <string.h>
@@ -66,6 +71,7 @@
 
 		{
 			.name = "tso",													//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,							// Property group.
 			.description = N_( "Non zero if the host is TSO." ),			//  Property description.
 			.get = lib3270_is_tso,											//  Get value.
 			.set = lib3270_set_tso											//  Set value.
@@ -73,6 +79,7 @@
 
 		{
 			.name = "as400",												//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,							// Property group.
 			.description = N_( "Non zero if the host is AS400." ),			//  Property description.
 			.get = lib3270_is_as400,										//  Get value.
 			.set = lib3270_set_as400										//  Set value.

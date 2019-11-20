@@ -31,6 +31,8 @@
  #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/selection.h>
+ #include <lib3270/trace.h>
+ #include <lib3270/log.h>
  #include "3270ds.h"
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -144,7 +146,22 @@ LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession)
 	return lib3270_get_selected_text(hSession,0,LIB3270_SELECTION_CUT);
 }
 
+static size_t get_selection_length(unsigned int width, unsigned int height)
+{
+	return sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * ((width*height)+1));
+}
+
+LIB3270_EXPORT size_t lib3270_selection_get_length(const lib3270_selection *selection)
+{
+	return get_selection_length(selection->bounds.width,selection->bounds.height);
+}
+
 LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut, int all)
+{
+	return lib3270_selection_new(hSession,cut,all);
+}
+
+LIB3270_EXPORT lib3270_selection * lib3270_selection_new(H3270 *hSession, int cut, int all)
 {
 	if(check_online_session(hSession))
 		return NULL;
@@ -164,13 +181,26 @@ LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cu
 	}
 
 	// Get output buffer.
-	lib3270_selection * selection = lib3270_malloc(sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * (width*height)));
+	size_t length = get_selection_length(width, height);
+	lib3270_selection * selection = lib3270_malloc(length);
+
+	memset(selection,0,length);
 
 	selection->bounds.col		= col;
 	selection->bounds.row		= row;
 	selection->bounds.height	= height;
 	selection->bounds.width		= width;
 	selection->cursor_address	= lib3270_get_cursor_address(hSession);
+
+	debug(
+		"width=%u height=%u length=%u (sz=%u szHeader=%u szElement=%u)",
+			selection->bounds.width,
+			selection->bounds.height,
+			((selection->bounds.width * selection->bounds.height) + 1),
+			(unsigned int) length,
+			(unsigned int) sizeof(lib3270_selection),
+			(unsigned int) sizeof(lib3270_selection_element)
+	);
 
 	unsigned int dstaddr = 0;
 
@@ -205,6 +235,8 @@ LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cu
 		}
 
 	}
+
+	debug("dstaddr=%u length=%u",(unsigned int) dstaddr, (unsigned int) length);
 
 	return selection;
 }

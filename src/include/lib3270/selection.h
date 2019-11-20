@@ -190,7 +190,7 @@
 	LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height);
 
 	/**
-	 * @brief Get selection contents.
+	 * @brief Create a new selection block.
 	 *
 	 * @param hSession	Session handle.
 	 * @param cut		Non zero to clear selected contents.
@@ -199,7 +199,19 @@
 	 * @return NULL on error (sets errno), pointer to a rectangle containing the selected area (release it with lib3270_free).
 	 *
 	 */
-	LIB3270_EXPORT lib3270_selection * lib3270_get_selection(H3270 *hSession, int cut, int all);
+	LIB3270_EXPORT lib3270_selection * lib3270_selection_new(H3270 *hSession, int cut, int all);
+
+	LIB3270_EXPORT lib3270_selection * LIB3270_DEPRECATED(lib3270_get_selection(H3270 *hSession, int cut, int all));
+
+	/**
+	 * @brief Get the length of the selection block.
+	 *
+	 * @param selection	Selection block.
+	 *
+	 * @return The length of the selection block.
+	 *
+	 */
+	LIB3270_EXPORT size_t lib3270_selection_get_length(const lib3270_selection *selection);
 
 	/**
 	 * @brief Get bitmasked flag for the current selection.

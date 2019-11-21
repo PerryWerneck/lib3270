@@ -885,7 +885,7 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 		0xc4, // CG 0xa3, LL corner
 		0xd4, // CG 0xac, LR corner
 
-		0xf0,
+		0xf0, // 0-9 Superscript
 		0xf1,
 		0xf2,
 		0xf3,
@@ -895,6 +895,12 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 		0xf7,
 		0xf8,
 		0xf9,
+
+		0xe1, // 1-3 subscript
+		0xe2,
+		0xe3,
+
+		0xb8, // Division Sign ÷
 
 		0x00
 

@@ -864,6 +864,8 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 		0x00
 	};
 
+	// http://www.prycroft6.com.au/misc/3270eds.html
+	// http://www.prycroft6.com.au/graphics/sym0and1.gif
 	static const unsigned char cg_pat[] =
 	{
 		0x8c, // CG 0xf7, less or equal "≤"
@@ -882,6 +884,17 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession)
 		0x85, // CG 0x184, vertical line
 		0xc4, // CG 0xa3, LL corner
 		0xd4, // CG 0xac, LR corner
+
+		0xf0,
+		0xf1,
+		0xf2,
+		0xf3,
+		0xf4,
+		0xf5,
+		0xf6,
+		0xf7,
+		0xf8,
+		0xf9,
 
 		0x00
 

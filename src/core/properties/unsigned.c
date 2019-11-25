@@ -125,6 +125,11 @@
 
 		{
 			.name = "unlock_delay",																				//  Property name.
+#ifdef UNLOCK_MS
+			.default_value = UNLOCK_MS,
+#else
+			.default_value = 350,
+#endif // UNLOCK_MS
 			.description = N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
 			.get = lib3270_get_unlock_delay,																	//  Get value.
 			.set = lib3270_set_unlock_delay																		//  Set value.

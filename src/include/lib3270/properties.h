@@ -51,6 +51,8 @@
 		int (*get)(const H3270 *hSession);								///< @brief Get value.
 		int (*set)(H3270 *hSession, int value);							///< @brief Set value.
 
+		int default_value;												///< @brief Default value for the property.
+
 	} LIB3270_INT_PROPERTY;
 
 	typedef struct _lib3270_uint_property
@@ -70,8 +72,10 @@
 	{
 		LIB3270_PROPERTY_HEAD
 
-		const char * (*get)(const H3270 *hSession);			///< @brief Get value.
-		int (*set)(H3270 *hSession, const char * value);	///< @brief Set value.
+		const char * (*get)(const H3270 *hSession);						///< @brief Get value.
+		int (*set)(H3270 *hSession, const char * value);				///< @brief Set value.
+
+		const char * default_value;										///< @brief Default value
 
 	} LIB3270_STRING_PROPERTY;
 

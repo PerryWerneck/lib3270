@@ -413,7 +413,7 @@ H3270 * lib3270_session_new(const char *model)
 	if(!default_session)
 		default_session = hSession;
 
-	lib3270_session_init(hSession, model, _( "bracket" ) );
+	lib3270_session_init(hSession, model, "bracket" );
 
 	if(screen_init(hSession))
 		return NULL;

@@ -68,6 +68,9 @@
 
 		{
 			.name = "url",															// Property name.
+#ifdef LIB3270_DEFAULT_HOST
+			.default_value = LIB3270_DEFAULT_HOST,									// Default value.
+#endif // LIB3270_DEFAULT_HOST
 			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
 			.icon = "network-server",												// Property icon.
 			.description = N_( "URL of the current host" ),							// Property description.
@@ -106,11 +109,12 @@
 		},
 
 		{
-			.name = "host_charset",													//  Property name.
+			.name = "host_charset",													// Property name.
+			.default_value = "bracket",												// Default charset.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
-			.description = N_( "Host charset" ),									//  Property description.
-			.get = lib3270_get_host_charset,										//  Get value.
-			.set = lib3270_set_host_charset											//  Set value.
+			.description = N_( "Host charset" ),									// Property description.
+			.get = lib3270_get_host_charset,										// Get value.
+			.set = lib3270_set_host_charset											// Set value.
 		},
 
 		{

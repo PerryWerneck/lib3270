@@ -79,19 +79,19 @@
 		},
 
 		{
-			.name = "model",														//  Property name.
+			.name = "model",														// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
-			.description = N_( "Model name" ),										//  Property description.
-			.get = lib3270_get_model_name,											//  Get value.
-			.set = lib3270_set_model_name											//  Set value.
+			.description = N_( "Model name" ),										// Property description.
+			.get = lib3270_get_model_name,											// Get value.
+			.set = lib3270_set_model_name											// Set value.
 		},
 
 		{
-			.name = "hosttype",														//  Property name.
+			.name = "host_type_name",												// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
-			.description = N_( "Host type name" ),									//  Property description.
-			.get = lib3270_get_host_type_name,										//  Get value.
-			.set = lib3270_set_host_type_by_name									//  Set value.
+			.description = N_( "Host type name" ),									// Property description.
+			.get = lib3270_get_host_type_name,										// Get value.
+			.set = lib3270_set_host_type_by_name									// Set value.
 		},
 
 		{

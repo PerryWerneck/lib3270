@@ -54,17 +54,39 @@
     return NULL;
  }
 
+int lib3270_set_host_type_number(H3270 *hSession, unsigned int host_type)
+{
+	FAIL_IF_ONLINE(hSession);
+	hSession->host_type = host_type;
+	return 0;
+}
+
+static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
+{
+	return (unsigned int) hSession->host_type;
+}
+
  const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void)
  {
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
 		{
-			.name = "color_type",									//  Property name.
+			.name = "color_type",									// Property name.
+			.default_value = 16,									// Default value for the property.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,					// Property group.
-			.description = N_( "The color type" ),					//  Property description.
-			.get = lib3270_get_color_type,							//  Get value.
-			.set = lib3270_set_color_type							//  Set value.
+			.description = N_( "The color type" ),					// Property description.
+			.get = lib3270_get_color_type,							// Get value.
+			.set = lib3270_set_color_type							// Set value.
+		},
+
+		{
+			.name = "host_type",									// Property name.
+			.default_value = (unsigned int) LIB3270_HOST_S390,
+			.group = LIB3270_ACTION_GROUP_OFFLINE,					// Property group.
+			.description = N_( "Host type number" ),				// Property description.
+			.get = lib3270_get_host_type_number,					// Get value.
+			.set = lib3270_set_host_type_number						// Set value.
 		},
 
 		{

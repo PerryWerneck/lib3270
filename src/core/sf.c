@@ -752,7 +752,15 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 			SET16(obptr_len, len);
 
 #ifdef DEBUG
-			lib3270_trace_data(hSession,see_qcode(replies[i].code),hSession->output.buf + obptr0, len);
+			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
+			{
+				lib3270_trace_data(
+					hSession,
+					see_qcode(replies[i].code),
+					hSession->output.buf + obptr0,
+					len
+				);
+			}
 #endif // DEBUG
 
 		} else {

@@ -118,7 +118,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
  #pragma GCC diagnostic push
  #pragma GCC diagnostic ignored "-Wunused-parameter"
- const char * lib3270_get_crl_url(const H3270 *hSession)
+ const char * lib3270_crl_get_url(const H3270 *hSession)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
 	if(hSession->ssl.crl.url)
@@ -139,7 +139,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
  #pragma GCC diagnostic push
  #pragma GCC diagnostic ignored "-Wunused-parameter"
- int lib3270_set_crl_url(H3270 *hSession, const char *crl)
+ int lib3270_crl_set_url(H3270 *hSession, const char *crl)
  {
 
     FAIL_IF_ONLINE(hSession);
@@ -174,9 +174,28 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
  }
  #pragma GCC diagnostic pop
 
+ const char ** lib3270_crl_get_available_protocols(void)
+ {
+	static const char * protocols[] =
+	{
+#ifdef HAVE_LDAP
+		"ldap",
+#endif // HAVE_LDAP
+
+#if defined(_WIN32) || defined(HAVE_LIBCURL)
+		"http",
+#endif // _WIN32 || LIBCURL
+
+		NULL
+	};
+
+	return protocols;
+ }
+
+
  #pragma GCC diagnostic push
  #pragma GCC diagnostic ignored "-Wunused-parameter"
- const char * lib3270_get_crl_prefered_protocol(const H3270 *hSession)
+ const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
 	if(hSession->ssl.crl.prefer)
@@ -189,7 +208,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
  #pragma GCC diagnostic push
  #pragma GCC diagnostic ignored "-Wunused-parameter"
- int lib3270_set_crl_prefered_protocol(H3270 *hSession, const char *protocol)
+ int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol)
  {
 
     FAIL_IF_ONLINE(hSession);

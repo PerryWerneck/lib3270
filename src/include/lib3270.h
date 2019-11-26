@@ -524,11 +524,17 @@
 	 * @return 0 on sucess, non zero on error (sets errno).
 	 *
 	 */
-	 LIB3270_EXPORT int lib3270_set_crl_url(H3270 *hSession, const char *crl);
-	 LIB3270_EXPORT const char * lib3270_get_crl_url(const H3270 *hSession);
+	 LIB3270_EXPORT int lib3270_crl_set_url(H3270 *hSession, const char *crl);
+	 LIB3270_EXPORT const char * lib3270_crl_get_url(const H3270 *hSession);
 
-	 LIB3270_EXPORT int lib3270_set_crl_prefered_protocol(H3270 *hSession, const char *protocol);
-	 LIB3270_EXPORT const char * lib3270_get_crl_prefered_protocol(const H3270 *hSession);
+	 LIB3270_EXPORT int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol);
+	 LIB3270_EXPORT const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession);
+
+	 /**
+	  * @brief Get the available protocols for CRL download.
+	  *
+	  */
+	 LIB3270_EXPORT const char ** lib3270_get_available_crl_protocols(void);
 
 	/**
 	 * @brief Get hostname for the connect/reconnect operations.

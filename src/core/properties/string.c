@@ -79,7 +79,7 @@
 		},
 
 		{
-			.name = "model",														// Property name.
+			.name = "model_name",													// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
 			.description = N_( "Model name" ),										// Property description.
 			.get = lib3270_get_model_name,											// Get value.
@@ -132,33 +132,33 @@
 		},
 
 		{
-			.name = "revision",										//  Property name.
-			.description = N_( "lib3270 revision" ),				//  Property description.
-			.get = get_revision,									//  Get value.
-			.set = NULL												//  Set value.
+			.name = "revision",													// Property name.
+			.description = N_( "lib3270 revision" ),							// Property description.
+			.get = get_revision,												// Get value.
+			.set = NULL															// Set value.
 		},
 
 		{
-			.name = "crlpath",													//  Property name.
+			.name = "crl_url",													// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
-			.description = N_( "URL for the certificate revocation list" ),		//  Property description.
-			.get = lib3270_get_crl_url,											//  Get value.
-			.set = lib3270_set_crl_url,											//  Set value.
+			.description = N_( "URL for the certificate revocation list" ),		// Property description.
+			.get = lib3270_crl_get_url,											// Get value.
+			.set = lib3270_crl_set_url,											// Set value.
 		},
 
 		{
-			.name = "crlprefer",												//  Property name.
+			.name = "crl_preferred_protocol",									// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
-			.description = N_( "Prefered protocol for CRL" ),					//  Property description.
-			.get = lib3270_get_crl_prefered_protocol,							//  Get value.
-			.set = lib3270_set_crl_prefered_protocol,							//  Set value.
+			.description = N_( "Preferred protocol for CRL download" ),			// Property description.
+			.get = lib3270_crl_get_preferred_protocol,							// Get value.
+			.set = lib3270_crl_set_preferred_protocol,							// Set value.
 		},
 
 		{
-			.name = "default_host",												//  Property name.
-			.description = N_( "Default host URL" ),							//  Property description.
-			.get = lib3270_get_default_host,									//  Get value.
-			.set = NULL															//  Set value.
+			.name = "default_host",												// Property name.
+			.description = N_( "Default host URL" ),							// Property description.
+			.get = lib3270_get_default_host,									// Get value.
+			.set = NULL															// Set value.
 		},
 
 		{

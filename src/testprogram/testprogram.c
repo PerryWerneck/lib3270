@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	printf("3270 session %p created\n]",h);
 
 #ifdef HAVE_LDAP
-	lib3270_set_crl_prefered_protocol(h,"ldap");
+	lib3270_crl_set_preferred_protocol(h,"ldap");
 #endif // HAVE_LDAP
 
 	lib3270_set_url(h,NULL);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'C':
-			lib3270_set_crl_url(h,optarg);
+			lib3270_crl_set_url(h,optarg);
 			break;
 
 		case 't':
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	printf("HOST URL: %s\tHOST CRL: %s\n",lib3270_get_url(h),lib3270_get_crl_url(h));
+	printf("HOST URL: %s\tHOST CRL: %s\n",lib3270_get_url(h),lib3270_crl_get_url(h));
 
 #ifdef _WIN32
 	{

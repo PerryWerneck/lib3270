@@ -107,10 +107,18 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 		// Can't get CRL.
 
 		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Unexpected or invalid CRL URL" );
-		message->description = _("The URL scheme is unknown");
-		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->description);
+
+		if(!(message->text && message->description))
+			message->title = _( "Security error" );
+
+		if(!message->text)
+			message->text = _( "Unexpected or invalid CRL URL" );
+
+		if(!message->description)
+			message->description = _("The URL scheme is unknown");
+
+		trace_ssl(hSession,"%s: The URL scheme is unknown",consturl);
+
 		errno = EINVAL;
 		return NULL;
 #endif // HAVE_LIBCURL

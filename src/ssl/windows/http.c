@@ -55,6 +55,11 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	{
 		message->error = hSession->ssl.error = 0;
 		message->title = _( "Security error" );
+		trace_ssl(
+			hSession,"Can't get %s: %s\n",
+				consturl,
+				message->description ? message->description : "Undefined message"
+		);
 		return NULL;
 	}
 
@@ -68,8 +73,17 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 		message->title = _( "Security error" );
 		message->text = _( "Can't decode certificate revocation list" );
 		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+
+		trace_ssl(
+			hSession,"%s: %s\n",
+				consturl,
+				message->text
+		);
+
 		return NULL;
 	}
+
+	trace_ssl(hSession,"Got CRL from %s\n",consturl);
 
 	return x509_crl;
 

@@ -144,6 +144,8 @@ int lib3270_crl_new_from_url(H3270 *hSession, void *ssl_error, const char *url)
 		return 0;
 	}
 
+	trace_ssl(hSession,"Can't get CRL using %s\n",url);
+
 	return -1;
 
 }

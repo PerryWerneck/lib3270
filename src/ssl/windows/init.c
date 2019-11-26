@@ -112,7 +112,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 		message->title = N_( "Security error" );
 		message->text = N_( "Cant open custom certificate directory." );
 
-		trace_ssl(hSession, _( "Can't open \"%s\" (The Windows error code was %ld)" ), certpath, (long) GetLastError());
+		trace_ssl(hSession, _( "Can't open \"%s\" (The Windows error code was %ld)\n" ), certpath, (long) GetLastError());
 	}
 	else
 	{

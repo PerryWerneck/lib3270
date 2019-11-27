@@ -54,7 +54,7 @@
     int (*activate)(H3270 *hSession);			///< @brief lib3270 associated method.
     int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?
 
-    const char *key;							///< @brief Default key (or NULL if no default).
+    const char *keys;							///< @brief Default accelerators (or NULL if no default).
 
  } LIB3270_ACTION;
 

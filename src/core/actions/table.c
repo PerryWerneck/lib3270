@@ -80,7 +80,7 @@
 			.name = "reconnect",
 			.type = LIB3270_ACTION_TYPE_NETWORK,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = "gtk-connect",
 			.label = N_( "_Connect" ) ,
 			.summary = N_( "Connect to host." ),
@@ -94,7 +94,7 @@
 			.name = "disconnect",
 			.type = LIB3270_ACTION_TYPE_NETWORK,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = "gtk-disconnect",
 			.label = N_( "_Disconnect" ),
 			.summary = N_( "Disconnect from host." ),
@@ -111,7 +111,7 @@
 			.name = "up",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Up",
+			.keys = "Up,KP_Up",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor up 1 position." ),
@@ -125,7 +125,7 @@
 			.name = "down",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Down",
+			.keys = "Down,KP_Down",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor down 1 position." ),
@@ -139,7 +139,7 @@
 			.name = "left",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Left",
+			.keys = "Left,KP_Left",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor left 1 position." ),
@@ -153,7 +153,7 @@
 			.name = "right",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Right",
+			.keys = "Right,KP_Right",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor right 1 position." ),
@@ -167,7 +167,7 @@
 			.name = "newline",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Control_R",
+			.keys = "Control_R",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor to first field on next line or any lines after that." ),
@@ -181,7 +181,7 @@
 			.name = "previous-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor to previous word." ),
@@ -195,7 +195,7 @@
 			.name = "next-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Cursor to next unprotected word." ),
@@ -212,7 +212,7 @@
 			.name = "save-all",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = "document-save",
 			.label = NULL,
 			.summary = N_( "Save screen." ),
@@ -226,7 +226,7 @@
 			.name = "save-selected",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Save selected area." ),
@@ -240,7 +240,7 @@
 			.name = "save-copy",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -254,7 +254,7 @@
 			.name = "paste-from-file",
 			.type = LIB3270_ACTION_TYPE_FILE,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = "document-load",
 			.label = NULL,
 			.summary = N_( "Paste file." ),
@@ -271,7 +271,7 @@
 			.name = "select-all",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.key = "<ctrl>a",
+			.keys = "<ctrl>a",
 			.icon = "edit-select-all",
 			.label = N_( "Select all" ),
 			.summary = NULL,
@@ -285,7 +285,7 @@
 			.name = "unselect",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = N_( "Remove selection" ),
 			.summary = N_( "Remove selection" ),
@@ -299,7 +299,7 @@
 			.name = "reselect",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.key = "<Ctrl>r",
+			.keys = "<Ctrl>r",
 			.icon = NULL,
 			.label = N_( "Reselect" ),
 			.summary = N_( "Reselect"),
@@ -316,7 +316,7 @@
 			.name = "select-field",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.key = "<Ctrl>f",
+			.keys = "<Ctrl>f",
 			.icon = NULL,
 			.label = N_( "Select field" ),
 			.summary = N_( "Select Field" ),
@@ -331,7 +331,7 @@
 			.name = "field-end",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field." ),
@@ -345,7 +345,7 @@
 			.name = "first-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Home",
+			.keys = "Home",
 			.icon = "go-first",
 			.label = NULL,
 			.summary = N_( "Move to first unprotected field on screen." ),
@@ -359,7 +359,7 @@
 			.name = "next-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "Tab",
+			.keys = "Tab",
 			.icon = "go-next",
 			.label = NULL,
 			.summary = N_( "Tab forward to next field." ),
@@ -373,7 +373,7 @@
 			.name = "previous-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "ISO_Left_Tab",
+			.keys = "ISO_Left_Tab",
 			.icon = "go-previous",
 			.label = NULL,
 			.summary = N_( "Tab backward to previous field." ),
@@ -391,7 +391,7 @@
 			.name = "delete-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "<Ctrl>w",
+			.keys = "<Ctrl>w",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Backspaces the cursor until it hits the front of a word." ),
@@ -405,7 +405,7 @@
 			.name = "delete-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = "<Ctrl>u",
+			.keys = "<Ctrl>u",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Delete field" ),
@@ -420,7 +420,7 @@
 			.name = "erase-input",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = "edit-clear",
 			.label = N_("Erase input"),
 			.summary = NULL,
@@ -434,7 +434,7 @@
 			.name = "erase-eof",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "End",
+			.keys = "End",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Erase End Of Field Key." ),
@@ -448,7 +448,7 @@
 			.name = "erase-eol",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Erase End Of Line Key." ),
@@ -462,7 +462,7 @@
 			.name = "erase",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "BackSpace",
+			.keys = "BackSpace",
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -479,7 +479,7 @@
 			.name = "enter",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Send an \"Enter\" action." ),
@@ -494,7 +494,7 @@
 			.name = "kybdreset",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "Escape",
+			.keys = "Escape",
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -508,7 +508,7 @@
 			.name = "clear",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = N_("Clear"),
 			.summary = N_( "Clear AID key" ),
@@ -523,7 +523,7 @@
 			.name = "delete",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "Delete",
+			.keys = "Delete",
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -537,7 +537,7 @@
 			.name = "dup",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "<Shift>KP_Multiply",
+			.keys = "<Shift>KP_Multiply",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "DUP key" ),
@@ -551,7 +551,7 @@
 			.name = "fieldmark",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "FM key" ),
@@ -565,7 +565,7 @@
 			.name = "backspace",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "3270-style backspace." ),
@@ -579,7 +579,7 @@
 			.name = "attn",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "<shift>Escape",
+			.keys = "<shift>Escape",
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "ATTN key, per RFC 2355.  Sends IP, regardless." ),
@@ -593,7 +593,7 @@
 			.name = "break",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -607,7 +607,7 @@
 			.name = "paste-next",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.key = "<shift><ctrl>v",
+			.keys = "<shift><ctrl>v",
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -621,7 +621,7 @@
 			.name = "sysreq",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = "<shift>Print",
+			.keys = "<shift>Print",
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -638,7 +638,7 @@
 			.name = "print",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
-			.key = "Print",
+			.keys = "Print",
 			.icon = "document-print",
 			.label = N_("Print"),
 			.summary  = N_("Send to print"),
@@ -653,7 +653,7 @@
 			.name = "print-all",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_("Print screen contents"),
@@ -667,7 +667,7 @@
 			.name = "print-selected",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_( "Print selected area." ),
@@ -681,7 +681,7 @@
 			.name = "print-copy",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = N_("Print copy (if available)"),
@@ -699,7 +699,7 @@
 			.name = "testpattern",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,
@@ -713,7 +713,7 @@
 			.name = "charsettable",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.key = NULL,
+			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,

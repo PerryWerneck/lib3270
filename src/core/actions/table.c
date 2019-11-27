@@ -373,7 +373,7 @@
 			.name = "previous-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = "ISO_Left_Tab",
+			.keys = "<Shift>ISO_Left_Tab",
 			.icon = "go-previous",
 			.label = NULL,
 			.summary = N_( "Tab backward to previous field." ),

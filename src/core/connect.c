@@ -92,7 +92,7 @@
         if(lib3270_set_url(hSession,NULL))
 		{
 			int err = errno;
-			lib3270_trace_event(hSession,"Can't set default URL (%s)\n",strerror(err));
+			lib3270_write_event_trace(hSession,"Can't set default URL (%s)\n",strerror(err));
 			return errno = err;
 		}
 
@@ -120,7 +120,7 @@
 
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
 
-	lib3270_trace_event(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
+	lib3270_write_event_trace(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
 
 	hSession->ever_3270	= False;
 

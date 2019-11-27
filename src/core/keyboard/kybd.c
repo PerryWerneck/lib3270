@@ -138,7 +138,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 	if (!lib3270_is_connected(hSession))
 	{
 		lib3270_ring_bell(hSession);
-		lib3270_trace_event(hSession,"typeahead action dropped (not connected)\n");
+		lib3270_write_event_trace(hSession,"typeahead action dropped (not connected)\n");
 		return NULL;
 	}
 
@@ -146,7 +146,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 	if (hSession->kybdlock & KL_OERR_MASK)
 	{
 		lib3270_ring_bell(hSession);
-		lib3270_trace_event(hSession,"typeahead action dropped (operator error)\n");
+		lib3270_write_event_trace(hSession,"typeahead action dropped (operator error)\n");
 		return NULL;
 	}
 
@@ -154,7 +154,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 	if (hSession->kybdlock & KL_SCROLLED)
 	{
 		lib3270_ring_bell(hSession);
-		lib3270_trace_event(hSession,"typeahead action dropped (scrolled)\n");
+		lib3270_write_event_trace(hSession,"typeahead action dropped (scrolled)\n");
 		return NULL;
 	}
 
@@ -162,7 +162,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 	if (!hSession->typeahead)
 	{
 		lib3270_ring_bell(hSession);
-		lib3270_trace_event(hSession,"typeahead action dropped (no typeahead)\n");
+		lib3270_write_event_trace(hSession,"typeahead action dropped (no typeahead)\n");
 		return NULL;
 	}
 
@@ -201,7 +201,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type)
 
 	ta->args.aid_code = aid_code;
 
-	lib3270_trace_event(hSession,"typeahead action Key-aid queued (kybdlock 0x%x)\n", hSession->kybdlock);
+	lib3270_write_event_trace(hSession,"typeahead action Key-aid queued (kybdlock 0x%x)\n", hSession->kybdlock);
  }
 
 
@@ -224,7 +224,7 @@ void enq_ta(H3270 *hSession, void (*fn)(H3270 *, const char *, const char *), co
 		ta->args.def.parm[1] = NewString(parm2);
 
 
-	lib3270_trace_event(hSession,"typeahead action queued (kybdlock 0x%x)\n", hSession->kybdlock);
+	lib3270_write_event_trace(hSession,"typeahead action queued (kybdlock 0x%x)\n", hSession->kybdlock);
 }
 
 void enq_action(H3270 *hSession, int (*fn)(H3270 *))
@@ -235,7 +235,7 @@ void enq_action(H3270 *hSession, int (*fn)(H3270 *))
 		return;
 
 	ta->args.action		= fn;
-	lib3270_trace_event(hSession,"single action queued (kybdlock 0x%x)\n", hSession->kybdlock);
+	lib3270_write_event_trace(hSession,"single action queued (kybdlock 0x%x)\n", hSession->kybdlock);
 
 }
 
@@ -321,7 +321,7 @@ static void kybdlock_set(H3270 *hSession, unsigned int bits)
 	if (n != hSession->kybdlock)
 	{
 #if defined(KYBDLOCK_TRACE)
-		lib3270_trace_event(hSession,"  %s: kybdlock |= 0x%04x, 0x%04x -> 0x%04x\n", "set", bits, hSession->kybdlock, n);
+		lib3270_write_event_trace(hSession,"  %s: kybdlock |= 0x%04x, 0x%04x -> 0x%04x\n", "set", bits, hSession->kybdlock, n);
 #endif
 		if ((hSession->kybdlock ^ bits) & KL_DEFERRED_UNLOCK)
 		{
@@ -346,7 +346,7 @@ void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KEYBOARD_LOCK_STATE bits)
 	if (n != hSession->kybdlock)
 	{
 #if defined(KYBDLOCK_TRACE)
-		lib3270_trace_event(hSession,"  %s: kybdlock &= ~0x%04x, 0x%04x -> 0x%04x\n", "clear", bits, hSession->kybdlock, n);
+		lib3270_write_event_trace(hSession,"  %s: kybdlock &= ~0x%04x, 0x%04x -> 0x%04x\n", "clear", bits, hSession->kybdlock, n);
 #endif
 		if ((hSession->kybdlock ^ n) & KL_DEFERRED_UNLOCK)
 		{
@@ -967,13 +967,13 @@ int key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum 
 	if (skipped != NULL)
 		*skipped = False;
 
-	lib3270_trace_event(hSession," %s -> Key(\"%s\") Hex(%02x)\n",ia_name[(int) cause], ctl_see((int) c), (int) c);
+	lib3270_write_event_trace(hSession," %s -> Key(\"%s\") Hex(%02x)\n",ia_name[(int) cause], ctl_see((int) c), (int) c);
 
 	if (IN_3270)
 	{
 		if (c < ' ')
 		{
-			lib3270_trace_event(hSession,"  dropped (control char)\n");
+			lib3270_write_event_trace(hSession,"  dropped (control char)\n");
 			return errno = EINVAL;
 		}
 		(void) key_Character(hSession, (int) hSession->charset.asc2ebc[c], keytype == KT_GE, False, skipped);
@@ -986,7 +986,7 @@ int key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum 
 #endif /*]*/
 	else
 	{
-		lib3270_trace_event(hSession,"  dropped (not connected)\n");
+		lib3270_write_event_trace(hSession,"  dropped (not connected)\n");
 		return errno = ENOTCONN;
 	}
 	return 0;
@@ -1802,7 +1802,7 @@ LIB3270_EXPORT int lib3270_emulate_input(H3270 *hSession, const char *s, int len
 		 */
 		if (hSession->kybdlock)
 		{
-			lib3270_trace_event(hSession,"  keyboard locked, string dropped\n");
+			lib3270_write_event_trace(hSession,"  keyboard locked, string dropped\n");
 			return errno = EPERM;
 		}
 
@@ -1906,7 +1906,7 @@ LIB3270_EXPORT int lib3270_emulate_input(H3270 *hSession, const char *s, int len
 					(void) key_WCharacter(ebc, &skipped);
 					break;
 				} else {
-					lib3270_trace_event(hSession,"Cannot convert U+%04x to "
+					lib3270_write_event_trace(hSession,"Cannot convert U+%04x to "
 					    "EBCDIC\n", c & 0xffff);
 					break;
 				}

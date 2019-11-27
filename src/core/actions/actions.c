@@ -77,11 +77,11 @@ LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *
 
 	if(!action->activatable(hSession))
 	{
-		lib3270_trace_event(hSession,"Action \"%s\" is disabled\n",action->name);
+		lib3270_write_event_trace(hSession,"Action \"%s\" is disabled\n",action->name);
 		return errno = EPERM;
 	}
 
-	lib3270_trace_event(hSession,"Activating action \"%s\"\n",action->name);
+	lib3270_write_event_trace(hSession,"Activating action \"%s\"\n",action->name);
 
 	return action->activate(hSession);
 
@@ -93,7 +93,7 @@ LIB3270_EXPORT int lib3270_action_activate_by_name(const char *name, H3270 *hSes
 
 	if(!action)
 	{
-		lib3270_trace_event(hSession,"Can't find action \"%s\"\n",name);
+		lib3270_write_event_trace(hSession,"Can't find action \"%s\"\n",name);
 		return errno;
 	}
 

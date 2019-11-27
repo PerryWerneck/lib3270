@@ -165,7 +165,7 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 
 char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message)
 {
-	lib3270_trace_event(hSession,"Getting data from %s",url);
+	lib3270_write_event_trace(hSession,"Getting data from %s",url);
 
 	// Use CURL to download the CRL
 	lib3270_autoptr(CURLDATA)	crl_data		= lib3270_malloc(sizeof(CURLDATA));

@@ -117,8 +117,9 @@
 	 * @param ...	Arguments.
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
+	LIB3270_EXPORT void lib3270_write_event_trace(H3270 *session, const char *fmt, ...) LIB3270_AS_PRINTF(2,3);
 
+	LIB3270_EXPORT void LIB3270_DEPRECATED(lib3270_trace_event(H3270 *session, const char *fmt, ...)) LIB3270_AS_PRINTF(2,3);
 
 	/**
 	 * @brief Write datablock on trace file.

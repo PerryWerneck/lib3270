@@ -248,7 +248,7 @@ LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *session, const char *fmt, 
 	va_end(args);
 }
 
-LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...)
+LIB3270_EXPORT void lib3270_write_event_trace(H3270 *session, const char *fmt, ...)
 {
 	va_list args;
 

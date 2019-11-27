@@ -530,7 +530,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 		return errno = EINVAL;
 	}
 
-	lib3270_trace_event(hSession,"Sending FT request:\n%s\n",buffer);
+	lib3270_write_event_trace(hSession,"Sending FT request:\n%s\n",buffer);
 
 	lib3270_emulate_input(ft->host, buffer, strlen(buffer), False);
 
@@ -547,7 +547,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 /* External entry points called by ft_dft and ft_cut. */
 void ft_message(H3270FT *ft, const char *msg)
 {
-	lib3270_trace_event(ft->host,"%s\n",msg);
+	lib3270_write_event_trace(ft->host,"%s\n",msg);
 	ft->cbk.message(ft->host,msg,ft->user_data);
 }
 

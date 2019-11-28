@@ -102,6 +102,12 @@
 	} LIB3270_TOGGLE;
 
 	/**
+	 * @brief Get the toggle by name.
+	 *
+	 */
+	LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_by_name(const char *name);
+
+	/**
 	 * @brief Get the toggle descriptors.
 	 *
 	 * @return Pointer to all available toggles.

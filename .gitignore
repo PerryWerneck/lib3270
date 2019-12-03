@@ -56,3 +56,4 @@ doxygen/doxyfile
 win32-configure*
 ValgrindOut.xml
 certs
+*.mak

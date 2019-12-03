@@ -100,6 +100,8 @@ case "$host" in
 		AC_CONFIG_FILES(sdk/lib3270-delayed.pc)
 		INSTALL_PACKAGES="$INSTALL_PACKAGES delayed"
 
+		AC_CONFIG_FILES(win/lib3270.mak)
+
 		;;
 
  	*)

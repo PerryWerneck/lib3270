@@ -35,6 +35,7 @@
 
 #include <config.h>
 #include <lib3270.h>
+#include <lib3270/log.h>
 #include <lib3270/charset.h>
 #include <iconv.h>
 #include <string.h>
@@ -112,10 +113,10 @@ struct _lib3270_iconv
 
  char * lib3270_iconv_from_host(LIB3270_ICONV *conv, const char *str, int len)
  {
-	return convert(&conv->local,str,len);
+	return convert(conv->local,str,len);
  }
 
  char * lib3270_iconv_to_host(LIB3270_ICONV *conv, const char *str, int len)
  {
-	return convert(&conv->host,str,len);
+	return convert(conv->host,str,len);
  }

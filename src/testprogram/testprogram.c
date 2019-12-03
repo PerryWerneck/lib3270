@@ -11,6 +11,7 @@
 #include <lib3270/toggle.h>
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
+#include <lib3270/charset.h>
 
 #define MAX_ARGS 10
 
@@ -34,6 +35,16 @@ static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_U
 
 int main(int argc, char *argv[])
 {
+
+	{
+		LIB3270_ICONV *converter = lib3270_iconv_new("iso-8859-1","utf-8");
+
+		lib3270_autoptr(char) text = lib3270_iconv_to_host(converter,"teste",-1);
+
+		lib3270_iconv_free(converter);
+		return 0;
+	}
+
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 	static struct option options[] = {

@@ -65,6 +65,9 @@
 		<Unit filename="src/core/charset/getset.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/charset/iconv.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/charset/remap.c">
 			<Option compilerVar="CC" />
 		</Unit>

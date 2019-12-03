@@ -92,6 +92,28 @@
 	 */
 	LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id);
 
+	typedef struct _lib3270_iconv LIB3270_ICONV;
+
+	///
+	/// @brief Create a new ICONV wrapper.
+	///
+	LIB3270_EXPORT LIB3270_ICONV * lib3270_iconv_new(const char *remote, const char *local);
+
+	///
+	/// @brief Release the ICONV Wrapper.
+	///
+	LIB3270_EXPORT void lib3270_iconv_free(LIB3270_ICONV *conv);
+
+	///
+	/// @brief Convert from host to local.
+	///
+	LIB3270_EXPORT char * lib3270_iconv_from_host(LIB3270_ICONV *conv, const char *str, int len);
+
+	///
+	/// @brief Convert from local to host.
+	///
+	LIB3270_EXPORT char * lib3270_iconv_to_host(LIB3270_ICONV *conv, const char *str, int len);
+
 #ifdef __cplusplus
 	}
 #endif

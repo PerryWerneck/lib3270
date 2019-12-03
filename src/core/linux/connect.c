@@ -42,10 +42,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-// #ifdef HAVE_ICONV
-//	#include <iconv.h>
-// #endif // HAVE_ICONV
-
 #define SOCK_CLOSE(s)	close(s->connection.sock); s->connection.sock = -1;
 
 #include <stdlib.h>

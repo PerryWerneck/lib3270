@@ -117,14 +117,26 @@
 	/**
 	 * @brief Paste remaining string.
 	 *
-	 * @param h	Session handle.
+	 * @param hSession	Session handle.
 	 *
 	 * @see lib3270_paste_text.
 	 *
 	 * @return Non 0 if there's more to paste.
 	 *
 	 */
-	 LIB3270_EXPORT int lib3270_paste_next(H3270 *h);
+	 LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession);
+
+	/**
+	 * @brief Check if can paste next.
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 * @see lib3270_paste_next.
+	 *
+	 * @return Non 0 if there's more to paste.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_can_paste_next(const H3270 *hSession);
 
 	/**
 	 * @brief Move selected box 1 char in the selected direction.

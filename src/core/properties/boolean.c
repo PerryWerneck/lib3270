@@ -38,6 +38,7 @@
  #include <lib3270.h>
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
+ #include <lib3270/selection.h>
 
  int lib3270_is_starting(const H3270 *hSession)
  {
@@ -145,6 +146,13 @@
 			.name = "has_selection",										//  Property name.
 			.description = N_( "Has selected area" ),						//  Property description.
 			.get = lib3270_has_selection,									//  Get value.
+			.set = NULL														//  Set value.
+		},
+
+		{
+			.name = "can_paste_next",										//  Property name.
+			.description = N_( "Still have text to paste" ),				//  Property description.
+			.get = lib3270_can_paste_next,									//  Get value.
 			.set = NULL														//  Set value.
 		},
 

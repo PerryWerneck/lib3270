@@ -413,6 +413,14 @@ LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str)
 	return 0;
 }
 
+LIB3270_EXPORT int lib3270_can_paste_next(const H3270 *hSession)
+{
+	if(!(lib3270_is_connected(hSession) && hSession->paste_buffer))
+		return 0;
+
+	return strlen(hSession->paste_buffer);
+}
+
 LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession)
 {
 	char	* ptr;

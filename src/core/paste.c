@@ -406,6 +406,7 @@ LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str)
 	if((int) strlen((char *) str) > sz)
 	{
 		hSession->paste_buffer = strdup((char *) (str+sz));
+		lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_COPY);
 		return strlen(hSession->paste_buffer);
 	}
 
@@ -431,5 +432,9 @@ LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession)
 	rc = lib3270_paste_text(hSession,(unsigned char *) ptr);
 
 	lib3270_free(ptr);
+
+	if(!hSession->paste_buffer)
+		lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_COPY);
+
 	return rc;
 }

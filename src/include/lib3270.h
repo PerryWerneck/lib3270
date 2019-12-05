@@ -368,6 +368,7 @@
 		LIB3270_ACTION_GROUP_SELECTION,				///< @brief Action depends on selection.
 		LIB3270_ACTION_GROUP_LOCK_STATE,			///< @brief Action depends on keyboard lock state.
 		LIB3270_ACTION_GROUP_FORMATTED,				///< @brief Action depends on a formatted screen.
+		LIB3270_ACTION_GROUP_COPY,					///< @brief Action depends on stored string.
 
 		LIB3270_ACTION_GROUP_CUSTOM					///< @brief Custom group/Number of groups.
 	} LIB3270_ACTION_GROUP;
@@ -1626,6 +1627,12 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *key, int seconds);
+
+	/**
+	 * @brief Notify action group.
+	 *
+	 */
+	LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_GROUP group);
 
 #ifdef __cplusplus
 	}

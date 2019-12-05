@@ -193,7 +193,7 @@ void do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned i
 	{
 		hSession->selected = 1;
 		hSession->cbk.set_selection(hSession,1);
-		lib3270_notify_actions(hSession,LIB3270_ACTION_GROUP_SELECTION);
+		lib3270_action_group_notify(hSession,LIB3270_ACTION_GROUP_SELECTION);
 	}
 
 	hSession->cbk.update_selection(hSession,start,end);

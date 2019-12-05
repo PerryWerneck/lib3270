@@ -877,5 +877,3 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	/// @brief Fire CState change.
 	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
 
-	/// @brief Notify actions.
-	LIB3270_INTERNAL void lib3270_notify_actions(H3270 *hSession, LIB3270_ACTION_GROUP group);

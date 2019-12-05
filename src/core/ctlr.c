@@ -249,7 +249,7 @@ static void set_formatted(H3270 *hSession, int state)
 	if(state != hSession->formatted)
 	{
 		hSession->formatted = state;
-		lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_LOCK_STATE);
+		lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_LOCK_STATE);
 	}
 }
 

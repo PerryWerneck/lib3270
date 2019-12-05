@@ -138,12 +138,12 @@ int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate)
 
 		if(connected != lib3270_is_connected(hSession)) {
 			// Online state has changed, fire LIB3270_ACTION_GROUP_ONLINE
-			lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_ONLINE);
+			lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_ONLINE);
 		}
 
 		if(disconnected != lib3270_is_disconnected(hSession)) {
 			// Offline state has changed, fire LIB3270_ACTION_GROUP_OFFLINE
-			lib3270_notify_actions(hSession, LIB3270_ACTION_GROUP_OFFLINE);
+			lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_OFFLINE);
 		}
 
 		return 1;

@@ -105,7 +105,7 @@ LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 	return lib3270_action_activate_by_name(name,hSession);
 }
 
-LIB3270_INTERNAL void lib3270_notify_actions(H3270 *hSession, LIB3270_ACTION_GROUP group)
+LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_GROUP group)
 {
 
 	if(group < (sizeof(hSession->listeners.actions)/sizeof(hSession->listeners.actions[0])))

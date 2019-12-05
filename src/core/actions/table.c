@@ -687,7 +687,7 @@
 			.summary = N_("Print copy (if available)"),
 			.activate = lib3270_print_copy,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_COPY,
 			.activatable = lib3270_is_connected
 		},
 

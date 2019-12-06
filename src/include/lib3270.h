@@ -668,6 +668,8 @@
 	 */
 	LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(const H3270 *h);
 
+	LIB3270_EXPORT const char * lib3270_connection_state_get_name(const LIB3270_CSTATE cstate);
+
 	/**
 	 * @brief Pretend that a sequence of keys was entered at the keyboard.
 	 *

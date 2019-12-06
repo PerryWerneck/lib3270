@@ -745,7 +745,6 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 
 }
 
-
 /*
  * set16
  *	Put a 16-bit value in a buffer.
@@ -786,8 +785,6 @@ static void send_naws(H3270 *hSession)
 	trace_dsn(hSession,"SENT %s NAWS %d %d %s\n", cmd(SB), XMIT_COLS, XMIT_ROWS, cmd(SE));
 }
 
-
-
 ///
 /// @brief Advance 'try_lu' to the next desired LU name.
 ///
@@ -797,11 +794,11 @@ static void next_lu(H3270 *hSession)
 		hSession->lu.curr = (char **)NULL;
 }
 
-/*
- * telnet_fsm
- *	Telnet finite-state machine.
- *	Returns 0 for okay, -1 for errors.
- */
+///
+///	@brief Telnet finite-state machine.
+///
+///	@return 0 for okay, -1 for errors.
+///
 static int telnet_fsm(H3270 *hSession, unsigned char c)
 {
 #if defined(X3270_ANSI) /*[*/
@@ -2043,18 +2040,9 @@ static void do_lnext(H3270 *hSession, char c)
 #endif /*]*/
 
 
-/**
- * Check for switches between NVT, SSCP-LU and 3270 modes.
- *
- * @param hSession	Session handle.
- *
- */
-static void check_in3270(H3270 *hSession)
+const char * lib3270_connection_state_get_name(const LIB3270_CSTATE cstate)
 {
-	LIB3270_CSTATE new_cstate = LIB3270_NOT_CONNECTED;
-
-#if defined(X3270_TRACE) /*[*/
-	static const char *state_name[] =
+	static const char *state_names[] =
 	{
 		"unconnected",
 		"resolving",
@@ -2067,7 +2055,23 @@ static void check_in3270(H3270 *hSession)
 		"TN3270E SSCP-LU",
 		"TN3270E 3270"
 	};
-#endif /*]*/
+
+	if(cstate > (sizeof(state_names)/sizeof(state_names[0])))
+		return "unknown";
+
+	return state_names[cstate];
+}
+
+/**
+ * Check for switches between NVT, SSCP-LU and 3270 modes.
+ *
+ * @param hSession	Session handle.
+ *
+ */
+static void check_in3270(H3270 *hSession)
+{
+	LIB3270_CSTATE new_cstate = LIB3270_NOT_CONNECTED;
+
 
 #if defined(X3270_TN3270E) /*[*/
 	if (hSession->myopts[TELOPT_TN3270E]) {
@@ -2142,7 +2146,7 @@ static void check_in3270(H3270 *hSession)
 			hSession->tn3270e_bound = 0;
 		}
 #endif
-		trace_dsn(hSession,"Now operating in %s mode.\n",state_name[new_cstate]);
+		trace_dsn(hSession,"Now operating in %s mode.\n",lib3270_connection_state_get_name(new_cstate));
 		host_in3270(hSession,new_cstate);
 	}
 }

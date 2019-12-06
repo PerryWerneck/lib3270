@@ -127,6 +127,13 @@ int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate)
 {
 	if(hSession->connection.state != cstate)
 	{
+		trace_dsn(
+			hSession,
+			"Connection state changes from %s to %s.\n",
+				lib3270_connection_state_get_name(hSession->connection.state),
+				lib3270_connection_state_get_name(cstate)
+		);
+
 		// Salve old states.
 		int connected = lib3270_is_connected(hSession);
 		int disconnected = lib3270_is_disconnected(hSession);

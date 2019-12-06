@@ -196,10 +196,11 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	hSession->ever_3270 = False;
 
 #if defined(HAVE_LIBSSL)
+	debug("%s: TLS/SSL is %s",__FUNCTION__,hSession->ssl.enabled ? "ENABLED" : "DISABLED")
+	trace_dsn(hSession,"TLS/SSL is %s\n", hSession->ssl.enabled ? "enabled" : "disabled" );
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;
-
 		if(ssl_init(hSession))
 			return errno = ENOTCONN;
 

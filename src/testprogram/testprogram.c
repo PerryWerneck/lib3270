@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
 	lib3270_crl_set_preferred_protocol(h,"ldap");
 #endif // HAVE_LDAP
 
-	lib3270_set_url(h,NULL);
+	if(lib3270_set_url(h,NULL))
+		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
 
 	int long_index =0;
 	int opt;
@@ -103,9 +104,6 @@ int main(int argc, char *argv[])
 		printf("Custom file: \"%s\"\n",datafile);
 	}
 
-
-	if(lib3270_set_url(h,NULL))
-		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
 
 	//lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(h,LIB3270_TOGGLE_SSL_TRACE,1);

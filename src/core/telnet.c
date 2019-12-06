@@ -1060,6 +1060,8 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 						cmd(SB),
 						opt(TELOPT_STARTTLS),
 						cmd(SE));
+
+				debug("%s: %s requires TLS/SSL",__FUNCTION__,opt(TELOPT_STARTTLS));
 				hSession->need_tls_follows = 1;
 			}
 #endif /*]*/

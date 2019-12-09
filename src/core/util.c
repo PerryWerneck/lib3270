@@ -138,18 +138,18 @@ xs_error(const char *fmt, ...)
 	lib3270_free(r);
 }
 
-
-/**
- * @brief Definition resource splitter.
- *
- * Definition resource splitter, for resources of the repeating form:
- *	left: right\n
- *
- * Can be called iteratively to parse a list.
- * Returns 1 for success, 0 for EOF, -1 for error.
- *
- * Note: Modifies the input string.
- */
+/*
+///
+/// @brief Definition resource splitter.
+///
+/// Definition resource splitter, for resources of the repeating form:
+///	left: right\n
+///
+/// Can be called iteratively to parse a list.
+/// Returns 1 for success, 0 for EOF, -1 for error.
+///
+/// Note: Modifies the input string.
+///
 int
 split_dresource(char **st, char **left, char **right)
 {
@@ -157,19 +157,19 @@ split_dresource(char **st, char **left, char **right)
 	char *t;
 	Boolean quote;
 
-	/* Skip leading white space. */
+	// Skip leading white space.
 	while (my_isspace(*s))
 		s++;
 
-	/* If nothing left, EOF. */
+	// If nothing left, EOF.
 	if (!*s)
 		return 0;
 
-	/* There must be a left-hand side. */
+	// There must be a left-hand side.
 	if (*s == ':')
 		return -1;
 
-	/* Scan until an unquoted colon is found. */
+	// Scan until an unquoted colon is found.
 	*left = s;
 	for (; *s && *s != ':' && *s != '\n'; s++)
 		if (*s == '\\' && *(s+1) == ':')
@@ -177,34 +177,34 @@ split_dresource(char **st, char **left, char **right)
 	if (*s != ':')
 		return -1;
 
-	/* Stip white space before the colon. */
+	// Stip white space before the colon.
 	for (t = s-1; my_isspace(*t); t--)
 		*t = '\0';
 
-	/* Terminate the left-hand side. */
+	// Terminate the left-hand side.
 	*(s++) = '\0';
 
-	/* Skip white space after the colon. */
+	// Skip white space after the colon.
 	while (*s != '\n' && my_isspace(*s))
 		s++;
 
-	/* There must be a right-hand side. */
+	// There must be a right-hand side.
 	if (!*s || *s == '\n')
 		return -1;
 
-	/* Scan until an unquoted newline is found. */
+	// Scan until an unquoted newline is found.
 	*right = s;
 	quote = False;
 	for (; *s; s++) {
 		if (*s == '\\' && *(s+1) == '"')
 			s++;
-		else if (*s == '"')
+		else if (*s == '"')split_dresource
 			quote = !quote;
 		else if (!quote && *s == '\n')
 			break;
 	}
 
-	/* Strip white space before the newline. */
+	// Strip white space before the newline.
 	if (*s) {
 		t = s;
 		*st = s+1;
@@ -215,27 +215,29 @@ split_dresource(char **st, char **left, char **right)
 	while (my_isspace(*t))
 		*t-- = '\0';
 
-	/* Done. */
+	// Done.
 	return 1;
 }
+*/
 
-/**
- * @brief Split a DBCS resource into its parts.
- *
- * Returns the number of parts found:
- *	-1 error (empty sub-field)
- *	 0 nothing found
- *	 1 one and just one thing found
- *	 2 two things found
- *	 3 more than two things found
- */
+/*
+///
+/// @brief Split a DBCS resource into its parts.
+///
+/// Returns the number of parts found:
+///	-1 error (empty sub-field)
+///	 0 nothing found
+///	 1 one and just one thing found
+///	 2 two things found
+///	 3 more than two things found
+///
 int
 split_dbcs_resource(const char *value, char sep, char **part1, char **part2)
 {
 	int n_parts = 0;
 	const char *s = value;
-	const char *f_start = CN;	/* start of sub-field */
-	const char *f_end = CN;		/* end of sub-field */
+	const char *f_start = CN;	// start of sub-field
+	const char *f_end = CN;		// end of sub-field
 	char c;
 	char **rp;
 
@@ -292,14 +294,16 @@ split_dbcs_resource(const char *value, char sep, char **part1, char **part2)
 		s++;
 	}
 }
+*/
 
-#if defined(X3270_DISPLAY) /*[*/
-/**
- * @brief List resource splitter, for lists of elements speparated by newlines.
- *
- * Can be called iteratively.
- * Returns 1 for success, 0 for EOF, -1 for error.
- */
+/*
+#if defined(X3270_DISPLAY)
+///
+/// @brief List resource splitter, for lists of elements speparated by newlines.
+///
+/// Can be called iteratively.
+/// Returns 1 for success, 0 for EOF, -1 for error.
+///
 int
 split_lresource(char **st, char **value)
 {
@@ -307,18 +311,18 @@ split_lresource(char **st, char **value)
 	char *t;
 	Boolean quote;
 
-	/* Skip leading white space. */
+	// Skip leading white space.
 	while (my_isspace(*s))
 		s++;
 
-	/* If nothing left, EOF. */
+	// If nothing left, EOF.
 	if (!*s)
 		return 0;
 
-	/* Save starting point. */
+	// Save starting point.
 	*value = s;
 
-	/* Scan until an unquoted newline is found. */
+	// Scan until an unquoted newline is found.
 	quote = False;
 	for (; *s; s++) {
 		if (*s == '\\' && *(s+1) == '"')
@@ -329,7 +333,7 @@ split_lresource(char **st, char **value)
 			break;
 	}
 
-	/* Strip white space before the newline. */
+	// Strip white space before the newline.
 	if (*s) {
 		t = s;
 		*st = s+1;
@@ -340,10 +344,11 @@ split_lresource(char **st, char **value)
 	while (my_isspace(*t))
 		*t-- = '\0';
 
-	/* Done. */
+	// Done.
 	return 1;
 }
-#endif /*]*/
+#endif
+*/
 
 
 /**
@@ -375,9 +380,8 @@ ctl_see(int c)
 	return buf;
 }
 
-/**
- * @brief Whitespace stripper.
- */
+/*
+/// @brief Whitespace stripper.
 char *
 strip_whitespace(const char *s)
 {
@@ -394,10 +398,12 @@ strip_whitespace(const char *s)
 	}
 	return t;
 }
+*/
 
-/**
- * @brief Hierarchy (a>b>c) splitter.
- */
+/*
+///
+/// @brief Hierarchy (a>b>c) splitter.
+///
 Boolean
 split_hier(char *label, char **base, char ***parents)
 {
@@ -429,14 +435,14 @@ split_hier(char *label, char **base, char ***parents)
 	}
 	return True;
 }
+*/
 
-/**
- * @brief Incremental, reallocing version of snprintf.
- */
+/*
+/// @brief Incremental, reallocing version of snprintf.
 #define RPF_BLKSIZE	4096
 #define SP_TMP_LEN	16384
 
-/* Initialize an RPF structure. */
+/// @brief Initialize an RPF structure.
 void
 rpf_init(rpf_t *r)
 {
@@ -445,18 +451,14 @@ rpf_init(rpf_t *r)
 	r->cur_len = 0;
 }
 
-/**
- * @brief Reset an initialized RPF structure (re-use with length 0).
- */
+/// @brief Reset an initialized RPF structure (re-use with length 0).
 void
 rpf_reset(rpf_t *r)
 {
 	r->cur_len = 0;
 }
 
-/**
- * @brief Append a string to a dynamically-allocated buffer.
- */
+/// @brief Append a string to a dynamically-allocated buffer.
 void
 rpf(rpf_t *r, char *fmt, ...)
 {
@@ -465,14 +467,14 @@ rpf(rpf_t *r, char *fmt, ...)
 	int ns;
 	char tbuf[SP_TMP_LEN];
 
-	/* Figure out how much space would be needed. */
+	// Figure out how much space would be needed.
 	va_start(a, fmt);
-	ns = vsprintf(tbuf, fmt, a); /* XXX: dangerous, but so is vsnprintf */
+	ns = vsprintf(tbuf, fmt, a); // XXX: dangerous, but so is vsnprintf
 	va_end(a);
 	if (ns >= SP_TMP_LEN)
 	    Error(NULL,"rpf overrun");
 
-	/* Make sure we have that. */
+	// Make sure we have that.
 	while (r->alloc_len - r->cur_len < ns + 1) {
 		r->alloc_len += RPF_BLKSIZE;
 		need_realloc = True;
@@ -481,22 +483,20 @@ rpf(rpf_t *r, char *fmt, ...)
 		r->buf = Realloc(r->buf, r->alloc_len);
 	}
 
-	/* Scribble onto the end of that. */
+	// Scribble onto the end of that.
 	(void) strcpy(r->buf + r->cur_len, tbuf);
 	r->cur_len += ns;
 }
 
-/**
- * @brief Free resources associated with an RPF.
- */
-void
-rpf_free(rpf_t *r)
+/// @brief Free resources associated with an RPF.
+void rpf_free(rpf_t *r)
 {
 	lib3270_free(r->buf);
 	r->buf = NULL;
 	r->alloc_len = 0;
 	r->cur_len = 0;
 }
+*/
 
 LIB3270_EXPORT void * lib3270_free(void *p)
 {

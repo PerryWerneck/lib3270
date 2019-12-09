@@ -40,13 +40,14 @@
 
 extern String fallbacks[];
 
-/* s3270 substitute Xt resource database. */
-
-#if defined(C3270) /*[*/
 /*
- * These should be properly #ifdef'd in X3270.xad, but it would turn it into
- * spaghetti.
- */
+// s3270 substitute Xt resource database.
+
+#if defined(C3270)
+//
+// These should be properly #ifdef'd in X3270.xad, but it would turn it into
+// spaghetti.
+//
 static struct {
         char *name;
         char *value;
@@ -96,12 +97,12 @@ static struct {
 	{ "message.terminalName",       "Terminal name:" },
 	{ "message.tn3270eNoOpts",      "No TN3270E options" },
 	{ "message.tn3270eOpts",        "TN3270E options:" },
-#if defined(_WIN32) /*[*/
+#if defined(_WIN32)
 	{ "message.windowsCodePage",	"Windows code page:" },
-#endif /*][*/
+#endif
 	{ NULL, NULL }
 };
-#endif /*]*/
+#endif
 
 static struct dresource {
 	struct dresource *next;
@@ -126,7 +127,6 @@ void add_resource(const char *name, const char *value)
 	*drdb_next = d;
 	drdb_next = &d->next;
 }
-
 
 const char * get_resource(H3270 *hSession, const char *name)
 {
@@ -165,7 +165,7 @@ const char * get_resource(H3270 *hSession, const char *name)
 	return NULL;
 }
 
-/* A version of get_resource that accepts sprintf arguments. */
+/// @brief A version of get_resource that accepts sprintf arguments.
 const char * get_fresource(H3270 *hSession, const char *fmt, ...)
 {
 	va_list args;
@@ -179,4 +179,6 @@ const char * get_fresource(H3270 *hSession, const char *fmt, ...)
 	lib3270_free(name);
 	return r;
 }
+
+*/
 

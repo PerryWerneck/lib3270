@@ -154,15 +154,17 @@ static void update_selected_region(H3270 *session)
 
 }
 
-void toggle_rectselect(H3270 *session, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+void toggle_rectselect(H3270 *hSession, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
-	if(!session->selected)
+	if(!hSession->selected)
 		return;
 
-	if(t->value)
-		update_selected_rectangle(session);
+	hSession->rectsel = (t->value != 0);
+
+	if(hSession->rectsel)
+		update_selected_rectangle(hSession);
 	else
-		update_selected_region(session);
+		update_selected_region(hSession);
 }
 
 void do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned int rect)

@@ -102,8 +102,7 @@ make all %{?_smp_mflags}
 %doc AUTHORS README.md
 %license LICENSE
 %else
-%license LICENSE
-%doc AUTHORS README.md
+%doc LICENSE AUTHORS README.md
 %endif
 
 %dir %{_datadir}/pw3270

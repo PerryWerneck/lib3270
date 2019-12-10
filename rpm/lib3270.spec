@@ -1,8 +1,8 @@
 #
 # spec file for package lib3270
 #
-# Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
-# Copyright (C) <2008> <Banco do Brasil S.A.>
+# Copyright (c) 2019 SUSE LLC
+# Copyright (c) <2008> <Banco do Brasil S.A.>
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -13,52 +13,40 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
-#---[ Package header ]------------------------------------------------------------------------------------------------
 
-Summary:		TN3270 Access library
-Name:			lib3270
-Version:		5.2
-Release:		0
-License:		LGPL-3.0
-
-Source:			%{name}-%{version}.tar.xz
-
-URL:			https://github.com/PerryWerneck/lib3270
-
-Group:			System/Libraries
-BuildRoot:		/var/tmp/%{name}-%{version}
-
-BuildRequires:	autoconf >= 2.61
-BuildRequires:	automake
-BuildRequires:	binutils
-BuildRequires:	coreutils
-BuildRequires:	gcc-c++
-BuildRequires:	gettext-devel
-BuildRequires:	m4
-BuildRequires:	pkgconfig
-BuildRequires:	fdupes
-
+Name:           lib3270
+Version:        5.2
+Release:        0
+Summary:        TN3270 Access library
+License:        LGPL-3.0-only
+Group:          System/Libraries
+URL:            https://github.com/PerryWerneck/lib3270
+Source:         %{name}-%{version}.tar.xz
+BuildRequires:  autoconf >= 2.61
+BuildRequires:  automake
+BuildRequires:  binutils
+BuildRequires:  coreutils
+BuildRequires:  fdupes
+BuildRequires:  gcc-c++
+BuildRequires:  gettext-devel
+BuildRequires:  m4
+BuildRequires:  pkgconfig
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
-
-BuildRequires:	pkgconfig(openssl)
-BuildRequires:	pkgconfig(libssl)
-BuildRequires:	pkgconfig(libcrypto)
-BuildRequires:	pkgconfig(libcurl)
-
+BuildRequires:  pkgconfig(libcrypto)
+BuildRequires:  pkgconfig(libcurl)
+BuildRequires:  pkgconfig(libssl)
+BuildRequires:  pkgconfig(openssl)
 %else
-
-BuildRequires:	openssl-devel
-BuildRequires:	xz
-BuildRequires:	libcurl-devel
-
+BuildRequires:  libcurl-devel
+BuildRequires:  openssl-devel
+BuildRequires:  xz
 %endif
-
 %if 0%{?centos_version}
 # CENTOS Requires gdb for debuginfo
-BuildRequires:	gdb
+BuildRequires:  gdb
 %endif
 
 %description
@@ -73,8 +61,8 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:		TN3270 Access library
-Group:			Development/Libraries/C and C++
+Summary:        TN3270 Access library
+Group:          Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
@@ -82,10 +70,9 @@ TN3270 access library, originally designed as part of the pw3270 application.
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
-
-Summary:		TN3270 Access library development files
-Group:			Development/Libraries/C and C++
-Requires:		%{name}-%{_libvrs} = %{version}
+Summary:        TN3270 Access library development files
+Group:          Development/Libraries/C and C++
+Requires:       %{name}-%{_libvrs} = %{version}
 
 %description devel
 Header files for the TN3270 access library.
@@ -93,7 +80,7 @@ Header files for the TN3270 access library.
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -q
 
 NOCONFIGURE=1 \
 	./autogen.sh
@@ -109,14 +96,14 @@ make all %{?_smp_mflags}
 %fdupes %{buildroot}/%{_prefix}
 
 %files -n %{name}-%{_libvrs}
-%defattr(-,root,root)
 
 # https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
 %if 0%{?sle_version} > 120200
 %doc AUTHORS README.md
 %license LICENSE
 %else
-%doc AUTHORS README.md LICENSE
+%license LICENSE
+%doc AUTHORS README.md
 %endif
 
 %dir %{_datadir}/pw3270
@@ -124,7 +111,6 @@ make all %{?_smp_mflags}
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %files devel
-%defattr(-,root,root)
 
 %{_libdir}/%{name}.so
 
@@ -137,7 +123,6 @@ make all %{?_smp_mflags}
 %{_datadir}/pw3270/pot/*.pot
 
 %post -n %{name}-%{_libvrs} -p /sbin/ldconfig
-
 %postun -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
 %changelog

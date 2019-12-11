@@ -607,7 +607,7 @@
 			.name = "paste-next",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<shift><ctrl>v",
+			.keys = "<shift><alt>v",
 			.icon = NULL,
 			.label = NULL,
 			.summary = NULL,

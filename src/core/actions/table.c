@@ -83,7 +83,7 @@
 			.keys = NULL,
 			.icon = "gtk-connect",
 			.label = N_( "_Connect" ) ,
-			.summary = N_( "Connect to host." ),
+			.summary = N_( "Connect to host" ),
 			.activate = connect_host,
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
@@ -97,7 +97,7 @@
 			.keys = NULL,
 			.icon = "gtk-disconnect",
 			.label = N_( "_Disconnect" ),
-			.summary = N_( "Disconnect from host." ),
+			.summary = N_( "Disconnect from host" ),
 			.activate = lib3270_disconnect,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -114,7 +114,7 @@
 			.keys = "Up,KP_Up",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor up 1 position." ),
+			.summary = N_( "Cursor up 1 position" ),
 			.activate = lib3270_cursor_up,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -128,7 +128,7 @@
 			.keys = "Down,KP_Down",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor down 1 position." ),
+			.summary = N_( "Cursor down 1 position" ),
 			.activate = lib3270_cursor_down,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -142,7 +142,7 @@
 			.keys = "Left,KP_Left",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor left 1 position." ),
+			.summary = N_( "Cursor left 1 position" ),
 			.activate = lib3270_cursor_left,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -156,7 +156,7 @@
 			.keys = "Right,KP_Right",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor right 1 position." ),
+			.summary = N_( "Cursor right 1 position" ),
 			.activate = lib3270_cursor_right,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -170,7 +170,7 @@
 			.keys = "Control_R",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor to first field on next line or any lines after that." ),
+			.summary = N_( "Cursor to first field on next line or any lines after that" ),
 			.activate = lib3270_newline,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -184,7 +184,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor to previous word." ),
+			.summary = N_( "Cursor to previous word" ),
 			.activate = lib3270_previousword,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -198,7 +198,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Cursor to next unprotected word." ),
+			.summary = N_( "Cursor to next unprotected word" ),
 			.activate = lib3270_nextword,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -215,7 +215,7 @@
 			.keys = NULL,
 			.icon = "document-save",
 			.label = NULL,
-			.summary = N_( "Save screen." ),
+			.summary = N_( "Save screen to file" ),
 			.activate = save_all,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -229,7 +229,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Save selected area." ),
+			.summary = N_( "Save selected area to file" ),
 			.activate = save_selected,
 
 			.group = LIB3270_ACTION_GROUP_SELECTION,
@@ -257,7 +257,7 @@
 			.keys = NULL,
 			.icon = "document-load",
 			.label = NULL,
-			.summary = N_( "Paste file." ),
+			.summary = N_( "Paste from text file" ),
 			.activate = paste_file,
 
 			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
@@ -334,7 +334,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field." ),
+			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field" ),
 			.activate = lib3270_fieldend,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -348,7 +348,7 @@
 			.keys = "Home",
 			.icon = "go-first",
 			.label = NULL,
-			.summary = N_( "Move to first unprotected field on screen." ),
+			.summary = N_( "Move to first unprotected field on screen" ),
 			.activate = lib3270_firstfield,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -362,7 +362,7 @@
 			.keys = "Tab",
 			.icon = "go-next",
 			.label = NULL,
-			.summary = N_( "Tab forward to next field." ),
+			.summary = N_( "Tab forward to next field" ),
 			.activate = lib3270_nextfield,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -376,7 +376,7 @@
 			.keys = "<Shift>ISO_Left_Tab",
 			.icon = "go-previous",
 			.label = NULL,
-			.summary = N_( "Tab backward to previous field." ),
+			.summary = N_( "Tab backward to previous field" ),
 			.activate = lib3270_previousfield,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -394,7 +394,7 @@
 			.keys = "<Ctrl>w",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Backspaces the cursor until it hits the front of a word." ),
+			.summary = N_( "Backspaces the cursor until it hits the front of a word" ),
 			.activate = lib3270_deleteword,
 
 			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
@@ -437,7 +437,7 @@
 			.keys = "End",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Erase End Of Field Key." ),
+			.summary = N_( "Erase End Of Field" ),
 			.activate = lib3270_eraseeof,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -451,7 +451,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Erase End Of Line Key." ),
+			.summary = N_( "Erase End Of Line" ),
 			.activate = lib3270_eraseeol,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -482,7 +482,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Send an \"Enter\" action." ),
+			.summary = N_( "Send an \"Enter\" action" ),
 			.activate = lib3270_enter,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -568,7 +568,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "3270-style backspace." ),
+			.summary = N_( "3270-style backspace" ),
 			.activate = lib3270_backspace,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -582,7 +582,7 @@
 			.keys = "<shift>Escape",
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "ATTN key, per RFC 2355.  Sends IP, regardless." ),
+			.summary = N_( "ATTN key, per RFC 2355.  Sends IP, regardless" ),
 			.activate = lib3270_attn,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -642,7 +642,7 @@
 			.icon = "document-print",
 			.label = N_("Print"),
 			.summary  = N_("Send to print"),
-			.description = N_("If the terminal has selected area print it, if not, print all contents."),
+			.description = N_("If the terminal has selected area print it, if not, print all contents"),
 			.activate = lib3270_print,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -670,7 +670,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = NULL,
-			.summary = N_( "Print selected area." ),
+			.summary = N_( "Print selected area" ),
 			.activate = lib3270_print_selected,
 
 			.group = LIB3270_ACTION_GROUP_SELECTION,

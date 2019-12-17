@@ -248,7 +248,7 @@ void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
 
 static void update_url(H3270 *hSession)
 {
-	Replace(hSession->host.url,
+	char * url =
 			lib3270_strdup_printf(
 				"%s%s:%s",
 #ifdef HAVE_LIBSSL
@@ -258,7 +258,20 @@ static void update_url(H3270 *hSession)
 #endif // HAVE_LIBSSL
 					hSession->host.current,
 					hSession->host.srvc
-		));
+	);
+
+	if(hSession->host.url && !strcmp(hSession->host.url,url))
+	{
+		debug("%s: Same url, ignoring",__FUNCTION__);
+		lib3270_free(url);
+		return;
+	}
+
+	debug("URL %s -> %s",hSession->host.url,url);
+
+	lib3270_write_event_trace(hSession,"Host URL was changed\nFrom: %s\nTo: %s\n",hSession->host.url,url);
+	lib3270_free(hSession->host.url);
+	hSession->host.url = url;
 
 #ifdef SSL_ENABLE_CRL_CHECK
 	lib3270_crl_free(hSession);

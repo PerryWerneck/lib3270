@@ -43,6 +43,11 @@
 	#include <stdarg.h>
 	#include <errno.h>
 
+	#ifdef _WIN32
+		#include <winsock2.h>
+		#include <windows.h>
+	#endif // _WIN32
+
 	#ifndef ENOTCONN
 		#define ENOTCONN 126
 	#endif // !ENOTCONN
@@ -1535,9 +1540,10 @@
 
 	LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on);
 
-#ifdef WIN32
+#ifdef _WIN32
 	LIB3270_EXPORT const char	* lib3270_win32_strerror(int e);
 	LIB3270_EXPORT const char	* lib3270_win32_local_charset(void);
+	LIB3270_EXPORT LSTATUS		  lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY phkResult);
 
 	/**
 	 * @brief Translate windows error code.

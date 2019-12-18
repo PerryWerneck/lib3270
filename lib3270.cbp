@@ -230,6 +230,9 @@
 		<Unit filename="src/core/windows/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/registry.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/windows/resources.rc" />
 		<Unit filename="src/core/windows/util.c">
 			<Option compilerVar="CC" />

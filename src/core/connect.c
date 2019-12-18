@@ -70,36 +70,48 @@
 
 #endif // HAVE_LIBSSL
 
+ int lib3270_allow_reconnect(H3270 *hSession)
+ {
+	//
+	// Can't reconnect if already reconnecting *OR* there's an open popup
+	// (to avoid open more than one connect error popup).
+	//
+	if(hSession->auto_reconnect_inprogress || hSession->popups)
+	{
+		errno = EBUSY;
+		return 0;
+	}
+
+ 	// Is the session disconnected?
+	if(!lib3270_is_disconnected(hSession))
+	{
+		errno = EISCONN;
+		return 0;
+	}
+
+	// Do I have a defined host?
+	if(!(hSession->host.current && hSession->host.srvc))
+	{
+		errno = EINVAL;
+		return 0;
+	}
+
+	if(hSession->connection.sock > 0)
+	{
+		errno = EISCONN;
+		return 0;
+	}
+
+	return 1;
+ }
+
  int lib3270_reconnect(H3270 *hSession, int seconds)
  {
  	debug("%s",__FUNCTION__);
 
- 	FAIL_IF_ONLINE(hSession);
-
-	//
-	// Can't reconnect if already reconnecting *OR* there's an open popup
-	// (to avoid open more than one connect error popup.
-	//
-	if(hSession->auto_reconnect_inprogress || hSession->popups)
-		return errno = EAGAIN;
-
-	if(hSession->connection.sock > 0)
-		return errno = EISCONN;
-
-	if(!(hSession->host.current && hSession->host.srvc))
+ 	if(!lib3270_allow_reconnect(hSession))
 	{
-		// No host info, try the default one.
-        if(lib3270_set_url(hSession,NULL))
-		{
-			int err = errno;
-			lib3270_write_event_trace(hSession,"Can't set default URL (%s)\n",strerror(err));
-			return errno = err;
-		}
-
-		if(!(hSession->host.current && hSession->host.srvc))
-		{
-			return errno = EINVAL;
-		}
+		return errno == 0 ? -1 : errno;
 	}
 
 #if defined(HAVE_LIBSSL)

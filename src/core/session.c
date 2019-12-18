@@ -432,6 +432,8 @@ H3270 * lib3270_session_new(const char *model)
 	ft_init(hSession);
 #endif
 
+	lib3270_set_url(hSession,NULL);	// Set default URL (if available).
+
 	trace("%s finished",__FUNCTION__);
 
 	errno = 0;

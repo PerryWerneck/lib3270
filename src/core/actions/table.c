@@ -87,7 +87,7 @@
 			.activate = connect_host,
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
-			.activatable = lib3270_is_disconnected
+			.activatable = lib3270_allow_reconnect // lib3270_is_disconnected
 		},
 
 		{
@@ -472,6 +472,20 @@
 			.activatable = lib3270_is_connected
 		},
 
+		{
+			.name = "clear",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
+			.keys = NULL,
+			.icon = "edit-clear-all",
+			.label = N_("Clear"),
+			.summary = N_( "Clear AID key" ),
+			.activate = lib3270_clear,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
 		//
 		// Keyboard actions
 		//
@@ -499,20 +513,6 @@
 			.label = NULL,
 			.summary = NULL,
 			.activate = lib3270_kybdreset,
-
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
-		},
-
-		{
-			.name = "clear",
-			.type = LIB3270_ACTION_TYPE_GENERIC,
-
-			.keys = NULL,
-			.icon = NULL,
-			.label = N_("Clear"),
-			.summary = N_( "Clear AID key" ),
-			.activate = lib3270_clear,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected

@@ -621,19 +621,28 @@
 	 * @return Pointer to host URL set (internal data, do not change it)
 	 *
 	 */
-	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h));
+    LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h));
 
+	/**
+	 * @brief Check if the session can reconnect.
+	 *
+	 * @param hSession			Session handle.
+	 *
+	 * @return zero if reconnect is unavailable (sets errno), non zero if available.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_allow_reconnect(H3270 *hSession);
 
 	/**
 	 * @brief Reconnect to host.
 	 *
-	 * @param h			Session handle.
+	 * @param hSession	Session handle.
 	 * @param seconds	Seconds to wait for connection.
 	 *
 	 * @return 0 for success, non zero if fails (sets errno).
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_reconnect(H3270 *h,int seconds);
+	LIB3270_EXPORT int lib3270_reconnect(H3270 *hSession,int seconds);
 
 	/**
 	 * @brief Connect by URL
@@ -1031,6 +1040,8 @@
 	LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession);
 
 	LIB3270_EXPORT int lib3270_is_connected(const H3270 *h);
+
+
 	LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h);
 
 	LIB3270_EXPORT int lib3270_is_unlocked(const H3270 *h);

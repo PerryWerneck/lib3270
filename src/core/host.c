@@ -430,6 +430,9 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	// Notifica atualização
 	update_url(h);
 
+	// The "reconnect" action is now available.
+	lib3270_action_group_notify(h, LIB3270_ACTION_GROUP_OFFLINE);
+
 	return 0;
 }
 

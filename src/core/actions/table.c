@@ -641,7 +641,7 @@
 			.keys = "Print",
 			.icon = "document-print",
 			.label = N_("Print"),
-			.summary  = N_("Send to print"),
+			.summary  = N_("Send to printer"),
 			.description = N_("If the terminal has selected area print it, if not, print all contents"),
 			.activate = lib3270_print,
 
@@ -654,8 +654,8 @@
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.keys = NULL,
-			.icon = NULL,
-			.label = NULL,
+			.icon = "document-print",
+			.label = N_("Print screen"),
 			.summary = N_("Print screen contents"),
 			.activate = lib3270_print_all,
 
@@ -668,8 +668,8 @@
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.keys = NULL,
-			.icon = NULL,
-			.label = NULL,
+			.icon = "document-print",
+			.label = N_("Print selection"),
 			.summary = N_( "Print selected area" ),
 			.activate = lib3270_print_selected,
 
@@ -682,8 +682,8 @@
 			.type = LIB3270_ACTION_TYPE_PRINTER,
 
 			.keys = NULL,
-			.icon = NULL,
-			.label = NULL,
+			.icon = "document-print",
+			.label = N_("Print copy"),
 			.summary = N_("Print copy (if available)"),
 			.activate = lib3270_print_copy,
 

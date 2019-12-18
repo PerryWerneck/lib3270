@@ -636,7 +636,7 @@
 	 * @return zero if reconnect is unavailable (sets errno), non zero if available.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_allow_reconnect(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_allow_reconnect(const H3270 *hSession);
 
 	/**
 	 * @brief Reconnect to host.

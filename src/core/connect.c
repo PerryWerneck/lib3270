@@ -70,7 +70,7 @@
 
 #endif // HAVE_LIBSSL
 
- int lib3270_allow_reconnect(H3270 *hSession)
+ int lib3270_allow_reconnect(const H3270 *hSession)
  {
 	//
 	// Can't reconnect if already reconnecting *OR* there's an open popup

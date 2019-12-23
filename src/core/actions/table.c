@@ -82,12 +82,12 @@
 
 			.keys = NULL,
 			.icon = "gtk-connect",
-			.label = N_( "_Connect" ) ,
-			.summary = N_( "Connect to host" ),
+			.label = N_( "_Reconnect" ) ,
+			.summary = N_( "Reconnect to the same host" ),
 			.activate = connect_host,
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
-			.activatable = lib3270_allow_reconnect // lib3270_is_disconnected
+			.activatable = lib3270_allow_reconnect
 		},
 
 		{

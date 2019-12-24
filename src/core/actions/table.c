@@ -205,6 +205,9 @@
 			.activatable = lib3270_is_connected
 		},
 
+		/*
+
+			No need here; this actions are better when implemented on the widget or main application.
 		//
 		// Save/load actions
 		//
@@ -227,7 +230,7 @@
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.keys = NULL,
-			.icon = NULL,
+			.icon = "document-save",
 			.label = NULL,
 			.summary = N_( "Save selected area to file" ),
 			.activate = save_selected,
@@ -241,7 +244,7 @@
 			.type = LIB3270_ACTION_TYPE_FILE,
 
 			.keys = NULL,
-			.icon = NULL,
+			.icon = "document-save",
 			.label = NULL,
 			.summary = NULL,
 			.activate = save_copy,
@@ -249,6 +252,7 @@
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
+		*/
 
 		{
 			.name = "paste-from-file",
@@ -634,6 +638,10 @@
 		//
 		// Misc actions
 		//
+		/*
+
+		No need here; this actions are better when implemented on the widget or main application.
+
 		{
 			.name = "print",
 			.type = LIB3270_ACTION_TYPE_PRINTER,
@@ -690,6 +698,7 @@
 			.group = LIB3270_ACTION_GROUP_COPY,
 			.activatable = lib3270_is_connected
 		},
+		*/
 
 		//
 		// Test actions

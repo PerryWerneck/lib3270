@@ -39,20 +39,26 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
+ /*
  static int save_all(H3270 *hSession)
  {
  	return lib3270_save_all(hSession,NULL);
  }
+ */
 
+ /*
  static int save_selected(H3270 *hSession)
  {
  	return lib3270_save_selected(hSession,NULL);
  }
+ */
 
+ /*
  static int save_copy(H3270 *hSession)
  {
  	return lib3270_save_copy(hSession,NULL);
  }
+ */
 
  static int paste_file(H3270 *hSession)
  {
@@ -112,7 +118,7 @@
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.keys = "Up,KP_Up",
-			.icon = NULL,
+			.icon = "go-up",
 			.label = NULL,
 			.summary = N_( "Cursor up 1 position" ),
 			.activate = lib3270_cursor_up,
@@ -126,7 +132,7 @@
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.keys = "Down,KP_Down",
-			.icon = NULL,
+			.icon = "go-down",
 			.label = NULL,
 			.summary = N_( "Cursor down 1 position" ),
 			.activate = lib3270_cursor_down,
@@ -140,7 +146,7 @@
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.keys = "Left,KP_Left",
-			.icon = NULL,
+			.icon = "go-previous",
 			.label = NULL,
 			.summary = N_( "Cursor left 1 position" ),
 			.activate = lib3270_cursor_left,
@@ -154,7 +160,7 @@
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
 			.keys = "Right,KP_Right",
-			.icon = NULL,
+			.icon = "go-next",
 			.label = NULL,
 			.summary = N_( "Cursor right 1 position" ),
 			.activate = lib3270_cursor_right,
@@ -397,7 +403,7 @@
 
 			.keys = "<Ctrl>w",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Delete word"),
 			.summary = N_( "Backspaces the cursor until it hits the front of a word" ),
 			.activate = lib3270_deleteword,
 
@@ -411,7 +417,7 @@
 
 			.keys = "<Ctrl>u",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_( "Delete field" ),
 			.summary = N_( "Delete field" ),
 			.activate = lib3270_deletefield,
 
@@ -440,7 +446,7 @@
 
 			.keys = "End",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Erase EOF"),
 			.summary = N_( "Erase End Of Field" ),
 			.activate = lib3270_eraseeof,
 
@@ -454,7 +460,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Erase EOL"),
 			.summary = N_( "Erase End Of Line" ),
 			.activate = lib3270_eraseeol,
 
@@ -498,7 +504,7 @@
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.keys = NULL,
-			.icon = NULL,
+			.icon = "gtk-ok",
 			.label = NULL,
 			.summary = N_( "Send an \"Enter\" action" ),
 			.activate = lib3270_enter,
@@ -514,7 +520,7 @@
 
 			.keys = "Escape",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Reset"),
 			.summary = NULL,
 			.activate = lib3270_kybdreset,
 
@@ -585,7 +591,7 @@
 
 			.keys = "<shift>Escape",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Attn"),
 			.summary = N_( "ATTN key, per RFC 2355.  Sends IP, regardless" ),
 			.activate = lib3270_attn,
 
@@ -599,7 +605,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Break"),
 			.summary = NULL,
 			.activate = lib3270_break,
 
@@ -612,8 +618,8 @@
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
 			.keys = "<shift><alt>v",
-			.icon = NULL,
-			.label = NULL,
+			.icon = "edit-paste",
+			.label = N_("Paste next"),
 			.summary = NULL,
 			.activate = lib3270_paste_next,
 

@@ -1162,7 +1162,22 @@
 	 * @return Greater than zero if the terminal has selected area, 0 if not.
 	 *
 	 */
-	LIB3270_EXPORT int	  lib3270_has_selection(const H3270 *hSession);
+	LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession);
+
+	LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_has_selection(const H3270 *hSession));
+
+	/**
+	 * @brief Check if the terminal has stored clipboard contents.
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 * @return Greater than zero if the terminal has copy, 0 if not.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_get_has_copy(const H3270 *hSession);
+
+	LIB3270_EXPORT void lib3270_set_has_copy(H3270 *hSession, int has_copy);
+
 
 	/**
 	 * @brief Get all text inside the terminal.

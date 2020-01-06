@@ -393,7 +393,7 @@ LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr)
 	return lib3270_get_string_at_address(session,first,lib3270_field_length(session,first)+1,0);
 }
 
-LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession)
+LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession)
 {
 	errno = 0;
 	if(check_online_session(hSession))
@@ -401,6 +401,26 @@ LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession)
 
 	return hSession->selected ? 1 : 0;
 }
+
+LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession) {
+	return lib3270_get_has_selection(hSession);
+}
+
+LIB3270_EXPORT int lib3270_get_has_copy(const H3270 *hSession)
+{
+	errno = 0;
+	if(check_online_session(hSession))
+		return 0;
+
+	return hSession->has_copy ? 1 : 0;
+}
+
+LIB3270_EXPORT void lib3270_set_has_copy(H3270 *hSession, int has_copy) {
+	hSession->has_copy = has_copy ? 1 : 0;
+	lib3270_action_group_notify(hSession,LIB3270_ACTION_GROUP_COPY);
+}
+
+
 
 LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height)
 {

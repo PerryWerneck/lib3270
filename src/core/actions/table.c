@@ -39,27 +39,6 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
- /*
- static int save_all(H3270 *hSession)
- {
- 	return lib3270_save_all(hSession,NULL);
- }
- */
-
- /*
- static int save_selected(H3270 *hSession)
- {
- 	return lib3270_save_selected(hSession,NULL);
- }
- */
-
- /*
- static int save_copy(H3270 *hSession)
- {
- 	return lib3270_save_copy(hSession,NULL);
- }
- */
-
  static int paste_file(H3270 *hSession)
  {
  	return lib3270_load(hSession,NULL);
@@ -210,55 +189,6 @@
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
 		},
-
-		/*
-
-			No need here; this actions are better when implemented on the widget or main application.
-		//
-		// Save/load actions
-		//
-		{
-			.name = "save-all",
-			.type = LIB3270_ACTION_TYPE_FILE,
-
-			.keys = NULL,
-			.icon = "document-save",
-			.label = NULL,
-			.summary = N_( "Save screen to file" ),
-			.activate = save_all,
-
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
-		},
-
-		{
-			.name = "save-selected",
-			.type = LIB3270_ACTION_TYPE_FILE,
-
-			.keys = NULL,
-			.icon = "document-save",
-			.label = NULL,
-			.summary = N_( "Save selected area to file" ),
-			.activate = save_selected,
-
-			.group = LIB3270_ACTION_GROUP_SELECTION,
-			.activatable = lib3270_has_selection
-		},
-
-		{
-			.name = "save-copy",
-			.type = LIB3270_ACTION_TYPE_FILE,
-
-			.keys = NULL,
-			.icon = "document-save",
-			.label = NULL,
-			.summary = NULL,
-			.activate = save_copy,
-
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
-		},
-		*/
 
 		{
 			.name = "paste-from-file",
@@ -642,71 +572,6 @@
 		},
 
 		//
-		// Misc actions
-		//
-		/*
-
-		No need here; this actions are better when implemented on the widget or main application.
-
-		{
-			.name = "print",
-			.type = LIB3270_ACTION_TYPE_PRINTER,
-
-			.keys = "Print",
-			.icon = "document-print",
-			.label = N_("Print"),
-			.summary  = N_("Send to printer"),
-			.description = N_("If the terminal has selected area print it, if not, print all contents"),
-			.activate = lib3270_print,
-
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
-		},
-
-		{
-			.name = "print-all",
-			.type = LIB3270_ACTION_TYPE_PRINTER,
-
-			.keys = NULL,
-			.icon = "document-print",
-			.label = N_("Print screen"),
-			.summary = N_("Print screen contents"),
-			.activate = lib3270_print_all,
-
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activatable = lib3270_is_connected
-		},
-
-		{
-			.name = "print-selected",
-			.type = LIB3270_ACTION_TYPE_PRINTER,
-
-			.keys = NULL,
-			.icon = "document-print",
-			.label = N_("Print selection"),
-			.summary = N_( "Print selected area" ),
-			.activate = lib3270_print_selected,
-
-			.group = LIB3270_ACTION_GROUP_SELECTION,
-			.activatable = lib3270_has_selection
-		},
-
-		{
-			.name = "print-copy",
-			.type = LIB3270_ACTION_TYPE_PRINTER,
-
-			.keys = NULL,
-			.icon = "document-print",
-			.label = N_("Print copy"),
-			.summary = N_("Print copy (if available)"),
-			.activate = lib3270_print_copy,
-
-			.group = LIB3270_ACTION_GROUP_COPY,
-			.activatable = lib3270_is_connected
-		},
-		*/
-
-		//
 		// Test actions
 		//
 
@@ -751,19 +616,18 @@
  	return hSession == NULL ? 0 : 1;
  }
 
- LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group)
- {
-	static const struct
-	{
+ LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group) {
+
+	static const struct {
 		int (*get)(const H3270 *);
-	} activatable[LIB3270_ACTION_CUSTOM] =
-	{
-		{ default_activatable_state	},	// LIB3270_ACTION_GROUP_NONE
- 		{ lib3270_is_connected		},	// LIB3270_ACTION_GROUP_ONLINE
- 		{ lib3270_is_disconnected	},	// LIB3270_ACTION_GROUP_OFFLINE
- 		{ lib3270_has_selection		},	// LIB3270_ACTION_GROUP_SELECTION
- 		{ lib3270_is_unlocked		},	// LIB3270_ACTION_GROUP_LOCK_STATE
- 		{ lib3270_is_formatted		},	// LIB3270_ACTION_GROUP_FORMATTED
+	} activatable[LIB3270_ACTION_CUSTOM] = {
+		{ default_activatable_state		},	// LIB3270_ACTION_GROUP_NONE
+ 		{ lib3270_is_connected			},	// LIB3270_ACTION_GROUP_ONLINE
+ 		{ lib3270_is_disconnected		},	// LIB3270_ACTION_GROUP_OFFLINE
+ 		{ lib3270_get_has_selection		},	// LIB3270_ACTION_GROUP_SELECTION
+ 		{ lib3270_is_unlocked			},	// LIB3270_ACTION_GROUP_LOCK_STATE
+ 		{ lib3270_is_formatted			},	// LIB3270_ACTION_GROUP_FORMATTED
+ 		{ lib3270_get_has_copy			},	// LIB3270_ACTION_GROUP_COPY
  	};
 
  	if(group < (sizeof(activatable)/sizeof(activatable[0]))) {

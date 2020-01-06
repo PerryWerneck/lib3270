@@ -353,6 +353,7 @@ struct _h3270
 	LIB3270_HOST_TYPE		  host_type;						///< @brief Host type.
 
 	int					  	  selected					: 1;	///< @brief Has selected region?
+	int						  has_copy					: 1;	///< @brief Has copy?
 	int						  rectsel					: 1;	///< @brief Selected region is a rectangle ?
 	int						  vcontrol					: 1;	///< @brief Visible control ?
 	int						  modified_sel				: 1;

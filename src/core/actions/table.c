@@ -36,6 +36,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/actions.h>
 #include <lib3270/toggle.h>
+#include <lib3270/log.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
@@ -232,7 +233,7 @@
 			.activate = lib3270_unselect,
 
 			.group = LIB3270_ACTION_GROUP_SELECTION,
-			.activatable = lib3270_has_selection
+			.activatable = lib3270_get_has_selection
 		},
 
 		{
@@ -620,7 +621,7 @@
 
 	static const struct {
 		int (*get)(const H3270 *);
-	} activatable[LIB3270_ACTION_CUSTOM] = {
+	} activatable[LIB3270_ACTION_GROUP_CUSTOM] = {
 		{ default_activatable_state		},	// LIB3270_ACTION_GROUP_NONE
  		{ lib3270_is_connected			},	// LIB3270_ACTION_GROUP_ONLINE
  		{ lib3270_is_disconnected		},	// LIB3270_ACTION_GROUP_OFFLINE

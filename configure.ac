@@ -105,7 +105,7 @@ case "$host" in
 		;;
 
  	*)
-		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir)"
+		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir) -DLOCALEDIR=\$(localedir)"
 		LDFLAGS="$LDFLAGS -pthread"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
@@ -451,6 +451,9 @@ AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])],
 AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname)
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname")
+AC_SUBST(GETTEXT_PACKAGE,"lib$app_cv_libname")
+
 dnl ---------------------------------------------------------------------------
 dnl OS Defs
 dnl ---------------------------------------------------------------------------
@@ -641,6 +644,7 @@ dnl ---------------------------------------------------------------------------
 AC_SUBST(INSTALL_PACKAGES)
 
 AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(locale/Makefile)
 
 AC_CONFIG_FILES(src/core/version.c)
 

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <locale.h>
 
 #include <internals.h>
 #include <lib3270.h>
@@ -35,6 +36,11 @@ static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_U
 
 int main(int argc, char *argv[])
 {
+#ifdef LC_ALL
+	setlocale( LC_ALL, "" );
+#endif
+
+	textdomain("pw3270");
 
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

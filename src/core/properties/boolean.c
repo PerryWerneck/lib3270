@@ -145,7 +145,7 @@
 		{
 			.name = "has_selection",										//  Property name.
 			.description = N_( "Has selected area" ),						//  Property description.
-			.get = lib3270_has_selection,									//  Get value.
+			.get = lib3270_get_has_selection,								//  Get value.
 			.set = NULL														//  Set value.
 		},
 

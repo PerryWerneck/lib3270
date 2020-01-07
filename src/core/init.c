@@ -38,6 +38,7 @@
 #endif // _WIN32
 
 #include <config.h>
+#include <locale.h>
 
 #ifdef HAVE_LIBCURL
 	#include <curl/curl.h>
@@ -105,6 +106,27 @@ int lib3270_loaded(void)
 	ansictl.vwerase = parse_ctlchar("^W");
 	ansictl.vrprnt  = parse_ctlchar("^R");
 	ansictl.vlnext  = parse_ctlchar("^V");
+
+#ifdef _WIN32
+	{
+		char lpFilename[4096];
+
+		memset(lpFilename,0,sizeof(lpFilename));
+		DWORD szPath = GetModuleFileName(hModule,lpFilename,sizeof(lpFilename));
+		lpFilename[szPath] = 0;
+
+		char * ptr = strrchr(lpFilename,'\\');
+		if(ptr)
+			ptr[1] = 0;
+
+		strncat(lpFilename,"locale",4095);
+		bindtextdomain(GETTEXT_PACKAGE,lpFilename);
+	}
+#else
+	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+#endif // _WIN32
+
+	bind_textdomain_codeset("lib" LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), "UTF-8");
 
 #ifdef HAVE_LIBCURL
 	trace("%s.curl_global_init",__FUNCTION__);

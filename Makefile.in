@@ -27,6 +27,7 @@
 #---[ Library configuration ]------------------------------------------------------------
 
 SONAME=@SONAME@
+PACKAGE_NAME=@PACKAGE_NAME@
 LIBNAME=lib@LIB3270_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
 INSTALL_PACKAGES=@INSTALL_PACKAGES@
@@ -196,12 +197,17 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 		--kill-at \
 		--output-lib $@
 
+install-%: \
+	%/Makefile
+
+	@$(MAKE) -C `dirname $<` DESTDIR=$(DESTDIR) install
+
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).a \
-	$(POTDIR)/lib3270.pot
+	locale/$(PACKAGE_NAME).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
@@ -243,7 +249,9 @@ $(BINRLS)/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
+	locale/$(PACKAGE_NAME).pot \
+	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG)) \
+	install-locale
 
 install-linux-lib: \
 	$(BINRLS)/$(SONAME)
@@ -325,7 +333,7 @@ install-delayed: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-delayed.pc
 
 install-dev: \
-	$(POTDIR)/lib3270.pot
+	locale/$(PACKAGE_NAME).pot
 
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 
@@ -343,9 +351,6 @@ install-dev: \
 		sdk/lib3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270.pc
 
-	# Install translation files
-	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
-	@$(INSTALL_DATA) $(POTDIR)/lib3270.pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/lib3270.pot
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -368,7 +373,7 @@ $(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 		-c src/core/X3270.xad \
 		$@
 
-$(POTDIR)/lib3270.pot: \
+locale/$(PACKAGE_NAME).pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 
 	@rm -f $@
@@ -376,7 +381,7 @@ $(POTDIR)/lib3270.pot: \
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
-	$(POTDIR)/lib3270.pot
+	locale/$(PACKAGE_NAME).pot
 
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile
@@ -437,6 +442,7 @@ clean: \
 
 	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
+	@rm -f locale/*.pot
 
 cleanDebug:
 

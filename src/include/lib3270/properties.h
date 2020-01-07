@@ -181,6 +181,12 @@
 	LIB3270_EXPORT int lib3270_set_oversize(H3270 *hSession, const char *value);
 
 	/**
+	 * @brief Get property label.
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_property_get_label(const LIB3270_PROPERTY * property);
+
+	/**
 	 * @brief Get property description.
 	 *
 	 */

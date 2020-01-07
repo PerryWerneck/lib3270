@@ -29,8 +29,8 @@
 
 
 /**
- *	@file	toggles/init.c
- *	@brief	Toggle description table.
+ *	@file	toggles/table.c
+ *	@brief	Toggle description table and associated methods.
  */
 
 #include <config.h>
@@ -342,14 +342,14 @@ LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggle_list()
 LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
-		return toggle_descriptor[ix].summary;
+		return lib3270_toggle_get_summary(toggle_descriptor+ix);
 	return "";
 }
 
 LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
-		return toggle_descriptor[ix].label;
+		return lib3270_toggle_get_label(toggle_descriptor+ix);
 	return "";
 }
 
@@ -357,14 +357,13 @@ LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix)
 LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix)
 {
 	if(ix < LIB3270_TOGGLE_COUNT)
-		return toggle_descriptor[ix].description;
+		return lib3270_toggle_get_description(toggle_descriptor+ix);
 	return "";
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix)
-{
+LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix) {
 	if(ix < LIB3270_TOGGLE_COUNT)
-		return toggle_descriptor[ix].name;
+		return lib3270_toggle_get_name(toggle_descriptor+ix);
 	return "";
 }
 

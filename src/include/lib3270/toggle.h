@@ -162,6 +162,8 @@
 	 */
 	LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix);
 
+
+
 	/**
 	 * @brief Get a long description of the toggle.
 	 *
@@ -211,6 +213,12 @@
 	 *
 	 */
 	LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_from_id(LIB3270_TOGGLE_ID id);
+
+	LIB3270_EXPORT const char * lib3270_toggle_get_name(const LIB3270_TOGGLE *toggle);
+	LIB3270_EXPORT const char * lib3270_toggle_get_label(const LIB3270_TOGGLE *toggle);
+	LIB3270_EXPORT const char * lib3270_toggle_get_summary(const LIB3270_TOGGLE *toggle);
+	LIB3270_EXPORT const char * lib3270_toggle_get_description(const LIB3270_TOGGLE *toggle);
+
 
 #ifdef __cplusplus
 	}

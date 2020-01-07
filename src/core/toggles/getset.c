@@ -30,7 +30,7 @@
 
 /**
  *	@file toggles/getset.c
- *	@brief This module handles toggle changes.
+ *	@brief This module handles toggle changes and properties.
  */
 
 #include <config.h>
@@ -41,8 +41,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE_ID ix)
-{
+LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_TOGGLE_ID ix) {
 
 	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT) {
 		errno = EINVAL;
@@ -55,8 +54,7 @@ LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_T
 /**
  * @brief Call the internal update routine and listeners.
  */
-static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_ID ix)
-{
+static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_ID ix) {
 	trace("%s: ix=%d upcall=%p",__FUNCTION__,ix,t->upcall);
 
 	t->upcall(session, t, LIB3270_TOGGLE_TYPE_INTERACTIVE);
@@ -89,8 +87,7 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
  *
  * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
  */
-LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int value)
-{
+LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int value) {
 	char v = value ? True : False;
 	struct lib3270_toggle * t;
 
@@ -110,8 +107,7 @@ LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int 
 	return 1;
 }
 
-LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE_ID ix)
-{
+LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE_ID ix) {
 	struct lib3270_toggle	*t;
 
 	CHECK_SESSION_HANDLE(session);
@@ -128,3 +124,38 @@ LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE_ID ix)
 	return (int) t->value;
 }
 
+LIB3270_EXPORT const char * lib3270_toggle_get_name(const LIB3270_TOGGLE *toggle) {
+
+	if(toggle && toggle->name)
+		return dgettext(GETTEXT_PACKAGE,toggle->name);
+
+	return "";
+
+}
+
+LIB3270_EXPORT const char * lib3270_toggle_get_label(const LIB3270_TOGGLE *toggle) {
+
+	if(toggle && toggle->label)
+		return dgettext(GETTEXT_PACKAGE,toggle->label);
+
+	return "";
+
+}
+
+LIB3270_EXPORT const char * lib3270_toggle_get_summary(const LIB3270_TOGGLE *toggle) {
+
+	if(toggle && toggle->summary)
+		return dgettext(GETTEXT_PACKAGE,toggle->summary);
+
+	return "";
+
+}
+
+LIB3270_EXPORT const char * lib3270_toggle_get_description(const LIB3270_TOGGLE *toggle) {
+
+	if(toggle && toggle->description)
+		return dgettext(GETTEXT_PACKAGE,toggle->description);
+
+	return "";
+
+}

@@ -333,8 +333,7 @@ install-delayed: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-delayed.pc
 
 install-dev: \
-	locale/$(PACKAGE_NAME).pot \
-	install-locale
+	locale/$(PACKAGE_NAME).pot
 
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 
@@ -352,6 +351,9 @@ install-dev: \
 		sdk/lib3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270.pc
 
+	# Install translation files
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+	@$(INSTALL_DATA) locale/$(PACKAGE_NAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

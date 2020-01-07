@@ -126,7 +126,7 @@ int lib3270_loaded(void)
 	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 #endif // _WIN32
 
-	bind_textdomain_codeset("lib" LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), "UTF-8");
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 
 #ifdef HAVE_LIBCURL
 	trace("%s.curl_global_init",__FUNCTION__);

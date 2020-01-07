@@ -93,9 +93,10 @@ make all %{?_smp_mflags}
 %install
 
 %make_install
+%find_lang %{name} langfiles
 %fdupes %{buildroot}/%{_prefix}
 
-%files -n %{name}-%{_libvrs}
+%files -n %{name}-%{_libvrs} -f langfiles
 
 # https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
 %if 0%{?sle_version} > 120200

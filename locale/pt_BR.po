@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-07 10:32-0300\n"
+"POT-Creation-Date: 2020-01-07 16:48-0300\n"
 "PO-Revision-Date: 2020-01-07 10:43-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -532,7 +532,7 @@ msgstr "Apaga até o final da linha"
 msgid "Erase input"
 msgstr "Apagar campos"
 
-#: src/core/util.c:592
+#: src/core/util.c:379
 msgid "Error"
 msgstr "Erro"
 

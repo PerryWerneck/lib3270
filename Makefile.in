@@ -333,7 +333,8 @@ install-delayed: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-delayed.pc
 
 install-dev: \
-	locale/$(PACKAGE_NAME).pot
+	locale/$(PACKAGE_NAME).pot \
+	install-locale
 
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 

@@ -1668,6 +1668,12 @@
 	 */
 	LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_GROUP group);
 
+	/**
+	 * @brief Get lib3270's translation domain (for use with dgettext).
+	 *
+	 */
+	LIB3270_EXPORT const char * lib3270_get_translation_domain();
+
 #ifdef __cplusplus
 	}
 #endif

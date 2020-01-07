@@ -186,6 +186,10 @@
 	 */
 	LIB3270_EXPORT const char * lib3270_property_get_label(const LIB3270_PROPERTY * property);
 
+
+	LIB3270_EXPORT const char * lib3270_property_get_name(const LIB3270_PROPERTY * property);
+	LIB3270_EXPORT const char * lib3270_property_get_tooltip(const LIB3270_PROPERTY * property);
+
 	/**
 	 * @brief Get property description.
 	 *

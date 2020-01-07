@@ -34,6 +34,30 @@
  #include <lib3270/properties.h>
  #include <utilc.h>
 
+ LIB3270_EXPORT const char * lib3270_property_get_name(const LIB3270_PROPERTY * property) {
+
+	if(property && property->name)
+		return property->name;
+
+	return "";
+
+ }
+
+ LIB3270_EXPORT const char * lib3270_property_get_tooltip(const LIB3270_PROPERTY * property) {
+
+	if(property) {
+
+		if(property->description && *property->description)
+			return dgettext(GETTEXT_PACKAGE,property->description);
+
+		if(property->summary && *property->summary)
+			return dgettext(GETTEXT_PACKAGE,property->summary);
+
+	}
+
+	return "";
+ }
+
  LIB3270_EXPORT const char * lib3270_property_get_label(const LIB3270_PROPERTY * property) {
 
 	if(property && property->label)

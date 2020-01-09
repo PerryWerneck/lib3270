@@ -81,7 +81,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
 		.label = N_( "Track Cursor" ),
-		.summary = N_( "Track Cursor" ),
+		.summary = N_( "Track Cursor location" ),
 		.description = N_( "Display the cursor location in the OIA (the status line)" )
 	},
 	{
@@ -90,7 +90,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Data Stream" ),
+		.label = N_( "Trace Data Stream" ),
 		.summary = N_( "Trace Data Stream" ),
 		.description = ""
 	},
@@ -120,7 +120,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Screens" ),
+		.label = N_( "Trace Screen" ),
 		.summary = N_( "Trace screen contents" ),
 		.description = ""
 	},
@@ -130,7 +130,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Events" ),
+		.label = N_( "Trace Events" ),
 		.summary = N_( "Trace interface and application events" ),
 		.description = ""
 	},
@@ -140,7 +140,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Paste with left margin" ),
+		.label = N_( "Margined paste" ),
 		.summary = N_( "Paste with left margin" ),
 		.description = N_( "If set, puts restrictions on how pasted text is placed on the screen. The position of the cursor at the time the paste operation is begun is used as a left margin. No pasted text will fill any area of the screen to the left of that position. This option is useful for pasting into certain IBM editors that use the left side of the screen for control information" )
 	},
@@ -280,9 +280,9 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = True,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Alternate screen" ),
+		.label = N_( "Auto Resize" ),
 		.summary = N_( "Resize on alternate screen" ),
-		.description = N_( "Auto resize on altscreen" )
+		.description = N_( "Change screen size on alternative screen" )
 	},
 	{
 		.id = LIB3270_TOGGLE_KEEP_ALIVE,
@@ -291,7 +291,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
 		.label = N_( "Network keep alive" ),
-		.summary = N_( "Network keep alive" ),
+		.summary = N_( "Enable use of network keep alive" ),
 		.description = N_( "Enable network keep-alive with SO_KEEPALIVE" )
 	},
 	{
@@ -300,7 +300,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "Network data" ),
+		.label = N_( "Trace Network" ),
 		.summary = N_( "Trace network data flow" ),
 		.description = N_( "Enable network in/out trace" )
 	},
@@ -310,7 +310,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
-		.label = N_( "SSL negotiation" ),
+		.label = N_( "Trace Security" ),
 		.summary = N_( "Trace SSL negotiation" ),
 		.description = N_( "Enable security negotiation trace" )
 	},

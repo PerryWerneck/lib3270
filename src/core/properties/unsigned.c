@@ -152,6 +152,7 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
 #else
 			.default_value = 350,
 #endif // UNLOCK_MS
+			.label = N_("Unlock delay"),
 			.description = N_( "The delay between the host unlocking the keyboard and the actual unlock" ),		//  Property description.
 			.get = lib3270_get_unlock_delay,																	//  Get value.
 			.set = lib3270_set_unlock_delay																		//  Set value.

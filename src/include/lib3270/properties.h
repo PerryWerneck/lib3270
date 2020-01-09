@@ -210,7 +210,7 @@
 	 * @return Property descriptor, or NULL if failed.
 	 *
 	 */
-	const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name);
+	LIB3270_EXPORT const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name);
 
 #ifdef __cplusplus
 	}

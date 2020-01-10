@@ -99,7 +99,7 @@
 
 			.keys = "Up,KP_Up",
 			.icon = "go-up",
-			.label = NULL,
+			.label = N_("Up"),
 			.summary = N_( "Cursor up 1 position" ),
 			.activate = lib3270_cursor_up,
 
@@ -113,7 +113,7 @@
 
 			.keys = "Down,KP_Down",
 			.icon = "go-down",
-			.label = NULL,
+			.label = N_("Down"),
 			.summary = N_( "Cursor down 1 position" ),
 			.activate = lib3270_cursor_down,
 
@@ -127,7 +127,7 @@
 
 			.keys = "Left,KP_Left",
 			.icon = "go-previous",
-			.label = NULL,
+			.label = N_("Left"),
 			.summary = N_( "Cursor left 1 position" ),
 			.activate = lib3270_cursor_left,
 
@@ -141,7 +141,7 @@
 
 			.keys = "Right,KP_Right",
 			.icon = "go-next",
-			.label = NULL,
+			.label = N_("Right"),
 			.summary = N_( "Cursor right 1 position" ),
 			.activate = lib3270_cursor_right,
 
@@ -155,7 +155,7 @@
 
 			.keys = "Control_R",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("New line"),
 			.summary = N_( "Cursor to first field on next line or any lines after that" ),
 			.activate = lib3270_newline,
 
@@ -169,7 +169,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Previous word"),
 			.summary = N_( "Cursor to previous word" ),
 			.activate = lib3270_previousword,
 
@@ -183,7 +183,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Next word"),
 			.summary = N_( "Cursor to next unprotected word" ),
 			.activate = lib3270_nextword,
 
@@ -197,7 +197,7 @@
 
 			.keys = NULL,
 			.icon = "document-load",
-			.label = NULL,
+			.label = N_("Paste from file"),
 			.summary = N_( "Paste from text file" ),
 			.activate = paste_file,
 
@@ -274,7 +274,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Field end"),
 			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field" ),
 			.activate = lib3270_fieldend,
 
@@ -288,7 +288,7 @@
 
 			.keys = "Home",
 			.icon = "go-first",
-			.label = NULL,
+			.label = N_("First field"),
 			.summary = N_( "Move to first unprotected field on screen" ),
 			.activate = lib3270_firstfield,
 
@@ -302,7 +302,7 @@
 
 			.keys = "Tab",
 			.icon = "go-next",
-			.label = NULL,
+			.label = N_("Next field"),
 			.summary = N_( "Tab forward to next field" ),
 			.activate = lib3270_nextfield,
 
@@ -316,7 +316,7 @@
 
 			.keys = "<Shift>ISO_Left_Tab",
 			.icon = "go-previous",
-			.label = NULL,
+			.label = N_("Previous field"),
 			.summary = N_( "Tab backward to previous field" ),
 			.activate = lib3270_previousfield,
 
@@ -405,7 +405,7 @@
 
 			.keys = "BackSpace",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Erase"),
 			.summary = NULL,
 			.activate = lib3270_erase,
 
@@ -436,7 +436,7 @@
 
 			.keys = NULL,
 			.icon = "gtk-ok",
-			.label = NULL,
+			.label = N_("Enter"),
 			.summary = N_( "Send an \"Enter\" action" ),
 			.activate = lib3270_enter,
 
@@ -466,7 +466,7 @@
 
 			.keys = "Delete",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Delete"),
 			.summary = NULL,
 			.activate = lib3270_delete,
 
@@ -480,7 +480,7 @@
 
 			.keys = "<Shift>KP_Multiply",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Dup"),
 			.summary = N_( "DUP key" ),
 			.activate = lib3270_dup,
 
@@ -494,7 +494,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("FM Key"),
 			.summary = N_( "FM key" ),
 			.activate = lib3270_fieldmark,
 
@@ -508,7 +508,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Back space"),
 			.summary = N_( "3270-style backspace" ),
 			.activate = lib3270_backspace,
 
@@ -564,7 +564,7 @@
 
 			.keys = "<shift>Print",
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Sys Req"),
 			.summary = NULL,
 			.activate = lib3270_sysreq,
 
@@ -582,7 +582,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Test pattern"),
 			.summary = NULL,
 			.activate = lib3270_testpattern,
 
@@ -596,7 +596,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = NULL,
+			.label = N_("Charset table"),
 			.summary = NULL,
 			.activate = lib3270_charsettable,
 

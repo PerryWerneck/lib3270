@@ -88,8 +88,8 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	if(ssl_ctx == NULL)
 	{
 		message->error = hSession->ssl.error = ERR_get_error();
-		message->title = N_( "Security error" );
-		message->text = N_( "Cant initialize the SSL context." );
+		message->title = _( "Security error" );
+		message->text = _( "Cant initialize the SSL context." );
 		return -1;
 	}
 
@@ -109,8 +109,8 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	if(hFind == INVALID_HANDLE_VALUE)
 	{
-		message->title = N_( "Security error" );
-		message->text = N_( "Cant open custom certificate directory." );
+		message->title = _( "Security error" );
+		message->text = _( "Cant open custom certificate directory." );
 
 		trace_ssl(hSession, _( "Can't open \"%s\" (The Windows error code was %ld)\n" ), certpath, (long) GetLastError());
 	}
@@ -135,8 +135,8 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 				if(!cert)
 				{
 					message->error = hSession->ssl.error = ERR_get_error();
-					message->title = N_( "Security error" );
-					message->text = N_( "Cant read custom certificate file." );
+					message->title = _( "Security error" );
+					message->text = _( "Cant read custom certificate file." );
 
 					trace_ssl(hSession, _( "Can't read \"%s\": %s" ), filename, ERR_lib_error_string(hSession->ssl.error));
 				}
@@ -146,8 +146,8 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 					if(X509_STORE_add_cert(store, cert) != 1)
 					{
 						message->error = hSession->ssl.error = ERR_get_error();
-						message->title = N_( "Security error" );
-						message->text = N_( "Cant load custom certificate file." );
+						message->title = _( "Security error" );
+						message->text = _( "Cant load custom certificate file." );
 
 						trace_ssl(hSession, _( "Can't load \"%s\": %s" ), filename, ERR_lib_error_string(hSession->ssl.error));
 					}

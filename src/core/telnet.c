@@ -282,45 +282,6 @@ static const char *trsp_flag[2] = { "POSITIVE-RESPONSE", "NEGATIVE-RESPONSE" };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-/*
-#if defined(_WIN32)
-void sockstart(H3270 *session)
-{
-	static int initted = 0;
-	WORD wVersionRequested;
-	WSADATA wsaData;
-
-	if (initted)
-		return;
-
-	initted = 1;
-
-	wVersionRequested = MAKEWORD(2, 2);
-
-	if (WSAStartup(wVersionRequested, &wsaData) != 0)
-	{
-		lib3270_popup_dialog(	session,
-								LIB3270_NOTIFY_CRITICAL,
-								N_( "Network startup error" ),
-								N_( "WSAStartup failed" ),
-								"%s", lib3270_win32_strerror(GetLastError()) );
-
-		_exit(1);
-	}
-
-	if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2)
-	{
-		lib3270_popup_dialog(	session,
-								LIB3270_NOTIFY_CRITICAL,
-								N_( "Network startup error" ),
-								N_( "Bad winsock version" ),
-								N_( "Can't use winsock version %d.%d" ), LOBYTE(wsaData.wVersion), HIBYTE(wsaData.wVersion));
-		_exit(1);
-	}
-}
-#endif
-*/
-
 static union {
 	struct sockaddr sa;
 	struct sockaddr_in sin;
@@ -708,11 +669,11 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 
 			if (HALF_CONNECTED)
 			{
-				popup_a_sockerr(hSession, N_( "%s" ),hSession->host.current);
+				popup_a_sockerr(hSession, "%s", hSession->host.current);
 			}
 			else if (socket_errno() != SE_ECONNRESET)
 			{
-				popup_a_sockerr(hSession, N_( "Socket read error" ) );
+				popup_a_sockerr(hSession, _( "Socket read error" ) );
 			}
 
 			host_disconnect(hSession,True);
@@ -745,14 +706,11 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 
 }
 
-/*
- * set16
- *	Put a 16-bit value in a buffer.
- *	Returns the number of bytes required.
+/**
+ *	@brief Put a 16-bit value in a buffer.
+ *	@return The number of bytes required.
  */
-static int
-set16(char *buf, int n)
-{
+static int set16(char *buf, int n) {
 	char *b0 = buf;
 
 	n %= 256 * 256;
@@ -1683,18 +1641,18 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	switch(socket_errno())
 	{
 	case SE_EPIPE:
-		popup_an_error(hSession, "%s", N_( "Broken pipe" ));
+		popup_an_error(hSession, "%s", _( "Broken pipe" ));
 		break;
 
 	case SE_ECONNRESET:
-		popup_an_error(hSession, "%s", N_( "Connection reset by peer" ));
+		popup_an_error(hSession, "%s", _( "Connection reset by peer" ));
 		break;
 
 	case SE_EINTR:
 		return 0;
 
 	default:
-		popup_a_sockerr(NULL, "%s", N_( "Socket write error" ) );
+		popup_a_sockerr(NULL, "%s", _( "Socket write error" ) );
 
 	}
 
@@ -1702,7 +1660,7 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 }
 
 /**
- * Send out raw telnet data.
+ * @brief Send out raw telnet data.
  *
  * We assume that there will always be enough space to buffer what we want to transmit,
  * so we don't handle EAGAIN or EWOULDBLOCK.
@@ -1737,16 +1695,12 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len)
 
 #if defined(X3270_ANSI)
 
-/*
- * net_cookedout
- *	Send user data out in ANSI mode, without cooked-mode processing.
+/**
+ * @brief Send user data out in ANSI mode, without cooked-mode processing.
  */
-static void
-net_cookedout(H3270 *hSession, const char *buf, int len)
-{
-#if defined(X3270_TRACE)
-	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
-	{
+static void net_cookedout(H3270 *hSession, const char *buf, int len) {
+
+	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 		int i;
 
 		trace_dsn(hSession,">");
@@ -1754,15 +1708,12 @@ net_cookedout(H3270 *hSession, const char *buf, int len)
 			trace_dsn(hSession," %s", ctl_see((int) *(buf+i)));
 		trace_dsn(hSession,"\n");
 	}
-#endif
+
 	net_rawout(hSession,(unsigned const char *) buf, len);
 }
 
-
-/*
- * net_cookout
- *	Send output in ANSI mode, including cooked-mode processing if
- *	appropriate.
+/***
+ * @brief Send output in ANSI mode, including cooked-mode processing if appropriate.
  */
 static void net_cookout(H3270 *hSession, const char *buf, int len)
 {
@@ -1818,13 +1769,11 @@ static void net_cookout(H3270 *hSession, const char *buf, int len)
 		net_cookedout(hSession, buf, len);
 }
 
-
-/*
- * Cooked mode input processing.
+/**
+ * @brief Cooked mode input processing.
  */
 
-static void cooked_init(H3270 *hSession)
-{
+static void cooked_init(H3270 *hSession) {
 	if (hSession->lbuf == (unsigned char *)NULL)
 		hSession->lbuf = (unsigned char *)lib3270_malloc(BUFSZ);
 	hSession->lbptr = hSession->lbuf;

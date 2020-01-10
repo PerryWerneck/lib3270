@@ -228,7 +228,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		int rc = errno;
 
 		char buffer[4096];
-		snprintf(buffer,4095,N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
+		snprintf(buffer,4095,_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,
@@ -249,7 +249,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 #if defined(OMTU)
 	else if (setsockopt(hSession->sock, SOL_SOCKET, SO_SNDBUF, (char *)&mtu,sizeof(mtu)) < 0)
 	{
-		popup_a_sockerr(hSession, N_( "setsockopt(%s)" ), "SO_SNDBUF");
+		popup_a_sockerr(hSession, _( "setsockopt(%s)" ), "SO_SNDBUF");
 		SOCK_CLOSE(hSession);
 	}
 #endif

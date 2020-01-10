@@ -368,7 +368,7 @@ static void cut_control_code(H3270 *hSession)
 				*bp-- = '\0';
 
 			if (!*buf)
-				strcpy(buf, N_( "Transfer cancelled by host" ) );
+				strcpy(buf, _( "Transfer cancelled by host" ) );
 		}
 		ft_failed(hSession->ft,buf);
 		lib3270_free(buf);
@@ -376,7 +376,7 @@ static void cut_control_code(H3270 *hSession)
 
 	default:
 		trace_ds(hSession,"unknown 0x%04x\n", code);
-		cut_abort(hSession,SC_ABORT_XMIT, "%s", N_("Unknown FT control code from host"));
+		cut_abort(hSession,SC_ABORT_XMIT, "%s", _("Unknown FT control code from host"));
 		break;
 	}
 }
@@ -397,7 +397,7 @@ static void cut_data_request(H3270 *hSession)
 	trace_ds(hSession,"< FT DATA_REQUEST %u\n", from6(hSession, seq));
 	if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT)
 	{
-		cut_abort(hSession,SC_ABORT_FILE,"%s", N_("Transfer cancelled by user") );
+		cut_abort(hSession,SC_ABORT_FILE,"%s", _("Transfer cancelled by user") );
 		return;
 	}
 

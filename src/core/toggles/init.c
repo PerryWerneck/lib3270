@@ -86,7 +86,7 @@ static void toggle_keepalive(H3270 *session, const struct lib3270_toggle GNUC_UN
 
 		if (setsockopt(session->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
 		{
-			popup_a_sockerr(session, N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
+			popup_a_sockerr(session, _( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 		}
 		else
 		{

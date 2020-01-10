@@ -124,8 +124,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	session->state = state;
 
 	ft_message(session,message);
-	session->cbk.state_changed(session->host,state,message,session->user_data);
-
+	session->cbk.state_changed(session->host,state,dgettext(GETTEXT_PACKAGE,message),session->user_data);
 
  }
 
@@ -429,7 +428,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 		// Sending file
 		if(fseek(ft->local_file,0L,SEEK_END) < 0)
 		{
-			ft_failed(ft,N_( "Can't get file size" ));
+			ft_failed(ft,_( "Can't get file size" ));
 			return errno ? errno : -1;
 		}
 
@@ -526,7 +525,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	if (!flen || flen < strlen(buffer) - 1)
 	{
 		lib3270_write_log(ft->host, "Unable to send command \"%s\" (flen=%d szBuffer=%d)",buffer,flen,strlen(buffer));
-		ft_failed(ft,N_( "Unable to send file-transfer request" ));
+		ft_failed(ft,_( "Unable to send file-transfer request" ));
 		return errno = EINVAL;
 	}
 
@@ -535,9 +534,9 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	lib3270_emulate_input(ft->host, buffer, strlen(buffer), False);
 
 	if(ft->flags & LIB3270_FT_OPTION_RECEIVE)
-		ft_message(ft,N_( "Waiting for GET response" ));
+		ft_message(ft,_( "Waiting for GET response" ));
 	else
-		ft_message(ft,N_( "Waiting for PUT response" ));
+		ft_message(ft,_( "Waiting for PUT response" ));
 
 	return 0;
 
@@ -578,12 +577,12 @@ static double finish(H3270FT *ft)
 
 void ft_complete(H3270FT *ft, const char *errmsg)
 {
-	ft->cbk.complete(ft->host,ft->ft_length,finish(ft),errmsg ? errmsg : N_("Transfer complete"),ft->user_data);
+	ft->cbk.complete(ft->host,ft->ft_length,finish(ft),errmsg ? errmsg : _("Transfer complete"),ft->user_data);
 }
 
 void ft_failed(H3270FT *ft, const char *errmsg)
 {
-	ft->cbk.failed(ft->host,ft->ft_length,finish(ft),errmsg ? errmsg : N_("Transfer failed"),ft->user_data);
+	ft->cbk.failed(ft->host,ft->ft_length,finish(ft),errmsg ? errmsg : _("Transfer failed"),ft->user_data);
 }
 
 LIB3270_EXPORT int lib3270_ft_destroy(H3270 *hSession, const char *reason)
@@ -674,7 +673,7 @@ void ft_aborting(H3270FT *h, const char *reason)
 	if (h->state == LIB3270_FT_STATE_RUNNING || h->state == LIB3270_FT_STATE_ABORT_WAIT)
 	{
 		set_ft_state(h,LIB3270_FT_STATE_ABORT_SENT);
-		h->cbk.message(h->host,N_("Aborting..."),h->user_data);
+		h->cbk.message(h->host,_("Aborting..."),h->user_data);
 		h->cbk.aborting(h->host,reason,h->user_data);
 	}
 }

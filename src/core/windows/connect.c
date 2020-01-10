@@ -130,8 +130,8 @@ static void sockstart(H3270 *session)
 	{
 		lib3270_popup_dialog(	session,
 								LIB3270_NOTIFY_CRITICAL,
-								N_( "Network startup error" ),
-								N_( "WSAStartup failed" ),
+								_( "Network startup error" ),
+								_( "WSAStartup failed" ),
 								"%s", lib3270_win32_strerror(GetLastError()) );
 
 		_exit(1);
@@ -141,9 +141,9 @@ static void sockstart(H3270 *session)
 	{
 		lib3270_popup_dialog(	session,
 								LIB3270_NOTIFY_CRITICAL,
-								N_( "Network startup error" ),
-								N_( "Bad winsock version" ),
-								N_( "Can't use winsock version %d.%d" ), LOBYTE(wsaData.wVersion), HIBYTE(wsaData.wVersion));
+								_( "Network startup error" ),
+								_( "Bad winsock version" ),
+								_( "Can't use winsock version %d.%d" ), LOBYTE(wsaData.wVersion), HIBYTE(wsaData.wVersion));
 		_exit(1);
 	}
 }
@@ -329,7 +329,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
 	{
 		char buffer[4096];
-		snprintf(buffer,4095,N_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
+		snprintf(buffer,4095,_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
 		lib3270_popup_dialog(	hSession,
 								LIB3270_NOTIFY_ERROR,

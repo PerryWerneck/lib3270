@@ -154,9 +154,9 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
-		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL negotiation failed" );
-		((SSL_ERROR_MESSAGE *) message)->description = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "SSL negotiation failed" );
+		((SSL_ERROR_MESSAGE *) message)->description = _( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." );
 
 		return -1;
 	}
@@ -188,8 +188,8 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		trace_ssl(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
-		((SSL_ERROR_MESSAGE *) message)->title = N_( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = N_( "SSL Connect failed" );
+		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
+		((SSL_ERROR_MESSAGE *) message)->text = _( "SSL Connect failed" );
 
 		return -1;
 

@@ -494,7 +494,7 @@
 
 			.keys = NULL,
 			.icon = NULL,
-			.label = N_("FM Key"),
+			.label = N_("FM key"),
 			.summary = N_( "FM key" ),
 			.activate = lib3270_fieldmark,
 

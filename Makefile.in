@@ -386,6 +386,8 @@ locale/$(PACKAGE_NAME).pot: \
 locale: \
 	locale/$(PACKAGE_NAME).pot
 
+	@$(MAKE) -C locale all
+
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile
 

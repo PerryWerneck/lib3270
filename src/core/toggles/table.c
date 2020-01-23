@@ -202,7 +202,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.icon = NULL,		// Icon name
 		.label = N_( "Smart paste" ),
 		.summary = N_( "Smart paste" ),
-		.description = ""
+		.description = N_( "If set the characters pasted over protected areas will be skipped to avoid locks" )
 	},
 	{
 		.id = LIB3270_TOGGLE_BOLD,

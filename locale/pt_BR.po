@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-21 16:18-0300\n"
-"PO-Revision-Date: 2020-01-21 16:24-0300\n"
+"PO-Revision-Date: 2020-01-23 11:18-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -695,9 +695,17 @@ msgstr "IBM S/390"
 msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
+#: src/core/toggles/table.c:205
+msgid ""
+"If set the characters pasted over protected areas will be skipped to avoid "
+"locks"
+msgstr ""
+"Se ativo caracters colados sobre áreas protegidas serão ignorado para evitar "
+"o bloqueio do terminal"
+
 #: src/core/toggles/table.c:175
 msgid "If set, asks to place the toplevel window in the fullscreen state"
-msgstr "If set, asks to place the toplevel window in the fullscreen state"
+msgstr "Se ativo pede para colocar a janela principal em modo de tela cheia"
 
 #: src/core/toggles/table.c:145
 msgid ""

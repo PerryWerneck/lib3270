@@ -57,3 +57,6 @@ win32-configure*
 ValgrindOut.xml
 certs
 *.mak
+confdefs.h
+conftest.*
+mstest.*

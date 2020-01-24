@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-23 17:02-0300\n"
-"PO-Revision-Date: 2020-01-23 11:18-0300\n"
+"PO-Revision-Date: 2020-01-24 11:19-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -42,7 +42,7 @@ msgstr "%s (erro SSL %d)"
 #: src/core/windows/connect.c:94
 #, c-format
 msgid "%s (rc=%d)"
-msgstr ""
+msgstr "%s (rc=%d)"
 
 #: src/core/keyboard/kybd.c:1923
 #, c-format
@@ -253,14 +253,12 @@ msgid "Can't connect to %s"
 msgstr "Não foi possível conectar a %s"
 
 #: src/core/windows/http.c:113
-#, fuzzy
 msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor DBUS"
+msgstr "Não foi possível conectar ao servidor HTTP"
 
 #: src/core/windows/http.c:125
-#, fuzzy
 msgid "Can't create HTTP request."
-msgstr "Não foi possível criar um semáforo para comunicação"
+msgstr "Não foi possível criar requisição HTTP"
 
 #: src/ssl/windows/getcrl.c:87
 msgid "Can't decode CRL"
@@ -272,18 +270,15 @@ msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
 #: src/ssl/windows/curl.c:370
-#, fuzzy
 msgid "Can't decode certificate revocation list got from LDAP Search"
 msgstr ""
 "Não foi possível decodificar a lista de certificados revogados obtida na "
 "pesquisa LDAP"
 
 #: src/ssl/windows/curl.c:334
-#, fuzzy
 msgid "Can't find certificate revocation list in LDAP response"
 msgstr ""
-"Não foi possível decodificar a lista de certificados revogados obtida na "
-"pesquisa LDAP"
+"Não foi possível encontrar a lista de certificados revogados na pesquisa LDAP"
 
 #: src/ssl/windows/ldap.c:223 src/ssl/windows/ldap.c:235
 msgid "Can't get LDAP attribute"
@@ -306,41 +301,40 @@ msgid "Can't load"
 msgstr "Não foi possível carregar"
 
 #: src/ssl/windows/init.c:152
-#, fuzzy, c-format
+#, c-format
 msgid "Can't load \"%s\": %s"
-msgstr "Não foi possível salvar %s: %s"
+msgstr "Não foi possível carregar \"%s\": %s"
 
 #: src/ssl/windows/init.c:115
-#, fuzzy, c-format
+#, c-format
 msgid "Can't open \"%s\" (The Windows error code was %ld)\n"
-msgstr "O código de erro foi %d"
+msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)"
 
 #: src/ssl/windows/init.c:128
-#, fuzzy, c-format
+#, c-format
 msgid "Can't open \"%s\": %s"
-msgstr "Não foi possível salvar %s: %s"
+msgstr "Não foi possível abrir %s: %s"
 
 #: src/ssl/windows/getcrl.c:58 src/ssl/windows/getcrl.c:75
 msgid "Can't open CRL File"
 msgstr "Não foi possível abrir arquivo CRL"
 
 #: src/core/windows/http.c:101
-#, fuzzy
 msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir %s"
+msgstr "Não foi possível abrir sessão HTTP"
 
 #: src/core/session.c:194
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
 #: src/ssl/windows/init.c:141
-#, fuzzy, c-format
+#, c-format
 msgid "Can't read \"%s\": %s"
-msgstr "Não foi possível salvar %s: %s"
+msgstr "Não foi possível ler \"%s\": %s"
 
 #: src/core/windows/http.c:180
 msgid "Can't read HTTP response size."
-msgstr ""
+msgstr "Não posso obter tamanho da resposta HTTP"
 
 #: src/core/session.c:201
 msgid "Can't save"
@@ -351,9 +345,8 @@ msgid "Can't search LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
 #: src/core/windows/http.c:139
-#, fuzzy
 msgid "Can't send HTTP request."
-msgstr "Não posso definir consulta LDAP"
+msgstr "Não posso enviar requisição HTTP"
 
 #: src/ssl/windows/ldap.c:166
 msgid "Can't set LDAP protocol version"
@@ -372,9 +365,9 @@ msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
 
 #: src/core/windows/connect.c:146
-#, fuzzy, c-format
+#, c-format
 msgid "Can't use winsock version %d.%d"
-msgstr "Versão winsock inválida"
+msgstr "Não posso usar versão winsock %d.%d"
 
 #: src/ssl/crl.c:165 src/ssl/negotiate.c:286
 msgid "Can't verify."
@@ -399,19 +392,16 @@ msgid "Cant initialize the SSL context."
 msgstr "Erro ao inicializar contexto de segurança"
 
 #: src/ssl/windows/init.c:150
-#, fuzzy
 msgid "Cant load custom certificate file."
-msgstr "Não foi possível decodificar a lista de certificados revogados"
+msgstr "Não foi possível ler arquivo de certificado personalizado"
 
 #: src/ssl/windows/init.c:113
-#, fuzzy
 msgid "Cant open custom certificate directory."
-msgstr "Não foi possível decodificar a lista de certificados revogados"
+msgstr "Não foi possível abrir o diretório de certificados personalizados"
 
 #: src/ssl/windows/init.c:139
-#, fuzzy
 msgid "Cant read custom certificate file."
-msgstr "Não foi possível ler certificados SSL de %s"
+msgstr "Não foi possível ler certificado personalizado"
 
 #: src/ssl/negotiate.c:159
 msgid ""
@@ -595,7 +585,7 @@ msgstr "EOR recebido fora do modo 3270, ignorado."
 
 #: src/core/windows/http.c:164
 msgid "Empty response from HTTP server."
-msgstr ""
+msgstr "Recebi resposta vazia do servidor HTTP"
 
 #: src/core/toggles/table.c:305
 msgid "Enable network in/out trace"
@@ -661,9 +651,8 @@ msgstr "Erro na transferência do arquivo, transferência cancelada"
 
 #: src/ssl/windows/curl.c:189 src/ssl/windows/curl.c:227
 #: src/ssl/windows/curl.c:243
-#, fuzzy
 msgid "Error loading certificate revocation list"
-msgstr "Erro ao obter a lista de certificados revogados"
+msgstr "Erro ao ler a lista de certificados revogados"
 
 #: src/core/ft/ftmessages.c:87
 msgid "Error reading file from host: file transfer canceled"
@@ -671,7 +660,7 @@ msgstr "Erro ao ler arquivo do host: Transferência cancelada"
 
 #: src/core/windows/http.c:151
 msgid "Error receiving HTTP response."
-msgstr ""
+msgstr "Erro recebendo resposta HTTP"
 
 #: src/core/ft/ftmessages.c:145
 msgid "Error while reading or writing to host disk: file transfer canceled"
@@ -786,8 +775,8 @@ msgid ""
 "If set the characters pasted over protected areas will be skipped to avoid "
 "locks"
 msgstr ""
-"Se ativo caracters colados sobre áreas protegidas serão ignorado para evitar "
-"o bloqueio do terminal"
+"Se ativo caracters colados sobre áreas protegidas serão ignorados para "
+"evitar o bloqueio do terminal"
 
 #: src/core/toggles/table.c:175
 msgid "If set, asks to place the toplevel window in the fullscreen state"
@@ -1004,9 +993,8 @@ msgid "No LDAP attribute on the URL"
 msgstr "URL de pesquisa não definiu o atributo LDAP"
 
 #: src/ssl/windows/curl.c:301
-#, fuzzy
 msgid "No attribute in LDAP search URL"
-msgstr "URL de pesquisa não definiu o atributo LDAP"
+msgstr "Nenhum atributo na URL de pesquisa LDAP"
 
 #: src/ssl/state.c:261
 msgid ""
@@ -1913,9 +1901,9 @@ msgid "Waiting for PUT response"
 msgstr "Aguardando resposta do pedido de upload"
 
 #: src/core/windows/util.c:131 src/core/windows/util.c:180
-#, fuzzy, c-format
+#, c-format
 msgid "Windows error %d"
-msgstr "Erro windows foi \"%s\" (%u)"
+msgstr "Erro windows foi %d"
 
 #: src/ssl/notify.c:108
 #, c-format

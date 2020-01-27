@@ -212,7 +212,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.icon = "format-text-bold",		// Icon name
 		.label = N_( "Bold" ),
 		.summary = N_( "Bold" ),
-		.description = ""
+		.description = "If set the bold version of the selected font will be used"
 	},
 	{
 		.id = LIB3270_TOGGLE_KEEP_SELECTED,
@@ -222,7 +222,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.icon = NULL,		// Icon name
 		.label = N_( "Keep selected" ),
 		.summary = N_( "Keep selected" ),
-		.description = ""
+		.description = N_("If set the selection will not be removed on screen changes"),
 	},
 	{
 		.id = LIB3270_TOGGLE_UNDERLINE,
@@ -232,7 +232,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 		.icon = "format-text-underline",		// Icon name
 		.label = N_( "Underline" ),
 		.summary = N_( "Show Underline" ),
-		.description = ""
+		.description = "If set the terminal will show undeline characters"
 	},
 	{
 		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,

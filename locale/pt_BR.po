@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-24 13:38-0300\n"
-"PO-Revision-Date: 2020-01-24 11:19-0300\n"
+"PO-Revision-Date: 2020-01-27 10:18-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -258,7 +258,6 @@ msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
 #: src/ssl/linux/url.c:99
-#, fuzzy
 msgid "Can't decode certificate revocation list got from LDAP server"
 msgstr ""
 "Não foi possível decodificar a lista de certificados revogados obtida na "
@@ -576,9 +575,8 @@ msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
 
 #: src/ssl/linux/url.c:66
-#, fuzzy
 msgid "Error getting certificate revocation list"
-msgstr "Erro ao ler a lista de certificados revogados"
+msgstr "Erro ao obter a lista de certificados revogados"
 
 #: src/core/ft/ftmessages.c:45
 msgid "Error in file transfer: file transfer canceled"
@@ -704,6 +702,10 @@ msgid ""
 msgstr ""
 "Se ativo caracters colados sobre áreas protegidas serão ignorados para "
 "evitar o bloqueio do terminal"
+
+#: src/core/toggles/table.c:225
+msgid "If set the selection will not be removed on screen changes"
+msgstr "Se ativo a seleção não será removida quando a tela mudar"
 
 #: src/core/toggles/table.c:175
 msgid "If set, asks to place the toplevel window in the fullscreen state"

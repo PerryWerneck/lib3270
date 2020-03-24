@@ -125,6 +125,8 @@ int host_disconnect(H3270 *hSession, int failed)
 
 int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate)
 {
+	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(cstate),(int) cstate);
+
 	if(hSession->connection.state != cstate)
 	{
 		trace_dsn(
@@ -216,34 +218,23 @@ void lib3270_set_disconnected(H3270 *hSession)
 /**
  * @brief Signal a state change.
  */
-void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode)
+void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode)
 {
-	/*
-#if defined(DEBUG)
-	static const char * state_name[LIB3270_STATE_USER] =
-	{
-		"LIB3270_STATE_RESOLVING",
-		"LIB3270_STATE_CONNECTING",
-		"LIB3270_STATE_HALF_CONNECT",
-		"LIB3270_STATE_CONNECT",
-		"LIB3270_STATE_3270_MODE",
-		"LIB3270_STATE_LINE_MODE",
-		"LIB3270_STATE_REMODEL",
-		"LIB3270_STATE_PRINTER",
-		"LIB3270_STATE_EXITING",
-		"LIB3270_STATE_CHARSET"
-	};
-#endif // DEBUG
-	*/
-
 	struct lib3270_linked_list_node * node;
 
-	for(node = h->listeners.state[tx].first; node; node = node->next)
+	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(tx),mode);
+    trace_dsn(
+        hSession,
+        "Notifying state %s with mode %d.\n",
+            lib3270_connection_state_get_name(tx),
+            mode
+    );
+
+	for(node = hSession->listeners.state[tx].first; node; node = node->next)
 	{
-		((struct lib3270_state_callback *) node)->func(h,mode,node->userdata);
+		((struct lib3270_state_callback *) node)->func(hSession,mode,node->userdata);
 	}
 
-	trace("%s ends",__FUNCTION__);
 }
 
 static void update_url(H3270 *hSession)

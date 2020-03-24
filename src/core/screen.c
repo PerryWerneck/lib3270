@@ -640,16 +640,19 @@ LIB3270_EXPORT int lib3270_is_ready(const H3270 *hSession)
 }
 
 
-void status_changed(H3270 *session, LIB3270_MESSAGE id)
+void status_changed(H3270 *hSession, LIB3270_MESSAGE id)
 {
-	CHECK_SESSION_HANDLE(session);
-
-	if(id == session->oia.status || id < 0)
+	if(id == hSession->oia.status || id < 0)
 		return;
 
-	session->oia.status = id;
+    trace_dsn(
+        hSession,
+        "Status changed to %d.\n",
+            (int) id
+    );
 
-	session->cbk.update_status(session,id);
+	hSession->oia.status = id;
+	hSession->cbk.update_status(hSession,id);
 }
 
 void status_twait(H3270 *session)

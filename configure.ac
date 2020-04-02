@@ -277,7 +277,7 @@ rm -f conftest.$ac_objext conftest.err m4_ifval([$1], [conftest.$ac_ext])[]dnl
 ])# GLIB_CHECK_COMPILE_WARNINGS
 
 AC_MSG_CHECKING(for GNUC visibility attribute)
-GLIB_CHECK_COMPILE_WARNINGS([
+GLIB_CHECK_COMPILE_WARNINGS([AC_LANG_SOURCE([[
 void
 __attribute__ ((visibility ("hidden")))
      f_hidden (void)
@@ -306,7 +306,7 @@ int main (int argc, char **argv)
         f_default();
         return 0;
 }
-],g_have_gnuc_visibility=yes,g_have_gnuc_visibility=no)
+]])],g_have_gnuc_visibility=yes,g_have_gnuc_visibility=no)
 AC_MSG_RESULT($g_have_gnuc_visibility)
 if test x$g_have_gnuc_visibility = xyes; then
   AC_DEFINE(HAVE_GNUC_VISIBILITY, 1, [supports GCC visibility attributes])

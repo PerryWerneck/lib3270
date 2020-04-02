@@ -93,7 +93,7 @@
  static void	  (*set_poll_state)(H3270 *session, void *id, int enabled)
 					= internal_set_poll_state;
 
- static int	  	  (*wait)(H3270 *session, int seconds)
+ static int	  	  (*wait_callback)(H3270 *session, int seconds)
 					= internal_wait;
 
  static int 	  (*event_dispatcher)(H3270 *session,int wait)
@@ -454,7 +454,7 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 	lib3270_register_fd_handlers(cbk->add_poll,cbk->remove_poll);
 
 	if(cbk->Wait)
-		wait = cbk->Wait;
+		wait_callback = cbk->Wait;
 
 	if(cbk->event_dispatcher)
 		event_dispatcher = cbk->event_dispatcher;
@@ -480,7 +480,7 @@ LIB3270_EXPORT void lib3270_main_iterate(H3270 *hSession, int block)
 
 LIB3270_EXPORT int lib3270_wait(H3270 *hSession, int seconds)
 {
-	wait(hSession,seconds);
+	wait_callback(hSession,seconds);
 	return 0;
 }
 

@@ -104,6 +104,20 @@ case "$host" in
 
 		;;
 
+	*-apple-darwin*)
+		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir) -DLOCALEDIR=\$(localedir)"
+		LDFLAGS="$LDFLAGS -pthread"
+		app_cv_osname="linux"
+		LOGDIR="/var/log"
+		DLLEXT=".so"
+		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
+
+		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
+
+		app_cv_static='yes'
+
+		;;
+
  	*)
 		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir) -DLOCALEDIR=\$(localedir)"
 		LDFLAGS="$LDFLAGS -pthread"
@@ -214,6 +228,10 @@ AC_CHECK_HEADER(libintl.h, [
 
 	case "$host" in
 	*-mingw32|*-pc-msys)
+		INTL_LIBS="-lintl"
+		;;
+
+	*-apple-darwin*)
 		INTL_LIBS="-lintl"
 		;;
 
@@ -510,7 +528,7 @@ dnl Check for headers
 dnl ---------------------------------------------------------------------------
 
 AC_CHECK_HEADER(malloc.h, AC_DEFINE(HAVE_MALLOC_H,,[do we have malloc.h?]))
-AC_CHECK_HEADER(syslog.h, AC_DEFINE(HAVE_SYSLOG,,[do we have malloc.h?]))
+AC_CHECK_HEADER(syslog.h, AC_DEFINE(HAVE_SYSLOG,,[do we have syslog.h?]))
 
 AC_CHECK_FUNCS(getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO) )
 AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )

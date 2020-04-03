@@ -37,7 +37,10 @@
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
-#include <malloc.h>
+#ifdef HAVE_MALLOC_H
+	#include <malloc.h>
+#endif // HAVE_MALLOC_H
+
 #include <internals.h>
 #include "resources.h"
 

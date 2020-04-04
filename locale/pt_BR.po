@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-11 09:48-0300\n"
+"POT-Creation-Date: 2020-04-04 01:39-0300\n"
 "PO-Revision-Date: 2020-02-11 09:49-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -29,7 +29,8 @@ msgstr "%dx%d é negativa ou zero"
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
 
-#: src/core/iocalls.c:554 src/core/iocalls.c:571
+#: src/core/iocalls.c:554 src/core/iocalls.c:571 src/core/linux/connect.c:80
+#: src/core/linux/connect.c:96
 #, c-format
 msgid "%s"
 msgstr "%s"
@@ -38,11 +39,6 @@ msgstr "%s"
 #, c-format
 msgid "%s (SSL error %d)"
 msgstr "%s (erro SSL %d)"
-
-#: src/core/windows/connect.c:94
-#, c-format
-msgid "%s (rc=%d)"
-msgstr "%s (rc=%d)"
 
 #: src/core/keyboard/kybd.c:1923
 #, c-format
@@ -74,12 +70,12 @@ msgstr "%s: Caractere desconhecido depois de \\pf"
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
 
-#: src/core/screen.c:772 src/core/screen.c:809 src/core/screen.c:827
-#: src/core/screen.c:972
+#: src/core/screen.c:775 src/core/screen.c:812 src/core/screen.c:830
+#: src/core/screen.c:975
 msgid "3270 Error"
 msgstr "Erro 3270"
 
-#: src/core/screen.c:790
+#: src/core/screen.c:793
 msgid "3270 Warning"
 msgstr "Alerta 3270"
 
@@ -190,10 +186,6 @@ msgstr "Back space"
 msgid "Backspaces the cursor until it hits the front of a word"
 msgstr "Volta o cursor até que atinga o início de uma palavra"
 
-#: src/core/windows/connect.c:145
-msgid "Bad winsock version"
-msgstr "Versão winsock inválida"
-
 #: src/core/toggles/table.c:265
 msgid "Beep on errors"
 msgstr "Emitir som nos erros"
@@ -238,49 +230,41 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:332
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:231
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/ssl/windows/ldap.c:181
+#: src/ssl/linux/ldap.c:157
 msgid "Can't bind to LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
-#: src/core/windows/connect.c:87 src/core/windows/connect.c:227
+#: src/core/linux/connect.c:88
 #, c-format
 msgid "Can't connect to %s"
 msgstr "Não foi possível conectar a %s"
 
-#: src/core/windows/http.c:113
-msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP"
+#: src/core/linux/connect.c:180
+#, c-format
+msgid "Can't connect to %s:%s"
+msgstr "Não foi possível conectar a %s:%s"
 
-#: src/core/windows/http.c:125
-msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP"
-
-#: src/ssl/windows/getcrl.c:87
+#: src/ssl/linux/getcrl.c:85
 msgid "Can't decode CRL"
 msgstr "Não foi possível decodificar arquivo CRL"
 
-#: src/ssl/windows/ldap.c:259 src/ssl/windows/http.c:74
-#: src/ssl/windows/curl.c:264
+#: src/ssl/linux/url.c:116 src/ssl/linux/ldap.c:229
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/ssl/windows/curl.c:370
-msgid "Can't decode certificate revocation list got from LDAP Search"
+#: src/ssl/linux/url.c:99
+#, fuzzy
+msgid "Can't decode certificate revocation list got from LDAP server"
 msgstr ""
 "Não foi possível decodificar a lista de certificados revogados obtida na "
 "pesquisa LDAP"
 
-#: src/ssl/windows/curl.c:334
-msgid "Can't find certificate revocation list in LDAP response"
-msgstr ""
-"Não foi possível encontrar a lista de certificados revogados na pesquisa LDAP"
-
-#: src/ssl/windows/ldap.c:223 src/ssl/windows/ldap.c:235
+#: src/ssl/linux/ldap.c:193 src/ssl/linux/ldap.c:205
 msgid "Can't get LDAP attribute"
 msgstr "Não foi possível obter o atributo LDAP"
 
@@ -288,11 +272,11 @@ msgstr "Não foi possível obter o atributo LDAP"
 msgid "Can't get file size"
 msgstr "Não foi possível obter o tamanho do arquivo"
 
-#: src/ssl/windows/ldap.c:152
+#: src/ssl/linux/ldap.c:135
 msgid "Can't initialize LDAP"
 msgstr "Erro ao inicializar LDAP"
 
-#: src/ssl/windows/curl.c:190
+#: src/core/linux/curl.c:181
 msgid "Can't initialize curl operation"
 msgstr "Erro ao inicializar operação CURL"
 
@@ -300,55 +284,23 @@ msgstr "Erro ao inicializar operação CURL"
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/ssl/windows/init.c:152
-#, c-format
-msgid "Can't load \"%s\": %s"
-msgstr "Não foi possível carregar \"%s\": %s"
-
-#: src/ssl/windows/init.c:115
-#, c-format
-msgid "Can't open \"%s\" (The Windows error code was %ld)\n"
-msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)\n"
-
-#: src/ssl/windows/init.c:128
-#, c-format
-msgid "Can't open \"%s\": %s"
-msgstr "Não foi possível abrir %s: %s"
-
-#: src/ssl/windows/getcrl.c:58 src/ssl/windows/getcrl.c:75
+#: src/ssl/linux/getcrl.c:56 src/ssl/linux/getcrl.c:73
 msgid "Can't open CRL File"
 msgstr "Não foi possível abrir arquivo CRL"
-
-#: src/core/windows/http.c:101
-msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir sessão HTTP"
 
 #: src/core/session.c:194
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/ssl/windows/init.c:141
-#, c-format
-msgid "Can't read \"%s\": %s"
-msgstr "Não foi possível ler \"%s\": %s"
-
-#: src/core/windows/http.c:180
-msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP"
-
 #: src/core/session.c:201
 msgid "Can't save"
 msgstr "Não é possível salvar"
 
-#: src/ssl/windows/ldap.c:211
+#: src/ssl/linux/ldap.c:182
 msgid "Can't search LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
-#: src/core/windows/http.c:139
-msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP"
-
-#: src/ssl/windows/ldap.c:166
+#: src/ssl/linux/ldap.c:146
 msgid "Can't set LDAP protocol version"
 msgstr "Não é possível setar a versão do protocolo LDAP"
 
@@ -363,11 +315,6 @@ msgstr "Não foi possível setar o socket para o modo não blocante."
 #: src/core/ft/ft.c:208
 msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
-
-#: src/core/windows/connect.c:146
-#, c-format
-msgid "Can't use winsock version %d.%d"
-msgstr "Não posso usar versão winsock %d.%d"
 
 #: src/ssl/negotiate.c:286 src/ssl/crl.c:165
 msgid "Can't verify."
@@ -387,21 +334,9 @@ msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
-#: src/ssl/windows/init.c:92
+#: src/ssl/linux/init.c:90
 msgid "Cant initialize the SSL context."
 msgstr "Erro ao inicializar contexto de segurança"
-
-#: src/ssl/windows/init.c:150
-msgid "Cant load custom certificate file."
-msgstr "Não foi possível ler arquivo de certificado personalizado"
-
-#: src/ssl/windows/init.c:113
-msgid "Cant open custom certificate directory."
-msgstr "Não foi possível abrir o diretório de certificados personalizados"
-
-#: src/ssl/windows/init.c:139
-msgid "Cant read custom certificate file."
-msgstr "Não foi possível ler certificado personalizado"
 
 #: src/ssl/negotiate.c:159
 msgid ""
@@ -459,13 +394,12 @@ msgstr "Comando incompleto, transferência cancelada"
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
-#: src/core/iocalls.c:538 src/core/windows/connect.c:288
-#: src/core/windows/connect.c:300 src/core/windows/connect.c:336
-#: src/core/windows/connect.c:352
+#: src/core/iocalls.c:538 src/core/linux/connect.c:184
+#: src/core/linux/connect.c:217 src/core/linux/connect.c:235
 msgid "Connection error"
 msgstr "Erro de conexão"
 
-#: src/core/windows/connect.c:92
+#: src/core/linux/connect.c:94
 msgid "Connection failed"
 msgstr "Conexão falhou"
 
@@ -583,10 +517,6 @@ msgstr "Dup"
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
 
-#: src/core/windows/http.c:164
-msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP"
-
 #: src/core/toggles/table.c:305
 msgid "Enable network in/out trace"
 msgstr "Habilitar trace de entrada/saída de rede"
@@ -645,22 +575,18 @@ msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
 
+#: src/ssl/linux/url.c:66
+#, fuzzy
+msgid "Error getting certificate revocation list"
+msgstr "Erro ao obter a lista de certificados revogados"
+
 #: src/core/ft/ftmessages.c:45
 msgid "Error in file transfer: file transfer canceled"
 msgstr "Erro na transferência do arquivo, transferência cancelada"
 
-#: src/ssl/windows/curl.c:189 src/ssl/windows/curl.c:227
-#: src/ssl/windows/curl.c:243
-msgid "Error loading certificate revocation list"
-msgstr "Erro ao obter a lista de certificados revogados"
-
 #: src/core/ft/ftmessages.c:87
 msgid "Error reading file from host: file transfer canceled"
 msgstr "Erro ao ler arquivo do host: Transferência cancelada"
-
-#: src/core/windows/http.c:151
-msgid "Error receiving HTTP response."
-msgstr "Erro recebendo resposta HTTP"
 
 #: src/core/ft/ftmessages.c:145
 msgid "Error while reading or writing to host disk: file transfer canceled"
@@ -718,9 +644,10 @@ msgstr "Tela formatada"
 msgid "Full Screen"
 msgstr "Tela cheia"
 
-#: src/ssl/windows/curl.c:273
-msgid "Got an invalid certificate revocation list from server"
-msgstr "Servidor enviou uma lista de certificados revogados inválida"
+#: src/ssl/linux/url.c:81
+msgid "Got a bad formatted certificate revocation list from LDAP server"
+msgstr ""
+"Obtive lista de certificados revogados com formato inválido do servidor LDAP"
 
 #: src/core/properties/boolean.c:147
 msgid "Has selected area"
@@ -963,18 +890,14 @@ msgstr "Move o cursor para o primeiro branco após o último não branco no camp
 msgid "Move to first unprotected field on screen"
 msgstr "Move para o primeiro campo desprotegido"
 
-#: src/core/telnet.c:320 src/core/windows/event_dispatcher.c:149
-#: src/core/windows/connect.c:78
+#: src/core/telnet.c:320 src/core/linux/event_dispatcher.c:143
+#: src/core/linux/connect.c:78
 msgid "Network error"
 msgstr "Erro de rede"
 
 #: src/core/toggles/table.c:293
 msgid "Network keep alive"
 msgstr "Manter rede ativa"
-
-#: src/core/windows/connect.c:133 src/core/windows/connect.c:144
-msgid "Network startup error"
-msgstr "Erro ao iniciar a rede"
 
 #: src/core/actions/table.c:158
 msgid "New line"
@@ -988,17 +911,13 @@ msgstr "Próximo campo"
 msgid "Next word"
 msgstr "Próxima palavra"
 
-#: src/ssl/windows/ldap.c:109
+#: src/ssl/linux/ldap.c:101
 msgid "No DN of the entry at which to start the search on the URL"
 msgstr "URL de pesquisa não contem o DN a pesquisar"
 
-#: src/ssl/windows/ldap.c:123
+#: src/ssl/linux/ldap.c:114
 msgid "No LDAP attribute on the URL"
 msgstr "URL de pesquisa não definiu o atributo LDAP"
-
-#: src/ssl/windows/curl.c:301
-msgid "No attribute in LDAP search URL"
-msgstr "Nenhum atributo na URL de pesquisa LDAP"
 
 #: src/ssl/state.c:261
 msgid ""
@@ -1227,11 +1146,11 @@ msgstr "Tamanho do buffer de tela em bytes"
 msgid "Screen oversize if larger than the chosen model"
 msgstr "\"oversize\" maior que o modelo escolhido"
 
-#: src/ssl/windows/ldap.c:224
+#: src/ssl/linux/ldap.c:194
 msgid "Search did not produce any attributes."
 msgstr "Pesquisa não produziu nenhum atributo"
 
-#: src/ssl/windows/ldap.c:236
+#: src/ssl/linux/ldap.c:206
 msgid "Search did not produce any values."
 msgstr "Pesquisa não produziu nenhum valor"
 
@@ -1241,20 +1160,13 @@ msgstr "Conexão segura efetuada com sucesso."
 
 #: src/ssl/negotiate.c:107 src/ssl/negotiate.c:157 src/ssl/negotiate.c:191
 #: src/ssl/negotiate.c:285 src/ssl/negotiate.c:307 src/ssl/negotiate.c:328
-#: src/ssl/crl.c:164 src/ssl/windows/ldap.c:108 src/ssl/windows/ldap.c:122
-#: src/ssl/windows/ldap.c:151 src/ssl/windows/ldap.c:165
-#: src/ssl/windows/ldap.c:180 src/ssl/windows/ldap.c:210
-#: src/ssl/windows/ldap.c:222 src/ssl/windows/ldap.c:234
-#: src/ssl/windows/ldap.c:258 src/ssl/windows/init.c:91
-#: src/ssl/windows/init.c:112 src/ssl/windows/init.c:138
-#: src/ssl/windows/init.c:149 src/ssl/windows/http.c:57
-#: src/ssl/windows/http.c:73 src/ssl/windows/getcrl.c:57
-#: src/ssl/windows/getcrl.c:74 src/ssl/windows/getcrl.c:86
-#: src/ssl/windows/getcrl.c:118 src/ssl/windows/curl.c:188
-#: src/ssl/windows/curl.c:218 src/ssl/windows/curl.c:242
-#: src/ssl/windows/curl.c:263 src/ssl/windows/curl.c:272
-#: src/ssl/windows/curl.c:300 src/ssl/windows/curl.c:333
-#: src/ssl/windows/curl.c:369
+#: src/ssl/crl.c:164 src/ssl/linux/url.c:65 src/ssl/linux/url.c:80
+#: src/ssl/linux/url.c:98 src/ssl/linux/url.c:115 src/ssl/linux/ldap.c:100
+#: src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134 src/ssl/linux/ldap.c:145
+#: src/ssl/linux/ldap.c:156 src/ssl/linux/ldap.c:181 src/ssl/linux/ldap.c:192
+#: src/ssl/linux/ldap.c:204 src/ssl/linux/ldap.c:228 src/ssl/linux/init.c:89
+#: src/ssl/linux/getcrl.c:55 src/ssl/linux/getcrl.c:72
+#: src/ssl/linux/getcrl.c:84 src/ssl/linux/getcrl.c:112
 msgid "Security error"
 msgstr "Erro de segurança"
 
@@ -1278,7 +1190,7 @@ msgstr "Seleção retangular"
 msgid "Select field"
 msgstr "Seleciona campo"
 
-#: src/core/windows/event_dispatcher.c:150
+#: src/core/linux/event_dispatcher.c:144
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1433,15 +1345,15 @@ msgstr ""
 msgid "The SSL certificate for this host is not trusted."
 msgstr "O certificado SSL deste servidor não é confiável"
 
-#: src/ssl/windows/ldap.c:110 src/ssl/windows/ldap.c:124
+#: src/ssl/linux/ldap.c:102 src/ssl/linux/ldap.c:115
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
-#: src/ssl/windows/getcrl.c:59
+#: src/ssl/linux/getcrl.c:57
 msgid "The URL for the CRL is undefined or empty"
 msgstr "A URL para o CRL não está definida ou vazia"
 
-#: src/ssl/windows/getcrl.c:124
+#: src/ssl/linux/getcrl.c:118
 msgid "The URL scheme is unknown"
 msgstr "O tipo de URL é desconhecido"
 
@@ -1780,7 +1692,7 @@ msgstr "Incapaz de decifrar a assinatura do certificado"
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
-#: src/core/windows/connect.c:79
+#: src/core/linux/connect.c:79
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
@@ -1824,7 +1736,7 @@ msgstr "Sublinhados"
 msgid "Unexpected error"
 msgstr "Erro inesperado"
 
-#: src/ssl/windows/getcrl.c:121
+#: src/ssl/linux/getcrl.c:115
 msgid "Unexpected or invalid CRL URL"
 msgstr "URL do CRL é inesperada ou inválida"
 
@@ -1892,10 +1804,6 @@ msgstr "Usar teclas +/- para navegar por campos"
 msgid "Use the keys +/- from keypad to select editable fields"
 msgstr "Use the keys +/- from keypad to select editable fields"
 
-#: src/core/windows/connect.c:134
-msgid "WSAStartup failed"
-msgstr "WSAStartup falhou"
-
 #: src/core/ft/ft.c:537
 msgid "Waiting for GET response"
 msgstr "Aguardando resposta do pedido de download"
@@ -1903,11 +1811,6 @@ msgstr "Aguardando resposta do pedido de download"
 #: src/core/ft/ft.c:539
 msgid "Waiting for PUT response"
 msgstr "Aguardando resposta do pedido de upload"
-
-#: src/core/windows/util.c:131 src/core/windows/util.c:180
-#, c-format
-msgid "Windows error %d"
-msgstr "Erro windows foi %d"
 
 #: src/ssl/notify.c:108
 #, c-format
@@ -2001,11 +1904,11 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:332
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:231
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:332
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:231
 msgid "enable"
 msgstr "habilitar"
 
@@ -2029,12 +1932,15 @@ msgstr "Versão da lib3270"
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/windows/connect.c:353
+#: src/core/linux/connect.c:218
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
+
+#~ msgid "%s (rc=%d)"
+#~ msgstr "%s (rc=%d)"
 
 #~ msgid "%s - Disconnected"
 #~ msgstr "%s - Desconectado"
@@ -2225,6 +2131,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Background"
 #~ msgstr "Fundo"
 
+#~ msgid "Bad winsock version"
+#~ msgstr "Versão winsock inválida"
+
 #~ msgid "Black"
 #~ msgstr "Preto"
 
@@ -2267,11 +2176,14 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't add activity"
 #~ msgstr "Não é possível adicionar atividade"
 
-#~ msgid "Can't connect to %s:%s"
-#~ msgstr "Não foi possível conectar a %s:%s"
+#~ msgid "Can't connect to HTTP server."
+#~ msgstr "Não foi possível conectar ao servidor HTTP"
 
 #~ msgid "Can't convert line %lu from %s to %s"
 #~ msgstr "Não foi possível converter a linha %lu de %s para %s"
+
+#~ msgid "Can't create HTTP request."
+#~ msgstr "Não foi possível criar requisição HTTP"
 
 #~ msgid "Can't cut rectangular regions"
 #~ msgstr "Recortar não permitido em seleção retangular"
@@ -2279,11 +2191,19 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't determine value for environment variable \"%s\" "
 #~ msgstr "Não consigo determinar o valor da variável de ambiente \"%s\" "
 
+#~ msgid "Can't find certificate revocation list in LDAP response"
+#~ msgstr ""
+#~ "Não foi possível encontrar a lista de certificados revogados na pesquisa "
+#~ "LDAP"
+
 #~ msgid "Can't get DBUS object name"
 #~ msgstr "Não foi possível obter o nome do objeto DBUS"
 
 #~ msgid "Can't get screen contents"
 #~ msgstr "Não foi possível obter o conteúdo da tela"
+
+#~ msgid "Can't load \"%s\": %s"
+#~ msgstr "Não foi possível carregar \"%s\": %s"
 
 #~ msgid "Can't load %s"
 #~ msgstr "Não foi possível carregar %s"
@@ -2296,6 +2216,15 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't load plugin %s"
 #~ msgstr "Não foi possível carregar plugin %s"
+
+#~ msgid "Can't open \"%s\" (The Windows error code was %ld)\n"
+#~ msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)\n"
+
+#~ msgid "Can't open \"%s\": %s"
+#~ msgstr "Não foi possível abrir %s: %s"
+
+#~ msgid "Can't open HTTP session"
+#~ msgstr "Não foi possível abrir sessão HTTP"
 
 #~ msgid "Can't open file"
 #~ msgstr "Não foi possível abrir arquivo"
@@ -2323,6 +2252,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't paste text"
 #~ msgstr "Não é possível colar texto"
+
+#~ msgid "Can't read \"%s\": %s"
+#~ msgstr "Não foi possível ler \"%s\": %s"
+
+#~ msgid "Can't read HTTP response size."
+#~ msgstr "Não posso obter tamanho da resposta HTTP"
 
 #~ msgid "Can't recognize \"%s\" as a valid host type"
 #~ msgstr "Não reconheço \"%s\" como um tipo de host válido"
@@ -2357,6 +2292,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't save trace data to file %s"
 #~ msgstr "Não foi possível salvar trace no arquivo %s"
 
+#~ msgid "Can't send HTTP request."
+#~ msgstr "Não posso enviar requisição HTTP"
+
 #~ msgid "Can't set callback table"
 #~ msgstr "Não foi possível setar a tabela de retornos"
 
@@ -2374,6 +2312,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't start upload."
 #~ msgstr "Não foi possível iniciar upload."
+
+#~ msgid "Can't use winsock version %d.%d"
+#~ msgstr "Não posso usar versão winsock %d.%d"
 
 #~ msgid "Cancel"
 #~ msgstr "_Cancelar"
@@ -2395,6 +2336,15 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Cannot parse %s \"%s\", entry %d"
 #~ msgstr "Impossível interpretar %s \"%s\", entrada %d"
+
+#~ msgid "Cant load custom certificate file."
+#~ msgstr "Não foi possível ler arquivo de certificado personalizado"
+
+#~ msgid "Cant open custom certificate directory."
+#~ msgstr "Não foi possível abrir o diretório de certificados personalizados"
+
+#~ msgid "Cant read custom certificate file."
+#~ msgstr "Não foi possível ler certificado personalizado"
 
 #~ msgid ""
 #~ "Cant set default locations for trusted CA certificates to\n"
@@ -2549,6 +2499,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Empty port name"
 #~ msgstr "Porta em branco"
 
+#~ msgid "Empty response from HTTP server."
+#~ msgstr "Recebi resposta vazia do servidor HTTP"
+
 #~ msgid ""
 #~ "Erase\n"
 #~ "Input"
@@ -2582,6 +2535,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Error loading CRL"
 #~ msgstr "Erro lendo CRL"
+
+#~ msgid "Error receiving HTTP response."
+#~ msgstr "Erro recebendo resposta HTTP"
 
 #~ msgid "Error resolving %s: %s"
 #~ msgstr "Erro ao resolver %s: %s"
@@ -2671,13 +2627,11 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Get transfer queue from file"
 #~ msgstr "Obtêm a fila de arquivos a transferir de um arquivo"
 
-#~ msgid "Got a bad formatted certificate revocation list from LDAP server"
-#~ msgstr ""
-#~ "Obtive lista de certificados revogados com formato inválido do servidor "
-#~ "LDAP"
-
 #~ msgid "Got an invalid CRL from server"
 #~ msgstr "Obtive um CRL inválido do servidor"
+
+#~ msgid "Got an invalid certificate revocation list from server"
+#~ msgstr "Servidor enviou uma lista de certificados revogados inválida"
 
 #~ msgid "Gray"
 #~ msgstr "Cinza"
@@ -2880,8 +2834,14 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Network data"
 #~ msgstr "Tráfego de rede"
 
+#~ msgid "Network startup error"
+#~ msgstr "Erro ao iniciar a rede"
+
 #~ msgid "No active transfer"
 #~ msgstr "Nenhuma transferência ativa"
+
+#~ msgid "No attribute in LDAP search URL"
+#~ msgstr "Nenhum atributo na URL de pesquisa LDAP"
 
 #~ msgid "No transfer"
 #~ msgstr "Nenhuma transferência"
@@ -3813,6 +3773,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "WSAEventSelect failed"
 #~ msgstr "WSAEventSelect falhou"
 
+#~ msgid "WSAStartup failed"
+#~ msgstr "WSAStartup falhou"
+
 #~ msgid "WaitForMultipleObjects() failed when processing for events."
 #~ msgstr "WaitForMultipleObjects() falhou ao processar eventos"
 
@@ -3830,6 +3793,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Windows Western languages (CP1252)"
 #~ msgstr "Windows ocidental (CP1252)"
+
+#~ msgid "Windows error %d"
+#~ msgstr "Erro windows foi %d"
 
 #~ msgid "X"
 #~ msgstr "X"

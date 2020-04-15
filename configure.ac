@@ -107,14 +107,15 @@ case "$host" in
 	*-apple-darwin*)
 		CFLAGS="$CFLAGS -pthread -DCONFDIR=\$(confdir) -DDATADIR=\$(datadir) -DLOCALEDIR=\$(localedir)"
 		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_osname="linux"
+		LIBS="$LIBS -framework CoreFoundation"
+		app_cv_osname="macos"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
 		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
 
-		app_cv_static='yes'
+		app_cv_static='no'
 
 		;;
 

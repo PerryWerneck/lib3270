@@ -410,6 +410,10 @@ H3270 * lib3270_session_new(const char *model)
 	hSession = lib3270_malloc(sizeof(H3270));
 	hSession->id = 0;
 
+#ifdef SSL_ENABLE_CRL_CHECK
+	hSession->ssl.crl.download = 1;
+#endif // SSL_ENABLE_CRL_CHECK
+
 	if(!default_session)
 		default_session = hSession;
 

@@ -147,15 +147,6 @@ LIB3270_INTERNAL const char * build_rpq_revision;
 	LIB3270_INTERNAL Boolean		dbcs;
 #endif /*]*/
 
-
-/**
- * @brief toggle names
- */ /*
-struct toggle_name {
-	const char *name;
-	int index;
-}; */
-
 /// @brief State macros
 #define PCONNECTED		lib3270_pconnected(hSession)
 #define HALF_CONNECTED	lib3270_half_connected(hSession)
@@ -188,14 +179,6 @@ struct toggle_name {
 #define PN	((XtPointer) NULL)
 #define Replace(var, value) { lib3270_free(var); var = (value); };
 
-/// @brief Configuration change masks.
-//#define NO_CHANGE		0x0000	/// @brief no change
-// #define MODEL_CHANGE	0x0001	/// @brief screen dimensions changed
-//#define FONT_CHANGE		0x0002	/// @brief emulator font changed
-//#define COLOR_CHANGE	0x0004	/// @brief color scheme or 3278/9 mode changed
-//#define SCROLL_CHANGE	0x0008	/// @brief scrollbar snapped on or off
-//#define CHARSET_CHANGE	0x0010	/// @brief character set changed
-// #define ALL_CHANGE		0xffff	/// @brief everything changed
 
 /* Portability macros */
 
@@ -217,14 +200,6 @@ struct toggle_name {
 #if defined(X3270_FT) && !defined(DFT_BUF) /*[*/
 	#define DFT_BUF		(4 * 1024)
 #endif /*]*/
-
-/* DBCS Preedit Types */ /*
-#if defined(X3270_DBCS)
-	#define PT_ROOT				"Root"
-	#define PT_OVER_THE_SPOT	"OverTheSpot"
-	#define PT_OFF_THE_SPOT		"OffTheSpot"
-	#define PT_ON_THE_SPOT		"OnTheSpot"
-#endif */
 
 /**
  * @brief input key type
@@ -690,6 +665,7 @@ struct _h3270
 #ifdef SSL_ENABLE_CRL_CHECK
 		struct
 		{
+			char			  download;	///< @brief Non zero to download CRL.
 			char			* prefer;	///< @brief Prefered protocol for CRL.
 			char			* url;		///< @brief URL for CRL download.
 			X509_CRL 		* cert;		///< @brief Loaded CRL (can be null).

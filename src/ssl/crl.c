@@ -247,32 +247,40 @@ int lib3270_crl_new_from_dist_points(H3270 *hSession, void *ssl_error, CRL_DIST_
 		hSession->ssl.crl.url = NULL;
 	}
 
-	if(hSession->ssl.crl.prefer && *hSession->ssl.crl.prefer)
+	//
+	// Downloading CRLs
+	//
+	if(hSession->ssl.crl.download)
 	{
-		size_t length = strlen(hSession->ssl.crl.prefer);
-
-		for(ix = 0; ix < uris->length; ix++)
+		if(hSession->ssl.crl.prefer && *hSession->ssl.crl.prefer)
 		{
-			if(!strncmp(uris->str[ix],hSession->ssl.crl.prefer,length))
+			size_t length = strlen(hSession->ssl.crl.prefer);
+
+			for(ix = 0; ix < uris->length; ix++)
 			{
-				trace_ssl(hSession,"Trying preferred URL %s\n",uris->str[ix]);
-				if(lib3270_crl_new_from_url(hSession, ssl_error, uris->str[ix]) == 0)
-					return 0;
+				if(!strncmp(uris->str[ix],hSession->ssl.crl.prefer,length))
+				{
+					trace_ssl(hSession,"Trying preferred URL %s\n",uris->str[ix]);
+					if(lib3270_crl_new_from_url(hSession, ssl_error, uris->str[ix]) == 0)
+						return 0;
+				}
+
 			}
 
 		}
 
+		// Can't load, try all of them.
+		for(ix = 0; ix < uris->length; ix++)
+		{
+			trace_ssl(hSession,"Trying CRL from %s\n",uris->str[ix]);
+			if(lib3270_crl_new_from_url(hSession, ssl_error, uris->str[ix]) == 0)
+				return 0;
+		}
+
+		return -1;
 	}
 
-	// Can't load, try all of them.
-	for(ix = 0; ix < uris->length; ix++)
-	{
-		trace_ssl(hSession,"Trying CRL from %s\n",uris->str[ix]);
-		if(lib3270_crl_new_from_url(hSession, ssl_error, uris->str[ix]) == 0)
-			return 0;
-	}
-
-	return -1;
+	return 0;
 
 }
 

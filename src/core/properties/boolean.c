@@ -45,6 +45,13 @@
 	return hSession->starting != 0;
  }
 
+ void lib3270_disable_crl_download(H3270 *hSession)
+ {
+#ifdef SSL_ENABLE_CRL_CHECK
+	hSession->ssl.crl.download = 0;
+#endif // SSL_ENABLE_CRL_CHECK
+ }
+
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
  {
 

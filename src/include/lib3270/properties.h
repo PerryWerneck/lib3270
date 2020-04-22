@@ -212,6 +212,14 @@
 	 */
 	LIB3270_EXPORT const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name);
 
+	/**
+	 * @brief Disable automatic download of the CRL.
+	 *
+	 * @param hSession	Session handle.
+	 *
+	 */
+	LIB3270_EXPORT void lib3270_disable_crl_download(H3270 *hSession);
+
 #ifdef __cplusplus
 	}
 #endif

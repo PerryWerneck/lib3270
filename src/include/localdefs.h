@@ -36,7 +36,11 @@
 //typedef void *XtPointer;
 // typedef void *Widget;
 // typedef void *XEvent;
-typedef char Boolean;
+#ifdef __APPLE__
+    typedef unsigned char Boolean;
+#else
+    typedef char Boolean;
+#endif
 typedef char *String;
 // typedef unsigned int Cardinal;
 typedef unsigned long KeySym;

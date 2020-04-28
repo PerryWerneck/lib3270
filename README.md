@@ -111,16 +111,6 @@ Building for macOS (using homebrew)
 
 2. Install dependencies
 
-	* automake
-	* binutils
-	* coreutils
-	* curl
-	* gettext
-	* libtool
-	* openldap
-	* openssl
-	* pkgconfig
-
 	```shell
 	$ brew install automake binutils coreutils curl gettext libtool openldap openssl pkgconfig
 	```

@@ -255,7 +255,7 @@
 			.name = "select-word",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<Ctrl>w",
+			.keys = NULL,
 			.icon = NULL,
 			.label = N_( "Select word" ),
 			.summary = N_( "Select word" ),

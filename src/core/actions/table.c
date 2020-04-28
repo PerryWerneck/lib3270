@@ -37,6 +37,7 @@
 #include <lib3270/actions.h>
 #include <lib3270/toggle.h>
 #include <lib3270/log.h>
+#include <lib3270/selection.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
@@ -245,6 +246,20 @@
 			.label = N_( "Reselect" ),
 			.summary = N_( "Reselect"),
 			.activate = lib3270_reselect,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-word",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Ctrl>w",
+			.icon = NULL,
+			.label = N_( "Select word" ),
+			.summary = N_( "Select word" ),
+			.activate = lib3270_select_word,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected

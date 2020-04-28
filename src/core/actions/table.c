@@ -253,7 +253,7 @@
 			.name = "select-all",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<ctrl>a",
+			.keys = "<Primary>a",
 			.icon = "edit-select-all",
 			.label = N_( "Select all" ),
 			.summary = NULL,
@@ -281,7 +281,7 @@
 			.name = "reselect",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<Ctrl>r",
+			.keys = "<Primary>r",
 			.icon = NULL,
 			.label = N_( "Reselect" ),
 			.summary = N_( "Reselect"),
@@ -423,7 +423,7 @@
 			.name = "select-field",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<Ctrl>f",
+			.keys = "<Primary>f",
 			.icon = NULL,
 			.label = N_( "Select field" ),
 			.summary = N_( "Select Field" ),
@@ -498,7 +498,7 @@
 			.name = "delete-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = "<Ctrl>w",
+			.keys = "<Primary>w",
 			.icon = NULL,
 			.label = N_("Delete word"),
 			.summary = N_( "Backspaces the cursor until it hits the front of a word" ),
@@ -512,7 +512,7 @@
 			.name = "delete-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = "<Ctrl>u",
+			.keys = "<Primary>u",
 			.icon = NULL,
 			.label = N_( "Delete field" ),
 			.summary = N_( "Delete field" ),

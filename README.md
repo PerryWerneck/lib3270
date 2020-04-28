@@ -115,28 +115,26 @@ Building for macOS (using homebrew)
 	* binutils
 	* coreutils
 	* curl
-	* dbus
 	* gettext
 	* libtool
-	* m4
 	* openldap
 	* openssl
 	* pkgconfig
 
-	```console
-	$ brew install automake binutils coreutils curl dbus gettext libtool m4 openldap openssl pkgconfig
+	```shell
+	$ brew install automake binutils coreutils curl gettext libtool openldap openssl pkgconfig
 	```
 
-3. Use [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) to make keg-only dependencies available during the build processes
+3. Use [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) to make keg-only dependencies available during build process
 
-	```console
-	$ open-keg curl gettext openldap openssl
+	```shell
+	$ open-keg curl openldap openssl
 	```
-4. Configure, build and install (inside [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) shell)
+4. Configure, build and install (inside the [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) shell opened above)
 
-	```console
+	```shell
 	$ ./autogen.sh --prefix="$(brew --cellar)/lib3270/5.3"
-	$ make && make install
+	$ make all && make install
 	$ brew link lib3270
 	```
 
@@ -145,7 +143,7 @@ Uninstalling
 
 1. To uninstall
 
-	```console
+	```shell
 	$ brew unlink lib3270
 	$ rm -fr "$(brew --cellar)/lib3270"
 	```

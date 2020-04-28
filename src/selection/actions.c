@@ -109,6 +109,11 @@ LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
 	return 0;
 }
 
+LIB3270_EXPORT int lib3270_select_word(H3270 *session)
+{
+	return lib3270_select_word_at(session,-1);
+}
+
 LIB3270_EXPORT int lib3270_select_word_at(H3270 *session, int baddr)
 {
 	int start, end;

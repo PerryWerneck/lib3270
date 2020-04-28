@@ -51,6 +51,26 @@
 	return lib3270_reconnect(hSession,0);
  }
 
+ static int select_up(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_UP,1);
+ }
+
+ static int select_down(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_DOWN,1);
+ }
+
+ static int select_left(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_LEFT,1);
+ }
+
+ static int select_right(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_RIGHT,1);
+ }
+
 /**
  * @brief Get LIB3270 action table;
  *
@@ -260,6 +280,62 @@
 			.label = N_( "Select word" ),
 			.summary = N_( "Select word" ),
 			.activate = lib3270_select_word,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-up",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Up",
+			.icon = NULL,
+			.label = N_( "Move cursor up and select" ),
+			.summary = NULL,
+			.activate = select_up,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-down",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Down",
+			.icon = NULL,
+			.label = N_( "Move cursor down and select" ),
+			.summary = NULL,
+			.activate = select_down,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-left",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Left",
+			.icon = NULL,
+			.label = N_( "Move cursor left and select" ),
+			.summary = NULL,
+			.activate = select_left,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-right",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Right",
+			.icon = NULL,
+			.label = N_( "Move cursor rigth and select" ),
+			.summary = NULL,
+			.activate = select_right,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected

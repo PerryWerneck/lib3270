@@ -741,7 +741,7 @@ LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
 
 LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
 
-LIB3270_INTERNAL void 	do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect);
+LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect);
 
 
 /**

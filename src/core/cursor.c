@@ -79,8 +79,6 @@ static int cursor_end(H3270 *hSession);
  */
 LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, unsigned char sel)
 {
-	int select_from = -1;
-
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(dir < 0 || dir >= LIB3270_DIR_COUNT)
@@ -106,18 +104,40 @@ LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, u
 		}
 	}
 
-	if(sel) {
-		select_from = (hSession->selected ? hSession->select.start : hSession->cursor_addr);
-	}
+	// Save last cursor position
+	int saved_cursor = hSession->cursor_addr;
 
 	int rc = calls[dir].exec(hSession);
 	if(rc)
 		return rc;
 
 	if(sel)
-		lib3270_select_region(hSession, select_from, hSession->cursor_addr);
+	{
+		if(hSession->cursor_addr < saved_cursor)
+		{
+			// Moved back
+			lib3270_select_region(
+					hSession,
+					hSession->cursor_addr,
+					((hSession->selected ? hSession->select.end : saved_cursor))
+			);
+
+		}
+		else
+		{
+			// Moved forward
+			lib3270_select_region(
+					hSession,
+					((hSession->selected ? hSession->select.start : saved_cursor)),
+					hSession->cursor_addr
+			);
+		}
+
+	}
 	else if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))
+	{
 		lib3270_unselect(hSession);
+	}
 
 	return 0;
 }

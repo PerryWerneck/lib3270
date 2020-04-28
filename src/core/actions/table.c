@@ -71,6 +71,26 @@
  	return lib3270_move_cursor(hSession,LIB3270_DIR_RIGHT,1);
  }
 
+ static int selection_up(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_UP);
+ }
+
+ static int selection_down(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_DOWN);
+ }
+
+ static int selection_left(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_LEFT);
+ }
+
+ static int selection_right(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_RIGHT);
+ }
+
 /**
  * @brief Get LIB3270 action table;
  *
@@ -339,6 +359,61 @@
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "selection-up",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Up",
+			.icon = NULL,
+			.label = N_( "Move selection up" ),
+			.summary = NULL,
+			.activate = selection_up,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.activatable = lib3270_get_has_selection
+		},
+
+		{
+			.name = "selection-down",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Down",
+			.icon = NULL,
+			.label = N_( "Move selection down" ),
+			.summary = NULL,
+			.activate = selection_down,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.activatable = lib3270_get_has_selection
+		},
+
+		{
+			.name = "selection-left",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Left",
+			.icon = NULL,
+			.label = N_( "Move selection left" ),
+			.summary = NULL,
+			.activate = selection_left,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.activatable = lib3270_get_has_selection
+		},
+
+		{
+			.name = "selection-right",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Right",
+			.icon = NULL,
+			.label = N_( "Move selection right" ),
+			.summary = NULL,
+			.activate = selection_right,
+			.activatable = lib3270_get_has_selection
+
 		},
 
 		//

@@ -104,3 +104,36 @@ Compiling for Windows (With MSYS2)
 	* make install
 
 
+Building for macOS (using homebrew)
+===================================
+
+1. Install [homebrew](https://brew.sh/)
+
+2. Install dependencies
+
+	```shell
+	$ brew install automake binutils coreutils curl gettext libtool openldap openssl pkgconfig
+	```
+
+3. Use [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) to make keg-only dependencies available during build process
+
+	```shell
+	$ open-keg curl openldap openssl
+	```
+4. Configure, build and install (inside the [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) shell opened above)
+
+	```shell
+	$ ./autogen.sh --prefix="$(brew --cellar)/lib3270/5.3"
+	$ make all && make install
+	$ brew link lib3270
+	```
+
+Uninstalling
+------------
+
+1. To uninstall
+
+	```shell
+	$ brew unlink lib3270
+	$ rm -fr "$(brew --cellar)/lib3270"
+	```

@@ -662,6 +662,13 @@ struct _h3270
 		char				  host;
 		LIB3270_SSL_STATE	  state;
 		unsigned long 		  error;
+
+		struct
+		{
+			int minimum;	///< @brief The minimum supported protocol version.
+			int maximum;	///< @brief The maximum supported protocol version.
+		} supported_version;
+
 #ifdef SSL_ENABLE_CRL_CHECK
 		struct
 		{

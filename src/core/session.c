@@ -410,6 +410,11 @@ H3270 * lib3270_session_new(const char *model)
 	hSession = lib3270_malloc(sizeof(H3270));
 	hSession->id = 0;
 
+#ifdef HAVE_LIBSSL
+	hSession->ssl.supported_version.minimum = 0;
+	hSession->ssl.supported_version.maximum = 0;
+#endif // HAVE_LIBSSL
+
 #ifdef SSL_ENABLE_CRL_CHECK
 	hSession->ssl.crl.download = 1;
 #endif // SSL_ENABLE_CRL_CHECK

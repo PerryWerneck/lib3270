@@ -665,9 +665,9 @@ struct _h3270
 
 		struct
 		{
-			int minimum;	///< @brief The minimum supported protocol version.
-			int maximum;	///< @brief The maximum supported protocol version.
-		} supported_version;
+			int min_version;	///< @brief The minimum supported protocol version.
+			int max_version;	///< @brief The maximum supported protocol version.
+		} protocol;
 
 #ifdef SSL_ENABLE_CRL_CHECK
 		struct

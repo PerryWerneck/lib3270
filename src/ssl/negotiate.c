@@ -150,6 +150,18 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	}
 
 	/* Set up the TLS/SSL connection. */
+	if(hSession->ssl.protocol.min_version)
+	{
+		trace_ssl(hSession,"Minimum protocol version set to %d\n",hSession->ssl.protocol.min_version);
+		SSL_set_min_proto_version(hSession->ssl.con,hSession->ssl.protocol.min_version);
+	}
+
+	if(hSession->ssl.protocol.max_version)
+	{
+		trace_ssl(hSession,"Maximum protocol version set to %d\n",hSession->ssl.protocol.max_version);
+		SSL_set_max_proto_version(hSession->ssl.con,hSession->ssl.protocol.max_version);
+	}
+
 	if(SSL_set_fd(hSession->ssl.con, hSession->connection.sock) != 1)
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");

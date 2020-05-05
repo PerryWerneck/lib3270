@@ -411,8 +411,8 @@ H3270 * lib3270_session_new(const char *model)
 	hSession->id = 0;
 
 #ifdef HAVE_LIBSSL
-	hSession->ssl.supported_version.minimum = 0;
-	hSession->ssl.supported_version.maximum = 0;
+	hSession->ssl.protocol.min_version = 0;
+	hSession->ssl.protocol.max_version = 0;
 #endif // HAVE_LIBSSL
 
 #ifdef SSL_ENABLE_CRL_CHECK

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-04 01:39-0300\n"
-"PO-Revision-Date: 2020-02-11 09:49-0300\n"
+"POT-Creation-Date: 2020-05-08 00:49-0300\n"
+"PO-Revision-Date: 2020-05-08 00:52-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -16,7 +16,8 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=4; plural= (n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != "
+"11) ? 2 : 3;\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
 #: src/core/ctlr.c:187
@@ -79,7 +80,7 @@ msgstr "Erro 3270"
 msgid "3270 Warning"
 msgstr "Alerta 3270"
 
-#: src/core/actions/table.c:512
+#: src/core/actions/table.c:678
 msgid "3270-style backspace"
 msgstr "Backspace no estilo 3270"
 
@@ -91,7 +92,7 @@ msgstr ""
 "A CA certificate is invalid. Either it is not a CA or its extensions are not "
 "consistent with the supplied purpose."
 
-#: src/core/actions/table.c:526
+#: src/core/actions/table.c:692
 msgid "ATTN key, per RFC 2355.  Sends IP, regardless"
 msgstr "Tecla ATTN, pela RFC 2355"
 
@@ -136,7 +137,7 @@ msgstr ""
 msgid "An invalid SEND or RECEIVE parameter was sent to the host."
 msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 
-#: src/core/actions/table.c:525
+#: src/core/actions/table.c:691
 msgid "Attn"
 msgstr "Attn"
 
@@ -178,11 +179,11 @@ msgstr "Reconecta automaticamente caso o servidor desconecte"
 msgid "Awaiting chance to send an abort"
 msgstr "Aguardando para enviar pedido de cancelamento"
 
-#: src/core/actions/table.c:511
+#: src/core/actions/table.c:677
 msgid "Back space"
 msgstr "Back space"
 
-#: src/core/actions/table.c:338
+#: src/core/actions/table.c:504
 msgid "Backspaces the cursor until it hits the front of a word"
 msgstr "Volta o cursor até que atinga o início de uma palavra"
 
@@ -202,7 +203,7 @@ msgstr "Cursor piscante"
 msgid "Bold"
 msgstr "Negrito"
 
-#: src/core/actions/table.c:539
+#: src/core/actions/table.c:705
 msgid "Break"
 msgstr "Break"
 
@@ -258,7 +259,6 @@ msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
 #: src/ssl/linux/url.c:99
-#, fuzzy
 msgid "Can't decode certificate revocation list got from LDAP server"
 msgstr ""
 "Não foi possível decodificar a lista de certificados revogados obtida na "
@@ -316,7 +316,7 @@ msgstr "Não foi possível setar o socket para o modo não blocante."
 msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
 
-#: src/ssl/negotiate.c:286 src/ssl/crl.c:165
+#: src/ssl/negotiate.c:298 src/ssl/crl.c:165
 msgid "Can't verify."
 msgstr "Não foi possível verificar"
 
@@ -338,7 +338,7 @@ msgstr ""
 msgid "Cant initialize the SSL context."
 msgstr "Erro ao inicializar contexto de segurança"
 
-#: src/ssl/negotiate.c:159
+#: src/ssl/negotiate.c:171
 msgid ""
 "Cant set the file descriptor for the input/output facility for the TLS/SSL "
 "(encrypted) side of ssl."
@@ -374,15 +374,15 @@ msgstr "Falha na assinatura do certificado"
 msgid "Change screen size on alternative screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
-#: src/core/actions/table.c:599
+#: src/core/actions/table.c:765
 msgid "Charset table"
 msgstr "Tabela de caracteres"
 
-#: src/core/actions/table.c:422
+#: src/core/actions/table.c:588
 msgid "Clear"
 msgstr "Limpar"
 
-#: src/core/actions/table.c:423
+#: src/core/actions/table.c:589
 msgid "Clear AID key"
 msgstr "Clear AID"
 
@@ -407,7 +407,7 @@ msgstr "Conexão falhou"
 msgid "Connection reset by peer"
 msgstr "Conexão foi cancelada pelo servidor"
 
-#: src/core/properties/signed.c:59
+#: src/core/properties/signed.c:101
 msgid "Connection state"
 msgstr "Estado da conexão"
 
@@ -427,37 +427,37 @@ msgstr "Largura atua da tela em colunas"
 msgid "Cursor address"
 msgstr "Endereço do cursor"
 
-#: src/core/actions/table.c:117
+#: src/core/actions/table.c:158
 msgid "Cursor down 1 position"
 msgstr "Move cursor uma posição para baixo"
 
-#: src/core/actions/table.c:131
+#: src/core/actions/table.c:172
 msgid "Cursor left 1 position"
 msgstr "Move o cursor 1 posição para a esquerda"
 
-#: src/core/actions/table.c:145
+#: src/core/actions/table.c:186
 msgid "Cursor right 1 position"
 msgstr "Move o cursor uma posição para a direita"
 
-#: src/core/actions/table.c:159
+#: src/core/actions/table.c:200
 msgid "Cursor to first field on next line or any lines after that"
 msgstr ""
 "Move o cursor para o primeiro campo da próxima linha ou qualquer linhas "
 "depois dela"
 
-#: src/core/actions/table.c:187
+#: src/core/actions/table.c:228
 msgid "Cursor to next unprotected word"
 msgstr "Move o cursor para a próxima palavra desprotegida"
 
-#: src/core/actions/table.c:173
+#: src/core/actions/table.c:214
 msgid "Cursor to previous word"
 msgstr "Move o cursor para a palavra anterior"
 
-#: src/core/actions/table.c:103
+#: src/core/actions/table.c:144
 msgid "Cursor up 1 position"
 msgstr "Cursor para cima 1 posição"
 
-#: src/core/actions/table.c:484
+#: src/core/actions/table.c:650
 msgid "DUP key"
 msgstr "Tecla \"DUP\""
 
@@ -469,15 +469,15 @@ msgstr "Erro na conversão de dados"
 msgid "Default host URL"
 msgstr "URL parão para acesso ao host"
 
-#: src/core/actions/table.c:469
+#: src/core/actions/table.c:635
 msgid "Delete"
 msgstr "Apagar"
 
-#: src/core/actions/table.c:351 src/core/actions/table.c:352
+#: src/core/actions/table.c:517 src/core/actions/table.c:518
 msgid "Delete field"
 msgstr "Apagar campo"
 
-#: src/core/actions/table.c:337
+#: src/core/actions/table.c:503
 msgid "Delete word"
 msgstr "Apaga palavra"
 
@@ -489,7 +489,7 @@ msgstr "Descrição do estado de segurança atual"
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
-#: src/core/actions/table.c:86
+#: src/core/actions/table.c:127
 msgid "Disconnect from host"
 msgstr "Desconecta do servidor"
 
@@ -505,11 +505,11 @@ msgstr "Tabela de caracteres para a tela"
 msgid "Display the cursor location in the OIA (the status line)"
 msgstr "Mostra posição do cursor na lista de informações ao operador"
 
-#: src/core/actions/table.c:116
+#: src/core/actions/table.c:157
 msgid "Down"
 msgstr "Descer"
 
-#: src/core/actions/table.c:483
+#: src/core/actions/table.c:649
 msgid "Dup"
 msgstr "Dup"
 
@@ -533,31 +533,31 @@ msgstr "Habilita trace da negociação de segurança"
 msgid "Enable use of network keep alive"
 msgstr "Habilita opção \"keep-alive\""
 
-#: src/core/actions/table.c:439
+#: src/core/actions/table.c:605
 msgid "Enter"
 msgstr "Enter"
 
-#: src/core/actions/table.c:408
+#: src/core/actions/table.c:574
 msgid "Erase"
 msgstr "Apagar"
 
-#: src/core/actions/table.c:380
+#: src/core/actions/table.c:546
 msgid "Erase EOF"
 msgstr "Erase EOF"
 
-#: src/core/actions/table.c:394
+#: src/core/actions/table.c:560
 msgid "Erase EOL"
 msgstr "Erase EOL"
 
-#: src/core/actions/table.c:381
+#: src/core/actions/table.c:547
 msgid "Erase End Of Field"
 msgstr "Apaga até o final do campo"
 
-#: src/core/actions/table.c:395
+#: src/core/actions/table.c:561
 msgid "Erase End Of Line"
 msgstr "Apaga até o final da linha"
 
-#: src/core/actions/table.c:366
+#: src/core/actions/table.c:532
 msgid "Erase input"
 msgstr "Apagar campos"
 
@@ -576,7 +576,6 @@ msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
 
 #: src/ssl/linux/url.c:66
-#, fuzzy
 msgid "Error getting certificate revocation list"
 msgstr "Erro ao obter a lista de certificados revogados"
 
@@ -596,11 +595,11 @@ msgstr "Erro ao ler ou gravar no host: Transferência cancelada"
 msgid "Error writing file to host: file transfer canceled"
 msgstr "Erro ao gravar arquivo no host, transferência cancelada"
 
-#: src/core/actions/table.c:497 src/core/actions/table.c:498
+#: src/core/actions/table.c:663 src/core/actions/table.c:664
 msgid "FM key"
 msgstr "Tecla \"FM\""
 
-#: src/core/actions/table.c:277
+#: src/core/actions/table.c:443
 msgid "Field end"
 msgstr "Final do campo"
 
@@ -616,7 +615,7 @@ msgstr "Transferência completa com registros segmentados"
 msgid "File transfer is already active in this session."
 msgstr "Transferência de arquivos já está ativa nesta sessão."
 
-#: src/core/actions/table.c:291
+#: src/core/actions/table.c:457
 msgid "First field"
 msgstr "Primeiro campo"
 
@@ -636,7 +635,7 @@ msgstr "Erro de formato no campo \"notAfter\" do certificado"
 msgid "Format error in certificate's notBefore field"
 msgstr "Erro de formato no campo \"notBefore\" do certificado"
 
-#: src/core/properties/boolean.c:168
+#: src/core/properties/boolean.c:175
 msgid "Formatted screen"
 msgstr "Tela formatada"
 
@@ -649,7 +648,7 @@ msgid "Got a bad formatted certificate revocation list from LDAP server"
 msgstr ""
 "Obtive lista de certificados revogados com formato inválido do servidor LDAP"
 
-#: src/core/properties/boolean.c:147
+#: src/core/properties/boolean.c:154
 msgid "Has selected area"
 msgstr "Tem área selecionada"
 
@@ -693,7 +692,15 @@ msgstr "IBM AS/400"
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/core/properties/signed.c:73
+#: src/core/properties/signed.c:130
+msgid "ID of the maximum supported SSL protocol version"
+msgstr "Identificador da maior versão de protocolo SSL suportada"
+
+#: src/core/properties/signed.c:122
+msgid "ID of the minimum supported SSL protocol version"
+msgstr "Identificador da menor versão de protocolo SSL suportada"
+
+#: src/core/properties/signed.c:115
 msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
@@ -814,23 +821,23 @@ msgstr "Opção xxxxxxxx inválida: Transferência cancelada"
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
-#: src/core/properties/boolean.c:68
+#: src/core/properties/boolean.c:75
 msgid "Is connection secure"
 msgstr "A conexão é segura ?"
 
-#: src/core/properties/boolean.c:161
+#: src/core/properties/boolean.c:168
 msgid "Is starting (no first screen)?"
 msgstr "Está iniciando (não recebeu a primeira tela)?"
 
-#: src/core/properties/boolean.c:61
+#: src/core/properties/boolean.c:68
 msgid "Is terminal connected"
 msgstr "O terminal está conectado"
 
-#: src/core/properties/boolean.c:140
+#: src/core/properties/boolean.c:147
 msgid "Is terminal in the INITIAL_E state?"
 msgstr "O terminal está no estad INITIAL_E?"
 
-#: src/core/properties/boolean.c:54
+#: src/core/properties/boolean.c:61
 msgid "Is terminal ready"
 msgstr "O terminal está pronto"
 
@@ -850,15 +857,15 @@ msgstr "Teclado está bloqueado"
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
-#: src/core/properties/signed.c:66
+#: src/core/properties/signed.c:108
 msgid "Latest program message"
 msgstr "Última mensagem de programa"
 
-#: src/core/actions/table.c:130
+#: src/core/actions/table.c:171
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/core/properties/boolean.c:175
+#: src/core/properties/boolean.c:182
 msgid "Lock keyboard on operator error"
 msgstr "Bloqueia teclado em caso de erro do operador"
 
@@ -882,11 +889,43 @@ msgstr "Nome do modelo"
 msgid "Monocase"
 msgstr "Só Maiúsculas"
 
-#: src/core/actions/table.c:278
+#: src/core/actions/table.c:328
+msgid "Move cursor down and select"
+msgstr "Move cursor para baixo selecionando"
+
+#: src/core/actions/table.c:342
+msgid "Move cursor left and select"
+msgstr "Move cursor para a esquerda selecionando"
+
+#: src/core/actions/table.c:356
+msgid "Move cursor rigth and select"
+msgstr "Move cursor para a direita selecionando"
+
+#: src/core/actions/table.c:314
+msgid "Move cursor up and select"
+msgstr "Move cursor para cima selecionando"
+
+#: src/core/actions/table.c:384
+msgid "Move selection down"
+msgstr "Move seleção para baixo"
+
+#: src/core/actions/table.c:398
+msgid "Move selection left"
+msgstr "Move seleção para a esquerda"
+
+#: src/core/actions/table.c:412
+msgid "Move selection right"
+msgstr "Move seleção para a direita"
+
+#: src/core/actions/table.c:370
+msgid "Move selection up"
+msgstr "Move seleção para cima"
+
+#: src/core/actions/table.c:444
 msgid "Move the cursor to the first blank after the last nonblank in the field"
 msgstr "Move o cursor para o primeiro branco após o último não branco no campo"
 
-#: src/core/actions/table.c:292
+#: src/core/actions/table.c:458
 msgid "Move to first unprotected field on screen"
 msgstr "Move para o primeiro campo desprotegido"
 
@@ -899,15 +938,15 @@ msgstr "Erro de rede"
 msgid "Network keep alive"
 msgstr "Manter rede ativa"
 
-#: src/core/actions/table.c:158
+#: src/core/actions/table.c:199
 msgid "New line"
 msgstr "Nova linha"
 
-#: src/core/actions/table.c:305
+#: src/core/actions/table.c:471
 msgid "Next field"
 msgstr "Próximo campo"
 
-#: src/core/actions/table.c:186
+#: src/core/actions/table.c:227
 msgid "Next word"
 msgstr "Próxima palavra"
 
@@ -931,11 +970,11 @@ msgstr ""
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/core/properties/boolean.c:84
+#: src/core/properties/boolean.c:91
 msgid "Non zero if the host is AS400."
 msgstr "Diferente de zero se o host é AS400"
 
-#: src/core/properties/boolean.c:76
+#: src/core/properties/boolean.c:83
 msgid "Non zero if the host is TSO."
 msgstr "Diferente de zero se o host é TSO"
 
@@ -961,15 +1000,15 @@ msgstr "Outro (VM/CMS)"
 msgid "Out of memory"
 msgstr "Memória insuficiente"
 
-#: src/core/actions/table.c:200
+#: src/core/actions/table.c:241
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
 
-#: src/core/actions/table.c:201
+#: src/core/actions/table.c:242
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
-#: src/core/actions/table.c:553
+#: src/core/actions/table.c:719
 msgid "Paste next"
 msgstr "Colar próximo"
 
@@ -989,11 +1028,11 @@ msgstr "Especificação de arquivo PC incorreta: Transferência cancelada"
 msgid "Preferred protocol for CRL download"
 msgstr "Protocolo preferido para download da CRL"
 
-#: src/core/actions/table.c:319
+#: src/core/actions/table.c:485
 msgid "Previous field"
 msgstr "Campo anterior"
 
-#: src/core/actions/table.c:172
+#: src/core/actions/table.c:213
 msgid "Previous word"
 msgstr "Palavra anterior"
 
@@ -1073,11 +1112,11 @@ msgstr "RPQ: Não foi possível resolver '%s': %s"
 msgid "RPQ: gethostbyname error"
 msgstr "RPQ: Erro em gethostbyname"
 
-#: src/core/actions/table.c:72
+#: src/core/actions/table.c:113
 msgid "Reconnect to the same host"
 msgstr "Reconecta ao mesmo servidor"
 
-#: src/core/actions/table.c:231 src/core/actions/table.c:232
+#: src/core/actions/table.c:272 src/core/actions/table.c:273
 msgid "Remove selection"
 msgstr "Remover seleção"
 
@@ -1089,11 +1128,11 @@ msgstr "Requisição falhou"
 msgid "Required host storage unavailable: file transfer canceled"
 msgstr "Armazenamento necessário indisponível: Transferência cancelada"
 
-#: src/core/actions/table.c:245 src/core/actions/table.c:246
+#: src/core/actions/table.c:286 src/core/actions/table.c:287
 msgid "Reselect"
 msgstr "Reselecionar"
 
-#: src/core/actions/table.c:454
+#: src/core/actions/table.c:620
 msgid "Reset"
 msgstr "Reset"
 
@@ -1101,7 +1140,7 @@ msgstr "Reset"
 msgid "Resize on alternate screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
-#: src/core/actions/table.c:144
+#: src/core/actions/table.c:185
 msgid "Right"
 msgstr "Direita"
 
@@ -1113,7 +1152,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/ssl/negotiate.c:192
+#: src/ssl/negotiate.c:204
 msgid "SSL Connect failed"
 msgstr "Conexão SSL falhou"
 
@@ -1125,7 +1164,7 @@ msgstr "Erro SSL"
 msgid "SSL Read error"
 msgstr "Erro de leitura SSL"
 
-#: src/ssl/negotiate.c:158
+#: src/ssl/negotiate.c:170
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
@@ -1158,8 +1197,8 @@ msgstr "Pesquisa não produziu nenhum valor"
 msgid "Secure connection was successful."
 msgstr "Conexão segura efetuada com sucesso."
 
-#: src/ssl/negotiate.c:107 src/ssl/negotiate.c:157 src/ssl/negotiate.c:191
-#: src/ssl/negotiate.c:285 src/ssl/negotiate.c:307 src/ssl/negotiate.c:328
+#: src/ssl/negotiate.c:107 src/ssl/negotiate.c:169 src/ssl/negotiate.c:203
+#: src/ssl/negotiate.c:297 src/ssl/negotiate.c:319 src/ssl/negotiate.c:340
 #: src/ssl/crl.c:164 src/ssl/linux/url.c:65 src/ssl/linux/url.c:80
 #: src/ssl/linux/url.c:98 src/ssl/linux/url.c:115 src/ssl/linux/ldap.c:100
 #: src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134 src/ssl/linux/ldap.c:145
@@ -1170,15 +1209,15 @@ msgstr "Conexão segura efetuada com sucesso."
 msgid "Security error"
 msgstr "Erro de segurança"
 
-#: src/ssl/negotiate.c:332
+#: src/ssl/negotiate.c:344
 msgid "Security warning"
 msgstr "Alerta de segurança"
 
-#: src/core/actions/table.c:263
+#: src/core/actions/table.c:429
 msgid "Select Field"
 msgstr "Selecionar campo"
 
-#: src/core/actions/table.c:217
+#: src/core/actions/table.c:258
 msgid "Select all"
 msgstr "Selecionar tudo"
 
@@ -1186,9 +1225,13 @@ msgstr "Selecionar tudo"
 msgid "Select by rectangles"
 msgstr "Seleção retangular"
 
-#: src/core/actions/table.c:262
+#: src/core/actions/table.c:428
 msgid "Select field"
 msgstr "Seleciona campo"
+
+#: src/core/actions/table.c:300 src/core/actions/table.c:301
+msgid "Select word"
+msgstr "Seleciona palavra"
 
 #: src/core/linux/event_dispatcher.c:144
 msgid "Select() failed when processing for events."
@@ -1202,7 +1245,7 @@ msgstr "Certificado auto assinado"
 msgid "Self signed certificate in certificate chain"
 msgstr "Certificado auto assinado na cadeia de certificados"
 
-#: src/core/actions/table.c:440
+#: src/core/actions/table.c:606
 msgid "Send an \"Enter\" action"
 msgstr "Envia um \"Enter\""
 
@@ -1246,11 +1289,11 @@ msgstr "Erro ao enviar dados para a rede"
 msgid "Sound"
 msgstr "Som"
 
-#: src/core/properties/boolean.c:119
+#: src/core/properties/boolean.c:126
 msgid "State is 3270, TN3270e or SSCP"
 msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 
-#: src/core/properties/boolean.c:154
+#: src/core/properties/boolean.c:161
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
 
@@ -1258,7 +1301,7 @@ msgstr "Ainda existe texto para colar"
 msgid "Subject issuer mismatch"
 msgstr "Divergência na identidade do emissor"
 
-#: src/core/actions/table.c:567
+#: src/core/actions/table.c:733
 msgid "Sys Req"
 msgstr "Sys Req"
 
@@ -1266,11 +1309,11 @@ msgstr "Sys Req"
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
 
-#: src/core/actions/table.c:320
+#: src/core/actions/table.c:486
 msgid "Tab backward to previous field"
 msgstr "Move para o campo anterior"
 
-#: src/core/actions/table.c:306
+#: src/core/actions/table.c:472
 msgid "Tab forward to next field"
 msgstr "Move para o próximo campo"
 
@@ -1286,7 +1329,7 @@ msgstr "Nome do terminal"
 msgid "Terminal type"
 msgstr "Tipo do terminal"
 
-#: src/core/actions/table.c:585
+#: src/core/actions/table.c:751
 msgid "Test pattern"
 msgstr "Padrão de teste"
 
@@ -1341,7 +1384,7 @@ msgstr ""
 "A lista de revogação de certificados (CRL) de um certificado não pôde ser "
 "encontrada."
 
-#: src/ssl/negotiate.c:308
+#: src/ssl/negotiate.c:320
 msgid "The SSL certificate for this host is not trusted."
 msgstr "O certificado SSL deste servidor não é confiável"
 
@@ -1563,7 +1606,7 @@ msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
 "especificados."
 
-#: src/ssl/negotiate.c:309
+#: src/ssl/negotiate.c:321
 msgid ""
 "The security certificate presented by this host was not issued by a trusted "
 "certificate authority."
@@ -1740,7 +1783,7 @@ msgstr "Erro inesperado"
 msgid "Unexpected or invalid CRL URL"
 msgstr "URL do CRL é inesperada ou inválida"
 
-#: src/ssl/negotiate.c:287
+#: src/ssl/negotiate.c:299
 msgid "Unexpected or invalid TLS/SSL verify result"
 msgstr "O resultado da verificação TLS/SSL foi inesperado"
 
@@ -1788,7 +1831,7 @@ msgstr "Unsupported RPQ term"
 msgid "Unsupported certificate purpose"
 msgstr "Finalidade do certificado não é suportada"
 
-#: src/core/actions/table.c:102
+#: src/core/actions/table.c:143
 msgid "Up"
 msgstr "Subir"
 
@@ -1896,11 +1939,11 @@ msgstr ""
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
-#: src/core/actions/table.c:85
+#: src/core/actions/table.c:126
 msgid "_Disconnect"
 msgstr "_Desconectar"
 
-#: src/core/actions/table.c:71
+#: src/core/actions/table.c:112
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
@@ -1928,7 +1971,7 @@ msgstr "Revisão da lib3270"
 msgid "lib3270 version"
 msgstr "Versão da lib3270"
 
-#: src/core/properties/boolean.c:182
+#: src/core/properties/boolean.c:189
 msgid "numeric lock"
 msgstr "numeric lock"
 

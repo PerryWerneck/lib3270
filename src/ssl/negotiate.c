@@ -137,6 +137,52 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 }
 #endif // SSL_ENABLE_CRL_CHECK
 
+static const struct ssl_protocol {
+	int id;
+	const char * description;
+} ssl_protocols[] = {
+
+	{
+		.id = SSL3_VERSION,
+		.description = "SSLv3"
+	},
+	{
+		.id = TLS1_VERSION,
+		.description = "TLSv1"
+	},
+	{
+		.id = TLS1_1_VERSION,
+		.description = "TLSv1.1"
+	},
+	{
+		.id = TLS1_2_VERSION,
+		.description = "TLSv1.2"
+	},
+	{
+		.id = DTLS1_VERSION,
+		.description = "DTLSv1"
+	},
+	{
+		.id = DTLS1_2_VERSION,
+		.description = "DTLSv2"
+	}
+
+};
+
+static const struct ssl_protocol * get_protocol_from_id(int id) {
+
+	if(id < 1)
+		return NULL;
+
+	id--;
+
+	if( ((size_t) id) > (sizeof(ssl_protocols)/sizeof(ssl_protocols[0])))
+		return NULL;
+
+	return ssl_protocols + id;
+
+}
+
 static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
 	int rv;
@@ -150,16 +196,18 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	}
 
 	/* Set up the TLS/SSL connection. */
-	if(hSession->ssl.protocol.min_version)
+	const struct ssl_protocol * protocol;
+
+	if( (protocol = get_protocol_from_id(hSession->ssl.protocol.min_version)) != NULL )
 	{
-		trace_ssl(hSession,"Minimum protocol version set to %d\n",hSession->ssl.protocol.min_version);
-		SSL_set_min_proto_version(hSession->ssl.con,hSession->ssl.protocol.min_version);
+		trace_ssl(hSession,"Minimum protocol version set to %s\n",protocol->description);
+		SSL_set_min_proto_version(hSession->ssl.con,protocol->id);
 	}
 
-	if(hSession->ssl.protocol.max_version)
+	if( (protocol = get_protocol_from_id(hSession->ssl.protocol.max_version)) != NULL )
 	{
-		trace_ssl(hSession,"Maximum protocol version set to %d\n",hSession->ssl.protocol.max_version);
-		SSL_set_max_proto_version(hSession->ssl.con,hSession->ssl.protocol.max_version);
+		trace_ssl(hSession,"Maximum protocol version set to %s\n",protocol->description);
+		SSL_set_max_proto_version(hSession->ssl.con,protocol->id);
 	}
 
 	if(SSL_set_fd(hSession->ssl.con, hSession->connection.sock) != 1)

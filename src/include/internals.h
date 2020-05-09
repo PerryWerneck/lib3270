@@ -136,12 +136,14 @@ enum iaction {
 };
 
 // Version strings
+/*
 LIB3270_INTERNAL const char * build;
 LIB3270_INTERNAL const char * app_defaults_version;
 LIB3270_INTERNAL const char * sccsid;
 LIB3270_INTERNAL const char * build_rpq_timestamp;
 LIB3270_INTERNAL const char * build_rpq_version;
 LIB3270_INTERNAL const char * build_rpq_revision;
+*/
 
 #if defined(X3270_DBCS) /*[*/
 	LIB3270_INTERNAL Boolean		dbcs;

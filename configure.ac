@@ -201,12 +201,12 @@ rpq_revision=`$date +"%Y%m%d"`
 sccs_date=`$date +%Y/%m/%d`
 sccs_user=$USER
 
-AC_SUBST(RPQ_BUILD_DATE,$rpq_build_date)
-AC_SUBST(RPQ_TIMESTAMP,$rpq_timestamp)
-AC_SUBST(RPQ_REVISION,$rpq_revision)
+AC_DEFINE_UNQUOTED(RPQ_BUILD_DATE,"$rpq_build_date")
+AC_DEFINE_UNQUOTED(RPQ_TIMESTAMP_VALUE,"$rpq_timestamp")
+AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision")
 
-AC_SUBST(SCCS_USER,$USER)
-AC_SUBST(SCCS_DATE,$sccs_date)
+AC_DEFINE_UNQUOTED(SCCS_USER,"$USER")
+AC_DEFINE_UNQUOTED(SCCS_DATE,"$sccs_date")
 
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl
@@ -664,8 +664,6 @@ AC_SUBST(INSTALL_PACKAGES)
 
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(locale/Makefile)
-
-AC_CONFIG_FILES(src/core/version.c)
 
 AC_CONFIG_FILES(sdk/lib3270.pc)
 AC_CONFIG_FILES(sdk/lib3270-static.pc)

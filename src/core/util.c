@@ -357,12 +357,17 @@ LIB3270_EXPORT void * lib3270_strdup(const char *str)
 
 LIB3270_EXPORT const char * lib3270_get_version(void)
 {
-	return build_rpq_version;
+	return PACKAGE_VERSION;
 }
 
 LIB3270_EXPORT const char * lib3270_get_revision(void)
 {
-	return build_rpq_revision;
+	return RPQ_REVISION;
+}
+
+LIB3270_EXPORT const char * lib3270_get_build_rpq_timestamp(void)
+{
+	return RPQ_TIMESTAMP_VALUE;
 }
 
 void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)

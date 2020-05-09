@@ -199,26 +199,26 @@ void do_qr_rpqnames(H3270 *hSession)
 			break;
 
 		case RPQ_VERSION:	/* program version */
-			x = strlen(build_rpq_version);
+			x = strlen(PACKAGE_VERSION);
 			omit_due_space_limit = (x > remaining);
 			if (!omit_due_space_limit)
 			{
 				for (i = 0; i < x; i++)
 				{
-					*hSession->output.ptr++ = hSession->charset.asc2ebc[(int)(*(build_rpq_version+i) & 0xff)];
+					*hSession->output.ptr++ = hSession->charset.asc2ebc[(int)(*(PACKAGE_VERSION+i) & 0xff)];
 				}
 			}
 			break;
 
 		case RPQ_TIMESTAMP:	/* program build time (yyyymmddhhmmss bcd) */
-			x = strlen(build_rpq_timestamp);
+			x = strlen(RPQ_TIMESTAMP_VALUE);
 			omit_due_space_limit = ((x+1)/2 > remaining) ? 1 : 0;
 			if (!omit_due_space_limit)
 			{
 				for (i=0; i < x; i+=2)
 				{
-					*hSession->output.ptr++ = ((*(build_rpq_timestamp+i) - '0') << 4)
-						+ (*(build_rpq_timestamp+i+1) - '0');
+					*hSession->output.ptr++ = ((*(RPQ_TIMESTAMP_VALUE+i) - '0') << 4)
+						+ (*(RPQ_TIMESTAMP_VALUE+i+1) - '0');
 				}
 			}
 			break;

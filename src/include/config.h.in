@@ -39,6 +39,12 @@
 	#undef LIB3270_NAME
 	#undef GETTEXT_PACKAGE
 
+	#undef RPQ_BUILD_DATE
+	#undef RPQ_TIMESTAMP_VALUE
+	#undef RPQ_REVISION
+	#undef SCCS_USER
+	#undef SCCS_DATE
+
 	/* Default settings */
 
 	/** @brief The lib3270's default host URL */

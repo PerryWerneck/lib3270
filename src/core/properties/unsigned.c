@@ -178,8 +178,4 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
 	return properties;
  }
 
- LIB3270_EXPORT const char * lib3270_get_build_rpq_timestamp(void)
- {
- 	return build_rpq_timestamp;
- }
 

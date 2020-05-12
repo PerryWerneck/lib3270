@@ -144,19 +144,19 @@ static const struct ssl_protocol {
 
 	{
 		.id = SSL3_VERSION,
-		.description = "SSLv3"
+		.description = SSL_TXT_SSLV3
 	},
 	{
 		.id = TLS1_VERSION,
-		.description = "TLSv1"
+		.description = SSL_TXT_TLSV1
 	},
 	{
 		.id = TLS1_1_VERSION,
-		.description = "TLSv1.1"
+		.description = SSL_TXT_TLSV1_1
 	},
 	{
 		.id = TLS1_2_VERSION,
-		.description = "TLSv1.2"
+		.description = SSL_TXT_TLSV1_2
 	},
 	{
 		.id = DTLS1_VERSION,

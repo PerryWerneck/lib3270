@@ -98,6 +98,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
+
 #ifdef SSL_ENABLE_CRL_CHECK
 
 	// Enable CRL check

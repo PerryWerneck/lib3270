@@ -1,7 +1,7 @@
 #
-# spec file for package mingw32-lib3270
+# spec file for package mingw32-%{_libname}
 #
-# Copyright (c) 2014 SUSE LINUX Products GmbH, Nuernberg, Germany.
+# Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
 #
 # All modifications and additions to the file contributed by third parties
@@ -16,6 +16,9 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+%define _libname lib3270
+%define _product pw3270
+
 %define __strip %{_mingw32_strip}
 %define __objdump %{_mingw32_objdump}
 %define _use_internal_dependency_generator 0
@@ -23,32 +26,27 @@
 %define __find_provides %{_mingw32_findprovides}
 %define __os_install_post %{_mingw32_debug_install_post} \
                           %{_mingw32_install_post}
+                          
+#---[ Package header ]------------------------------------------------------------------------------------------------
 
-#---[ Main package ]--------------------------------------------------------------------------------------------------
-
-Summary:		TN3270 Access library
-Name:			mingw32-lib3270
+Summary:		TN3270 access library for 32 bits Windows
+Name:			mingw32-%{_libname}
 Version:		5.2
-
-%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-
 Release:		0
-License:		GPL-2.0
+License:		LGPL-3.0
 
 Source:			lib3270-%{version}.tar.xz
 
-Url:			https://portal.softwarepublico.gov.br/social/pw3270/
+URL:			https://github.com/PerryWerneck/lib3270
 
-Group:			Development/Libraries/C and C++
+Group:			System/Libraries
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:		mingw32(lib:3270) = %{version}
-
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake
-BuildRequires:	gettext-tools
+BuildRequires:	gettext-devel
+BuildRequires:	xz
+BuildRequires:	fdupes
 
 BuildRequires:	mingw32-cross-binutils
 BuildRequires:	mingw32-cross-gcc
@@ -61,77 +59,82 @@ BuildRequires:	mingw32(lib:iconv)
 BuildRequires:	mingw32(lib:intl)
 
 %description
+TN3270 access library, originally designed as part of the %{_product} application.
 
-TN3270 access library originally designed as part of the pw3270 application.
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+#---[ Library ]-------------------------------------------------------------------------------------------------------
 
-#---[ Development ]---------------------------------------------------------------------------------------------------
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+
+%package -n %{name}-%{_libvrs}
+Summary:		TN3270 Access library
+Group:			Development/Libraries/C and C++
+
+%description -n %{name}-%{_libvrs}
+TN3270 access library, originally designed as part of the %{_product} application.
+
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
 
-Summary:	TN3270 Access library development files
-Group:		Development/Libraries/C and C++
-Requires:	%{name} = %{version}
+Summary:		TN3270 Access library development files
+Group:			Development/Libraries/C and C++
+Requires:		%{name}-%{_libvrs} = %{version}
 
 %description devel
-
-TN3270 access library for C development files.
-
-Originally designed as part of the pw3270 application.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
+Header files for the TN3270 access library.
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
 %setup -n lib3270-%{version}
 
-NOCONFIGURE=1 ./autogen.sh
+NOCONFIGURE=1 \
+	./autogen.sh
 
 %{_mingw32_configure}
 
 %build
-make clean
-make all
+make all %{?_smp_mflags}
 
 %{_mingw32_strip} \
 	--strip-all \
 	.bin/Release/*.dll
 
+
 %install
 %{_mingw32_makeinstall}
+%_mingw32_find_lang %{_libname} langfiles
+%fdupes %{buildroot}
 
-%clean
-rm -rf %{buildroot}
-
-#---[ Files ]---------------------------------------------------------------------------------------------------------
-
-%files
+%files -n %{name}-%{_libvrs} -f langfiles
 %defattr(-,root,root)
-%doc AUTHORS LICENSE README.md
 
-%{_mingw32_libdir}/lib3270.dll
-%{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}
-%{_mingw32_libdir}/lib3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%doc AUTHORS README.md
+%license LICENSE
 
-%dir %{_mingw32_datadir}/pw3270
+%dir %{_mingw32_datadir}/%{_product}
+
+%{_mingw32_bindir}/*.dll
 
 %files devel
 %defattr(-,root,root)
 
-%{_mingw32_includedir}/lib3270
+%{_mingw32_libdir}/*.a
 
 %{_mingw32_includedir}/*.h
+%{_mingw32_includedir}/lib3270
+
 %{_mingw32_libdir}/pkgconfig/*.pc
-%{_mingw32_libdir}/*.a
-%{_mingw32_libdir}/*.lib
 
-%dir %{_mingw32_datadir}/pw3270/def
-%{_mingw32_datadir}/pw3270/def/*.def
+%dir %{_mingw32_datadir}/%{_product}/def
+%{_mingw32_datadir}/%{_product}/def/*.def
+%{_mingw32_datadir}/%{_product}/def/*.mak
 
-%dir %{_mingw32_datadir}/pw3270/pot
-%{_mingw32_datadir}/pw3270/pot/*.pot
+%dir %{_mingw32_datadir}/%{_product}/pot
+%{_mingw32_datadir}/%{_product}/pot/*.pot
 
 %changelog
-

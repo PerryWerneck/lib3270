@@ -201,8 +201,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	if( (protocol = get_protocol_from_id(hSession->ssl.protocol.min_version)) != NULL )
 	{
 #if (OPENSSL_VERSION_NUMBER >= 0x1010009fL)
-		trace_ssl(hSession,"Minimum protocol version set to %s\n",protocol->description);
-		SSL_set_min_proto_version(hSession->ssl.con,protocol->id);
+		if(SSL_set_min_proto_version(hSession->ssl.con,protocol->id) == 1)
+		{
+			trace_ssl(hSession,"Minimum protocol version set to %s\n",protocol->description);
+		}
+		else
+		{
+			lib3270_write_log(hSession,"ssl","Can't set minimum protocol version to %s",protocol->description);
+		}
 #else
 		trace_ssl(hSession,"Can't set minimum protocol version to %s\n",protocol->description);
 #endif // OPENSSL_VERSION_NUMBER
@@ -211,8 +217,14 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	if( (protocol = get_protocol_from_id(hSession->ssl.protocol.max_version)) != NULL )
 	{
 #if (OPENSSL_VERSION_NUMBER >= 0x1010009fL)
-		trace_ssl(hSession,"Maximum protocol version set to %s\n",protocol->description);
-		SSL_set_max_proto_version(hSession->ssl.con,protocol->id);
+		if(SSL_set_max_proto_version(hSession->ssl.con,protocol->id) == 1)
+		{
+			trace_ssl(hSession,"Maximum protocol version set to %s\n",protocol->description);
+		}
+		else
+		{
+			lib3270_write_log(hSession,"ssl","Can't set maximum protocol version to %s",protocol->description);
+		}
 #else
 		trace_ssl(hSession,"Can't set maximum protocol version to %s\n",protocol->description);
 #endif // OPENSSL_VERSION_NUMBER

@@ -79,7 +79,7 @@ LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start
 	if(baddr < 0)
 		baddr = lib3270_get_cursor_address(session);
 
-	if(baddr > lib3270_get_length(session)) {
+	if(baddr > (int) lib3270_get_length(session)) {
 		return errno = EINVAL;
 	}
 

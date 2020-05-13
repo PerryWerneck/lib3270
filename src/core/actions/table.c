@@ -51,6 +51,46 @@
 	return lib3270_reconnect(hSession,0);
  }
 
+ static int select_up(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_UP,1);
+ }
+
+ static int select_down(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_DOWN,1);
+ }
+
+ static int select_left(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_LEFT,1);
+ }
+
+ static int select_right(H3270 *hSession)
+ {
+ 	return lib3270_move_cursor(hSession,LIB3270_DIR_RIGHT,1);
+ }
+
+ static int selection_up(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_UP);
+ }
+
+ static int selection_down(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_DOWN);
+ }
+
+ static int selection_left(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_LEFT);
+ }
+
+ static int selection_right(H3270 *hSession)
+ {
+ 	return lib3270_move_selection(hSession,LIB3270_DIR_RIGHT);
+ }
+
 /**
  * @brief Get LIB3270 action table;
  *
@@ -213,7 +253,7 @@
 			.name = "select-all",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<ctrl>a",
+			.keys = "<Primary>a",
 			.icon = "edit-select-all",
 			.label = N_( "Select all" ),
 			.summary = NULL,
@@ -241,7 +281,7 @@
 			.name = "reselect",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<Ctrl>r",
+			.keys = "<Primary>r",
 			.icon = NULL,
 			.label = N_( "Reselect" ),
 			.summary = N_( "Reselect"),
@@ -265,6 +305,117 @@
 			.activatable = lib3270_is_connected
 		},
 
+		{
+			.name = "select-up",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Up",
+			.icon = NULL,
+			.label = N_( "Move cursor up and select" ),
+			.summary = NULL,
+			.activate = select_up,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-down",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Down",
+			.icon = NULL,
+			.label = N_( "Move cursor down and select" ),
+			.summary = NULL,
+			.activate = select_down,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-left",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Left",
+			.icon = NULL,
+			.label = N_( "Move cursor left and select" ),
+			.summary = NULL,
+			.activate = select_left,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "select-right",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Shift>Right",
+			.icon = NULL,
+			.label = N_( "Move cursor rigth and select" ),
+			.summary = NULL,
+			.activate = select_right,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "selection-up",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Up",
+			.icon = NULL,
+			.label = N_( "Move selection up" ),
+			.summary = NULL,
+			.activate = selection_up,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.activatable = lib3270_get_has_selection
+		},
+
+		{
+			.name = "selection-down",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Down",
+			.icon = NULL,
+			.label = N_( "Move selection down" ),
+			.summary = NULL,
+			.activate = selection_down,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.activatable = lib3270_get_has_selection
+		},
+
+		{
+			.name = "selection-left",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Left",
+			.icon = NULL,
+			.label = N_( "Move selection left" ),
+			.summary = NULL,
+			.activate = selection_left,
+
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.activatable = lib3270_get_has_selection
+		},
+
+		{
+			.name = "selection-right",
+			.type = LIB3270_ACTION_TYPE_SELECTION,
+
+			.keys = "<Alt>Right",
+			.icon = NULL,
+			.label = N_( "Move selection right" ),
+			.summary = NULL,
+			.activate = selection_right,
+			.activatable = lib3270_get_has_selection
+
+		},
+
 		//
 		// Field actions.
 		//
@@ -272,7 +423,7 @@
 			.name = "select-field",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = "<Ctrl>f",
+			.keys = "<Primary>f",
 			.icon = NULL,
 			.label = N_( "Select field" ),
 			.summary = N_( "Select Field" ),
@@ -347,7 +498,7 @@
 			.name = "delete-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = "<Ctrl>w",
+			.keys = "<Primary>w",
 			.icon = NULL,
 			.label = N_("Delete word"),
 			.summary = N_( "Backspaces the cursor until it hits the front of a word" ),
@@ -361,7 +512,7 @@
 			.name = "delete-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = "<Ctrl>u",
+			.keys = "<Primary>u",
 			.icon = NULL,
 			.label = N_( "Delete field" ),
 			.summary = N_( "Delete field" ),

@@ -40,6 +40,10 @@
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
 
+#if defined(HAVE_LIBSSL)
+	#include <openssl/opensslv.h>
+#endif // HAVE_LIBSSL
+
 #define my_isspace(c)	isspace((unsigned char)c)
 
 /**
@@ -357,12 +361,28 @@ LIB3270_EXPORT void * lib3270_strdup(const char *str)
 
 LIB3270_EXPORT const char * lib3270_get_version(void)
 {
-	return build_rpq_version;
+	return PACKAGE_VERSION;
 }
 
 LIB3270_EXPORT const char * lib3270_get_revision(void)
 {
-	return build_rpq_revision;
+	return RPQ_REVISION;
+}
+
+LIB3270_EXPORT char * lib3270_get_version_info(void)
+{
+#if defined(HAVE_LIBSSL)
+	return lib3270_strdup_printf(
+				"%s version %s-%s build %s (%s)",
+				PACKAGE_NAME,
+				PACKAGE_VERSION,
+				PACKAGE_RELEASE,
+				RPQ_TIMESTAMP_VALUE,
+				OPENSSL_VERSION_TEXT
+			);
+#else
+	return lib3270_strdup_printf("%s version %s-%s build %s",PACKAGE_NAME,PACKAGE_VERSION,PACKAGE_RELEASE,RPQ_TIMESTAMP_VALUE);
+#endif // HAVE_LIBSSL
 }
 
 void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)

@@ -49,6 +49,48 @@
  	return (int) lib3270_get_ssl_state(hSession);
  }
 
+ static int lib3270_set_ssl_minimum_protocol_version(H3270 *hSession, int value)
+ {
+#ifdef HAVE_LIBSSL
+	FAIL_IF_ONLINE(hSession);
+	hSession->ssl.protocol.min_version = value;
+	return 0;
+#else
+	return ENOTSUP;
+#endif // HAVE_LIBSSL
+ }
+
+ static int lib3270_set_ssl_maximum_protocol_version(H3270 *hSession, int value)
+ {
+#ifdef HAVE_LIBSSL
+	FAIL_IF_ONLINE(hSession);
+	hSession->ssl.protocol.max_version = value;
+	return 0;
+#else
+	return ENOTSUP;
+#endif // HAVE_LIBSSL
+ }
+
+ static int lib3270_get_ssl_minimum_protocol_version(const H3270 *hSession)
+ {
+#ifdef HAVE_LIBSSL
+	return hSession->ssl.protocol.min_version;
+#else
+	errno = ENOTSUP;
+	return 0;
+#endif // HAVE_LIBSSL
+ }
+
+ static int lib3270_get_ssl_maximum_protocol_version(const H3270 *hSession)
+ {
+#ifdef HAVE_LIBSSL
+	return hSession->ssl.protocol.max_version;
+#else
+	errno = ENOTSUP;
+	return 0;
+#endif // HAVE_LIBSSL
+ }
+
  const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void)
  {
 
@@ -73,6 +115,22 @@
 			.description = N_( "ID of the session security state" ),	//  Property description.
 			.get = lib3270_get_ssl_state_as_int,						//  Get value.
 			.set = NULL													//  Set value.
+		},
+
+ 		{
+			.name = "ssl_min_protocol_version",									//  Property name.
+			.description = N_( "ID of the minimum supported SSL protocol version" ),	//  Property description.
+			.default_value = 0,
+			.get = lib3270_get_ssl_minimum_protocol_version,				//  Get value.
+			.set = lib3270_set_ssl_minimum_protocol_version				//  Set value.
+		},
+
+ 		{
+			.name = "ssl_max_protocol_version",									//  Property name.
+			.description = N_( "ID of the maximum supported SSL protocol version" ),	//  Property description.
+			.default_value = 0,
+			.get = lib3270_get_ssl_maximum_protocol_version,				//  Get value.
+			.set = lib3270_set_ssl_maximum_protocol_version				//  Set value.
 		},
 
 		{

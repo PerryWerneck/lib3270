@@ -100,11 +100,10 @@ LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
 	maxlen = (h->view.rows * h->view.cols);
 
 	// Check bounds
-	if(start < 0 || start > maxlen || end < 0 || end > maxlen || start > end)
+	if(start < 0 || start > maxlen || end < 0 || end > maxlen)
 		return EINVAL;
 
 	do_select(h,start,end,lib3270_get_toggle(h,LIB3270_TOGGLE_RECTANGLE_SELECT));
-	cursor_move(h,h->select.end);
 
 	return 0;
 }

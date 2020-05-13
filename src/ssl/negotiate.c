@@ -137,6 +137,52 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 }
 #endif // SSL_ENABLE_CRL_CHECK
 
+static const struct ssl_protocol {
+	int id;
+	const char * description;
+} ssl_protocols[] = {
+
+	{
+		.id = SSL3_VERSION,
+		.description = SSL_TXT_SSLV3
+	},
+	{
+		.id = TLS1_VERSION,
+		.description = SSL_TXT_TLSV1
+	},
+	{
+		.id = TLS1_1_VERSION,
+		.description = SSL_TXT_TLSV1_1
+	},
+	{
+		.id = TLS1_2_VERSION,
+		.description = SSL_TXT_TLSV1_2
+	},
+	{
+		.id = DTLS1_VERSION,
+		.description = "DTLSv1"
+	},
+	{
+		.id = DTLS1_2_VERSION,
+		.description = "DTLSv2"
+	}
+
+};
+
+static const struct ssl_protocol * get_protocol_from_id(int id) {
+
+	if(id < 1)
+		return NULL;
+
+	id--;
+
+	if( ((size_t) id) > (sizeof(ssl_protocols)/sizeof(ssl_protocols[0])))
+		return NULL;
+
+	return ssl_protocols + id;
+
+}
+
 static int background_ssl_negotiation(H3270 *hSession, void *message)
 {
 	int rv;
@@ -150,6 +196,40 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	}
 
 	/* Set up the TLS/SSL connection. */
+	const struct ssl_protocol * protocol;
+
+	if( (protocol = get_protocol_from_id(hSession->ssl.protocol.min_version)) != NULL )
+	{
+#if (OPENSSL_VERSION_NUMBER >= 0x1010009fL)
+		if(SSL_set_min_proto_version(hSession->ssl.con,protocol->id) == 1)
+		{
+			trace_ssl(hSession,"Minimum protocol version set to %s\n",protocol->description);
+		}
+		else
+		{
+			lib3270_write_log(hSession,"ssl","Can't set minimum protocol version to %s",protocol->description);
+		}
+#else
+		trace_ssl(hSession,"Can't set minimum protocol version to %s\n",protocol->description);
+#endif // OPENSSL_VERSION_NUMBER
+	}
+
+	if( (protocol = get_protocol_from_id(hSession->ssl.protocol.max_version)) != NULL )
+	{
+#if (OPENSSL_VERSION_NUMBER >= 0x1010009fL)
+		if(SSL_set_max_proto_version(hSession->ssl.con,protocol->id) == 1)
+		{
+			trace_ssl(hSession,"Maximum protocol version set to %s\n",protocol->description);
+		}
+		else
+		{
+			lib3270_write_log(hSession,"ssl","Can't set maximum protocol version to %s",protocol->description);
+		}
+#else
+		trace_ssl(hSession,"Can't set maximum protocol version to %s\n",protocol->description);
+#endif // OPENSSL_VERSION_NUMBER
+	}
+
 	if(SSL_set_fd(hSession->ssl.con, hSession->connection.sock) != 1)
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");

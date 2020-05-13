@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	setlocale( LC_ALL, "" );
 #endif
 
-	textdomain("pw3270");
+	textdomain("lib3270");
 
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
 	H3270		* h		= lib3270_session_new("");
 	int			  rc	= 0;
 
-	printf("3270 session %p created\n]",h);
+	lib3270_autoptr(char) version_info = lib3270_get_version_info();
+	printf("3270 session %p created\n%s\n]",h,version_info);
 
 #ifdef HAVE_LDAP
 	lib3270_crl_set_preferred_protocol(h,"ldap");

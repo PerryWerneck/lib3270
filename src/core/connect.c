@@ -90,7 +90,7 @@
 	}
 
 	// Do I have a defined host?
-	if(!(hSession->host.current && hSession->host.srvc))
+	if(!(hSession->host.current && hSession->host.srvc && *hSession->host.current && *hSession->host.srvc))
 	{
 		errno = EINVAL;
 		return 0;

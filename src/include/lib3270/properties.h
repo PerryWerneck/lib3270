@@ -220,6 +220,14 @@
 	 */
 	LIB3270_EXPORT void lib3270_disable_crl_download(H3270 *hSession);
 
+	/**
+	 * @brief Get lib3270 version info.
+	 *
+	 * @return String with lib3270 version info (release it with lib3270_free).
+	 */
+	LIB3270_EXPORT char * lib3270_get_version_info(void);
+
+
 #ifdef __cplusplus
 	}
 #endif

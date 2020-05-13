@@ -167,14 +167,16 @@ void toggle_rectselect(H3270 *hSession, const struct lib3270_toggle *t, LIB3270_
 		update_selected_region(hSession);
 }
 
-void do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned int rect)
+int do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned int rect)
 {
-	if(end > (hSession->view.rows * hSession->view.cols))
-		return;
+	unsigned int length = (hSession->view.rows * hSession->view.cols);
+
+	if(end > length || start > length)
+		return errno = EINVAL;
 
 	// Do we really need to change selection?
 	if( ((int) start) == hSession->select.start && ((int) end) == hSession->select.end && hSession->selected)
-		return;
+		return 0;
 
 	// Start address is inside the screen?
 	hSession->select.start		= start;
@@ -200,6 +202,7 @@ void do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned i
 
 	hSession->cbk.update_selection(hSession,start,end);
 
+	return 0;
 }
 
 LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int baddr)

@@ -158,14 +158,18 @@ static const struct ssl_protocol {
 		.id = TLS1_2_VERSION,
 		.description = SSL_TXT_TLSV1_2
 	},
+#ifdef DTLS1_VERSION
 	{
 		.id = DTLS1_VERSION,
 		.description = "DTLSv1"
 	},
+#endif // DTLS1_VERSION
+#ifdef DTLS1_2_VERSION
 	{
 		.id = DTLS1_2_VERSION,
 		.description = "DTLSv2"
-	}
+	},
+#endif // DTLS1_2_VERSION
 
 };
 

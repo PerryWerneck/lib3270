@@ -2,10 +2,10 @@
 
 pkgname=lib3270
 
-pkgver=5.2
+pkgver=5.3
 pkgrel=1
 pkgdesc="TN3270 Access library"
-url="https://portal.softwarepublico.gov.br/social/pw3270/"
+url="https://github.com/PerryWerneck/lib3270/"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()

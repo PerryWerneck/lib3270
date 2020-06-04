@@ -85,7 +85,8 @@ Header files for the TN3270 access library.
 NOCONFIGURE=1 \
 	./autogen.sh
 
-%configure
+%configure \
+	--with-release=%{release}
 
 %build
 make all %{?_smp_mflags}

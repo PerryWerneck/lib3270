@@ -22,7 +22,7 @@ Description: TN3270 Access library development files.
 
 Package: lib3270-dbg
 Architecture: any
-Depends: lib3270 (= ${binary:Version}), ${misc:Depends}
+Depends: lib3270 (= ${binary:Version})
 Description: Debugging symbols for lib3270
  This package contains the debugging symbols for lib3270.
 

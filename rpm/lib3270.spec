@@ -1,7 +1,7 @@
 #
 # spec file for package lib3270
 #
-# Copyright (c) 2019 SUSE LLC
+# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (c) <2008> <Banco do Brasil S.A.>
 #
 # All modifications and additions to the file contributed by third parties
@@ -22,7 +22,6 @@ Version:        5.3
 Release:        0
 Summary:        TN3270 Access library
 License:        LGPL-3.0-only
-Group:          System/Libraries
 URL:            https://github.com/PerryWerneck/lib3270
 Source:         %{name}-%{version}.tar.xz
 BuildRequires:  autoconf >= 2.61
@@ -34,16 +33,12 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig
-%if 0%{?fedora} ||  0%{?suse_version} > 1200
 BuildRequires:  pkgconfig(libcrypto)
-BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(libssl)
 BuildRequires:  pkgconfig(openssl)
-%else
-BuildRequires:  libcurl-devel
-BuildRequires:  openssl-devel
+BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  xz
-%endif
+
 %if 0%{?centos_version}
 # CENTOS Requires gdb for debuginfo
 BuildRequires:  gdb
@@ -54,15 +49,12 @@ TN3270 access library, originally designed as part of the pw3270 application.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-#---[ Library ]-------------------------------------------------------------------------------------------------------
-
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:        TN3270 Access library
-Group:          Development/Libraries/C and C++
+Summary:    TN3270 Access library
 
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
@@ -70,58 +62,40 @@ TN3270 access library, originally designed as part of the pw3270 application.
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
-Summary:        TN3270 Access library development files
-Group:          Development/Libraries/C and C++
-Requires:       %{name}-%{_libvrs} = %{version}
+Summary:    TN3270 Access library development files
+Requires:   %{name}-%{_libvrs} = %{version}
 
 %description devel
 Header files for the TN3270 access library.
 
-#---[ Build & Install ]-----------------------------------------------------------------------------------------------
-
 %prep
 %setup -q
-
-NOCONFIGURE=1 \
-	./autogen.sh
-
-%configure \
-	--with-release=%{release}
+NOCONFIGURE=1 ./autogen.sh
+%configure --with-release=%{release}
 
 %build
 make all %{?_smp_mflags}
 
 %install
-
 %make_install
 %find_lang %{name} langfiles
+
 %fdupes %{buildroot}/%{_prefix}
 
-%files -n %{name}-%{_libvrs} -f langfiles
-
-# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
-%if 0%{?sle_version} > 120200
+%files -n %{name}-%{_libvrs}  -f langfiles
 %doc AUTHORS README.md
 %license LICENSE
-%else
-%doc LICENSE AUTHORS README.md
-%endif
 
-%dir %{_datadir}/pw3270
-
-%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_libdir}/%{name}.so.*
 
 %files devel
-
 %{_libdir}/%{name}.so
-
-%{_includedir}/*.h
-%{_includedir}/%{name}
-
-%{_libdir}/pkgconfig/*.pc
-
+%dir %{_datadir}/pw3270
 %dir %{_datadir}/pw3270/pot
 %{_datadir}/pw3270/pot/*.pot
+%{_includedir}/*.h
+%{_includedir}/%{name}
+%{_libdir}/pkgconfig/*.pc
 
 %post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 %postun -n %{name}-%{_libvrs} -p /sbin/ldconfig

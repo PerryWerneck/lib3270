@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-08 00:49-0300\n"
+"POT-Creation-Date: 2020-06-04 09:05-0300\n"
 "PO-Revision-Date: 2020-05-08 00:52-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -316,7 +316,7 @@ msgstr "Não foi possível setar o socket para o modo não blocante."
 msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
 
-#: src/ssl/negotiate.c:298 src/ssl/crl.c:165
+#: src/ssl/negotiate.c:370 src/ssl/crl.c:165
 msgid "Can't verify."
 msgstr "Não foi possível verificar"
 
@@ -338,7 +338,7 @@ msgstr ""
 msgid "Cant initialize the SSL context."
 msgstr "Erro ao inicializar contexto de segurança"
 
-#: src/ssl/negotiate.c:171
+#: src/ssl/negotiate.c:243
 msgid ""
 "Cant set the file descriptor for the input/output facility for the TLS/SSL "
 "(encrypted) side of ssl."
@@ -561,7 +561,7 @@ msgstr "Apaga até o final da linha"
 msgid "Erase input"
 msgstr "Apagar campos"
 
-#: src/core/util.c:379
+#: src/core/util.c:399
 msgid "Error"
 msgstr "Erro"
 
@@ -1152,7 +1152,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/ssl/negotiate.c:204
+#: src/ssl/negotiate.c:276
 msgid "SSL Connect failed"
 msgstr "Conexão SSL falhou"
 
@@ -1164,7 +1164,7 @@ msgstr "Erro SSL"
 msgid "SSL Read error"
 msgstr "Erro de leitura SSL"
 
-#: src/ssl/negotiate.c:170
+#: src/ssl/negotiate.c:242
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
@@ -1197,8 +1197,8 @@ msgstr "Pesquisa não produziu nenhum valor"
 msgid "Secure connection was successful."
 msgstr "Conexão segura efetuada com sucesso."
 
-#: src/ssl/negotiate.c:107 src/ssl/negotiate.c:169 src/ssl/negotiate.c:203
-#: src/ssl/negotiate.c:297 src/ssl/negotiate.c:319 src/ssl/negotiate.c:340
+#: src/ssl/negotiate.c:107 src/ssl/negotiate.c:241 src/ssl/negotiate.c:275
+#: src/ssl/negotiate.c:369 src/ssl/negotiate.c:391 src/ssl/negotiate.c:412
 #: src/ssl/crl.c:164 src/ssl/linux/url.c:65 src/ssl/linux/url.c:80
 #: src/ssl/linux/url.c:98 src/ssl/linux/url.c:115 src/ssl/linux/ldap.c:100
 #: src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134 src/ssl/linux/ldap.c:145
@@ -1209,7 +1209,7 @@ msgstr "Conexão segura efetuada com sucesso."
 msgid "Security error"
 msgstr "Erro de segurança"
 
-#: src/ssl/negotiate.c:344
+#: src/ssl/negotiate.c:416
 msgid "Security warning"
 msgstr "Alerta de segurança"
 
@@ -1384,7 +1384,7 @@ msgstr ""
 "A lista de revogação de certificados (CRL) de um certificado não pôde ser "
 "encontrada."
 
-#: src/ssl/negotiate.c:320
+#: src/ssl/negotiate.c:392
 msgid "The SSL certificate for this host is not trusted."
 msgstr "O certificado SSL deste servidor não é confiável"
 
@@ -1606,7 +1606,7 @@ msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
 "especificados."
 
-#: src/ssl/negotiate.c:321
+#: src/ssl/negotiate.c:393
 msgid ""
 "The security certificate presented by this host was not issued by a trusted "
 "certificate authority."
@@ -1783,7 +1783,7 @@ msgstr "Erro inesperado"
 msgid "Unexpected or invalid CRL URL"
 msgstr "URL do CRL é inesperada ou inválida"
 
-#: src/ssl/negotiate.c:299
+#: src/ssl/negotiate.c:371
 msgid "Unexpected or invalid TLS/SSL verify result"
 msgstr "O resultado da verificação TLS/SSL foi inesperado"
 

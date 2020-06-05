@@ -250,11 +250,11 @@ $(BINRLS)/$(LIBNAME).a: \
 
 install: \
 	locale/$(PACKAGE_NAME).pot \
-	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG)) \
-	install-locale
+	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-linux-lib: \
-	$(BINRLS)/$(SONAME)
+	$(BINRLS)/$(SONAME) \
+	install-locale
 
 	# Install library
 	@$(MKDIR) $(DESTDIR)$(libdir)
@@ -263,17 +263,13 @@ install-linux-lib: \
 		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 
-	@rm -f $(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
-	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
-
 	# Install default configs
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
 
 install-windows-lib: \
 	$(BINRLS)/$(SONAME) \
-	$(BINRLS)/$(LIBNAME).dll.a
+	$(BINRLS)/$(LIBNAME).dll.a \
+	install-locale
 
 	@$(MKDIR) \
 		$(DESTDIR)$(bindir)
@@ -355,6 +351,12 @@ install-dev: \
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) locale/$(PACKAGE_NAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+
+	@rm -f $(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

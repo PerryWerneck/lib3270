@@ -278,25 +278,6 @@ install-windows-lib: \
 		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(bindir)/$(SONAME)
 
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).dll.a \
-		$(DESTDIR)$(libdir)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		win/lib3270.mak \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-	
-
 install-static: \
 	$(BINRLS)/$(LIBNAME).a
 
@@ -330,7 +311,8 @@ install-delayed: \
 		$(DESTDIR)$(libdir)/pkgconfig/lib3270-delayed.pc
 
 install-dev: \
-	locale/$(PACKAGE_NAME).pot
+	locale/$(PACKAGE_NAME).pot \
+	install-@OSNAME@-dev
 
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 
@@ -352,11 +334,35 @@ install-dev: \
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) locale/$(PACKAGE_NAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
+install-linux-dev:
+
 	@rm -f $(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 	@$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
+install-windows-dev: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).dll.a \
+		$(DESTDIR)$(libdir)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		win/lib3270.mak \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+	
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

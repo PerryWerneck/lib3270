@@ -99,7 +99,7 @@ Compiling for Windows (With MSYS2)
 2. Install devel packages
 
 	```shell
-	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git openssl pkg-config
+	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git openssl pkg-config openssl-devel
 	```
 
 3. Get lib3270 sources from git using the mingw shell

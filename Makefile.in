@@ -347,6 +347,7 @@ install-windows-dev: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).dll.a
 
+	# Install Windows development files
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
 

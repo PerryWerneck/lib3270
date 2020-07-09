@@ -90,25 +90,27 @@ Cross-compiling on SuSE Linux (Native or WSL)
 Compiling for Windows (With MSYS2)
 ----------------------------------
 
-1. Install MSYS2 
+1. Install and update MSYS2 
 
-	* Download and install msys2 from https://www.msys2.org/
-	* Open a msys2 terminal and run "pacman -Syu" repeatedly
+	* Download and install msys2 from https://www.msys2.org/ (Don't forget to update the package database and core system packages)
+	```
+2. Update system path
+
 	* Add c:\msys64\usr\bin and c:\msys64\mingw64\bin to system path
 
-2. Install devel packages
+3. Install devel packages
 
 	```shell
-	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git openssl pkg-config openssl-devel
+	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git openssl pkg-config openssl-devel gettext-devel libintl
 	```
 
-3. Get lib3270 sources from git using the mingw shell
+4. Get lib3270 sources from git using the mingw shell
 
 	```shell
 	$ git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 	```
 
-4. Build library using the mingw shell
+5. Build library using the mingw shell
 
 	```shell
 	$ cd lib3270
@@ -116,12 +118,11 @@ Compiling for Windows (With MSYS2)
 	$ make all
 	```
 
-5. Install
+6. Install
 
 	```shell
 	$ make install
 	```
-
 
 Building for macOS (using homebrew)
 ===================================

@@ -47,8 +47,8 @@ Building for Linux
 	$ make all
 	```
 
-Cross-compiling for Windows
-===========================
+Building for Windows
+====================
 
 Cross-compiling on SuSE Linux (Native or WSL)
 ---------------------------------------------
@@ -87,8 +87,8 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	$ make all
 	```
 
-Compiling for Windows (With MSYS2)
-----------------------------------
+Windows native with MSYS2
+-------------------------
 
 1. Install and update MSYS2 
 

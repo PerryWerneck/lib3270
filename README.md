@@ -93,7 +93,7 @@ Compiling for Windows (With MSYS2)
 1. Install and update MSYS2 
 
 	* Download and install msys2 from https://www.msys2.org/ (Don't forget to update the package database and core system packages)
-	```
+
 2. Update system path
 
 	* Add c:\msys64\usr\bin and c:\msys64\mingw64\bin to system path
@@ -101,8 +101,9 @@ Compiling for Windows (With MSYS2)
 3. Install devel packages
 
 	```shell
-	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git openssl pkg-config openssl-devel gettext-devel libintl
+	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkg-config mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl
 	```
+	Afther thist close and reopen mingw shell.
 
 4. Get lib3270 sources from git using the mingw shell
 

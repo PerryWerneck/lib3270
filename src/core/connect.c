@@ -115,6 +115,10 @@
 	}
 
 #if defined(HAVE_LIBSSL)
+	debug("%s: TLS/SSL is %s",__FUNCTION__,hSession->ssl.enabled ? "ENABLED" : "DISABLED")
+	trace_dsn(hSession,"TLS/SSL is %s\n", hSession->ssl.enabled ? "enabled" : "disabled" );
+
+	if(hSession->ssl.enabled)
 	{
 		SSL_ERROR_MESSAGE ssl_error;
 		memset(&ssl_error,0,sizeof(ssl_error));

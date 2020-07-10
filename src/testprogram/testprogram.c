@@ -36,6 +36,10 @@ static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_U
 
 int main(int argc, char *argv[])
 {
+#ifdef _WIN32
+	printf("Process %s running on pid %u\n",argv[0],(unsigned int) GetCurrentProcessId());
+#endif // _WIN32
+
 #ifdef LC_ALL
 	setlocale( LC_ALL, "" );
 #endif

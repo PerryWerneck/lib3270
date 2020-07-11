@@ -530,7 +530,7 @@
 			.keys = NULL,
 			.icon = "edit-clear",
 			.label = N_("Erase input"),
-			.summary = NULL,
+			.summary = N_("Clear"),
 			.activate = lib3270_eraseinput,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -618,7 +618,7 @@
 			.keys = "Escape",
 			.icon = NULL,
 			.label = N_("Reset"),
-			.summary = NULL,
+			.summary = N_("Reset"),
 			.activate = lib3270_kybdreset,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,

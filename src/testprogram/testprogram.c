@@ -36,9 +36,9 @@ static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_U
 
 int main(int argc, char *argv[])
 {
-#ifdef _WIN32
+#ifdef DEBUG
 	printf("Process %s running on pid %u\n",argv[0],(unsigned int) GetCurrentProcessId());
-#endif // _WIN32
+#endif // DEBUG
 
 #ifdef LC_ALL
 	setlocale( LC_ALL, "" );
@@ -60,6 +60,8 @@ int main(int argc, char *argv[])
 
 	H3270		* h		= lib3270_session_new("");
 	int			  rc	= 0;
+
+	lib3270_write_log(h,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 
 	lib3270_autoptr(char) version_info = lib3270_get_version_info();
 	printf("3270 session %p created\n%s\n]",h,version_info);

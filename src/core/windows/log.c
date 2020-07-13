@@ -43,31 +43,38 @@
 
  void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *fmt, va_list arg_ptr)
  {
-	lib3270_autoptr(char) username = lib3270_get_user_name();
 	lib3270_autoptr(char) msg = lib3270_vsprintf(fmt,arg_ptr);
 
-	const char *outMsg[] = {
-		username,
-		module,
-		msg
-	};
+	debug("%s",msg);
 
-#ifdef DEBUG
-	fprintf(stderr,"LOG(%s): %s\n",module,msg);
-	fflush(stderr);
-#endif // DEBUG
+ 	if(hEventLog)
+	{
+		lib3270_autoptr(char) username = lib3270_get_user_name();
 
-	ReportEvent(
-		hEventLog,
-		(rc == 0 ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE),
-		1,
-		0,
-		NULL,
-		3,
-		0,
-		outMsg,
-		NULL
-	);
+		const char *outMsg[] = {
+			username,
+			module,
+			msg
+		};
+
+	#ifdef DEBUG
+		fprintf(stderr,"LOG(%s): %s\n",module,msg);
+		fflush(stderr);
+	#endif // DEBUG
+
+		ReportEvent(
+			hEventLog,
+			(rc == 0 ? EVENTLOG_INFORMATION_TYPE : EVENTLOG_ERROR_TYPE),
+			1,
+			0,
+			NULL,
+			3,
+			0,
+			outMsg,
+			NULL
+		);
+
+	}
 
  }
 

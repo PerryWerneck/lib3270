@@ -238,6 +238,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 
 			debug("host.message=\"%s\"",host.message);
 
+			if(hEventLog)
 			{
 				// Register on event log
 				lib3270_autoptr(char) username = lib3270_get_user_name();

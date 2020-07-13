@@ -160,22 +160,29 @@ int lib3270_unloaded(void)
 
 BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lpvResvd))
 {
+	debug("%s starts",__FUNCTION__);
+
     switch(dwcallpurpose)
     {
     case DLL_PROCESS_ATTACH:
     	hModule = hInstance;
-		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME));
+		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 		get_version_info();
 		lib3270_loaded();
 		break;
 
 	case DLL_PROCESS_DETACH:
 		lib3270_unloaded();
-		DeregisterEventSource(hEventLog);
-		hEventLog = 0;
+		if(hEventLog)
+		{
+			DeregisterEventSource(hEventLog);
+		}
+		hEventLog = NULL;
 		break;
 
     }
+
+    debug("%s ends",__FUNCTION__);
 
     return TRUE;
 }

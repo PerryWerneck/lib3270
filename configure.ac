@@ -203,10 +203,12 @@ sccs_user=$USER
 
 AC_DEFINE_UNQUOTED(RPQ_BUILD_DATE,"$rpq_build_date")
 AC_DEFINE_UNQUOTED(RPQ_TIMESTAMP_VALUE,"$rpq_timestamp")
-AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision")
 
 AC_DEFINE_UNQUOTED(SCCS_USER,"$USER")
 AC_DEFINE_UNQUOTED(SCCS_DATE,"$sccs_date")
+
+AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision")
+AC_SUBST(RPQ_REVISION,"$rpq_revision")
 
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl

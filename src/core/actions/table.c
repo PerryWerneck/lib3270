@@ -792,7 +792,7 @@
 			.name = "PA1",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.keys = NULL,
+			.keys = "<Alt>1",
 			.icon = NULL,
 			.label = N_("PA1"),
 			.summary = N_( "Program Action 1" ),
@@ -806,7 +806,7 @@
 			.name = "PA2",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.keys = NULL,
+			.keys = "<Alt>2",
 			.icon = NULL,
 			.label = N_("PA1"),
 			.summary = N_( "Program Action 2" ),
@@ -820,7 +820,7 @@
 			.name = "PA3",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.keys = NULL,
+			.keys = "<Alt>3",
 			.icon = NULL,
 			.label = N_("PA1"),
 			.summary = N_( "Program Action 3" ),

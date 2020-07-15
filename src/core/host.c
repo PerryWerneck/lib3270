@@ -288,16 +288,59 @@ LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession)
 	if(hSession->host.url)
 		return hSession->host.url;
 
-#ifdef LIB3270_DEFAULT_HOST
-	return LIB3270_DEFAULT_HOST;
-#else
-	return getenv("LIB3270_DEFAULT_HOST");
-#endif // LIB3270_DEFAULT_HOST
-
+	return lib3270_get_default_host(hSession);
 }
 
 LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hSession))
 {
+#ifdef _WIN32
+	{
+		HKEY hKey;
+		DWORD disp = 0;
+		LSTATUS	rc = RegCreateKeyEx(
+						HKEY_LOCAL_MACHINE,
+						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
+						0,
+						NULL,
+						REG_OPTION_NON_VOLATILE,
+						KEY_QUERY_VALUE|KEY_READ,
+						NULL,
+						&hKey,
+						&disp);
+
+		if(rc == ERROR_SUCCESS)
+		{
+			static char * default_host = NULL;
+			DWORD cbData = 4096;
+
+			if(!default_host)
+			{
+				default_host = (char *) malloc(cbData+1);
+			}
+			else
+			{
+				default_host = (char *) realloc(default_host,cbData+1);
+			}
+
+			DWORD dwRet = RegQueryValueEx(hKey,"host",NULL,NULL,(LPBYTE) default_host, &cbData);
+
+			RegCloseKey(hKey);
+
+			trace("***************** %d",dwRet);
+			if(dwRet == ERROR_SUCCESS)
+			{
+				default_host = (char *) realloc(default_host,cbData+1);
+                default_host[cbData] = 0;
+                return default_host;
+			}
+
+			free(default_host);
+			default_host = NULL;
+
+		}
+	}
+#endif // _WIN32
+
 #ifdef LIB3270_DEFAULT_HOST
 	return LIB3270_DEFAULT_HOST;
 #else

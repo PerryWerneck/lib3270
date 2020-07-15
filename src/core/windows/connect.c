@@ -320,7 +320,6 @@ int net_reconnect(H3270 *hSession, int seconds)
 
 	if(hSession->ssl.enabled)
 	{
-		debug("%s: Enabling SSL ****************************",__FUNCTION__);
 		hSession->ssl.host = 1;
 		if(ssl_init(hSession))
 			return errno = ENOTCONN;

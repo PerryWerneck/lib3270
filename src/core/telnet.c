@@ -482,6 +482,9 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 		trace_ds(hSession,"SENT HOSTNAME %s:%d\n", hSession->hostname, hSession->current_port);
 	}
 	*/
+
+	non_blocking(hSession,True);
+
 }
 
 /**

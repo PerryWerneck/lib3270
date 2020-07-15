@@ -91,6 +91,21 @@
  	return lib3270_move_selection(hSession,LIB3270_DIR_RIGHT);
  }
 
+ static int pa1(H3270 *hSession)
+ {
+ 	return lib3270_pakey(hSession,1);
+ }
+
+ static int pa2(H3270 *hSession)
+ {
+ 	return lib3270_pakey(hSession,1);
+ }
+
+ static int pa3(H3270 *hSession)
+ {
+ 	return lib3270_pakey(hSession,1);
+ }
+
 /**
  * @brief Get LIB3270 action table;
  *
@@ -530,7 +545,7 @@
 			.keys = NULL,
 			.icon = "edit-clear",
 			.label = N_("Erase input"),
-			.summary = NULL,
+			.summary = N_("Clear"),
 			.activate = lib3270_eraseinput,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -618,7 +633,7 @@
 			.keys = "Escape",
 			.icon = NULL,
 			.label = N_("Reset"),
-			.summary = NULL,
+			.summary = N_("Reset"),
 			.activate = lib3270_kybdreset,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -768,6 +783,51 @@
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.activatable = lib3270_is_disconnected
+		},
+
+		//
+		// Misc Actions
+		//
+		{
+			.name = "PA1",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
+			.keys = "<Alt>1",
+			.icon = NULL,
+			.label = N_("PA1"),
+			.summary = N_( "Program Action 1" ),
+			.activate = pa1,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+			{
+			.name = "PA2",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
+			.keys = "<Alt>2",
+			.icon = NULL,
+			.label = N_("PA1"),
+			.summary = N_( "Program Action 2" ),
+			.activate = pa2,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
+		},
+
+		{
+			.name = "PA3",
+			.type = LIB3270_ACTION_TYPE_GENERIC,
+
+			.keys = "<Alt>3",
+			.icon = NULL,
+			.label = N_("PA1"),
+			.summary = N_( "Program Action 3" ),
+			.activate = pa3,
+
+			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.activatable = lib3270_is_connected
 		},
 
 		{

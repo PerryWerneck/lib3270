@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-04 14:53-0300\n"
+"POT-Creation-Date: 2020-07-09 20:22-0300\n"
 "PO-Revision-Date: 2020-05-08 00:52-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -265,8 +265,8 @@ msgstr "Não foi possível criar requisição HTTP"
 msgid "Can't decode CRL"
 msgstr "Não foi possível decodificar arquivo CRL"
 
-#: src/ssl/windows/ldap.c:259 src/ssl/windows/http.c:74
-#: src/ssl/windows/curl.c:264
+#: src/ssl/windows/curl.c:264 src/ssl/windows/http.c:74
+#: src/ssl/windows/ldap.c:259
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
@@ -371,7 +371,7 @@ msgstr "Não foi possível iniciar transferência de arquivo."
 msgid "Can't use winsock version %d.%d"
 msgstr "Não posso usar versão winsock %d.%d"
 
-#: src/ssl/negotiate.c:370 src/ssl/crl.c:165
+#: src/ssl/crl.c:165 src/ssl/negotiate.c:370
 msgid "Can't verify."
 msgstr "Não foi possível verificar"
 
@@ -637,12 +637,12 @@ msgstr "Apagar campos"
 msgid "Error"
 msgstr "Erro"
 
-#: src/core/ft/ft_dft.c:454 src/core/ft/ft_cut.c:423
+#: src/core/ft/ft_cut.c:423 src/core/ft/ft_dft.c:454
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_dft.c:332 src/core/ft/ft_cut.c:528
+#: src/core/ft/ft_cut.c:528 src/core/ft/ft_dft.c:332
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
@@ -1006,8 +1006,8 @@ msgstr "Move o cursor para o primeiro branco após o último não branco no camp
 msgid "Move to first unprotected field on screen"
 msgstr "Move para o primeiro campo desprotegido"
 
-#: src/core/telnet.c:320 src/core/windows/event_dispatcher.c:149
-#: src/core/windows/connect.c:78
+#: src/core/telnet.c:320 src/core/windows/connect.c:78
+#: src/core/windows/event_dispatcher.c:149
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1282,22 +1282,22 @@ msgstr "Pesquisa não produziu nenhum valor"
 msgid "Secure connection was successful."
 msgstr "Conexão segura efetuada com sucesso."
 
-#: src/ssl/negotiate.c:107 src/ssl/negotiate.c:241 src/ssl/negotiate.c:275
-#: src/ssl/negotiate.c:369 src/ssl/negotiate.c:391 src/ssl/negotiate.c:412
-#: src/ssl/crl.c:164 src/ssl/windows/ldap.c:108 src/ssl/windows/ldap.c:122
-#: src/ssl/windows/ldap.c:151 src/ssl/windows/ldap.c:165
-#: src/ssl/windows/ldap.c:180 src/ssl/windows/ldap.c:210
-#: src/ssl/windows/ldap.c:222 src/ssl/windows/ldap.c:234
-#: src/ssl/windows/ldap.c:258 src/ssl/windows/init.c:91
-#: src/ssl/windows/init.c:112 src/ssl/windows/init.c:138
-#: src/ssl/windows/init.c:149 src/ssl/windows/http.c:57
-#: src/ssl/windows/http.c:73 src/ssl/windows/getcrl.c:57
-#: src/ssl/windows/getcrl.c:74 src/ssl/windows/getcrl.c:86
-#: src/ssl/windows/getcrl.c:118 src/ssl/windows/curl.c:188
+#: src/ssl/crl.c:164 src/ssl/negotiate.c:107 src/ssl/negotiate.c:241
+#: src/ssl/negotiate.c:275 src/ssl/negotiate.c:369 src/ssl/negotiate.c:391
+#: src/ssl/negotiate.c:412 src/ssl/windows/curl.c:188
 #: src/ssl/windows/curl.c:218 src/ssl/windows/curl.c:242
 #: src/ssl/windows/curl.c:263 src/ssl/windows/curl.c:272
 #: src/ssl/windows/curl.c:300 src/ssl/windows/curl.c:333
-#: src/ssl/windows/curl.c:369
+#: src/ssl/windows/curl.c:369 src/ssl/windows/getcrl.c:57
+#: src/ssl/windows/getcrl.c:74 src/ssl/windows/getcrl.c:86
+#: src/ssl/windows/getcrl.c:118 src/ssl/windows/http.c:57
+#: src/ssl/windows/http.c:73 src/ssl/windows/init.c:91
+#: src/ssl/windows/init.c:112 src/ssl/windows/init.c:138
+#: src/ssl/windows/init.c:149 src/ssl/windows/ldap.c:108
+#: src/ssl/windows/ldap.c:122 src/ssl/windows/ldap.c:151
+#: src/ssl/windows/ldap.c:165 src/ssl/windows/ldap.c:180
+#: src/ssl/windows/ldap.c:210 src/ssl/windows/ldap.c:222
+#: src/ssl/windows/ldap.c:234 src/ssl/windows/ldap.c:258
 msgid "Security error"
 msgstr "Erro de segurança"
 
@@ -1781,8 +1781,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_dft.c:230 src/core/ft/ft_dft.c:373 src/core/ft/ft_cut.c:400
-#: src/core/ft/ft_cut.c:495
+#: src/core/ft/ft_cut.c:400 src/core/ft/ft_cut.c:495 src/core/ft/ft_dft.c:230
+#: src/core/ft/ft_dft.c:373
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 

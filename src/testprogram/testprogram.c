@@ -1,3 +1,31 @@
+/*
+ * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+ * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ *
+ * Copyright (C) <2008> <Banco do Brasil S.A.>
+ *
+ * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+ * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+ * Free Software Foundation.
+ *
+ * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+ * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+ * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+ * obter mais detalhes.
+ *
+ * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+ * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Este programa está nomeado como connect.c e possui - linhas de código.
+ *
+ * Contatos:
+ *
+ * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ *
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +64,10 @@ static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_U
 
 int main(int argc, char *argv[])
 {
+#ifdef _WIN32
+	debug("Process %s running on pid %u\n",argv[0],(unsigned int) GetCurrentProcessId());
+#endif // _WIN32
+
 #ifdef LC_ALL
 	setlocale( LC_ALL, "" );
 #endif
@@ -56,6 +88,8 @@ int main(int argc, char *argv[])
 
 	H3270		* h		= lib3270_session_new("");
 	int			  rc	= 0;
+
+	lib3270_write_log(h,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 
 	lib3270_autoptr(char) version_info = lib3270_get_version_info();
 	printf("3270 session %p created\n%s\n]",h,version_info);

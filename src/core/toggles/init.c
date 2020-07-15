@@ -116,7 +116,7 @@ void initialize_toggles(H3270 *session)
 		LIB3270_TOGGLE_ID	id;
 		void (*upcall)(H3270 *session, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt);
 	}
-	upcalls[] =
+	upcalls[LIB3270_TOGGLE_COUNT] =
 	{
 		{
 			LIB3270_TOGGLE_RECTANGLE_SELECT,
@@ -150,15 +150,66 @@ void initialize_toggles(H3270 *session)
 
 	unsigned int f;
 
+	// Set defaults
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
+	{
 		session->toggle[f].upcall = toggle_nop;
+		session->toggle[f].value = toggle_descriptor[f].def;
+	}
 
+	// Load upcalls
 	for(f=0;f<(sizeof(upcalls)/sizeof(upcalls[0]));f++)
 		session->toggle[upcalls[f].id].upcall = upcalls[f].upcall;
 
+#ifdef _WIN32
+	{
+		HKEY hKey;
+		DWORD disp = 0;
+		LSTATUS	rc = RegCreateKeyEx(
+						HKEY_LOCAL_MACHINE,
+						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\toggles",
+						0,
+						NULL,
+						REG_OPTION_NON_VOLATILE,
+						KEY_QUERY_VALUE|KEY_READ,
+						NULL,
+						&hKey,
+						&disp);
+
+		if(rc == ERROR_SUCCESS)
+		{
+			debug("%s: Loading toggles from registry",__FUNCTION__);
+			for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
+			{
+				DWORD val 		= 0;
+				DWORD cbData    = sizeof(DWORD);
+
+				DWORD dwRet = RegQueryValueEx(
+										hKey,
+										lib3270_toggle_get_from_id(f)->name,
+										NULL,
+										NULL,
+										(LPBYTE) &val,
+										&cbData
+								);
+
+				debug("get(%s)=%d",lib3270_toggle_get_from_id(f)->name,(int) dwRet);
+				if(dwRet == ERROR_SUCCESS)
+				{
+					debug("toggle.%s=%s",lib3270_toggle_get_from_id(f)->name,val ? "True" : "False");
+					session->toggle[f].value = (val ? True : False);
+				}
+
+			}
+			RegCloseKey(hKey);
+		}
+
+	}
+#endif // _WIN32
+
+	// Initialize upcalls.
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
 	{
-		session->toggle[f].value = toggle_descriptor[f].def;
 		if(session->toggle[f].value)
 			session->toggle[f].upcall(session,&session->toggle[f],LIB3270_TOGGLE_TYPE_INITIAL);
 	}

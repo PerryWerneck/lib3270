@@ -203,10 +203,12 @@ sccs_user=$USER
 
 AC_DEFINE_UNQUOTED(RPQ_BUILD_DATE,"$rpq_build_date")
 AC_DEFINE_UNQUOTED(RPQ_TIMESTAMP_VALUE,"$rpq_timestamp")
-AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision")
 
 AC_DEFINE_UNQUOTED(SCCS_USER,"$USER")
 AC_DEFINE_UNQUOTED(SCCS_DATE,"$sccs_date")
+
+AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision")
+AC_SUBST(RPQ_REVISION,"$rpq_revision")
 
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl
@@ -241,6 +243,8 @@ AC_CHECK_HEADER(libintl.h, [
 
 	esac
 
+], [
+	AC_MSG_ERROR([Can't find required file libintl.h])
 ])
 
 AC_SUBST(INTL_LIBS)
@@ -559,7 +563,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for SSL
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL), AC_MSG_NOTICE([libssl not present.]) )
+PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL), AC_MSG_ERROR([libssl not present.]) )
 
 AC_SUBST(LIBSSL_LIBS)
 AC_SUBST(LIBSSL_CFLAGS)

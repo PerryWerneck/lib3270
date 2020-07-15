@@ -190,25 +190,30 @@ static void sockstart(H3270 *session)
 	for(rp = result; hSession->connection.sock < 0 && rp != NULL; rp = rp->ai_next)
 	{
 		hSession->connection.sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+
 		if(hSession->connection.sock < 0)
 		{
 			((struct resolver *) host)->rc = errno;
 			((struct resolver *) host)->message = strerror(errno);
+			debug("Socket error %d: %s",((struct resolver *) host)->rc,((struct resolver *) host)->message);
 			continue;
 		}
 
 		// Connected!
 		if(connect(hSession->connection.sock, rp->ai_addr, rp->ai_addrlen))
 		{
-			SOCK_CLOSE(hSession);
 			((struct resolver *) host)->rc = errno;
 			((struct resolver *) host)->message = strerror(errno);
+			debug("Connection error %d: %s",((struct resolver *) host)->rc,((struct resolver *) host)->message);
+			SOCK_CLOSE(hSession);
 			continue;
 		}
 
 	}
 
 	freeaddrinfo(result);
+
+	debug("%s: Connected using socket %d",__FUNCTION__,hSession->connection.sock);
 
 	return 0;
 
@@ -233,6 +238,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 
 			debug("host.message=\"%s\"",host.message);
 
+			if(hEventLog)
 			{
 				// Register on event log
 				lib3270_autoptr(char) username = lib3270_get_user_name();

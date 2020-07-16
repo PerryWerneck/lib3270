@@ -1561,6 +1561,7 @@
 	LIB3270_EXPORT const char	* lib3270_win32_strerror(int e);
 	LIB3270_EXPORT const char	* lib3270_win32_local_charset(void);
 	LIB3270_EXPORT LSTATUS		  lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY phkResult);
+	LIB3270_EXPORT DWORD		  lib3270_win32_get_dword(HKEY hKey, const char *name, DWORD def);
 
 	/**
 	 * @brief Translate windows error code.

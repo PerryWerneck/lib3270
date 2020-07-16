@@ -326,7 +326,6 @@ LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hS
 
 			RegCloseKey(hKey);
 
-			trace("***************** %d",dwRet);
 			if(dwRet == ERROR_SUCCESS)
 			{
 				default_host = (char *) realloc(default_host,cbData+1);

@@ -36,7 +36,7 @@
 #include <windows.h>
 #include <lib3270.h>
 
-LSTATUS lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY phkResult) {
+LIB3270_EXPORT LSTATUS lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY phkResult) {
 
 	LSTATUS	rc;
 	DWORD   disp;
@@ -54,4 +54,17 @@ LSTATUS lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY ph
 	lib3270_free(path);
 
 	return rc;
+}
+
+LIB3270_EXPORT DWORD lib3270_win32_get_dword(HKEY hKey, const char *name, DWORD def)
+{
+	DWORD val = def;
+	DWORD cbData = sizeof(DWORD);
+
+	DWORD dwRet = RegQueryValueEx(hKey, name, NULL, NULL, (LPBYTE) &val, &cbData);
+
+	if(dwRet != ERROR_SUCCESS)
+		return def;
+
+	return val;
 }

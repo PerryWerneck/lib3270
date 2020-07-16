@@ -24,8 +24,6 @@
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
 
@@ -47,7 +45,7 @@
 #include "../ssl/crl.h"
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
-
+#include <lib3270/properties.h>
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -364,14 +362,61 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->pointer				= (unsigned short) LIB3270_POINTER_LOCKED;
 
 #ifdef UNLOCK_MS
-	hSession->unlock_delay_ms		= UNLOCK_MS;
+	lib3270_set_unlock_delay(hSession,UNLOCK_MS);
 #else
-	hSession->unlock_delay_ms		= 350;
+	lib3270_set_unlock_delay(hSession,350);
 #endif // UNLOCK_MS
 
 	// CSD
 	for(f=0;f<4;f++)
 		hSession->csd[f] = hSession->saved_csd[f] = LIB3270_ANSI_CSD_US;
+
+#ifdef _WIN32
+	// Get defaults from registry.
+	{
+		HKEY hKey;
+		DWORD disp = 0;
+		LSTATUS	rc = RegCreateKeyEx(
+						HKEY_LOCAL_MACHINE,
+						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\protocol",
+						0,
+						NULL,
+						REG_OPTION_NON_VOLATILE,
+						KEY_QUERY_VALUE|KEY_READ,
+						NULL,
+						&hKey,
+						&disp);
+
+		if(rc == ERROR_SUCCESS)
+		{
+			size_t property;
+			const LIB3270_UINT_PROPERTY * uiProps = lib3270_get_unsigned_properties_list();
+
+			for(property = 0; uiProps[property].name;property++)
+			{
+				if(!(uiProps[property].set && uiProps[property].group == LIB3270_ACTION_GROUP_OFFLINE))
+					continue;
+
+				DWORD val = (DWORD) uiProps[property].default_value;
+				DWORD cbData = sizeof(DWORD);
+				DWORD dwRet = RegQueryValueEx(hKey, uiProps[property].name, NULL, NULL, (LPBYTE) &val, &cbData);
+
+				if(dwRet == ERROR_SUCCESS)
+				{
+					debug("%s=%u",uiProps[property].name,(unsigned int) val);
+					uiProps[property].set(hSession,(unsigned int) val);
+				}
+				else
+				{
+					uiProps[property].set(hSession,uiProps[property].default_value);
+				}
+
+			}
+
+			RegCloseKey(hKey);
+		}
+	}
+#endif // _WIN32
 
 	// Initialize toggles
 	initialize_toggles(hSession);

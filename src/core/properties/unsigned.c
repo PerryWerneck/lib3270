@@ -147,6 +147,7 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
 
 		{
 			.name = "unlock_delay",																				//  Property name.
+			.group = LIB3270_ACTION_GROUP_OFFLINE,																// Property group.
 #ifdef UNLOCK_MS
 			.default_value = UNLOCK_MS,
 #else

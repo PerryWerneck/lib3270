@@ -237,7 +237,7 @@
 			.name = "next-word",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = NULL,
+			.keys = "<Primary>Right",
 			.icon = NULL,
 			.label = N_("Next word"),
 			.summary = N_( "Cursor to next unprotected word" ),
@@ -271,7 +271,7 @@
 			.keys = "<Primary>a",
 			.icon = "edit-select-all",
 			.label = N_( "Select all" ),
-			.summary = NULL,
+			.summary = N_( "Select all" ),
 			.activate = lib3270_select_all,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -282,7 +282,7 @@
 			.name = "unselect",
 			.type = LIB3270_ACTION_TYPE_SELECTION,
 
-			.keys = NULL,
+			.keys = "<Primary>u",
 			.icon = NULL,
 			.label = N_( "Remove selection" ),
 			.summary = N_( "Remove selection" ),
@@ -326,8 +326,8 @@
 
 			.keys = "<Shift>Up",
 			.icon = NULL,
-			.label = N_( "Move cursor up and select" ),
-			.summary = NULL,
+			.label = N_( "Select UP" ),
+			.summary = N_( "Move cursor up and select" ),
 			.activate = select_up,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -340,8 +340,8 @@
 
 			.keys = "<Shift>Down",
 			.icon = NULL,
-			.label = N_( "Move cursor down and select" ),
-			.summary = NULL,
+			.label = N_( "Select Down" ),
+			.summary = N_( "Move cursor down and select" ),
 			.activate = select_down,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -354,8 +354,8 @@
 
 			.keys = "<Shift>Left",
 			.icon = NULL,
-			.label = N_( "Move cursor left and select" ),
-			.summary = NULL,
+			.label = N_( "Select Left" ),
+			.summary = N_( "Move cursor left and select" ),
 			.activate = select_left,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -368,8 +368,8 @@
 
 			.keys = "<Shift>Right",
 			.icon = NULL,
-			.label = N_( "Move cursor rigth and select" ),
-			.summary = NULL,
+			.label = N_( "Select right" ),
+			.summary = N_( "Move cursor rigth and select" ),
 			.activate = select_right,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -382,8 +382,8 @@
 
 			.keys = "<Alt>Up",
 			.icon = NULL,
-			.label = N_( "Move selection up" ),
-			.summary = NULL,
+			.label = N_( "Selection up" ),
+			.summary = N_( "Move selection up" ),
 			.activate = selection_up,
 
 			.group = LIB3270_ACTION_GROUP_SELECTION,
@@ -396,8 +396,8 @@
 
 			.keys = "<Alt>Down",
 			.icon = NULL,
-			.label = N_( "Move selection down" ),
-			.summary = NULL,
+			.label = N_( "Selection down" ),
+			.summary = N_( "Move selection down" ),
 			.activate = selection_down,
 
 			.group = LIB3270_ACTION_GROUP_SELECTION,
@@ -410,8 +410,8 @@
 
 			.keys = "<Alt>Left",
 			.icon = NULL,
-			.label = N_( "Move selection left" ),
-			.summary = NULL,
+			.label = N_( "Selection left" ),
+			.summary = N_( "Move selection left" ),
 			.activate = selection_left,
 
 			.group = LIB3270_ACTION_GROUP_SELECTION,
@@ -424,8 +424,8 @@
 
 			.keys = "<Alt>Right",
 			.icon = NULL,
-			.label = N_( "Move selection right" ),
-			.summary = NULL,
+			.label = N_( "Selection right" ),
+			.summary = N_( "Move selection right" ),
 			.activate = selection_right,
 			.activatable = lib3270_get_has_selection
 
@@ -456,7 +456,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = N_("Field end"),
-			.summary = N_( "Move the cursor to the first blank after the last nonblank in the field" ),
+			.summary = N_( "Move the cursor to the first blank after the last non blank in the field" ),
 			.activate = lib3270_fieldend,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -484,7 +484,7 @@
 			.keys = "Tab",
 			.icon = "go-next",
 			.label = N_("Next field"),
-			.summary = N_( "Tab forward to next field" ),
+			.summary = N_( "Move to the next unprotected field on screen" ),
 			.activate = lib3270_nextfield,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -498,7 +498,7 @@
 			.keys = "<Shift>ISO_Left_Tab",
 			.icon = "go-previous",
 			.label = N_("Previous field"),
-			.summary = N_( "Tab backward to previous field" ),
+			.summary = N_( "Move to the previous unprotected field on screen" ),
 			.activate = lib3270_previousfield,
 
 			.group = LIB3270_ACTION_GROUP_FORMATTED,
@@ -527,7 +527,7 @@
 			.name = "delete-field",
 			.type = LIB3270_ACTION_TYPE_NAVIGATION,
 
-			.keys = "<Primary>u",
+			.keys = NULL,
 			.icon = NULL,
 			.label = N_( "Delete field" ),
 			.summary = N_( "Delete field" ),
@@ -545,10 +545,10 @@
 			.keys = NULL,
 			.icon = "edit-clear",
 			.label = N_("Erase input"),
-			.summary = N_("Clear"),
+			.summary = N_("Erase all unprotected fields"),
 			.activate = lib3270_eraseinput,
 
-			.group = LIB3270_ACTION_GROUP_ONLINE,
+			.group = LIB3270_ACTION_GROUP_FORMATTED,
 			.activatable = lib3270_is_connected
 		},
 
@@ -587,7 +587,7 @@
 			.keys = "BackSpace",
 			.icon = NULL,
 			.label = N_("Erase"),
-			.summary = NULL,
+			.summary = N_("Erase"),
 			.activate = lib3270_erase,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -633,7 +633,7 @@
 			.keys = "Escape",
 			.icon = NULL,
 			.label = N_("Reset"),
-			.summary = N_("Reset"),
+			.summary = N_("Reset keyboard lock"),
 			.activate = lib3270_kybdreset,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -648,7 +648,7 @@
 			.keys = "Delete",
 			.icon = NULL,
 			.label = N_("Delete"),
-			.summary = NULL,
+			.summary = N_("Delete"),
 			.activate = lib3270_delete,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -673,10 +673,10 @@
 			.name = "fieldmark",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.keys = NULL,
+			.keys = "<Shift>Home",
 			.icon = NULL,
 			.label = N_("FM key"),
-			.summary = N_( "FM key" ),
+			.summary = N_( "Field Mark" ),
 			.activate = lib3270_fieldmark,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -704,7 +704,7 @@
 			.keys = "<shift>Escape",
 			.icon = NULL,
 			.label = N_("Attn"),
-			.summary = N_( "ATTN key, per RFC 2355.  Sends IP, regardless" ),
+			.summary = N_( "ATTN key, per RFC 2355. Sends IP, regardless" ),
 			.activate = lib3270_attn,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -718,7 +718,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = N_("Break"),
-			.summary = NULL,
+			.summary = N_("Break"),
 			.activate = lib3270_break,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -732,7 +732,7 @@
 			.keys = "<shift><alt>v",
 			.icon = "edit-paste",
 			.label = N_("Paste next"),
-			.summary = NULL,
+			.summary = N_("Paste next"),
 			.activate = lib3270_paste_next,
 
 			.group = LIB3270_ACTION_GROUP_LOCK_STATE,
@@ -746,7 +746,7 @@
 			.keys = "<shift>Print",
 			.icon = NULL,
 			.label = N_("Sys Req"),
-			.summary = NULL,
+			.summary = N_("Sys Request"),
 			.activate = lib3270_sysreq,
 
 			.group = LIB3270_ACTION_GROUP_ONLINE,
@@ -764,7 +764,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = N_("Test pattern"),
-			.summary = NULL,
+			.summary = N_("Show test pattern"),
 			.activate = lib3270_testpattern,
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
@@ -778,7 +778,7 @@
 			.keys = NULL,
 			.icon = NULL,
 			.label = N_("Charset table"),
-			.summary = NULL,
+			.summary = N_("Show charset table"),
 			.activate = lib3270_charsettable,
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,

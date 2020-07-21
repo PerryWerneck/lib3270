@@ -397,17 +397,17 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 #endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 
 		default:
-			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->description);
+			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->body);
 
-			debug("message: %s",msg->message);
-			debug("description: %s",msg->description);
+			debug("message: %s",msg->summary);
+			debug("description: %s",msg->body);
 
-			((SSL_ERROR_MESSAGE *) message)->text = gettext(msg->message);
-			((SSL_ERROR_MESSAGE *) message)->description = gettext(msg->description);
+			((SSL_ERROR_MESSAGE *) message)->text = gettext(msg->summary);
+			((SSL_ERROR_MESSAGE *) message)->description = gettext(msg->body);
 
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
-			if(msg->icon == LIB3270_NOTIFY_ERROR)
+			if(msg->type == LIB3270_NOTIFY_ERROR)
 			{
 				((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
 				return EACCES;

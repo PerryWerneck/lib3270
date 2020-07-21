@@ -86,6 +86,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	if(ssl_ctx == NULL)
 	{
 		message->error = hSession->ssl.error = ERR_get_error();
+		message->id = "SSLCTXERR";
 		message->title = _( "Security error" );
 		message->text = _( "Cant initialize the SSL context." );
 		return -1;

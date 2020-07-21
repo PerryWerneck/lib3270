@@ -38,6 +38,7 @@
 #include <lib3270/charset.h>
 #include <lib3270/session.h>
 #include <lib3270/actions.h>
+#include <lib3270/popup.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
@@ -782,9 +783,10 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	typedef struct _ssl_error_message
 	{
 		int			  error;
-		const char	* title;
-		const char	* text;
-		const char	* description;
+		const char	* id;			///< @brief Message identifier.
+		const char	* title;		///< @brief Title for popup window.
+		const char	* text;			///< @brief Message text.
+		const char	* description;	///< @brief Message description.
 #ifdef _WIN32
 		DWORD		  lasterror;
 #endif // _WIN32
@@ -792,11 +794,10 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	struct ssl_status_msg
 	{
+		LIB3270_POPUP_HEAD
+
 		long			  id;
-		LIB3270_NOTIFY	  icon;
-		const char		* iconName;		// Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-		const char		* message;
-		const char		* description;
+		const char		* iconName;		///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 	};
 
 	LIB3270_INTERNAL int							  ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);

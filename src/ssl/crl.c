@@ -161,6 +161,7 @@ int lib3270_crl_new_from_x509(H3270 *hSession, void *ssl_error, X509 *cert)
 
 	if(!dist_points)
 	{
+		((SSL_ERROR_MESSAGE *) ssl_error)->id = "NODISTPOINTS";
 		((SSL_ERROR_MESSAGE *) ssl_error)->title = _( "Security error" );
 		((SSL_ERROR_MESSAGE *) ssl_error)->text = _( "Can't verify." );
 		((SSL_ERROR_MESSAGE *) ssl_error)->description = _( "The host certificate doesn't have CRL distribution points" );

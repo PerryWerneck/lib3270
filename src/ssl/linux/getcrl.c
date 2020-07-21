@@ -52,6 +52,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 	if(!(consturl && *consturl))
 	{
 		message->error = hSession->ssl.error = 0;
+		message->id = "CRLINVURL";
 		message->title = _( "Security error" );
 		message->text = _( "Can't open CRL File" );
 		message->description = _("The URL for the CRL is undefined or empty");
@@ -69,6 +70,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 			int err = errno;
 
 			message->error = hSession->ssl.error = 0;
+			message->id = "CRLOPEN";
 			message->title = _( "Security error" );
 			message->text = _( "Can't open CRL File" );
 			message->description = strerror(err);
@@ -80,6 +82,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 		trace_ssl(hSession,"Loading CRL from %s\n",consturl+7);
 		if(d2i_X509_CRL_fp(hCRL, &x509_crl))
 		{
+			message->id = "CRLDECODE";
 			message->error = hSession->ssl.error = ERR_get_error();
 			message->title = _( "Security error" );
 			message->text = _( "Can't decode CRL" );

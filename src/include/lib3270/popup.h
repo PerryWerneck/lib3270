@@ -52,6 +52,23 @@
 		LIB3270_NOTIFY_USER			///< @brief Reserved, always the last one.
 	} LIB3270_NOTIFY;
 
+
+	/**
+	 * @brief Head for popup descriptors.
+	 *
+	 */
+	#define LIB3270_POPUP_HEAD	\
+		const char * name; \
+		LIB3270_NOTIFY type; \
+		const char * title; \
+		const char * summary; \
+		const char * body;
+
+	typedef struct _lib3270_popup_descriptor
+	{
+		LIB3270_POPUP_HEAD
+	} LIB3270_POPUP_DESCRIPTOR;
+
 	LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list));
 
 	/**

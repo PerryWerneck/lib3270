@@ -505,7 +505,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code)
 
 	hSession->aid = aid_code;
 	ctlr_read_modified(hSession, hSession->aid, False);
-	ticking_start(hSession,False);
+	hSession->cbk.set_timer(hSession,1);
 	status_ctlr_done(hSession);
 }
 

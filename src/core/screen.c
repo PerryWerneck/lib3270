@@ -733,6 +733,7 @@ static void status_printer(H3270 *session, int on, void *dunno)
 }
 */
 
+/*
 void status_timing(H3270 GNUC_UNUSED(*session), struct timeval GNUC_UNUSED(*t0), struct timeval GNUC_UNUSED(*t1))
 {
 }
@@ -744,6 +745,7 @@ void status_untiming(H3270 *session)
 	if(session->cbk.set_timer)
 		session->cbk.set_timer(session,0);
 }
+*/
 
 /*
 static int logpopup(H3270 *session, void *widget, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg)

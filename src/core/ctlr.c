@@ -73,7 +73,7 @@ static void set_formatted(H3270 *hSession, int state);
 static void ctlr_blanks(H3270 *session);
 static void	ctlr_half_connect(H3270 *session, int ignored, void *dunno);
 static void	ctlr_connect(H3270 *session, int ignored, void *dunno);
-static void ticking_stop(H3270 *session);
+//static void ticking_stop(H3270 *session);
 static void ctlr_add_ic(H3270 *session, int baddr, unsigned char ic);
 
 /**
@@ -286,7 +286,7 @@ static void update_formatted(H3270 *hSession)
 ///
 static void ctlr_half_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
-	ticking_start(hSession,True);
+	hSession->cbk.set_timer(hSession,1);
 }
 
 ///
@@ -294,8 +294,9 @@ static void ctlr_half_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GN
 ///
 static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
 {
-	ticking_stop(hSession);
-	status_untiming(hSession);
+	hSession->cbk.set_timer(hSession,0);
+//	ticking_stop(hSession);
+//	status_untiming(hSession);
 
 	if (hSession->ever_3270)
 		hSession->ea_buf[-1].fa = FA_PRINTABLE | FA_MODIFY;
@@ -1181,7 +1182,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 	}
 	wcc_keyboard_restore = WCC_KEYBOARD_RESTORE(buf[1]);
 	if (wcc_keyboard_restore)
-		ticking_stop(hSession);
+		hSession->cbk.set_timer(hSession,0);
 
 	if (wcc_keyboard_restore)
 	{
@@ -2676,21 +2677,21 @@ void mdt_clear(H3270 *hSession, int baddr)
 }
 
 #if defined(X3270_DBCS) /*[*/
-/*
- * DBCS state query.
- * Returns:
- *  DBCS_NONE:	Buffer position is SBCS.
- *  DBCS_LEFT:	Buffer position is left half of a DBCS character.
- *  DBCS_RIGHT:	Buffer position is right half of a DBCS character.
- *  DBCS_SI:    Buffer position is the SI terminating a DBCS subfield (treated
- *		as DBCS_LEFT for wide cursor tests)
- *  DBCS_SB:	Buffer position is an SBCS character after an SI (treated as
- *		DBCS_RIGHT for wide cursor tests)
+/**
+ * @brief DBCS state query.
  *
  * Takes line-wrapping into account, which probably isn't done all that well.
+ *
+ * @return DBCS state
+ *
+ * @retval DBCS_NONE	Buffer position is SBCS.
+ * @retval DBCS_LEFT	Buffer position is left half of a DBCS character.
+ * @retval DBCS_RIGHT:	Buffer position is right half of a DBCS character.
+ * @retval DBCS_SI    	Buffer position is the SI terminating a DBCS subfield (treated as DBCS_LEFT for wide cursor tests)
+ * @retval DBCS_SB		Buffer position is an SBCS character after an SI (treated as DBCS_RIGHT for wide cursor tests)
+ *
  */
-enum dbcs_state
-ctlr_dbcs_state(int baddr)
+enum dbcs_state ctlr_dbcs_state(int baddr)
 {
 	return dbcs? ea_buf[baddr].db: DBCS_NONE;
 }
@@ -2708,6 +2709,7 @@ ctlr_dbcs_state(int baddr)
 //static void * tick_id;
 //static struct timeval t_want;
 
+/*
 /// @brief Return the difference in milliseconds between two timevals.
 static long delta_msec(struct timeval *t1, struct timeval *t0)
 {
@@ -2731,7 +2733,9 @@ static int keep_ticking(H3270 *hSession)
 
 	return 1;
 }
+*/
 
+/*
 void ticking_start(H3270 *hSession, Boolean anyway)
 {
 	CHECK_SESSION_HANDLE(hSession);
@@ -2761,7 +2765,9 @@ void ticking_start(H3270 *hSession, Boolean anyway)
 	}
 
 }
+*/
 
+/*
 static void ticking_stop(H3270 *hSession)
 {
 	CHECK_SESSION_HANDLE(hSession);
@@ -2787,3 +2793,4 @@ static void ticking_stop(H3270 *hSession)
 		status_timing(hSession,&hSession->t_start, &t1);
 	}
 }
+*/

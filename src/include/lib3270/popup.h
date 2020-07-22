@@ -106,7 +106,7 @@
 	 * @brief Auto cleanup method (for use with lib3270_autoptr).
 	 *
 	 */
-	LIB3270_EXPORT void	  lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr);
+	LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr);
 
 #ifdef __cplusplus
 	}

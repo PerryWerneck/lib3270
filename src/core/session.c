@@ -220,28 +220,26 @@ static void message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *
 #endif // ANDROID
 }
 
-static void def_popup(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(type), const char *title, const char *msg, const char *fmt, va_list arg)
+static void def_popup(H3270 *hSession, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
 {
-#ifdef ANDROID
-	char *mask = xs_buffer("%s\n",fmt);
-	__android_log_vprint(ANDROID_LOG_VERBOSE, PACKAGE_NAME, mask, arg);
-	lib3270_free(mask);
-#else
-	lib3270_write_log(session,"popup","%s",title);
-	lib3270_write_log(session,"popup","%s",msg);
-	lib3270_write_va_log(session,"popup",fmt,arg);
-#endif // ANDROID
+	lib3270_popup_va(hSession,type,title,msg,fmt,args);
 }
 
 static int def_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait)
 {
-	lib3270_popup_dialog(
-		hSession,
-		popup->type,
+	const char * text[] = {
 		popup->title,
 		popup->summary,
-		"%s", popup->body
-	);
+		popup->body
+	};
+
+	size_t ix;
+
+	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++)
+	{
+		lib3270_write_log(hSession,"popup","%s",text[ix]);
+	}
+
 	return ENOTSUP;
 }
 

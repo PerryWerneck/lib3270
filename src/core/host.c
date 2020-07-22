@@ -66,11 +66,13 @@
  */
 int lib3270_check_for_auto_reconnect(H3270 *hSession)
 {
+	/*
 	if(hSession->popups)
 	{
 		lib3270_write_log(hSession,"3270","Delaying auto-reconnect. There's %u pending popup(s)",(unsigned int) hSession->popups);
 		return 1;
 	}
+	*/
 
 	if(hSession->auto_reconnect_inprogress)
 	{

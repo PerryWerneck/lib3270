@@ -50,13 +50,13 @@
 #include "trace_dsc.h"
 #include "telnetc.h"
 #include "screen.h"
+#include "utilc.h"
 
 #include <lib3270/internals.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
-
 
 static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
 {
@@ -83,18 +83,8 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 	else if(err)
 	{
-		char buffer[4096];
-
-		snprintf(buffer,4095,_( "Can't connect to %s" ), lib3270_get_url(hSession) );
-
-		lib3270_disconnect(hSession);
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Connection failed" ),
-			buffer,
-			_( "%s" ), strerror(err)
-		);
+		lib3270_autoptr(char) body = lib3270_strdup_printf(_("%s (rc=%d)"),strerror(err),err);
+		connection_failed(hSession,body);
 		return;
 	}
 
@@ -176,17 +166,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	// Connect to host
 	if(lib3270_run_task(hSession, background_connect, &host) || hSession->connection.sock < 0)
 	{
-		char buffer[4096];
-		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
-
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								buffer,
-								"%s",
-								host.message);
-
-		lib3270_set_disconnected(hSession);
+		connection_failed(hSession,host.message);
 		return errno = ENOTCONN;
 	}
 

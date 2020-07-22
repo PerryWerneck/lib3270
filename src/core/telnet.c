@@ -859,7 +859,12 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 			}
 			else
 			{
-				Warning(hSession, _( "EOR received when not in 3270 mode, ignored." ));
+				lib3270_popup_dialog(
+					hSession,
+					LIB3270_NOTIFY_WARNING,_("Warning"),
+					_( "EOR received when not in 3270 mode, ignored." ),
+					NULL
+				);
 			}
 			trace_dsn(hSession,"RCVD EOR\n");
 			hSession->ibptr = hSession->ibuf;

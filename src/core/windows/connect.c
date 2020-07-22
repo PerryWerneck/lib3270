@@ -83,17 +83,9 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 	else if(err)
 	{
-		char buffer[4096];
-		snprintf(buffer,4095,_( "Can't connect to %s" ), lib3270_get_url(hSession) );
+		lib3270_autoptr(char) body = lib3270_strdup_printf(_("%s (rc=%d)"),strerror(err),err);
 
-		lib3270_disconnect(hSession);
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection failed" ),
-								buffer,
-								_( "%s (rc=%d)"), strerror(err), err
-							);
-		trace("%s",__FUNCTION__);
+		connection_failed(hSession,body);
 		return;
 	}
 
@@ -229,10 +221,10 @@ int net_reconnect(H3270 *hSession, int seconds)
 
 	if(lib3270_run_task(hSession, background_connect, &host) || hSession->connection.sock < 0)
 	{
-		lib3270_autoptr(char) message = lib3270_strdup_printf(_( "Can't connect to %s"), lib3270_get_url(hSession));
-
 		if(host.message)
 		{
+			// Have windows message, convert charset.
+
 			char msg[4096];
 			strncpy(msg,host.message,4095);
 
@@ -289,24 +281,12 @@ int net_reconnect(H3270 *hSession, int seconds)
 			}
 #endif // HAVE_ICONV
 
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									message,
-									"%s (rc=%d)",
-									msg,
-									host.rc
-								);
+			connection_failed(hSession,msg);
 
 		}
 		else
 		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									message,
-									"%s",
-									NULL);
+			connection_failed(hSession,NULL);
 		}
 
 		lib3270_set_disconnected(hSession);

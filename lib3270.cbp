@@ -149,6 +149,9 @@
 		<Unit filename="src/core/paste.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/popup.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/print.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -357,10 +360,6 @@
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

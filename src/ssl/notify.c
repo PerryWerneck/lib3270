@@ -36,6 +36,7 @@
 #include <config.h>
 #include <internals.h>
 #include <lib3270/log.h>
+#include <lib3270/popup.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -154,8 +155,9 @@ int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const SSL_ERROR_MESSAG
 
 void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg) {
 
-	lib3270_autoptr(LIB3270_POPUP) * popup = translate_ssl_error_message(msg,0);
+	LIB3270_POPUP * popup = translate_ssl_error_message(msg,0);
 	hSession->cbk.popup_show(hSession,popup,0);
+	lib3270_free(popup);
 
 }
 

@@ -98,7 +98,7 @@ static void toggle_keepalive(H3270 *session, const struct lib3270_toggle GNUC_UN
 
 static void toggle_connect(H3270 *hSession, const struct lib3270_toggle *toggle, LIB3270_TOGGLE_TYPE tt)
 {
-	if(tt != LIB3270_TOGGLE_TYPE_INITIAL && lib3270_is_disconnected(hSession) && !hSession->popups && toggle->value)
+	if(tt != LIB3270_TOGGLE_TYPE_INITIAL && lib3270_is_disconnected(hSession) && toggle->value)
 	{
 		if(lib3270_reconnect(hSession,0))
 			lib3270_write_log(hSession,"3270","Auto-connect fails: %s",strerror(errno));

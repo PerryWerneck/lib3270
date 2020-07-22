@@ -655,8 +655,6 @@ struct _h3270
 		void 				* except;
 	} xio;
 
-	size_t					  popups;	///< @brief Count open popups.
-
 #ifdef HAVE_LIBSSL
 	/// @brief SSL Data.
 	struct
@@ -753,6 +751,7 @@ LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block
 
 LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect);
 
+LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.
@@ -840,7 +839,6 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	 */
 	LIB3270_INTERNAL void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg);
 
-
 #endif
 
 	/// @brief Clear element at adress.
@@ -866,4 +864,3 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	/// @brief Fire CState change.
 	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
-

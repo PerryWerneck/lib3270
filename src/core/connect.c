@@ -37,6 +37,7 @@
 #include <trace_dsc.h>
 
 #include "../ssl/crl.h"
+#include "utilc.h"
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
@@ -70,13 +71,39 @@
 
 #endif // HAVE_LIBSSL
 
+ void connection_failed(H3270 *hSession, const char *message)
+ {
+	lib3270_disconnect(hSession);
+
+	lib3270_autoptr(char) summary = lib3270_strdup_printf(
+										_( "Can't connect to %s:%s"),
+										hSession->host.current,
+										hSession->host.srvc
+									);
+
+	LIB3270_POPUP popup = {
+		.name = "CantConnect",
+		.title = _( "Connection failed" ),
+		.type = LIB3270_NOTIFY_INFO,
+		.summary = summary,
+		.body = message
+	};
+
+	if(hSession->cbk.popup_show(hSession,&popup,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT) && !hSession->auto_reconnect_inprogress) == 0) {
+		// Schedule an automatic reconnection.
+		hSession->auto_reconnect_inprogress = 1;
+		(void) AddTimer(RECONNECT_ERR_MS, hSession, lib3270_check_for_auto_reconnect);
+	}
+
+ }
+
  int lib3270_allow_reconnect(const H3270 *hSession)
  {
 	//
 	// Can't reconnect if already reconnecting *OR* there's an open popup
 	// (to avoid open more than one connect error popup).
 	//
-	if(hSession->auto_reconnect_inprogress || hSession->popups)
+	if(hSession->auto_reconnect_inprogress)
 	{
 		errno = EBUSY;
 		return 0;

@@ -51,11 +51,15 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 
 	if(!(consturl && *consturl))
 	{
-		message->error = hSession->ssl.error = 0;
-		message->id = "CRLINVURL";
-		message->title = _( "Security error" );
-		message->text = _( "Can't open CRL File" );
-		message->description = _("The URL for the CRL is undefined or empty");
+		static const LIB3270_POPUP_DESCRIPTOR popup = {
+			.type = LIB3270_NOTIFY_SECURE,
+			.name = "SSL-INVCRLURL",
+			.summary = N_( "Can't open CRL File" ),
+			.body = N_("The URL for the CRL is undefined or empty")
+		};
+
+		message->code = hSession->ssl.error = 0;
+		message->popup = &popup;
 		errno = ENOENT;
 		return NULL;
 	}
@@ -69,12 +73,17 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 			// Can't open CRL File.
 			int err = errno;
 
-			message->error = hSession->ssl.error = 0;
-			message->id = "CRLOPEN";
-			message->title = _( "Security error" );
-			message->text = _( "Can't open CRL File" );
-			message->description = strerror(err);
-			trace_ssl(hSession,"Can't open %s: %s\n",consturl,message->description);
+			static const LIB3270_POPUP_DESCRIPTOR popup = {
+				.type = LIB3270_NOTIFY_SECURE,
+				.name = "SSL-CRLOPEN",
+				.summary = N_( "Can't open CRL File" )
+			};
+
+			message->code = hSession->ssl.error = 0;
+			message->popup = &popup;
+
+			trace_ssl(hSession,"Can't open %s: %s\n",consturl,strerror(err));
+
 			return NULL;
 
 		}
@@ -82,15 +91,16 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 		trace_ssl(hSession,"Loading CRL from %s\n",consturl+7);
 		if(d2i_X509_CRL_fp(hCRL, &x509_crl))
 		{
-			message->id = "CRLDECODE";
-			message->error = hSession->ssl.error = ERR_get_error();
-			message->title = _( "Security error" );
-			message->text = _( "Can't decode CRL" );
-			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+			static const LIB3270_POPUP_DESCRIPTOR popup = {
+				.type = LIB3270_NOTIFY_SECURE,
+				.name = "SSL-CRLDECODE",
+				.summary = N_( "Can't decode CRL" )
+			};
+			message->code = hSession->ssl.error = ERR_get_error();
+			message->popup = &popup;
+			lib3270_write_log(hSession,"ssl","%s: %s",consturl, popup.summary);
 			return NULL;
 		}
-
-
 
 	}
 #ifdef HAVE_LDAP

@@ -88,6 +88,20 @@
 	LIB3270_EXPORT LIB3270_NOTIFY	lib3270_get_ssl_state_icon(const H3270 *hSession);
 	LIB3270_EXPORT const char *		lib3270_get_ssl_state_icon_name(const H3270 *hSession);
 
+	/**
+	 * @brief Emit popup message.
+	 *
+	 * @param hSession	TN3270 Session handle.
+	 * @param popup		Popup descriptor.
+	 * @param wait		If non zero waits for user response.
+	 *
+	 * @return User action.
+	 *
+	 * @retval 0			User has confirmed, continue action.
+	 * @retval ECANCELED	Operation was cancelled.
+	 */
+	LIB3270_EXPORT int lib3270_emit_popup(H3270 *hSession, const LIB3270_POPUP_DESCRIPTOR *popup, unsigned char wait);
+
 #ifdef __cplusplus
 	}
 #endif

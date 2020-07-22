@@ -780,25 +780,25 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 #if defined(HAVE_LIBSSL)
 
-	typedef struct _ssl_error_message
-	{
-		int			  error;
-		const char	* id;			///< @brief Message identifier.
-		const char	* title;		///< @brief Title for popup window.
-		const char	* text;			///< @brief Message text.
-		const char	* description;	///< @brief Message description.
-#ifdef _WIN32
-		DWORD		  lasterror;
-#endif // _WIN32
-	} SSL_ERROR_MESSAGE;
-
-	struct ssl_status_msg
+	typedef struct ssl_status_msg
 	{
 		LIB3270_POPUP_HEAD
 
 		long			  id;
 		const char		* iconName;		///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-	};
+	} SSL_STATUS_MSG;
+
+	typedef struct _ssl_error_message
+	{
+		int code;
+#ifdef _WIN32
+		DWORD	lasterror;
+#endif // _WIN32
+
+		const LIB3270_POPUP_DESCRIPTOR *popup;	/// @brief Pointer to popup message.
+
+	} SSL_ERROR_MESSAGE;
+
 
 	LIB3270_INTERNAL int							  ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);
 	LIB3270_INTERNAL int							  ssl_init(H3270 *session);
@@ -831,13 +831,15 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	 * @brief Emit popup on ssl error.
 	 *
 	 */
-	LIB3270_INTERNAL int popup_ssl_error(H3270 *session, int rc, const char *title, const char *summary, const char *body);
+	LIB3270_INTERNAL int popup_ssl_error(H3270 *session, int rc, const SSL_ERROR_MESSAGE *message);
 
 	/**
-	 * @brief Emite popup on SSL error.
+	 * @brief Emits SSL popup.
+	 *
 	 *
 	 */
-	LIB3270_INTERNAL int notify_ssl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *message);
+	LIB3270_INTERNAL void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg);
+
 
 #endif
 

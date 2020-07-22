@@ -103,9 +103,13 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	hSession->ssl.con = SSL_new(ssl_ctx);
 	if(hSession->ssl.con == NULL)
 	{
-		((SSL_ERROR_MESSAGE *) message)->error = hSession->ssl.error = ERR_get_error();
-		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "Cant create a new SSL structure for current connection." );
+		static const LIB3270_POPUP_DESCRIPTOR popup = {
+			.type = LIB3270_NOTIFY_SECURE,
+			.summary = N_( "Cant create a new SSL structure for current connection." )
+		};
+
+		((SSL_ERROR_MESSAGE *) message)->code = hSession->ssl.error = ERR_get_error();
+		((SSL_ERROR_MESSAGE *) message)->popup = &popup;
 		return -1;
 	}
 
@@ -238,9 +242,12 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
-		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "SSL negotiation failed" );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." );
+		static const LIB3270_POPUP_DESCRIPTOR popup = {
+			.summary = N_( "SSL negotiation failed" ),
+			.body = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." )
+		};
+
+		((SSL_ERROR_MESSAGE *) message)->popup = &popup;
 
 		return -1;
 	}
@@ -262,18 +269,20 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 	if (rv != 1)
 	{
-		const char * msg = "";
+		((SSL_ERROR_MESSAGE *) message)->code = SSL_get_error(hSession->ssl.con,rv);
+		if(((SSL_ERROR_MESSAGE *) message)->code == SSL_ERROR_SYSCALL && hSession->ssl.error)
+			((SSL_ERROR_MESSAGE *) message)->code = hSession->ssl.error;
 
-		((SSL_ERROR_MESSAGE *) message)->error = SSL_get_error(hSession->ssl.con,rv);
-		if(((SSL_ERROR_MESSAGE *) message)->error == SSL_ERROR_SYSCALL && hSession->ssl.error)
-			((SSL_ERROR_MESSAGE *) message)->error = hSession->ssl.error;
-
-		msg = ERR_lib_error_string(((SSL_ERROR_MESSAGE *) message)->error);
+		const char * msg = ERR_lib_error_string(((SSL_ERROR_MESSAGE *) message)->code);
 
 		trace_ssl(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
-		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "SSL Connect failed" );
+		static const LIB3270_POPUP_DESCRIPTOR popup = {
+			.type = LIB3270_NOTIFY_ERROR,
+			.summary = N_( "SSL Connect failed" ),
+		};
+
+		((SSL_ERROR_MESSAGE *) message)->popup = &popup;
 
 		return -1;
 
@@ -366,9 +375,12 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
-		((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-		((SSL_ERROR_MESSAGE *) message)->text = _( "Can't verify." );
-		((SSL_ERROR_MESSAGE *) message)->description = _( "Unexpected or invalid TLS/SSL verify result" );
+		static LIB3270_POPUP_DESCRIPTOR popup = {
+			.summary = N_( "Can't verify." ),
+			.body = N_( "Unexpected or invalid TLS/SSL verify result" )
+		};
+
+		((SSL_ERROR_MESSAGE *) message)->popup = &popup;
 		return EACCES;
 
 	}
@@ -388,9 +400,13 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-			((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
-			((SSL_ERROR_MESSAGE *) message)->text = _( "The SSL certificate for this host is not trusted." );
-			((SSL_ERROR_MESSAGE *) message)->description = _( "The security certificate presented by this host was not issued by a trusted certificate authority." );
+			static const LIB3270_POPUP_DESCRIPTOR popup = {
+				.name = "SelfSignedCert",
+				.type = LIB3270_NOTIFY_SECURE,
+				.summary = N_( "The SSL certificate for this host is not trusted." ),
+				.body = N_( "The security certificate presented by this host was not issued by a trusted certificate authority." )
+			}
+			((SSL_ERROR_MESSAGE *) message)->popup = &popup;
 			return EACCES;
 #else
 			break;
@@ -399,21 +415,15 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		default:
 			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->body);
 
-			debug("message: %s",msg->summary);
-			debug("description: %s",msg->body);
+			((SSL_ERROR_MESSAGE *) message)->popup = (LIB3270_POPUP_DESCRIPTOR *) msg;
 
-			((SSL_ERROR_MESSAGE *) message)->text = gettext(msg->summary);
-			((SSL_ERROR_MESSAGE *) message)->description = gettext(msg->body);
+			debug("message: %s",((SSL_ERROR_MESSAGE *) message)->popup->summary);
+			debug("description: %s",((SSL_ERROR_MESSAGE *) message)->popup->body);
 
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
 			if(msg->type == LIB3270_NOTIFY_ERROR)
-			{
-				((SSL_ERROR_MESSAGE *) message)->title = _( "Security error" );
 				return EACCES;
-			}
-
-			((SSL_ERROR_MESSAGE *) message)->title = _( "Security warning" );
 
 		}
 
@@ -448,44 +458,40 @@ int ssl_negotiate(H3270 *hSession)
 
 	rc = lib3270_run_task(hSession, background_ssl_negotiation, &msg);
 
-	if(rc == EACCES)
+	if(rc && msg.popup)
 	{
-		// SSL validation has failed
+		// SSL Negotiation has failed.
+		host_disconnect(hSession,1); // Disconnect with "failed" status.
 
-		int abort = -1;
+		if(popup_ssl_error(hSession,rc,&msg))
+		{
+			host_disconnect(hSession,1); // Disconnect with "failed" status.
+			return rc;
+		}
 
-		if(msg.description)
-			abort = popup_ssl_error(hSession,rc,msg.title,msg.text,msg.description);
-		else
-			abort = popup_ssl_error(hSession,rc,msg.title,msg.text,ERR_reason_error_string(msg.error));
+	} else if(rc) {
 
-		if(abort)
+		// SSL Negotiation has failed, no popup to present.
+		const LIB3270_POPUP_DESCRIPTOR popup = {
+			.summary = N_("SSL negotiation has failed")
+		};
+
+		msg.popup = &popup;
+		if(popup_ssl_error(hSession,rc,&msg))
 		{
 			host_disconnect(hSession,1); // Disconnect with "failed" status.
 			return rc;
 		}
 
 	}
-	else if(rc)
-	{
-		// SSL Negotiation has failed.
-		host_disconnect(hSession,1); // Disconnect with "failed" status.
 
-		if(msg.description)
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
-		else
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
-
-		return rc;
-
-	}
-
-	/* Tell the world that we are (still) connected, now in secure mode. */
+	// Tell the world that we are (still) connected, now in secure mode.
 	lib3270_set_connected_initial(hSession);
 	non_blocking(hSession,True);
 
 	return 0;
 }
+
 
 int	ssl_init(H3270 *hSession) {
 
@@ -502,10 +508,25 @@ int	ssl_init(H3270 *hSession) {
 		// SSL init has failed.
 		host_disconnect(hSession,1); // Disconnect with "failed" status.
 
-		if(msg.description)
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", msg.description);
+		if(msg.popup)
+		{
+			ssl_popup_message(hSession,&msg);
+		}
 		else
-			lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, msg.title, msg.text, "%s", ERR_reason_error_string(msg.error));
+		{
+			LIB3270_POPUP_DESCRIPTOR popup = {
+				.summary = N_("Unexpected error on SSL initialization")
+			};
+
+			lib3270_autoptr(char) body = lib3270_strdup_printf("%s (rc=%d)",strerror(rc),rc);
+			popup.body = body;
+
+			msg.popup = &popup;
+			ssl_popup_message(hSession,&msg);
+			msg.popup = NULL;
+
+		}
+
 
 	}
 

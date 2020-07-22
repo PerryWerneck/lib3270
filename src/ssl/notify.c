@@ -43,16 +43,76 @@
 
 #include <openssl/err.h>
 
-int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const char GNUC_UNUSED(*title), const char *summary, const char *body)
+/**
+ * @brief Translate strings from ssl error message.
+ *
+ * @param msg	SSL error message descriptor.
+ * @param rc	Value of errno.
+ *
+ * @return Dynamically allocated popup description.
+ *
+ */
+static LIB3270_POPUP_DESCRIPTOR * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg, int rc)
 {
+	LIB3270_POPUP_DESCRIPTOR * popup;
+
+	if(msg->popup->body)
+	{
+		popup = lib3270_malloc(sizeof(LIB3270_POPUP_DESCRIPTOR));
+		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP_DESCRIPTOR));
+		popup->body = dgettext(GETTEXT_PACKAGE,msg->popup->body);
+	}
+	else
+	{
+		lib3270_autoptr(char) body = NULL;
+		if(msg->code)
+		{
+			body = lib3270_strdup_printf(_( "%s (SSL error %d)" ),ERR_reason_error_string(msg->code),msg->code);
+		}
+#ifdef _WIN32
+		else if(msg->lasterror)
+		{
+			lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(msg->lasterror);
+			body = lib3270_strdup_printf(_( "Windows error was \"%s\" (%u)" ), windows_error,(unsigned int) msg->lasterror);
+		}
+#endif
+		else if(rc) {
+			body = lib3270_strdup_printf(_( "%s (rc=%d)" ),strerror(rc),rc);
+		}
+
+		popup = lib3270_malloc(sizeof(LIB3270_POPUP_DESCRIPTOR)+strlen(body)+1);
+		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP_DESCRIPTOR));
+		popup->body = (char *) (popup+1);
+		strcpy((char *) (popup+1),body);
+
+	}
+
+	if(popup->summary)
+		popup->summary = dgettext(GETTEXT_PACKAGE,popup->summary);
+
+	if(popup->title)
+		popup->title = dgettext(GETTEXT_PACKAGE,popup->title);
+	else
+		popup->title = _("Security alert");
+
+	return popup;
+}
+
+
+int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const SSL_ERROR_MESSAGE *msg)
+{
+	int response = 0;
+
+	LIB3270_POPUP_DESCRIPTOR * popup = translate_ssl_error_message(msg,0);
+
 #ifdef _WIN32
 
 	lib3270_autoptr(char) rcMessage = lib3270_strdup_printf("The error code was %d",rc);
 
 	const char *outMsg[] = {
-		title,
-		summary,
-		(body ? body : ""),
+		popup->title,
+		popup->summary,
+		(popup->body ? popup->body : ""),
 		rcMessage
 	};
 
@@ -70,63 +130,42 @@ int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const char GNUC_UNUSED
 
 #else
 
-	lib3270_write_log(hSession, "SSL", "%s %s (rc=%d)", summary, (body ? body : ""), rc);
+	lib3270_write_log(hSession, "SSL", "%s %s (rc=%d)", popup->summary, (popup->body ? popup->body : ""), rc);
 
 #endif // _WIN32
 
 #ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 
-	return hSession->cbk.popup_ssl_error(hSession,rc,title,summary,body);
+	response = hSession->cbk.popup_ssl_error(
+							hSession,
+							rc,
+							popup->title,
+							popup->summary,
+							popup->body
+						);
 
-#else
-
-	return 0;
 
 #endif // SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+
+	lib3270_free(popup);
+	return response;
+
 }
 
-int notify_ssl_error(H3270 *hSession, int rc, const SSL_ERROR_MESSAGE *message)
-{
-	lib3270_write_log(
+void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg) {
+
+	LIB3270_POPUP_DESCRIPTOR * popup = translate_ssl_error_message(msg,0);
+
+	lib3270_popup_dialog(
 		hSession,
-		"SSL-CRL-GET",
-		"CRL GET error: %s (rc=%d ssl_error=%d)",
-			message->title,
-			rc,
-			message->error
+		popup->type,
+		popup->title,
+		popup->summary,
+		"%s", popup->body
 	);
 
-	if(message->description)
-	{
-		if(popup_ssl_error(hSession,rc,message->title,message->text,message->description))
-			return rc;
-	}
-#ifdef _WIN32
-	else if(message->lasterror)
-	{
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(message->lasterror);
-		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "Windows error was \"%s\" (%u)" ), windows_error,(unsigned int) message->lasterror);
+	lib3270_free(popup);
 
-		if(popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
-			return rc;
-
-	}
-#endif // WIN32
-	else if(message->error)
-	{
-		lib3270_autoptr(char) formatted_error = lib3270_strdup_printf(_( "%s (SSL error %d)" ),ERR_reason_error_string(message->error),message->error);
-		lib3270_write_log(hSession,"SSL-CRL-GET","%s",formatted_error);
-
-		if(popup_ssl_error(hSession,rc,message->title,message->text,formatted_error))
-			return rc;
-	}
-	else
-	{
-		if(popup_ssl_error(hSession,rc,message->title,message->text,""))
-			return rc;
-	}
-
-	return 0;
 }
 
 #endif // defined(HAVE_LIBSSL)

@@ -126,7 +126,7 @@
 		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 		int rc = lib3270_run_task(hSession, background_ssl_init, &ssl_error);
 
-		if(rc && notify_ssl_error(hSession, rc, &ssl_error))
+		if(rc && popup_ssl_error(hSession, rc, &ssl_error))
 			return errno = rc;
 
 		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);

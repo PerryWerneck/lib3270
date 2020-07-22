@@ -795,7 +795,7 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 		DWORD	lasterror;
 #endif // _WIN32
 
-		const LIB3270_POPUP_DESCRIPTOR *popup;	/// @brief Pointer to popup message.
+		const LIB3270_POPUP *popup;	/// @brief Pointer to popup message.
 
 	} SSL_ERROR_MESSAGE;
 

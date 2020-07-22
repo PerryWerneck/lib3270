@@ -64,10 +64,10 @@
 		const char * summary; \
 		const char * body;
 
-	typedef struct _lib3270_popup_descriptor
+	typedef struct _LIB3270_POPUP
 	{
 		LIB3270_POPUP_HEAD
-	} LIB3270_POPUP_DESCRIPTOR;
+	} LIB3270_POPUP;
 
 	LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list));
 
@@ -100,7 +100,13 @@
 	 * @retval 0			User has confirmed, continue action.
 	 * @retval ECANCELED	Operation was cancelled.
 	 */
-	LIB3270_EXPORT int lib3270_emit_popup(H3270 *hSession, const LIB3270_POPUP_DESCRIPTOR *popup, unsigned char wait);
+	LIB3270_EXPORT int lib3270_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+
+	/**
+	 * @brief Auto cleanup method (for use with lib3270_autoptr).
+	 *
+	 */
+	LIB3270_EXPORT void	  lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr);
 
 #ifdef __cplusplus
 	}

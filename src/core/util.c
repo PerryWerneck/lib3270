@@ -305,6 +305,15 @@ LIB3270_EXPORT void lib3270_autoptr_cleanup_char(char **ptr)
 	}
 }
 
+LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr)
+{
+	if(ptr && *ptr)
+	{
+		free((void *) *ptr);
+		*ptr = NULL;
+	}
+}
+
 LIB3270_EXPORT void * lib3270_realloc(void *p, int len)
 {
 	p = realloc(p, len);

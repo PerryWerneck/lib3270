@@ -85,7 +85,7 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 	ssl_ctx = SSL_CTX_new(SSLv23_method());
 	if(ssl_ctx == NULL)
 	{
-		static const LIB3270_POPUP_DESCRIPTOR popup = {
+		static const LIB3270_POPUP popup = {
 			.name = "SSL-CTXERROR",
 			.type = LIB3270_NOTIFY_SECURE,
 			.summary = N_( "Cant initialize the SSL context." )

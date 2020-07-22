@@ -51,7 +51,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 
 	if(!(consturl && *consturl))
 	{
-		static const LIB3270_POPUP_DESCRIPTOR popup = {
+		static const LIB3270_POPUP popup = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.name = "SSL-INVCRLURL",
 			.summary = N_( "Can't open CRL File" ),
@@ -73,7 +73,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 			// Can't open CRL File.
 			int err = errno;
 
-			static const LIB3270_POPUP_DESCRIPTOR popup = {
+			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_SECURE,
 				.name = "SSL-CRLOPEN",
 				.summary = N_( "Can't open CRL File" )
@@ -91,7 +91,7 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 		trace_ssl(hSession,"Loading CRL from %s\n",consturl+7);
 		if(d2i_X509_CRL_fp(hCRL, &x509_crl))
 		{
-			static const LIB3270_POPUP_DESCRIPTOR popup = {
+			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_SECURE,
 				.name = "SSL-CRLDECODE",
 				.summary = N_( "Can't decode CRL" )

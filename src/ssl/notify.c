@@ -52,14 +52,14 @@
  * @return Dynamically allocated popup description.
  *
  */
-static LIB3270_POPUP_DESCRIPTOR * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg, int rc)
+static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg, int rc)
 {
-	LIB3270_POPUP_DESCRIPTOR * popup;
+	LIB3270_POPUP * popup;
 
 	if(msg->popup->body)
 	{
-		popup = lib3270_malloc(sizeof(LIB3270_POPUP_DESCRIPTOR));
-		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP_DESCRIPTOR));
+		popup = lib3270_malloc(sizeof(LIB3270_POPUP));
+		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP));
 		popup->body = dgettext(GETTEXT_PACKAGE,msg->popup->body);
 	}
 	else
@@ -80,8 +80,8 @@ static LIB3270_POPUP_DESCRIPTOR * translate_ssl_error_message(const SSL_ERROR_ME
 			body = lib3270_strdup_printf(_( "%s (rc=%d)" ),strerror(rc),rc);
 		}
 
-		popup = lib3270_malloc(sizeof(LIB3270_POPUP_DESCRIPTOR)+strlen(body)+1);
-		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP_DESCRIPTOR));
+		popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
+		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP));
 		popup->body = (char *) (popup+1);
 		strcpy((char *) (popup+1),body);
 
@@ -103,7 +103,7 @@ int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const SSL_ERROR_MESSAG
 {
 	int response = 0;
 
-	LIB3270_POPUP_DESCRIPTOR * popup = translate_ssl_error_message(msg,0);
+	LIB3270_POPUP * popup = translate_ssl_error_message(msg,0);
 
 #ifdef _WIN32
 
@@ -154,17 +154,8 @@ int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const SSL_ERROR_MESSAG
 
 void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg) {
 
-	LIB3270_POPUP_DESCRIPTOR * popup = translate_ssl_error_message(msg,0);
-
-	lib3270_popup_dialog(
-		hSession,
-		popup->type,
-		popup->title,
-		popup->summary,
-		"%s", popup->body
-	);
-
-	lib3270_free(popup);
+	lib3270_autoptr(LIB3270_POPUP) * popup = translate_ssl_error_message(msg,0);
+	hSession->cbk.popup_show(hSession,popup,0);
 
 }
 

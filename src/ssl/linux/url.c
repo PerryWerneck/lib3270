@@ -63,7 +63,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE
 
 	if(!httpText)
 	{
-		LIB3270_POPUP_DESCRIPTOR popup = {
+		LIB3270_POPUP popup = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.name = "SSL-CantGetCRL",
 			.summary = N_( "Error getting certificate revocation list" ),
@@ -82,7 +82,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE
 		char * data = strstr((char *) httpText,":: ");
 		if(!data)
 		{
-			static const LIB3270_POPUP_DESCRIPTOR popup = {
+			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_SECURE,
 				.summary = N_( "Got a bad formatted certificate revocation list from LDAP server" )
 			};
@@ -104,7 +104,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE
 
 		if(!d2i_X509_CRL_bio(bio, &x509_crl))
 		{
-			static const LIB3270_POPUP_DESCRIPTOR popup = {
+			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_SECURE,
 				.summary = N_( "Can't decode certificate revocation list got from LDAP server" )
 			};
@@ -126,7 +126,7 @@ LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE
 
 		if(!d2i_X509_CRL(&x509_crl, &crl_data, szText))
 		{
-			static const LIB3270_POPUP_DESCRIPTOR popup = {
+			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_SECURE,
 				.summary = N_( "Can't decode certificate revocation list" )
 			};

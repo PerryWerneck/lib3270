@@ -103,7 +103,7 @@ static int background_ssl_init(H3270 *hSession, void *message)
 	hSession->ssl.con = SSL_new(ssl_ctx);
 	if(hSession->ssl.con == NULL)
 	{
-		static const LIB3270_POPUP_DESCRIPTOR popup = {
+		static const LIB3270_POPUP popup = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.summary = N_( "Cant create a new SSL structure for current connection." )
 		};
@@ -242,7 +242,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
-		static const LIB3270_POPUP_DESCRIPTOR popup = {
+		static const LIB3270_POPUP popup = {
 			.summary = N_( "SSL negotiation failed" ),
 			.body = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." )
 		};
@@ -277,7 +277,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 		trace_ssl(hSession,"SSL_connect failed: %s %s\n",msg,ERR_reason_error_string(hSession->ssl.error));
 
-		static const LIB3270_POPUP_DESCRIPTOR popup = {
+		static const LIB3270_POPUP popup = {
 			.type = LIB3270_NOTIFY_ERROR,
 			.summary = N_( "SSL Connect failed" ),
 		};
@@ -375,7 +375,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",rv);
 		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
-		static LIB3270_POPUP_DESCRIPTOR popup = {
+		static LIB3270_POPUP popup = {
 			.summary = N_( "Can't verify." ),
 			.body = N_( "Unexpected or invalid TLS/SSL verify result" )
 		};
@@ -400,7 +400,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-			static const LIB3270_POPUP_DESCRIPTOR popup = {
+			static const LIB3270_POPUP popup = {
 				.name = "SelfSignedCert",
 				.type = LIB3270_NOTIFY_SECURE,
 				.summary = N_( "The SSL certificate for this host is not trusted." ),
@@ -415,7 +415,7 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 		default:
 			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->body);
 
-			((SSL_ERROR_MESSAGE *) message)->popup = (LIB3270_POPUP_DESCRIPTOR *) msg;
+			((SSL_ERROR_MESSAGE *) message)->popup = (LIB3270_POPUP *) msg;
 
 			debug("message: %s",((SSL_ERROR_MESSAGE *) message)->popup->summary);
 			debug("description: %s",((SSL_ERROR_MESSAGE *) message)->popup->body);
@@ -472,7 +472,7 @@ int ssl_negotiate(H3270 *hSession)
 	} else if(rc) {
 
 		// SSL Negotiation has failed, no popup to present.
-		const LIB3270_POPUP_DESCRIPTOR popup = {
+		const LIB3270_POPUP popup = {
 			.summary = N_("SSL negotiation has failed")
 		};
 
@@ -514,7 +514,7 @@ int	ssl_init(H3270 *hSession) {
 		}
 		else
 		{
-			LIB3270_POPUP_DESCRIPTOR popup = {
+			LIB3270_POPUP popup = {
 				.summary = N_("Unexpected error on SSL initialization")
 			};
 

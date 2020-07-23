@@ -66,20 +66,13 @@
  */
 int lib3270_check_for_auto_reconnect(H3270 *hSession)
 {
-	/*
-	if(hSession->popups)
-	{
-		lib3270_write_log(hSession,"3270","Delaying auto-reconnect. There's %u pending popup(s)",(unsigned int) hSession->popups);
-		return 1;
-	}
-	*/
 
 	if(hSession->auto_reconnect_inprogress)
 	{
 		lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
+		hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
 		if(lib3270_reconnect(hSession,0))
 			lib3270_write_log(hSession,"3270","Auto-reconnect fails: %s",strerror(errno));
-		hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
 	}
 
 	return 0;

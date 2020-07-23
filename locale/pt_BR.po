@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-16 15:52-0300\n"
-"PO-Revision-Date: 2020-07-16 15:57-0300\n"
+"POT-Creation-Date: 2020-07-23 11:07-0300\n"
+"PO-Revision-Date: 2020-07-23 11:09-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -31,15 +31,19 @@ msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
 
 #: src/core/iocalls.c:554 src/core/iocalls.c:571 src/core/linux/connect.c:80
-#: src/core/linux/connect.c:96
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: src/ssl/notify.c:117
+#: src/ssl/notify.c:71
 #, c-format
 msgid "%s (SSL error %d)"
 msgstr "%s (erro SSL %d)"
+
+#: src/core/linux/connect.c:86 src/ssl/notify.c:81
+#, c-format
+msgid "%s (rc=%d)"
+msgstr "%s (rc=%d)"
 
 #: src/core/keyboard/kybd.c:1923
 #, c-format
@@ -70,15 +74,6 @@ msgstr "%s: Caractere desconhecido depois de \\pf"
 #, c-format
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
-
-#: src/core/screen.c:775 src/core/screen.c:812 src/core/screen.c:830
-#: src/core/screen.c:975
-msgid "3270 Error"
-msgstr "Erro 3270"
-
-#: src/core/screen.c:793
-msgid "3270 Warning"
-msgstr "Alerta 3270"
 
 #: src/core/actions/table.c:693
 msgid "3270-style backspace"
@@ -207,7 +202,7 @@ msgstr "Negrito"
 msgid "Break"
 msgstr "Break"
 
-#: src/core/telnet.c:1647
+#: src/core/telnet.c:1652
 msgid "Broken pipe"
 msgstr "Conexão interrompida"
 
@@ -231,7 +226,7 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
-#: src/core/toggles/init.c:89 src/core/linux/connect.c:229
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:209
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
@@ -240,25 +235,20 @@ msgstr "Não foi possível %s opção \"keep-alive\""
 msgid "Can't bind to LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
-#: src/core/linux/connect.c:88
-#, c-format
-msgid "Can't connect to %s"
-msgstr "Não foi possível conectar a %s"
-
-#: src/core/linux/connect.c:180
+#: src/core/connect.c:79
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
 
-#: src/ssl/linux/getcrl.c:85
+#: src/ssl/linux/getcrl.c:97
 msgid "Can't decode CRL"
 msgstr "Não foi possível decodificar arquivo CRL"
 
-#: src/ssl/linux/url.c:116 src/ssl/linux/ldap.c:229
+#: src/ssl/linux/url.c:131 src/ssl/linux/ldap.c:229
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/ssl/linux/url.c:99
+#: src/ssl/linux/url.c:109
 msgid "Can't decode certificate revocation list got from LDAP server"
 msgstr ""
 "Não foi possível decodificar a lista de certificados revogados fornecida "
@@ -284,7 +274,7 @@ msgstr "Erro ao inicializar operação CURL"
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/ssl/linux/getcrl.c:56 src/ssl/linux/getcrl.c:73
+#: src/ssl/linux/getcrl.c:57 src/ssl/linux/getcrl.c:79
 msgid "Can't open CRL File"
 msgstr "Não foi possível abrir arquivo CRL"
 
@@ -316,7 +306,11 @@ msgstr "Não foi possível setar o socket para o modo não blocante."
 msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
 
-#: src/ssl/negotiate.c:370 src/ssl/crl.c:165
+#: src/ssl/crl.c:167
+msgid "Can't verify"
+msgstr "Não foi possível verificar"
+
+#: src/ssl/negotiate.c:379
 msgid "Can't verify."
 msgstr "Não foi possível verificar"
 
@@ -324,7 +318,7 @@ msgstr "Não foi possível verificar"
 msgid "Cancelled by user"
 msgstr "Cancelado pelo usuário"
 
-#: src/core/telnet.c:1068
+#: src/core/telnet.c:1073
 msgid "Cannot connect to specified LU"
 msgstr "Não foi possível conectar na LU pedida"
 
@@ -334,11 +328,11 @@ msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
-#: src/ssl/linux/init.c:90
+#: src/ssl/linux/init.c:91
 msgid "Cant initialize the SSL context."
 msgstr "Erro ao inicializar contexto de segurança"
 
-#: src/ssl/negotiate.c:243
+#: src/ssl/negotiate.c:247
 msgid ""
 "Cant set the file descriptor for the input/output facility for the TLS/SSL "
 "(encrypted) side of ssl."
@@ -394,22 +388,26 @@ msgstr "Comando incompleto, transferência cancelada"
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
-#: src/core/iocalls.c:538 src/core/linux/connect.c:184
-#: src/core/linux/connect.c:215 src/core/linux/connect.c:233
+#: src/core/iocalls.c:538 src/core/linux/connect.c:195
+#: src/core/linux/connect.c:213
 msgid "Connection error"
 msgstr "Erro de conexão"
 
-#: src/core/linux/connect.c:94
+#: src/core/connect.c:86
 msgid "Connection failed"
 msgstr "Conexão falhou"
 
-#: src/core/telnet.c:1651
+#: src/core/telnet.c:1656
 msgid "Connection reset by peer"
 msgstr "Conexão foi cancelada pelo servidor"
 
 #: src/core/properties/signed.c:101
 msgid "Connection state"
 msgstr "Estado da conexão"
+
+#: src/ssl/notify.c:99
+msgid "Continue"
+msgstr "Continuar"
 
 #: src/core/toggles/table.c:163 src/core/toggles/table.c:164
 msgid "Cross hair cursor"
@@ -485,7 +483,7 @@ msgstr "Apaga palavra"
 msgid "Description of the current security state"
 msgstr "Descrição do estado de segurança atual"
 
-#: src/core/telnet.c:1322
+#: src/core/telnet.c:1327
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
@@ -513,7 +511,7 @@ msgstr "Descer"
 msgid "Dup"
 msgstr "Dup"
 
-#: src/core/telnet.c:862
+#: src/core/telnet.c:865
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
 
@@ -565,7 +563,7 @@ msgstr "Apagar todos os campos desprotegidos"
 msgid "Erase input"
 msgstr "Apagar campos"
 
-#: src/core/util.c:399
+#: src/core/util.c:409
 msgid "Error"
 msgstr "Erro"
 
@@ -579,7 +577,7 @@ msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
 
-#: src/ssl/linux/url.c:66
+#: src/ssl/linux/url.c:69
 msgid "Error getting certificate revocation list"
 msgstr "Erro ao obter a lista de certificados revogados"
 
@@ -651,7 +649,7 @@ msgstr "Tela formatada"
 msgid "Full Screen"
 msgstr "Tela cheia"
 
-#: src/ssl/linux/url.c:81
+#: src/ssl/linux/url.c:87
 msgid "Got a bad formatted certificate revocation list from LDAP server"
 msgstr ""
 "Obtive lista de certificados revogados com formato inválido do servidor LDAP"
@@ -668,7 +666,7 @@ msgstr "Página de código do host"
 msgid "Host disconnected, transfer cancelled"
 msgstr "Servidor desconectou, transferência cancelada"
 
-#: src/core/telnet.c:1380
+#: src/core/telnet.c:1385
 msgid "Host illegally added function(s)"
 msgstr "Host illegally added function(s)"
 
@@ -676,11 +674,11 @@ msgstr "Host illegally added function(s)"
 msgid "Host program error code xxxxxxxxxx: file transfer canceled"
 msgstr "Erro código xxxxxxxxxx no aplicativo do host: Transferência cancelada"
 
-#: src/core/telnet.c:1305
+#: src/core/telnet.c:1310
 msgid "Host rejected device type or request type"
 msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 
-#: src/core/telnet.c:1318
+#: src/core/telnet.c:1323
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
@@ -799,6 +797,11 @@ msgstr "Código de requisição incorreto, transferência cancelada"
 #: src/core/toggles/table.c:193
 msgid "Insert"
 msgstr "Inserção"
+
+#: src/core/util.c:59 src/core/util.c:69 src/core/util.c:81 src/core/util.c:322
+#: src/core/util.c:338 src/core/util.c:350 src/core/util.c:365
+msgid "Internal error"
+msgstr "Erro interno"
 
 #: src/ssl/state.c:276
 msgid "Invalid CA certificate"
@@ -1190,7 +1193,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/ssl/negotiate.c:276
+#: src/ssl/negotiate.c:282
 msgid "SSL Connect failed"
 msgstr "Conexão SSL falhou"
 
@@ -1202,11 +1205,15 @@ msgstr "Erro SSL"
 msgid "SSL Read error"
 msgstr "Erro de leitura SSL"
 
-#: src/ssl/negotiate.c:242
+#: src/ssl/negotiate.c:246
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
-#: src/core/telnet.c:1637
+#: src/ssl/negotiate.c:476
+msgid "SSL negotiation has failed"
+msgstr "Negociação de segurança falhou"
+
+#: src/core/telnet.c:1642
 #, c-format
 msgid ""
 "SSL_write:\n"
@@ -1235,21 +1242,16 @@ msgstr "Pesquisa não produziu nenhum valor"
 msgid "Secure connection was successful."
 msgstr "Conexão segura efetuada com sucesso."
 
-#: src/ssl/negotiate.c:107 src/ssl/negotiate.c:241 src/ssl/negotiate.c:275
-#: src/ssl/negotiate.c:369 src/ssl/negotiate.c:391 src/ssl/negotiate.c:412
-#: src/ssl/crl.c:164 src/ssl/linux/url.c:65 src/ssl/linux/url.c:80
-#: src/ssl/linux/url.c:98 src/ssl/linux/url.c:115 src/ssl/linux/ldap.c:100
-#: src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134 src/ssl/linux/ldap.c:145
-#: src/ssl/linux/ldap.c:156 src/ssl/linux/ldap.c:181 src/ssl/linux/ldap.c:192
-#: src/ssl/linux/ldap.c:204 src/ssl/linux/ldap.c:228 src/ssl/linux/init.c:89
-#: src/ssl/linux/getcrl.c:55 src/ssl/linux/getcrl.c:72
-#: src/ssl/linux/getcrl.c:84 src/ssl/linux/getcrl.c:112
+#: src/ssl/notify.c:97
+msgid "Security alert"
+msgstr "Alerta de segurança"
+
+#: src/ssl/linux/ldap.c:100 src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134
+#: src/ssl/linux/ldap.c:145 src/ssl/linux/ldap.c:156 src/ssl/linux/ldap.c:181
+#: src/ssl/linux/ldap.c:192 src/ssl/linux/ldap.c:204 src/ssl/linux/ldap.c:228
+#: src/ssl/linux/getcrl.c:125
 msgid "Security error"
 msgstr "Erro de segurança"
-
-#: src/ssl/negotiate.c:416
-msgid "Security warning"
-msgstr "Alerta de segurança"
 
 #: src/core/actions/table.c:343
 msgid "Select Down"
@@ -1359,7 +1361,7 @@ msgstr "Erro no socket"
 msgid "Socket read error"
 msgstr "Erro ao ler dados da rede"
 
-#: src/core/telnet.c:1658
+#: src/core/telnet.c:1663
 msgid "Socket write error"
 msgstr "Erro ao enviar dados para a rede"
 
@@ -1387,7 +1389,7 @@ msgstr "Sys Req"
 msgid "Sys Request"
 msgstr "Sys Request"
 
-#: src/core/telnet.c:1141
+#: src/core/telnet.c:1146
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
 
@@ -1458,7 +1460,7 @@ msgstr ""
 "A lista de revogação de certificados (CRL) de um certificado não pôde ser "
 "encontrada."
 
-#: src/ssl/negotiate.c:392
+#: src/ssl/negotiate.c:406
 msgid "The SSL certificate for this host is not trusted."
 msgstr "O certificado SSL deste servidor não é confiável"
 
@@ -1466,11 +1468,11 @@ msgstr "O certificado SSL deste servidor não é confiável"
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
-#: src/ssl/linux/getcrl.c:57
+#: src/ssl/linux/getcrl.c:58
 msgid "The URL for the CRL is undefined or empty"
 msgstr "A URL para o CRL não está definida ou vazia"
 
-#: src/ssl/linux/getcrl.c:118
+#: src/ssl/linux/getcrl.c:131
 msgid "The URL scheme is unknown"
 msgstr "O tipo de URL é desconhecido"
 
@@ -1600,7 +1602,7 @@ msgstr "A transferência de arquivos terminou com sucesso."
 msgid "The height %d is less than model %d rows (%d)"
 msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
 
-#: src/ssl/crl.c:166
+#: src/ssl/crl.c:168
 msgid "The host certificate doesn't have CRL distribution points"
 msgstr ""
 "O certificado apresentado pelo servidor não tem pontos de distribuição de CRL"
@@ -1680,7 +1682,7 @@ msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
 "especificados."
 
-#: src/ssl/negotiate.c:393
+#: src/ssl/negotiate.c:407
 msgid ""
 "The security certificate presented by this host was not issued by a trusted "
 "certificate authority."
@@ -1780,6 +1782,10 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
+#: src/core/connect.c:90
+msgid "Try again"
+msgstr "Tentar novamente"
+
 #: src/core/properties/string.c:144
 msgid "URL for the certificate revocation list"
 msgstr "URL para a lista de certificados revogados"
@@ -1853,11 +1859,15 @@ msgstr "Sublinhados"
 msgid "Unexpected error"
 msgstr "Erro inesperado"
 
-#: src/ssl/linux/getcrl.c:115
+#: src/ssl/negotiate.c:518
+msgid "Unexpected error on SSL initialization"
+msgstr "Erro inesperado na inicialização do sistema de segurança"
+
+#: src/ssl/linux/getcrl.c:128
 msgid "Unexpected or invalid CRL URL"
 msgstr "URL do CRL é inesperada ou inválida"
 
-#: src/ssl/negotiate.c:371
+#: src/ssl/negotiate.c:380
 msgid "Unexpected or invalid TLS/SSL verify result"
 msgstr "O resultado da verificação TLS/SSL foi inesperado"
 
@@ -1870,7 +1880,7 @@ msgstr "Estado de segurança inesperado ou desconhecido."
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
 
-#: src/core/ctlr.c:675
+#: src/core/ctlr.c:676
 #, c-format
 msgid "Unknown 3270 Data Stream command: 0x%X"
 msgstr "Unknown 3270 Data Stream command: 0x%X"
@@ -1929,7 +1939,11 @@ msgstr "Aguardando resposta do pedido de download"
 msgid "Waiting for PUT response"
 msgstr "Aguardando resposta do pedido de upload"
 
-#: src/ssl/notify.c:108
+#: src/core/telnet.c:864
+msgid "Warning"
+msgstr "Alerta"
+
+#: src/ssl/notify.c:77
 #, c-format
 msgid "Windows error was \"%s\" (%u)"
 msgstr "Erro windows foi \"%s\" (%u)"
@@ -2021,11 +2035,11 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/toggles/init.c:89 src/core/linux/connect.c:229
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:209
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:89 src/core/linux/connect.c:229
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:209
 msgid "enable"
 msgstr "habilitar"
 
@@ -2049,15 +2063,12 @@ msgstr "Versão da lib3270"
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/linux/connect.c:216
+#: src/core/linux/connect.c:196
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
-
-#~ msgid "%s (rc=%d)"
-#~ msgstr "%s (rc=%d)"
 
 #~ msgid "%s - Disconnected"
 #~ msgstr "%s - Desconectado"
@@ -2092,8 +2103,14 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "16 colors"
 #~ msgstr "16 cores"
 
+#~ msgid "3270 Error"
+#~ msgstr "Erro 3270"
+
 #~ msgid "3270 File transfer"
 #~ msgstr "Transferência de arquivos 3270"
+
+#~ msgid "3270 Warning"
+#~ msgstr "Alerta 3270"
 
 #~ msgid "3270 screen"
 #~ msgstr "Tela 3270"
@@ -2292,6 +2309,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't add activity"
 #~ msgstr "Não é possível adicionar atividade"
+
+#~ msgid "Can't connect to %s"
+#~ msgstr "Não foi possível conectar a %s"
 
 #~ msgid "Can't connect to HTTP server."
 #~ msgstr "Não foi possível conectar ao servidor HTTP"
@@ -2520,9 +2540,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Configure host"
 #~ msgstr "Configurar host"
-
-#~ msgid "Continue"
-#~ msgstr "Continuar"
 
 #~ msgid "Copiar tudo"
 #~ msgstr "Copiar tudo"
@@ -2835,9 +2852,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Intensified/Unprotected"
 #~ msgstr "Intensificado/Desprotegido"
 
-#~ msgid "Interface"
-#~ msgstr "Interface"
-
 #~ msgid "Invalid CGCSGID '%s', ignoring"
 #~ msgstr "Invalid CGCSGID '%s', ignoring"
 
@@ -2968,9 +2982,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Not the same terminal type"
 #~ msgstr "O tipo de terminal é diferente"
-
-#~ msgid "OIA Warning"
-#~ msgstr "Alerta na OIA"
 
 #~ msgid "OIA background"
 #~ msgstr "Fundo da OIA"
@@ -3455,6 +3466,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Secondary space"
 #~ msgstr "Secondary space"
+
+#~ msgid "Security warning"
+#~ msgstr "Alerta de segurança"
 
 #~ msgid "Select destination file"
 #~ msgstr "Selecionar arquivo destino"

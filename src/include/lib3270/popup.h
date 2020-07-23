@@ -62,7 +62,8 @@
 		LIB3270_NOTIFY type; \
 		const char * title; \
 		const char * summary; \
-		const char * body;
+		const char * body; \
+		const char * label;
 
 	typedef struct _LIB3270_POPUP
 	{

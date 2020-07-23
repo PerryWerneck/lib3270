@@ -96,6 +96,7 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 	else
 		popup->title = _("Security alert");
 
+	popup->label = _("Continue");
 	return popup;
 }
 

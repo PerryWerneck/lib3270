@@ -458,11 +458,10 @@ int ssl_negotiate(H3270 *hSession)
 
 	rc = lib3270_run_task(hSession, background_ssl_negotiation, &msg);
 
+	debug("background_ssl_negotiation exits with rc=%d",rc);
 	if(rc && msg.popup)
 	{
 		// SSL Negotiation has failed.
-		host_disconnect(hSession,1); // Disconnect with "failed" status.
-
 		if(popup_ssl_error(hSession,rc,&msg))
 		{
 			host_disconnect(hSession,1); // Disconnect with "failed" status.

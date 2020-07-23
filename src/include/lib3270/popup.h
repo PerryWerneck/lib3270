@@ -90,6 +90,17 @@
 	LIB3270_EXPORT const char *		lib3270_get_ssl_state_icon_name(const H3270 *hSession);
 
 	/**
+	 * @brief Clone popup object replacing the body contents.
+	 *
+	 * @param origin	Original popup definition.
+	 * @param fmt		Printf formatting string.
+	 *
+	 * @return New popup object with the body replaced (release it with g_free).
+	 *
+	 */
+	LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...);
+
+	/**
 	 * @brief Emit popup message.
 	 *
 	 * @param hSession	TN3270 Session handle.

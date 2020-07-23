@@ -57,44 +57,97 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 {
 	LIB3270_POPUP * popup;
 
-	if(msg->popup->body)
+	printf("\n\nMSG-CODE=%d\n\n",msg->code);
+
+	if(msg->code)
 	{
-		popup = lib3270_malloc(sizeof(LIB3270_POPUP));
-		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP));
-		popup->body = dgettext(GETTEXT_PACKAGE,msg->popup->body);
+		if(msg->popup->body)
+		{
+			popup = lib3270_popup_clone_printf(
+						msg->popup,
+						_( "%s\nThe SSL error message was \"%s\"(%d)" ),
+						dgettext(GETTEXT_PACKAGE,msg->popup->body),
+						ERR_reason_error_string(msg->code),
+						msg->code
+					);
+		}
+		else
+		{
+			popup = lib3270_popup_clone_printf(
+						msg->popup,
+						_( "The SSL error message was \"%s\" (%d)" ),
+						ERR_reason_error_string(msg->code),
+						msg->code
+					);
+		}
+
+	}
+#ifdef _WIN32
+	else if(msg->lasterror)
+	{
+		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(msg->lasterror);
+
+		if(msg->popup->body)
+		{
+			popup = lib3270_popup_clone_printf(
+						msg->popup,
+						_( "%s\nThe windows error was \"%s\" (%u)" ),
+						dgettext(GETTEXT_PACKAGE,msg->popup->body),
+						windows_error,
+						(unsigned int) msg->lasterror
+					);
+		}
+		else
+		{
+			popup = lib3270_popup_clone_printf(
+						msg->popup,
+						_( "Windows error was \"%s\" (%u)" ),
+						windows_error,
+						(unsigned int) msg->lasterror
+					);
+		}
+
+	}
+#endif // _WIN32
+	else if(rc)
+	{
+		if(msg->popup->body)
+		{
+			popup = lib3270_popup_clone_printf(
+						msg->popup,
+						_( "%s\nThe operating system error was \"%s\" (%u)" ),
+						dgettext(GETTEXT_PACKAGE,msg->popup->body),
+						strerror(rc),
+						rc
+					);
+		}
+		else
+		{
+			popup = lib3270_popup_clone_printf(
+						msg->popup,
+						_( "The operating system error was \"%s\" (%u)" ),
+						strerror(rc),
+						rc
+					);
+		}
+
 	}
 	else
 	{
-		lib3270_autoptr(char) body = NULL;
-		if(msg->code)
-		{
-			body = lib3270_strdup_printf(_( "%s (SSL error %d)" ),ERR_reason_error_string(msg->code),msg->code);
-		}
-#ifdef _WIN32
-		else if(msg->lasterror)
-		{
-			lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(msg->lasterror);
-			body = lib3270_strdup_printf(_( "Windows error was \"%s\" (%u)" ), windows_error,(unsigned int) msg->lasterror);
-		}
-#endif
-		else if(rc) {
-			body = lib3270_strdup_printf(_( "%s (rc=%d)" ),strerror(rc),rc);
-		}
+		popup = lib3270_malloc(sizeof(LIB3270_POPUP));
+		*popup = *msg->popup;
 
-		popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
-		memcpy(popup,msg->popup,sizeof(LIB3270_POPUP));
-		popup->body = (char *) (popup+1);
-		strcpy((char *) (popup+1),body);
+		if(msg->popup->body)
+			popup->body = dgettext(GETTEXT_PACKAGE,msg->popup->body);
 
 	}
 
-	if(popup->summary)
-		popup->summary = dgettext(GETTEXT_PACKAGE,popup->summary);
+	popup->summary = dgettext(GETTEXT_PACKAGE,msg->popup->summary);
 
 	if(popup->title)
 		popup->title = dgettext(GETTEXT_PACKAGE,popup->title);
 	else
-		popup->title = _("Security alert");
+		popup->title = _("Your connection is not safe");
 
 	popup->label = _("Continue");
 	return popup;

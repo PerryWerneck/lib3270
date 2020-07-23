@@ -116,3 +116,25 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id , const 
 	hSession->cbk.popup_show(hSession,&popup,0);
 
 }
+
+LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...)
+{
+	va_list args;
+
+	// Create body
+	lib3270_autoptr(char) body = NULL;
+
+	va_start(args, fmt);
+	body = lib3270_vsprintf(fmt, args);
+	va_end(args);
+
+	// Alocate new struct
+	LIB3270_POPUP * popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
+
+	*popup = *origin;
+
+	strcpy((char *)(popup+1),body);
+	popup->body = (char *)(popup+1);
+	return popup;
+}
+

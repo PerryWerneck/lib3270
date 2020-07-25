@@ -41,6 +41,10 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+LIB3270_EXPORT int lib3270_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+	return hSession->cbk.popup_show(hSession,popup,wait);
+}
+
 /// @brief Pop up an error dialog.
 void popup_an_error(H3270 *hSession, const char *fmt, ...)
 {

@@ -64,7 +64,7 @@
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-int lib3270_check_for_auto_reconnect(H3270 *hSession)
+static int check_for_auto_reconnect(H3270 *hSession)
 {
 
 	if(hSession->auto_reconnect_inprogress)
@@ -74,6 +74,27 @@ int lib3270_check_for_auto_reconnect(H3270 *hSession)
 		if(lib3270_reconnect(hSession,0))
 			lib3270_write_log(hSession,"3270","Auto-reconnect fails: %s",strerror(errno));
 	}
+
+	return 0;
+}
+
+/**
+ * @brief Activate auto-reconnect timer.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param msec		Time to reconnect.
+ *
+ * @return 0 if ok or error code if not.
+ *
+ * @retval EBUSY	Auto reconnect is already active.
+ */
+int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
+{
+	if(hSession->auto_reconnect_inprogress)
+		return EBUSY;
+
+	hSession->auto_reconnect_inprogress = 1;
+	(void) AddTimer(msec, hSession, check_for_auto_reconnect);
 
 	return 0;
 }
@@ -95,12 +116,8 @@ int host_disconnect(H3270 *hSession, int failed)
 
 		trace("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
 
-		if(failed && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT) && !hSession->auto_reconnect_inprogress)
-		{
-			/* Schedule an automatic reconnection. */
-			hSession->auto_reconnect_inprogress = 1;
-			(void) AddTimer(failed ? RECONNECT_ERR_MS : RECONNECT_MS, hSession, lib3270_check_for_auto_reconnect);
-		}
+		if(failed && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT))
+			lib3270_activate_auto_reconnect(hSession,failed ? RECONNECT_ERR_MS : RECONNECT_MS);
 
 		/*
 		 * Remember a disconnect from ANSI mode, to keep screen tracing

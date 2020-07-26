@@ -753,11 +753,6 @@ LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, 
 
 LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
 
-/**
- * @brief Called from timer to attempt an automatic reconnection.
- */
-LIB3270_INTERNAL int	lib3270_check_for_auto_reconnect(H3270 *hSession);
-
 #if defined(DEBUG)
 	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);
 	LIB3270_INTERNAL void check_session_handle(H3270 **hSession, const char *fname);
@@ -765,6 +760,18 @@ LIB3270_INTERNAL int	lib3270_check_for_auto_reconnect(H3270 *hSession);
 	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x);
 	LIB3270_INTERNAL void check_session_handle(H3270 **hSession);
 #endif // DEBUG
+
+/**
+ * @brief Activate auto-reconnect timer.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param msec		Time to reconnect.
+ *
+ * @return 0 if ok or error code if not.
+ *
+ * @retval EBUSY	Auto reconnect is already active.
+ */
+LIB3270_INTERNAL int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec);
 
 LIB3270_INTERNAL int check_online_session(const H3270 *hSession);
 LIB3270_INTERNAL int check_offline_session(const H3270 *hSession);

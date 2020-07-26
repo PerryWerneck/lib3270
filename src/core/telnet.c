@@ -2223,12 +2223,11 @@ static const char * cmd(int c)
 		return nnn(c);
 }
 
-/*
- * opt
- *	Expands a TELNET option into a character string.
+/***
+ *
+ * @brief Expands a TELNET option into a character string.
  */
-static const char *
-opt(unsigned char c)
+static const char * opt(unsigned char c)
 {
 	if (TELOPT_OK(c))
 		return TELOPT(c);

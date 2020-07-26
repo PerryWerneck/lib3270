@@ -78,6 +78,7 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
 	hSession->ssl.state = state;
 	trace_dsn(hSession,"SSL state changes to %d\n",(int) state);
+	debug("SSL state changes to %d\n",(int) state);
 
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 }

@@ -83,19 +83,15 @@
 
 	LIB3270_POPUP popup = {
 		.name = "CantConnect",
-		.title = _( "Connection failed" ),
+//		.title = _( "Connection failed" ),
 		.type = LIB3270_NOTIFY_INFO,
 		.summary = summary,
 		.body = message,
 		.label = _("Try again")
 	};
 
-//	if(hSession->cbk.popup_show(hSession,&popup,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT) && !hSession->auto_reconnect_inprogress) == 0) {
-	if(hSession->cbk.popup_show(hSession,&popup,!hSession->auto_reconnect_inprogress) == 0) {
-		// Schedule an automatic reconnection.
-		hSession->auto_reconnect_inprogress = 1;
-		(void) AddTimer(1000, hSession, lib3270_check_for_auto_reconnect);
-	}
+	if(hSession->cbk.popup_show(hSession,&popup,!hSession->auto_reconnect_inprogress) == 0)
+		lib3270_activate_auto_reconnect(hSession,1000);
 
  }
 

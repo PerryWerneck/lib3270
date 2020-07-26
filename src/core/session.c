@@ -243,10 +243,22 @@ static int def_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned 
 	return ENOTSUP;
 }
 
-static int def_popup_ssl_error(H3270 *session, int GNUC_UNUSED(rc), const char *title, const char *summary, const char *body)
+static int def_popup_ssl_error(H3270 *hSession, int GNUC_UNUSED(rc), const char *title, const char *summary, const char *body)
 {
+	LIB3270_POPUP popup = {
+		.type = LIB3270_NOTIFY_SECURE,
+		.title = title,
+		.summary = summary,
+		.body = body,
+		.label = _("Continue")
+	};
+
+	return hSession->cbk.popup_show(hSession,&popup,1);
+
+	/*
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_ERROR, title, summary, "%s", body);
     return -1;
+    */
 }
 
 static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)

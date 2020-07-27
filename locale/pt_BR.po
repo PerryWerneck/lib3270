@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-23 11:07-0300\n"
-"PO-Revision-Date: 2020-07-23 11:09-0300\n"
+"POT-Creation-Date: 2020-07-27 18:09-0300\n"
+"PO-Revision-Date: 2020-07-27 18:12-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -35,12 +35,34 @@ msgstr "Tela %dx%d é maior que o tamanho máximo"
 msgid "%s"
 msgstr "%s"
 
-#: src/ssl/notify.c:71
+#: src/ssl/notify.c:68
 #, c-format
-msgid "%s (SSL error %d)"
-msgstr "%s (erro SSL %d)"
+msgid ""
+"%s\n"
+"The SSL error message was \"%s\"(%d)"
+msgstr ""
+"%s\n"
+"A mensagem de erro SSL foi \"%s\" (%d)"
 
-#: src/core/linux/connect.c:86 src/ssl/notify.c:81
+#: src/ssl/notify.c:118
+#, c-format
+msgid ""
+"%s\n"
+"The operating system error was \"%s\" (%u)"
+msgstr ""
+"%s\n"
+"A mensagem de erro do sistema foi \"%s\" (%u)"
+
+#: src/ssl/notify.c:94
+#, c-format
+msgid ""
+"%s\n"
+"The windows error was \"%s\" (%u)"
+msgstr ""
+"%s\n"
+"O erro windows foi \"%s\" (%u)"
+
+#: src/core/linux/connect.c:86
 #, c-format
 msgid "%s (rc=%d)"
 msgstr "%s (rc=%d)"
@@ -79,7 +101,7 @@ msgstr "%s: Tabulação vertical não é suportada"
 msgid "3270-style backspace"
 msgstr "Backspace no estilo 3270"
 
-#: src/ssl/state.c:277
+#: src/ssl/state.c:278
 msgid ""
 "A CA certificate is invalid. Either it is not a CA or its extensions are not "
 "consistent with the supplied purpose."
@@ -123,7 +145,7 @@ msgstr ""
 "Um erro ocorreu na transferência de arquivos, pode ser um erro nos dados "
 "sendo transferidos ou um erro de sistema não identificado."
 
-#: src/ssl/state.c:225
+#: src/ssl/state.c:226
 msgid "An error occurred trying to allocate memory. This should never happen."
 msgstr ""
 "Ocorreu um erro ao tentar alocar memória. Isso nunca deveria acontecer."
@@ -136,11 +158,11 @@ msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 msgid "Attn"
 msgstr "Attn"
 
-#: src/ssl/state.c:332
+#: src/ssl/state.c:333
 msgid "Authority and issuer serial number mismatch"
 msgstr "Divergência nos números de série da autoridade e emissor "
 
-#: src/ssl/state.c:324
+#: src/ssl/state.c:325
 msgid "Authority and subject key identifier mismatch"
 msgstr "Authority and subject key identifier mismatch"
 
@@ -222,7 +244,7 @@ msgstr "Disco CMS apenas para leitura, transferência cancelada"
 msgid "CMS file not found: file transfer canceled"
 msgstr "Arquivo CMS não encontrado, transferência cancelada"
 
-#: src/ssl/state.c:148
+#: src/ssl/state.c:149
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
@@ -340,27 +362,27 @@ msgstr ""
 "Não foi possível definir o descritor de arquivo para a conexão TLS/SSL "
 "(encriptada)."
 
-#: src/ssl/state.c:164
+#: src/ssl/state.c:165
 msgid "Certificate has expired"
 msgstr "O certificado expirou"
 
-#: src/ssl/state.c:156
+#: src/ssl/state.c:157
 msgid "Certificate is not yet valid"
 msgstr "O certificado ainda não é válido"
 
-#: src/ssl/state.c:300
+#: src/ssl/state.c:301
 msgid "Certificate not trusted"
 msgstr "O certificado não é confiável"
 
-#: src/ssl/state.c:308
+#: src/ssl/state.c:309
 msgid "Certificate rejected"
 msgstr "Certificado rejeitado"
 
-#: src/ssl/state.c:268
+#: src/ssl/state.c:269
 msgid "Certificate revoked"
 msgstr "Certificado revogado"
 
-#: src/ssl/state.c:140
+#: src/ssl/state.c:141
 msgid "Certificate signature failure"
 msgstr "Falha na assinatura do certificado"
 
@@ -393,10 +415,6 @@ msgstr "Conectar ao iniciar"
 msgid "Connection error"
 msgstr "Erro de conexão"
 
-#: src/core/connect.c:86
-msgid "Connection failed"
-msgstr "Conexão falhou"
-
 #: src/core/telnet.c:1656
 msgid "Connection reset by peer"
 msgstr "Conexão foi cancelada pelo servidor"
@@ -405,7 +423,7 @@ msgstr "Conexão foi cancelada pelo servidor"
 msgid "Connection state"
 msgstr "Estado da conexão"
 
-#: src/ssl/notify.c:99
+#: src/core/session.c:253 src/ssl/notify.c:152
 msgid "Continue"
 msgstr "Continuar"
 
@@ -625,19 +643,19 @@ msgstr "Transferência de arquivos já está ativa nesta sessão."
 msgid "First field"
 msgstr "Primeiro campo"
 
-#: src/ssl/state.c:208
+#: src/ssl/state.c:209
 msgid "Format error in CRL's lastUpdate field"
 msgstr "Erro de formato no campo \"lastUpdate\" do CRL"
 
-#: src/ssl/state.c:216
+#: src/ssl/state.c:217
 msgid "Format error in CRL's nextUpdate field"
 msgstr "Erro de formato no campo \"nextUpdate\" do CRL"
 
-#: src/ssl/state.c:200
+#: src/ssl/state.c:201
 msgid "Format error in certificate's notAfter field"
 msgstr "Erro de formato no campo \"notAfter\" do certificado"
 
-#: src/ssl/state.c:192
+#: src/ssl/state.c:193
 msgid "Format error in certificate's notBefore field"
 msgstr "Erro de formato no campo \"notBefore\" do certificado"
 
@@ -803,7 +821,7 @@ msgstr "Inserção"
 msgid "Internal error"
 msgstr "Erro interno"
 
-#: src/ssl/state.c:276
+#: src/ssl/state.c:277
 msgid "Invalid CA certificate"
 msgstr "Certificado CA inválido"
 
@@ -856,7 +874,7 @@ msgstr "O terminal está pronto"
 msgid "Keep selected"
 msgstr "Manter selecionado"
 
-#: src/ssl/state.c:340
+#: src/ssl/state.c:341
 msgid "Key usage does not include certificate signing"
 msgstr "Uso da chave não permite assinatura de certificados"
 
@@ -978,7 +996,7 @@ msgstr "URL de pesquisa não contem o DN a pesquisar"
 msgid "No LDAP attribute on the URL"
 msgstr "URL de pesquisa não definiu o atributo LDAP"
 
-#: src/ssl/state.c:261
+#: src/ssl/state.c:262
 msgid ""
 "No signatures could be verified because the chain contains only one "
 "certificate and it is not self signed."
@@ -1016,7 +1034,7 @@ msgstr "Outro (TSO)"
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/ssl/state.c:224
+#: src/ssl/state.c:225
 msgid "Out of memory"
 msgstr "Memória insuficiente"
 
@@ -1041,7 +1059,7 @@ msgstr "Colar próximo"
 msgid "Paste with left margin"
 msgstr "Colar com margem esquerda"
 
-#: src/ssl/state.c:284
+#: src/ssl/state.c:285
 msgid "Path length constraint exceeded"
 msgstr "Path length constraint exceeded"
 
@@ -1209,7 +1227,7 @@ msgstr "Erro de leitura SSL"
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
-#: src/ssl/negotiate.c:476
+#: src/ssl/negotiate.c:475
 msgid "SSL negotiation has failed"
 msgstr "Negociação de segurança falhou"
 
@@ -1238,13 +1256,9 @@ msgstr "Pesquisa não produziu nenhum atributo"
 msgid "Search did not produce any values."
 msgstr "Pesquisa não produziu nenhum valor"
 
-#: src/ssl/state.c:92
+#: src/ssl/state.c:93
 msgid "Secure connection was successful."
 msgstr "Conexão segura efetuada com sucesso."
-
-#: src/ssl/notify.c:97
-msgid "Security alert"
-msgstr "Alerta de segurança"
 
 #: src/ssl/linux/ldap.c:100 src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134
 #: src/ssl/linux/ldap.c:145 src/ssl/linux/ldap.c:156 src/ssl/linux/ldap.c:181
@@ -1309,11 +1323,11 @@ msgstr "Move seleção para a direita"
 msgid "Selection up"
 msgstr "Sobe a seleção"
 
-#: src/ssl/state.c:232
+#: src/ssl/state.c:233
 msgid "Self signed certificate"
 msgstr "Certificado auto assinado"
 
-#: src/ssl/state.c:244
+#: src/ssl/state.c:245
 msgid "Self signed certificate in certificate chain"
 msgstr "Certificado auto assinado na cadeia de certificados"
 
@@ -1377,7 +1391,7 @@ msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
 
-#: src/ssl/state.c:316
+#: src/ssl/state.c:317
 msgid "Subject issuer mismatch"
 msgstr "Divergência na identidade do emissor"
 
@@ -1419,23 +1433,23 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/ssl/state.c:184
+#: src/ssl/state.c:185
 msgid "The CRL has expired."
 msgstr "A lista de certificados revogados expirou."
 
-#: src/ssl/state.c:172
+#: src/ssl/state.c:173
 msgid "The CRL is not yet valid."
 msgstr "A lista de certificados revogados ainda não é válida."
 
-#: src/ssl/state.c:209
+#: src/ssl/state.c:210
 msgid "The CRL lastUpdate field contains an invalid time."
 msgstr "Campo \"lastUpdate\" do CRL contem horário inválido."
 
-#: src/ssl/state.c:217
+#: src/ssl/state.c:218
 msgid "The CRL nextUpdate field contains an invalid time."
 msgstr "Campo \"nextUpdate\" contem horário inválido."
 
-#: src/ssl/state.c:125
+#: src/ssl/state.c:126
 msgid ""
 "The CRL signature could not be decrypted: this means that the actual "
 "signature value could not be determined rather than it not matching the "
@@ -1445,15 +1459,15 @@ msgstr ""
 "signature value could not be determined rather than it not matching the "
 "expected value. Unused."
 
-#: src/ssl/state.c:185
+#: src/ssl/state.c:186
 msgid "The Certificate revocation list (CRL) has expired."
 msgstr "A lista de revogação de certificados (CRL) está expirada."
 
-#: src/ssl/state.c:173
+#: src/ssl/state.c:174
 msgid "The Certificate revocation list (CRL) is not yet valid."
 msgstr "A lista de revogação de certificados (CRL) ainda não é válida."
 
-#: src/ssl/state.c:109
+#: src/ssl/state.c:110
 msgid ""
 "The Certificate revocation list (CRL) of a certificate could not be found."
 msgstr ""
@@ -1463,6 +1477,11 @@ msgstr ""
 #: src/ssl/negotiate.c:406
 msgid "The SSL certificate for this host is not trusted."
 msgstr "O certificado SSL deste servidor não é confiável"
+
+#: src/ssl/notify.c:78
+#, c-format
+msgid "The SSL error message was \"%s\" (%d)"
+msgstr "A mensagem de erro SSL foi \"%s\" (%d)"
 
 #: src/ssl/linux/ldap.c:102 src/ssl/linux/ldap.c:115
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
@@ -1476,11 +1495,11 @@ msgstr "A URL para o CRL não está definida ou vazia"
 msgid "The URL scheme is unknown"
 msgstr "O tipo de URL é desconhecido"
 
-#: src/ssl/state.c:285
+#: src/ssl/state.c:286
 msgid "The basicConstraints pathlength parameter has been exceeded."
 msgstr "The basicConstraints pathlength parameter has been exceeded."
 
-#: src/ssl/state.c:245
+#: src/ssl/state.c:246
 msgid ""
 "The certificate chain could be built up using the untrusted certificates but "
 "the root could not be found locally."
@@ -1488,11 +1507,11 @@ msgstr ""
 "The certificate chain could be built up using the untrusted certificates but "
 "the root could not be found locally."
 
-#: src/ssl/state.c:269
+#: src/ssl/state.c:270
 msgid "The certificate has been revoked."
 msgstr "O certificado foi revogado."
 
-#: src/ssl/state.c:165
+#: src/ssl/state.c:166
 msgid ""
 "The certificate has expired: that is the notAfter date is before the current "
 "time."
@@ -1500,7 +1519,7 @@ msgstr ""
 "The certificate has expired: that is the notAfter date is before the current "
 "time."
 
-#: src/ssl/state.c:157
+#: src/ssl/state.c:158
 msgid ""
 "The certificate is not yet valid: the notBefore date is after the current "
 "time."
@@ -1508,15 +1527,15 @@ msgstr ""
 "The certificate is not yet valid: the notBefore date is after the current "
 "time."
 
-#: src/ssl/state.c:201
+#: src/ssl/state.c:202
 msgid "The certificate notAfter field contains an invalid time."
 msgstr "The certificate notAfter field contains an invalid time."
 
-#: src/ssl/state.c:193
+#: src/ssl/state.c:194
 msgid "The certificate notBefore field contains an invalid time."
 msgstr "The certificate notBefore field contains an invalid time."
 
-#: src/ssl/state.c:117
+#: src/ssl/state.c:118
 msgid ""
 "The certificate signature could not be decrypted. This means that the actual "
 "signature value could not be determined rather than it not matching the "
@@ -1530,15 +1549,15 @@ msgstr ""
 msgid "The color type"
 msgstr "O tipo de cor"
 
-#: src/ssl/state.c:372 src/ssl/state.c:400 src/ssl/state.c:427
+#: src/ssl/state.c:373 src/ssl/state.c:401 src/ssl/state.c:428
 msgid "The connection is insecure"
 msgstr "A conexão não é segura"
 
-#: src/ssl/state.c:93
+#: src/ssl/state.c:94
 msgid "The connection is secure and the host identity was confirmed."
 msgstr "A conexão é segura e a identidade do servidor foi confirmada."
 
-#: src/ssl/state.c:333
+#: src/ssl/state.c:334
 msgid ""
 "The current candidate issuer certificate was rejected because its issuer "
 "name and serial number was present and did not match the authority key "
@@ -1550,7 +1569,7 @@ msgstr ""
 "identifier of the current certificate. Only displayed when the -"
 "issuer_checks option is set."
 
-#: src/ssl/state.c:341
+#: src/ssl/state.c:342
 msgid ""
 "The current candidate issuer certificate was rejected because its keyUsage "
 "extension does not permit certificate signing."
@@ -1558,7 +1577,7 @@ msgstr ""
 "The current candidate issuer certificate was rejected because its keyUsage "
 "extension does not permit certificate signing."
 
-#: src/ssl/state.c:325
+#: src/ssl/state.c:326
 msgid ""
 "The current candidate issuer certificate was rejected because its subject "
 "key identifier was present and did not match the authority key identifier "
@@ -1568,7 +1587,7 @@ msgstr ""
 "key identifier was present and did not match the authority key identifier "
 "current certificate. Only displayed when the -issuer_checks option is set."
 
-#: src/ssl/state.c:317
+#: src/ssl/state.c:318
 msgid ""
 "The current candidate issuer certificate was rejected because its subject "
 "name did not match the issuer name of the current certificate. Only "
@@ -1613,7 +1632,7 @@ msgid ""
 "operation."
 msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 
-#: src/ssl/state.c:253
+#: src/ssl/state.c:254
 msgid ""
 "The issuer certificate could not be found: this occurs if the issuer "
 "certificate of an untrusted certificate cannot be found."
@@ -1621,7 +1640,7 @@ msgstr ""
 "The issuer certificate could not be found: this occurs if the issuer "
 "certificate of an untrusted certificate cannot be found."
 
-#: src/ssl/state.c:101
+#: src/ssl/state.c:102
 msgid ""
 "The issuer certificate of a looked up certificate could not be found. This "
 "normally means the list of trusted certificates is not complete."
@@ -1636,6 +1655,11 @@ msgstr "Nº do modelo"
 #: src/core/properties/string.c:64
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
+
+#: src/ssl/notify.c:128
+#, c-format
+msgid "The operating system error was \"%s\" (%u)"
+msgstr "O erro do sistema operacional foi \"%s\" (%u)"
 
 #: src/core/ctlr.c:229
 msgid "The oversize height is too small."
@@ -1653,7 +1677,7 @@ msgstr "Os valores do 'oversize' são muito grandes."
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
-#: src/ssl/state.c:233
+#: src/ssl/state.c:234
 msgid ""
 "The passed certificate is self signed and the same certificate cannot be "
 "found in the list of trusted certificates."
@@ -1661,7 +1685,7 @@ msgstr ""
 "The passed certificate is self signed and the same certificate cannot be "
 "found in the list of trusted certificates."
 
-#: src/ssl/state.c:133
+#: src/ssl/state.c:134
 msgid ""
 "The public key in the certificate SubjectPublicKeyInfo could not be read."
 msgstr ""
@@ -1671,12 +1695,12 @@ msgstr ""
 msgid "The remote file name is invalid."
 msgstr "O nome do arquivo remoto não é válido."
 
-#: src/ssl/state.c:309
+#: src/ssl/state.c:310
 msgid "The root CA is marked to reject the specified purpose."
 msgstr ""
 "O certificado raiz está marcado para rejeitar a finalidade especificada."
 
-#: src/ssl/state.c:301
+#: src/ssl/state.c:302
 msgid "The root CA is not marked as trusted for the specified purpose."
 msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
@@ -1694,11 +1718,11 @@ msgstr ""
 msgid "The security state"
 msgstr "O estado da segurança"
 
-#: src/ssl/state.c:141 src/ssl/state.c:149
+#: src/ssl/state.c:142 src/ssl/state.c:150
 msgid "The signature of the certificate is invalid."
 msgstr "A assinatura do certificado não é válida."
 
-#: src/ssl/state.c:293
+#: src/ssl/state.c:294
 msgid "The supplied certificate cannot be used for the specified purpose."
 msgstr ""
 "O certificado fornecido não pode ser utilizado para a finalidade "
@@ -1798,20 +1822,20 @@ msgstr "URL do host atual"
 msgid "Uknown DFT Open type from host"
 msgstr "Host enviou código de abertura DFT desconhecido"
 
-#: src/ssl/state.c:132
+#: src/ssl/state.c:133
 msgid "Unable to decode issuer public key"
 msgstr "Não é possível decodificar chave pública do emissor"
 
-#: src/ssl/state.c:124
+#: src/ssl/state.c:125
 msgid "Unable to decrypt CRL's signature"
 msgstr ""
 "Não foi possível decriptar assinatura da lista de certificados revogados"
 
-#: src/ssl/state.c:116
+#: src/ssl/state.c:117
 msgid "Unable to decrypt certificate's signature"
 msgstr "Incapaz de decifrar a assinatura do certificado"
 
-#: src/ssl/state.c:108
+#: src/ssl/state.c:109
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
@@ -1819,11 +1843,11 @@ msgstr "Incapaz de obter o CRL de um certificado."
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/ssl/state.c:100
+#: src/ssl/state.c:101
 msgid "Unable to get issuer certificate"
 msgstr "Não foi possível obter emissor do certificado"
 
-#: src/ssl/state.c:252
+#: src/ssl/state.c:253
 msgid "Unable to get local issuer certificate"
 msgstr "Unable to get local issuer certificate"
 
@@ -1847,7 +1871,7 @@ msgstr "Incapaz de salvar"
 msgid "Unable to send file-transfer request"
 msgstr "Não foi possível enviar a requisição de transferência de arquivo"
 
-#: src/ssl/state.c:260
+#: src/ssl/state.c:261
 msgid "Unable to verify the first certificate"
 msgstr "Não foi possível verificar o primeiro certificado"
 
@@ -1859,7 +1883,7 @@ msgstr "Sublinhados"
 msgid "Unexpected error"
 msgstr "Erro inesperado"
 
-#: src/ssl/negotiate.c:518
+#: src/ssl/negotiate.c:517
 msgid "Unexpected error on SSL initialization"
 msgstr "Erro inesperado na inicialização do sistema de segurança"
 
@@ -1871,7 +1895,7 @@ msgstr "URL do CRL é inesperada ou inválida"
 msgid "Unexpected or invalid TLS/SSL verify result"
 msgstr "O resultado da verificação TLS/SSL foi inesperado"
 
-#: src/ssl/state.c:403
+#: src/ssl/state.c:404
 msgid "Unexpected or unknown security status"
 msgstr "Estado de segurança inesperado ou desconhecido."
 
@@ -1911,7 +1935,7 @@ msgstr "Atraso no desbloqueio"
 msgid "Unsupported RPQ term"
 msgstr "Unsupported RPQ term"
 
-#: src/ssl/state.c:292
+#: src/ssl/state.c:293
 msgid "Unsupported certificate purpose"
 msgstr "Finalidade do certificado não é suportada"
 
@@ -1943,7 +1967,7 @@ msgstr "Aguardando resposta do pedido de upload"
 msgid "Warning"
 msgstr "Alerta"
 
-#: src/ssl/notify.c:77
+#: src/ssl/notify.c:104
 #, c-format
 msgid "Windows error was \"%s\" (%u)"
 msgstr "Erro windows foi \"%s\" (%u)"
@@ -2027,6 +2051,10 @@ msgstr ""
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
+#: src/ssl/notify.c:150
+msgid "Your connection is not safe"
+msgstr "A conexão não é segura"
+
 #: src/core/actions/table.c:141
 msgid "_Disconnect"
 msgstr "_Desconectar"
@@ -2069,6 +2097,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
+
+#~ msgid "%s (SSL error %d)"
+#~ msgstr "%s (erro SSL %d)"
 
 #~ msgid "%s - Disconnected"
 #~ msgstr "%s - Desconectado"
@@ -2540,6 +2571,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Configure host"
 #~ msgstr "Configurar host"
+
+#~ msgid "Connection failed"
+#~ msgstr "Conexão falhou"
 
 #~ msgid "Copiar tudo"
 #~ msgstr "Copiar tudo"
@@ -3466,6 +3500,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Secondary space"
 #~ msgstr "Secondary space"
+
+#~ msgid "Security alert"
+#~ msgstr "Alerta de segurança"
 
 #~ msgid "Security warning"
 #~ msgstr "Alerta de segurança"

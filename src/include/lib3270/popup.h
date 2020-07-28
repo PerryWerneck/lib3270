@@ -71,7 +71,13 @@
 	} LIB3270_POPUP;
 
 	/**
-	 * Pop up an error dialog, based on an error number.
+	 * @brief Replace popup handler.
+	 *
+	 */
+	LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *hSession, int (*handler)(H3270 *, const LIB3270_POPUP *, unsigned char wait));
+
+	/**
+	 * @brief Pop up an error dialog, based on an error number.
 	 *
 	 * @param hSession	Session handle
 	 * @param errn		Error number (errno).
@@ -109,6 +115,7 @@
 	 *
 	 * @retval 0			User has confirmed, continue action.
 	 * @retval ECANCELED	Operation was canceled.
+	 * @retval ENOTSUP		No popup handler available.
 	 */
 	LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 

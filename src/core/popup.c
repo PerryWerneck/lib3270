@@ -142,3 +142,31 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 	return popup;
 }
 
+static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait)
+{
+	const char * text[] = {
+		popup->title,
+		popup->summary,
+		popup->body
+	};
+
+	size_t ix;
+
+	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++)
+	{
+		lib3270_write_log(hSession,"popup","%s",text[ix]);
+	}
+
+	return ENOTSUP;
+}
+
+
+LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *hSession, int (*handler)(H3270 *, const LIB3270_POPUP *, unsigned char wait)) {
+
+	if(handler)
+		hSession->cbk.popup = handler;
+	else
+		hSession->cbk.popup = def_popup;
+
+
+}

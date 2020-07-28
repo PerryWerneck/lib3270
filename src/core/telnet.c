@@ -652,6 +652,8 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 					.popup = &popup
 				};
 
+				popup_ssl_error(hSession,0,&message);
+
 				/*
 				unsigned long e;
 				char err_buf[120];

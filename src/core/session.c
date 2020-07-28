@@ -229,24 +229,6 @@ static void def_popup(H3270 *hSession, LIB3270_NOTIFY type, const char *title, c
 }
 */
 
-static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait)
-{
-	const char * text[] = {
-		popup->title,
-		popup->summary,
-		popup->body
-	};
-
-	size_t ix;
-
-	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++)
-	{
-		lib3270_write_log(hSession,"popup","%s",text[ix]);
-	}
-
-	return ENOTSUP;
-}
-
 static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
@@ -324,7 +306,8 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
-	hSession->cbk.popup					= def_popup;
+
+	lib3270_set_popup_handler(hSession, NULL);
 
 }
 

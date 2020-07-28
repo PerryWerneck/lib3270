@@ -41,8 +41,8 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
-	return hSession->cbk.popup_show(hSession,popup,wait);
+LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+	return hSession->cbk.popup(hSession,popup,wait);
 }
 
 /// @brief Pop up an error dialog.
@@ -64,7 +64,7 @@ void popup_an_error(H3270 *hSession, const char *fmt, ...)
 		.summary = summary
 	};
 
-	hSession->cbk.popup_show(hSession,&popup,0);
+	hSession->cbk.popup(hSession,&popup,0);
 
 }
 
@@ -88,7 +88,7 @@ void popup_system_error(H3270 *hSession, const char *title, const char *summary,
 		.body = body
 	};
 
-	hSession->cbk.popup_show(hSession,&popup,0);
+	hSession->cbk.popup(hSession,&popup,0);
 
 }
 
@@ -117,7 +117,7 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id , const 
 		.body = body
 	};
 
-	hSession->cbk.popup_show(hSession,&popup,0);
+	hSession->cbk.popup(hSession,&popup,0);
 
 }
 

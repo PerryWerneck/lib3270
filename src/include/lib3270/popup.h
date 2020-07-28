@@ -70,8 +70,6 @@
 		LIB3270_POPUP_HEAD
 	} LIB3270_POPUP;
 
-	LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list));
-
 	/**
 	 * Pop up an error dialog, based on an error number.
 	 *
@@ -110,9 +108,9 @@
 	 * @return User action.
 	 *
 	 * @retval 0			User has confirmed, continue action.
-	 * @retval ECANCELED	Operation was cancelled.
+	 * @retval ECANCELED	Operation was canceled.
 	 */
-	LIB3270_EXPORT int lib3270_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+	LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
 	/**
 	 * @brief Auto cleanup method (for use with lib3270_autoptr).

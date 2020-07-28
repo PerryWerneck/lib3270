@@ -207,7 +207,8 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename))
 	return errno = ENOTSUP;
 }
 
-static void message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *title, const char *msg, const char *text)
+/*
+static void def_message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *title, const char *msg, const char *text)
 {
 #ifdef ANDROID
 	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",title);
@@ -219,13 +220,16 @@ static void message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *
 	lib3270_write_log(session,"lib3270","%s",text);
 #endif // ANDROID
 }
+*/
 
+/*
 static void def_popup(H3270 *hSession, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
 {
 	lib3270_popup_va(hSession,type,title,msg,fmt,args);
 }
+*/
 
-static int def_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait)
+static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait)
 {
 	const char * text[] = {
 		popup->title,
@@ -241,24 +245,6 @@ static int def_popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned 
 	}
 
 	return ENOTSUP;
-}
-
-static int def_popup_ssl_error(H3270 *hSession, int GNUC_UNUSED(rc), const char *title, const char *summary, const char *body)
-{
-	LIB3270_POPUP popup = {
-		.type = LIB3270_NOTIFY_SECURE,
-		.title = title,
-		.summary = summary,
-		.body = body,
-		.label = _("Continue")
-	};
-
-	return hSession->cbk.popup_show(hSession,&popup,1);
-
-	/*
-	lib3270_popup_dialog(session, LIB3270_NOTIFY_ERROR, title, summary, "%s", body);
-    return -1;
-    */
 }
 
 static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
@@ -326,7 +312,6 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.update_oia			= update_oia;
 	hSession->cbk.update_selection		= update_selection;
 	hSession->cbk.cursor 				= set_cursor;
-	hSession->cbk.message				= message;
 	hSession->cbk.update_ssl			= update_ssl;
 	hSession->cbk.display				= screen_disp;
 	hSession->cbk.set_width				= nop_int;
@@ -339,10 +324,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
-
 	hSession->cbk.popup					= def_popup;
-	hSession->cbk.popup_ssl_error		= def_popup_ssl_error;
-	hSession->cbk.popup_show			= def_popup_show;
 
 }
 
@@ -465,10 +447,6 @@ LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HAN
 	*handler	= hSession->trace.handler;
 	*userdata	= hSession->trace.userdata;
 
-}
-
-LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *session, void (*handler)(H3270 *, LIB3270_NOTIFY, const char *, const char *, const char *, va_list)) {
-	session->cbk.popup = handler ? handler : def_popup;
 }
 
 H3270 * lib3270_session_new(const char *model)

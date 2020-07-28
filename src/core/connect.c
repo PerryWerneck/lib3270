@@ -90,7 +90,7 @@
 		.label = _("Try again")
 	};
 
-	if(hSession->cbk.popup_show(hSession,&popup,!hSession->auto_reconnect_inprogress) == 0)
+	if(hSession->cbk.popup(hSession,&popup,!hSession->auto_reconnect_inprogress) == 0)
 		lib3270_activate_auto_reconnect(hSession,1000);
 
  }

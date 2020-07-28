@@ -144,6 +144,8 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 
 	popup->summary = dgettext(GETTEXT_PACKAGE,msg->popup->summary);
 
+	debug("%s: names[\"%s\",\"%s\"]",__FUNCTION__,popup->name, msg->popup->name);
+
 	if(popup->title)
 		popup->title = dgettext(GETTEXT_PACKAGE,popup->title);
 	else
@@ -191,14 +193,7 @@ int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const SSL_ERROR_MESSAG
 
 #ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 
-	response = hSession->cbk.popup_ssl_error(
-							hSession,
-							rc,
-							popup->title,
-							popup->summary,
-							popup->body
-						);
-
+	response = hSession->cbk.popup(hSession,popup,1);
 
 #endif // SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 
@@ -210,7 +205,7 @@ int popup_ssl_error(H3270 GNUC_UNUSED(*hSession), int rc, const SSL_ERROR_MESSAG
 void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg) {
 
 	LIB3270_POPUP * popup = translate_ssl_error_message(msg,0);
-	hSession->cbk.popup_show(hSession,popup,0);
+	hSession->cbk.popup(hSession,popup,0);
 	lib3270_free(popup);
 
 }

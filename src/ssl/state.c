@@ -104,6 +104,7 @@ static const struct ssl_status_msg status_msg[] =
 
 	{
 		.id = X509_V_ERR_UNABLE_TO_GET_CRL,
+		.name = "X509_V_ERR_UNABLE_TO_GET_CRL",
 		.type = LIB3270_NOTIFY_ERROR,
 		.iconName = "dialog-error",
 		.summary = N_( "Unable to get certificate CRL." ),

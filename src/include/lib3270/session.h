@@ -81,11 +81,7 @@
 		int  (*save)(H3270 *session, LIB3270_CONTENT_OPTION mode, const char *filename);
 		int  (*load)(H3270 *hSession, const char *filename);
 
-		void (*message)(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text);
-
-		void (*popup)(H3270 *session, LIB3270_NOTIFY id, const char *title, const char *msg, const char *fmt, va_list);
-		int  (*popup_ssl_error)(H3270 *session, int rc, const char *title, const char *summary, const char *body);
-		int  (*popup_show)(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+		int  (*popup)(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
 #ifdef HAVE_LIBSSL
 		void (*set_peer_certificate)(const X509 *cert);

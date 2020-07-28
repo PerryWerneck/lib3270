@@ -642,6 +642,17 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 #if defined(HAVE_LIBSSL) /*[*/
 			if(hSession->ssl.con != NULL)
 			{
+				static const LIB3270_POPUP popup = {
+					.type = LIB3270_NOTIFY_ERROR,
+					.summary = N_( "SSL Read error" )
+				};
+
+				SSL_ERROR_MESSAGE message = {
+					.code = ERR_get_error(),
+					.popup = &popup
+				};
+
+				/*
 				unsigned long e;
 				char err_buf[120];
 
@@ -651,11 +662,13 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 					(void) ERR_error_string(e, err_buf);
 					trace_dsn(hSession,"RCVD SSL_read error %ld (%s)\n", e,err_buf);
 					hSession->cbk.message(hSession,LIB3270_NOTIFY_ERROR,_( "SSL Error" ),_( "SSL Read error" ),err_buf );
+					ssl_popup_message(hSession,msg);
 				}
 				else
 				{
 					trace_dsn(hSession,"RCVD SSL_read error %ld (%s)\n", e, "unknown");
 				}
+				*/
 
 				host_disconnect(hSession,True);
 				return;

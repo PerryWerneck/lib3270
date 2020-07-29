@@ -507,9 +507,11 @@ static void connection_complete(H3270 *session)
 }
 
 
+/*
 LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
 {
-	trace("%s",__FUNCTION__);
+	LIB3270_NETWORK_STATE state;
+	memset(&state,0,sizeof(state));
 
 #if defined(HAVE_LIBSSL)
 	if(hSession->ssl.con != NULL)
@@ -527,37 +529,47 @@ LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
 		hSession->xio.write = 0;
 	}
 
-	if(hSession->connection.sock >= 0)
-	{
-		shutdown(hSession->connection.sock, 2);
-		SOCK_CLOSE(hSession->connection.sock);
-		hSession->connection.sock = -1;
-	}
+	hSession->network.module->disconnect(hSession->network.context,hSession,&state);
 
 }
+*/
 
 /**
- *	@brief Shut down the socket.
+ *	@brief Disconnect from host.
  */
-void net_disconnect(H3270 *session)
+void net_disconnect(H3270 *hSession)
 {
+	LIB3270_NETWORK_STATE state;
+	memset(&state,0,sizeof(state));
+
+	// Disconnect from host
 #if defined(HAVE_LIBSSL)
-	set_ssl_state(session,LIB3270_SSL_UNSECURE);
-#endif // HAVE_LIBSSL
+	if(hSession->ssl.con != NULL)
+	{
+		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+		SSL_shutdown(hSession->ssl.con);
+		SSL_free(hSession->ssl.con);
+		hSession->ssl.con = NULL;
+	}
+	else
+	{
+		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+	}
+#endif
 
-	session->cbk.disconnect(session);
+	if(hSession->xio.write)
+	{
+		lib3270_remove_poll(hSession, hSession->xio.write);
+		hSession->xio.write = 0;
+	}
 
-	trace_dsn(session,"SENT disconnect\n");
+	hSession->network.module->disconnect(hSession,&state);
 
-	/* Restore terminal type to its default. */
-	/*
-	if (session->termname == CN)
-		session->termtype = session->full_model_name;
-	*/
+	trace_dsn(hSession,"SENT disconnect\n");
 
 	// We're not connected to an LU any more.
-	session->lu.associated = CN;
-	status_lu(session,CN);
+	hSession->lu.associated = CN;
+	status_lu(hSession,CN);
 
 }
 
@@ -618,8 +630,8 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
  	for (;;)
 #endif
 	{
-		if (hSession->connection.sock < 0)
-			return;
+//		if (hSession->connection.sock < 0)
+//			return;
 
 #if defined(X3270_ANSI)
 		hSession->ansi_data = 0;
@@ -629,9 +641,9 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		if (hSession->ssl.con != NULL)
 			nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
 		else
-			nr = recv(hSession->connection.sock, (char *) buffer, BUFSZ, 0);
+			nr = hSession->network.module->recv(hSession->network.context, buffer, BUFSZ);
 #else
-			nr = recv(hSession->connection.sock, (char *) buffer, BUFSZ, 0);
+			nr = hSession->network.module->recv(hSession->network.context, buffer, BUFSZ);
 #endif // HAVE_LIBSSL
 
 		if (nr < 0)
@@ -1637,7 +1649,7 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	else
 		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
 #else
-		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
+		rc = hSession->network.module->send(hSession, buf, len);
 #endif // HAVE_LIBSSL
 
 	if(rc > 0)
@@ -2650,9 +2662,12 @@ void net_abort(H3270 *hSession)
 #endif /*]*/
 
 /* Return the local address for the socket. */
+
+/*
 int net_getsockname(const H3270 *session, void *buf, int *len)
 {
 	if (session->connection.sock < 0)
 		return -1;
 	return getsockname(session->connection.sock, buf, (socklen_t *)(void *)len);
 }
+*/

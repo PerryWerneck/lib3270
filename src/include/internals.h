@@ -39,6 +39,7 @@
 #include <lib3270/session.h>
 #include <lib3270/actions.h>
 #include <lib3270/popup.h>
+#include <networking.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
@@ -319,12 +320,22 @@ struct _h3270
 {
 	struct lib3270_session_callbacks	  cbk;					///< @brief Callback table - Always the first one.
 
-	// Session info
-	char					  id;								///< @brief Session Identifier.
+	/// @brief Session Identifier.
+	char					  id;
+
+	// Network
+	struct {
+
+		/// @brief Network module.
+		const LIB3270_NET_MODULE	* module;
+
+		/// @brief Network context.
+		LIB3270_NET_CONTEXT			* context;
+
+	} network;
 
 	// Connection info
 	struct {
-		int					  sock;								///< @brief Network socket.
 		LIB3270_CSTATE		  state;							///< @brief Connection state.
 	} connection;
 
@@ -745,7 +756,7 @@ LIB3270_INTERNAL void	toggle_rectselect(H3270 *session, const struct lib3270_tog
 LIB3270_INTERNAL void	remove_input_calls(H3270 *session);
 
 LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len);
-LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
+// LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
 
 LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
 
@@ -871,3 +882,11 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	/// @brief Fire CState change.
 	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
+
+	inline LIB3270_NET_CONTEXT * lib3270_get_net_context(H3270 *hSession) {
+		return hSession->network.context;
+	}
+
+	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
+
+

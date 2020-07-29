@@ -42,7 +42,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define SOCK_CLOSE(s)	close(s->connection.sock); s->connection.sock = -1;
+// #define SOCK_CLOSE(s)	close(s->connection.sock); s->connection.sock = -1;
 
 #include <stdlib.h>
 
@@ -69,7 +69,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		hSession->xio.write = NULL;
 	}
 
-	if(getsockopt(hSession->connection.sock, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
+	if(hSession->network.module->getsockopt(hSession, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
 	{
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(
@@ -88,16 +88,11 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		return;
 	}
 
-	hSession->xio.except	= lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
-	hSession->xio.read		= lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,net_input,0);
+	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
 
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
-	{
-		if(ssl_negotiate(hSession))
-			return;
-	}
-#endif
+	if(lib3270_start_tls(hSession))
+		return;
 
 	lib3270_setup_session(hSession);
 	lib3270_set_connected_initial(hSession);
@@ -238,8 +233,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	lib3270_set_cstate(hSession, LIB3270_PENDING);
 	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
-	hSession->xio.write = lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_WRITE,net_connected,0);
-	// hSession->ns_write_id = AddOutput(hSession->sock, hSession, net_connected);
+	hSession->xio.write = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_WRITE,net_connected,0);
 
 	trace("%s: Connection in progress",__FUNCTION__);
 

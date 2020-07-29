@@ -299,19 +299,18 @@ static void internal_remove_poll(H3270 *session, void *id)
  }
 
 
+/*
 LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id)
 {
 	debug("%s(%d,%p)",__FUNCTION__,session->connection.sock,id);
 	remove_poll(session, id);
 }
+*/
 
 LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled)
 {
 	if(id)
-	{
-		debug("%s: Polling on %d (%p) is %s",__FUNCTION__,session->connection.sock,id,(enabled ? "enabled" : "disabled"));
 		set_poll_state(session, id, enabled);
-	}
 }
 
 LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd)
@@ -349,7 +348,7 @@ LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FL
 }
 
 LIB3270_EXPORT void	 * lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
-	debug("%s(%d)",__FUNCTION__,session->connection.sock);
+	debug("%s(%d)",__FUNCTION__,fd);
 	return add_poll(session,fd,flag,call,userdata);
 }
 
@@ -400,11 +399,10 @@ void x_except_on(H3270 *h)
 	if(reading)
 		lib3270_remove_poll(h,h->xio.read);
 
-	h->xio.except = lib3270_add_poll_fd(h,h->connection.sock,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	h->xio.except = h->network.module->add_poll(h,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 
 	if(reading)
-		h->xio.read = lib3270_add_poll_fd(h,h->connection.sock,LIB3270_IO_FLAG_READ,net_input,0);
-	debug("%s",__FUNCTION__);
+		h->xio.read = h->network.module->add_poll(h,LIB3270_IO_FLAG_READ,net_input,0);
 
 }
 
@@ -522,60 +520,8 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, vo
 
 int non_blocking(H3270 *hSession, Boolean on)
 {
-
-	if(hSession->connection.sock < 0)
+	if(hSession->network.module->non_blocking,on)
 		return 0;
-
-#ifdef WIN32
-
-		WSASetLastError(0);
-		u_long iMode= on ? 1 : 0;
-
-		if(ioctlsocket(hSession->connection.sock,FIONBIO,&iMode))
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "ioctlsocket(FIONBIO) failed." ),
-									"%s", lib3270_win32_strerror(GetLastError()));
-			return -1;
-		}
-
-#else
-
-	int f;
-
-	if ((f = fcntl(hSession->connection.sock, F_GETFL, 0)) == -1)
-	{
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								_( "fcntl() error when getting socket state." ),
-								_( "%s" ), strerror(errno)
-							);
-
-		return -1;
-	}
-
-	if (on)
-		f |= O_NDELAY;
-	else
-		f &= ~O_NDELAY;
-
-	if (fcntl(hSession->connection.sock, F_SETFL, f) < 0)
-	{
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
-								_( "%s" ), strerror(errno)
-							);
-		return -1;
-	}
-
-#endif
-
-	debug("Socket %d is now %s",hSession->connection.sock,(on ? "Non Blocking" : "Blocking"));
 
 	lib3270_set_poll_state(hSession,hSession->xio.read, on);
 	lib3270_set_poll_state(hSession,hSession->xio.write, on);

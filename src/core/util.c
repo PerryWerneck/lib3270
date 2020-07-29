@@ -516,6 +516,7 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
 
 }
 
+/*
 LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
 {
 	CHECK_SESSION_HANDLE(hSession);
@@ -544,7 +545,7 @@ LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, s
 
 	return getsockname(hSession->connection.sock, addr, addrlen);
 }
-
+*/
 static int xdigit_value(const char scanner)
 {
 

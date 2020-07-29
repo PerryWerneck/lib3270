@@ -121,7 +121,7 @@
 		return 0;
 	}
 
-	if(hSession->connection.sock > 0)
+	if(hSession->network.module->is_connected(hSession))
 	{
 		errno = EISCONN;
 		return 0;
@@ -168,4 +168,42 @@
 	return net_reconnect(hSession,seconds);
 
  }
+
+ static int bg_start_tls(H3270 *hSession, void *message)
+ {
+
+ }
+
+ int lib3270_start_tls(H3270 *hSession)
+ {
+	int rc = 0;
+
+	if(hSession->network.module->start_tls)
+	{
+		LIB3270_NETWORK_STATE state;
+		memset(&state,0,sizeof(state));
+
+		non_blocking(hSession,False);
+
+		rc = lib3270_run_task(
+				hSession,
+				(int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
+				&state
+			);
+
+		if(state.popup) {
+			if(lib3270_popup(hSession,state.popup,1)) {
+				lib3270_disconnect(hSession);
+				return rc;
+			}
+
+			// User has selected "continue", ignore error.
+			return 0;
+		}
+
+	}
+
+	return rc;
+ }
+
 

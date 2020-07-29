@@ -690,7 +690,7 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 		void *src = NULL;
 		int len = 0;
 
-		if(net_getsockname(hSession, &u, &addrlen) < 0)
+		if(hSession->network.module->getsockname(hSession, (struct sockaddr *) &u, &addrlen) < 0)
 			return 0;
 		SET16(buf, u.sa.sa_family);
 		x += 2;

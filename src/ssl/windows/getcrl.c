@@ -53,10 +53,14 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 
 	if(!(consturl && *consturl))
 	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
-		message->text = _( "Can't open CRL File" );
-		message->description = _("The URL for the CRL is undefined or empty");
+		static const LIB3270_POPUP popup = {
+			.name = "CantOpenCRL",
+			.summary = N_("Can´t open CRL file"),
+			.body = N_("The URL for the CRL is undefined or empty")
+		};
+
+		message->code = hSession->ssl.error = 0;
+		message->popup = &popup;
 		errno = ENOENT;
 		return NULL;
 	}
@@ -68,13 +72,15 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 		if(!hCRL)
 		{
 			// Can't open CRL File.
-			int err = errno;
+			static const LIB3270_POPUP popup = {
+				.summary = N_("Can´t open CRL file"),
+				.body = N_("Unable to open the defined CRL file")
+			};
 
-			message->error = hSession->ssl.error = 0;
-			message->title = _( "Security error" );
-			message->text = _( "Can't open CRL File" );
-			message->description = strerror(err);
-			trace_ssl(hSession,"Can't open %s: %s\n",consturl,message->description);
+			message->code = errno;
+			message->popup = &popup;
+			hSession->ssl.error = 0;
+			trace_ssl(hSession,"Can't open %s: %s\n",consturl,strerror(errno));
 			return NULL;
 
 		}
@@ -82,10 +88,13 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 		trace_ssl(hSession,"Loading CRL from %s\n",consturl+7);
 		if(d2i_X509_CRL_fp(hCRL, &x509_crl))
 		{
-			message->error = hSession->ssl.error = ERR_get_error();
-			message->title = _( "Security error" );
-			message->text = _( "Can't decode CRL" );
-			lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+			static const LIB3270_POPUP popup = {
+				.summary = N_("Unable to decode CRL")
+			};
+
+			message->code = hSession->ssl.error = ERR_get_error();
+			message->popup = &popup;
+			lib3270_write_log(hSession,"ssl","%s: %s",consturl, popup.summary);
 			return NULL;
 		}
 
@@ -112,16 +121,14 @@ X509_CRL * lib3270_download_crl(H3270 *hSession, SSL_ERROR_MESSAGE * message, co
 #else
 		// Can't get CRL.
 
-		message->error = hSession->ssl.error = 0;
-
-		if(!(message->text && message->description))
-			message->title = _( "Security error" );
-
-		if(!message->text)
-			message->text = _( "Unexpected or invalid CRL URL" );
-
-		if(!message->description)
-			message->description = _("The URL scheme is unknown");
+		message->code = hSession->ssl.error = 0;
+		if(!message->popup) {
+			static const LIB3270_POPUP popup = {
+				.summary = N_( "Unexpected or invalid CRL URL" ),
+				.body = N_("The URL scheme is unknown")
+			};
+			message->popup = &popup;
+		}
 
 		trace_ssl(hSession,"%s: The URL scheme is unknown",consturl);
 

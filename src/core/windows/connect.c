@@ -226,22 +226,16 @@ int net_reconnect(H3270 *hSession, int seconds)
 			// Have windows message, convert charset.
 
 			char msg[4096];
-			strncpy(msg,host.message,4095);
-
-			debug("host.message=\"%s\"",host.message);
+			snprintf(msg,sizeof(msg),"%s (RC=%d)",host.message,host.rc);
 
 			if(hEventLog)
 			{
 				// Register on event log
 				lib3270_autoptr(char) username = lib3270_get_user_name();
 
-				snprintf(msg,sizeof(msg),"rc=%d",host.rc);
-
 				const char *outMsg[] = {
 					username,
 					"networking",
-					message,
-					host.message,
 					msg
 				};
 
@@ -270,7 +264,8 @@ int net_reconnect(H3270 *hSession, int seconds)
 				iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
 				if(iconv(
 						hConv,
-						&host.message,&in,
+						(ICONV_CONST char *) &host.message,
+						&in,
 						&ptr,&out
 					) == ((size_t) -1))
 				{

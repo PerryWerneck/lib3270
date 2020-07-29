@@ -49,16 +49,22 @@
 X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
 {
 	size_t szResponse = 0;
-	lib3270_autoptr(char) httpText = lib3270_get_from_url(hSession, consturl, &szResponse, &message->text);
+	const char * error_message = NULL;
+	lib3270_autoptr(char) httpText = lib3270_get_from_url(hSession, consturl, &szResponse, &error_message);
 
 	if(!httpText)
 	{
-		message->error = hSession->ssl.error = 0;
-		message->title = _( "Security error" );
+		static LIB3270_POPUP popup = {
+			.summary = N_("Can´t get CRL"),
+		};
+
+		popup.body = error_message;
+		message->popup = error_message;
+		message->code = hSession->ssl.error = 0;
 		trace_ssl(
 			hSession,"Can't get %s: %s\n",
 				consturl,
-				message->description ? message->description : "Undefined message"
+				popup.body ? popup.body : "Undefined message"
 		);
 		return NULL;
 	}
@@ -67,17 +73,20 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	const unsigned char *crl_data = (const unsigned char *) httpText;
 
 	X509_CRL * x509_crl = NULL;
+
 	if(!d2i_X509_CRL(&x509_crl,&crl_data, (DWORD) szResponse))
 	{
-		message->error = hSession->ssl.error = ERR_get_error();
-		message->title = _( "Security error" );
-		message->text = _( "Can't decode certificate revocation list" );
-		lib3270_write_log(hSession,"ssl","%s: %s",consturl, message->text);
+		static const LIB3270_POPUP popup = {
+			.summary = N_( "Can't decode certificate revocation list" )
+		};
+		message->code = hSession->ssl.error = ERR_get_error();
+		message->popup = &popup;
+		lib3270_write_log(hSession,"ssl","%s: %s",consturl, popup.summary);
 
 		trace_ssl(
 			hSession,"%s: %s\n",
 				consturl,
-				message->text
+				popup.summary
 		);
 
 		return NULL;

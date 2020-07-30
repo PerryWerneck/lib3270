@@ -264,7 +264,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 				iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
 				if(iconv(
 						hConv,
-						(ICONV_CONST char *) &host.message,
+						(ICONV_CONST char *) host.message,
 						&in,
 						&ptr,&out
 					) == ((size_t) -1))

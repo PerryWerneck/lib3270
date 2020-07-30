@@ -74,7 +74,7 @@ void lib3270_session_free(H3270 *h)
 
 	shutdown_toggles(h);
 
-#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSL)
+#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSLx)
 	if(h->ssl.crl.prefer)
 	{
 		free(h->ssl.crl.prefer);
@@ -324,7 +324,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	memset(hSession,0,sizeof(H3270));
 	lib3270_set_default_network_module(hSession);
 
-#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSL)
+#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSLx)
 	hSession->ssl.crl.download = 1;
 #endif // SSL_ENABLE_CRL_CHECK
 

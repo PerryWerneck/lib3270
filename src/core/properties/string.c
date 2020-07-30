@@ -139,6 +139,7 @@
 			.set = NULL															// Set value.
 		},
 
+		/*
 		{
 			.name = "crl_url",													// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
@@ -154,6 +155,7 @@
 			.get = lib3270_crl_get_preferred_protocol,							// Get value.
 			.set = lib3270_crl_set_preferred_protocol,							// Set value.
 		},
+		*/
 
 		{
 			.name = "default_host",												// Property name.
@@ -162,6 +164,7 @@
 			.set = NULL															// Set value.
 		},
 
+		/*
 		{
 			.name = "sslmessage",												//  Property name.
 			.description = N_( "The security state" ),							//  Property description.
@@ -175,6 +178,7 @@
 			.get = lib3270_get_ssl_state_description,							//  Get value.
 			.set = NULL															//  Set value.
 		},
+		*/
 
 		{
 			.name = "oversize",														//  Property name.

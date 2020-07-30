@@ -35,8 +35,6 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <trace_dsc.h>
-
-#include "../ssl/crl.h"
 #include "utilc.h"
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/

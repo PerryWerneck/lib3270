@@ -307,14 +307,21 @@
 		<Unit filename="src/mkfb/mkfb.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/network_modules/linux/connect.c">
+		<Unit filename="src/network_modules/default/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/network_modules/openssl.c">
+		<Unit filename="src/network_modules/default/private.h" />
+		<Unit filename="src/network_modules/openssl/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/network_modules/private.h" />
-		<Unit filename="src/network_modules/unsecure.c">
+		<Unit filename="src/network_modules/openssl/private.h" />
+		<Unit filename="src/network_modules/openssl/states.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/select.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/state.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/selection/actions.c">
@@ -350,9 +357,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/properties.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/state.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/windows/getcrl.c">

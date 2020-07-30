@@ -51,7 +51,7 @@
 
  static int lib3270_set_ssl_minimum_protocol_version(H3270 *hSession, int value)
  {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 	FAIL_IF_ONLINE(hSession);
 	hSession->ssl.protocol.min_version = value;
 	return 0;
@@ -62,7 +62,7 @@
 
  static int lib3270_set_ssl_maximum_protocol_version(H3270 *hSession, int value)
  {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 	FAIL_IF_ONLINE(hSession);
 	hSession->ssl.protocol.max_version = value;
 	return 0;
@@ -73,7 +73,7 @@
 
  static int lib3270_get_ssl_minimum_protocol_version(const H3270 *hSession)
  {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 	return hSession->ssl.protocol.min_version;
 #else
 	errno = ENOTSUP;
@@ -83,7 +83,7 @@
 
  static int lib3270_get_ssl_maximum_protocol_version(const H3270 *hSession)
  {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 	return hSession->ssl.protocol.max_version;
 #else
 	errno = ENOTSUP;

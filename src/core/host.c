@@ -257,12 +257,8 @@ static void update_url(H3270 *hSession)
 {
 	char * url =
 			lib3270_strdup_printf(
-				"%s%s:%s",
-#ifdef HAVE_LIBSSL
-					(hSession->ssl.enabled ? "tn3270s://" : "tn3270://"),
-#else
-					"tn3270://",
-#endif // HAVE_LIBSSL
+				"%s//%s:%s",
+					hSession->network.module->name,
 					hSession->host.current,
 					hSession->host.srvc
 	);
@@ -280,7 +276,7 @@ static void update_url(H3270 *hSession)
 	lib3270_free(hSession->host.url);
 	hSession->host.url = url;
 
-#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
+#if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
 	lib3270_crl_free(hSession);
 #endif // SSL_ENABLE_CRL_CHECK
 
@@ -377,7 +373,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 		const char		* srvc;
 	} sch[] =
 	{
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 		{ 1, "tn3270s://",	"telnets"	},
 		{ 1, "telnets://",	"telnets"	},
 		{ 1, "L://",		"telnets"	},
@@ -398,7 +394,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 
 	trace("%s(%s)",__FUNCTION__,str);
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 	h->ssl.enabled = 0;
 #endif // HAVE_LIBSSL
 
@@ -407,7 +403,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 		size_t sz = strlen(sch[f].text);
 		if(!strncasecmp(hostname,sch[f].text,sz))
 		{
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 			h->ssl.enabled	= sch[f].ssl;
 #endif // HAVE_LIBSSL
 			srvc			= sch[f].srvc;

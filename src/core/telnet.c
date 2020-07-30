@@ -1520,37 +1520,12 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
 
 LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len)
 {
-	int rc;
-
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con != NULL)
-		rc = SSL_write(hSession->ssl.con, (const char *) buf, len);
-	else
-		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
-#else
-		rc = hSession->network.module->send(hSession, buf, len);
-#endif // HAVE_LIBSSL
+	int rc = hSession->network.module->send(hSession, buf, len);
 
 	if(rc > 0)
 		return rc;
 
 	// Send error, notify
-
-#if defined(HAVE_LIBSSL)
-	#error TODO - The send method should emit popup messages.
-	if(hSession->ssl.con != NULL)
-	{
-		unsigned long e;
-		char err_buf[120];
-
-		e = ERR_get_error();
-		(void) ERR_error_string(e, err_buf);
-		trace_dsn(hSession,"RCVD SSL_write error %ld (%s)\n", e,err_buf);
-		popup_an_error(hSession,_( "SSL_write:\n%s" ), err_buf);
-		return -1;
-	}
-#endif // HAVE_LIBSSL
-
 	trace_dsn(hSession,"RCVD socket error %d\n", -rc);
 
 	return -1;

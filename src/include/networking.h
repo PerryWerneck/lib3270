@@ -51,9 +51,21 @@
 
 	typedef struct lib3270_net_module {
 
+		/// @brief Protocol name for URL.
+		const char *name;
+
+		/// @brief Default service name.
+		const char *service;
+
+		/// @brief Prepare to connect.
+		///
+		/// @param hSession	TN3270 session.
+		/// @param state	Pointer to state message.
+		///
+		int (*init)(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+
 		/// @brief Deinitialize network module.
 		///
-		/// @param context	Network context.
 		/// @param hSession	TN3270 session.
 		/// @param state	Pointer to state message.
 		///
@@ -61,7 +73,6 @@
 
 		/// @brief Connect to host.
 		///
-		/// @param context	Network context.
 		/// @param hSession	TN3270 session.
 		/// @param seconds	Seconds for timeout.
 		/// @param state	Pointer to state message.
@@ -70,7 +81,6 @@
 
 		/// @brief Disconnect from host.
 		///
-		/// @param context	Network context.
 		/// @param hSession	TN3270 session.
 		/// @param state	Pointer to state message.
 		///
@@ -131,14 +141,21 @@
 	/**
 	 * @brief Connect to host, returns a connected socket.
 	 *
+	 * @param hSession	Disconnected TN3270 session.
+	 * @param state		Pointer to network state context.
+	 *
 	 * @return The Socket number or -1 in case of failure.
 	 *
 	 */
-	LIB3270_INTERNAL int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+	LIB3270_INTERNAL int	  lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state);
 
-
-	LIB3270_INTERNAL void	* lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
-	LIB3270_INTERNAL int	  lib3270_openssl_get_ex_index(H3270 *hSession);
+	/**
+	 * @brief Select the default (unsecure) network context.
+	 *
+	 * @param hSession	TN3270 Session handle.
+	 *
+	 */
+	LIB3270_INTERNAL void	  lib3270_set_default_network_module(H3270 *hSession);
 
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

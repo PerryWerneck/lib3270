@@ -34,26 +34,6 @@
 
  #include "private.h"
 
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <netdb.h>
- #include <openssl/ssl.h>
- #include <openssl/x509.h>
-
- struct _lib3270_net_context {
-
-	int sock;						///< @brief Session socket.
-
-	SSL * con;						///< @brief SSL Connection handle.
-
-	struct {
-		char			  download;	///< @brief Non zero to download CRL.
-		char			* prefer;	///< @brief Prefered protocol for CRL.
-		char			* url;		///< @brief URL for CRL download.
-		X509_CRL 		* cert;		///< @brief Loaded CRL (can be null).
-	} crl;
-
-  };
 
 static void crl_free(LIB3270_NET_CONTEXT *context) {
 	if(context->crl.cert) {
@@ -246,6 +226,9 @@ static int openssl_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *sta
 void lib3270_set_openssl_network_module(H3270 *hSession) {
 
 	static const LIB3270_NET_MODULE module = {
+		.name = "tn3270s",
+		.service = "tn3270s",
+		.init = openssl_network_init,
 		.finalize = openssl_network_finalize,
 		.connect = openssl_network_connect,
 		.disconnect = openssl_network_disconnect,

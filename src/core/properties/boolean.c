@@ -47,7 +47,7 @@
 
  void lib3270_disable_crl_download(H3270 *hSession)
  {
-#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
+#if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
 	hSession->ssl.crl.download = 0;
 #endif // SSL_ENABLE_CRL_CHECK
  }

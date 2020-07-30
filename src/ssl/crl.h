@@ -35,7 +35,7 @@
 #include <config.h>				/* autoconf settings */
 #include <lib3270.h>			/* lib3270 API calls and defs */
 
-#if defined(HAVE_LIBSSL)
+#if defined(HAVE_LIBSSLx)
 
 	#include <openssl/ssl.h>
 	#include <openssl/err.h>
@@ -61,7 +61,7 @@
 
 #endif // HAVE_LIBSSL
 
-#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSL)
+#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSLx)
 
 	/// @brief Unconditional release of the session CRL.
 	LIB3270_INTERNAL void lib3270_crl_free(H3270 *hSession);

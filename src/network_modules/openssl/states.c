@@ -28,62 +28,14 @@
  */
 
 #include <config.h>
-#include <internals.h>
-#include <errno.h>
 #include <lib3270.h>
-#include <lib3270/internals.h>
-#include <lib3270/popup.h>
-#include <lib3270/trace.h>
-#include <trace_dsc.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 
-#ifdef HAVE_LIBSSL
-	#include <openssl/ssl.h>
-	#include <openssl/err.h>
-#endif // HAVE_LIBSSL
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
-
-LIB3270_EXPORT int lib3270_is_secure(const H3270 *hSession)
-{
-	return lib3270_get_ssl_state(hSession) == LIB3270_SSL_SECURE;
-}
-
-LIB3270_EXPORT long lib3270_get_SSL_verify_result(const H3270 *hSession)
-{
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con)
-		return SSL_get_verify_result(hSession->ssl.con);
-#else
-	errno = ENOTSUP;
-#endif // HAVE_LIBSSL
-	return -1;
-}
-
-LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession)
-{
-#if defined(HAVE_LIBSSL)
-	return hSession->ssl.state;
-#else
-	return LIB3270_SSL_UNDEFINED;
-#endif // HAVE_LIBSSL
-}
-
-void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
-{
-	if(state == hSession->ssl.state)
-		return;
-
-	hSession->ssl.state = state;
-	trace_dsn(hSession,"SSL state changes to %d\n",(int) state);
-	debug("SSL state changes to %d\n",(int) state);
-
-	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
-}
-
-
-#if defined(HAVE_LIBSSL)
 
 static const struct ssl_status_msg status_msg[] =
 {
@@ -441,5 +393,4 @@ static const struct ssl_status_msg status_msg[] =
  	return "dialog-error";
  }
 
-#endif // HAVE_LIBSSL
 

@@ -33,14 +33,7 @@
   */
 
  #include "private.h"
-
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <netdb.h>
-
- struct _lib3270_net_context {
-	int sock;
- };
+ #include <fcntl.h>
 
  static void unsecure_network_finalize(H3270 *hSession) {
 
@@ -238,6 +231,10 @@ static int unsecure_network_getsockopt(H3270 *hSession, int level, int optname, 
 	return getsockopt(hSession->network.context->sock, level, optname, optval, optlen);
 }
 
+static int unsecure_network_init(H3270 GNUC_UNUSED(*hSession), LIB3270_NETWORK_STATE GNUC_UNUSED(*state)) {
+	return 0;
+}
+
 static int unsecure_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	hSession->network.context->sock = lib3270_network_connect(hSession, state);
@@ -271,6 +268,9 @@ static int unsecure_network_start_tls(H3270 GNUC_UNUSED(*hSession), LIB3270_NETW
 void lib3270_set_default_network_module(H3270 *hSession) {
 
 	static const LIB3270_NET_MODULE module = {
+		.name = "tn3270",
+		.service = "tn3270",
+		.init = unsecure_network_init,
 		.finalize = unsecure_network_finalize,
 		.connect = unsecure_network_connect,
 		.disconnect = unsecure_network_disconnect,

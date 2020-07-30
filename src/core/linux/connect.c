@@ -53,8 +53,83 @@
 #include <lib3270/internals.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <networking.h>
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
+
+ int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+
+	//
+	// Resolve hostname
+	//
+	struct addrinfo	  hints;
+ 	struct addrinfo * result	= NULL;
+	memset(&hints,0,sizeof(hints));
+	hints.ai_family 	= AF_UNSPEC;	// Allow IPv4 or IPv6
+	hints.ai_socktype	= SOCK_STREAM;	// Stream socket
+	hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
+	hints.ai_protocol	= 0;			// Any protocol
+
+	status_resolving(hSession);
+
+ 	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
+ 	if(rc)
+	{
+		state->error_message = gai_strerror(rc);
+		return -1;
+	}
+
+	//
+	// Try connecting to hosts.
+	//
+	int sock = -1;
+	struct addrinfo * rp = NULL;
+
+	status_connecting(hSession);
+
+	for(rp = result; sock < 0 && rp != NULL; rp = rp->ai_next)
+	{
+		// Got socket from host definition.
+		sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+		if(sock < 0)
+		{
+			// Can't get socket.
+			state->syserror = errno;
+			continue;
+		}
+
+		// Try connect.
+		if(connect(sock, rp->ai_addr, rp->ai_addrlen))
+		{
+			// Can't connect to host
+			state->syserror = errno;
+			close(sock);
+			sock = -1;
+			continue;
+		}
+
+	}
+
+	freeaddrinfo(result);
+
+	if(sock < 0)
+	{
+		static const LIB3270_POPUP popup = {
+			.name = "CantConnect",
+			.type = LIB3270_NOTIFY_ERROR,
+			.summary = N_("Can't connect to host"),
+			.label = N_("Try again")
+		};
+
+		state->popup = &popup;
+		return sock;
+	}
+
+	// don't share the socket with our children
+	(void) fcntl(sock, F_SETFD, 1);
+
+	return sock;
+ }
 
  static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
  {
@@ -171,7 +246,7 @@
 	//
 	hSession->ever_3270 = False;
 
-#if defined(HAVE_LIBSSL)
+#if defined(HAVE_LIBSSLx)
 	if(hSession->ssl.enabled)
 	{
 		hSession->ssl.host = 1;

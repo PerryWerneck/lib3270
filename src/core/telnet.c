@@ -261,7 +261,6 @@ static const char *trsp_flag[2] = { "POSITIVE-RESPONSE", "NEGATIVE-RESPONSE" };
 	#define SE_EAGAIN	WSAEINPROGRESS
 	#define SE_EPIPE	WSAECONNABORTED
 	#define SE_EINPROGRESS	WSAEINPROGRESS
-	#define SOCK_CLOSE(s)	closesocket(s)
 	#define SOCK_IOCTL(s, f, v)	ioctlsocket(s, f, (void *)v)
 #else /*][*/
 	#define socket_errno()	errno
@@ -275,7 +274,6 @@ static const char *trsp_flag[2] = { "POSITIVE-RESPONSE", "NEGATIVE-RESPONSE" };
 		#define SE_EINPROGRESS	EINPROGRESS
 	#endif /*]*/
 
-	#define SOCK_CLOSE(s)	close(s)
 	#define SOCK_IOCTL	ioctl
 #endif /*]*/
 
@@ -539,8 +537,6 @@ LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
  */
 void net_disconnect(H3270 *hSession)
 {
-	LIB3270_NETWORK_STATE state;
-	memset(&state,0,sizeof(state));
 
 	// Disconnect from host
 #if defined(HAVE_LIBSSL)
@@ -563,7 +559,7 @@ void net_disconnect(H3270 *hSession)
 		hSession->xio.write = 0;
 	}
 
-	hSession->network.module->disconnect(hSession,&state);
+	hSession->network.module->disconnect(hSession);
 
 	trace_dsn(hSession,"SENT disconnect\n");
 
@@ -641,9 +637,9 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		if (hSession->ssl.con != NULL)
 			nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
 		else
-			nr = hSession->network.module->recv(hSession->network.context, buffer, BUFSZ);
+			nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 #else
-			nr = hSession->network.module->recv(hSession->network.context, buffer, BUFSZ);
+			nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 #endif // HAVE_LIBSSL
 
 		if (nr < 0)
@@ -1602,13 +1598,10 @@ static int process_eor(H3270 *hSession)
 	return 0;
 }
 
-
-/**
- *	@brief Called when there is an exceptional condition on the socket.
- */
+/// @brief Called when there is an exceptional condition on the socket.
 void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
 {
-	CHECK_SESSION_HANDLE(session);
+	debug("%s",__FUNCTION__);
 
 	trace_dsn(session,"RCVD urgent data indication\n");
 	if (!session->syncing)
@@ -1655,9 +1648,10 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	if(rc > 0)
 		return rc;
 
-	// Recv error, notify
+	// Send error, notify
 
 #if defined(HAVE_LIBSSL)
+	#error TODO - The send method should emit popup messages.
 	if(hSession->ssl.con != NULL)
 	{
 		unsigned long e;
@@ -1671,25 +1665,7 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 	}
 #endif // HAVE_LIBSSL
 
-	trace_dsn(hSession,"RCVD socket error %d\n", socket_errno());
-
-	switch(socket_errno())
-	{
-	case SE_EPIPE:
-		popup_an_error(hSession, "%s", _( "Broken pipe" ));
-		break;
-
-	case SE_ECONNRESET:
-		popup_an_error(hSession, "%s", _( "Connection reset by peer" ));
-		break;
-
-	case SE_EINTR:
-		return 0;
-
-	default:
-		popup_a_sockerr(NULL, "%s", _( "Socket write error" ) );
-
-	}
+	trace_dsn(hSession,"RCVD socket error %d\n", -rc);
 
 	return -1;
 }
@@ -2029,7 +2005,7 @@ const char * lib3270_connection_state_get_name(const LIB3270_CSTATE cstate)
 	static const char *state_names[] =
 	{
 		"unconnected",
-		"resolving",
+		"connecting",
 		"pending",
 		"connected initial",
 		"TN3270 NVT",

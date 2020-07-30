@@ -883,10 +883,16 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	/// @brief Fire CState change.
 	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
 
-	inline LIB3270_NET_CONTEXT * lib3270_get_net_context(H3270 *hSession) {
-		return hSession->network.context;
-	}
-
-	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
+	///
+	/// @brief Start TLS/SSL
+	///
+	/// @param hSession	Session handle.
+	/// @param required	Non zero if the SSL/TLS is not optional.
+	///
+	/// @return 0 if ok, non zero if failed.
+	///
+	/// @retval ENOTSUP	TLS/SSL is not supported by library.
+	///
+	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession, Bool required);
 
 

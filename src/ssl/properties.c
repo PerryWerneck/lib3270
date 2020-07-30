@@ -51,7 +51,7 @@ LIB3270_EXPORT int lib3270_get_secure_host(const H3270 *hSession)
 
 }
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession)
 {
 
@@ -120,7 +120,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
  #pragma GCC diagnostic ignored "-Wunused-parameter"
  const char * lib3270_crl_get_url(const H3270 *hSession)
  {
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 	if(hSession->ssl.crl.url)
 		return hSession->ssl.crl.url;
 
@@ -144,7 +144,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
     FAIL_IF_ONLINE(hSession);
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSS) && defined(SSL_ENABLE_CRL_CHECK)
 
 	if(hSession->ssl.crl.url)
 	{
@@ -197,7 +197,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
  #pragma GCC diagnostic ignored "-Wunused-parameter"
  const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession)
  {
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 	if(hSession->ssl.crl.prefer)
 		return hSession->ssl.crl.prefer;
 #endif
@@ -213,7 +213,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
     FAIL_IF_ONLINE(hSession);
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(HAVE_SSL_ENABLE_CRL_CHECK)
 
 	if(hSession->ssl.crl.prefer)
 	{

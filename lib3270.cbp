@@ -307,6 +307,10 @@
 		<Unit filename="src/mkfb/mkfb.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/network_modules/linux/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/private.h" />
 		<Unit filename="src/network_modules/unsecure.c">
 			<Option compilerVar="CC" />
 		</Unit>

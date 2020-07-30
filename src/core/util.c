@@ -44,6 +44,10 @@
 	#include <openssl/opensslv.h>
 #endif // HAVE_LIBSSL
 
+#if defined(HAVE_MALLOC_H)
+	#include <malloc.h>
+#endif // defined
+
 #define my_isspace(c)	isspace((unsigned char)c)
 
 /**

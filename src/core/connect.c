@@ -62,7 +62,7 @@
 	if(ssl_ctx_init(hSession, (SSL_ERROR_MESSAGE *) ssl_error))
 		return -1;
 
-#if defined(SSL_ENABLE_CRL_CHECK)
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 	lib3270_crl_free_if_expired(hSession);
 #endif // defined(SSL_ENABLE_CRL_CHECK)
 
@@ -71,6 +71,7 @@
 
 #endif // HAVE_LIBSSL
 
+/*
  void connection_failed(H3270 *hSession, const char *message)
  {
 	lib3270_disconnect(hSession);
@@ -94,6 +95,7 @@
 		lib3270_activate_auto_reconnect(hSession,1000);
 
  }
+*/
 
  int lib3270_allow_reconnect(const H3270 *hSession)
  {
@@ -169,16 +171,11 @@
 
  }
 
- static int bg_start_tls(H3270 *hSession, void *message)
- {
-
- }
-
- int lib3270_start_tls(H3270 *hSession)
+ int lib3270_start_tls(H3270 *hSession, Bool required)
  {
 	int rc = 0;
 
-	if(hSession->network.module->start_tls)
+	if(hSession->network.module->start_tls,required)
 	{
 		LIB3270_NETWORK_STATE state;
 		memset(&state,0,sizeof(state));

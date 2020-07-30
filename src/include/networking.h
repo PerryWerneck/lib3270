@@ -41,26 +41,15 @@
 		DWORD 	winerror;			///< @brief Win32 error got from GetLastError()
 #endif // _WIN32
 
+		const char * error_message;	/// @brief System error message.
+
 		const LIB3270_POPUP *popup;	/// @brief Detailed info for popup.
 
 	} LIB3270_NETWORK_STATE;
 
-	typedef struct _lib3270_new_context LIB3270_NET_CONTEXT;
+	typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
 
 	typedef struct lib3270_net_module {
-
-		const char * name;			///< @brief The network module name.
-
-		/// @brief Initialize network module
-		///
-		/// @param hSession	TN3270 session.
-		/// @param state	Pointer to state message.
-		///
-		/// @return Allocated network context.
-		///
-		/// @retval NULL	Initialization failed.
-		///
-		LIB3270_NET_CONTEXT * (*init)(H3270 *hSession, LIB3270_NETWORK_STATE *state);
 
 		/// @brief Deinitialize network module.
 		///
@@ -68,7 +57,7 @@
 		/// @param hSession	TN3270 session.
 		/// @param state	Pointer to state message.
 		///
-		void (*deinit)(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+		void (*finalize)(H3270 *hSession);
 
 		/// @brief Connect to host.
 		///
@@ -77,7 +66,7 @@
 		/// @param seconds	Seconds for timeout.
 		/// @param state	Pointer to state message.
 		///
-		int (*connect)(H3270 *hSession, int seconds, LIB3270_NETWORK_STATE *state);
+		int (*connect)(H3270 *hSession, LIB3270_NETWORK_STATE *state);
 
 		/// @brief Disconnect from host.
 		///
@@ -85,9 +74,9 @@
 		/// @param hSession	TN3270 session.
 		/// @param state	Pointer to state message.
 		///
-		int (*disconnect)(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+		int (*disconnect)(H3270 *hSession);
 
-		int (*start_tls)(H3270 *hSession, LIB3270_NETWORK_STATE *msg);
+		int (*start_tls)(H3270 *hSession, LIB3270_NETWORK_STATE *msg, unsigned char required);
 
 		/// @brief Send on network context.
 		///
@@ -126,16 +115,26 @@
 		int (*getsockname)(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 
 		/// @brief Set socket options.
-		int (*setsockopt)(H3270 *hSession, int level, int optname, void *optval, size_t optlen);
+		int (*setsockopt)(H3270 *hSession, int level, int optname, const void *optval, size_t optlen);
 
 		/// @brief Get socket options.
 		int (*getsockopt)(H3270 *hSession, int level, int optname, void *optval, socklen_t *optlen);
 
 	} LIB3270_NET_MODULE;
 
-	LIB3270_NET_CONTEXT * lib3270_get_net_context(H3270 *hSession);
-	LIB3270_NET_CONTEXT * lib3270_get_default_net_context(void);
+	/**
+	 * @brief Activate the default (and insecure) network module.
+	 *
+	 */
+	LIB3270_INTERNAL void lib3270_set_default_network_module(H3270 *hSession);
 
+	/**
+	 * @brief Connect to host, returns a connected socket.
+	 *
+	 * @return The Socket number or -1 in case of failure.
+	 *
+	 */
+	LIB3270_INTERNAL int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state);
 
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

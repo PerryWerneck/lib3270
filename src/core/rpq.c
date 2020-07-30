@@ -686,7 +686,7 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 			struct sockaddr_in6 sa6;
 #endif // HAVE_GETADDRINFO
 		} u;
-		int addrlen = sizeof(u);
+		socklen_t addrlen = sizeof(u);
 		void *src = NULL;
 		int len = 0;
 

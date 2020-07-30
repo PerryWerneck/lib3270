@@ -45,6 +45,8 @@ SOURCES= \
 	$(wildcard src/selection/*.c) \
 	$(wildcard src/ssl/*.c) \
 	$(wildcard src/ssl/@OSNAME@/*.c) \
+	$(wildcard src/network_modules/*.c) \
+	$(wildcard src/network_modules/@OSNAME@/*.c) \
 	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c
 
 TEST_SOURCES= \

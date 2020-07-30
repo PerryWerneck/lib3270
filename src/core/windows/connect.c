@@ -47,8 +47,6 @@
 	#include <iconv.h>
 #endif // HAVE_ICONV
 
-#define SOCK_CLOSE(s)	closesocket(s->connection.sock); s->connection.sock = -1;
-
 #include "hostc.h"
 #include "trace_dsc.h"
 #include "telnetc.h"

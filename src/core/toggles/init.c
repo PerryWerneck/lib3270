@@ -77,19 +77,22 @@ static void toggle_nop(H3270 GNUC_UNUSED(*session), const struct lib3270_toggle 
 {
 }
 
-static void toggle_keepalive(H3270 *session, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
+static void toggle_keepalive(H3270 *hSession, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
-	// Update keep-alive option
-	int optval = t->value ? 1 : 0;
+	if(hSession->network.context)
+	{
+		// Has network context, update keep-alive option
+		int optval = t->value ? 1 : 0;
 
-	if(session->network.module->setsockopt(session, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0)
-	{
-		if(errno != ENOTCONN)
-			popup_a_sockerr(session, _( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
-	}
-	else
-	{
-		trace_dsn(session,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
+		if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0)
+		{
+			if(errno != ENOTCONN)
+				popup_a_sockerr(hSession, _( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
+		}
+		else
+		{
+			trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
+		}
 	}
 
 }

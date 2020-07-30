@@ -299,13 +299,10 @@ static void internal_remove_poll(H3270 *session, void *id)
  }
 
 
-/*
 LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id)
 {
-	debug("%s(%d,%p)",__FUNCTION__,session->connection.sock,id);
 	remove_poll(session, id);
 }
-*/
 
 LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled)
 {
@@ -520,7 +517,7 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, vo
 
 int non_blocking(H3270 *hSession, Boolean on)
 {
-	if(hSession->network.module->non_blocking,on)
+	if(hSession->network.module->non_blocking(hSession,on))
 		return 0;
 
 	lib3270_set_poll_state(hSession,hSession->xio.read, on);

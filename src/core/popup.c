@@ -135,7 +135,14 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 	// Alocate new struct
 	LIB3270_POPUP * popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
 
-	*popup = *origin;
+	if(origin)
+	{
+		*popup = *origin;
+	}
+	else
+	{
+		memset(popup,0,sizeof(LIB3270_POPUP));
+	}
 
 	strcpy((char *)(popup+1),body);
 	popup->body = (char *)(popup+1);
@@ -154,7 +161,8 @@ static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char 
 
 	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++)
 	{
-		lib3270_write_log(hSession,"popup","%s",text[ix]);
+		if(text[ix])
+			lib3270_write_log(hSession,"popup","%s",text[ix]);
 	}
 
 	return ENOTSUP;

@@ -42,6 +42,7 @@
 #endif // HAVE_MALLOC_H
 
 #include <internals.h>
+#include <stdlib.h>
 #include "resources.h"
 
 #include "hostc.h"
@@ -279,7 +280,7 @@ static void update_url(H3270 *hSession)
 	lib3270_free(hSession->host.url);
 	hSession->host.url = url;
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 	lib3270_crl_free(hSession);
 #endif // SSL_ENABLE_CRL_CHECK
 

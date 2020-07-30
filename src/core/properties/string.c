@@ -28,6 +28,7 @@
  */
 
  #include <config.h>
+ #include <stdlib.h>
  #include <internals.h>
  #include <string.h>
  #include <lib3270.h>

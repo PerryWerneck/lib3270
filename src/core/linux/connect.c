@@ -42,8 +42,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-// #define SOCK_CLOSE(s)	close(s->connection.sock); s->connection.sock = -1;
-
 #include <stdlib.h>
 
 #include "hostc.h"
@@ -58,8 +56,8 @@
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
-static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
-{
+ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
+ {
 	int 		err;
 	socklen_t	len		= sizeof(err);
 
@@ -83,91 +81,94 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 	else if(err)
 	{
-		lib3270_autoptr(char) body = lib3270_strdup_printf(_("%s (rc=%d)"),strerror(err),err);
-		connection_failed(hSession,body);
+		lib3270_autoptr(LIB3270_POPUP) popup =
+			lib3270_popup_clone_printf(
+				NULL,
+				_( "Can't connect to %s:%s"),
+				hSession->host.current,
+				hSession->host.srvc
+			);
+
+		lib3270_autoptr(char) syserror =
+						lib3270_strdup_printf(
+							_("The system error was \"%s\" (rc=%d)"),
+							strerror(err),
+							err
+						);
+
+		if(hSession->cbk.popup(hSession,popup,!hSession->auto_reconnect_inprogress) == 0)
+			lib3270_activate_auto_reconnect(hSession,1000);
+
 		return;
 	}
 
 	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
 
-	if(lib3270_start_tls(hSession))
+	if(lib3270_start_tls(hSession,0))
 		return;
 
 	lib3270_setup_session(hSession);
 	lib3270_set_connected_initial(hSession);
 
-}
-
- struct resolver
- {
-	const char 			* message;
- };
-
- static int background_connect(H3270 *hSession, void *host)
- {
-
-	struct addrinfo	  hints;
- 	struct addrinfo * result	= NULL;
-	struct addrinfo * rp		= NULL;
-
-	memset(&hints,0,sizeof(hints));
-	hints.ai_family 	= AF_UNSPEC;	// Allow IPv4 or IPv6
-	hints.ai_socktype	= SOCK_STREAM;	// Stream socket
-	hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
-	hints.ai_protocol	= 0;			// Any protocol
-
-	status_resolving(hSession);
-
- 	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
- 	if(rc != 0)
-	{
-		((struct resolver *) host)->message = gai_strerror(rc);
-		return -1;
-	}
-
-	status_connecting(hSession);
-
-	for(rp = result; hSession->connection.sock < 0 && rp != NULL; rp = rp->ai_next)
-	{
-		hSession->connection.sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-		if(hSession->connection.sock < 0)
-		{
-			((struct resolver *) host)->message = strerror(errno);
-			continue;
-		}
-
-		// Connected!
-		if(connect(hSession->connection.sock, rp->ai_addr, rp->ai_addrlen))
-		{
-			SOCK_CLOSE(hSession);
-			((struct resolver *) host)->message = strerror(errno);
-			continue;
-		}
-
-	}
-
-	freeaddrinfo(result);
-
-	return 0;
-
  }
 
  int net_reconnect(H3270 *hSession, int seconds)
  {
-	struct resolver		  host;
-	memset(&host,0,sizeof(host));
+	LIB3270_NETWORK_STATE state;
+	memset(&state,0,sizeof(state));
 
-	// Connect to host
-	if(lib3270_run_task(hSession, background_connect, &host) || hSession->connection.sock < 0)
+ 	// Initialize and connect to host
+	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state))
 	{
-		connection_failed(hSession,host.message);
+		lib3270_autoptr(LIB3270_POPUP) popup =
+			lib3270_popup_clone_printf(
+				NULL,
+				_( "Can't connect to %s:%s"),
+				hSession->host.current,
+				hSession->host.srvc
+			);
+
+		if(!popup->summary)
+		{
+			popup->summary = popup->body;
+			popup->body = NULL;
+		}
+
+		lib3270_autoptr(char) syserror = NULL;
+		if(state.syserror)
+		{
+			syserror = lib3270_strdup_printf(
+							_("The system error was \"%s\" (rc=%d)"),
+							strerror(state.syserror),
+							state.syserror
+						);
+		}
+#ifdef _WIN32
+		else if(state.winerror)
+		{
+			#error TODO
+		}
+#endif // _WIN32
+
+		if(!popup->body)
+		{
+			if(state.error_message)
+				popup->body = state.error_message;
+			else
+				popup->body = syserror;
+		}
+
+		if(hSession->cbk.popup(hSession,popup,!hSession->auto_reconnect_inprogress) == 0)
+			lib3270_activate_auto_reconnect(hSession,1000);
+
 		return errno = ENOTCONN;
 	}
 
-	/* don't share the socket with our children */
-	(void) fcntl(hSession->connection.sock, F_SETFD, 1);
 
+	//
+	// Connected
+	//
 	hSession->ever_3270 = False;
 
 #if defined(HAVE_LIBSSL)
@@ -182,7 +183,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	// set options for inline out-of-band data and keepalives
 	int optval = 1;
-	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
+	if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_OOBINLINE, &optval, sizeof(optval)) < 0)
 	{
 		int rc = errno;
 		lib3270_popup_dialog(	hSession,
@@ -191,12 +192,12 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 								_( "setsockopt(SO_OOBINLINE) has failed" ),
 								"%s",
 								strerror(rc));
-		SOCK_CLOSE(hSession);
+		hSession->network.module->disconnect(hSession);
 		return rc;
 	}
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
-	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
+	if (hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0)
 	{
 		int rc = errno;
 
@@ -209,7 +210,8 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 								buffer,
 								"%s",
 								strerror(rc));
-		SOCK_CLOSE(hSession);
+
+		hSession->network.module->disconnect(hSession);
 		return rc;
 	}
 	else
@@ -254,7 +256,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 			case LIB3270_CONNECTED_INITIAL_E:
 			case LIB3270_CONNECTED_NVT:
 			case LIB3270_CONNECTED_SSCP:
-			case LIB3270_RESOLVING:
+			case LIB3270_CONNECTING:
 				break;
 
 			case LIB3270_NOT_CONNECTED:

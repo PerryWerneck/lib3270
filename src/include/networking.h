@@ -137,7 +137,8 @@
 	LIB3270_INTERNAL int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state);
 
 
-	LIB3270_INTERNAL void * lib3270_get_openssl_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+	LIB3270_INTERNAL void	* lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+	LIB3270_INTERNAL int	  lib3270_openssl_get_ex_index(H3270 *hSession);
 
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

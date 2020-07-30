@@ -63,12 +63,12 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 // @brief Index of h3270 handle in SSL session.
-static int ssl_3270_ex_index;
+static int ssl_ex_index = 0;
 
 /// @brief Callback for tracing protocol negotiation.
 static void info_callback(INFO_CONST SSL *s, int where, int ret)
 {
-	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_3270_ex_index);
+	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_ex_index);
 
 	switch(where)
 	{
@@ -144,7 +144,7 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 	}
 }
 
-void * lib3270_get_openssl_context(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+void * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	static SSL_CTX * context = NULL;
 
@@ -174,7 +174,7 @@ void * lib3270_get_openssl_context(H3270 *hSession, LIB3270_NETWORK_STATE *state
 
 	SSL_CTX_set_default_verify_paths(context);
 
-	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
+	ssl_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
 
 #ifdef SSL_ENABLE_CRL_CHECK
 
@@ -191,4 +191,8 @@ void * lib3270_get_openssl_context(H3270 *hSession, LIB3270_NETWORK_STATE *state
 
 	return context;
 
+}
+
+int lib3270_openssl_get_ex_index(H3270 GNUC_UNUSED(*hSession)) {
+	return ssl_ex_index;
 }

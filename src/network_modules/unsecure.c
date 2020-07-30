@@ -249,7 +249,7 @@ static int unsecure_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *stat
 
 static int unsecure_network_start_tls(H3270 GNUC_UNUSED(*hSession), LIB3270_NETWORK_STATE *msg) {
 
-	if(hSession->ssl.required) {
+	if(hSession->ssl.host) {
 
 		// TODO: Replace network module with the openssl version, initialize and execute start_tls on it.
 
@@ -292,6 +292,7 @@ void lib3270_set_default_network_module(H3270 *hSession) {
 		hSession->network.module->finalize(hSession);
 	}
 
+	hSession->ssl.host = 0;
 	hSession->network.context = lib3270_malloc(sizeof(LIB3270_NET_CONTEXT));
 	memset(hSession->network.context,0,sizeof(LIB3270_NET_CONTEXT));
 	hSession->network.context->sock = -1;

@@ -307,7 +307,10 @@ LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id)
 LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled)
 {
 	if(id)
+	{
+		debug("%s: Polling on %p is %s",__FUNCTION__,id,(enabled ? "enabled" : "disabled"))
 		set_poll_state(session, id, enabled);
+	}
 }
 
 LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd)

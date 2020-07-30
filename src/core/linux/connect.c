@@ -105,7 +105,7 @@
 	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
 
-	if(lib3270_start_tls(hSession,0))
+	if(lib3270_start_tls(hSession))
 		return;
 
 	lib3270_setup_session(hSession);

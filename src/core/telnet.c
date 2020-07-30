@@ -50,10 +50,6 @@
 #endif // !ANDROID
 
 #include <config.h>
-#if defined(HAVE_LIBSSL)
-	#include <openssl/ssl.h>
-	#include <openssl/err.h>
-#endif
 
 #include <internals.h>
 #include <errno.h>
@@ -148,9 +144,7 @@ static void store3270in(H3270 *hSession, unsigned char c);
 static void check_linemode(H3270 *hSession, Boolean init);
 static int net_connected(H3270 *session);
 
-#if defined(HAVE_LIBSSL)
 static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len);
-#endif // HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) /*[*/
 static int tn3270e_negotiate(H3270 *hSession);
@@ -397,33 +391,15 @@ static void setup_lus(H3270 *hSession)
 
 static int net_connected(H3270 *hSession)
 {
-	/*
-	if(hSession->proxy_type > 0)
+
+	// Set up SSL.
+	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host ? " using SSL": "");
+
+	if(hSession->ssl.host && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
 	{
-		// Negotiate with the proxy.
-		trace_dsn(hSession,"Connected to proxy server %s, port %u.\n",hSession->proxy_host, hSession->proxy_port);
-
-		if (proxy_negotiate(hSession, hSession->proxy_type, hSession->sock, hSession->hostname,hSession->current_port) < 0)
-		{
-			host_disconnect(hSession,True);
-			return -1;
-		}
-	}
-	*/
-
-#if defined(HAVE_LIBSSL)
-	/* Set up SSL. */
-	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host? " using SSL": "");
-
-	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
-	{
-		if(ssl_negotiate(hSession))
+		if(lib3270_start_tls(hSession))
 			return -1;
 	}
-#else
-	trace_dsn(hSession,"Connected to %s.\n", hSession->host.current);
-
-#endif
 
 	lib3270_setup_session(hSession);
 
@@ -449,9 +425,7 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 	hSession->response_required = TN3270E_RSF_NO_RESPONSE;
 #endif
 
-#if defined(HAVE_LIBSSL)
 	hSession->need_tls_follows = 0;
-#endif
 	hSession->telnet_state = TNS_DATA;
 	hSession->ibptr = hSession->ibuf;
 
@@ -485,14 +459,14 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 
 }
 
-/**
- * @brief Connection_complete.
- *
- * The connection appears to be complete (output is possible or input
- * appeared ready but recv() returned EWOULDBLOCK).  Complete the
- * connection-completion processing.
- *
- */
+/*
+///
+/// @brief Connection_complete.
+///
+/// The connection appears to be complete (output is possible or input
+/// appeared ready but recv() returned EWOULDBLOCK).  Complete the
+/// connection-completion processing.
+///
 static void connection_complete(H3270 *session)
 {
 	if (non_blocking(session,False) < 0)
@@ -503,56 +477,11 @@ static void connection_complete(H3270 *session)
 	lib3270_set_connected_initial(session);
 	net_connected(session);
 }
-
-
-/*
-LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
-{
-	LIB3270_NETWORK_STATE state;
-	memset(&state,0,sizeof(state));
-
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con != NULL)
-	{
-		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-		SSL_shutdown(hSession->ssl.con);
-		SSL_free(hSession->ssl.con);
-		hSession->ssl.con = NULL;
-	}
-#endif
-
-	if(hSession->xio.write)
-	{
-		lib3270_remove_poll(hSession, hSession->xio.write);
-		hSession->xio.write = 0;
-	}
-
-	hSession->network.module->disconnect(hSession->network.context,hSession,&state);
-
-}
 */
 
-/**
- *	@brief Disconnect from host.
- */
+///	@brief Disconnect from host.
 void net_disconnect(H3270 *hSession)
 {
-
-	// Disconnect from host
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con != NULL)
-	{
-		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-		SSL_shutdown(hSession->ssl.con);
-		SSL_free(hSession->ssl.con);
-		hSession->ssl.con = NULL;
-	}
-	else
-	{
-		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-	}
-#endif
-
 	if(hSession->xio.write)
 	{
 		lib3270_remove_poll(hSession, hSession->xio.write);
@@ -633,71 +562,34 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		hSession->ansi_data = 0;
 #endif
 
-#if defined(HAVE_LIBSSL)
+/*
 		if (hSession->ssl.con != NULL)
 			nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
 		else
 			nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
-#else
-			nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
-#endif // HAVE_LIBSSL
+*/
+		nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 
 		if (nr < 0)
 		{
-			if (socket_errno() == SE_EWOULDBLOCK)
+			if (nr == -EWOULDBLOCK)
 				return;
 
-#if defined(HAVE_LIBSSL) /*[*/
-			if(hSession->ssl.con != NULL)
-			{
-				static const LIB3270_POPUP popup = {
-					.type = LIB3270_NOTIFY_ERROR,
-					.summary = N_( "SSL Read error" )
-				};
-
-				SSL_ERROR_MESSAGE message = {
-					.code = ERR_get_error(),
-					.popup = &popup
-				};
-
-				popup_ssl_error(hSession,0,&message);
-
-				/*
-				unsigned long e;
-				char err_buf[120];
-
-				e = ERR_get_error();
-				if (e != 0)
-				{
-					(void) ERR_error_string(e, err_buf);
-					trace_dsn(hSession,"RCVD SSL_read error %ld (%s)\n", e,err_buf);
-					hSession->cbk.message(hSession,LIB3270_NOTIFY_ERROR,_( "SSL Error" ),_( "SSL Read error" ),err_buf );
-					ssl_popup_message(hSession,msg);
-				}
-				else
-				{
-					trace_dsn(hSession,"RCVD SSL_read error %ld (%s)\n", e, "unknown");
-				}
-				*/
-
-				host_disconnect(hSession,True);
-				return;
-			}
-#endif /*]*/
-
-			if (HALF_CONNECTED && socket_errno() == SE_EAGAIN)
+			/*
+			if (HALF_CONNECTED && nr == -EWOULDBLOCK)
 			{
 				connection_complete(hSession);
 				return;
 			}
+			*/
 
-			trace_dsn(hSession,"RCVD socket error %d\n", errno);
+			trace_dsn(hSession,"RCVD socket error %d (%s)\n", -nr, strerror(-nr));
 
 			if (HALF_CONNECTED)
 			{
 				popup_a_sockerr(hSession, "%s", hSession->host.current);
 			}
-			else if (socket_errno() != SE_ECONNRESET)
+			else if (nr != -ECONNRESET)
 			{
 				popup_a_sockerr(hSession, _( "Socket read error" ) );
 			}
@@ -1009,55 +901,52 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 #if defined(X3270_TN3270E) /*[*/
 		    case TELOPT_TN3270E:
 #endif /*]*/
-#if defined(HAVE_LIBSSL) /*[*/
 		    case TELOPT_STARTTLS:
-#endif /*]*/
-			if (c == TELOPT_TN3270E && hSession->non_tn3270e_host)
-				goto wont;
-			if (c == TELOPT_TM && !hSession->bsd_tm)
-				goto wont;
+				if (c == TELOPT_TN3270E && hSession->non_tn3270e_host)
+					goto wont;
+				if (c == TELOPT_TM && !hSession->bsd_tm)
+					goto wont;
 
-			trace("hSession->myopts[c]=%d",hSession->myopts[c]);
-			if (!hSession->myopts[c])
-			{
-				if (c != TELOPT_TM)
-					hSession->myopts[c] = 1;
-				will_opt[2] = c;
-				net_rawout(hSession, will_opt, sizeof(will_opt));
-				trace_dsn(hSession,"SENT %s %s\n", cmd(WILL), opt(c));
-				check_in3270(hSession);
-				check_linemode(hSession,False);
-			}
-			if (c == TELOPT_NAWS)
-				send_naws(hSession);
-#if defined(HAVE_LIBSSL) /*[*/
-			if (c == TELOPT_STARTTLS) {
-				static unsigned char follows_msg[] = {
-					IAC, SB, TELOPT_STARTTLS,
-					TLS_FOLLOWS, IAC, SE
-				};
+				trace("hSession->myopts[c]=%d",hSession->myopts[c]);
+				if (!hSession->myopts[c])
+				{
+					if (c != TELOPT_TM)
+						hSession->myopts[c] = 1;
+					will_opt[2] = c;
+					net_rawout(hSession, will_opt, sizeof(will_opt));
+					trace_dsn(hSession,"SENT %s %s\n", cmd(WILL), opt(c));
+					check_in3270(hSession);
+					check_linemode(hSession,False);
+				}
+				if (c == TELOPT_NAWS)
+					send_naws(hSession);
+				if (c == TELOPT_STARTTLS) {
+					static unsigned char follows_msg[] = {
+						IAC, SB, TELOPT_STARTTLS,
+						TLS_FOLLOWS, IAC, SE
+					};
 
-				/*
-				 * Send IAC SB STARTTLS FOLLOWS IAC SE
-				 * to announce that what follows is TLS.
-				 */
-				net_rawout(hSession, follows_msg, sizeof(follows_msg));
-				trace_dsn(hSession,"SENT %s %s FOLLOWS %s\n",
-						cmd(SB),
-						opt(TELOPT_STARTTLS),
-						cmd(SE));
+					//
+					// Send IAC SB STARTTLS FOLLOWS IAC SE
+					// to announce that what follows is TLS.
+					//
+					net_rawout(hSession, follows_msg, sizeof(follows_msg));
+					trace_dsn(hSession,"SENT %s %s FOLLOWS %s\n",
+							cmd(SB),
+							opt(TELOPT_STARTTLS),
+							cmd(SE));
 
-				debug("%s: %s requires TLS/SSL",__FUNCTION__,opt(TELOPT_STARTTLS));
-				hSession->need_tls_follows = 1;
-			}
-#endif /*]*/
-			break;
+					debug("%s: %s requires TLS/SSL",__FUNCTION__,opt(TELOPT_STARTTLS));
+					hSession->need_tls_follows = 1;
+				}
+				break;
+
 		    default:
-		    wont:
-			wont_opt[2] = c;
-			net_rawout(hSession, wont_opt, sizeof(wont_opt));
-			trace_dsn(hSession,"SENT %s %s\n", cmd(WONT), opt(c));
-			break;
+				wont:
+				wont_opt[2] = c;
+				net_rawout(hSession, wont_opt, sizeof(wont_opt));
+				trace_dsn(hSession,"SENT %s %s\n", cmd(WONT), opt(c));
+				break;
 		}
 		hSession->telnet_state = TNS_DATA;
 		break;
@@ -1137,12 +1026,10 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 					return -1;
 			}
 #endif /*]*/
-#if defined(HAVE_LIBSSL) /*[*/
 			else if (hSession->need_tls_follows && hSession->myopts[TELOPT_STARTTLS] && hSession->sbbuf[0] == TELOPT_STARTTLS)
 			{
 				continue_tls(hSession,hSession->sbbuf, hSession->sbptr - hSession->sbbuf);
 			}
-#endif /*]*/
 
 		} else {
 			hSession->telnet_state = TNS_SB;
@@ -1152,16 +1039,13 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 	return 0;
 }
 
-#if defined(HAVE_LIBSSL)
-/**
- * Process a STARTTLS subnegotiation.
- */
+/// @brief Process a STARTTLS subnegotiation.
 static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len)
 {
-	/* Whatever happens, we're not expecting another SB STARTTLS. */
+	// Whatever happens, we're not expecting another SB STARTTLS.
 	hSession->need_tls_follows = 0;
 
-	/* Make sure the option is FOLLOWS. */
+	// Make sure the option is FOLLOWS.
 	if (len < 2 || sbbuf[1] != TLS_FOLLOWS)
 	{
 		/* Trace the junk. */
@@ -1171,11 +1055,13 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len)
 		return;
 	}
 
-	/* Trace what we got. */
+	// Trace what we got.
 	trace_dsn(hSession,"%s FOLLOWS %s\n", opt(TELOPT_STARTTLS), cmd(SE));
-	ssl_negotiate(hSession);
+
+	hSession->ssl.host = 1;	// Set host type as SSL.
+	lib3270_start_tls(hSession);
+
 }
-#endif // HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) /*[*/
 /// @brief Send a TN3270E terminal type request.

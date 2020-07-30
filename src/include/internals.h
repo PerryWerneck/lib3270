@@ -683,8 +683,8 @@ struct _h3270
 
 	struct
 	{
-		int 				error;			///< @brief OpenSSL error.
-		unsigned char		required;		///< @brief Non zero if SSL is required.
+		int					host		: 1;		///< @brief Non zero if host requires SSL.
+		int 				error;					///< @brief OpenSSL error.
 		LIB3270_SSL_STATE	state;
 	} ssl;
 
@@ -856,6 +856,6 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	///
 	/// @retval ENOTSUP	TLS/SSL is not supported by library.
 	///
-	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession, Bool required);
+	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
 
 

@@ -165,8 +165,9 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 	}
 
 	//
-	// Connect to host.
+	// Enable SSL & Connect to host.
 	//
+	hSession->ssl.host = 1;
 	context->sock = lib3270_network_connect(hSession, state);
 
 	return (context->sock < 0 ? -1 : 0);
@@ -204,6 +205,7 @@ void lib3270_set_openssl_network_module(H3270 *hSession) {
 		hSession->network.module->finalize(hSession);
 	}
 
+	hSession->ssl.host = 1;
 	hSession->network.context = lib3270_malloc(sizeof(LIB3270_NET_CONTEXT));
 	memset(hSession->network.context,0,sizeof(LIB3270_NET_CONTEXT));
 

@@ -124,11 +124,10 @@
 		return errno == 0 ? -1 : errno;
 	}
 
-//	debug("%s: TLS/SSL is %s",__FUNCTION__,hSession->ssl.enabled ? "ENABLED" : "DISABLED")
-//	trace_dsn(hSession,"TLS/SSL is %s\n", hSession->ssl.enabled ? "enabled" : "disabled" );
+	debug("%s: TLS/SSL is %s",__FUNCTION__,hSession->ssl.host ? "ENABLED" : "DISABLED")
+	trace_dsn(hSession,"TLS/SSL is %s\n", hSession->ssl.host ? "enabled" : "disabled" );
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-	// hSession->ssl.host  = 0;
 
 	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
 	lib3270_write_event_trace(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
@@ -139,11 +138,9 @@
 
  }
 
- int lib3270_start_tls(H3270 *hSession, Bool required)
+ int lib3270_start_tls(H3270 *hSession)
  {
 	int rc = 0;
-
-	hSession->ssl.required = (required ? 1 : 0);
 
 	LIB3270_NETWORK_STATE state;
 	memset(&state,0,sizeof(state));
@@ -156,10 +153,11 @@
 			&state
 		);
 
-	if(required && rc) {
+	non_blocking(hSession,True);
+
+	if(hSession->ssl.host && rc) {
 
 		// SSL is required and TLS/SSL has failed, abort.
-
 		lib3270_popup(hSession,state.popup,0);
 		lib3270_disconnect(hSession);
 		return rc;
@@ -167,8 +165,6 @@
 	}
 
 	// Not required or success
-
-	non_blocking(hSession,True);
 
 	return 0;
  }

@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
 		case 't':
 			trace_file = optarg;
 			lib3270_set_trace_handler(h,write_trace,NULL);
+			lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 			break;
 		}
 

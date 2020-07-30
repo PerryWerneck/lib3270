@@ -666,34 +666,6 @@ struct _h3270
 		void 				* except;
 	} xio;
 
-#ifdef HAVE_LIBSSL
-	/// @brief SSL Data.
-	struct
-	{
-		char				  enabled;
-		char				  host;
-		LIB3270_SSL_STATE	  state;
-		unsigned long 		  error;
-
-		struct
-		{
-			int min_version;	///< @brief The minimum supported protocol version.
-			int max_version;	///< @brief The maximum supported protocol version.
-		} protocol;
-
-#ifdef SSL_ENABLE_CRL_CHECK
-		struct
-		{
-			char			  download;	///< @brief Non zero to download CRL.
-			char			* prefer;	///< @brief Prefered protocol for CRL.
-			char			* url;		///< @brief URL for CRL download.
-			X509_CRL 		* cert;		///< @brief Loaded CRL (can be null).
-		} crl;
-#endif // SSL_ENABLE_CRL_CHECK
-		SSL 				* con;
-	} ssl;
-#endif // HAVE_LIBSSL
-
 	struct lib3270_linked_list_head timeouts;
 
 	struct
@@ -708,6 +680,13 @@ struct _h3270
 		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
 		void *userdata;
 	} trace;
+
+	struct
+	{
+		int 				error;			///< @brief OpenSSL error.
+		unsigned char		required;		///< @brief Non zero if SSL is required.
+		LIB3270_SSL_STATE	state;
+	} ssl;
 
 	/// @brief Event Listeners.
 	struct
@@ -795,6 +774,9 @@ LIB3270_INTERNAL int check_offline_session(const H3270 *hSession);
 
 LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
+LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
+
+/*
 #if defined(HAVE_LIBSSL)
 
 	typedef struct ssl_status_msg
@@ -820,44 +802,25 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	LIB3270_INTERNAL int							  ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);
 	LIB3270_INTERNAL int							  ssl_init(H3270 *session);
 	LIB3270_INTERNAL int							  ssl_negotiate(H3270 *hSession);
-	LIB3270_INTERNAL void							  set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	LIB3270_INTERNAL const struct ssl_status_msg	* ssl_get_status_from_error_code(long id);
 
 
-	#if OPENSSL_VERSION_NUMBER >= 0x00907000L
-		#define INFO_CONST const
-	#else
-		#define INFO_CONST
-	#endif
 
 	LIB3270_INTERNAL void ssl_info_callback(INFO_CONST SSL *s, int where, int ret);
 
-	/**
-	 * @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
-	 *
-	 */
+	 // @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
 	LIB3270_INTERNAL SSL_CTX * ssl_ctx;
 
-	/**
-	 * @brief Index of h3270 handle in SSL session.
-	 *
-	 */
-	LIB3270_INTERNAL int ssl_3270_ex_index;
 
-	/**
-	 * @brief Emit popup on ssl error.
-	 *
-	 */
+
+	/// @brief Emit popup on ssl error.
 	LIB3270_INTERNAL int popup_ssl_error(H3270 *session, int rc, const SSL_ERROR_MESSAGE *message);
 
-	/**
-	 * @brief Emits SSL popup.
-	 *
-	 *
-	 */
+	/// @brief Emits SSL popup.
 	LIB3270_INTERNAL void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg);
 
 #endif
+*/
 
 	/// @brief Clear element at adress.
 	LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);

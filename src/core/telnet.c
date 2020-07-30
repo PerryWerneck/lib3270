@@ -707,13 +707,13 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		}
 		else if (nr == 0)
 		{
-			/* Host disconnected. */
+			// Host disconnected.
 			trace_dsn(hSession,"RCVD disconnect\n");
 			host_disconnect(hSession,False);
 			return;
 		}
 
-		/* Process the data. */
+		// Process the data.
 		if (HALF_CONNECTED)
 		{
 			if (non_blocking(hSession,False) < 0)

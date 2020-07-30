@@ -70,7 +70,6 @@ LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession)
 #endif // HAVE_LIBSSL
 }
 
-#if defined(HAVE_LIBSSL)
 void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 {
 	if(state == hSession->ssl.state)
@@ -82,6 +81,9 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 }
+
+
+#if defined(HAVE_LIBSSL)
 
 static const struct ssl_status_msg status_msg[] =
 {

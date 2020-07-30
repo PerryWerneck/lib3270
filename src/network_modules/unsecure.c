@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como networking.h e possui - linhas de código.
+ * Este programa está nomeado como unsecure.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -213,7 +213,7 @@ static int unsecure_network_non_blocking(H3270 *hSession, const unsigned char on
 	return 0;
 }
 
-static int unsecure_network_is_connected(H3270 *hSession) {
+static int unsecure_network_is_connected(const H3270 *hSession) {
 	return hSession->network.context->sock > 0;
 }
 
@@ -247,9 +247,9 @@ static int unsecure_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *stat
 	return 0;
 }
 
-static int unsecure_network_start_tls(H3270 GNUC_UNUSED(*hSession), LIB3270_NETWORK_STATE *msg, unsigned char required) {
+static int unsecure_network_start_tls(H3270 GNUC_UNUSED(*hSession), LIB3270_NETWORK_STATE *msg) {
 
-	if(required) {
+	if(hSession->ssl.required) {
 
 		// TODO: Replace network module with the openssl version, initialize and execute start_tls on it.
 

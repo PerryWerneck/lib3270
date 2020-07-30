@@ -76,7 +76,7 @@
 		///
 		int (*disconnect)(H3270 *hSession);
 
-		int (*start_tls)(H3270 *hSession, LIB3270_NETWORK_STATE *msg, unsigned char required);
+		int (*start_tls)(H3270 *hSession, LIB3270_NETWORK_STATE *msg);
 
 		/// @brief Send on network context.
 		///
@@ -104,7 +104,7 @@
 		/// @brief Check if the session is online.
 		///
 		/// @retval 0	The session is offline.
-		int (*is_connected)(H3270 *hSession);
+		int (*is_connected)(const H3270 *hSession);
 
 		/// @brief get socket name.
 		///
@@ -135,6 +135,9 @@
 	 *
 	 */
 	LIB3270_INTERNAL int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+
+
+	LIB3270_INTERNAL void * lib3270_get_openssl_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
 
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

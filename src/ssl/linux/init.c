@@ -35,12 +35,9 @@
 
 /**
  * @brief OpenSSL initialization for linux.
- *
  */
 
 #include <config.h>
-
-#if defined(HAVE_LIBSSL)
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -51,63 +48,138 @@
 #endif // !SSL_ST_OK
 
 #include <internals.h>
-#include <errno.h>
-#include <lib3270.h>
-#include <lib3270/internals.h>
-#include <lib3270/trace.h>
+#include <networking.h>
 #include <lib3270/log.h>
-#include "trace_dsc.h"
 
 #ifdef SSL_ENABLE_CRL_CHECK
-	#include <openssl/x509.h>
 #endif // SSL_ENABLE_CRL_CHECK
+
+#if OPENSSL_VERSION_NUMBER >= 0x00907000L
+	#define INFO_CONST const
+#else
+	#define INFO_CONST
+#endif
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-/**
- * @brief Initialize openssl library.
- *
- * @return 0 if ok, non zero if fails.
- *
- */
-int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
-{
-	debug("%s ssl_ctx=%p",__FUNCTION__,ssl_ctx);
+// @brief Index of h3270 handle in SSL session.
+static int ssl_3270_ex_index;
 
-	if(ssl_ctx)
-		return 0;
+/// @brief Callback for tracing protocol negotiation.
+static void info_callback(INFO_CONST SSL *s, int where, int ret)
+{
+	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_3270_ex_index);
+
+	switch(where)
+	{
+	case SSL_CB_CONNECT_LOOP:
+		trace_ssl(hSession,"SSL_connect: %s %s\n",SSL_state_string(s), SSL_state_string_long(s));
+		break;
+
+	case SSL_CB_CONNECT_EXIT:
+
+		trace_ssl(hSession,"%s: SSL_CB_CONNECT_EXIT\n",__FUNCTION__);
+
+		if (ret == 0)
+		{
+			trace_ssl(hSession,"SSL_connect: failed in %s\n",SSL_state_string_long(s));
+		}
+		else if (ret < 0)
+		{
+			unsigned long e = ERR_get_error();
+			char err_buf[1024];
+
+			if(e != 0)
+			{
+				hSession->ssl.error = e;
+				(void) ERR_error_string_n(e, err_buf, 1023);
+			}
+#if defined(_WIN32)
+			else if (GetLastError() != 0)
+			{
+				strncpy(err_buf,lib3270_win32_strerror(GetLastError()),1023);
+			}
+#else
+			else if (errno != 0)
+			{
+				strncpy(err_buf, strerror(errno),1023);
+			}
+#endif
+			else
+			{
+				err_buf[0] = '\0';
+			}
+
+			trace_ssl(hSession,"SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
+							ret,
+							err_buf,
+							SSL_state_string_long(s),
+							SSL_alert_type_string_long(ret)
+						);
+
+		}
+		break;
+
+	default:
+		trace_ssl(hSession,"SSL Current state is \"%s\"\n",SSL_state_string_long(s));
+	}
+
+#ifdef DEBUG
+	if(where & SSL_CB_EXIT)
+	{
+		trace("%s: SSL_CB_EXIT ret=%d\n",__FUNCTION__,ret);
+	}
+#endif
+
+	if(where & SSL_CB_ALERT)
+		trace_ssl(hSession,"SSL ALERT: %s\n",SSL_alert_type_string_long(ret));
+
+	if(where & SSL_CB_HANDSHAKE_DONE)
+	{
+		trace_ssl(hSession,"%s: SSL_CB_HANDSHAKE_DONE state=%04x\n",__FUNCTION__,SSL_get_state(s));
+		if(SSL_get_state(s) == SSL_ST_OK)
+			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+		else
+			set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+	}
+}
+
+void * lib3270_get_openssl_context(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+
+	static SSL_CTX * context = NULL;
+
+	if(context)
+		return context;
 
 	trace_ssl(hSession,"Initializing SSL context.\n");
 
 	SSL_load_error_strings();
 	SSL_library_init();
 
-	ssl_ctx = SSL_CTX_new(SSLv23_method());
-	if(ssl_ctx == NULL)
+	context = SSL_CTX_new(SSLv23_method());
+	if(context == NULL)
 	{
 		static const LIB3270_POPUP popup = {
-			.name = "SSL-CTXERROR",
 			.type = LIB3270_NOTIFY_SECURE,
-			.summary = N_( "Cant initialize the SSL context." )
+			.summary = N_( "Can't initialize the SSL context." )
 		};
 
-		message->code = hSession->ssl.error = ERR_get_error();
-		message->popup = &popup;
+//		message->code = hSession->ssl.error = ERR_get_error();
+		state->popup = &popup;
 		return -1;
 	}
 
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
-	SSL_CTX_set_info_callback(ssl_ctx, ssl_info_callback);
+	SSL_CTX_set_options(context, SSL_OP_ALL);
+	SSL_CTX_set_info_callback(context, info_callback);
 
-	SSL_CTX_set_default_verify_paths(ssl_ctx);
+	SSL_CTX_set_default_verify_paths(context);
 
 	ssl_3270_ex_index = SSL_get_ex_new_index(0,NULL,NULL,NULL,NULL);
-
 
 #ifdef SSL_ENABLE_CRL_CHECK
 
 	// Enable CRL check
-	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
+	X509_STORE *store = SSL_CTX_get_cert_store(context);
 	X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
 	X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_CRL_CHECK);
 	X509_STORE_set1_param(store, param);
@@ -117,8 +189,6 @@ int ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE * message)
 
 #endif // SSL_ENABLE_CRL_CHECK
 
-	return 0;
+	return context;
 
 }
-
-#endif // HAVE_LIBSSL

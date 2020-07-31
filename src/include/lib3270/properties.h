@@ -220,7 +220,7 @@
 	 *
 	 * @return 0 if ok or error code if not (Sets errno).
 	 *
-	 * @retval	0 		Download of the CRL was disabled.
+	 * @retval	0 		Success, the property was set.
 	 * @retval	ENOTSUP	No SSL/TLS support.
 	 */
 	LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled);

@@ -237,11 +237,11 @@ void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode)
 {
 	struct lib3270_linked_list_node * node;
 
-	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(tx),mode);
+	debug("%s(%s,%d)",__FUNCTION__,lib3270_state_get_name(tx),mode);
     trace_dsn(
         hSession,
         "Notifying state %s with mode %d.\n",
-            lib3270_connection_state_get_name(tx),
+            lib3270_state_get_name(tx),
             mode
     );
 

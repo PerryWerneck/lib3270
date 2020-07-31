@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 10:26-0300\n"
+"POT-Creation-Date: 2020-07-31 13:59-0300\n"
 "PO-Revision-Date: 2020-07-27 18:12-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -30,7 +30,7 @@ msgstr "%dx%d é negativa ou zero"
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
 
-#: src/core/iocalls.c:554 src/core/iocalls.c:571
+#: src/core/iocalls.c:508 src/core/iocalls.c:525
 #, c-format
 msgid "%s"
 msgstr "%s"
@@ -359,11 +359,11 @@ msgstr "Não posso enviar requisição HTTP"
 msgid "Can't set LDAP protocol version"
 msgstr "Não é possível setar a versão do protocolo LDAP"
 
-#: src/core/iocalls.c:570
+#: src/core/iocalls.c:524
 msgid "Can't set socket to blocking mode."
 msgstr "Não foi possível mudar o socket para o modo blocante."
 
-#: src/core/iocalls.c:570
+#: src/core/iocalls.c:524
 msgid "Can't set socket to non blocking mode"
 msgstr "Não foi possível setar o socket para o modo não blocante."
 
@@ -480,7 +480,7 @@ msgstr "Comando incompleto, transferência cancelada"
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
-#: src/core/iocalls.c:538 src/core/windows/connect.c:317
+#: src/core/iocalls.c:492 src/core/windows/connect.c:317
 #: src/core/windows/connect.c:333
 msgid "Connection error"
 msgstr "Erro de conexão"
@@ -739,7 +739,7 @@ msgstr "Erro de formato no campo \"notAfter\" do certificado"
 msgid "Format error in certificate's notBefore field"
 msgstr "Erro de formato no campo \"notBefore\" do certificado"
 
-#: src/core/properties/boolean.c:175
+#: src/core/properties/boolean.c:178
 msgid "Formatted screen"
 msgstr "Tela formatada"
 
@@ -751,7 +751,7 @@ msgstr "Tela cheia"
 msgid "Got an invalid certificate revocation list from server"
 msgstr "Servidor enviou uma lista de certificados revogados inválida"
 
-#: src/core/properties/boolean.c:154
+#: src/core/properties/boolean.c:157
 msgid "Has selected area"
 msgstr "Tem área selecionada"
 
@@ -929,23 +929,23 @@ msgstr "Opção xxxxxxxx inválida: Transferência cancelada"
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
-#: src/core/properties/boolean.c:75
+#: src/core/properties/boolean.c:78
 msgid "Is connection secure"
 msgstr "A conexão é segura ?"
 
-#: src/core/properties/boolean.c:168
+#: src/core/properties/boolean.c:171
 msgid "Is starting (no first screen)?"
 msgstr "Está iniciando (não recebeu a primeira tela)?"
 
-#: src/core/properties/boolean.c:68
+#: src/core/properties/boolean.c:71
 msgid "Is terminal connected"
 msgstr "O terminal está conectado"
 
-#: src/core/properties/boolean.c:147
+#: src/core/properties/boolean.c:150
 msgid "Is terminal in the INITIAL_E state?"
 msgstr "O terminal está no estad INITIAL_E?"
 
-#: src/core/properties/boolean.c:61
+#: src/core/properties/boolean.c:64
 msgid "Is terminal ready"
 msgstr "O terminal está pronto"
 
@@ -973,7 +973,7 @@ msgstr "Última mensagem de programa"
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/core/properties/boolean.c:182
+#: src/core/properties/boolean.c:185
 msgid "Lock keyboard on operator error"
 msgstr "Bloqueia teclado em caso de erro do operador"
 
@@ -1095,11 +1095,11 @@ msgstr ""
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/core/properties/boolean.c:91
+#: src/core/properties/boolean.c:94
 msgid "Non zero if the host is AS400."
 msgstr "Diferente de zero se o host é AS400"
 
-#: src/core/properties/boolean.c:83
+#: src/core/properties/boolean.c:86
 msgid "Non zero if the host is TSO."
 msgstr "Diferente de zero se o host é TSO"
 
@@ -1455,7 +1455,7 @@ msgstr "Show timer when processing"
 msgid "Smart paste"
 msgstr "Colar inteligente"
 
-#: src/core/iocalls.c:552 src/core/iocalls.c:569
+#: src/core/iocalls.c:506 src/core/iocalls.c:523
 msgid "Socket error"
 msgstr "Erro no socket"
 
@@ -1471,11 +1471,11 @@ msgstr "Erro ao enviar dados para a rede"
 msgid "Sound"
 msgstr "Som"
 
-#: src/core/properties/boolean.c:126
+#: src/core/properties/boolean.c:129
 msgid "State is 3270, TN3270e or SSCP"
 msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 
-#: src/core/properties/boolean.c:161
+#: src/core/properties/boolean.c:164
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
 
@@ -2178,11 +2178,11 @@ msgstr "desabilitar"
 msgid "enable"
 msgstr "habilitar"
 
-#: src/core/iocalls.c:553
+#: src/core/iocalls.c:507
 msgid "fcntl() error when getting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
-#: src/core/iocalls.c:539
+#: src/core/iocalls.c:493
 msgid "ioctlsocket(FIONBIO) failed."
 msgstr "ioctlsocket(FIONBIO) failed."
 
@@ -2194,7 +2194,7 @@ msgstr "Revisão da lib3270"
 msgid "lib3270 version"
 msgstr "Versão da lib3270"
 
-#: src/core/properties/boolean.c:189
+#: src/core/properties/boolean.c:192
 msgid "numeric lock"
 msgstr "numeric lock"
 

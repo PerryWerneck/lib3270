@@ -188,10 +188,14 @@ retry:
 			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec))
 			{
 				t->in_play = True;
-				(*t->proc)(hSession,t->userdata);
+
+				if((*t->proc)(hSession,t->userdata) == 0)
+					lib3270_linked_list_delete_node(&hSession->timeouts,t);
+				else
+					t->in_play = False;
+
 				processed_any = True;
 
-				lib3270_linked_list_delete_node(&hSession->timeouts,t);
 
 			}
 			else

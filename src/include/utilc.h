@@ -17,22 +17,11 @@
  * @brief Global declarations for util.c.
  */
 
-LIB3270_INTERNAL char *ctl_see(int c);
+LIB3270_INTERNAL char 	* ctl_see(int c);
 
- /*
-LIB3270_INTERNAL void add_resource(const char *name, const char *value);
-LIB3270_INTERNAL const char *get_message(const char *key);
-LIB3270_INTERNAL const char *get_fresource(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
-LIB3270_INTERNAL const char *get_resource(H3270 *hSession, const char *name);
-LIB3270_INTERNAL int split_dbcs_resource(const char *value, char sep, char **part1, char **part2);
-LIB3270_INTERNAL int split_dresource(char **st, char **left, char **right);
-LIB3270_INTERNAL int split_lresource(char **st, char **value);
-LIB3270_INTERNAL char *strip_whitespace(const char *s);
-*/
-
-LIB3270_INTERNAL char *xs_buffer(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
-LIB3270_INTERNAL void xs_error(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
-LIB3270_INTERNAL void xs_warning(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
+LIB3270_INTERNAL char 	* xs_buffer(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
+LIB3270_INTERNAL void	  xs_error(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
+LIB3270_INTERNAL void	  xs_warning(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
 
 LIB3270_INTERNAL void 	* AddInput(int, H3270 *session, void (*fn)(H3270 *session));
 LIB3270_INTERNAL void 	* AddOutput(int, H3270 *session, void (*fn)(H3270 *session));
@@ -41,24 +30,6 @@ LIB3270_INTERNAL void 	* AddExcept(int, H3270 *session, void (*fn)(H3270 *sessio
 LIB3270_INTERNAL void     RemoveSource(H3270 *session, void *cookie);
 LIB3270_INTERNAL void	* AddTimer(unsigned long msec, H3270 *session, int (*fn)(H3270 *session, void *userdata), void *userdata);
 LIB3270_INTERNAL void	  RemoveTimer(H3270 *session, void *cookie);
-
-// LIB3270_INTERNAL const char * KeysymToString(KeySym k);
-
-// LIB3270_INTERNAL int read_resource_file(const char *filename, Boolean fatal);
-// LIB3270_INTERNAL Boolean split_hier(char *label, char **base, char ***parents);
-
-/*
-typedef struct {
-	char *buf;
-	int alloc_len;
-	int cur_len;
-} rpf_t;
-
-LIB3270_INTERNAL void rpf_init(rpf_t *r);
-LIB3270_INTERNAL void rpf_reset(rpf_t *r);
-LIB3270_INTERNAL void rpf(rpf_t *r, char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
-LIB3270_INTERNAL void rpf_free(rpf_t *r);
-*/
 
 /**
  * @brief "unescape" text (Replaces %value for corresponding character).
@@ -71,7 +42,7 @@ LIB3270_INTERNAL void rpf_free(rpf_t *r);
 LIB3270_INTERNAL char * lib3270_unescape(const char *text);
 
 /**
- * @brief Compare strings ignoring non alfanumeric chars.
+ * @brief Compare strings ignoring non alphanumeric chars.
  *
  * @param s1	First string.
  * @param s2	Second string.

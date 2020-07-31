@@ -84,6 +84,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 			break;
 		}
 
+		debug("%s: Waiting",__FUNCTION__);
 		lib3270_main_iterate(hSession,1);
 	}
 	RemoveTimer(hSession,timer);
@@ -189,11 +190,45 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 
 }
 
-int lib3270_wait_for_string_at(H3270 *hSession, unsigned int row, unsigned int col, const char *key, int seconds)
+LIB3270_EXPORT int lib3270_wait_for_string_at(H3270 *hSession, unsigned int row, unsigned int col, const char *key, int seconds)
 {
 	int baddr = lib3270_translate_to_address(hSession,row,col);
 	if(baddr < 0)
 		return errno;
 
 	return lib3270_wait_for_string_at_address(hSession,baddr,key,seconds);
+}
+
+LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstate, int seconds)
+{
+
+	int rc = -1;
+	int timeout = 0;
+	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+
+	while(rc == -1)
+	{
+		if(timeout) {
+			// Timeout! The timer was destroyed.
+			return errno = ETIMEDOUT;
+		}
+
+		if(hSession->connection.state == LIB3270_NOT_CONNECTED)
+		{
+			rc = ENOTCONN;
+			break;
+		}
+
+		if(!hSession->starting && hSession->connection.state == cstate)
+		{
+			rc = 0;
+			break;
+		}
+
+		lib3270_main_iterate(hSession,1);
+
+	}
+	RemoveTimer(hSession,timer);
+
+	return errno = rc;
 }

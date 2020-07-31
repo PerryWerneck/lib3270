@@ -325,9 +325,12 @@ static void internal_ring_bell(H3270 GNUC_UNUSED(*session))
 
 void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session, void *userdata), void *userdata)
 {
-	void *timer;
-	CHECK_SESSION_HANDLE(session);
-	timer = add_timer(session,interval_ms,proc,userdata);
+	void *timer = add_timer(
+						session,
+						interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
+						proc,
+						userdata
+					);
 	trace("Timeout %p created with %ld ms",timer,interval_ms);
 	return timer;
 }

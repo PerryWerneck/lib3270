@@ -181,11 +181,17 @@ int main(int argc, char *argv[])
 			for(f=0;f < 1000; f++) {
 				lib3270_wait_for_ready(h,10);
 			}
-			printf("Time for 1000 iterations of wait_for_ready was %d\n",(int) (time(0) - start));
+
+			time_t tm = (time(0) - start);
+			printf("\n\nTime for 1000 iterations of wait_for_ready was %d\n",(int) tm);
+
+			if(tm > 1) {
+				exit(-1);
+			}
 
 		}
 
-		printf("Waiting ends %u\n\n",(unsigned int) time(NULL));
+		printf("\n\nWaiting ends %u\n\n",(unsigned int) time(NULL));
 
 		lib3270_enter(h);
 		lib3270_wait(h,5);

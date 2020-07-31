@@ -64,7 +64,7 @@
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-static int check_for_auto_reconnect(H3270 *hSession)
+static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata))
 {
 
 	if(hSession->auto_reconnect_inprogress)
@@ -94,7 +94,7 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
 		return EBUSY;
 
 	hSession->auto_reconnect_inprogress = 1;
-	(void) AddTimer(msec, hSession, check_for_auto_reconnect);
+	(void) AddTimer(msec, hSession, check_for_auto_reconnect, NULL);
 
 	return 0;
 }

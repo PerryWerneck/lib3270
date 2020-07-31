@@ -50,6 +50,9 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 {
 	FAIL_IF_NOT_ONLINE(hSession);
 
+	debug("%s",__FUNCTION__);
+	debug("Session lock state is %d",lib3270_get_lock_status(hSession));
+
 	int rc = 0;
 	int timeout = 0;
 	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
@@ -58,11 +61,14 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 	{
 		if(timeout) {
 			// Timeout! The timer was destroyed.
+			debug("%s exits with ETIMEDOUT",__FUNCTION__);
 			return errno = ETIMEDOUT;
 		}
 
-		if(!lib3270_get_lock_status(hSession))
+		if(lib3270_get_lock_status(hSession) == LIB3270_MESSAGE_NONE)
 		{
+			// Is unlocked, break.
+
 			break;
 		}
 
@@ -82,6 +88,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 	}
 	RemoveTimer(hSession,timer);
 
+	debug("%s exits with rc=%d",__FUNCTION__,rc);
 	return rc;
 
 }

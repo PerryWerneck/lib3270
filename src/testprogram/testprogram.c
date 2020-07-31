@@ -161,9 +161,20 @@ int main(int argc, char *argv[])
 	{
 		printf("\n\nWaiting starts %u\n",(unsigned int) time(NULL));
 		lib3270_wait_for_ready(h,10);
+
+		{
+			// Performance checks
+			size_t f;
+			time_t start = time(0);
+			for(f=0;f < 1000; f++) {
+				lib3270_wait_for_ready(h,10);
+			}
+			printf("Time for 1000 iterations of wait_for_ready was %d\n",(int) (time(0) - start));
+
+		}
+
 		printf("Waiting ends %u\n\n",(unsigned int) time(NULL));
 
-		/*
 		lib3270_enter(h);
 		lib3270_wait(h,5);
 
@@ -185,7 +196,6 @@ int main(int argc, char *argv[])
 			if(text)
 				printf("Screen:\n[%s]\n",text);
 		}
-		*/
 
 		lib3270_disconnect(h);
 

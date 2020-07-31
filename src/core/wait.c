@@ -37,8 +37,8 @@
 
 static int timer_expired(H3270 GNUC_UNUSED(*hSession), void *userdata)
 {
-	*((int *) userdata) = errno = ETIMEDOUT;
-	return 1; // Keep timer handle.
+	*((int *) userdata) = 1;
+	return 0;
 }
 
 LIB3270_EXPORT int lib3270_wait_for_update(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(seconds))
@@ -51,10 +51,16 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	int rc = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &rc);
+	int timeout = 0;
+	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc)
 	{
+		if(timeout) {
+			// Timeout! The timer was destroyed.
+			return errno = ETIMEDOUT;
+		}
+
 		if(!lib3270_get_lock_status(hSession))
 		{
 			break;
@@ -85,10 +91,16 @@ int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds)
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	int rc = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &rc);
+	int timeout = 0;
+	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc)
 	{
+		if(timeout) {
+			// Timeout! The timer was destroyed.
+			return errno = ETIMEDOUT;
+		}
+
 		// Keyboard is locked by operator error, fails!
 		if(hSession->kybdlock && KYBDLOCK_IS_OERR(hSession))
 		{
@@ -133,10 +145,16 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 		baddr = lib3270_get_cursor_address(hSession);
 
 	int rc = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &rc);
+	int timeout = 0;
+	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc)
 	{
+		if(timeout) {
+			// Timeout! The timer was destroyed.
+			return errno = ETIMEDOUT;
+		}
+
 		// Keyboard is locked by operator error, fails!
 		if(hSession->kybdlock && KYBDLOCK_IS_OERR(hSession))
 		{

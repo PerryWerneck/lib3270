@@ -189,10 +189,8 @@ retry:
 			{
 				t->in_play = True;
 
-				if((*t->proc)(hSession,t->userdata) == 0)
-					lib3270_linked_list_delete_node(&hSession->timeouts,t);
-				else
-					t->in_play = False;
+				(*t->proc)(hSession,t->userdata);
+				lib3270_linked_list_delete_node(&hSession->timeouts,t);
 
 				processed_any = True;
 

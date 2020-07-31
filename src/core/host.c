@@ -65,7 +65,7 @@
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-static int check_for_auto_reconnect(H3270 *hSession)
+static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata))
 {
 
 	if(hSession->auto_reconnect_inprogress)
@@ -95,7 +95,7 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
 		return EBUSY;
 
 	hSession->auto_reconnect_inprogress = 1;
-	(void) AddTimer(msec, hSession, check_for_auto_reconnect);
+	(void) AddTimer(msec, hSession, check_for_auto_reconnect, NULL);
 
 	return 0;
 }
@@ -238,11 +238,11 @@ void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode)
 {
 	struct lib3270_linked_list_node * node;
 
-	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(tx),mode);
+	debug("%s(%s,%d)",__FUNCTION__,lib3270_state_get_name(tx),mode);
     trace_dsn(
         hSession,
         "Notifying state %s with mode %d.\n",
-            lib3270_connection_state_get_name(tx),
+            lib3270_state_get_name(tx),
             mode
     );
 

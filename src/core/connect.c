@@ -156,7 +156,7 @@
 	if(hSession->ssl.host && rc) {
 
 		// SSL is required and TLS/SSL has failed, abort.
-		lib3270_popup(hSession,state.popup,0);
+		lib3270_popup(hSession,(const LIB3270_POPUP *) state.popup,0);
 		lib3270_disconnect(hSession);
 		return rc;
 

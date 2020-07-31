@@ -45,12 +45,19 @@
 	return hSession->starting != 0;
  }
 
- void lib3270_disable_crl_download(H3270 *hSession)
- {
 #if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
-	hSession->ssl.crl.download = 0;
-#endif // SSL_ENABLE_CRL_CHECK
+ LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled)
+ {
+ 	FAIL_IF_ONLINE(hSession);
+	hSession->ssl.crl.download = enabled ? 1 : 0;
+	return 0;
  }
+#else
+ LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(enabled))
+ {
+	return errno = ENOTSUP;
+ }
+#endif // HAVE_LIBSSL && SSL_ENABLE_CRL_CHECK
 
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
  {

@@ -53,6 +53,7 @@
 
 	struct _lib3270_network_popup {
 		LIB3270_POPUP_HEAD
+
 		long                      id;
 		const char              * icon;             ///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 	};

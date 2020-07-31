@@ -52,7 +52,7 @@
 
 	#endif // HAVE_LDAP
 
-	#if defined (HAVE_LIBSSL) && defined(HAVE_LIBCURL)
+	#if defined (HAVE_LIBSSLx) && defined(HAVE_LIBCURL)
 
 		/// @brief Use libcurl to get CRL.
 		LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl);

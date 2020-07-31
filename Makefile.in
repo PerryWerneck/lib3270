@@ -178,6 +178,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	@echo $(notdir $@) ...
 	@$(MKDIR) $(dir $@)
 	@$(XGETTEXT) \
+		--from-code=UTF-8 \
 		--language=C \
 		--keyword=_ \
 		--keyword=N_ \

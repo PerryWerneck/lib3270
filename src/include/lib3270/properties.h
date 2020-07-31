@@ -216,9 +216,14 @@
 	 * @brief Disable automatic download of the CRL.
 	 *
 	 * @param hSession	Session handle.
+	 * @param Value		Non zero to enable automatic download of CRL.
 	 *
+	 * @return 0 if ok or error code if not (Sets errno).
+	 *
+	 * @retval	0 		Success, the property was set.
+	 * @retval	ENOTSUP	No SSL/TLS support.
 	 */
-	LIB3270_EXPORT void lib3270_disable_crl_download(H3270 *hSession);
+	LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled);
 
 	/**
 	 * @brief Get lib3270 version info.

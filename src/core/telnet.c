@@ -1865,23 +1865,47 @@ const char * lib3270_connection_state_get_name(const LIB3270_CSTATE cstate)
 {
 	static const char *state_names[] =
 	{
-		"unconnected",
-		"connecting",
-		"pending",
-		"connected initial",
-		"TN3270 NVT",
-		"TN3270 3270",
-		"TN3270E",
-		"TN3270E NVT",
-		"TN3270E SSCP-LU",
-		"TN3270E 3270"
+		N_("Unconnected"),
+		N_("Resolving"),
+		N_("Pending"),
+		N_("Connected initial"),
+		N_("TN3270 NVT"),
+		N_("TN3270 3270"),
+		N_("TN3270E"),
+		N_("TN3270E NVT"),
+		N_("TN3270E SSCP-LU"),
+		N_("TN3270E 3270")
 	};
 
 	if(cstate > (sizeof(state_names)/sizeof(state_names[0])))
-		return "unknown";
+		return _("Unknown");
 
-	return state_names[cstate];
+	return dgettext(GETTEXT_PACKAGE,state_names[cstate]);
 }
+
+LIB3270_EXPORT const char * lib3270_state_get_name(const LIB3270_STATE state)
+{
+	static const char *state_names[] =
+	{
+		N_("Resolving"),
+		N_("Connecting"),
+		N_("Half connect"),
+		N_("Connect"),
+		N_("3270 Mode"),
+		N_("Line mode"),
+		N_("Remodel"),
+		N_("Printer"),
+		N_("Exiting"),
+		N_("Charset"),
+	};
+
+	if(state > (sizeof(state_names)/sizeof(state_names[0])))
+		return _("Unknown");
+
+	return dgettext(GETTEXT_PACKAGE,state_names[state]);
+
+}
+
 
 /**
  * Check for switches between NVT, SSCP-LU and 3270 modes.

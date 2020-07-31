@@ -62,7 +62,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-#if defined(HAVE_LIBSSL)
+#if defined(HAVE_LIBSSLx)
 
  /**
   * @brief Index of h3270 handle in SSL session.

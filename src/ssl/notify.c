@@ -40,7 +40,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-#if defined(HAVE_LIBSSL)
+#if defined(HAVE_LIBSSLx)
 
 #include <openssl/err.h>
 

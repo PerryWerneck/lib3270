@@ -63,7 +63,7 @@
 
 // Timeout calls
  static void      internal_remove_timer(H3270 *session, void *timer);
- static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session));
+ static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
 
  static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
  static void	  internal_remove_poll(H3270 *session, void *id);
@@ -78,7 +78,7 @@
 
 /*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
 
- static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session))
+ static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata)
 					= internal_add_timer;
 
  static void	  (*remove_timer)(H3270 *session, void *timer)
@@ -128,7 +128,7 @@ static void ms_ts(unsigned long long *u)
 }
 #endif
 
-static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session))
+static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata)
 {
 	timeout_t *t_new;
 	timeout_t *t;
@@ -139,6 +139,7 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 	t_new = (timeout_t *) lib3270_malloc(sizeof(timeout_t));
 
 	t_new->proc = proc;
+	t_new->userdata = userdata;
 	t_new->in_play = False;
 
 #if defined(_WIN32)
@@ -207,28 +208,6 @@ static void internal_remove_timer(H3270 *session, void * timer)
 	if(!st->in_play)
 		lib3270_linked_list_delete_node(&session->timeouts,timer);
 
-	/*
-	timeout_t *t;
-	timeout_t *prev = TN;
-
-
-	if (st->in_play)
-		return;
-
-	for (t = session->timeouts; t != TN; t = t->next)
-	{
-		if (t == st)
-		{
-			if (prev != TN)
-				prev->next = t->next;
-			else
-				session->timeouts = t->next;
-			lib3270_free(t);
-			return;
-		}
-		prev = t;
-	}
-	*/
 }
 
 /* I/O events. */
@@ -250,35 +229,7 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 static void internal_remove_poll(H3270 *session, void *id)
 {
 	lib3270_linked_list_delete_node(&session->input.list,id);
-
 	session->input.changed = 1;
-
-	/*
-	input_t *ip;
-	input_t *prev = (input_t *)NULL;
-
-	for (ip = session->inputs; ip != (input_t *) NULL; ip = (input_t *) ip->next)
-	{
-		if (ip == (input_t *)id)
-			break;
-
-		prev = ip;
-	}
-
-	if (ip == (input_t *)NULL)
-	{
-		lib3270_write_log(session,"lib3270","Invalid call to (%s): Input %p wasnt found in the list",__FUNCTION__,id);
-		return;
-	}
-
-	if (prev != (input_t *)NULL)
-		prev->next = ip->next;
-	else
-		session->inputs = (input_t *) ip->next;
-
-	lib3270_free(ip);
-	session->inputs_changed = 1;
-	*/
 }
 
  static void internal_set_poll_state(H3270 *session, void *id, int enabled)
@@ -371,11 +322,14 @@ static void internal_ring_bell(H3270 GNUC_UNUSED(*session))
 
 /* External entry points */
 
-void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session))
+void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session, void *userdata), void *userdata)
 {
-	void *timer;
-	CHECK_SESSION_HANDLE(session);
-	timer = add_timer(session,interval_ms,proc);
+	void *timer = add_timer(
+						session,
+						interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
+						proc,
+						userdata
+					);
 	trace("Timeout %p created with %ld ms",timer,interval_ms);
 	return timer;
 }
@@ -425,7 +379,7 @@ void remove_input_calls(H3270 *session)
 	}
 }
 
-LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer))
+LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session,void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer))
 {
 	if(add)
 		add_timer = add;

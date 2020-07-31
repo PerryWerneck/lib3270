@@ -43,10 +43,19 @@
 
 	#include <lib3270.h>
  	#include <lib3270/log.h>
+ 	#include <lib3270/popup.h>
  	#include <internals.h>
+	#include <networking.h>
+	#include <trace_dsc.h>
 
 	#include <openssl/ssl.h>
 	#include <openssl/x509.h>
+
+	struct _lib3270_network_popup {
+		LIB3270_POPUP_HEAD
+		long                      id;
+		const char              * icon;             ///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+	};
 
 	struct _lib3270_net_context {
 
@@ -61,9 +70,18 @@
 			X509_CRL 		* cert;		///< @brief Loaded CRL (can be null).
 		} crl;
 
+		struct {
+			const LIB3270_NETWORK_POPUP	* popup;	///< @brief The active popup for the session.
+			unsigned long	  error;				///< @brief The last OpenSSL error code.
+			const char 		* message;				///< @brief The last OpenSSL state message.
+			const char		* alert;				///< @brief The last OpenSSL alert message.
+		} state;
+
 	};
 
-	LIB3270_INTERNAL void	* lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
-	LIB3270_INTERNAL int	  lib3270_openssl_get_ex_index(H3270 *hSession);
+	LIB3270_INTERNAL SSL_CTX * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+	LIB3270_INTERNAL int lib3270_openssl_get_ex_index(H3270 *hSession);
+	LIB3270_INTERNAL const LIB3270_NETWORK_POPUP * lib3270_openssl_get_popup_from_error_code(long id);
+
 
 #endif // !LIB3270_OPENSSL_MODULE_PRIVATE_H_INCLUDED

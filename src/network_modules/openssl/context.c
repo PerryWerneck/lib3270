@@ -37,22 +37,14 @@
  * @brief OpenSSL initialization for linux.
  */
 
-#include <config.h>
+#include "private.h"
 
-#include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
 
 #ifndef SSL_ST_OK
 	#define SSL_ST_OK 3
 #endif // !SSL_ST_OK
-
-#include <internals.h>
-#include <networking.h>
-#include <lib3270/log.h>
-
-#ifdef SSL_ENABLE_CRL_CHECK
-#endif // SSL_ENABLE_CRL_CHECK
 
 #if OPENSSL_VERSION_NUMBER >= 0x00907000L
 	#define INFO_CONST const
@@ -69,6 +61,7 @@ static int ssl_ex_index = 0;
 static void info_callback(INFO_CONST SSL *s, int where, int ret)
 {
 	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_ex_index);
+	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
 	switch(where)
 	{
@@ -82,16 +75,19 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 
 		if (ret == 0)
 		{
-			trace_ssl(hSession,"SSL_connect: failed in %s\n",SSL_state_string_long(s));
+			context->state.message = SSL_state_string_long(s);
+			trace_ssl(hSession,"SSL_connect: failed in %s\n",context->state.message);
 		}
 		else if (ret < 0)
 		{
 			unsigned long e = ERR_get_error();
+			context->state.message = NULL;
+
 			char err_buf[1024];
 
 			if(e != 0)
 			{
-				hSession->ssl.error = e;
+				context->state.error = e;
 				(void) ERR_error_string_n(e, err_buf, 1023);
 			}
 #if defined(_WIN32)
@@ -121,7 +117,8 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 		break;
 
 	default:
-		trace_ssl(hSession,"SSL Current state is \"%s\"\n",SSL_state_string_long(s));
+		context->state.message = SSL_state_string_long(s);
+		trace_ssl(hSession,"SSL Current state is \"%s\"\n",context->state.message);
 	}
 
 #ifdef DEBUG
@@ -132,7 +129,10 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 #endif
 
 	if(where & SSL_CB_ALERT)
-		trace_ssl(hSession,"SSL ALERT: %s\n",SSL_alert_type_string_long(ret));
+	{
+		context->state.alert = SSL_alert_type_string_long(ret);
+		trace_ssl(hSession,"SSL ALERT: %s\n",context->state.alert);
+	}
 
 	if(where & SSL_CB_HANDSHAKE_DONE)
 	{
@@ -144,7 +144,7 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 	}
 }
 
-void * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+SSL_CTX * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	static SSL_CTX * context = NULL;
 
@@ -159,14 +159,15 @@ void * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL)
 	{
-		static const LIB3270_POPUP popup = {
+		static const LIB3270_NETWORK_POPUP popup = {
 			.type = LIB3270_NOTIFY_SECURE,
-			.summary = N_( "Can't initialize the SSL context." )
+			.icon = "dialog-error",
+			.summary = N_( "Can't initialize the TLS/SSL context." ),
 		};
 
-//		message->code = hSession->ssl.error = ERR_get_error();
-		state->popup = &popup;
-		return -1;
+		hSession->network.context->state.popup = state->popup = &popup;
+		hSession->network.context->state.error = ERR_get_error();
+		return NULL;
 	}
 
 	SSL_CTX_set_options(context, SSL_OP_ALL);
@@ -185,7 +186,11 @@ void * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state
 	X509_STORE_set1_param(store, param);
 	X509_VERIFY_PARAM_free(param);
 
-	trace_ssl(hSession,"CRL CHECK was enabled\n");
+	trace_ssl(hSession,"OpenSSL state context initialized with CRL check.\n");
+
+#else
+
+	trace_ssl(hSession,"OpenSSL state context initialized without CRL check.\n");
 
 #endif // SSL_ENABLE_CRL_CHECK
 

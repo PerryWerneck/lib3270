@@ -50,9 +50,13 @@
 
 	debug("%s",__FUNCTION__);
 
-	if(hSession->network.context->sock >= 0) {
+	if(hSession->network.context->sock > 0) {
 		shutdown(hSession->network.context->sock, 2);
+#ifdef _WIN32
+		sockclose(hSession->network.context->sock);
+#else
 		close(hSession->network.context->sock);
+#endif // _WIN32
 		hSession->network.context->sock = -1;
 	}
 
@@ -244,10 +248,18 @@ static int unsecure_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *stat
 	return 0;
 }
 
-static int unsecure_network_start_tls(H3270 GNUC_UNUSED(*hSession), LIB3270_NETWORK_STATE *msg) {
+static int unsecure_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *msg) {
 
 	if(hSession->ssl.host) {
 
+		// TLS/SSL is required, replace network module with the OpenSSL one.
+		int rc = lib3270_activate_ssl_network_module(hSession, hSession->network.context->sock, msg);
+
+		if(!rc)
+			rc = hSession->network.module->start_tls(hSession,msg);
+
+		return rc;
+/*
 		// TODO: Replace network module with the openssl version, initialize and execute start_tls on it.
 
 		static const LIB3270_POPUP popup = {
@@ -259,6 +271,7 @@ static int unsecure_network_start_tls(H3270 GNUC_UNUSED(*hSession), LIB3270_NETW
 		msg->popup = &popup;
 
 		return ENOTSUP;
+*/
 
 	}
 

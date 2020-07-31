@@ -311,6 +311,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/network_modules/default/private.h" />
+		<Unit filename="src/network_modules/openssl/context.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/network_modules/openssl/main.c">
 			<Option compilerVar="CC" />
 		</Unit>

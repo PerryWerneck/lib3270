@@ -1548,7 +1548,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len)
 
 	while (len)
 	{
-		int nw = hSession->cbk.write(hSession,buf,len);
+		int nw = lib3270_sock_send(hSession,buf,len);
 
 		if (nw > 0)
 		{

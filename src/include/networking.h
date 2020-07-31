@@ -34,6 +34,9 @@
 	#include <lib3270/popup.h>
 	#include <sys/socket.h>
 
+	typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
+	typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
+
 	typedef struct lib3270_network_state {
 
 		int syserror;				///< @brief System error (errno)
@@ -43,11 +46,9 @@
 
 		const char * error_message;	/// @brief System error message.
 
-		const LIB3270_POPUP *popup;	/// @brief Detailed info for popup.
+		const LIB3270_NETWORK_POPUP *popup;	/// @brief Detailed info for popup.
 
 	} LIB3270_NETWORK_STATE;
-
-	typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
 
 	typedef struct lib3270_net_module {
 
@@ -156,6 +157,8 @@
 	 *
 	 */
 	LIB3270_INTERNAL void	  lib3270_set_default_network_module(H3270 *hSession);
+
+	LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock, LIB3270_NETWORK_STATE *state);
 
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

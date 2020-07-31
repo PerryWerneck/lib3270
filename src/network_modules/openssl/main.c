@@ -46,7 +46,6 @@ static void openssl_network_finalize(H3270 *hSession) {
 
 	debug("%s",__FUNCTION__);
 
-
 	if(hSession->network.context) {
 
 		// Cleanupp
@@ -63,6 +62,23 @@ static void openssl_network_finalize(H3270 *hSession) {
 
 static int openssl_network_disconnect(H3270 *hSession) {
 
+	LIB3270_NET_CONTEXT * context = hSession->network.context;
+
+	if(context->con) {
+		SSL_shutdown(context->con);
+		SSL_free(context->con);
+		context->con = NULL;
+	}
+
+	if(context->sock > 0) {
+		shutdown(context->sock, 2);
+#ifdef _WIN32
+		sockclose(context->sock);
+#else
+		close(context->sock);
+#endif // _WIN32
+		context->sock = -1;
+	}
 
 }
 
@@ -97,7 +113,7 @@ static int openssl_network_setsockopt(H3270 *hSession, int level, int optname, c
 static int openssl_network_getsockopt(H3270 *hSession, int level, int optname, void *optval, socklen_t *optlen) {
 }
 
-static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+static int openssl_network_init(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 
@@ -106,13 +122,19 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 		return -1;
 
 	//
-	// Prepare for connection
+	// Create SSL context.
 	//
-	LIB3270_NET_CONTEXT *context = hSession->network.context;
+	LIB3270_NET_CONTEXT * context = hSession->network.context;
+
+}
+
+static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+
+	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
 	if(context->crl.cert) {
 
-		// Release CRL if expired.
+		// Has CRL, release if expired.
 		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
 		// X509_CRL_get_nextUpdate is deprecated in openssl 1.1.0
 
@@ -147,6 +169,8 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 	//
 	// Enable SSL & Connect to host.
 	//
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+
 	hSession->ssl.host = 1;
 	context->sock = lib3270_network_connect(hSession, state);
 
@@ -185,7 +209,7 @@ static int openssl_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *sta
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
-		static const LIB3270_POPUP popup = {
+		static const LIB3270_NETWORK_POPUP popup = {
 			.summary = N_( "SSL negotiation failed" ),
 			.body = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." )
 		};
@@ -254,7 +278,19 @@ void lib3270_set_openssl_network_module(H3270 *hSession) {
 	hSession->network.context = lib3270_malloc(sizeof(LIB3270_NET_CONTEXT));
 	memset(hSession->network.context,0,sizeof(LIB3270_NET_CONTEXT));
 
-
+	hSession->network.context->sock = -1;
 
 	hSession->network.module = &module;
+}
+
+int lib3270_activate_ssl_network_module(H3270 *hSession, int sock, LIB3270_NETWORK_STATE *state) {
+
+	lib3270_set_openssl_network_module(hSession);
+
+	int rc = openssl_network_init(hSession, state);
+
+	hSession->network.context->sock = sock;
+
+	return rc;
+
 }

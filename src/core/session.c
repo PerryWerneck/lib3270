@@ -286,8 +286,6 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	// Default calls
 	memset(&hSession->cbk,0,sizeof(hSession->cbk));
 
-	hSession->cbk.write					= lib3270_sock_send;
-//	hSession->cbk.disconnect			= lib3270_sock_disconnect;
 	hSession->cbk.update 				= update_char;
 	hSession->cbk.update_model			= update_model;
 	hSession->cbk.update_cursor			= update_cursor;

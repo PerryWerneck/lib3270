@@ -735,7 +735,6 @@ LIB3270_INTERNAL void	toggle_rectselect(H3270 *session, const struct lib3270_tog
 LIB3270_INTERNAL void	remove_input_calls(H3270 *session);
 
 LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len);
-// LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
 
 LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
 

@@ -59,6 +59,9 @@
 
  int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
+	// Reset state
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+
 	//
 	// Resolve hostname
 	//
@@ -194,6 +197,8 @@
 	memset(&state,0,sizeof(state));
 
  	// Initialize and connect to host
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+
 	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state))
 	{
 		lib3270_autoptr(LIB3270_POPUP) popup =

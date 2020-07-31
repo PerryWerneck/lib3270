@@ -48,9 +48,6 @@
 
 	struct lib3270_session_callbacks
 	{
-		int	 (*write)(H3270 *hSession, unsigned const char *buf, int len);
-//		void (*disconnect)(H3270 *hSession);
-
 		void (*configure)(H3270 *session, unsigned short rows, unsigned short cols);
 		void (*update)(H3270 *session, int baddr, unsigned char c, unsigned short attr, unsigned char cursor);
 		void (*changed)(H3270 *session, int offset, int len);

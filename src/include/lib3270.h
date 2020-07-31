@@ -970,7 +970,7 @@
 	{
 		unsigned short sz;
 
-		void	* (*AddTimer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session));
+		void	* (*AddTimer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
 		void	  (*RemoveTimer)(H3270 *session, void *timer);
 
 		void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
@@ -1001,7 +1001,7 @@
 	 * @param rm	Callback for removing a timeout
 	 *
 	 */
-	LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session)), void (*rm)(H3270 *session, void *timer));
+	LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer));
 
 	LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
 
@@ -1111,7 +1111,7 @@
 	LIB3270_EXPORT int lib3270_wait_for_update(H3270 *hSession, int seconds);
 
 	/**
-	 * Wait "N" seconds for "ready" state.
+	 * @brief Wait "N" seconds for "ready" state.
 	 *
 	 * @param seconds	Number of seconds to wait.
 	 *
@@ -1119,6 +1119,20 @@
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds);
+
+	/**
+	 * @brief Wait "N" seconds for online state.
+	 *
+	 * @param seconds	Number of seconds to wait.
+	 *
+	 * @return 0 if ok, errno code if not.
+	 *
+	 * @retval	ETIMEDOUT	Timeout waiting.
+	 * @retval	ENOTCONN	Not connected to host.
+	 * @retval	0			Session is online and in required state.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstate, int seconds);
 
 	/**
 	 * "beep" to notify user.

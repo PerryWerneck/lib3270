@@ -347,6 +347,18 @@ int net_reconnect(H3270 *hSession, int seconds)
 
 	if(seconds)
 	{
+		int rc = lib3270_wait_for_cstate(hSession,LIB3270_CONNECTED_TN3270E,seconds);
+		if(rc)
+		{
+			lib3270_disconnect(hSession);
+			lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(rc));
+			return errno = rc;
+		}
+	}
+
+	/*
+	if(seconds)
+	{
 		time_t end = time(0)+seconds;
 
 		while(time(0) < end)
@@ -382,6 +394,7 @@ int net_reconnect(H3270 *hSession, int seconds)
 		lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 		return errno = ETIMEDOUT;
 	}
+	*/
 
 	return 0;
 

@@ -274,7 +274,7 @@ typedef struct timeout
 	struct timeval tv;
 #endif /*]*/
 
-	int (*proc)(H3270 *session);
+	int (*proc)(H3270 *session, void *userdata);
 
 } timeout_t;
 

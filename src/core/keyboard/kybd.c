@@ -1009,7 +1009,7 @@ LIB3270_EXPORT int lib3270_clear_operator_error(H3270 *hSession)
 /**
  * @brief Deferred keyboard unlock.
  */
-static int defer_unlock(H3270 *hSession)
+static int defer_unlock(H3270 *hSession, void GNUC_UNUSED(*userdata))
 {
 	lib3270_kybdlock_clear(hSession,KL_DEFERRED_UNLOCK);
 	status_reset(hSession);
@@ -1067,12 +1067,12 @@ void do_reset(H3270 *hSession, Boolean explicit)
 
 		if(hSession->unlock_delay_ms)
 		{
-			hSession->unlock_id = AddTimer(hSession->unlock_delay_ms, hSession, defer_unlock);
+			hSession->unlock_id = AddTimer(hSession->unlock_delay_ms, hSession, defer_unlock, NULL);
 		}
 		else
 		{
 			hSession->unlock_id = 0;
-			defer_unlock(hSession);
+			defer_unlock(hSession, NULL);
 		}
 
 	}

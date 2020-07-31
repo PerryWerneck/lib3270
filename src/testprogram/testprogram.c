@@ -154,16 +154,39 @@ int main(int argc, char *argv[])
 
 	const void * online_listener = lib3270_register_action_group_listener(h,LIB3270_ACTION_GROUP_ONLINE,online_group_state_changed,NULL);
 
-	rc = lib3270_reconnect(h,120);
+	rc = lib3270_reconnect(h,0);
 	printf("\n\nConnect exits with rc=%d (%s)\n\n",rc,strerror(rc));
 
 	if(!rc)
 	{
+		rc = lib3270_wait_for_cstate(h,LIB3270_CONNECTED_TN3270E, 60);
+		printf("\n\nWait for LIB3270_CONNECTED_TN3270E exits with rc=%d (%s)\n\n",rc,strerror(rc));
+	}
+
+	if(!rc)
+	{
+		rc = lib3270_wait_for_ready(h,60);
+		printf("\n\nWait for ready exits with rc=%d (%s)\n\n",rc,strerror(rc));
+	}
+
+	if(!rc)
+	{
+
 		printf("\n\nWaiting starts %u\n",(unsigned int) time(NULL));
-		lib3270_wait_for_ready(h,10);
+
+		{
+			// Performance checks
+			size_t f;
+			time_t start = time(0);
+			for(f=0;f < 1000; f++) {
+				lib3270_wait_for_ready(h,10);
+			}
+			printf("Time for 1000 iterations of wait_for_ready was %d\n",(int) (time(0) - start));
+
+		}
+
 		printf("Waiting ends %u\n\n",(unsigned int) time(NULL));
 
-		/*
 		lib3270_enter(h);
 		lib3270_wait(h,5);
 
@@ -185,7 +208,6 @@ int main(int argc, char *argv[])
 			if(text)
 				printf("Screen:\n[%s]\n",text);
 		}
-		*/
 
 		lib3270_disconnect(h);
 

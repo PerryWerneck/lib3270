@@ -45,10 +45,13 @@
 	return hSession->starting != 0;
  }
 
- void lib3270_disable_crl_download(H3270 *hSession)
+ int lib3270_disable_crl_download(H3270 *hSession, int enabled)
  {
 #ifdef SSL_ENABLE_CRL_CHECK
-	hSession->ssl.crl.download = 0;
+	hSession->ssl.crl.download = enabled ? 1 : 0;
+	return 0;
+#else
+	return errno = ENOTSUP;
 #endif // SSL_ENABLE_CRL_CHECK
  }
 

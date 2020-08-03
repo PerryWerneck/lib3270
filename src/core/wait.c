@@ -30,6 +30,7 @@
 #include <internals.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/keyboard.h>
 #include "kybdc.h"
 #include "utilc.h"
 
@@ -231,4 +232,42 @@ LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstat
 	RemoveTimer(hSession,timer);
 
 	return errno = rc;
+}
+
+LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H3270 *hSession, int seconds)
+{
+	debug("Session lock state is %d",lib3270_get_lock_status(hSession));
+
+	int rc = 0;
+	int timeout = 0;
+	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+
+	while(!rc)
+	{
+		if(timeout) {
+			// Timeout! The timer was destroyed.
+			debug("%s exits with ETIMEDOUT",__FUNCTION__);
+			errno = ETIMEDOUT;
+			return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
+		}
+
+		if(lib3270_is_disconnected(hSession))
+		{
+			errno = ENOTCONN;
+			break;
+		}
+
+		if(KYBDLOCK_IS_OERR(hSession))
+			break;
+
+		debug("%s: Waiting",__FUNCTION__);
+		lib3270_main_iterate(hSession,1);
+
+	}
+
+	RemoveTimer(hSession,timer);
+
+	debug("%s exits with rc=%d",__FUNCTION__,rc);
+	return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
+
 }

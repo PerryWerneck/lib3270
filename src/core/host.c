@@ -60,6 +60,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
+#include <lib3270/keyboard.h>
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.
@@ -209,6 +210,7 @@ void lib3270_set_disconnected(H3270 *hSession)
 	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
 	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
 
+	hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
 	hSession->starting	= 0;
 
 #if defined(HAVE_LIBSSL)

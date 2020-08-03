@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-31 13:59-0300\n"
-"PO-Revision-Date: 2020-07-27 18:12-0300\n"
+"POT-Creation-Date: 2020-08-03 14:14-0300\n"
+"PO-Revision-Date: 2020-08-03 14:21-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -30,7 +30,7 @@ msgstr "%dx%d é negativa ou zero"
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
 
-#: src/core/iocalls.c:508 src/core/iocalls.c:525
+#: src/core/linux/connect.c:156
 #, c-format
 msgid "%s"
 msgstr "%s"
@@ -62,11 +62,6 @@ msgstr ""
 "%s\n"
 "O erro windows foi \"%s\" (%u)"
 
-#: src/core/windows/connect.c:86
-#, c-format
-msgid "%s (rc=%d)"
-msgstr "%s (rc=%d)"
-
 #: src/core/keyboard/kybd.c:1923
 #, c-format
 msgid "%s: Bell not supported"
@@ -97,17 +92,13 @@ msgstr "%s: Caractere desconhecido depois de \\pf"
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
 
+#: src/core/telnet.c:1894
+msgid "3270 Mode"
+msgstr "Modo 3270"
+
 #: src/core/actions/table.c:693
 msgid "3270-style backspace"
 msgstr "Backspace no estilo 3270"
-
-#: src/ssl/state.c:279
-msgid ""
-"A CA certificate is invalid. Either it is not a CA or its extensions are not "
-"consistent with the supplied purpose."
-msgstr ""
-"A CA certificate is invalid. Either it is not a CA or its extensions are not "
-"consistent with the supplied purpose."
 
 #: src/core/actions/table.c:707
 msgid "ATTN key, per RFC 2355. Sends IP, regardless"
@@ -145,11 +136,6 @@ msgstr ""
 "Um erro ocorreu na transferência de arquivos, pode ser um erro nos dados "
 "sendo transferidos ou um erro de sistema não identificado."
 
-#: src/ssl/state.c:227
-msgid "An error occurred trying to allocate memory. This should never happen."
-msgstr ""
-"Ocorreu um erro ao tentar alocar memória. Isso nunca deveria acontecer."
-
 #: src/core/ft/ftmessages.c:102
 msgid "An invalid SEND or RECEIVE parameter was sent to the host."
 msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
@@ -157,14 +143,6 @@ msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 #: src/core/actions/table.c:706
 msgid "Attn"
 msgstr "Attn"
-
-#: src/ssl/state.c:334
-msgid "Authority and issuer serial number mismatch"
-msgstr "Divergência nos números de série da autoridade e emissor "
-
-#: src/ssl/state.c:326
-msgid "Authority and subject key identifier mismatch"
-msgstr "Authority and subject key identifier mismatch"
 
 #: src/core/toggles/table.c:283
 msgid "Auto Resize"
@@ -204,10 +182,6 @@ msgstr "Back space"
 msgid "Backspaces the cursor until it hits the front of a word"
 msgstr "Volta o cursor até que atinga o início de uma palavra"
 
-#: src/core/windows/connect.c:137
-msgid "Bad winsock version"
-msgstr "Versão winsock inválida"
-
 #: src/core/toggles/table.c:265
 msgid "Beep on errors"
 msgstr "Emitir som nos erros"
@@ -228,10 +202,6 @@ msgstr "Negrito"
 msgid "Break"
 msgstr "Break"
 
-#: src/core/telnet.c:1667
-msgid "Broken pipe"
-msgstr "Conexão interrompida"
-
 #: src/core/ft/ftmessages.c:215
 msgid "CMS disk is full: file transfer canceled"
 msgstr "Disco CMS está lotado, transferência cancelada"
@@ -248,50 +218,39 @@ msgstr "Disco CMS apenas para leitura, transferência cancelada"
 msgid "CMS file not found: file transfer canceled"
 msgstr "Arquivo CMS não encontrado, transferência cancelada"
 
-#: src/ssl/state.c:150
-msgid "CRL signature failure"
-msgstr "Erro na assinatura CRL"
-
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:313
+#: src/core/toggles/init.c:90 src/core/linux/connect.c:285
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/ssl/windows/ldap.c:181
+#: src/ssl/linux/ldap.c:157
 msgid "Can't bind to LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
-#: src/core/connect.c:79
+#: src/core/linux/connect.c:165 src/core/linux/connect.c:207
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
 
-#: src/core/windows/http.c:113
-msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP"
+#: src/core/linux/connect.c:123
+msgid "Can't connect to host"
+msgstr "Não foi possível conectar no host"
 
-#: src/core/windows/http.c:125
-msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP"
+#: src/ssl/linux/getcrl.c:97
+msgid "Can't decode CRL"
+msgstr "Não foi possível decodificar CRL"
 
-#: src/ssl/windows/curl.c:264 src/ssl/windows/http.c:80
-#: src/ssl/windows/ldap.c:259
+#: src/ssl/linux/url.c:131 src/ssl/linux/ldap.c:229
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/ssl/windows/curl.c:370
-#, fuzzy
-msgid "Can't decode certificate revocation list got from LDAP Search"
+#: src/ssl/linux/url.c:109
+msgid "Can't decode certificate revocation list got from LDAP server"
 msgstr ""
 "Não foi possível decodificar a lista de certificados revogados fornecida "
 "pelo servidor LDAP"
 
-#: src/ssl/windows/curl.c:334
-msgid "Can't find certificate revocation list in LDAP response"
-msgstr ""
-"Não foi possível encontrar a lista de certificados revogados na pesquisa LDAP"
-
-#: src/ssl/windows/ldap.c:223 src/ssl/windows/ldap.c:235
+#: src/ssl/linux/ldap.c:193 src/ssl/linux/ldap.c:205
 msgid "Can't get LDAP attribute"
 msgstr "Não foi possível obter o atributo LDAP"
 
@@ -299,82 +258,41 @@ msgstr "Não foi possível obter o atributo LDAP"
 msgid "Can't get file size"
 msgstr "Não foi possível obter o tamanho do arquivo"
 
-#: src/ssl/windows/ldap.c:152
+#: src/ssl/linux/ldap.c:135
 msgid "Can't initialize LDAP"
 msgstr "Erro ao inicializar LDAP"
 
-#: src/ssl/windows/curl.c:190
+#: src/core/linux/curl.c:181
 msgid "Can't initialize curl operation"
 msgstr "Erro ao inicializar operação CURL"
 
-#: src/core/session.c:206
+#: src/core/session.c:212
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/ssl/windows/init.c:162
-#, c-format
-msgid "Can't load \"%s\": %s"
-msgstr "Não foi possível carregar \"%s\": %s"
+#: src/ssl/linux/getcrl.c:57 src/ssl/linux/getcrl.c:79
+msgid "Can't open CRL File"
+msgstr "Não foi possível abrir arquivo CRL"
 
-#: src/ssl/windows/init.c:121
-#, c-format
-msgid "Can't open \"%s\" (The Windows error code was %ld)\n"
-msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)\n"
-
-#: src/ssl/windows/init.c:134
-#, c-format
-msgid "Can't open \"%s\": %s"
-msgstr "Não foi possível abrir %s: %s"
-
-#: src/core/windows/http.c:101
-msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir sessão HTTP"
-
-#: src/core/session.c:192
+#: src/core/session.c:198
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/ssl/windows/init.c:149
-#, c-format
-msgid "Can't read \"%s\": %s"
-msgstr "Não foi possível ler \"%s\": %s"
-
-#: src/core/windows/http.c:180
-msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP"
-
-#: src/core/session.c:199
+#: src/core/session.c:205
 msgid "Can't save"
 msgstr "Não é possível salvar"
 
-#: src/ssl/windows/ldap.c:211
+#: src/ssl/linux/ldap.c:182
 msgid "Can't search LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
-#: src/core/windows/http.c:139
-msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP"
-
-#: src/ssl/windows/ldap.c:166
+#: src/ssl/linux/ldap.c:146
 msgid "Can't set LDAP protocol version"
 msgstr "Não é possível setar a versão do protocolo LDAP"
-
-#: src/core/iocalls.c:524
-msgid "Can't set socket to blocking mode."
-msgstr "Não foi possível mudar o socket para o modo blocante."
-
-#: src/core/iocalls.c:524
-msgid "Can't set socket to non blocking mode"
-msgstr "Não foi possível setar o socket para o modo não blocante."
 
 #: src/core/ft/ft.c:208
 msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
-
-#: src/core/windows/connect.c:138
-#, c-format
-msgid "Can't use winsock version %d.%d"
-msgstr "Não posso usar versão winsock %d.%d"
 
 #: src/ssl/crl.c:167
 msgid "Can't verify"
@@ -388,7 +306,7 @@ msgstr "Não foi possível verificar"
 msgid "Cancelled by user"
 msgstr "Cancelado pelo usuário"
 
-#: src/core/telnet.c:1088
+#: src/core/telnet.c:985
 msgid "Cannot connect to specified LU"
 msgstr "Não foi possível conectar na LU pedida"
 
@@ -398,22 +316,6 @@ msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
-#: src/ssl/windows/init.c:91
-msgid "Cant initialize the SSL context."
-msgstr "Erro ao inicializar contexto de segurança"
-
-#: src/ssl/windows/init.c:157
-msgid "Cant load custom certificate file."
-msgstr "Não foi possível ler arquivo de certificado personalizado"
-
-#: src/ssl/windows/init.c:116
-msgid "Cant open custom certificate directory."
-msgstr "Não foi possível abrir o diretório de certificados personalizados"
-
-#: src/ssl/windows/init.c:144
-msgid "Cant read custom certificate file."
-msgstr "Não foi possível ler certificado personalizado"
-
 #: src/ssl/negotiate.c:247
 msgid ""
 "Cant set the file descriptor for the input/output facility for the TLS/SSL "
@@ -422,43 +324,13 @@ msgstr ""
 "Não foi possível definir o descritor de arquivo para a conexão TLS/SSL "
 "(encriptada)."
 
-#: src/ssl/windows/http.c:58
-#, fuzzy
-msgid "Can´t get CRL"
-msgstr "Não foi possível decodificar arquivo CRL"
-
-#: src/ssl/windows/getcrl.c:58 src/ssl/windows/getcrl.c:76
-#, fuzzy
-msgid "Can´t open CRL file"
-msgstr "Não foi possível abrir arquivo CRL"
-
-#: src/ssl/state.c:166
-msgid "Certificate has expired"
-msgstr "O certificado expirou"
-
-#: src/ssl/state.c:158
-msgid "Certificate is not yet valid"
-msgstr "O certificado ainda não é válido"
-
-#: src/ssl/state.c:302
-msgid "Certificate not trusted"
-msgstr "O certificado não é confiável"
-
-#: src/ssl/state.c:310
-msgid "Certificate rejected"
-msgstr "Certificado rejeitado"
-
-#: src/ssl/state.c:270
-msgid "Certificate revoked"
-msgstr "Certificado revogado"
-
-#: src/ssl/state.c:142
-msgid "Certificate signature failure"
-msgstr "Falha na assinatura do certificado"
-
 #: src/core/toggles/table.c:285
 msgid "Change screen size on alternative screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
+
+#: src/core/telnet.c:1899
+msgid "Charset"
+msgstr "Tabela de caracteres"
 
 #: src/core/actions/table.c:780
 msgid "Charset table"
@@ -476,18 +348,25 @@ msgstr "Clear AID"
 msgid "Command incomplete: file transfer canceled"
 msgstr "Comando incompleto, transferência cancelada"
 
+#: src/core/telnet.c:1893
+msgid "Connect"
+msgstr "Conectar"
+
 #: src/core/toggles/table.c:243
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
-#: src/core/iocalls.c:492 src/core/windows/connect.c:317
-#: src/core/windows/connect.c:333
+#: src/core/telnet.c:1871
+msgid "Connected initial"
+msgstr "Connected initial"
+
+#: src/core/telnet.c:1891
+msgid "Connecting"
+msgstr "Conectando"
+
+#: src/core/linux/connect.c:271 src/core/linux/connect.c:289
 msgid "Connection error"
 msgstr "Erro de conexão"
-
-#: src/core/telnet.c:1671
-msgid "Connection reset by peer"
-msgstr "Conexão foi cancelada pelo servidor"
 
 #: src/core/properties/signed.c:101
 msgid "Connection state"
@@ -551,7 +430,7 @@ msgstr "Tecla \"DUP\""
 msgid "Data conversion error"
 msgstr "Erro na conversão de dados"
 
-#: src/core/properties/string.c:159
+#: src/core/properties/string.c:162
 msgid "Default host URL"
 msgstr "URL parão para acesso ao host"
 
@@ -567,11 +446,7 @@ msgstr "Apagar campo"
 msgid "Delete word"
 msgstr "Apaga palavra"
 
-#: src/core/properties/string.c:173
-msgid "Description of the current security state"
-msgstr "Descrição do estado de segurança atual"
-
-#: src/core/telnet.c:1342
+#: src/core/telnet.c:1236
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
@@ -583,7 +458,7 @@ msgstr "Desconecta do servidor"
 msgid "Disconnected from host."
 msgstr "Desconectado do servidor."
 
-#: src/core/properties/string.c:122
+#: src/core/properties/string.c:123
 msgid "Display charset"
 msgstr "Tabela de caracteres para a tela"
 
@@ -599,13 +474,9 @@ msgstr "Descer"
 msgid "Dup"
 msgstr "Dup"
 
-#: src/core/telnet.c:880
+#: src/core/telnet.c:780
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
-
-#: src/core/windows/http.c:164
-msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP"
 
 #: src/core/toggles/table.c:305
 msgid "Enable network in/out trace"
@@ -655,37 +526,31 @@ msgstr "Apagar todos os campos desprotegidos"
 msgid "Erase input"
 msgstr "Apagar campos"
 
-#: src/core/util.c:409
+#: src/core/util.c:413
 msgid "Error"
 msgstr "Erro"
 
-#: src/core/ft/ft_cut.c:423 src/core/ft/ft_dft.c:454
+#: src/core/ft/ft_dft.c:454 src/core/ft/ft_cut.c:423
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_cut.c:528 src/core/ft/ft_dft.c:332
+#: src/core/ft/ft_dft.c:332 src/core/ft/ft_cut.c:528
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
+
+#: src/ssl/linux/url.c:69
+msgid "Error getting certificate revocation list"
+msgstr "Erro ao obter a lista de certificados revogados"
 
 #: src/core/ft/ftmessages.c:45
 msgid "Error in file transfer: file transfer canceled"
 msgstr "Erro na transferência do arquivo, transferência cancelada"
 
-#: src/ssl/windows/curl.c:189 src/ssl/windows/curl.c:227
-#: src/ssl/windows/curl.c:243
-#, fuzzy
-msgid "Error loading certificate revocation list"
-msgstr "Erro ao obter a lista de certificados revogados"
-
 #: src/core/ft/ftmessages.c:87
 msgid "Error reading file from host: file transfer canceled"
 msgstr "Erro ao ler arquivo do host: Transferência cancelada"
-
-#: src/core/windows/http.c:151
-msgid "Error receiving HTTP response."
-msgstr "Erro recebendo resposta HTTP"
 
 #: src/core/ft/ftmessages.c:145
 msgid "Error while reading or writing to host disk: file transfer canceled"
@@ -694,6 +559,10 @@ msgstr "Erro ao ler ou gravar no host: Transferência cancelada"
 #: src/core/ft/ftmessages.c:80
 msgid "Error writing file to host: file transfer canceled"
 msgstr "Erro ao gravar arquivo no host, transferência cancelada"
+
+#: src/core/telnet.c:1898
+msgid "Exiting"
+msgstr "Saindo"
 
 #: src/core/actions/table.c:678
 msgid "FM key"
@@ -723,23 +592,7 @@ msgstr "Transferência de arquivos já está ativa nesta sessão."
 msgid "First field"
 msgstr "Primeiro campo"
 
-#: src/ssl/state.c:210
-msgid "Format error in CRL's lastUpdate field"
-msgstr "Erro de formato no campo \"lastUpdate\" do CRL"
-
-#: src/ssl/state.c:218
-msgid "Format error in CRL's nextUpdate field"
-msgstr "Erro de formato no campo \"nextUpdate\" do CRL"
-
-#: src/ssl/state.c:202
-msgid "Format error in certificate's notAfter field"
-msgstr "Erro de formato no campo \"notAfter\" do certificado"
-
-#: src/ssl/state.c:194
-msgid "Format error in certificate's notBefore field"
-msgstr "Erro de formato no campo \"notBefore\" do certificado"
-
-#: src/core/properties/boolean.c:178
+#: src/core/properties/boolean.c:182
 msgid "Formatted screen"
 msgstr "Tela formatada"
 
@@ -747,15 +600,20 @@ msgstr "Tela formatada"
 msgid "Full Screen"
 msgstr "Tela cheia"
 
-#: src/ssl/windows/curl.c:273
-msgid "Got an invalid certificate revocation list from server"
-msgstr "Servidor enviou uma lista de certificados revogados inválida"
+#: src/ssl/linux/url.c:87
+msgid "Got a bad formatted certificate revocation list from LDAP server"
+msgstr ""
+"Obtive lista de certificados revogados com formato inválido do servidor LDAP"
 
-#: src/core/properties/boolean.c:157
+#: src/core/telnet.c:1892
+msgid "Half connect"
+msgstr "Half connect"
+
+#: src/core/properties/boolean.c:161
 msgid "Has selected area"
 msgstr "Tem área selecionada"
 
-#: src/core/properties/string.c:115
+#: src/core/properties/string.c:116
 msgid "Host charset"
 msgstr "Página de código do host"
 
@@ -763,7 +621,7 @@ msgstr "Página de código do host"
 msgid "Host disconnected, transfer cancelled"
 msgstr "Servidor desconectou, transferência cancelada"
 
-#: src/core/telnet.c:1400
+#: src/core/telnet.c:1294
 msgid "Host illegally added function(s)"
 msgstr "Host illegally added function(s)"
 
@@ -771,15 +629,15 @@ msgstr "Host illegally added function(s)"
 msgid "Host program error code xxxxxxxxxx: file transfer canceled"
 msgstr "Erro código xxxxxxxxxx no aplicativo do host: Transferência cancelada"
 
-#: src/core/telnet.c:1325
+#: src/core/telnet.c:1219
 msgid "Host rejected device type or request type"
 msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 
-#: src/core/telnet.c:1338
+#: src/core/telnet.c:1232
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
-#: src/core/properties/string.c:92
+#: src/core/properties/string.c:93
 msgid "Host type name"
 msgstr "Nome do tipo de host"
 
@@ -895,14 +753,10 @@ msgstr "Código de requisição incorreto, transferência cancelada"
 msgid "Insert"
 msgstr "Inserção"
 
-#: src/core/util.c:59 src/core/util.c:69 src/core/util.c:81 src/core/util.c:322
-#: src/core/util.c:338 src/core/util.c:350 src/core/util.c:365
+#: src/core/util.c:63 src/core/util.c:73 src/core/util.c:85 src/core/util.c:326
+#: src/core/util.c:342 src/core/util.c:354 src/core/util.c:369
 msgid "Internal error"
 msgstr "Erro interno"
-
-#: src/ssl/state.c:278
-msgid "Invalid CA certificate"
-msgstr "Certificado CA inválido"
 
 #: src/core/ft/ftmessages.c:166
 msgid "Invalid option xxxxxxxx with APPEND: file transfer canceled"
@@ -929,33 +783,29 @@ msgstr "Opção xxxxxxxx inválida: Transferência cancelada"
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
-#: src/core/properties/boolean.c:78
+#: src/core/properties/boolean.c:82
 msgid "Is connection secure"
 msgstr "A conexão é segura ?"
 
-#: src/core/properties/boolean.c:171
+#: src/core/properties/boolean.c:175
 msgid "Is starting (no first screen)?"
 msgstr "Está iniciando (não recebeu a primeira tela)?"
 
-#: src/core/properties/boolean.c:71
+#: src/core/properties/boolean.c:75
 msgid "Is terminal connected"
 msgstr "O terminal está conectado"
 
-#: src/core/properties/boolean.c:150
+#: src/core/properties/boolean.c:154
 msgid "Is terminal in the INITIAL_E state?"
 msgstr "O terminal está no estad INITIAL_E?"
 
-#: src/core/properties/boolean.c:64
+#: src/core/properties/boolean.c:68
 msgid "Is terminal ready"
 msgstr "O terminal está pronto"
 
 #: src/core/toggles/table.c:223 src/core/toggles/table.c:224
 msgid "Keep selected"
 msgstr "Manter selecionado"
-
-#: src/ssl/state.c:342
-msgid "Key usage does not include certificate signing"
-msgstr "Uso da chave não permite assinatura de certificados"
 
 #: src/core/paste.c:400
 msgid "Keyboard is locked"
@@ -973,7 +823,11 @@ msgstr "Última mensagem de programa"
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/core/properties/boolean.c:185
+#: src/core/telnet.c:1895
+msgid "Line mode"
+msgstr "Line mode"
+
+#: src/core/properties/boolean.c:189
 msgid "Lock keyboard on operator error"
 msgstr "Bloqueia teclado em caso de erro do operador"
 
@@ -989,7 +843,7 @@ msgstr "Altura máxima da tela em linhas"
 msgid "Maximum screen width in columns"
 msgstr "Largura maxima da tela em colunas"
 
-#: src/core/properties/string.c:84
+#: src/core/properties/string.c:85
 msgid "Model name"
 msgstr "Nome do modelo"
 
@@ -1046,18 +900,14 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:320 src/core/windows/connect.c:78
-#: src/core/windows/event_dispatcher.c:149
+#: src/core/telnet.c:312 src/core/linux/event_dispatcher.c:143
+#: src/core/linux/connect.c:154
 msgid "Network error"
 msgstr "Erro de rede"
 
 #: src/core/toggles/table.c:293
 msgid "Network keep alive"
 msgstr "Manter rede ativa"
-
-#: src/core/windows/connect.c:125 src/core/windows/connect.c:136
-msgid "Network startup error"
-msgstr "Erro ao iniciar a rede"
 
 #: src/core/actions/table.c:214
 msgid "New line"
@@ -1071,35 +921,23 @@ msgstr "Próximo campo"
 msgid "Next word"
 msgstr "Próxima palavra"
 
-#: src/ssl/windows/ldap.c:109
+#: src/ssl/linux/ldap.c:101
 msgid "No DN of the entry at which to start the search on the URL"
 msgstr "URL de pesquisa não contem o DN a pesquisar"
 
-#: src/ssl/windows/ldap.c:123
+#: src/ssl/linux/ldap.c:114
 msgid "No LDAP attribute on the URL"
 msgstr "URL de pesquisa não definiu o atributo LDAP"
-
-#: src/ssl/windows/curl.c:301
-msgid "No attribute in LDAP search URL"
-msgstr "Nenhum atributo na URL de pesquisa LDAP"
-
-#: src/ssl/state.c:263
-msgid ""
-"No signatures could be verified because the chain contains only one "
-"certificate and it is not self signed."
-msgstr ""
-"Nenhuma assinatura pode ser verificada, porque a cadeia contém apenas um "
-"certificado e não é auto assinado."
 
 #: src/core/ft/ft.c:101
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/core/properties/boolean.c:94
+#: src/core/properties/boolean.c:98
 msgid "Non zero if the host is AS400."
 msgstr "Diferente de zero se o host é AS400"
 
-#: src/core/properties/boolean.c:86
+#: src/core/properties/boolean.c:90
 msgid "Non zero if the host is TSO."
 msgstr "Diferente de zero se o host é TSO"
 
@@ -1120,10 +958,6 @@ msgstr "Outro (TSO)"
 #: src/core/options.c:61
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
-
-#: src/ssl/state.c:226
-msgid "Out of memory"
-msgstr "Memória insuficiente"
 
 #: src/core/actions/table.c:797 src/core/actions/table.c:811
 #: src/core/actions/table.c:825
@@ -1146,17 +980,13 @@ msgstr "Colar próximo"
 msgid "Paste with left margin"
 msgstr "Colar com margem esquerda"
 
-#: src/ssl/state.c:286
-msgid "Path length constraint exceeded"
-msgstr "Path length constraint exceeded"
+#: src/core/telnet.c:1870
+msgid "Pending"
+msgstr "Pendente"
 
 #: src/core/ft/ftmessages.c:66
 msgid "Personal computer filespec incorrect: file transfer canceled"
 msgstr "Especificação de arquivo PC incorreta: Transferência cancelada"
-
-#: src/core/properties/string.c:152
-msgid "Preferred protocol for CRL download"
-msgstr "Protocolo preferido para download da CRL"
 
 #: src/core/actions/table.c:500
 msgid "Previous field"
@@ -1165,6 +995,10 @@ msgstr "Campo anterior"
 #: src/core/actions/table.c:228
 msgid "Previous word"
 msgstr "Palavra anterior"
+
+#: src/core/telnet.c:1897
+msgid "Printer"
+msgstr "Impressão"
 
 #: src/core/actions/table.c:798
 msgid "Program Action 1"
@@ -1258,6 +1092,10 @@ msgstr "RPQ: Erro em gethostbyname"
 msgid "Reconnect to the same host"
 msgstr "Reconecta ao mesmo servidor"
 
+#: src/core/telnet.c:1896
+msgid "Remodel"
+msgstr "Remodel"
+
 #: src/core/actions/table.c:287 src/core/actions/table.c:288
 msgid "Remove selection"
 msgstr "Remover seleção"
@@ -1286,6 +1124,10 @@ msgstr "Reinicia bloqueio de teclado"
 msgid "Resize on alternate screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
+#: src/core/telnet.c:1869 src/core/telnet.c:1890
+msgid "Resolving"
+msgstr "Resolvendo"
+
 #: src/core/actions/table.c:200
 msgid "Right"
 msgstr "Direita"
@@ -1302,10 +1144,6 @@ msgstr ""
 msgid "SSL Connect failed"
 msgstr "Conexão SSL falhou"
 
-#: src/core/telnet.c:647
-msgid "SSL Read error"
-msgstr "Erro de leitura SSL"
-
 #: src/ssl/negotiate.c:246
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
@@ -1314,44 +1152,26 @@ msgstr "Negociação SSL falhou"
 msgid "SSL negotiation has failed"
 msgstr "Negociação de segurança falhou"
 
-#: src/core/telnet.c:1657
-#, c-format
-msgid ""
-"SSL_write:\n"
-"%s"
-msgstr ""
-"SSL_write:\n"
-"%s"
-
 #: src/core/properties/unsigned.c:143
 msgid "Screen buffer length in bytes"
 msgstr "Tamanho do buffer de tela em bytes"
 
-#: src/core/properties/string.c:181
+#: src/core/properties/string.c:186
 msgid "Screen oversize if larger than the chosen model"
 msgstr "\"oversize\" maior que o modelo escolhido"
 
-#: src/ssl/windows/ldap.c:224
+#: src/ssl/linux/ldap.c:194
 msgid "Search did not produce any attributes."
 msgstr "Pesquisa não produziu nenhum atributo"
 
-#: src/ssl/windows/ldap.c:236
+#: src/ssl/linux/ldap.c:206
 msgid "Search did not produce any values."
 msgstr "Pesquisa não produziu nenhum valor"
 
-#: src/ssl/state.c:93
-msgid "Secure connection was successful."
-msgstr "Conexão segura efetuada com sucesso."
-
-#: src/ssl/windows/curl.c:188 src/ssl/windows/curl.c:218
-#: src/ssl/windows/curl.c:242 src/ssl/windows/curl.c:263
-#: src/ssl/windows/curl.c:272 src/ssl/windows/curl.c:300
-#: src/ssl/windows/curl.c:333 src/ssl/windows/curl.c:369
-#: src/ssl/windows/ldap.c:108 src/ssl/windows/ldap.c:122
-#: src/ssl/windows/ldap.c:151 src/ssl/windows/ldap.c:165
-#: src/ssl/windows/ldap.c:180 src/ssl/windows/ldap.c:210
-#: src/ssl/windows/ldap.c:222 src/ssl/windows/ldap.c:234
-#: src/ssl/windows/ldap.c:258
+#: src/ssl/linux/ldap.c:100 src/ssl/linux/ldap.c:113 src/ssl/linux/ldap.c:134
+#: src/ssl/linux/ldap.c:145 src/ssl/linux/ldap.c:156 src/ssl/linux/ldap.c:181
+#: src/ssl/linux/ldap.c:192 src/ssl/linux/ldap.c:204 src/ssl/linux/ldap.c:228
+#: src/ssl/linux/getcrl.c:125
 msgid "Security error"
 msgstr "Erro de segurança"
 
@@ -1391,7 +1211,7 @@ msgstr "Seleciona a direita"
 msgid "Select word"
 msgstr "Seleciona palavra"
 
-#: src/core/windows/event_dispatcher.c:150
+#: src/core/linux/event_dispatcher.c:144
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1410,14 +1230,6 @@ msgstr "Move seleção para a direita"
 #: src/core/actions/table.c:385
 msgid "Selection up"
 msgstr "Sobe a seleção"
-
-#: src/ssl/state.c:234
-msgid "Self signed certificate"
-msgstr "Certificado auto assinado"
-
-#: src/ssl/state.c:246
-msgid "Self signed certificate in certificate chain"
-msgstr "Certificado auto assinado na cadeia de certificados"
 
 #: src/core/actions/table.c:621
 msgid "Send an \"Enter\" action"
@@ -1455,33 +1267,21 @@ msgstr "Show timer when processing"
 msgid "Smart paste"
 msgstr "Colar inteligente"
 
-#: src/core/iocalls.c:506 src/core/iocalls.c:523
-msgid "Socket error"
-msgstr "Erro no socket"
-
-#: src/core/telnet.c:694
+#: src/core/telnet.c:594
 msgid "Socket read error"
 msgstr "Erro ao ler dados da rede"
-
-#: src/core/telnet.c:1678
-msgid "Socket write error"
-msgstr "Erro ao enviar dados para a rede"
 
 #: src/core/toggles/table.c:263
 msgid "Sound"
 msgstr "Som"
 
-#: src/core/properties/boolean.c:129
+#: src/core/properties/boolean.c:133
 msgid "State is 3270, TN3270e or SSCP"
 msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 
-#: src/core/properties/boolean.c:164
+#: src/core/properties/boolean.c:168
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
-
-#: src/ssl/state.c:318
-msgid "Subject issuer mismatch"
-msgstr "Divergência na identidade do emissor"
 
 #: src/core/actions/table.c:748
 msgid "Sys Req"
@@ -1491,19 +1291,43 @@ msgstr "Sys Req"
 msgid "Sys Request"
 msgstr "Sys Request"
 
-#: src/core/telnet.c:1161
+#: src/core/telnet.c:1053
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
+
+#: src/core/telnet.c:1873
+msgid "TN3270 3270"
+msgstr "TN3270 3270"
+
+#: src/core/telnet.c:1872
+msgid "TN3270 NVT"
+msgstr "TN3270 NVT"
+
+#: src/core/telnet.c:1874
+msgid "TN3270E"
+msgstr "TN3270E"
+
+#: src/core/telnet.c:1877
+msgid "TN3270E 3270"
+msgstr "TN3270E 3270"
+
+#: src/core/telnet.c:1875
+msgid "TN3270E NVT"
+msgstr "TN3270E NVT"
+
+#: src/core/telnet.c:1876
+msgid "TN3270E SSCP-LU"
+msgstr "TN3270E SSCP-LU"
 
 #: src/core/properties/unsigned.c:96
 msgid "Terminal model"
 msgstr "Modelo do terminal"
 
-#: src/core/properties/string.c:106
+#: src/core/properties/string.c:107
 msgid "Terminal name"
 msgstr "Nome do terminal"
 
-#: src/core/properties/string.c:99
+#: src/core/properties/string.c:100
 msgid "Terminal type"
 msgstr "Tipo do terminal"
 
@@ -1521,47 +1345,6 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/ssl/state.c:186
-msgid "The CRL has expired."
-msgstr "A lista de certificados revogados expirou."
-
-#: src/ssl/state.c:174
-msgid "The CRL is not yet valid."
-msgstr "A lista de certificados revogados ainda não é válida."
-
-#: src/ssl/state.c:211
-msgid "The CRL lastUpdate field contains an invalid time."
-msgstr "Campo \"lastUpdate\" do CRL contem horário inválido."
-
-#: src/ssl/state.c:219
-msgid "The CRL nextUpdate field contains an invalid time."
-msgstr "Campo \"nextUpdate\" contem horário inválido."
-
-#: src/ssl/state.c:127
-msgid ""
-"The CRL signature could not be decrypted: this means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value. Unused."
-msgstr ""
-"The CRL signature could not be decrypted: this means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value. Unused."
-
-#: src/ssl/state.c:187
-msgid "The Certificate revocation list (CRL) has expired."
-msgstr "A lista de revogação de certificados (CRL) está expirada."
-
-#: src/ssl/state.c:175
-msgid "The Certificate revocation list (CRL) is not yet valid."
-msgstr "A lista de revogação de certificados (CRL) ainda não é válida."
-
-#: src/ssl/state.c:111
-msgid ""
-"The Certificate revocation list (CRL) of a certificate could not be found."
-msgstr ""
-"A lista de revogação de certificados (CRL) de um certificado não pôde ser "
-"encontrada."
-
 #: src/ssl/negotiate.c:406
 msgid "The SSL certificate for this host is not trusted."
 msgstr "O certificado SSL deste servidor não é confiável"
@@ -1571,119 +1354,21 @@ msgstr "O certificado SSL deste servidor não é confiável"
 msgid "The SSL error message was \"%s\" (%d)"
 msgstr "A mensagem de erro SSL foi \"%s\" (%d)"
 
-#: src/ssl/windows/ldap.c:110 src/ssl/windows/ldap.c:124
+#: src/ssl/linux/ldap.c:102 src/ssl/linux/ldap.c:115
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
-#: src/ssl/windows/getcrl.c:59
+#: src/ssl/linux/getcrl.c:58
 msgid "The URL for the CRL is undefined or empty"
 msgstr "A URL para o CRL não está definida ou vazia"
 
-#: src/ssl/windows/getcrl.c:128
+#: src/ssl/linux/getcrl.c:131
 msgid "The URL scheme is unknown"
 msgstr "O tipo de URL é desconhecido"
-
-#: src/ssl/state.c:287
-msgid "The basicConstraints pathlength parameter has been exceeded."
-msgstr "The basicConstraints pathlength parameter has been exceeded."
-
-#: src/ssl/state.c:247
-msgid ""
-"The certificate chain could be built up using the untrusted certificates but "
-"the root could not be found locally."
-msgstr ""
-"The certificate chain could be built up using the untrusted certificates but "
-"the root could not be found locally."
-
-#: src/ssl/state.c:271
-msgid "The certificate has been revoked."
-msgstr "O certificado foi revogado."
-
-#: src/ssl/state.c:167
-msgid ""
-"The certificate has expired: that is the notAfter date is before the current "
-"time."
-msgstr ""
-"The certificate has expired: that is the notAfter date is before the current "
-"time."
-
-#: src/ssl/state.c:159
-msgid ""
-"The certificate is not yet valid: the notBefore date is after the current "
-"time."
-msgstr ""
-"The certificate is not yet valid: the notBefore date is after the current "
-"time."
-
-#: src/ssl/state.c:203
-msgid "The certificate notAfter field contains an invalid time."
-msgstr "The certificate notAfter field contains an invalid time."
-
-#: src/ssl/state.c:195
-msgid "The certificate notBefore field contains an invalid time."
-msgstr "The certificate notBefore field contains an invalid time."
-
-#: src/ssl/state.c:119
-msgid ""
-"The certificate signature could not be decrypted. This means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value, this is only meaningful for RSA keys."
-msgstr ""
-"The certificate signature could not be decrypted. This means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value, this is only meaningful for RSA keys."
 
 #: src/core/properties/unsigned.c:78
 msgid "The color type"
 msgstr "O tipo de cor"
-
-#: src/ssl/state.c:374 src/ssl/state.c:402 src/ssl/state.c:429
-msgid "The connection is insecure"
-msgstr "A conexão não é segura"
-
-#: src/ssl/state.c:94
-msgid "The connection is secure and the host identity was confirmed."
-msgstr "A conexão é segura e a identidade do servidor foi confirmada."
-
-#: src/ssl/state.c:335
-msgid ""
-"The current candidate issuer certificate was rejected because its issuer "
-"name and serial number was present and did not match the authority key "
-"identifier of the current certificate. Only displayed when the -"
-"issuer_checks option is set."
-msgstr ""
-"The current candidate issuer certificate was rejected because its issuer "
-"name and serial number was present and did not match the authority key "
-"identifier of the current certificate. Only displayed when the -"
-"issuer_checks option is set."
-
-#: src/ssl/state.c:343
-msgid ""
-"The current candidate issuer certificate was rejected because its keyUsage "
-"extension does not permit certificate signing."
-msgstr ""
-"The current candidate issuer certificate was rejected because its keyUsage "
-"extension does not permit certificate signing."
-
-#: src/ssl/state.c:327
-msgid ""
-"The current candidate issuer certificate was rejected because its subject "
-"key identifier was present and did not match the authority key identifier "
-"current certificate. Only displayed when the -issuer_checks option is set."
-msgstr ""
-"The current candidate issuer certificate was rejected because its subject "
-"key identifier was present and did not match the authority key identifier "
-"current certificate. Only displayed when the -issuer_checks option is set."
-
-#: src/ssl/state.c:319
-msgid ""
-"The current candidate issuer certificate was rejected because its subject "
-"name did not match the issuer name of the current certificate. Only "
-"displayed when the -issuer_checks option is set."
-msgstr ""
-"The current candidate issuer certificate was rejected because its subject "
-"name did not match the issuer name of the current certificate. Only "
-"displayed when the -issuer_checks option is set."
 
 #: src/core/properties/unsigned.c:159
 msgid "The delay between the host unlocking the keyboard and the actual unlock"
@@ -1720,27 +1405,11 @@ msgid ""
 "operation."
 msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 
-#: src/ssl/state.c:255
-msgid ""
-"The issuer certificate could not be found: this occurs if the issuer "
-"certificate of an untrusted certificate cannot be found."
-msgstr ""
-"The issuer certificate could not be found: this occurs if the issuer "
-"certificate of an untrusted certificate cannot be found."
-
-#: src/ssl/state.c:102
-msgid ""
-"The issuer certificate of a looked up certificate could not be found. This "
-"normally means the list of trusted certificates is not complete."
-msgstr ""
-"The issuer certificate of a looked up certificate could not be found. This "
-"normally means the list of trusted certificates is not complete."
-
 #: src/core/properties/unsigned.c:97
 msgid "The model number"
 msgstr "Nº do modelo"
 
-#: src/core/properties/string.c:64
+#: src/core/properties/string.c:65
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
 
@@ -1765,34 +1434,9 @@ msgstr "Os valores do 'oversize' são muito grandes."
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
-#: src/ssl/state.c:235
-msgid ""
-"The passed certificate is self signed and the same certificate cannot be "
-"found in the list of trusted certificates."
-msgstr ""
-"The passed certificate is self signed and the same certificate cannot be "
-"found in the list of trusted certificates."
-
-#: src/ssl/state.c:135
-msgid ""
-"The public key in the certificate SubjectPublicKeyInfo could not be read."
-msgstr ""
-"The public key in the certificate SubjectPublicKeyInfo could not be read."
-
 #: src/core/ft/ft.c:277
 msgid "The remote file name is invalid."
 msgstr "O nome do arquivo remoto não é válido."
-
-#: src/ssl/state.c:311
-msgid "The root CA is marked to reject the specified purpose."
-msgstr ""
-"O certificado raiz está marcado para rejeitar a finalidade especificada."
-
-#: src/ssl/state.c:303
-msgid "The root CA is not marked as trusted for the specified purpose."
-msgstr ""
-"O Certificado raiz não está marcado como confiável para os fins "
-"especificados."
 
 #: src/ssl/negotiate.c:407
 msgid ""
@@ -1802,19 +1446,10 @@ msgstr ""
 "O certificado de segurança apresentado pelo servidor não foi assinado por "
 "uma autoridade certificadora confiável."
 
-#: src/core/properties/string.c:166
-msgid "The security state"
-msgstr "O estado da segurança"
-
-#: src/ssl/state.c:143 src/ssl/state.c:151
-msgid "The signature of the certificate is invalid."
-msgstr "A assinatura do certificado não é válida."
-
-#: src/ssl/state.c:295
-msgid "The supplied certificate cannot be used for the specified purpose."
-msgstr ""
-"O certificado fornecido não pode ser utilizado para a finalidade "
-"especificada."
+#: src/core/linux/connect.c:172 src/core/linux/connect.c:222
+#, c-format
+msgid "The system error was \"%s\" (rc=%d)"
+msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
 
 #: src/core/ctlr.c:216
 #, c-format
@@ -1877,8 +1512,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_cut.c:400 src/core/ft/ft_cut.c:495 src/core/ft/ft_dft.c:230
-#: src/core/ft/ft_dft.c:373
+#: src/core/ft/ft_dft.c:230 src/core/ft/ft_dft.c:373 src/core/ft/ft_cut.c:400
+#: src/core/ft/ft_cut.c:495
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 
@@ -1894,15 +1529,11 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
-#: src/core/connect.c:90
+#: src/core/linux/connect.c:124
 msgid "Try again"
 msgstr "Tentar novamente"
 
-#: src/core/properties/string.c:144
-msgid "URL for the certificate revocation list"
-msgstr "URL para a lista de certificados revogados"
-
-#: src/core/properties/string.c:76
+#: src/core/properties/string.c:77
 msgid "URL of the current host"
 msgstr "URL do host atual"
 
@@ -1910,58 +1541,23 @@ msgstr "URL do host atual"
 msgid "Uknown DFT Open type from host"
 msgstr "Host enviou código de abertura DFT desconhecido"
 
-#: src/ssl/windows/getcrl.c:92
-#, fuzzy
-msgid "Unable to decode CRL"
-msgstr "Não foi possível decodificar arquivo CRL"
-
-#: src/ssl/state.c:134
-msgid "Unable to decode issuer public key"
-msgstr "Não é possível decodificar chave pública do emissor"
-
-#: src/ssl/state.c:126
-msgid "Unable to decrypt CRL's signature"
-msgstr ""
-"Não foi possível decriptar assinatura da lista de certificados revogados"
-
-#: src/ssl/state.c:118
-msgid "Unable to decrypt certificate's signature"
-msgstr "Incapaz de decifrar a assinatura do certificado"
-
-#: src/ssl/state.c:110
-msgid "Unable to get certificate CRL."
-msgstr "Incapaz de obter o CRL de um certificado."
-
-#: src/core/windows/connect.c:79
+#: src/core/linux/connect.c:155
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/ssl/state.c:101
-msgid "Unable to get issuer certificate"
-msgstr "Não foi possível obter emissor do certificado"
-
-#: src/ssl/state.c:254
-msgid "Unable to get local issuer certificate"
-msgstr "Unable to get local issuer certificate"
-
-#: src/core/session.c:206
+#: src/core/session.c:212
 msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
-
-#: src/ssl/windows/getcrl.c:77
-#, fuzzy
-msgid "Unable to open the defined CRL file"
-msgstr "Unable to get certificate CRL"
 
 #: src/core/paste.c:399
 msgid "Unable to paste text"
 msgstr "Incapaz de colar texto"
 
-#: src/core/session.c:192
+#: src/core/session.c:198
 msgid "Unable to print"
 msgstr "Incapaz de imprimir"
 
-#: src/core/session.c:199
+#: src/core/session.c:205
 msgid "Unable to save"
 msgstr "Incapaz de salvar"
 
@@ -1969,9 +1565,9 @@ msgstr "Incapaz de salvar"
 msgid "Unable to send file-transfer request"
 msgstr "Não foi possível enviar a requisição de transferência de arquivo"
 
-#: src/ssl/state.c:262
-msgid "Unable to verify the first certificate"
-msgstr "Não foi possível verificar o primeiro certificado"
+#: src/core/telnet.c:1868
+msgid "Unconnected"
+msgstr "Não conectado"
 
 #: src/core/toggles/table.c:233
 msgid "Underline"
@@ -1985,7 +1581,7 @@ msgstr "Erro inesperado"
 msgid "Unexpected error on SSL initialization"
 msgstr "Erro inesperado na inicialização do sistema de segurança"
 
-#: src/ssl/windows/getcrl.c:127
+#: src/ssl/linux/getcrl.c:128
 msgid "Unexpected or invalid CRL URL"
 msgstr "URL do CRL é inesperada ou inválida"
 
@@ -1993,14 +1589,14 @@ msgstr "URL do CRL é inesperada ou inválida"
 msgid "Unexpected or invalid TLS/SSL verify result"
 msgstr "O resultado da verificação TLS/SSL foi inesperado"
 
-#: src/ssl/state.c:405
-msgid "Unexpected or unknown security status"
-msgstr "Estado de segurança inesperado ou desconhecido."
-
 #: src/core/keyboard/kybd.c:279
 #, c-format
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
+
+#: src/core/telnet.c:1881 src/core/telnet.c:1903
+msgid "Unknown"
+msgstr "Desconhecido"
 
 #: src/core/ctlr.c:676
 #, c-format
@@ -2033,10 +1629,6 @@ msgstr "Atraso no desbloqueio"
 msgid "Unsupported RPQ term"
 msgstr "Unsupported RPQ term"
 
-#: src/ssl/state.c:294
-msgid "Unsupported certificate purpose"
-msgstr "Finalidade do certificado não é suportada"
-
 #: src/core/actions/table.c:158
 msgid "Up"
 msgstr "Subir"
@@ -2053,10 +1645,6 @@ msgstr "Usar teclas +/- para navegar por campos"
 msgid "Use the keys +/- from keypad to select editable fields"
 msgstr "Use the keys +/- from keypad to select editable fields"
 
-#: src/core/windows/connect.c:126
-msgid "WSAStartup failed"
-msgstr "WSAStartup falhou"
-
 #: src/core/ft/ft.c:537
 msgid "Waiting for GET response"
 msgstr "Aguardando resposta do pedido de download"
@@ -2065,14 +1653,9 @@ msgstr "Aguardando resposta do pedido de download"
 msgid "Waiting for PUT response"
 msgstr "Aguardando resposta do pedido de upload"
 
-#: src/core/telnet.c:879
+#: src/core/telnet.c:779
 msgid "Warning"
 msgstr "Alerta"
-
-#: src/core/windows/util.c:131 src/core/windows/util.c:180
-#, c-format
-msgid "Windows error %d"
-msgstr "Erro windows foi %d"
 
 #: src/ssl/notify.c:104
 #, c-format
@@ -2170,35 +1753,27 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:313
+#: src/core/toggles/init.c:90 src/core/linux/connect.c:285
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:313
+#: src/core/toggles/init.c:90 src/core/linux/connect.c:285
 msgid "enable"
 msgstr "habilitar"
 
-#: src/core/iocalls.c:507
-msgid "fcntl() error when getting socket state."
-msgstr "erro fcntl() ao obter estado do socket."
-
-#: src/core/iocalls.c:493
-msgid "ioctlsocket(FIONBIO) failed."
-msgstr "ioctlsocket(FIONBIO) failed."
-
-#: src/core/properties/string.c:136
+#: src/core/properties/string.c:137
 msgid "lib3270 revision"
 msgstr "Revisão da lib3270"
 
-#: src/core/properties/string.c:129
+#: src/core/properties/string.c:130
 msgid "lib3270 version"
 msgstr "Versão da lib3270"
 
-#: src/core/properties/boolean.c:192
+#: src/core/properties/boolean.c:196
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/windows/connect.c:334
+#: src/core/linux/connect.c:272
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) has failed"
 
@@ -2207,6 +1782,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "%s (SSL error %d)"
 #~ msgstr "%s (erro SSL %d)"
+
+#~ msgid "%s (rc=%d)"
+#~ msgstr "%s (rc=%d)"
 
 #~ msgid "%s - Disconnected"
 #~ msgstr "%s - Desconectado"
@@ -2240,9 +1818,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "16 colors"
 #~ msgstr "16 cores"
-
-#~ msgid "3270 Error"
-#~ msgstr "Erro 3270"
 
 #~ msgid "3270 File transfer"
 #~ msgstr "Transferência de arquivos 3270"
@@ -2341,6 +1916,13 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "<separator> should be inside a <menu> or <toolbar>"
 #~ msgstr "<separator> só é válido dentro de <menu> ou <toolbar>"
 
+#~ msgid ""
+#~ "A CA certificate is invalid. Either it is not a CA or its extensions are "
+#~ "not consistent with the supplied purpose."
+#~ msgstr ""
+#~ "A CA certificate is invalid. Either it is not a CA or its extensions are "
+#~ "not consistent with the supplied purpose."
+
 #~ msgid "A_ppend to file"
 #~ msgstr "_Adicionar ao arquivo"
 
@@ -2373,6 +1955,11 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Alternate screen"
 #~ msgstr "Tela alternativa"
 
+#~ msgid ""
+#~ "An error occurred trying to allocate memory. This should never happen."
+#~ msgstr ""
+#~ "Ocorreu um erro ao tentar alocar memória. Isso nunca deveria acontecer."
+
 #~ msgid "Appends the source file to the destination file."
 #~ msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 
@@ -2385,8 +1972,11 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Attribute \"%s\" is invalid or undefined"
 #~ msgstr "Atributo \"%s\" é invalido ou indefinido"
 
-#~ msgid "Auto connect"
-#~ msgstr "Conexão automática"
+#~ msgid "Authority and issuer serial number mismatch"
+#~ msgstr "Divergência nos números de série da autoridade e emissor "
+
+#~ msgid "Authority and subject key identifier mismatch"
+#~ msgstr "Authority and subject key identifier mismatch"
 
 #~ msgid "Auto resize on altscreen"
 #~ msgstr "Mudar automaticamente o tamanho do terminal em tela alternativa"
@@ -2403,6 +1993,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Background"
 #~ msgstr "Fundo"
 
+#~ msgid "Bad winsock version"
+#~ msgstr "Versão winsock inválida"
+
 #~ msgid "Black"
 #~ msgstr "Preto"
 
@@ -2414,6 +2007,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Brazilian Public Software Portal"
 #~ msgstr "Portal do Software Público Brasileiro"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Conexão interrompida"
 
 #~ msgid ""
 #~ "Buffer size for DFT-mode transfers. Can range from 256 to 32768. Larger "
@@ -2430,6 +2026,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "CRL is not yet valid"
 #~ msgstr "CRL ainda não é válido"
 
+#~ msgid "CRL signature failure"
+#~ msgstr "Erro na assinatura CRL"
+
 #~ msgid "C_haracter Coding"
 #~ msgstr "C_odificação de caracteres"
 
@@ -2445,11 +2044,14 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't add activity"
 #~ msgstr "Não é possível adicionar atividade"
 
-#~ msgid "Can't connect to %s"
-#~ msgstr "Não foi possível conectar a %s"
+#~ msgid "Can't connect to HTTP server."
+#~ msgstr "Não foi possível conectar ao servidor HTTP"
 
 #~ msgid "Can't convert line %lu from %s to %s"
 #~ msgstr "Não foi possível converter a linha %lu de %s para %s"
+
+#~ msgid "Can't create HTTP request."
+#~ msgstr "Não foi possível criar requisição HTTP"
 
 #~ msgid "Can't cut rectangular regions"
 #~ msgstr "Recortar não permitido em seleção retangular"
@@ -2457,11 +2059,19 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't determine value for environment variable \"%s\" "
 #~ msgstr "Não consigo determinar o valor da variável de ambiente \"%s\" "
 
+#~ msgid "Can't find certificate revocation list in LDAP response"
+#~ msgstr ""
+#~ "Não foi possível encontrar a lista de certificados revogados na pesquisa "
+#~ "LDAP"
+
 #~ msgid "Can't get DBUS object name"
 #~ msgstr "Não foi possível obter o nome do objeto DBUS"
 
 #~ msgid "Can't get screen contents"
 #~ msgstr "Não foi possível obter o conteúdo da tela"
+
+#~ msgid "Can't load \"%s\": %s"
+#~ msgstr "Não foi possível carregar \"%s\": %s"
 
 #~ msgid "Can't load %s"
 #~ msgstr "Não foi possível carregar %s"
@@ -2474,6 +2084,15 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't load plugin %s"
 #~ msgstr "Não foi possível carregar plugin %s"
+
+#~ msgid "Can't open \"%s\" (The Windows error code was %ld)\n"
+#~ msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)\n"
+
+#~ msgid "Can't open \"%s\": %s"
+#~ msgstr "Não foi possível abrir %s: %s"
+
+#~ msgid "Can't open HTTP session"
+#~ msgstr "Não foi possível abrir sessão HTTP"
 
 #~ msgid "Can't open file"
 #~ msgstr "Não foi possível abrir arquivo"
@@ -2501,6 +2120,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't paste text"
 #~ msgstr "Não é possível colar texto"
+
+#~ msgid "Can't read \"%s\": %s"
+#~ msgstr "Não foi possível ler \"%s\": %s"
+
+#~ msgid "Can't read HTTP response size."
+#~ msgstr "Não posso obter tamanho da resposta HTTP"
 
 #~ msgid "Can't recognize \"%s\" as a valid host type"
 #~ msgstr "Não reconheço \"%s\" como um tipo de host válido"
@@ -2535,6 +2160,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't save trace data to file %s"
 #~ msgstr "Não foi possível salvar trace no arquivo %s"
 
+#~ msgid "Can't send HTTP request."
+#~ msgstr "Não posso enviar requisição HTTP"
+
 #~ msgid "Can't set callback table"
 #~ msgstr "Não foi possível setar a tabela de retornos"
 
@@ -2544,6 +2172,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't set lib3270 I/O controller"
 #~ msgstr "Não foi possível registrar manipuladores de I/O 3270"
 
+#~ msgid "Can't set socket to blocking mode."
+#~ msgstr "Não foi possível mudar o socket para o modo blocante."
+
+#~ msgid "Can't set socket to non blocking mode"
+#~ msgstr "Não foi possível setar o socket para o modo não blocante."
+
 #~ msgid "Can't start download."
 #~ msgstr "Não foi possível iniciar o download."
 
@@ -2552,6 +2186,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't start upload."
 #~ msgstr "Não foi possível iniciar upload."
+
+#~ msgid "Can't use winsock version %d.%d"
+#~ msgstr "Não posso usar versão winsock %d.%d"
 
 #~ msgid "Cancel"
 #~ msgstr "_Cancelar"
@@ -2574,12 +2211,46 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Cannot parse %s \"%s\", entry %d"
 #~ msgstr "Impossível interpretar %s \"%s\", entrada %d"
 
+#~ msgid "Cant initialize the SSL context."
+#~ msgstr "Erro ao inicializar contexto de segurança"
+
+#~ msgid "Cant load custom certificate file."
+#~ msgstr "Não foi possível ler arquivo de certificado personalizado"
+
+#~ msgid "Cant open custom certificate directory."
+#~ msgstr "Não foi possível abrir o diretório de certificados personalizados"
+
+#~ msgid "Cant read custom certificate file."
+#~ msgstr "Não foi possível ler certificado personalizado"
+
 #~ msgid ""
 #~ "Cant set default locations for trusted CA certificates to\n"
 #~ "%s"
 #~ msgstr ""
 #~ "Cant set default locations for trusted CA certificates to\n"
 #~ "%s"
+
+#, fuzzy
+#~ msgid "Can´t get CRL"
+#~ msgstr "Não foi possível decodificar arquivo CRL"
+
+#~ msgid "Certificate has expired"
+#~ msgstr "O certificado expirou"
+
+#~ msgid "Certificate is not yet valid"
+#~ msgstr "O certificado ainda não é válido"
+
+#~ msgid "Certificate not trusted"
+#~ msgstr "O certificado não é confiável"
+
+#~ msgid "Certificate rejected"
+#~ msgstr "Certificado rejeitado"
+
+#~ msgid "Certificate revoked"
+#~ msgstr "Certificado revogado"
+
+#~ msgid "Certificate signature failure"
+#~ msgstr "Falha na assinatura do certificado"
 
 #~ msgid "Charset has %d entries, need 256"
 #~ msgstr "Tabela de tradução tem %d entradas, precisa de 256"
@@ -2634,6 +2305,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Connection failed"
 #~ msgstr "Conexão falhou"
+
+#~ msgid "Connection reset by peer"
+#~ msgstr "Conexão foi cancelada pelo servidor"
 
 #~ msgid "Copiar tudo"
 #~ msgstr "Copiar tudo"
@@ -2709,6 +2383,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Default"
 #~ msgstr "Padrão"
 
+#~ msgid "Description of the current security state"
+#~ msgstr "Descrição do estado de segurança atual"
+
 #~ msgid "Display current charset"
 #~ msgstr "Mostrar a tabela de caracteres ativa"
 
@@ -2726,6 +2403,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Empty port name"
 #~ msgstr "Porta em branco"
+
+#~ msgid "Empty response from HTTP server."
+#~ msgstr "Recebi resposta vazia do servidor HTTP"
 
 #~ msgid ""
 #~ "Erase\n"
@@ -2757,6 +2437,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Error loading CRL"
 #~ msgstr "Erro lendo CRL"
+
+#~ msgid "Error receiving HTTP response."
+#~ msgstr "Erro recebendo resposta HTTP"
 
 #~ msgid "Error resolving %s: %s"
 #~ msgstr "Erro ao resolver %s: %s"
@@ -2822,6 +2505,18 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Forces monochrome display"
 #~ msgstr "Força tela monocromática"
 
+#~ msgid "Format error in CRL's lastUpdate field"
+#~ msgstr "Erro de formato no campo \"lastUpdate\" do CRL"
+
+#~ msgid "Format error in CRL's nextUpdate field"
+#~ msgstr "Erro de formato no campo \"nextUpdate\" do CRL"
+
+#~ msgid "Format error in certificate's notAfter field"
+#~ msgstr "Erro de formato no campo \"notAfter\" do certificado"
+
+#~ msgid "Format error in certificate's notBefore field"
+#~ msgstr "Erro de formato no campo \"notBefore\" do certificado"
+
 #~ msgid "From"
 #~ msgstr "De"
 
@@ -2843,13 +2538,11 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Get transfer queue from file"
 #~ msgstr "Obtêm a fila de arquivos a transferir de um arquivo"
 
-#~ msgid "Got a bad formatted certificate revocation list from LDAP server"
-#~ msgstr ""
-#~ "Obtive lista de certificados revogados com formato inválido do servidor "
-#~ "LDAP"
-
 #~ msgid "Got an invalid CRL from server"
 #~ msgstr "Obtive um CRL inválido do servidor"
+
+#~ msgid "Got an invalid certificate revocation list from server"
+#~ msgstr "Servidor enviou uma lista de certificados revogados inválida"
 
 #~ msgid "Gray"
 #~ msgstr "Cinza"
@@ -2942,6 +2635,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Intensified/Unprotected"
 #~ msgstr "Intensificado/Desprotegido"
 
+#~ msgid "Invalid CA certificate"
+#~ msgstr "Certificado CA inválido"
+
 #~ msgid "Invalid CGCSGID '%s', ignoring"
 #~ msgstr "Invalid CGCSGID '%s', ignoring"
 
@@ -2984,6 +2680,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Java"
 #~ msgstr "Java"
+
+#~ msgid "Key usage does not include certificate signing"
+#~ msgstr "Uso da chave não permite assinatura de certificados"
 
 #~ msgid "LRECL:"
 #~ msgstr "LRECL:"
@@ -3049,8 +2748,21 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Network data"
 #~ msgstr "Tráfego de rede"
 
+#~ msgid "Network startup error"
+#~ msgstr "Erro ao iniciar a rede"
+
 #~ msgid "No active transfer"
 #~ msgstr "Nenhuma transferência ativa"
+
+#~ msgid "No attribute in LDAP search URL"
+#~ msgstr "Nenhum atributo na URL de pesquisa LDAP"
+
+#~ msgid ""
+#~ "No signatures could be verified because the chain contains only one "
+#~ "certificate and it is not self signed."
+#~ msgstr ""
+#~ "Nenhuma assinatura pode ser verificada, porque a cadeia contém apenas um "
+#~ "certificado e não é auto assinado."
 
 #~ msgid "No transfer"
 #~ msgstr "Nenhuma transferência"
@@ -3099,6 +2811,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Orange"
 #~ msgstr "Laranja"
+
+#~ msgid "Out of memory"
+#~ msgstr "Memória insuficiente"
 
 #~ msgid "Out of memory in vasprintf"
 #~ msgstr "Memória insuficiente em vasprintf"
@@ -3211,6 +2926,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Path for plugin files"
 #~ msgstr "Caminho para os arquivos de plugin"
 
+#~ msgid "Path length constraint exceeded"
+#~ msgstr "Path length constraint exceeded"
+
 #~ msgid "Path to application data files"
 #~ msgstr "Caminho para os arquivos de dados da aplicação"
 
@@ -3232,6 +2950,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Predefined color schemes"
 #~ msgstr "Esquemas de cor pré-definidos"
 
+#~ msgid "Preferred protocol for CRL download"
+#~ msgstr "Protocolo preferido para download da CRL"
+
 #~ msgid "Preparing"
 #~ msgstr "Preparando"
 
@@ -3241,9 +2962,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgstr ""
 #~ "Primary allocation for a file created on a TSO host.\n"
 #~ "The units are given by the space allocation units option."
-
-#~ msgid "Print"
-#~ msgstr "Imprimir"
 
 #~ msgid "Print copy"
 #~ msgstr "Imprimir cópia"
@@ -3333,9 +3051,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Remote file"
 #~ msgstr "Arquivo remoto:"
-
-#~ msgid "Remote:"
-#~ msgstr "Remoto:"
 
 #, fuzzy
 #~ msgid "Remove <_CR> from end of the line."
@@ -3450,6 +3165,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "SSL Error"
 #~ msgstr "Erro SSL"
 
+#~ msgid "SSL Read error"
+#~ msgstr "Erro de leitura SSL"
+
 #~ msgid "SSL init failed!"
 #~ msgstr "Inicialização SSL falhou"
 
@@ -3461,6 +3179,13 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "SSL_set_fd failed!"
 #~ msgstr "SSL_set_fd falhou!"
+
+#~ msgid ""
+#~ "SSL_write:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "SSL_write:\n"
+#~ "%s"
 
 #~ msgid "SSLv2/v3 read server hello A"
 #~ msgstr "SSLv2/v3 read server hello A"
@@ -3554,6 +3279,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Secondary space"
 #~ msgstr "Secondary space"
 
+#~ msgid "Secure connection was successful."
+#~ msgstr "Conexão segura efetuada com sucesso."
+
 #~ msgid "Security alert"
 #~ msgstr "Alerta de segurança"
 
@@ -3596,6 +3324,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Selection foreground"
 #~ msgstr "Frente da seleção"
 
+#~ msgid "Self signed certificate"
+#~ msgstr "Certificado auto assinado"
+
+#~ msgid "Self signed certificate in certificate chain"
+#~ msgstr "Certificado auto assinado na cadeia de certificados"
+
 #~ msgid "Send file"
 #~ msgstr "Enviar arquivo"
 
@@ -3610,9 +3344,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Send/Receive"
 #~ msgstr "Enviar/Receber"
-
-#~ msgid "Sending file"
-#~ msgstr "Enviando arquivo"
 
 #~ msgid "Session name"
 #~ msgstr "Nome da sessão"
@@ -3646,6 +3377,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Skip this transfer, keep the file on queue."
 #~ msgstr "Skip this transfer, keep the file on queue."
+
+#~ msgid "Socket error"
+#~ msgstr "Erro no socket"
+
+#~ msgid "Socket write error"
+#~ msgstr "Erro ao enviar dados para a rede"
 
 #~ msgid "Space allocation units"
 #~ msgstr "Unidades de alocação de espaço"
@@ -3734,6 +3471,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Status"
 #~ msgstr "Situação"
 
+#~ msgid "Subject issuer mismatch"
+#~ msgstr "Divergência na identidade do emissor"
+
 #~ msgid "System _type"
 #~ msgstr "_Tipo de servidor"
 
@@ -3773,8 +3513,44 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Text files"
 #~ msgstr "Arquivos de texto"
 
+#~ msgid "The CRL has expired."
+#~ msgstr "A lista de certificados revogados expirou."
+
+#~ msgid "The CRL is not yet valid."
+#~ msgstr "A lista de certificados revogados ainda não é válida."
+
+#~ msgid "The CRL lastUpdate field contains an invalid time."
+#~ msgstr "Campo \"lastUpdate\" do CRL contem horário inválido."
+
+#~ msgid "The CRL nextUpdate field contains an invalid time."
+#~ msgstr "Campo \"nextUpdate\" contem horário inválido."
+
 #~ msgid "The CRL of a certificate could not be found."
 #~ msgstr "O CRL do certificado não foi encontrado."
+
+#~ msgid ""
+#~ "The CRL signature could not be decrypted: this means that the actual "
+#~ "signature value could not be determined rather than it not matching the "
+#~ "expected value. Unused."
+#~ msgstr ""
+#~ "The CRL signature could not be decrypted: this means that the actual "
+#~ "signature value could not be determined rather than it not matching the "
+#~ "expected value. Unused."
+
+#~ msgid "The Certificate revocation list (CRL) has expired."
+#~ msgstr "A lista de revogação de certificados (CRL) está expirada."
+
+#~ msgid "The Certificate revocation list (CRL) is not yet valid."
+#~ msgstr "A lista de revogação de certificados (CRL) ainda não é válida."
+
+#~ msgid ""
+#~ "The Certificate revocation list (CRL) of a certificate could not be found."
+#~ msgstr ""
+#~ "A lista de revogação de certificados (CRL) de um certificado não pôde ser "
+#~ "encontrada."
+
+#~ msgid "The basicConstraints pathlength parameter has been exceeded."
+#~ msgstr "The basicConstraints pathlength parameter has been exceeded."
 
 #~ msgid ""
 #~ "The callback table for file transfer was rejected, possible version "
@@ -3783,8 +3559,103 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ "Tabela de callbacks para transferência de arquivos inválida, possível "
 #~ "divergência de versão na lib3270"
 
+#~ msgid ""
+#~ "The certificate chain could be built up using the untrusted certificates "
+#~ "but the root could not be found locally."
+#~ msgstr ""
+#~ "The certificate chain could be built up using the untrusted certificates "
+#~ "but the root could not be found locally."
+
+#~ msgid "The certificate has been revoked."
+#~ msgstr "O certificado foi revogado."
+
+#~ msgid ""
+#~ "The certificate has expired: that is the notAfter date is before the "
+#~ "current time."
+#~ msgstr ""
+#~ "The certificate has expired: that is the notAfter date is before the "
+#~ "current time."
+
+#~ msgid ""
+#~ "The certificate is not yet valid: the notBefore date is after the current "
+#~ "time."
+#~ msgstr ""
+#~ "The certificate is not yet valid: the notBefore date is after the current "
+#~ "time."
+
+#~ msgid "The certificate notAfter field contains an invalid time."
+#~ msgstr "The certificate notAfter field contains an invalid time."
+
+#~ msgid "The certificate notBefore field contains an invalid time."
+#~ msgstr "The certificate notBefore field contains an invalid time."
+
+#~ msgid ""
+#~ "The certificate signature could not be decrypted. This means that the "
+#~ "actual signature value could not be determined rather than it not "
+#~ "matching the expected value, this is only meaningful for RSA keys."
+#~ msgstr ""
+#~ "The certificate signature could not be decrypted. This means that the "
+#~ "actual signature value could not be determined rather than it not "
+#~ "matching the expected value, this is only meaningful for RSA keys."
+
+#~ msgid "The connection is insecure"
+#~ msgstr "A conexão não é segura"
+
+#~ msgid "The connection is secure and the host identity was confirmed."
+#~ msgstr "A conexão é segura e a identidade do servidor foi confirmada."
+
+#~ msgid ""
+#~ "The current candidate issuer certificate was rejected because its issuer "
+#~ "name and serial number was present and did not match the authority key "
+#~ "identifier of the current certificate. Only displayed when the -"
+#~ "issuer_checks option is set."
+#~ msgstr ""
+#~ "The current candidate issuer certificate was rejected because its issuer "
+#~ "name and serial number was present and did not match the authority key "
+#~ "identifier of the current certificate. Only displayed when the -"
+#~ "issuer_checks option is set."
+
+#~ msgid ""
+#~ "The current candidate issuer certificate was rejected because its "
+#~ "keyUsage extension does not permit certificate signing."
+#~ msgstr ""
+#~ "The current candidate issuer certificate was rejected because its "
+#~ "keyUsage extension does not permit certificate signing."
+
+#~ msgid ""
+#~ "The current candidate issuer certificate was rejected because its subject "
+#~ "key identifier was present and did not match the authority key identifier "
+#~ "current certificate. Only displayed when the -issuer_checks option is set."
+#~ msgstr ""
+#~ "The current candidate issuer certificate was rejected because its subject "
+#~ "key identifier was present and did not match the authority key identifier "
+#~ "current certificate. Only displayed when the -issuer_checks option is set."
+
+#~ msgid ""
+#~ "The current candidate issuer certificate was rejected because its subject "
+#~ "name did not match the issuer name of the current certificate. Only "
+#~ "displayed when the -issuer_checks option is set."
+#~ msgstr ""
+#~ "The current candidate issuer certificate was rejected because its subject "
+#~ "name did not match the issuer name of the current certificate. Only "
+#~ "displayed when the -issuer_checks option is set."
+
 #~ msgid "The file \"%s\" already exists. Replace it?"
 #~ msgstr "O arquivo \"%s\" já existe, substituir?"
+
+#~ msgid ""
+#~ "The issuer certificate could not be found: this occurs if the issuer "
+#~ "certificate of an untrusted certificate cannot be found."
+#~ msgstr ""
+#~ "The issuer certificate could not be found: this occurs if the issuer "
+#~ "certificate of an untrusted certificate cannot be found."
+
+#~ msgid ""
+#~ "The issuer certificate of a looked up certificate could not be found. "
+#~ "This normally means the list of trusted certificates is not complete."
+#~ msgstr ""
+#~ "The issuer certificate of a looked up certificate could not be found. "
+#~ "This normally means the list of trusted certificates is not complete."
 
 #~ msgid "The known types are %s"
 #~ msgstr "Os tipos conhecidos são %s"
@@ -3794,6 +3665,38 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "The name of the active LU"
 #~ msgstr "Nome da LU ativa"
+
+#~ msgid ""
+#~ "The passed certificate is self signed and the same certificate cannot be "
+#~ "found in the list of trusted certificates."
+#~ msgstr ""
+#~ "The passed certificate is self signed and the same certificate cannot be "
+#~ "found in the list of trusted certificates."
+
+#~ msgid ""
+#~ "The public key in the certificate SubjectPublicKeyInfo could not be read."
+#~ msgstr ""
+#~ "The public key in the certificate SubjectPublicKeyInfo could not be read."
+
+#~ msgid "The root CA is marked to reject the specified purpose."
+#~ msgstr ""
+#~ "O certificado raiz está marcado para rejeitar a finalidade especificada."
+
+#~ msgid "The root CA is not marked as trusted for the specified purpose."
+#~ msgstr ""
+#~ "O Certificado raiz não está marcado como confiável para os fins "
+#~ "especificados."
+
+#~ msgid "The security state"
+#~ msgstr "O estado da segurança"
+
+#~ msgid "The signature of the certificate is invalid."
+#~ msgstr "A assinatura do certificado não é válida."
+
+#~ msgid "The supplied certificate cannot be used for the specified purpose."
+#~ msgstr ""
+#~ "O certificado fornecido não pode ser utilizado para a finalidade "
+#~ "especificada."
 
 #~ msgid "There's no available settings for charset \"%s\""
 #~ msgstr "Não encontrei configuração para a tabela de caracteres \"%s\""
@@ -3883,6 +3786,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "URL for the CRL file"
 #~ msgstr "URL para o arquivo CRL"
 
+#~ msgid "URL for the certificate revocation list"
+#~ msgstr "URL para a lista de certificados revogados"
+
 #~ msgid "UTF-8"
 #~ msgstr "UTF-8"
 
@@ -3896,11 +3802,37 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Unable to connect to secure hosts"
 #~ msgstr "Não é possível conectar em servidores seguros"
 
+#~ msgid "Unable to decode issuer public key"
+#~ msgstr "Não é possível decodificar chave pública do emissor"
+
+#~ msgid "Unable to decrypt CRL's signature"
+#~ msgstr ""
+#~ "Não foi possível decriptar assinatura da lista de certificados revogados"
+
+#~ msgid "Unable to decrypt certificate's signature"
+#~ msgstr "Incapaz de decifrar a assinatura do certificado"
+
 #~ msgid "Unable to find selected hostname."
 #~ msgstr "Não consegui encontrar o host selecionado."
 
+#~ msgid "Unable to get certificate CRL."
+#~ msgstr "Incapaz de obter o CRL de um certificado."
+
+#~ msgid "Unable to get issuer certificate"
+#~ msgstr "Não foi possível obter emissor do certificado"
+
+#~ msgid "Unable to get local issuer certificate"
+#~ msgstr "Unable to get local issuer certificate"
+
+#, fuzzy
+#~ msgid "Unable to open the defined CRL file"
+#~ msgstr "Unable to get certificate CRL"
+
 #~ msgid "Unable to paste formatted data"
 #~ msgstr "Incapaz de colar texto formatado"
+
+#~ msgid "Unable to verify the first certificate"
+#~ msgstr "Não foi possível verificar o primeiro certificado"
 
 #~ msgid "Undefined"
 #~ msgstr "Indefinido"
@@ -3938,15 +3870,11 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Unexpected or invalid color value \"%s\""
 #~ msgstr "Valor de cor inválido ou inesperado: \"%s\""
 
+#~ msgid "Unexpected or unknown security status"
+#~ msgstr "Estado de segurança inesperado ou desconhecido."
+
 #~ msgid "Unexpected target \"%s\""
 #~ msgstr "Alvo inesperado \"%s\""
-
-#~ msgid ""
-#~ "Unknown host:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Servidor desconhecido:\n"
-#~ "%s"
 
 #~ msgid "Unknown passthru host: %s"
 #~ msgstr "Servidor \"passthru\" desconhecido: %s"
@@ -3956,6 +3884,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Unknown port number or service: %s"
 #~ msgstr "Número de porta ou serviço desconhecido: %s"
+
+#~ msgid "Unsupported certificate purpose"
+#~ msgstr "Finalidade do certificado não é suportada"
 
 #~ msgid "Unsupported passthru host session"
 #~ msgstr "Unsupported passthru host session"
@@ -3982,6 +3913,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "WSAEventSelect failed"
 #~ msgstr "WSAEventSelect falhou"
 
+#~ msgid "WSAStartup failed"
+#~ msgstr "WSAStartup falhou"
+
 #~ msgid "WaitForMultipleObjects() failed when processing for events."
 #~ msgstr "WaitForMultipleObjects() falhou ao processar eventos"
 
@@ -4000,14 +3934,14 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Windows Western languages (CP1252)"
 #~ msgstr "Windows ocidental (CP1252)"
 
+#~ msgid "Windows error %d"
+#~ msgstr "Erro windows foi %d"
+
 #~ msgid "X"
 #~ msgstr "X"
 
 #~ msgid "X -f"
 #~ msgstr "X -f"
-
-#~ msgid "X Connecting"
-#~ msgstr "X Conectando"
 
 #~ msgid "X Inhibit"
 #~ msgstr "X Inibido"
@@ -4023,9 +3957,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "X Protected"
 #~ msgstr "X Protegido"
-
-#~ msgid "X Resolving"
-#~ msgstr "X Resolvendo"
 
 #~ msgid "X System"
 #~ msgstr "X Sistema"
@@ -4068,9 +3999,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "_Color table"
 #~ msgstr "_Tabela de cores"
-
-#~ msgid "_Connect"
-#~ msgstr "_Conectar"
 
 #~ msgid "_Edit"
 #~ msgstr "_Editar"
@@ -4153,17 +4081,20 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "bracket"
 #~ msgstr "bracket"
 
-#~ msgid "connected"
-#~ msgstr "Conectado"
-
 #~ msgid "disconnected"
 #~ msgstr "Desconectado"
 
 #~ msgid "fcntl(%s)"
 #~ msgstr "fcntl(%s)"
 
+#~ msgid "fcntl() error when getting socket state."
+#~ msgstr "erro fcntl() ao obter estado do socket."
+
 #~ msgid "ioctl(%s)"
 #~ msgstr "ioctl(%s)"
+
+#~ msgid "ioctlsocket(FIONBIO) failed."
+#~ msgstr "ioctlsocket(FIONBIO) failed."
 
 #~ msgid "setsockopt(%s)"
 #~ msgstr "setsockopt(%s)"

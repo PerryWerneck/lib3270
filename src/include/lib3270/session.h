@@ -104,7 +104,17 @@
 	LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 	LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 
-	LIB3270_EXPORT struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *session, unsigned short sz);
+	/**
+	 * @brief Get lib3270 callback table.
+	 *
+	 * @param hSession	TN3270 Session.
+	 . @param revision	Expected lib3270 revision.
+	 * @param sz		Expected lib3270_session_callbacks struct length.
+	 *
+	 * @return Callback table if ok, NULL if failed.
+	 *
+	 */
+	LIB3270_EXPORT struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz);
 
 #endif // LIB3270_SESSION_H_INCLUDED
 

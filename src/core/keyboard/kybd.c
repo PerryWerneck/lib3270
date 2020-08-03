@@ -2240,25 +2240,3 @@ int kybd_prime(H3270 *hSession)
 }
 #endif /*]*/
 
-LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H3270 *hSession, int seconds)
-{
-	time_t end = time(0)+seconds;
-
-	lib3270_main_iterate(hSession,0);
-
-	do
-	{
-		if(!lib3270_is_connected(hSession))
-			return LIB3270_KL_NOT_CONNECTED;
-
-		if(KYBDLOCK_IS_OERR(hSession))
-			break;
-
-		lib3270_main_iterate(hSession,1);
-
-	}
-	while(hSession->kybdlock && time(0) < end);
-
-	return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
-}
-

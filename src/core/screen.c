@@ -592,15 +592,16 @@ void status_reset(H3270 *session)
 }
 
 /**
- * Query the updated terminal status.
+ * @brief Query the updated terminal status.
  *
  * @return status-code.
  *
  * @see LIB3270_MESSAGE
  */
-LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(const H3270 *session)
+LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(const H3270 *hSession)
 {
-	return session->oia.status;
+	debug("OIA Status=%d",hSession->oia.status);
+	return hSession->oia.status;
 }
 
 /**
@@ -616,11 +617,11 @@ LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_program_message(const H3270 *session)
  */
 LIB3270_EXPORT LIB3270_MESSAGE lib3270_get_lock_status(const H3270 *hSession)
 {
-	if(hSession->oia.status)
-		return hSession->oia.status;
-
 	if(hSession->kybdlock)
 		return LIB3270_MESSAGE_KYBDLOCK;
+
+	if(hSession->oia.status)
+		return hSession->oia.status;
 
 	return LIB3270_MESSAGE_NONE;
 

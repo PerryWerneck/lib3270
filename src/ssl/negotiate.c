@@ -57,6 +57,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/toggle.h>
+#include <lib3270/properties.h>
 #include "hostc.h" // host_disconnect
 #include "trace_dsc.h"
 
@@ -411,6 +412,22 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 #else
 			break;
 #endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+
+		case X509_V_ERR_UNABLE_TO_GET_CRL:
+
+			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->body);
+
+			((SSL_ERROR_MESSAGE *) message)->popup = (LIB3270_POPUP *) msg;
+
+			debug("message: %s",((SSL_ERROR_MESSAGE *) message)->popup->summary);
+			debug("description: %s",((SSL_ERROR_MESSAGE *) message)->popup->body);
+
+			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+
+			if(msg->type == LIB3270_NOTIFY_ERROR && lib3270_ssl_get_crl_download(hSession))
+				return EACCES;
+
+			break;
 
 		default:
 			trace_ssl(hSession,"TLS/SSL verify result was %d (%s)\n", rv, msg->body);

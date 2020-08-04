@@ -59,7 +59,7 @@ X509_CRL * get_crl_using_http(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 		};
 
 		popup.body = error_message;
-		message->popup = error_message;
+		message->popup = &popup;
 		message->code = hSession->ssl.error = 0;
 		trace_ssl(
 			hSession,"Can't get %s: %s\n",

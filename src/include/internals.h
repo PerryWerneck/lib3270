@@ -793,6 +793,8 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 		DWORD	lasterror;
 #endif // _WIN32
 
+		const char *body;
+
 		const LIB3270_POPUP *popup;	/// @brief Pointer to popup message.
 
 	} SSL_ERROR_MESSAGE;

@@ -248,16 +248,22 @@ LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H327
 			// Timeout! The timer was destroyed.
 			debug("%s exits with ETIMEDOUT",__FUNCTION__);
 			errno = ETIMEDOUT;
-			return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
+			break;
 		}
 
-		if(lib3270_is_disconnected(hSession))
+		if(hSession->kybdlock == LIB3270_KL_NOT_CONNECTED)
 		{
 			errno = ENOTCONN;
 			break;
 		}
 
 		if(KYBDLOCK_IS_OERR(hSession))
+		{
+			errno = EPERM;
+			break;
+		}
+
+		if(hSession->kybdlock == LIB3270_KL_UNLOCKED)
 			break;
 
 		debug("%s: Waiting",__FUNCTION__);

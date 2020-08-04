@@ -225,6 +225,8 @@
 	 */
 	LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled);
 
+	LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession);
+
 	/**
 	 * @brief Get lib3270 version info.
 	 *

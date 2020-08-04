@@ -59,14 +59,16 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 
 	printf("\n\nMSG-CODE=%d\n\n",msg->code);
 
+	const char *body = (msg->body ? msg->body : msg->popup->body);
+
 	if(msg->code)
 	{
-		if(msg->popup->body)
+		if(body)
 		{
 			popup = lib3270_popup_clone_printf(
 						msg->popup,
 						_( "%s\nThe SSL error message was \"%s\"(%d)" ),
-						dgettext(GETTEXT_PACKAGE,msg->popup->body),
+						dgettext(GETTEXT_PACKAGE,body),
 						ERR_reason_error_string(msg->code),
 						msg->code
 					);
@@ -87,12 +89,12 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 	{
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(msg->lasterror);
 
-		if(msg->popup->body)
+		if(body)
 		{
 			popup = lib3270_popup_clone_printf(
 						msg->popup,
 						_( "%s\nThe windows error was \"%s\" (%u)" ),
-						dgettext(GETTEXT_PACKAGE,msg->popup->body),
+						dgettext(GETTEXT_PACKAGE,body),
 						windows_error,
 						(unsigned int) msg->lasterror
 					);
@@ -111,12 +113,12 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 #endif // _WIN32
 	else if(rc)
 	{
-		if(msg->popup->body)
+		if(body)
 		{
 			popup = lib3270_popup_clone_printf(
 						msg->popup,
 						_( "%s\nThe operating system error was \"%s\" (%u)" ),
-						dgettext(GETTEXT_PACKAGE,msg->popup->body),
+						dgettext(GETTEXT_PACKAGE,body),
 						strerror(rc),
 						rc
 					);
@@ -137,8 +139,8 @@ static LIB3270_POPUP * translate_ssl_error_message(const SSL_ERROR_MESSAGE *msg,
 		popup = lib3270_malloc(sizeof(LIB3270_POPUP));
 		*popup = *msg->popup;
 
-		if(msg->popup->body)
-			popup->body = dgettext(GETTEXT_PACKAGE,msg->popup->body);
+		if(body)
+			popup->body = dgettext(GETTEXT_PACKAGE,body);
 
 	}
 

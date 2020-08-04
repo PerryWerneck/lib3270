@@ -66,6 +66,8 @@
 	 * @param seconds	Number of seconds to wait.
 	 *
 	 * @return keyboard lock status.
+	 *
+	 * @retval LIB3270_KL_UNLOCKED	Keyboard unlocked, acess ok.
 	 */
 	LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H3270 *hSession, int seconds);
 

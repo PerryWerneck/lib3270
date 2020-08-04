@@ -52,12 +52,22 @@
 	hSession->ssl.crl.download = enabled ? 1 : 0;
 	return 0;
  }
+
+LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession)
+{
+	return hSession->ssl.crl.download;
+}
 #else
  LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(enabled))
  {
 	return errno = ENOTSUP;
  }
-#endif // HAVE_LIBSSL && SSL_ENABLE_CRL_CHECK
+
+ LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 GNUC_UNUSED(*hSession))
+ {
+	return 0;
+ }
+#endif // SSL_ENABLE_CRL_CHECK
 
  const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
  {
@@ -196,6 +206,13 @@
 			.description = N_( "numeric lock" ),							//  Property description.
 			.get = lib3270_get_numeric_lock,								//  Get value.
 			.set = lib3270_set_numeric_lock									//  Set value.
+		},
+
+		{
+			.name = "crlget",													//  Property name.
+			.description = N_( "Non zero if the download of CRL is enabled" ),	//  Property description.
+			.get = lib3270_ssl_get_crl_download,								//  Get value.
+			.set = lib3270_ssl_set_crl_download									//  Set value.
 		},
 
 		{

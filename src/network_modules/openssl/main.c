@@ -80,6 +80,8 @@ static int openssl_network_disconnect(H3270 *hSession) {
 		context->sock = -1;
 	}
 
+	return 0;
+
 }
 
 ssize_t openssl_network_send(H3270 *hSession, const void *buffer, size_t length) {
@@ -121,11 +123,9 @@ static int openssl_network_init(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 	if(!ctx_context)
 		return -1;
 
-	//
-	// Create SSL context.
-	//
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
+	return 0;
 }
 
 static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
@@ -241,6 +241,18 @@ static int openssl_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *sta
 
 		state->popup = &popup;
 		return -1;
+
+	}
+
+	//
+	// Connection succeeded, do we need to download the CRL?
+	//
+	if(lib3270_ssl_get_crl_download(hSession)) {
+
+
+	} else {
+
+		trace_ssl(hSession,"CRL download is disabled\n");
 
 	}
 

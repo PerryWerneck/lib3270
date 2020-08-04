@@ -401,11 +401,11 @@ static int background_ssl_negotiation(H3270 *hSession, void *message)
 
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 			static const LIB3270_POPUP popup = {
-				.name = "SelfSignedCert",
 				.type = LIB3270_NOTIFY_SECURE,
 				.summary = N_( "The SSL certificate for this host is not trusted." ),
 				.body = N_( "The security certificate presented by this host was not issued by a trusted certificate authority." )
-			}
+			};
+
 			((SSL_ERROR_MESSAGE *) message)->popup = &popup;
 			return EACCES;
 #else

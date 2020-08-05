@@ -860,3 +860,5 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
 
 
+	/// @brief Load file using URL.
+	LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, LIB3270_POPUP **popup);

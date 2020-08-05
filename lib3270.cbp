@@ -314,10 +314,16 @@
 		<Unit filename="src/network_modules/openssl/context.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/network_modules/openssl/crl.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/network_modules/openssl/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/network_modules/openssl/private.h" />
+		<Unit filename="src/network_modules/openssl/start.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/network_modules/openssl/states.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -80,12 +80,6 @@
 
 		int  (*popup)(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
-#ifdef HAVE_LIBSSL
-		void (*set_peer_certificate)(const X509 *cert);
-#else
-		void (*set_peer_certificate)(const void *cert);
-#endif // HAVE_LIBSSL
-
 	};
 
 	/**

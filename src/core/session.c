@@ -260,18 +260,6 @@ static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width))
 	return;
 }
 
-#ifdef HAVE_LIBSSL
-static void set_peer_certificate(const X509 GNUC_UNUSED(*cert))
-{
-
-}
-#else
-static void set_peer_certificate(const void GNUC_UNUSED(*cert))
-{
-
-}
-#endif // HAVE_LIBSSL
-
 static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name))
 {
 }
@@ -307,7 +295,6 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.print					= print;
 	hSession->cbk.save					= save;
 	hSession->cbk.load					= load;
-	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
 

@@ -66,10 +66,12 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		{
 			.id = X509_V_ERR_UNABLE_TO_GET_CRL,
 			.message = {
+				.name = "X509UnableToGetCRL",
 				.type = LIB3270_NOTIFY_ERROR,
-				.icon = "dialog-error",
+				.icon = "security-low",
 				.summary = N_( "Unable to get certificate CRL." ),
-				.body = N_( "The Certificate revocation list (CRL) of a certificate could not be found." )
+				.body = N_( "The Certificate revocation list (CRL) of a certificate could not be found." ),
+				.label = N_( "Continue" )
 			}
 		},
 

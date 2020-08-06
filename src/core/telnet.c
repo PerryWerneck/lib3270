@@ -569,6 +569,8 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 
 		nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 
+		debug("%s: recv=%d",__FUNCTION__,nr);
+
 		if (nr < 0)
 		{
 			if (nr == -EWOULDBLOCK)
@@ -578,6 +580,7 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 
 			if(HALF_CONNECTED && nr == -EAGAIN)
 			{
+				debug("%s: Received a -EAGAIN with half-connect",__FUNCTION__);
 				connection_complete(hSession);
 				return;
 			}
@@ -598,6 +601,7 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		// Process the data.
 		if (HALF_CONNECTED)
 		{
+			debug("%s: Received a %d with half-connect",__FUNCTION__,nr);
 			if (non_blocking(hSession,False) < 0)
 			{
 				host_disconnect(hSession,True);

@@ -79,15 +79,14 @@ static void toggle_nop(H3270 GNUC_UNUSED(*session), const struct lib3270_toggle 
 
 static void toggle_keepalive(H3270 *hSession, const struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
 {
-	if(hSession->network.context)
+	if(hSession->network.module->is_connected(hSession))
 	{
-		// Has network context, update keep-alive option
+		// Has network connection, update keep-alive option
 		int optval = t->value ? 1 : 0;
 
 		if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0)
 		{
-			if(errno != ENOTCONN)
-				popup_a_sockerr(hSession, _( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
+			popup_a_sockerr(hSession, _( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 		}
 		else
 		{

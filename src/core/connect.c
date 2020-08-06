@@ -149,8 +149,6 @@
 			NULL
 		);
 
-	non_blocking(hSession,True);
-
 	if(rc == ENOTSUP) {
 
 		// No support for TLS/SSL in the active network module, the connection is insecure
@@ -198,12 +196,16 @@
 		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
 		// Ask user what I can do!
+		debug("********************* [%s]",hSession->ssl.message->name);
+		debug("********************* [%s]",hSession->ssl.message->label);
+
 		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
-			lib3270_disconnect(hSession);
 			return ECANCELED;
 		}
 
 	}
+
+	non_blocking(hSession,True);
 
 	return 0;
  }

@@ -194,10 +194,12 @@ static int openssl_network_is_connected(const H3270 *hSession) {
 }
 
 static int openssl_network_setsockopt(H3270 *hSession, int level, int optname, const void *optval, size_t optlen) {
+	debug("%s(%d)",__FUNCTION__,hSession->network.context->sock);
 	return setsockopt(hSession->network.context->sock, level, optname, optval, optlen);
 }
 
 static int openssl_network_getsockopt(H3270 *hSession, int level, int optname, void *optval, socklen_t *optlen) {
+	debug("%s(%d)",__FUNCTION__,hSession->network.context->sock);
 	return getsockopt(hSession->network.context->sock, level, optname, optval, optlen);
 }
 

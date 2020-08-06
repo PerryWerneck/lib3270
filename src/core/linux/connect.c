@@ -147,13 +147,14 @@
 
 	if(hSession->network.module->getsockopt(hSession, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
 	{
+		int err = errno;
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(
 			hSession,
 			LIB3270_NOTIFY_ERROR,
 			_( "Network error" ),
 			_( "Unable to get connection state." ),
-			_( "%s" ), strerror(errno)
+			_( "The system error was %s" ), strerror(err)
 		);
 		return;
 	}
@@ -180,11 +181,13 @@
 		return;
 	}
 
+	if(lib3270_start_tls(hSession)) {
+		lib3270_disconnect(hSession);
+		return;
+	}
+
 	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
-
-	if(lib3270_start_tls(hSession))
-		return;
 
 	lib3270_setup_session(hSession);
 	lib3270_set_connected_initial(hSession);

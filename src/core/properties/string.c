@@ -164,7 +164,6 @@
 			.set = NULL															// Set value.
 		},
 
-		/*
 		{
 			.name = "sslmessage",												//  Property name.
 			.description = N_( "The security state" ),							//  Property description.
@@ -178,7 +177,6 @@
 			.get = lib3270_get_ssl_state_description,							//  Get value.
 			.set = NULL															//  Set value.
 		},
-		*/
 
 		{
 			.name = "oversize",														//  Property name.

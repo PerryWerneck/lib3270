@@ -75,3 +75,57 @@ void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
 
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 }
+
+LIB3270_EXPORT const char * lib3270_get_ssl_state_message(const H3270 *hSession) {
+
+	if(hSession->ssl.message) {
+
+		if(hSession->ssl.message->summary)
+			return dgettext(GETTEXT_PACKAGE,hSession->ssl.message->summary);
+
+		return "";
+	}
+
+	return _( "The connection is insecure" );
+
+}
+
+LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(const H3270 *hSession) {
+
+	if(hSession->ssl.message && hSession->ssl.message->icon)
+		return hSession->ssl.message->icon;
+
+	return "dialog-error";
+}
+
+LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSession) {
+
+	if(hSession->ssl.message) {
+
+		if(hSession->ssl.message->body)
+			return dgettext(GETTEXT_PACKAGE,hSession->ssl.message->body);
+
+		return "";
+	}
+
+	return "";
+
+}
+
+LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession) {
+
+#ifndef DEBUG
+	#error Implementar!
+#endif // DEBUG
+
+	return NULL;
+}
+
+LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession) {
+
+#ifndef DEBUG
+	#error Implementar!
+#endif // DEBUG
+
+	return NULL;
+}

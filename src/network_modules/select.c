@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como unsecure.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -41,14 +41,24 @@
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- const char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url) {
+ char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url) {
 
 	static const struct {
 		const char *scheme;					///< @brief URL scheme for module.
 		void (*activate)(H3270 *hSession);	///< @brief Selection method.
 	} modules[] = {
 
-		{ "tn3270://",	lib3270_set_default_network_module },
+		{ "tn3270://",	lib3270_set_default_network_module	},
+
+#ifdef HAVE_LIBSSL
+
+		{ "tn3270s://",	lib3270_set_libssl_network_module		},
+
+		// Compatibility schemes.
+		{ "L://",		lib3270_set_libssl_network_module	},
+		{ "L:",			lib3270_set_libssl_network_module	},
+
+#endif // HAVE_LIBSSL
 
 	};
 

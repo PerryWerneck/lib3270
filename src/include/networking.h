@@ -177,7 +177,7 @@
 	 * @retval -EAGAIN		Try again.
 	 *
 	 */
-	LIB3270_INTERNAL int lib3270_network_recv_failed(H3270 *hSession);
+	LIB3270_INTERNAL int lib3270_socket_recv_failed(H3270 *hSession);
 
 	/**
 	 * @brief Translate system socket send error codes, show popup if needed.
@@ -187,7 +187,9 @@
 	 * @return Translated error code.
 	 *
 	 */
-	LIB3270_INTERNAL int lib3270_network_send_failed(H3270 *hSession);
+	LIB3270_INTERNAL int lib3270_socket_send_failed(H3270 *hSession);
+
+	LIB3270_INTERNAL int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on);
 
 	/**
 	 * @breif Select the network context from URL.
@@ -195,7 +197,8 @@
 	 * @return Pointer to the hostname or NULL if failed (sets errno).
 	 *
 	 */
-	LIB3270_INTERNAL const char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url);
+	LIB3270_INTERNAL char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url);
+
 
 	/**
 	 * @brief Select the default (unsecure) network context.
@@ -204,6 +207,10 @@
 	 *
 	 */
 	LIB3270_INTERNAL void	  lib3270_set_default_network_module(H3270 *hSession);
+
+#ifdef HAVE_LIBSSL
+	LIB3270_INTERNAL void	  lib3270_set_libssl_network_module(H3270 *hSession);
+#endif // HAVE_LIBSSL
 
 	LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock);
 

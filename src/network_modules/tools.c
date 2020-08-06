@@ -37,10 +37,11 @@
  #include <lib3270/log.h>
  #include <internals.h>
  #include <networking.h>
+ #include <fcntl.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int lib3270_network_recv_failed(H3270 *hSession) {
+ int lib3270_socket_recv_failed(H3270 *hSession) {
 
 #ifdef _WIN32
 
@@ -95,7 +96,7 @@
 
  }
 
- int lib3270_network_send_failed(H3270 *hSession) {
+ int lib3270_socket_send_failed(H3270 *hSession) {
 
  #ifdef _WIN32
 
@@ -148,4 +149,66 @@
 
  #endif // _WIN32
 
+	return -1;
+
  }
+
+int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on) {
+
+	if(sock < 0)
+		return 0;
+
+#ifdef WIN32
+
+		WSASetLastError(0);
+		u_long iMode= on ? 1 : 0;
+
+		if(ioctlsocket(sock,FIONBIO,&iMode))
+		{
+			lib3270_popup_dialog(	hSession,
+									LIB3270_NOTIFY_ERROR,
+									_( "Connection error" ),
+									_( "ioctlsocket(FIONBIO) failed." ),
+									"%s", lib3270_win32_strerror(GetLastError()));
+			return -1;
+		}
+
+#else
+
+	int f;
+
+	if ((f = fcntl(sock, F_GETFL, 0)) == -1)
+	{
+		lib3270_popup_dialog(	hSession,
+								LIB3270_NOTIFY_ERROR,
+								_( "Socket error" ),
+								_( "fcntl() error when getting socket state." ),
+								_( "%s" ), strerror(errno)
+							);
+
+		return -1;
+	}
+
+	if (on)
+		f |= O_NDELAY;
+	else
+		f &= ~O_NDELAY;
+
+	if (fcntl(sock, F_SETFL, f) < 0)
+	{
+		lib3270_popup_dialog(	hSession,
+								LIB3270_NOTIFY_ERROR,
+								_( "Socket error" ),
+								on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
+								_( "%s" ), strerror(errno)
+							);
+		return -1;
+	}
+
+#endif
+
+	debug("Socket %d is now %s",sock,(on ? "Non Blocking" : "Blocking"));
+
+	return 0;
+
+}

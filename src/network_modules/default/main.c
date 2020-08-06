@@ -33,7 +33,6 @@
   */
 
  #include "private.h"
- #include <fcntl.h>
 
  static void unsecure_network_finalize(H3270 *hSession) {
 
@@ -70,7 +69,7 @@
 	if(bytes >= 0)
 		return bytes;
 
-	return lib3270_network_send_failed(hSession);
+	return lib3270_socket_send_failed(hSession);
 
  }
 
@@ -82,7 +81,7 @@
 		return bytes;
 	}
 
-	return lib3270_network_recv_failed(hSession);
+	return lib3270_socket_recv_failed(hSession);
 
 }
 
@@ -95,62 +94,7 @@ static void * unsecure_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, v
 }
 
 static int unsecure_network_non_blocking(H3270 *hSession, const unsigned char on) {
-
-	if(hSession->network.context->sock < 0)
-		return 0;
-
-#ifdef WIN32
-
-		WSASetLastError(0);
-		u_long iMode= on ? 1 : 0;
-
-		if(ioctlsocket(hSession->network.context->sock,FIONBIO,&iMode))
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "ioctlsocket(FIONBIO) failed." ),
-									"%s", lib3270_win32_strerror(GetLastError()));
-			return -1;
-		}
-
-#else
-
-	int f;
-
-	if ((f = fcntl(hSession->network.context->sock, F_GETFL, 0)) == -1)
-	{
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								_( "fcntl() error when getting socket state." ),
-								_( "%s" ), strerror(errno)
-							);
-
-		return -1;
-	}
-
-	if (on)
-		f |= O_NDELAY;
-	else
-		f &= ~O_NDELAY;
-
-	if (fcntl(hSession->network.context->sock, F_SETFL, f) < 0)
-	{
-		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
-								_( "%s" ), strerror(errno)
-							);
-		return -1;
-	}
-
-#endif
-
-	debug("Socket %d is now %s",hSession->network.context->sock,(on ? "Non Blocking" : "Blocking"));
-
-	return 0;
+	return lib3270_socket_set_non_blocking(hSession, hSession->network.context->sock, on);
 }
 
 static int unsecure_network_is_connected(const H3270 *hSession) {

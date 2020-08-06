@@ -388,13 +388,14 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 		{ 0, "telnet://",	"telnet"	}
 
 	};
+	int						  f;
 */
+
 	lib3270_autoptr(char)	  str 		= strdup(n);
 	char					* hostname 	= lib3270_set_network_module_from_url(h,str);
 	const char 				* srvc;
 	char					* ptr;
 	char					* query		= "";
-	int						  f;
 
 	trace("%s(%s)",__FUNCTION__,str);
 

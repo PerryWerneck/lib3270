@@ -683,10 +683,12 @@ struct _h3270
 
 	struct
 	{
-		int								  host		: 1;		///< @brief Non zero if host requires SSL.
+		int								  host			: 1;		///< @brief Non zero if host requires SSL.
+		int								  download_crl	: 1;		///< @brief Non zero to download CRL.
 		LIB3270_SSL_STATE				  state;
 		int 							  error;
-		const LIB3270_SSL_MESSAGE		* message;				///< @brief Pointer to SSL messages for current state.
+		const LIB3270_SSL_MESSAGE		* message;					///< @brief Pointer to SSL messages for current state.
+		unsigned short					  crl_preferred_protocol;	///< @brief The CRL Preferred protocol.
 	} ssl;
 
 	/// @brief Event Listeners.

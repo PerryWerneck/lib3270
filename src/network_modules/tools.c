@@ -212,3 +212,43 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 	return 0;
 
 }
+
+ static const char * crl_download_protocols[] = {
+ 	NULL,
+	"http",
+	"https",
+#ifdef HAVE_LDAP
+	"ldap",
+	"ldaps"
+#endif // HAVE_LDAP
+ };
+
+ const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession)
+ {
+ 	debug("%s: selected: %d",__FUNCTION__,(int) hSession->ssl.crl_preferred_protocol);
+ 	if(hSession->ssl.crl_preferred_protocol < (sizeof(crl_download_protocols)/sizeof(crl_download_protocols[0])))
+		return crl_download_protocols[hSession->ssl.crl_preferred_protocol];
+
+	errno = EINVAL;
+	return NULL;
+ }
+
+ int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol)
+ {
+    FAIL_IF_ONLINE(hSession);
+
+    debug("%s(%s)",__FUNCTION__,protocol);
+    size_t ix;
+    for(ix = 0; ix < (sizeof(crl_download_protocols)/sizeof(crl_download_protocols[0])); ix++) {
+
+		debug("[%s] [%s]",protocol,crl_download_protocols[ix]);
+		if(crl_download_protocols[ix] && !strcasecmp(protocol,crl_download_protocols[ix])) {
+			hSession->ssl.crl_preferred_protocol = (unsigned short) ix;
+			return 0;
+		}
+    }
+
+    debug("Unsupported protocol: %s",protocol);
+
+    return EINVAL;
+ }

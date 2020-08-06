@@ -88,6 +88,86 @@
 
  }
 
+ static void download_crl(H3270 *hSession, SSL_CTX * ctx_context, LIB3270_NET_CONTEXT * context, X509 *peer) {
+
+	debug("%s peer=%p",__FUNCTION__,(void *) peer);
+
+	if(!peer)
+		return;
+
+	lib3270_autoptr(LIB3270_STRING_ARRAY) uris = lib3270_openssl_get_crls_from_peer(hSession, peer);
+	if(!uris) {
+		trace_ssl(hSession,"Can't get distpoints from peer certificate\n");
+		return;
+	}
+
+	size_t ix;
+	const char * error_message = NULL;
+	lib3270_autoptr(char) crl_text = NULL;
+
+	const char *prefer = lib3270_crl_get_preferred_protocol(hSession);
+	if(!prefer) {
+
+		// No preferred protocol, try all uris.
+		for(ix = 0; ix < uris->length; ix++) {
+
+			debug("Trying %s",uris->str[ix]);
+			crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
+
+			if(error_message) {
+				trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
+			} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+				trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
+				return;
+			}
+
+		}
+		return;
+
+	}
+
+	// Try preferred protocol.
+	trace_ssl(hSession,"CRL download protocol is set to %s\n",prefer);
+
+	size_t length = strlen(prefer);
+
+	for(ix = 0; ix < uris->length; ix++) {
+
+		if(strncasecmp(prefer,uris->str[ix],length))
+			continue;
+
+		debug("Trying %s",uris->str[ix]);
+		crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
+
+		if(error_message) {
+			trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
+		} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+			trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
+			return;
+		}
+
+	}
+
+	// Not found; try other ones
+	for(ix = 0; ix < uris->length; ix++) {
+
+		if(!strncasecmp(prefer,uris->str[ix],length))
+			continue;
+
+		debug("Trying %s",uris->str[ix]);
+		crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
+
+		if(error_message) {
+			trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
+		} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+			trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
+			return;
+		}
+
+	}
+
+ }
+
  int openssl_network_start_tls(H3270 *hSession) {
 
 	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession);
@@ -186,44 +266,7 @@
 
 		// CRL download is enabled and verification has failed; look for CRL file.
 		trace_ssl(hSession,"CRL Validation has failed, requesting CRL download\n");
-
-		lib3270_autoptr(char) crl_text = NULL;
-		if(context->crl.url) {
-
-			// There's a pre-defined URL, use it.
-			const char *error_message = NULL;
-			crl_text = lib3270_url_get(hSession, context->crl.url,&error_message);
-
-			if(error_message) {
-				trace_ssl(hSession,"Error downloading CRL from %s: %s\n",context->crl.url,error_message);
-			} else {
-				import_crl(hSession, ctx_context, context, crl_text);
-			}
-
-
-		} else if(peer) {
-
-			// There's no pre-defined URL, get them from peer.
-			lib3270_autoptr(LIB3270_STRING_ARRAY) uris = lib3270_openssl_get_crls_from_peer(hSession, peer);
-
-			if(uris) {
-
-				size_t ix;
-				for(ix = 0; ix < uris->length; ix++) {
-
-					const char * error_message = NULL;
-					crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
-
-					if(error_message) {
-						trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
-					} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
-						break;
-					}
-
-				}
-			}
-
-		}
+		download_crl(hSession, ctx_context, context, peer);
 
 	}
 

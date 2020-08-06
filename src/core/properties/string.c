@@ -147,6 +147,7 @@
 			.get = lib3270_crl_get_url,											// Get value.
 			.set = lib3270_crl_set_url,											// Set value.
 		},
+		*/
 
 		{
 			.name = "crl_preferred_protocol",									// Property name.
@@ -155,7 +156,6 @@
 			.get = lib3270_crl_get_preferred_protocol,							// Get value.
 			.set = lib3270_crl_set_preferred_protocol,							// Set value.
 		},
-		*/
 
 		{
 			.name = "default_host",												// Property name.

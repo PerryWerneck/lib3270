@@ -243,7 +243,7 @@ static char * openssl_network_getcrl(const H3270 *hSession) {
 		unsigned char			* text;
 		int						  n;
 
-		X509_print(out,context->crl.cert);
+		X509_CRL_print(out,context->crl.cert);
 
 		n		= BIO_get_mem_data(out, &data);
 		text	= (unsigned char *) lib3270_malloc(n+1);

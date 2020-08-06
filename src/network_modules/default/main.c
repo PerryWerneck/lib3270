@@ -151,7 +151,7 @@ void lib3270_set_default_network_module(H3270 *hSession) {
 
 	static const LIB3270_NET_MODULE module = {
 		.name = "tn3270",
-		.service = "tn3270",
+		.service = "23",
 		.init = unsecure_network_init,
 		.finalize = unsecure_network_finalize,
 		.connect = unsecure_network_connect,

@@ -190,6 +190,14 @@
 	LIB3270_INTERNAL int lib3270_network_send_failed(H3270 *hSession);
 
 	/**
+	 * @breif Select the network context from URL.
+	 *
+	 * @return Pointer to the hostname or NULL if failed (sets errno).
+	 *
+	 */
+	LIB3270_INTERNAL const char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url);
+
+	/**
 	 * @brief Select the default (unsecure) network context.
 	 *
 	 * @param hSession	TN3270 Session handle.

@@ -35,4 +35,34 @@
  #include <config.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
+ #include <lib3270/trace.h>
  #include <networking.h>
+ #include <string.h>
+
+ /*--[ Implement ]------------------------------------------------------------------------------------*/
+
+ const char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url) {
+
+	static const struct {
+		const char *scheme;					///< @brief URL scheme for module.
+		void (*activate)(H3270 *hSession);	///< @brief Selection method.
+	} modules[] = {
+
+		{ "tn3270://",	lib3270_set_default_network_module },
+
+	};
+
+	size_t ix;
+
+	for(ix=0;ix < (sizeof(modules)/sizeof(modules[0])); ix++) {
+
+		size_t len = strlen(modules[ix].scheme);
+		if(!strncasecmp(url,modules[ix].scheme,len)) {
+			modules[ix].activate(hSession);
+			return url+len;
+		}
+
+	}
+
+	return NULL;
+ }

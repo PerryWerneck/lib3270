@@ -87,8 +87,6 @@
 }
 
 static int unsecure_network_getsockname(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {
-	if(hSession->network.context->sock < 0)
-		return -(errno = ENOTCONN);
 	return getsockname(hSession->network.context->sock, addr, addrlen);
 }
 
@@ -160,27 +158,14 @@ static int unsecure_network_is_connected(const H3270 *hSession) {
 }
 
 static int unsecure_network_setsockopt(H3270 *hSession, int level, int optname, const void *optval, size_t optlen) {
-
-	if(hSession->network.context->sock < 0) {
-		errno = ENOTCONN;
-		return -1;
-	}
-
 	return setsockopt(hSession->network.context->sock, level, optname, optval, optlen);
-
 }
 
 static int unsecure_network_getsockopt(H3270 *hSession, int level, int optname, void *optval, socklen_t *optlen) {
-
-	if(hSession->network.context->sock < 0) {
-		errno = ENOTCONN;
-		return -1;
-	}
-
 	return getsockopt(hSession->network.context->sock, level, optname, optval, optlen);
 }
 
-static int unsecure_network_init(H3270 GNUC_UNUSED(*hSession), LIB3270_NETWORK_STATE GNUC_UNUSED(*state)) {
+static int unsecure_network_init(H3270 GNUC_UNUSED(*hSession)) {
 	return 0;
 }
 

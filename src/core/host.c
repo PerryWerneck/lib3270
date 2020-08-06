@@ -62,6 +62,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <lib3270/keyboard.h>
+#include <networking.h>
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.
@@ -368,6 +369,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	if(!n)
 		return errno = ENOENT;
 
+/*
 	static const struct _sch
 	{
 		char			  ssl;
@@ -386,36 +388,20 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 		{ 0, "telnet://",	"telnet"	}
 
 	};
-
+*/
 	lib3270_autoptr(char)	  str 		= strdup(n);
-	char					* hostname 	= str;
-	const char 				* srvc		= "telnet";
+	char					* hostname 	= lib3270_set_network_module_from_url(h,str);
+	const char 				* srvc;
 	char					* ptr;
 	char					* query		= "";
 	int						  f;
 
 	trace("%s(%s)",__FUNCTION__,str);
 
-#ifdef HAVE_LIBSSLx
-	h->ssl.enabled = 0;
-#endif // HAVE_LIBSSL
-
-	for(f=0;f < sizeof(sch)/sizeof(sch[0]);f++)
-	{
-		size_t sz = strlen(sch[f].text);
-		if(!strncasecmp(hostname,sch[f].text,sz))
-		{
-#ifdef HAVE_LIBSSLx
-			h->ssl.enabled	= sch[f].ssl;
-#endif // HAVE_LIBSSL
-			srvc			= sch[f].srvc;
-			hostname		+= sz;
-			break;
-		}
-	}
-
-	if(!*hostname)
+	if(!(hostname && *hostname))
 		return 0;
+
+	srvc = h->network.module->service;
 
 	ptr = strchr(hostname,':');
 	if(ptr)

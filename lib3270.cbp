@@ -134,6 +134,9 @@
 		<Unit filename="src/core/linux/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/ldap.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/log.c">
 			<Option compilerVar="CC" />
 		</Unit>

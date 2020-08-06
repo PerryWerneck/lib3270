@@ -888,5 +888,16 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	 * @retval ECANCELED	Operation was canceled.
 	 * @retval ENOTSUP		No popup handler available.
 	 */
-	LIB3270_EXPORT int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+	LIB3270_INTERNAL int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
+#if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
+	/**
+	 * @brief Download X509 CRL using LDAP backend.
+	 *
+	 * @param hSession	tn3270 session handle.
+	 * @param url		URL for Ldap access.
+	 * @param error		pointer to error message.
+	 *
+	 */
+	LIB3270_INTERNAL X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *url, const char **error);
+#endif // HAVE_LDAP

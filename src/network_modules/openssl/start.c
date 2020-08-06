@@ -35,13 +35,30 @@
  #include "private.h"
  #include <lib3270/properties.h>
 
- static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *crl) {
+ static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *url) {
 
 	X509_CRL * x509_crl = NULL;
 
-	// Import CRL
-	{
-		lib3270_autoptr(BIO) bio = BIO_new_mem_buf(crl,-1);
+	const char *error_message = NULL;
+	if(strncasecmp(url,"ldap",4) == 0) {
+
+		// Download using LDAP
+#ifdef HAVE_LDAP
+
+		x509_crl = lib3270_crl_get_using_ldap(hSession, url, &error_message);
+
+#else
+
+		*error_message = _("No LDAP support");
+
+#endif // HAVE_LDAP
+
+	} else {
+
+		// Download with URL
+		lib3270_autoptr(char) crl_text = lib3270_url_get(hSession, url, &error_message);
+
+		lib3270_autoptr(BIO) bio = BIO_new_mem_buf(crl_text,-1);
 
 		BIO * b64 = BIO_new(BIO_f_base64());
 		bio = BIO_push(b64, bio);
@@ -49,14 +66,20 @@
 		BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
 
 		if(!d2i_X509_CRL_bio(bio, &x509_crl)) {
-			trace_ssl(hSession,"Can't decode CRL data:\n%s\n",crl);
-			return -1;
+			trace_ssl(hSession,"Can't decode CRL data:\n%s\n",crl_text);
+			error_message = _("Can't decode CRL data");
 		}
 
-		lib3270_openssl_crl_free(context);
-		context->crl.cert = x509_crl;
-
 	}
+
+	if(error_message)
+		trace_ssl(hSession,"Error downloading CRL from %s: %s\n",url,error_message);
+
+	if(!x509_crl)
+		return -1;
+
+	lib3270_openssl_crl_free(context);
+	context->crl.cert = x509_crl;
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 
@@ -88,7 +111,7 @@
 
  }
 
- static void download_crl(H3270 *hSession, SSL_CTX * ctx_context, LIB3270_NET_CONTEXT * context, X509 *peer) {
+ static void download_crl_from_peer(H3270 *hSession, SSL_CTX * ctx_context, LIB3270_NET_CONTEXT * context, X509 *peer) {
 
 	debug("%s peer=%p",__FUNCTION__,(void *) peer);
 
@@ -102,8 +125,6 @@
 	}
 
 	size_t ix;
-	const char * error_message = NULL;
-	lib3270_autoptr(char) crl_text = NULL;
 
 	const char *prefer = lib3270_crl_get_preferred_protocol(hSession);
 	if(!prefer) {
@@ -111,12 +132,7 @@
 		// No preferred protocol, try all uris.
 		for(ix = 0; ix < uris->length; ix++) {
 
-			debug("Trying %s",uris->str[ix]);
-			crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
-
-			if(error_message) {
-				trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
-			} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+			if(!import_crl(hSession,ctx_context,context,uris->str[ix])) {
 				trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
 				return;
 			}
@@ -137,11 +153,7 @@
 			continue;
 
 		debug("Trying %s",uris->str[ix]);
-		crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
-
-		if(error_message) {
-			trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
-		} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+		if(!import_crl(hSession,ctx_context,context,uris->str[ix])) {
 			trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
 			return;
 		}
@@ -154,12 +166,7 @@
 		if(!strncasecmp(prefer,uris->str[ix],length))
 			continue;
 
-		debug("Trying %s",uris->str[ix]);
-		crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
-
-		if(error_message) {
-			trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
-		} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+		if(!import_crl(hSession,ctx_context,context,uris->str[ix])) {
 			trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
 			return;
 		}
@@ -265,8 +272,13 @@
 	if(lib3270_ssl_get_crl_download(hSession) && SSL_get_verify_result(context->con) == X509_V_ERR_UNABLE_TO_GET_CRL) {
 
 		// CRL download is enabled and verification has failed; look for CRL file.
+
 		trace_ssl(hSession,"CRL Validation has failed, requesting CRL download\n");
-		download_crl(hSession, ctx_context, context, peer);
+		if(context->crl.url) {
+			import_crl(hSession, ctx_context,context,context->crl.url);
+		} else {
+			download_crl_from_peer(hSession, ctx_context, context, peer);
+		}
 
 	}
 

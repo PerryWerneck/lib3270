@@ -41,4 +41,8 @@
 	LIB3270_INTERNAL char * lib3270_url_get_using_curl(H3270 *hSession, const char *u, const char **error);
  #endif // HAVE_LIBCURL
 
+ #if defined(HAVE_LDAP)
+	LIB3270_INTERNAL char * lib3270_url_get_using_ldap(H3270 *hSession, const char *u, const char **error);
+ #endif // HAVE_LDAP
+
 #endif // !PRIVATE_H_INCLUDED

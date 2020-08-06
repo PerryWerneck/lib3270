@@ -45,7 +45,7 @@ LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, un
 	return hSession->cbk.popup(hSession,popup,wait);
 }
 
-LIB3270_EXPORT int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
 	LIB3270_POPUP translated = *popup;
 

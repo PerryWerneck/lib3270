@@ -224,5 +224,6 @@
 
 	LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock);
 
+
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

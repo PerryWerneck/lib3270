@@ -113,7 +113,9 @@
 		///
 		/// @return Positive on data received, negative on error.
 		///
-		/// @retval -ENOTCONN	Not connected to host.
+		/// @retval -ENOTCONN		Not connected to host.
+		/// @retval -EWOULDBLOCK	Next request will block.
+		/// @retval -EAGAIN			Try again.
 		///
 		ssize_t (*recv)(H3270 *hSession, void *buf, size_t len);
 
@@ -163,6 +165,29 @@
 	 *
 	 */
 	LIB3270_INTERNAL int	  lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+
+	/**
+	 * @brief Translate system socket receive error codes, show popup if needed.
+	 *
+	 * @param hSession TN3270 Session handle.
+	 *
+	 * @return Translated error code.
+	 *
+	 * @retval -EWOULDBLOCK	Next call would block.
+	 * @retval -EAGAIN		Try again.
+	 *
+	 */
+	LIB3270_INTERNAL int lib3270_network_recv_failed(H3270 *hSession);
+
+	/**
+	 * @brief Translate system socket send error codes, show popup if needed.
+	 *
+	 * @param hSession TN3270 Session handle.
+	 *
+	 * @return Translated error code.
+	 *
+	 */
+	LIB3270_INTERNAL int lib3270_network_send_failed(H3270 *hSession);
 
 	/**
 	 * @brief Select the default (unsecure) network context.

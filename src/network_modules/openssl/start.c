@@ -232,28 +232,7 @@
 	//
 	long verify_result = SSL_get_verify_result(context->con);
 
-	const struct ssl_status_msg * msg = ssl_get_status_from_error_code(verify_result);
-	if(!msg) {
-
-		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",verify_result);
-
-		static const LIB3270_SSL_MESSAGE message = {
-			.type = LIB3270_NOTIFY_ERROR,
-			.icon = "dialog-error",
-			.summary = N_( "Invalid TLS/SSL verify result" ),
-			.body = N_( "The verification of the connection security status returned an unexpected value." )
-		};
-
-		hSession->ssl.message = &message;
-		return EACCES;
-
-	} else {
-
-		trace_ssl(hSession,"The TLS/SSL verify result was %d: %s\n",verify_result, msg);
-
-	}
-
-	// Get SSL Message
+	// Get validation message.
 	hSession->ssl.message = lib3270_openssl_message_from_id(verify_result);
 
 	// Trace cypher

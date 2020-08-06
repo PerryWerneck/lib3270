@@ -459,7 +459,6 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 
 }
 
-/*
 ///
 /// @brief Connection_complete.
 ///
@@ -477,7 +476,6 @@ static void connection_complete(H3270 *session)
 	lib3270_set_connected_initial(session);
 	net_connected(session);
 }
-*/
 
 ///	@brief Disconnect from host.
 void net_disconnect(H3270 *hSession)
@@ -568,31 +566,23 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 		else
 			nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 */
+
 		nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 
 		if (nr < 0)
 		{
 			if (nr == -EWOULDBLOCK)
+			{
 				return;
+			}
 
-			/*
-			if (HALF_CONNECTED && nr == -EWOULDBLOCK)
+			if(HALF_CONNECTED && nr == -EAGAIN)
 			{
 				connection_complete(hSession);
 				return;
 			}
-			*/
 
-			trace_dsn(hSession,"RCVD socket error %d (%s)\n", -nr, strerror(-nr));
-
-			if (HALF_CONNECTED)
-			{
-				popup_a_sockerr(hSession, "%s", hSession->host.current);
-			}
-			else if (nr != -ECONNRESET)
-			{
-				popup_a_sockerr(hSession, _( "Socket read error" ) );
-			}
+			trace_dsn(hSession,"RCVD socket error %d\n", -nr);
 
 			host_disconnect(hSession,True);
 			return;
@@ -1526,7 +1516,7 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 		return rc;
 
 	// Send error, notify
-	trace_dsn(hSession,"RCVD socket error %d\n", -rc);
+	trace_dsn(hSession,"SND socket error %d\n", -rc);
 
 	return -1;
 }

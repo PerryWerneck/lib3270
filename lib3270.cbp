@@ -337,6 +337,9 @@
 		<Unit filename="src/network_modules/state.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/network_modules/translate.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/selection/actions.c">
 			<Option compilerVar="CC" />
 		</Unit>

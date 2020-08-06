@@ -65,80 +65,25 @@
 
  ssize_t unsecure_network_send(H3270 *hSession, const void *buffer, size_t length) {
 
-	if(hSession->network.context->sock < 0) {
-		return -(errno = ENOTCONN);
-	}
-
 	ssize_t bytes = send(hSession->network.context->sock,buffer,length,0);
-
-	debug("%s bytes=%d",__FUNCTION__,(int) bytes);
 
 	if(bytes >= 0)
 		return bytes;
 
-	int rc = errno;
+	return lib3270_network_send_failed(hSession);
 
-	debug("%s: %s",__FUNCTION__,strerror(rc));
-
-	switch(rc)
-	{
-	case EPIPE:
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			NULL,
-			_("Broken pipe"),
-			_("The system error code was %d"),
-			rc
-		);
-		break;
-
-	case ECONNRESET:
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			NULL,
-			_("Connection reset by peer"),
-			_("The system error code was %d"),
-			rc
-		);
-		break;
-
-	case EINTR:
-		return 0;
-
-	default:
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			NULL,
-			_("Unexpected error writing to network socket"),
-			_("The system error code was %d (%s)"),
-			rc, strerror(rc)
-		);
-
-	}
-
-	return -rc;
  }
 
  static ssize_t unsecure_network_recv(H3270 *hSession, void *buf, size_t len) {
 
- 	debug("%s",__FUNCTION__);
-
-	if(hSession->network.context->sock < 0) {
-		return -(errno = ENOTCONN);
-	}
-
 	ssize_t bytes = recv(hSession->network.context->sock, (char *) buf, len, 0);
 
-	debug("%s bytes=%d",__FUNCTION__,(int) bytes);
-
-	if(bytes < 0) {
-		return -errno;
+	if(bytes >= 0) {
+		return bytes;
 	}
 
-	return bytes;
+	return lib3270_network_recv_failed(hSession);
+
 }
 
 static int unsecure_network_getsockname(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {

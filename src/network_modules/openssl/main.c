@@ -79,14 +79,49 @@ static int openssl_network_disconnect(H3270 *hSession) {
 
 ssize_t openssl_network_send(H3270 *hSession, const void *buffer, size_t length) {
 
+/*
+	if(hSession->network.context->sock < 0) {
+		return -(errno = ENOTCONN);
+	}
+
+	ssize_t bytes =  SSL_write(hSession->network.context->con, (const char *) buffer, length);
+
+	debug("%s bytes=%d",__FUNCTION__,(int) bytes);
+
+	if(bytes >= 0)
+		return bytes;
+
+	// SSL Write has failed, using SSL_get_error to identify what has happened.
+	int error = SSL_get_error(hSession->network.context->con,(int) bytes);
+
+	if(error == SSL_ERROR_SYSCALL) {
+
+		#error Use errno!
+
+		return -1;
+	}
+
+	// Not a system error, inspects the result.
+
+
+
+	lib3270_popup(hSession,&popup,0);
+
+	return -1;
+*/
+
 }
 
 static ssize_t openssl_network_recv(H3270 *hSession, void *buf, size_t len) {
 
+//	return SSL_read(hSession->network.context->con, (char *) buf, len);
+
+
+
 }
 
 static int openssl_network_getsockname(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {
-
+	return getsockname(hSession->network.context->sock, addr, addrlen);
 }
 
 static void * openssl_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata) {
@@ -147,14 +182,14 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 			else
 			{
 				trace_ssl(hSession,"Can't get CRL next update, discarding it\n");
-				crl_free(context);
+				lib3270_openssl_crl_free(context);
 			}
 
 		}
 		else
 		{
 			trace_ssl(hSession,"CRL is no longer valid\n");
-			crl_free(context);
+			lib3270_openssl_crl_free(context);
 		}
 
 	}

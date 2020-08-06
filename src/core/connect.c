@@ -138,31 +138,72 @@
 
  int lib3270_start_tls(H3270 *hSession)
  {
-	int rc = 0;
-
-	LIB3270_NETWORK_STATE state;
-	memset(&state,0,sizeof(state));
+	hSession->ssl.message = NULL;	// Reset message.
+	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	non_blocking(hSession,False);
 
-	rc = lib3270_run_task(
+	int rc = lib3270_run_task(
 			hSession,
 			(int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
-			&state
+			NULL
 		);
 
 	non_blocking(hSession,True);
 
-	if(hSession->ssl.host && rc) {
+	if(rc == ENOTSUP) {
 
-		// SSL is required and TLS/SSL has failed, abort.
-		lib3270_popup(hSession,(const LIB3270_POPUP *) state.popup,0);
-		lib3270_disconnect(hSession);
-		return rc;
+		// No support for TLS/SSL in the active network module, the connection is insecure
+		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+		return 0;
 
 	}
 
-	// Not required or success
+	// The network module SHOULD set the status message.
+	if(!hSession->ssl.message) {
+
+		static const LIB3270_POPUP message = {
+			.type = LIB3270_NOTIFY_CRITICAL,
+			.summary = N_( "Can't determine the TLS/SSL estate"),
+			.body = N_("The network module didn't set the TLS/SSL state message, this is not supposed to happen and can be a coding error")
+		};
+
+		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+		lib3270_popup_translated(hSession,&message,0);
+		return EINVAL;
+
+	}
+
+	if(rc) {
+
+		// Negotiation has failed. Will disconnect
+		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+
+		if(hSession->ssl.message) {
+			lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,0);
+		}
+
+		return rc;
+	}
+
+	// Negotiation complete is the connection secure?
+	if(hSession->ssl.message->type == LIB3270_NOTIFY_INFO) {
+
+		// Yes! The message was only informational.
+		set_ssl_state(hSession,LIB3270_SSL_SECURE);
+
+	} else {
+
+		// No! The negotiation completed with a warning or error.
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+
+		// Ask user what I can do!
+		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
+			lib3270_disconnect(hSession);
+			return ECANCELED;
+		}
+
+	}
 
 	return 0;
  }

@@ -683,9 +683,10 @@ struct _h3270
 
 	struct
 	{
-		int					host		: 1;		///< @brief Non zero if host requires SSL.
-		int 				error;					///< @brief OpenSSL error.
-		LIB3270_SSL_STATE	state;
+		int								  host		: 1;		///< @brief Non zero if host requires SSL.
+		LIB3270_SSL_STATE				  state;
+		int 							  error;
+		const LIB3270_SSL_MESSAGE		* message;				///< @brief Pointer to SSL messages for current state.
 	} ssl;
 
 	/// @brief Event Listeners.
@@ -835,14 +836,24 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 
 	/// @brief Query data from URL.
 	///
-	/// @param hSession			Handle of the TN3270 Session.
-	/// @param url				The url to get.
-	/// @param length			Pointer to the response lenght (can be NULL).
-	/// @param error_message	Pointer to the error message.
+	/// @param hSession		Handle of the TN3270 Session.
+	/// @param url			The url to get.
+	/// @param length		Pointer to the response lenght (can be NULL).
+	/// @param error		Pointer to the detailed error message.
 	///
 	/// @return The data from URL (release it with lib3270_free) or NULL on error.
 	///
-	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message);
+	LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, const char **error);
+
+	/// @brief Load text file.
+	///
+	/// @param hSession		Handle of the TN3270 Session.
+	/// @param filename		The file name.
+	///
+	/// @return The file contents (release it with lib3270_free or NULL on error (sets errno).
+	///
+	LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 *hSession, const char *filename);
+
 
 	/// @brief Fire CState change.
 	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
@@ -859,6 +870,18 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	///
 	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
 
+	/**
+	 * @brief Emit translated popup message.
+	 *
+	 * @param hSession	TN3270 Session handle.
+	 * @param popup		Popup descriptor.
+	 * @param wait		If non zero waits for user response.
+	 *
+	 * @return User action.
+	 *
+	 * @retval 0			User has confirmed, continue action.
+	 * @retval ECANCELED	Operation was canceled.
+	 * @retval ENOTSUP		No popup handler available.
+	 */
+	LIB3270_EXPORT int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
-	/// @brief Load file using URL.
-	LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, LIB3270_POPUP **popup);

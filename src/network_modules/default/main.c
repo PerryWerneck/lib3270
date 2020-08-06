@@ -248,34 +248,29 @@ static int unsecure_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *stat
 	return 0;
 }
 
-static int unsecure_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *msg) {
+static int unsecure_network_start_tls(H3270 *hSession) {
 
 	if(hSession->ssl.host) {
 
 		// TLS/SSL is required, replace network module with the OpenSSL one.
-		int rc = lib3270_activate_ssl_network_module(hSession, hSession->network.context->sock, msg);
+		int rc = lib3270_activate_ssl_network_module(hSession, hSession->network.context->sock);
 
 		if(!rc)
-			rc = hSession->network.module->start_tls(hSession,msg);
+			rc = hSession->network.module->start_tls(hSession);
 
 		return rc;
-/*
-		// TODO: Replace network module with the openssl version, initialize and execute start_tls on it.
-
-		static const LIB3270_POPUP popup = {
-			.type = LIB3270_NOTIFY_ERROR,
-			.summary = N_("Can't activate SSL/TLS"),
-			.body = N_("The protocol library was build without SSL/TLS support")
-		};
-
-		msg->popup = &popup;
-
-		return ENOTSUP;
-*/
 
 	}
 
-	return 0;
+	static LIB3270_SSL_MESSAGE message = {
+		.icon = "dialog-error",
+		.summary = N_( "The session is not secure" ),
+		.body = N_( "No TLS/SSL support on this session" )
+	};
+
+	hSession->ssl.message = &message;
+
+	return ENOTSUP;
 }
 
 void lib3270_set_default_network_module(H3270 *hSession) {

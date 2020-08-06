@@ -62,7 +62,7 @@ LIB3270_STRING_ARRAY * lib3270_openssl_get_crls_from_peer(H3270 *hSession, X509 
 
 		GENERAL_NAMES *gens = dp->distpoint->name.fullname;
 
-		size_t i;
+		int i;
 		for (i = 0; i < sk_GENERAL_NAME_num(gens); i++) {
 			int gtype;
 			GENERAL_NAME *gen = sk_GENERAL_NAME_value(gens, i);

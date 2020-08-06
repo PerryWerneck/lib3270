@@ -144,7 +144,7 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 	}
 }
 
-SSL_CTX * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 
 	static SSL_CTX * context = NULL;
 
@@ -159,13 +159,13 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *st
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL)
 	{
-		static const LIB3270_NETWORK_POPUP popup = {
+		static const LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.icon = "dialog-error",
 			.summary = N_( "Can't initialize the TLS/SSL context." ),
 		};
 
-		hSession->network.context->state.popup = state->popup = &popup;
+		hSession->ssl.message = &message;
 		hSession->network.context->state.error = ERR_get_error();
 		return NULL;
 	}

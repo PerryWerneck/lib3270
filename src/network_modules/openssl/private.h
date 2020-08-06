@@ -74,7 +74,6 @@
 		} crl;
 
 		struct {
-			const LIB3270_NETWORK_POPUP	* popup;	///< @brief The active popup for the session.
 			unsigned long	  error;				///< @brief The last OpenSSL error code.
 			const char 		* message;				///< @brief The last OpenSSL state message.
 			const char		* alert;				///< @brief The last OpenSSL alert message.
@@ -97,12 +96,22 @@
 		*ptr = NULL;
 	}
 
-	LIB3270_INTERNAL SSL_CTX * lib3270_openssl_get_context(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+	static inline void lib3270_autoptr_cleanup_BIO(BIO **ptr) {
+		if(*ptr)
+			BIO_free_all(*ptr);
+		*ptr = NULL;
+	}
+
+	LIB3270_INTERNAL SSL_CTX * lib3270_openssl_get_context(H3270 *hSession);
 	LIB3270_INTERNAL int lib3270_openssl_get_ex_index(H3270 *hSession);
 	LIB3270_INTERNAL const LIB3270_NETWORK_POPUP * lib3270_openssl_get_popup_from_error_code(long id);
 
-	LIB3270_INTERNAL int openssl_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+	LIB3270_INTERNAL int openssl_network_start_tls(H3270 *hSession);
 
 	LIB3270_INTERNAL LIB3270_STRING_ARRAY * lib3270_openssl_get_crls_from_peer(H3270 *hSession, X509 *cert);
+
+	LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id);
+	LIB3270_INTERNAL void lib3270_openssl_crl_free(LIB3270_NET_CONTEXT *context);
+
 
 #endif // !LIB3270_OPENSSL_MODULE_PRIVATE_H_INCLUDED

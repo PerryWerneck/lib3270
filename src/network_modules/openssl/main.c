@@ -35,13 +35,6 @@
  #include "private.h"
 
 
-static void crl_free(LIB3270_NET_CONTEXT *context) {
-	if(context->crl.cert) {
-		X509_CRL_free(context->crl.cert);
-		context->crl.cert = NULL;
-	}
-}
-
 static void openssl_network_finalize(H3270 *hSession) {
 
 	debug("%s",__FUNCTION__);
@@ -51,7 +44,7 @@ static void openssl_network_finalize(H3270 *hSession) {
 		// Cleanupp
 		LIB3270_NET_CONTEXT *context = hSession->network.context;
 
-		crl_free(context);
+		lib3270_openssl_crl_free(context);
 
 		// Release network context.
 		lib3270_free(hSession->network.context);
@@ -115,11 +108,11 @@ static int openssl_network_setsockopt(H3270 *hSession, int level, int optname, c
 static int openssl_network_getsockopt(H3270 *hSession, int level, int optname, void *optval, socklen_t *optlen) {
 }
 
-static int openssl_network_init(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+static int openssl_network_init(H3270 *hSession) {
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 
-	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(state,state);
+	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession);
 	if(!ctx_context)
 		return -1;
 
@@ -214,14 +207,22 @@ void lib3270_set_openssl_network_module(H3270 *hSession) {
 	hSession->network.module = &module;
 }
 
-int lib3270_activate_ssl_network_module(H3270 *hSession, int sock, LIB3270_NETWORK_STATE *state) {
+int lib3270_activate_ssl_network_module(H3270 *hSession, int sock) {
 
 	lib3270_set_openssl_network_module(hSession);
 
-	int rc = openssl_network_init(hSession, state);
+	int rc = openssl_network_init(hSession);
 
 	hSession->network.context->sock = sock;
 
 	return rc;
 
 }
+
+void lib3270_openssl_crl_free(LIB3270_NET_CONTEXT *context) {
+	if(context->crl.cert) {
+		X509_CRL_free(context->crl.cert);
+		context->crl.cert = NULL;
+	}
+}
+

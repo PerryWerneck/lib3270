@@ -37,6 +37,11 @@
 	typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
 	typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
 
+	typedef struct lib3270_ssl_message {
+		LIB3270_POPUP_HEAD			///< @brief Standard popup fields.
+		const char		* icon;		///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+	} LIB3270_SSL_MESSAGE;
+
 	typedef struct lib3270_network_state {
 
 		int syserror;				///< @brief System error (errno)
@@ -46,7 +51,7 @@
 
 		const char * error_message;	/// @brief System error message.
 
-		const LIB3270_NETWORK_POPUP *popup;	/// @brief Detailed info for popup.
+		const LIB3270_POPUP *popup;	/// @brief Detailed info for popup.
 
 	} LIB3270_NETWORK_STATE;
 
@@ -63,7 +68,7 @@
 		/// @param hSession	TN3270 session.
 		/// @param state	Pointer to state message.
 		///
-		int (*init)(H3270 *hSession, LIB3270_NETWORK_STATE *state);
+		int (*init)(H3270 *hSession);
 
 		/// @brief Deinitialize network module.
 		///
@@ -87,7 +92,16 @@
 		///
 		int (*disconnect)(H3270 *hSession);
 
-		int (*start_tls)(H3270 *hSession, LIB3270_NETWORK_STATE *msg);
+		/// @brief Start TLS/SSL.
+		///
+		/// @param hSession	TN3270 session.
+		///
+		/// @return 0 if ok, error code if not.
+		///
+		/// @retval 0		TLS/SSL was negotiated.
+		/// @retval ENOTSUP	No TLS/SSL support in the network module.
+		///
+		int (*start_tls)(H3270 *hSession);
 
 		/// @brief Send on network context.
 		///
@@ -158,7 +172,7 @@
 	 */
 	LIB3270_INTERNAL void	  lib3270_set_default_network_module(H3270 *hSession);
 
-	LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock, LIB3270_NETWORK_STATE *state);
+	LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock);
 
 #endif // LIB3270_NETWORKING_H_INCLUDED
 

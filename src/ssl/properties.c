@@ -148,7 +148,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
     FAIL_IF_ONLINE(hSession);
 
-#if defined(HAVE_LIBSS) && defined(SSL_ENABLE_CRL_CHECK)
+#if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
 
 	if(hSession->ssl.crl.url)
 	{

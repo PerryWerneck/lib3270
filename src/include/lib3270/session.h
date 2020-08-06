@@ -39,10 +39,6 @@
 		#include <sys/socket.h>
 	#endif // _WIN32
 
-#ifdef HAVE_LIBSSL
-	#include <openssl/ssl.h>
-#endif // HAVE_LIBSSL
-
 	#include <lib3270/popup.h>
 	#include <lib3270/toggle.h>
 

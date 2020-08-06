@@ -35,9 +35,62 @@
  #include "private.h"
  #include <lib3270/properties.h>
 
- int openssl_network_start_tls(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+ static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *crl) {
 
-	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession,state);
+	X509_CRL * x509_crl = NULL;
+
+	// Import CRL
+	{
+		lib3270_autoptr(BIO) bio = BIO_new_mem_buf(crl,-1);
+
+		BIO * b64 = BIO_new(BIO_f_base64());
+		bio = BIO_push(b64, bio);
+
+		BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
+
+		if(!d2i_X509_CRL_bio(bio, &x509_crl)) {
+			trace_ssl(hSession,"Can't decode CRL data:\n%s\n",crl);
+			return -1;
+		}
+
+		lib3270_openssl_crl_free(context);
+		context->crl.cert = x509_crl;
+
+	}
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
+
+		lib3270_autoptr(BIO) bio = BIO_new(BIO_s_mem());
+
+		X509_CRL_print(bio,x509_crl);
+
+		unsigned char *data = NULL;
+		int n = BIO_get_mem_data(bio, &data);
+
+		lib3270_autoptr(char) text = (char *) lib3270_malloc(n+1);
+		memcpy(text,data,n);
+		text[n]	='\0';
+
+		trace_ssl(hSession,"CRL Data:\n%s\n",text);
+
+	}
+
+	// Add CRL in the store.
+	X509_STORE *store = SSL_CTX_get_cert_store(ssl_ctx);
+
+	if(X509_STORE_add_crl(store, x509_crl)) {
+		trace_ssl(hSession,"CRL was added to context cert store\n");
+	} else {
+		trace_ssl(hSession,"CRL was not added to context cert store\n");
+	}
+
+	return 0;
+
+ }
+
+ int openssl_network_start_tls(H3270 *hSession) {
+
+	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession);
 	if(!ctx_context)
 		return -1;
 
@@ -45,16 +98,15 @@
 
 	debug("%s",__FUNCTION__);
 
-	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 	context->con = SSL_new(ctx_context);
 	if(context->con == NULL)
 	{
-		static const LIB3270_NETWORK_POPUP popup = {
+		static const LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.summary = N_( "Cant create a new SSL structure for current connection." )
 		};
 
-		state->popup = &popup;
+		hSession->ssl.message = &message;
 		return -1;
 	}
 
@@ -66,12 +118,12 @@
 	{
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
-		static const LIB3270_NETWORK_POPUP popup = {
+		static const LIB3270_SSL_MESSAGE message = {
 			.summary = N_( "SSL negotiation failed" ),
 			.body = N_( "Cant set the file descriptor for the input/output facility for the TLS/SSL (encrypted) side of ssl." )
 		};
 
-		state->popup = &popup;
+		hSession->ssl.message = &message;
 		return -1;
 
 	}
@@ -86,16 +138,17 @@
 
 		if(code == SSL_ERROR_SYSCALL && hSession->ssl.error)
 			code = hSession->ssl.error;
-
-		state->error_message = ERR_lib_error_string(code);
+		else
+			hSession->ssl.error = code;
 
 		trace_ssl(hSession,"SSL_connect failed: %s\n",ERR_reason_error_string(code));
 
-		static const LIB3270_NETWORK_POPUP popup = {
+		static const LIB3270_SSL_MESSAGE message = {
 			.summary = N_( "SSL Connect failed" ),
+			.body = N_("The client was unable to negotiate a secure connection with the host")
 		};
 
-		state->popup = &popup;
+		hSession->ssl.message = &message;
 		return -1;
 
 	}
@@ -131,23 +184,22 @@
 	// Do we really need to download a new CRL?
 	if(lib3270_ssl_get_crl_download(hSession) && SSL_get_verify_result(context->con) == X509_V_ERR_UNABLE_TO_GET_CRL) {
 
-		trace_ssl(hSession,"CRL Validation has failed, requesting download\n");
+		// CRL download is enabled and verification has failed; look for CRL file.
+		trace_ssl(hSession,"CRL Validation has failed, requesting CRL download\n");
 
 		lib3270_autoptr(char) crl_text = NULL;
 		if(context->crl.url) {
 
 			// There's a pre-defined URL, use it.
-			const LIB3270_POPUP * popup = NULL;
-			crl_text = lib3270_url_get(hSession, context->crl.url,&popup);
+			const char *error_message = NULL;
+			crl_text = lib3270_url_get(hSession, context->crl.url,&error_message);
 
-			if(popup) {
-				state->popup = popup;
-				trace_ssl(hSession,"Error downloading CRL from %s: %s\n",context->crl.url,popup->summary);
+			if(error_message) {
+				trace_ssl(hSession,"Error downloading CRL from %s: %s\n",context->crl.url,error_message);
+			} else {
+				import_crl(hSession, ctx_context, context, crl_text);
 			}
 
-#ifndef DEBUG
-			#error TODO: Import crl_text;
-#endif // DEBUG
 
 		} else if(peer) {
 
@@ -159,16 +211,14 @@
 				size_t ix;
 				for(ix = 0; ix < uris->length; ix++) {
 
-					LIB3270_POPUP * popup = NULL;
-					crl_text = lib3270_url_get(hSession, uris->str[ix], &popup);
+					const char * error_message = NULL;
+					crl_text = lib3270_url_get(hSession, uris->str[ix], &error_message);
 
-					if(popup) {
-						trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris[ix],popup->summary);
+					if(error_message) {
+						trace_ssl(hSession,"Error downloading CRL from %s: %s\n",uris->str[ix],error_message);
+					} else if(!import_crl(hSession, ctx_context, context, crl_text)) {
+						break;
 					}
-
-#ifndef DEBUG
-					#error TODO: Import crl_text;
-#endif // DEBUG
 
 				}
 			}
@@ -177,7 +227,74 @@
 
 	}
 
+	//
+	// Validate SSL state.
+	//
+	long verify_result = SSL_get_verify_result(context->con);
 
+	const struct ssl_status_msg * msg = ssl_get_status_from_error_code(verify_result);
+	if(!msg) {
+
+		trace_ssl(hSession,"Unexpected or invalid TLS/SSL verify result %d\n",verify_result);
+
+		static const LIB3270_SSL_MESSAGE message = {
+			.type = LIB3270_NOTIFY_ERROR,
+			.icon = "dialog-error",
+			.summary = N_( "Invalid TLS/SSL verify result" ),
+			.body = N_( "The verification of the connection security status returned an unexpected value." )
+		};
+
+		hSession->ssl.message = &message;
+		return EACCES;
+
+	} else {
+
+		trace_ssl(hSession,"The TLS/SSL verify result was %d: %s\n",verify_result, msg);
+
+	}
+
+	// Get SSL Message
+	hSession->ssl.message = lib3270_openssl_message_from_id(verify_result);
+
+	// Trace cypher
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
+	{
+		char				  buffer[4096];
+		int 				  alg_bits		= 0;
+		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(context->con);
+
+		trace_ssl(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
+		SSL_CIPHER_get_bits(cipher, &alg_bits);
+		trace_ssl(hSession,"%s version %s with %d bits\n",
+						SSL_CIPHER_get_name(cipher),
+						SSL_CIPHER_get_version(cipher),
+						alg_bits);
+	}
+
+	// Check results.
+	/*
+	switch(verify_result) {
+	case X509_V_OK:
+		trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
+		break;
+
+#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
+		trace_ssl(hSession,"TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n");
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+		return EACCES;
+#endif
+
+	default:
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+	}
+	*/
+
+	if(hSession->ssl.message)
+		trace_ssl(hSession,"%s",hSession->ssl.message->summary);
+	else
+		trace_ssl(hSession,"TLS/SSL verify result was %ld\n", verify_result);
 
 	return 0;
+
 }

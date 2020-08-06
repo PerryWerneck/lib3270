@@ -128,12 +128,16 @@
 		<Unit filename="src/core/linux/curl.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/download.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/private.h" />
 		<Unit filename="src/core/linux/util.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -320,11 +324,11 @@
 		<Unit filename="src/network_modules/openssl/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/network_modules/openssl/private.h" />
-		<Unit filename="src/network_modules/openssl/start.c">
+		<Unit filename="src/network_modules/openssl/messages.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/network_modules/openssl/states.c">
+		<Unit filename="src/network_modules/openssl/private.h" />
+		<Unit filename="src/network_modules/openssl/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/network_modules/select.c">

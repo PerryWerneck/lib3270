@@ -45,6 +45,29 @@ LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, un
 	return hSession->cbk.popup(hSession,popup,wait);
 }
 
+LIB3270_EXPORT int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+
+	LIB3270_POPUP translated = *popup;
+
+	if(popup->title) {
+		translated.title = dgettext(GETTEXT_PACKAGE,popup->title);
+	}
+
+	if(popup->label) {
+		translated.label = dgettext(GETTEXT_PACKAGE,popup->label);
+	}
+
+	if(popup->summary) {
+		translated.summary = dgettext(GETTEXT_PACKAGE,popup->summary);
+	}
+
+	if(popup->body) {
+		translated.body = dgettext(GETTEXT_PACKAGE,popup->body);
+	}
+
+	return hSession->cbk.popup(hSession,&translated,wait);
+}
+
 /// @brief Pop up an error dialog.
 void popup_an_error(H3270 *hSession, const char *fmt, ...)
 {

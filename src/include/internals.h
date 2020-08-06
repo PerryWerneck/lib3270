@@ -870,6 +870,9 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	///
 	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
 
+	LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
+
+
 	/**
 	 * @brief Emit translated popup message.
 	 *

@@ -136,6 +136,20 @@
 
  }
 
+ void lib3270_notify_tls(H3270 *hSession) {
+
+	// Negotiation complete is the connection secure?
+	if(hSession->ssl.message->type != LIB3270_NOTIFY_INFO) {
+
+		// Ask user what I can do!
+		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
+			lib3270_disconnect(hSession);
+		}
+
+	}
+
+ }
+
  int lib3270_start_tls(H3270 *hSession)
  {
 	hSession->ssl.message = NULL;	// Reset message.
@@ -184,27 +198,7 @@
 		return rc;
 	}
 
-	// Negotiation complete is the connection secure?
-	if(hSession->ssl.message->type == LIB3270_NOTIFY_INFO) {
-
-		// Yes! The message was only informational.
-		set_ssl_state(hSession,LIB3270_SSL_SECURE);
-
-	} else {
-
-		// No! The negotiation completed with a warning or error.
-		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
-
-		// Ask user what I can do!
-		debug("********************* [%s]",hSession->ssl.message->name);
-		debug("********************* [%s]",hSession->ssl.message->label);
-
-		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
-			return ECANCELED;
-		}
-
-	}
-
+	set_ssl_state(hSession,(hSession->ssl.message->type == LIB3270_NOTIFY_INFO ? LIB3270_SSL_SECURE : LIB3270_SSL_NEGOTIATED));
 	non_blocking(hSession,True);
 
 	return 0;

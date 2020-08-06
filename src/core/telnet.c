@@ -402,6 +402,7 @@ static int net_connected(H3270 *hSession)
 	}
 
 	lib3270_setup_session(hSession);
+	lib3270_notify_tls(hSession);
 
 	return 0;
 }
@@ -1053,7 +1054,12 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len)
 	trace_dsn(hSession,"%s FOLLOWS %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 
 	hSession->ssl.host = 1;	// Set host type as SSL.
-	lib3270_start_tls(hSession);
+	if(lib3270_start_tls(hSession)) {
+		lib3270_disconnect(hSession);
+		return;
+	}
+
+	lib3270_notify_tls(hSession);
 
 }
 

@@ -203,6 +203,62 @@ static int openssl_network_getsockopt(H3270 *hSession, int level, int optname, v
 	return getsockopt(hSession->network.context->sock, level, optname, optval, optlen);
 }
 
+static char * openssl_network_getcert(const H3270 *hSession) {
+
+	LIB3270_NET_CONTEXT * context = hSession->network.context;
+
+	if(context && context->con) {
+		lib3270_autoptr(X509) peer = SSL_get_peer_certificate(context->con);
+
+		if(peer) {
+
+			lib3270_autoptr(BIO)	  out = BIO_new(BIO_s_mem());
+			unsigned char			* data;
+			unsigned char			* text;
+			int						  n;
+
+			X509_print(out,peer);
+
+			n		= BIO_get_mem_data(out, &data);
+			text	= (unsigned char *) lib3270_malloc(n+1);
+			memcpy(text,data,n);
+			text[n]	='\0';
+
+			return (char *) text;
+		}
+	}
+
+	errno = ENOTCONN;
+	return NULL;
+}
+
+static char * openssl_network_getcrl(const H3270 *hSession) {
+
+	LIB3270_NET_CONTEXT * context = hSession->network.context;
+
+	if(context->crl.cert) {
+
+		lib3270_autoptr(BIO)	  out = BIO_new(BIO_s_mem());
+		unsigned char			* data;
+		unsigned char			* text;
+		int						  n;
+
+		X509_print(out,context->crl.cert);
+
+		n		= BIO_get_mem_data(out, &data);
+		text	= (unsigned char *) lib3270_malloc(n+1);
+		memcpy(text,data,n);
+		text[n]	='\0';
+
+		return (char *) text;
+
+	}
+
+	errno = ENOENT;
+	return NULL;
+
+}
+
 static int openssl_network_init(H3270 *hSession) {
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
@@ -283,7 +339,9 @@ void lib3270_set_libssl_network_module(H3270 *hSession) {
 		.is_connected = openssl_network_is_connected,
 		.getsockname = openssl_network_getsockname,
 		.setsockopt = openssl_network_setsockopt,
-		.getsockopt = openssl_network_getsockopt
+		.getsockopt = openssl_network_getsockopt,
+		.getcert = openssl_network_getcert,
+		.getcrl	= openssl_network_getcrl
 	};
 
  	debug("%s",__FUNCTION__);

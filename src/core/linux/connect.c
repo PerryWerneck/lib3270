@@ -192,6 +192,8 @@
 	lib3270_setup_session(hSession);
 	lib3270_set_connected_initial(hSession);
 
+	lib3270_notify_tls(hSession);
+
  }
 
  int net_reconnect(H3270 *hSession, int seconds)

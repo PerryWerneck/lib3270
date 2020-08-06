@@ -147,6 +147,16 @@
 		/// @brief Get socket options.
 		int (*getsockopt)(H3270 *hSession, int level, int optname, void *optval, socklen_t *optlen);
 
+		/// @brief Get Peer certificate.
+		///
+		/// @return String with the peer certificate (release it with lib3270_free); NULL if not available.
+		char * (*getcert)(const H3270 *hSession);
+
+		/// @brief Get CRL.
+		///
+		/// @return String with the CRL certificate (release it with lib3270_free); NULL if not available.
+		char * (*getcrl)(const H3270 *hSession);
+
 	} LIB3270_NET_MODULE;
 
 	/**

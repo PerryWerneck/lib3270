@@ -57,6 +57,8 @@ static int openssl_network_disconnect(H3270 *hSession) {
 
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
+	debug("%s",__FUNCTION__);
+
 	if(context->con) {
 		SSL_shutdown(context->con);
 		SSL_free(context->con);
@@ -190,6 +192,7 @@ static int openssl_network_non_blocking(H3270 *hSession, const unsigned char on)
 }
 
 static int openssl_network_is_connected(const H3270 *hSession) {
+	debug("%s: %s",__FUNCTION__, (hSession->network.context->sock > 0 ? "True" : "False"))
 	return hSession->network.context->sock > 0;
 }
 
@@ -271,6 +274,8 @@ static int openssl_network_init(H3270 *hSession) {
 }
 
 static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+
+	debug("%s",__FUNCTION__);
 
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 

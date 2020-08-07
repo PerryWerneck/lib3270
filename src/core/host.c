@@ -104,12 +104,20 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
 
 LIB3270_EXPORT int lib3270_disconnect(H3270 *h)
 {
+	debug("%s",__FUNCTION__);
 	return host_disconnect(h,0);
 }
 
 int host_disconnect(H3270 *hSession, int failed)
 {
     CHECK_SESSION_HANDLE(hSession);
+
+    debug("%s: connected=%s half connected=%s network=%s",
+				__FUNCTION__,
+				(CONNECTED ? "Yes" : "No"),
+				(HALF_CONNECTED ? "Yes" : "No"),
+				(hSession->network.module->is_connected(hSession) ? "Active" : "Inactive")
+		);
 
 	if (CONNECTED || HALF_CONNECTED)
 	{
@@ -134,6 +142,12 @@ int host_disconnect(H3270 *hSession, int failed)
 		lib3270_set_disconnected(hSession);
 
 		return 0;
+
+	}
+
+	if(hSession->network.module->is_connected(hSession)) {
+
+		debug("%s: Disconnecting socket", __FUNCTION__);
 
 	}
 

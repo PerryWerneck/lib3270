@@ -54,8 +54,54 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <networking.h>
+//#include <fcntl.h>
+#include <poll.h>
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
+
+ static int sock_connect(H3270 *hSession, int sock, const struct sockaddr *address, socklen_t address_len) {
+
+	lib3270_socket_set_non_blocking(hSession, sock, 1);
+
+	if(!connect(sock,address,address_len))
+		return 0;
+
+	if(errno != EINPROGRESS)
+		return errno;
+
+	unsigned int timer;
+	for(timer = 0; timer < hSession->connection.timeout; timer += 10) {
+
+		if(lib3270_get_connection_state(hSession) != LIB3270_CONNECTING)
+			return errno = ECANCELED;
+
+		struct pollfd pfd = {
+			.fd = sock,
+			.events = POLLOUT
+		};
+
+		switch(poll(&pfd,1,10)) {
+		case -1:	// Poll error
+			return errno;
+
+		case 0:
+			break;
+
+		case 1:
+			// Got response.
+			if(pfd.revents && POLLOUT) {
+				debug("%s: Connection complete",__FUNCTION__);
+				return 0;
+			}
+			break;
+		}
+
+	}
+
+	return errno = ETIMEDOUT;
+
+ }
+
 
  int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
@@ -90,7 +136,7 @@
 
 	status_connecting(hSession);
 
-	for(rp = result; sock < 0 && rp != NULL; rp = rp->ai_next)
+	for(rp = result; sock < 0 && rp != NULL && state->syserror != ECANCELED; rp = rp->ai_next)
 	{
 		// Got socket from host definition.
 		sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
@@ -102,7 +148,7 @@
 		}
 
 		// Try connect.
-		if(connect(sock, rp->ai_addr, rp->ai_addrlen))
+		if(sock_connect(hSession, sock, rp->ai_addr, rp->ai_addrlen))
 		{
 			// Can't connect to host
 			state->syserror = errno;
@@ -111,6 +157,7 @@
 			continue;
 		}
 
+		lib3270_socket_set_non_blocking(hSession,sock,0);
 	}
 
 	freeaddrinfo(result);
@@ -203,6 +250,7 @@
 
  	// Initialize and connect to host
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
 
 	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state))
 	{

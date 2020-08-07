@@ -328,6 +328,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->onlcr					=  1;
 	hSession->model_num				= -1;
 	hSession->connection.state		= LIB3270_NOT_CONNECTED;
+	hSession->connection.timeout	= 10000;
 	hSession->oia.status			= LIB3270_MESSAGE_DISCONNECTED;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;

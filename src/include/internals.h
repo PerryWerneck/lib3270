@@ -337,6 +337,7 @@ struct _h3270
 	// Connection info
 	struct {
 		LIB3270_CSTATE		  state;							///< @brief Connection state.
+		unsigned int		  timeout;							///< @brief Connection timeout (1000 = 1s)
 	} connection;
 
 	// flags

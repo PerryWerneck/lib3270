@@ -274,7 +274,7 @@ static void update_url(H3270 *hSession)
 {
 	char * url =
 			lib3270_strdup_printf(
-				"%s//%s:%s",
+				"%s://%s:%s",
 					hSession->network.module->name,
 					hSession->host.current,
 					hSession->host.srvc
@@ -382,28 +382,6 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 
 	if(!n)
 		return errno = ENOENT;
-
-/*
-	static const struct _sch
-	{
-		char			  ssl;
-		const char		* text;
-		const char		* srvc;
-	} sch[] =
-	{
-#ifdef HAVE_LIBSSLx
-		{ 1, "tn3270s://",	"telnets"	},
-		{ 1, "telnets://",	"telnets"	},
-		{ 1, "L://",		"telnets"	},
-		{ 1, "L:",			"telnets"	},
-#endif // HAVE_LIBSSL
-
-		{ 0, "tn3270://",	"telnet"	},
-		{ 0, "telnet://",	"telnet"	}
-
-	};
-	int						  f;
-*/
 
 	lib3270_autoptr(char)	  str 		= strdup(n);
 	char					* hostname 	= lib3270_set_network_module_from_url(h,str);

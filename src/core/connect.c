@@ -86,6 +86,7 @@
 	//
 	if(hSession->auto_reconnect_inprogress)
 	{
+		debug("%s: auto_reconnect_inprogress",__FUNCTION__);
 		errno = EBUSY;
 		return 0;
 	}
@@ -93,6 +94,7 @@
  	// Is the session disconnected?
 	if(!lib3270_is_disconnected(hSession))
 	{
+		debug("%s: is_disconnected=FALSE",__FUNCTION__);
 		errno = EISCONN;
 		return 0;
 	}

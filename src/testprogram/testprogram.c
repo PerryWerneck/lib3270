@@ -172,10 +172,13 @@ int main(int argc, char *argv[])
 	if(!rc)
 	{
 
-		printf("\n\nWaiting starts %u\n",(unsigned int) time(NULL));
+		lib3270_wait_for_ready(h,10);
 
+		/*
 		{
 			// Performance checks
+			printf("\n\nWaiting starts %u\n",(unsigned int) time(NULL));
+
 			size_t f;
 			time_t start = time(0);
 			for(f=0;f < 1000; f++) {
@@ -188,10 +191,10 @@ int main(int argc, char *argv[])
 			if(tm > 1) {
 				exit(-1);
 			}
+			printf("\n\nWaiting ends %u\n\n",(unsigned int) time(NULL));
 
 		}
-
-		printf("\n\nWaiting ends %u\n\n",(unsigned int) time(NULL));
+		*/
 
 		lib3270_enter(h);
 		lib3270_wait(h,5);

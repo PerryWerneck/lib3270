@@ -237,6 +237,9 @@
 		<Unit filename="src/core/windows/http.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/ldap.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/windows/log.c">
 			<Option compilerVar="CC" />
 		</Unit>

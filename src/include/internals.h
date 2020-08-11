@@ -902,3 +902,9 @@ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	 */
 	LIB3270_INTERNAL X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *url, const char **error);
 #endif // HAVE_LDAP
+
+#ifdef _WIN32
+
+	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, const char **error_message);
+
+#endif // _WIN32

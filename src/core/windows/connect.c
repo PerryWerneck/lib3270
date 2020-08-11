@@ -53,7 +53,13 @@
 	if(!connect(sock,address,address_len))
 		return 0;
 
-	debug("WSAGetLastError=%d",(int) WSAGetLastError());
+		/*
+	if(WSAGetLastError() != WSAEINPROGRESS) {
+		debug("Can't connect WSAGetLastError=%d",(int) WSAGetLastError());
+		errno = ENOTCONN;
+		return -1;
+	}
+		*/
 
 	unsigned int timer;
 	for(timer = 0; timer < hSession->connection.timeout; timer += 10) {
@@ -64,7 +70,7 @@
 		struct timeval tm;
 
 		tm.tv_sec 	= 0;
-		tm.tv_usec	= 10;
+		tm.tv_usec	= 10000;
 
 		fd_set wfds;
 		FD_ZERO(&wfds);
@@ -81,6 +87,7 @@
 
 	}
 
+	debug("Timeout! WSAGetLastError=%d",(int) WSAGetLastError());
 	return errno = ETIMEDOUT;
 
  }
@@ -173,6 +180,10 @@
 		if(sock_connect(hSession, sock, rp->ai_addr, rp->ai_addrlen))
 		{
 			// Can't connect to host
+			state->winerror = WSAGetLastError();
+			if(state->winerror == WSAEWOULDBLOCK) {
+				state->winerror = 0;
+			}
 			state->syserror = errno;
 			closesocket(sock);
 			sock = -1;
@@ -286,20 +297,45 @@
 		}
 
 		lib3270_autoptr(char) syserror = NULL;
-		if(state.syserror)
+
+#ifdef _WIN32
+		if(state.winerror)
 		{
+			syserror = lib3270_strdup_printf(
+							_("The system error was \"%s\""),
+							lib3270_win32_strerror(state.winerror)
+						);
+		} else if(state.syserror == ETIMEDOUT) {
+
+			syserror = lib3270_strdup_printf(
+							_("The system error was \"%s\" (rc=%d)"),
+							_("Timeout conneting to host"),
+							state.syserror
+						);
+
+		} else if(state.syserror == ENOTCONN) {
+
+			syserror = lib3270_strdup_printf(
+							_("The system error was \"%s\" (rc=%d)"),
+							_("Not connected to host"),
+							state.syserror
+						);
+
+		} else if(state.syserror) {
 			syserror = lib3270_strdup_printf(
 							_("The system error was \"%s\" (rc=%d)"),
 							strerror(state.syserror),
 							state.syserror
 						);
 		}
-#ifdef _WIN32
-		else if(state.winerror)
+
+#else
+		if(state.syserror)
 		{
 			syserror = lib3270_strdup_printf(
-							_("The system error was \"%s\""),
-							lib3270_win32_strerror(WSAGetLastError())
+							_("The system error was \"%s\" (rc=%d)"),
+							strerror(state.syserror),
+							state.syserror
 						);
 		}
 #endif // _WIN32

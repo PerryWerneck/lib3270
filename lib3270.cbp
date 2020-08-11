@@ -228,6 +228,9 @@
 		<Unit filename="src/core/windows/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/download.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/windows/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -237,6 +240,7 @@
 		<Unit filename="src/core/windows/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/private.h" />
 		<Unit filename="src/core/windows/registry.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -41,7 +41,7 @@
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url) {
+char * lib3270_set_network_module_from_url(H3270 *hSession, char *url) {
 
 	static const struct {
 		const char *scheme;					///< @brief URL scheme for module.

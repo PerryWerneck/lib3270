@@ -52,7 +52,7 @@
 	if(hSession->network.context->sock > 0) {
 		shutdown(hSession->network.context->sock, 2);
 #ifdef _WIN32
-		sockclose(hSession->network.context->sock);
+		closesocket(hSession->network.context->sock);
 #else
 		close(hSession->network.context->sock);
 #endif // _WIN32

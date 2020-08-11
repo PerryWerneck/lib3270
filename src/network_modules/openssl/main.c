@@ -68,7 +68,7 @@ static int openssl_network_disconnect(H3270 *hSession) {
 	if(context->sock > 0) {
 		shutdown(context->sock, 2);
 #ifdef _WIN32
-		sockclose(context->sock);
+		closesocket(context->sock);
 #else
 		close(context->sock);
 #endif // _WIN32

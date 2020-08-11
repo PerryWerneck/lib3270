@@ -455,7 +455,10 @@ static int get_rpq_timezone(H3270 *hSession)
 		delta = difftime(mktime(&here_tm), mktime(utc_tm)) / 60L;
 	}
 
-	/* sanity check: difference cannot exceed +/- 12 hours */
+	// sanity check: difference cannot exceed +/- 12 hours
+#ifdef _WIN32
+	#pragma GCC diagnostic ignored "-Wabsolute-value"
+#endif // _WIN32
 	if (labs(delta) > 720L)
 		rpq_warning(hSession, _("RPQ timezone exceeds 12 hour UTC offset"));
 	return (labs(delta) > 720L)? 3 : (int) delta;

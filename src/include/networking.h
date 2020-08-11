@@ -31,8 +31,17 @@
 
 	#define LIB3270_NETWORKING_H_INCLUDED
 
-	#include <lib3270/popup.h>
+#ifdef _WIN32
+	#include <winsock2.h>
+	#include <windows.h>
+
+	typedef int socklen_t;
+
+#else
 	#include <sys/socket.h>
+#endif // _WIN32
+
+	#include <lib3270/popup.h>
 
 	typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
 	typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
@@ -207,7 +216,7 @@
 	 * @return Pointer to the hostname or NULL if failed (sets errno).
 	 *
 	 */
-	LIB3270_INTERNAL char * lib3270_set_network_module_from_url(H3270 *hSession, const char *url);
+	LIB3270_INTERNAL char * lib3270_set_network_module_from_url(H3270 *hSession, char *url);
 
 
 	/**

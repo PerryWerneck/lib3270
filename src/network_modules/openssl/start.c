@@ -49,7 +49,7 @@
 
 #else
 
-		*error_message = _("No LDAP support");
+		error_message = _("No LDAP support");
 
 #endif // HAVE_LDAP
 

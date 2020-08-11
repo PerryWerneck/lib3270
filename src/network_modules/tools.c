@@ -60,7 +60,7 @@
 		.name = "RecvFailed",
 		.type = LIB3270_NOTIFY_ERROR,
 		.summary = _("Error receiving data from host"),
-	}
+	};
 
 	// TODO: Translate WSA Error, update message body.
 
@@ -102,7 +102,15 @@
 
 	int rc = WSAGetLastError();
 
-	#error Have work to do.
+	lib3270_popup_dialog(
+		hSession,
+		LIB3270_NOTIFY_ERROR,
+		NULL,
+		_("Erro sending data to host"),
+		_( "The system error was %s (%d)" ),
+		lib3270_win32_strerror(rc),
+		rc
+	);
 
  #else
 

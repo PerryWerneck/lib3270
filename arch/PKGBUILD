@@ -3,7 +3,7 @@
 pkgname=lib3270
 
 pkgver=5.3
-pkgrel=2
+pkgrel=0
 pkgdesc="TN3270 Access library"
 url="https://github.com/PerryWerneck/lib3270/"
 arch=(i686 x86_64)

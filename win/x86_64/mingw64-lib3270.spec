@@ -106,7 +106,11 @@ make all %{?_smp_mflags}
 
 
 %install
-%{_mingw64_makeinstall}
+
+# The macro changes the prefix!
+#%{_mingw64_makeinstall}
+make DESTDIR=%{buildroot} install
+
 %_mingw64_find_lang %{_libname} langfiles
 %fdupes %{buildroot}
 
@@ -119,6 +123,7 @@ make all %{?_smp_mflags}
 %dir %{_mingw64_datadir}/%{_product}
 
 %{_mingw64_bindir}/*.dll
+%{_mingw64_libdir}/*.dll
 
 %files devel
 %defattr(-,root,root)

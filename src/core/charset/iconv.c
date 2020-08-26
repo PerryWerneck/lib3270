@@ -108,7 +108,11 @@ struct _lib3270_iconv
 
 	}
 
-	return NULL;
+	char * rc = lib3270_malloc(length+1);
+	strcpy(rc,str);
+	rc[length] = 0;
+
+	return rc;
  }
 
  char * lib3270_iconv_from_host(LIB3270_ICONV *conv, const char *str, int len)

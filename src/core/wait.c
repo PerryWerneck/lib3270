@@ -49,8 +49,6 @@ LIB3270_EXPORT int lib3270_wait_for_update(H3270 GNUC_UNUSED(*hSession), int GNU
 
 LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds)
 {
-	FAIL_IF_NOT_ONLINE(hSession);
-
 	debug("%s",__FUNCTION__);
 	debug("Session lock state is %d",lib3270_get_lock_status(hSession));
 

@@ -62,6 +62,16 @@ static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_U
 	printf("\n\n%s\n\n",__FUNCTION__);
 }
 
+static void reconnect_test(H3270 *hSession) {
+
+	lib3270_reconnect(hSession,0);
+
+	int rc = lib3270_wait_for_ready(hSession,10);
+
+	printf("\n\nlib3270_wait_for_ready exits with rc %d (%s)\n\n",rc,strerror(rc));
+
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef _WIN32
@@ -80,6 +90,7 @@ int main(int argc, char *argv[])
 		{ "crl",		required_argument,	0,	'C' },
 		{ "url",		required_argument,	0,	'U' },
 		{ "tracefile",	required_argument,	0,	't' },
+		{ "reconnect",	no_argument,		0,	'r' },
 
 		{ 0, 0, 0, 0}
 
@@ -103,7 +114,7 @@ int main(int argc, char *argv[])
 
 	int long_index =0;
 	int opt;
-	while((opt = getopt_long(argc, argv, "C:U:t:", options, &long_index )) != -1) {
+	while((opt = getopt_long(argc, argv, "C:U:t:r", options, &long_index )) != -1) {
 		switch(opt) {
 		case 'U':
 			lib3270_set_url(h,optarg);
@@ -112,6 +123,10 @@ int main(int argc, char *argv[])
 		case 'C':
 			lib3270_crl_set_url(h,optarg);
 			break;
+
+		case 'r':
+			reconnect_test(h);
+			return 0;
 
 		case 't':
 			trace_file = optarg;

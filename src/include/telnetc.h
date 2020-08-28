@@ -62,4 +62,4 @@ LIB3270_INTERNAL void space3270out(H3270 *hSession, int n);
 	#define trace_netdata(direction, buf, len) /* */
 #endif // X3270_TRACE
 
-LIB3270_INTERNAL int net_getsockname(const H3270 *h3270, void *buf, int *len);
+// LIB3270_INTERNAL int net_getsockname(const H3270 *h3270, void *buf, int *len);

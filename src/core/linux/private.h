@@ -27,37 +27,22 @@
  *
  */
 
-#ifndef LIB3270_LINUX_SSL_PRIVATE_H_INCLUDED
+#ifndef PRIVATE_H_INCLUDED
 
-	#define LIB3270_LINUX_SSL_PRIVATE_H_INCLUDED
+	#define PRIVATE_H_INCLUDED
 
 	#include <config.h>
-
-	#include <openssl/ssl.h>
-	#include <openssl/err.h>
-	#include <openssl/x509_vfy.h>
-	#include <openssl/x509.h>
-
 	#include <internals.h>
-	#include <trace_dsc.h>
-	#include <errno.h>
+
 	#include <lib3270.h>
-	#include <lib3270/trace.h>
-	#include <lib3270/log.h>
+ 	#include <lib3270/log.h>
 
-	#if defined(HAVE_LIBSSL) && defined(HAVE_LDAP)
+ #if defined(HAVE_LIBCURL)
+	LIB3270_INTERNAL char * lib3270_url_get_using_curl(H3270 *hSession, const char *u, const char **error);
+ #endif // HAVE_LIBCURL
 
-		/// @brief Use libldap to get CRL.
-		LIB3270_INTERNAL X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl);
+ #if defined(HAVE_LDAP)
+	LIB3270_INTERNAL char * lib3270_url_get_using_ldap(H3270 *hSession, const char *u, const char **error);
+ #endif // HAVE_LDAP
 
-	#endif // HAVE_LDAP
-
-	#if defined (HAVE_LIBSSLx) && defined(HAVE_LIBCURL)
-
-		/// @brief Use libcurl to get CRL.
-		LIB3270_INTERNAL X509_CRL * get_crl_using_url(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl);
-
-	#endif // HAVE_LIBCURL
-
-
-#endif // !LIB3270_LINUX_SSL_PRIVATE_H_INCLUDED
+#endif // !PRIVATE_H_INCLUDED

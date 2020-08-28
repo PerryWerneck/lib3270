@@ -32,6 +32,8 @@ LIBNAME=lib@LIB3270_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
 INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
+NETWORK_MODULES=default openssl
+
 SOURCES= \
 	$(wildcard src/core/*.c) \
 	$(wildcard src/core/keyboard/*.c) \
@@ -43,9 +45,9 @@ SOURCES= \
 	$(wildcard src/core/@OSNAME@/*.c) \
 	$(wildcard src/core/properties/*.c) \
 	$(wildcard src/selection/*.c) \
-	$(wildcard src/ssl/*.c) \
-	$(wildcard src/ssl/@OSNAME@/*.c) \
-	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c
+	$(wildcard src/network_modules/*.c) \
+	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c \
+	$(foreach MODULE, $(NETWORK_MODULES), $(wildcard src/network_modules/$(MODULE)/*.c))
 
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.c)

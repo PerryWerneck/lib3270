@@ -252,7 +252,7 @@
 	typedef enum lib3270_cstate
 	{
 		LIB3270_NOT_CONNECTED,			///< @brief no socket, disconnected
-		LIB3270_RESOLVING,				///< @brief resolving hostname
+		LIB3270_CONNECTING,				///< @brief connecting to host
 		LIB3270_PENDING,				///< @brief connection pending
 		LIB3270_CONNECTED_INITIAL,		///< @brief connected, no mode yet
 		LIB3270_CONNECTED_ANSI,			///< @brief connected in NVT ANSI mode

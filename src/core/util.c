@@ -39,16 +39,20 @@
 #include "popupsc.h"
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/opensslv.h>
 #endif // HAVE_LIBSSL
 
+#if defined(HAVE_MALLOC_H)
+	#include <malloc.h>
+#endif // defined
+
 #define my_isspace(c)	isspace((unsigned char)c)
 
-/**
- * @brief Cheesy internal version of sprintf that allocates its own memory.
- */
+///  @brief Cheesy internal version of sprintf that allocates its own memory.
 char * lib3270_vsprintf(const char *fmt, va_list args)
 {
 	char *r = NULL;
@@ -115,34 +119,6 @@ char * xs_buffer(const char *fmt, ...)
 	return r;
 }
 
-// Common uses of xs_buffer.
-
-/*
-void xs_warning(const char *fmt, ...)
-{
-	va_list args;
-	char *r;
-
-	va_start(args, fmt);
-	r = lib3270_vsprintf(fmt, args);
-	va_end(args);
-	lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_WARNING,_("Warning"),r,NULL);
-	lib3270_free(r);
-}
-
-void xs_error(const char *fmt, ...)
-{
-	va_list args;
-	char *r;
-
-	va_start(args, fmt);
-	r = lib3270_vsprintf(fmt, args);
-	va_end(args);
-	lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Error"),r,NULL);
-	lib3270_free(r);
-}
-*/
-
 /**
  *	@brief Expands a character in the manner of "cat -v".
  */
@@ -171,124 +147,6 @@ ctl_see(int c)
 	*p = '\0';
 	return buf;
 }
-
-/*
-/// @brief Whitespace stripper.
-char *
-strip_whitespace(const char *s)
-{
-	char *t = NewString(s);
-
-	while (*t && my_isspace(*t))
-		t++;
-	if (*t) {
-		char *u = t + strlen(t) - 1;
-
-		while (my_isspace(*u)) {
-			*u-- = '\0';
-		}
-	}
-	return t;
-}
-*/
-
-/*
-///
-/// @brief Hierarchy (a>b>c) splitter.
-///
-Boolean
-split_hier(char *label, char **base, char ***parents)
-{
-	int n_parents = 0;
-	char *gt;
-	char *lp;
-
-	label = NewString(label);
-	for (lp = label; (gt = strchr(lp, '>')) != CN; lp = gt + 1) {
-		if (gt == lp)
-			return False;
-		n_parents++;
-	}
-	if (!*lp)
-		return False;
-
-	if (n_parents) {
-		*parents = (char **)Calloc(n_parents + 1, sizeof(char *));
-		for (n_parents = 0, lp = label;
-		     (gt = strchr(lp, '>')) != CN;
-		     lp = gt + 1) {
-			(*parents)[n_parents++] = lp;
-			*gt = '\0';
-		}
-		*base = lp;
-	} else {
-		(*parents) = NULL;
-		(*base) = label;
-	}
-	return True;
-}
-*/
-
-/*
-/// @brief Incremental, reallocing version of snprintf.
-#define RPF_BLKSIZE	4096
-#define SP_TMP_LEN	16384
-
-/// @brief Initialize an RPF structure.
-void
-rpf_init(rpf_t *r)
-{
-	r->buf = NULL;
-	r->alloc_len = 0;
-	r->cur_len = 0;
-}
-
-/// @brief Reset an initialized RPF structure (re-use with length 0).
-void
-rpf_reset(rpf_t *r)
-{
-	r->cur_len = 0;
-}
-
-/// @brief Append a string to a dynamically-allocated buffer.
-void
-rpf(rpf_t *r, char *fmt, ...)
-{
-	va_list a;
-	Boolean need_realloc = False;
-	int ns;
-	char tbuf[SP_TMP_LEN];
-
-	// Figure out how much space would be needed.
-	va_start(a, fmt);
-	ns = vsprintf(tbuf, fmt, a); // XXX: dangerous, but so is vsnprintf
-	va_end(a);
-	if (ns >= SP_TMP_LEN)
-	    Error(NULL,"rpf overrun");
-
-	// Make sure we have that.
-	while (r->alloc_len - r->cur_len < ns + 1) {
-		r->alloc_len += RPF_BLKSIZE;
-		need_realloc = True;
-	}
-	if (need_realloc) {
-		r->buf = Realloc(r->buf, r->alloc_len);
-	}
-
-	// Scribble onto the end of that.
-	(void) strcpy(r->buf + r->cur_len, tbuf);
-	r->cur_len += ns;
-}
-
-/// @brief Free resources associated with an RPF.
-void rpf_free(rpf_t *r)
-{
-	lib3270_free(r->buf);
-	r->buf = NULL;
-	r->alloc_len = 0;
-	r->cur_len = 0;
-}
-*/
 
 LIB3270_EXPORT void * lib3270_free(void *p)
 {
@@ -516,35 +374,6 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
 
 }
 
-LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
-{
-	CHECK_SESSION_HANDLE(hSession);
-
- 	memset(addr,0,*addrlen);
-
- 	if(hSession->connection.sock < 0) {
-		errno = ENOTCONN;
-		return -1;
- 	}
-
-	return getpeername(hSession->connection.sock, addr, addrlen);
-
-}
-
-LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
-{
-	CHECK_SESSION_HANDLE(hSession);
-
- 	memset(addr,0,*addrlen);
-
- 	if(hSession->connection.sock < 0) {
-		errno = ENOTCONN;
-		return -1;
- 	}
-
-	return getsockname(hSession->connection.sock, addr, addrlen);
-}
-
 static int xdigit_value(const char scanner)
 {
 
@@ -654,4 +483,47 @@ int lib3270_compare_alnum(const char *s1, const char *s2)
 
 LIB3270_EXPORT const char * lib3270_get_translation_domain() {
 	return GETTEXT_PACKAGE;
+}
+
+LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 GNUC_UNUSED(*hSession), const char *filename) {
+
+	int fd = open(filename,O_RDONLY);
+	if(fd < 0)
+		return NULL;
+
+	// Get file size.
+	struct stat st;
+
+	if(fstat(fd,&st) < 0) {
+		int err = errno;
+		close(fd);
+		errno = err;
+		return NULL;
+	}
+
+	char * text = lib3270_malloc(st.st_size+1);
+	memset(text,0,st.st_size+1);
+
+	char *ptr = text;
+	while(st.st_size) {
+
+		ssize_t bytes = read(fd,ptr,st.st_size);
+		if(bytes < 0) {
+			int err = errno;
+			close(fd);
+			lib3270_free(text);
+			errno = err;
+			return NULL;
+		}
+
+		if(!bytes)
+			break;
+
+		ptr += bytes;
+		st.st_size -= bytes;
+
+	}
+
+	close(fd);
+	return text;
 }

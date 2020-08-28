@@ -35,7 +35,7 @@
 #include <config.h>				/* autoconf settings */
 #include <lib3270.h>			/* lib3270 API calls and defs */
 
-#if defined(HAVE_LIBSSL)
+#if defined(HAVE_LIBSSLx)
 
 	#include <openssl/ssl.h>
 	#include <openssl/err.h>
@@ -61,13 +61,10 @@
 
 #endif // HAVE_LIBSSL
 
-#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSL)
+#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSLx)
 
 	/// @brief Unconditional release of the session CRL.
 	LIB3270_INTERNAL void lib3270_crl_free(H3270 *hSession);
-
-	/// @brief Release CRL if expired.
-	LIB3270_INTERNAL void lib3270_crl_free_if_expired(H3270 *hSession);
 
 	/// @brief Load CRL from URL.
 	LIB3270_INTERNAL int lib3270_crl_new_from_url(H3270 *hSession, void *ssl_error, const char *url);

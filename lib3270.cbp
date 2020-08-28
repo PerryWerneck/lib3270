@@ -128,12 +128,19 @@
 		<Unit filename="src/core/linux/curl.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/download.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/event_dispatcher.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/linux/ldap.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/private.h" />
 		<Unit filename="src/core/linux/util.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -221,15 +228,22 @@
 		<Unit filename="src/core/windows/connect.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/download.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/windows/event_dispatcher.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/windows/http.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/ldap.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/windows/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/private.h" />
 		<Unit filename="src/core/windows/registry.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -271,6 +285,7 @@
 		<Unit filename="src/include/lib3270/trace.h" />
 		<Unit filename="src/include/linkedlist.h" />
 		<Unit filename="src/include/localdefs.h" />
+		<Unit filename="src/include/networking.h" />
 		<Unit filename="src/include/popupsc.h" />
 		<Unit filename="src/include/proxyc.h" />
 		<Unit filename="src/include/resolverc.h" />
@@ -306,6 +321,35 @@
 		<Unit filename="src/mkfb/mkfb.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/network_modules/default/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/default/private.h" />
+		<Unit filename="src/network_modules/openssl/context.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/openssl/crl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/openssl/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/openssl/messages.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/openssl/private.h" />
+		<Unit filename="src/network_modules/openssl/start.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/select.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/network_modules/tools.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/selection/actions.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -339,9 +383,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/properties.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/state.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ssl/windows/getcrl.c">

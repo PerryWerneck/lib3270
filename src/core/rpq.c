@@ -455,7 +455,10 @@ static int get_rpq_timezone(H3270 *hSession)
 		delta = difftime(mktime(&here_tm), mktime(utc_tm)) / 60L;
 	}
 
-	/* sanity check: difference cannot exceed +/- 12 hours */
+	// sanity check: difference cannot exceed +/- 12 hours
+#ifdef _WIN32
+	#pragma GCC diagnostic ignored "-Wabsolute-value"
+#endif // _WIN32
 	if (labs(delta) > 720L)
 		rpq_warning(hSession, _("RPQ timezone exceeds 12 hour UTC offset"));
 	return (labs(delta) > 720L)? 3 : (int) delta;
@@ -686,11 +689,11 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 			struct sockaddr_in6 sa6;
 #endif // HAVE_GETADDRINFO
 		} u;
-		int addrlen = sizeof(u);
+		socklen_t addrlen = sizeof(u);
 		void *src = NULL;
 		int len = 0;
 
-		if(net_getsockname(hSession, &u, &addrlen) < 0)
+		if(hSession->network.module->getsockname(hSession, (struct sockaddr *) &u, &addrlen) < 0)
 			return 0;
 		SET16(buf, u.sa.sa_family);
 		x += 2;

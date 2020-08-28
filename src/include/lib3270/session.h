@@ -39,18 +39,11 @@
 		#include <sys/socket.h>
 	#endif // _WIN32
 
-#ifdef HAVE_LIBSSL
-	#include <openssl/ssl.h>
-#endif // HAVE_LIBSSL
-
 	#include <lib3270/popup.h>
 	#include <lib3270/toggle.h>
 
 	struct lib3270_session_callbacks
 	{
-		int	 (*write)(H3270 *hSession, unsigned const char *buf, int len);
-		void (*disconnect)(H3270 *hSession);
-
 		void (*configure)(H3270 *session, unsigned short rows, unsigned short cols);
 		void (*update)(H3270 *session, int baddr, unsigned char c, unsigned short attr, unsigned char cursor);
 		void (*changed)(H3270 *session, int offset, int len);
@@ -82,12 +75,6 @@
 		int  (*load)(H3270 *hSession, const char *filename);
 
 		int  (*popup)(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
-
-#ifdef HAVE_LIBSSL
-		void (*set_peer_certificate)(const X509 *cert);
-#else
-		void (*set_peer_certificate)(const void *cert);
-#endif // HAVE_LIBSSL
 
 	};
 

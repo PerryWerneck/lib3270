@@ -39,6 +39,7 @@
 #include <lib3270/session.h>
 #include <lib3270/actions.h>
 #include <lib3270/popup.h>
+#include <networking.h>
 
 #if defined(HAVE_LIBSSL)
 	#include <openssl/ssl.h>
@@ -319,13 +320,24 @@ struct _h3270
 {
 	struct lib3270_session_callbacks	  cbk;					///< @brief Callback table - Always the first one.
 
-	// Session info
-	char					  id;								///< @brief Session Identifier.
+	/// @brief Session Identifier.
+	char					  id;
+
+	// Network
+	struct {
+
+		/// @brief Network module.
+		const LIB3270_NET_MODULE	* module;
+
+		/// @brief Network context.
+		LIB3270_NET_CONTEXT			* context;
+
+	} network;
 
 	// Connection info
 	struct {
-		int					  sock;								///< @brief Network socket.
 		LIB3270_CSTATE		  state;							///< @brief Connection state.
+		unsigned int		  timeout;							///< @brief Connection timeout (1000 = 1s)
 	} connection;
 
 	// flags
@@ -655,34 +667,6 @@ struct _h3270
 		void 				* except;
 	} xio;
 
-#ifdef HAVE_LIBSSL
-	/// @brief SSL Data.
-	struct
-	{
-		char				  enabled;
-		char				  host;
-		LIB3270_SSL_STATE	  state;
-		unsigned long 		  error;
-
-		struct
-		{
-			int min_version;	///< @brief The minimum supported protocol version.
-			int max_version;	///< @brief The maximum supported protocol version.
-		} protocol;
-
-#ifdef SSL_ENABLE_CRL_CHECK
-		struct
-		{
-			char			  download;	///< @brief Non zero to download CRL.
-			char			* prefer;	///< @brief Prefered protocol for CRL.
-			char			* url;		///< @brief URL for CRL download.
-			X509_CRL 		* cert;		///< @brief Loaded CRL (can be null).
-		} crl;
-#endif // SSL_ENABLE_CRL_CHECK
-		SSL 				* con;
-	} ssl;
-#endif // HAVE_LIBSSL
-
 	struct lib3270_linked_list_head timeouts;
 
 	struct
@@ -697,6 +681,16 @@ struct _h3270
 		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
 		void *userdata;
 	} trace;
+
+	struct
+	{
+		int								  host			: 1;		///< @brief Non zero if host requires SSL.
+		int								  download_crl	: 1;		///< @brief Non zero to download CRL.
+		LIB3270_SSL_STATE				  state;
+		int 							  error;
+		const LIB3270_SSL_MESSAGE		* message;					///< @brief Pointer to SSL messages for current state.
+		unsigned short					  crl_preferred_protocol;	///< @brief The CRL Preferred protocol.
+	} ssl;
 
 	/// @brief Event Listeners.
 	struct
@@ -745,7 +739,6 @@ LIB3270_INTERNAL void	toggle_rectselect(H3270 *session, const struct lib3270_tog
 LIB3270_INTERNAL void	remove_input_calls(H3270 *session);
 
 LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len);
-LIB3270_INTERNAL void	lib3270_sock_disconnect(H3270 *hSession);
 
 LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
 
@@ -784,6 +777,9 @@ LIB3270_INTERNAL int check_offline_session(const H3270 *hSession);
 
 LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
+LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
+
+/*
 #if defined(HAVE_LIBSSL)
 
 	typedef struct ssl_status_msg
@@ -811,44 +807,25 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 	LIB3270_INTERNAL int							  ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);
 	LIB3270_INTERNAL int							  ssl_init(H3270 *session);
 	LIB3270_INTERNAL int							  ssl_negotiate(H3270 *hSession);
-	LIB3270_INTERNAL void							  set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 	LIB3270_INTERNAL const struct ssl_status_msg	* ssl_get_status_from_error_code(long id);
 
 
-	#if OPENSSL_VERSION_NUMBER >= 0x00907000L
-		#define INFO_CONST const
-	#else
-		#define INFO_CONST
-	#endif
 
 	LIB3270_INTERNAL void ssl_info_callback(INFO_CONST SSL *s, int where, int ret);
 
-	/**
-	 * @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
-	 *
-	 */
+	 // @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
 	LIB3270_INTERNAL SSL_CTX * ssl_ctx;
 
-	/**
-	 * @brief Index of h3270 handle in SSL session.
-	 *
-	 */
-	LIB3270_INTERNAL int ssl_3270_ex_index;
 
-	/**
-	 * @brief Emit popup on ssl error.
-	 *
-	 */
+
+	/// @brief Emit popup on ssl error.
 	LIB3270_INTERNAL int popup_ssl_error(H3270 *session, int rc, const SSL_ERROR_MESSAGE *message);
 
-	/**
-	 * @brief Emits SSL popup.
-	 *
-	 *
-	 */
+	/// @brief Emits SSL popup.
 	LIB3270_INTERNAL void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg);
 
 #endif
+*/
 
 	/// @brief Clear element at adress.
 	LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
@@ -862,14 +839,72 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 	/// @brief Query data from URL.
 	///
-	/// @param hSession			Handle of the TN3270 Session.
-	/// @param url				The url to get.
-	/// @param length			Pointer to the response lenght (can be NULL).
-	/// @param error_message	Pointer to the error message.
+	/// @param hSession		Handle of the TN3270 Session.
+	/// @param url			The url to get.
+	/// @param length		Pointer to the response lenght (can be NULL).
+	/// @param error		Pointer to the detailed error message.
 	///
 	/// @return The data from URL (release it with lib3270_free) or NULL on error.
 	///
-	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message);
+	LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, const char **error);
+
+	/// @brief Load text file.
+	///
+	/// @param hSession		Handle of the TN3270 Session.
+	/// @param filename		The file name.
+	///
+	/// @return The file contents (release it with lib3270_free or NULL on error (sets errno).
+	///
+	LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 *hSession, const char *filename);
+
 
 	/// @brief Fire CState change.
 	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
+
+	///
+	/// @brief Start TLS/SSL
+	///
+	/// @param hSession	Session handle.
+	/// @param required	Non zero if the SSL/TLS is not optional.
+	///
+	/// @return 0 if ok, non zero if failed.
+	///
+	/// @retval ENOTSUP	TLS/SSL is not supported by library.
+	///
+	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
+
+	LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
+
+
+	/**
+	 * @brief Emit translated popup message.
+	 *
+	 * @param hSession	TN3270 Session handle.
+	 * @param popup		Popup descriptor.
+	 * @param wait		If non zero waits for user response.
+	 *
+	 * @return User action.
+	 *
+	 * @retval 0			User has confirmed, continue action.
+	 * @retval ECANCELED	Operation was canceled.
+	 * @retval ENOTSUP		No popup handler available.
+	 */
+	LIB3270_INTERNAL int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+
+#if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
+	/**
+	 * @brief Download X509 CRL using LDAP backend.
+	 *
+	 * @param hSession	tn3270 session handle.
+	 * @param url		URL for Ldap access.
+	 * @param error		pointer to error message.
+	 *
+	 */
+	LIB3270_INTERNAL X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *url, const char **error);
+#endif // HAVE_LDAP
+
+#ifdef _WIN32
+
+	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, const char **error_message);
+
+#endif // _WIN32

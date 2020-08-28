@@ -74,7 +74,7 @@ void lib3270_session_free(H3270 *h)
 
 	shutdown_toggles(h);
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSLx)
 	if(h->ssl.crl.prefer)
 	{
 		free(h->ssl.crl.prefer);
@@ -84,10 +84,16 @@ void lib3270_session_free(H3270 *h)
 	lib3270_crl_free(h);
 #endif // SSL_ENABLE_CRL_CHECK
 
+	// Release network module
+	if(h->network.module)
+	{
+		h->network.module->finalize(h);
+		h->network.module = NULL;
+	}
+
 	// Release state change callbacks
 	for(f=0;f<LIB3270_STATE_USER;f++)
 		lib3270_linked_list_free(&h->listeners.state[f]);
-
 
 	// Release toggle change listeners.
 	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
@@ -254,18 +260,6 @@ static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width))
 	return;
 }
 
-#ifdef HAVE_LIBSSL
-static void set_peer_certificate(const X509 GNUC_UNUSED(*cert))
-{
-
-}
-#else
-static void set_peer_certificate(const void GNUC_UNUSED(*cert))
-{
-
-}
-#endif // HAVE_LIBSSL
-
 static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name))
 {
 }
@@ -280,8 +274,6 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	// Default calls
 	memset(&hSession->cbk,0,sizeof(hSession->cbk));
 
-	hSession->cbk.write					= lib3270_sock_send;
-	hSession->cbk.disconnect			= lib3270_sock_disconnect;
 	hSession->cbk.update 				= update_char;
 	hSession->cbk.update_model			= update_model;
 	hSession->cbk.update_cursor			= update_cursor;
@@ -303,7 +295,6 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.print					= print;
 	hSession->cbk.save					= save;
 	hSession->cbk.load					= load;
-	hSession->cbk.set_peer_certificate	= set_peer_certificate;
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
 
@@ -313,10 +304,14 @@ void lib3270_reset_callbacks(H3270 *hSession)
 
 static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)
 {
-	int		f;
+	int f;
 
 	memset(hSession,0,sizeof(H3270));
-//	hSession->sz = sizeof(H3270);
+	lib3270_set_default_network_module(hSession);
+
+#if defined(SSL_ENABLE_CRL_CHECK)
+	hSession->ssl.download_crl = 1;
+#endif // SSL_ENABLE_CRL_CHECK
 
 	lib3270_set_host_charset(hSession,charset);
 	lib3270_reset_callbacks(hSession);
@@ -331,9 +326,9 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->unlock_delay			=  1;
 	hSession->icrnl 				=  1;
 	hSession->onlcr					=  1;
-	hSession->connection.sock		= -1;
 	hSession->model_num				= -1;
 	hSession->connection.state		= LIB3270_NOT_CONNECTED;
+	hSession->connection.timeout	= 10000;
 	hSession->oia.status			= LIB3270_MESSAGE_DISCONNECTED;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;
@@ -439,21 +434,10 @@ H3270 * lib3270_session_new(const char *model)
 	trace("%s - configured=%s",__FUNCTION__,default_session ? "Yes" : "No");
 
 	hSession = lib3270_malloc(sizeof(H3270));
-	hSession->id = 0;
-
-#ifdef HAVE_LIBSSL
-	hSession->ssl.protocol.min_version = 0;
-	hSession->ssl.protocol.max_version = 0;
-#endif // HAVE_LIBSSL
-
-#ifdef SSL_ENABLE_CRL_CHECK
-	hSession->ssl.crl.download = 1;
-#endif // SSL_ENABLE_CRL_CHECK
+	lib3270_session_init(hSession, model, "bracket" );
 
 	if(!default_session)
 		default_session = hSession;
-
-	lib3270_session_init(hSession, model, "bracket" );
 
 	if(screen_init(hSession))
 		return NULL;

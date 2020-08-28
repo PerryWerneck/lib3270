@@ -550,19 +550,21 @@ void status_oerr(H3270 *session, int error_type)
  */
 void status_resolving(H3270 *hSession)
 {
-	lib3270_set_cstate(hSession,LIB3270_RESOLVING);
-	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
+	debug("%s",__FUNCTION__);
 
 	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+
+	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 }
 
 void status_connecting(H3270 *hSession)
 {
-	lib3270_set_cstate(hSession,LIB3270_RESOLVING);
-	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
+	debug("%s",__FUNCTION__);
 
 	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+
+	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
 	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
 }
 

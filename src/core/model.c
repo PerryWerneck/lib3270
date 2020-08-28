@@ -28,6 +28,7 @@
  */
 
  #include <internals.h>
+ #include <stdlib.h>
  #include "screen.h"
  #include "ctlrc.h"
  #include "popupsc.h"

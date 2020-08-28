@@ -42,6 +42,7 @@
 #include <winldap.h>
 #include <utilc.h>
 #include <lib3270/toggle.h>
+#include <lib3270/trace.h>
 
 # ifndef LDAP_VENDOR_NAME
 #  error Your Platform SDK is NOT sufficient for LDAP support! \
@@ -88,7 +89,7 @@ static inline void lib3270_autoptr_cleanup_BerElement(BerElement **ber)
 }
 
 
-X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, const char *consturl)
+X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *consturl, const char **error)
 {
 	X509_CRL * x509_crl = NULL;
 	int rc = 0;
@@ -104,14 +105,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 
 	if(!base)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "No DN of the entry at which to start the search on the URL" ),
-			.body = N_( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" )
-		};
-
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-		debug("%s",message->popup->summary);
+		*error = _( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" );
 		errno = EINVAL;
 		return NULL;
 	}
@@ -121,14 +115,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 
 	if(!base)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "No LDAP attribute on the URL" ),
-			.body = N_( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" )
-		};
-
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-		debug("%s",message->popup->summary);
+		*error = _( "The URL argument should be in the format ldap://[HOST]/[DN]?attribute" );
 		errno = EINVAL;
 		return NULL;
 	}
@@ -153,16 +140,8 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 
 	if(!ld)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't initialize LDAP" )
-		};
-
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-
-		debug("%s",message->popup->summary);
-		message->lasterror = GetLastError();
-		errno = EINVAL;
+		*error = _( "Can't initialize LDAP" );
+		errno = -1;
 		return NULL;
 	}
 
@@ -170,16 +149,8 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &version);
 	if(rc != LDAP_SUCCESS)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't set LDAP protocol version" )
-		};
-
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-		message->lasterror = LdapMapErrorToWin32(rc);
-
-		debug("%s (rc=%u, lasterror=%d)",ldap_err2string(rc),rc,(unsigned int) message->lasterror);
-
+		*error = _( "Can't set LDAP protocol version" );
+		SetLastError(LdapMapErrorToWin32(rc));
 		errno = EINVAL;
 		return NULL;
 	}
@@ -187,16 +158,8 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	rc = ldap_simple_bind_s(ld, NULL, NULL);
 	if(rc != LDAP_SUCCESS)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't bind to LDAP server" )
-		};
-
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-		message->lasterror = LdapMapErrorToWin32(rc);
-
-		debug("%s (rc=%u, lasterror=%d)",ldap_err2string(rc),rc,(unsigned int) message->lasterror);
-
+		*error =_( "Can't bind to LDAP server" );
+		SetLastError(LdapMapErrorToWin32(rc));
 		errno = EINVAL;
 		return NULL;
 	}
@@ -219,12 +182,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 
 	if(rc != LDAP_SUCCESS)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't search LDAP server" )
-		};
-		message->body = ldap_err2string(rc);
-		message->popup = &popup;
-		lib3270_write_log(hSession,"ssl","%s: %s",url, message->body);
+		*error = ldap_err2string(rc);
 		return NULL;
 	}
 
@@ -232,14 +190,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	char __attribute__ ((__cleanup__(lib3270_autoptr_cleanup_LDAPPTR))) *attr = ldap_first_attribute(ld, results, &ber);
 	if(!attr)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't get LDAP attribute" ),
-			.body  = N_("Search did not produce any attributes.")
-		};
-
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-		lib3270_write_log(hSession,"ssl","%s: %s",url, message->popup->body);
+		*error = _("LDAP Search did not produce any attributes.");
 		errno = ENOENT;
 		return NULL;
 	}
@@ -247,13 +198,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 	struct berval ** value = ldap_get_values_len(ld, results, attr);
 	if(!value)
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't get LDAP attribute" ),
-			.body = N_("Search did not produce any values.")
-		};
-		message->code = hSession->ssl.error = 0;
-		message->popup = &popup;
-		lib3270_write_log(hSession,"ssl","%s: %s",url, message->popup->body);
+		*error = _("LDAPSearch did not produce any values.");
 		errno = ENOENT;
 		return NULL;
 	}
@@ -273,14 +218,7 @@ X509_CRL * get_crl_using_ldap(H3270 *hSession, SSL_ERROR_MESSAGE * message, cons
 
 	if(!d2i_X509_CRL(&x509_crl, &crl_data, value[0]->bv_len))
 	{
-		static const LIB3270_POPUP popup = {
-			.summary = N_( "Can't decode certificate revocation list" )
-		};
-
-		message->code = hSession->ssl.error = ERR_get_error();
-		message->popup = &popup;
-
-		lib3270_write_log(hSession,"ssl","%s: %s",url, message->popup->summary);
+		*error =_( "Can't decode certificate revocation list" );
 		ldap_value_free_len(value);
 		return NULL;
 	}

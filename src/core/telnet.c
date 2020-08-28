@@ -50,10 +50,6 @@
 #endif // !ANDROID
 
 #include <config.h>
-#if defined(HAVE_LIBSSL)
-	#include <openssl/ssl.h>
-	#include <openssl/err.h>
-#endif
 
 #include <internals.h>
 #include <errno.h>
@@ -148,9 +144,7 @@ static void store3270in(H3270 *hSession, unsigned char c);
 static void check_linemode(H3270 *hSession, Boolean init);
 static int net_connected(H3270 *session);
 
-#if defined(HAVE_LIBSSL)
 static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len);
-#endif // HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) /*[*/
 static int tn3270e_negotiate(H3270 *hSession);
@@ -261,7 +255,6 @@ static const char *trsp_flag[2] = { "POSITIVE-RESPONSE", "NEGATIVE-RESPONSE" };
 	#define SE_EAGAIN	WSAEINPROGRESS
 	#define SE_EPIPE	WSAECONNABORTED
 	#define SE_EINPROGRESS	WSAEINPROGRESS
-	#define SOCK_CLOSE(s)	closesocket(s)
 	#define SOCK_IOCTL(s, f, v)	ioctlsocket(s, f, (void *)v)
 #else /*][*/
 	#define socket_errno()	errno
@@ -275,7 +268,6 @@ static const char *trsp_flag[2] = { "POSITIVE-RESPONSE", "NEGATIVE-RESPONSE" };
 		#define SE_EINPROGRESS	EINPROGRESS
 	#endif /*]*/
 
-	#define SOCK_CLOSE(s)	close(s)
 	#define SOCK_IOCTL	ioctl
 #endif /*]*/
 
@@ -399,35 +391,18 @@ static void setup_lus(H3270 *hSession)
 
 static int net_connected(H3270 *hSession)
 {
-	/*
-	if(hSession->proxy_type > 0)
+
+	// Set up SSL.
+	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host ? " using SSL": "");
+
+	if(hSession->ssl.host && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
 	{
-		// Negotiate with the proxy.
-		trace_dsn(hSession,"Connected to proxy server %s, port %u.\n",hSession->proxy_host, hSession->proxy_port);
-
-		if (proxy_negotiate(hSession, hSession->proxy_type, hSession->sock, hSession->hostname,hSession->current_port) < 0)
-		{
-			host_disconnect(hSession,True);
-			return -1;
-		}
-	}
-	*/
-
-#if defined(HAVE_LIBSSL)
-	/* Set up SSL. */
-	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host? " using SSL": "");
-
-	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
-	{
-		if(ssl_negotiate(hSession))
+		if(lib3270_start_tls(hSession))
 			return -1;
 	}
-#else
-	trace_dsn(hSession,"Connected to %s.\n", hSession->host.current);
-
-#endif
 
 	lib3270_setup_session(hSession);
+	lib3270_notify_tls(hSession);
 
 	return 0;
 }
@@ -451,9 +426,7 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 	hSession->response_required = TN3270E_RSF_NO_RESPONSE;
 #endif
 
-#if defined(HAVE_LIBSSL)
 	hSession->need_tls_follows = 0;
-#endif
 	hSession->telnet_state = TNS_DATA;
 	hSession->ibptr = hSession->ibuf;
 
@@ -487,14 +460,13 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession)
 
 }
 
-/**
- * @brief Connection_complete.
- *
- * The connection appears to be complete (output is possible or input
- * appeared ready but recv() returned EWOULDBLOCK).  Complete the
- * connection-completion processing.
- *
- */
+///
+/// @brief Connection_complete.
+///
+/// The connection appears to be complete (output is possible or input
+/// appeared ready but recv() returned EWOULDBLOCK).  Complete the
+/// connection-completion processing.
+///
 static void connection_complete(H3270 *session)
 {
 	if (non_blocking(session,False) < 0)
@@ -506,58 +478,22 @@ static void connection_complete(H3270 *session)
 	net_connected(session);
 }
 
-
-LIB3270_INTERNAL void lib3270_sock_disconnect(H3270 *hSession)
+///	@brief Disconnect from host.
+void net_disconnect(H3270 *hSession)
 {
-	trace("%s",__FUNCTION__);
-
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con != NULL)
-	{
-		set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-		SSL_shutdown(hSession->ssl.con);
-		SSL_free(hSession->ssl.con);
-		hSession->ssl.con = NULL;
-	}
-#endif
-
 	if(hSession->xio.write)
 	{
 		lib3270_remove_poll(hSession, hSession->xio.write);
 		hSession->xio.write = 0;
 	}
 
-	if(hSession->connection.sock >= 0)
-	{
-		shutdown(hSession->connection.sock, 2);
-		SOCK_CLOSE(hSession->connection.sock);
-		hSession->connection.sock = -1;
-	}
+	hSession->network.module->disconnect(hSession);
 
-}
-
-/**
- *	@brief Shut down the socket.
- */
-void net_disconnect(H3270 *session)
-{
-#if defined(HAVE_LIBSSL)
-	set_ssl_state(session,LIB3270_SSL_UNSECURE);
-#endif // HAVE_LIBSSL
-
-	session->cbk.disconnect(session);
-
-	trace_dsn(session,"SENT disconnect\n");
-
-	/* Restore terminal type to its default. */
-	/*
-	if (session->termname == CN)
-		session->termtype = session->full_model_name;
-	*/
+	trace_dsn(hSession,"SENT disconnect\n");
 
 	// We're not connected to an LU any more.
-	session->lu.associated = CN;
-	status_lu(session,CN);
+	hSession->lu.associated = CN;
+	status_lu(hSession,CN);
 
 }
 
@@ -618,96 +554,55 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
  	for (;;)
 #endif
 	{
-		if (hSession->connection.sock < 0)
-			return;
+//		if (hSession->connection.sock < 0)
+//			return;
 
 #if defined(X3270_ANSI)
 		hSession->ansi_data = 0;
 #endif
 
-#if defined(HAVE_LIBSSL)
+/*
 		if (hSession->ssl.con != NULL)
 			nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
 		else
-			nr = recv(hSession->connection.sock, (char *) buffer, BUFSZ, 0);
-#else
-			nr = recv(hSession->connection.sock, (char *) buffer, BUFSZ, 0);
-#endif // HAVE_LIBSSL
+			nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
+*/
+
+		nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
+
+		debug("%s: recv=%d",__FUNCTION__,nr);
 
 		if (nr < 0)
 		{
-			if (socket_errno() == SE_EWOULDBLOCK)
-				return;
-
-#if defined(HAVE_LIBSSL) /*[*/
-			if(hSession->ssl.con != NULL)
+			if (nr == -EWOULDBLOCK)
 			{
-				static const LIB3270_POPUP popup = {
-					.type = LIB3270_NOTIFY_ERROR,
-					.summary = N_( "SSL Read error" )
-				};
-
-				SSL_ERROR_MESSAGE message = {
-					.code = ERR_get_error(),
-					.popup = &popup
-				};
-
-				popup_ssl_error(hSession,0,&message);
-
-				/*
-				unsigned long e;
-				char err_buf[120];
-
-				e = ERR_get_error();
-				if (e != 0)
-				{
-					(void) ERR_error_string(e, err_buf);
-					trace_dsn(hSession,"RCVD SSL_read error %ld (%s)\n", e,err_buf);
-					hSession->cbk.message(hSession,LIB3270_NOTIFY_ERROR,_( "SSL Error" ),_( "SSL Read error" ),err_buf );
-					ssl_popup_message(hSession,msg);
-				}
-				else
-				{
-					trace_dsn(hSession,"RCVD SSL_read error %ld (%s)\n", e, "unknown");
-				}
-				*/
-
-				host_disconnect(hSession,True);
 				return;
 			}
-#endif /*]*/
 
-			if (HALF_CONNECTED && socket_errno() == SE_EAGAIN)
+			if(HALF_CONNECTED && nr == -EAGAIN)
 			{
+				debug("%s: Received a -EAGAIN with half-connect",__FUNCTION__);
 				connection_complete(hSession);
 				return;
 			}
 
-			trace_dsn(hSession,"RCVD socket error %d\n", errno);
-
-			if (HALF_CONNECTED)
-			{
-				popup_a_sockerr(hSession, "%s", hSession->host.current);
-			}
-			else if (socket_errno() != SE_ECONNRESET)
-			{
-				popup_a_sockerr(hSession, _( "Socket read error" ) );
-			}
+			trace_dsn(hSession,"RCVD socket error %d\n", -nr);
 
 			host_disconnect(hSession,True);
 			return;
 		}
 		else if (nr == 0)
 		{
-			/* Host disconnected. */
+			// Host disconnected.
 			trace_dsn(hSession,"RCVD disconnect\n");
 			host_disconnect(hSession,False);
 			return;
 		}
 
-		/* Process the data. */
+		// Process the data.
 		if (HALF_CONNECTED)
 		{
+			debug("%s: Received a %d with half-connect",__FUNCTION__,nr);
 			if (non_blocking(hSession,False) < 0)
 			{
 				host_disconnect(hSession,True);
@@ -1001,55 +896,52 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 #if defined(X3270_TN3270E) /*[*/
 		    case TELOPT_TN3270E:
 #endif /*]*/
-#if defined(HAVE_LIBSSL) /*[*/
 		    case TELOPT_STARTTLS:
-#endif /*]*/
-			if (c == TELOPT_TN3270E && hSession->non_tn3270e_host)
-				goto wont;
-			if (c == TELOPT_TM && !hSession->bsd_tm)
-				goto wont;
+				if (c == TELOPT_TN3270E && hSession->non_tn3270e_host)
+					goto wont;
+				if (c == TELOPT_TM && !hSession->bsd_tm)
+					goto wont;
 
-			trace("hSession->myopts[c]=%d",hSession->myopts[c]);
-			if (!hSession->myopts[c])
-			{
-				if (c != TELOPT_TM)
-					hSession->myopts[c] = 1;
-				will_opt[2] = c;
-				net_rawout(hSession, will_opt, sizeof(will_opt));
-				trace_dsn(hSession,"SENT %s %s\n", cmd(WILL), opt(c));
-				check_in3270(hSession);
-				check_linemode(hSession,False);
-			}
-			if (c == TELOPT_NAWS)
-				send_naws(hSession);
-#if defined(HAVE_LIBSSL) /*[*/
-			if (c == TELOPT_STARTTLS) {
-				static unsigned char follows_msg[] = {
-					IAC, SB, TELOPT_STARTTLS,
-					TLS_FOLLOWS, IAC, SE
-				};
+				trace("hSession->myopts[c]=%d",hSession->myopts[c]);
+				if (!hSession->myopts[c])
+				{
+					if (c != TELOPT_TM)
+						hSession->myopts[c] = 1;
+					will_opt[2] = c;
+					net_rawout(hSession, will_opt, sizeof(will_opt));
+					trace_dsn(hSession,"SENT %s %s\n", cmd(WILL), opt(c));
+					check_in3270(hSession);
+					check_linemode(hSession,False);
+				}
+				if (c == TELOPT_NAWS)
+					send_naws(hSession);
+				if (c == TELOPT_STARTTLS) {
+					static unsigned char follows_msg[] = {
+						IAC, SB, TELOPT_STARTTLS,
+						TLS_FOLLOWS, IAC, SE
+					};
 
-				/*
-				 * Send IAC SB STARTTLS FOLLOWS IAC SE
-				 * to announce that what follows is TLS.
-				 */
-				net_rawout(hSession, follows_msg, sizeof(follows_msg));
-				trace_dsn(hSession,"SENT %s %s FOLLOWS %s\n",
-						cmd(SB),
-						opt(TELOPT_STARTTLS),
-						cmd(SE));
+					//
+					// Send IAC SB STARTTLS FOLLOWS IAC SE
+					// to announce that what follows is TLS.
+					//
+					net_rawout(hSession, follows_msg, sizeof(follows_msg));
+					trace_dsn(hSession,"SENT %s %s FOLLOWS %s\n",
+							cmd(SB),
+							opt(TELOPT_STARTTLS),
+							cmd(SE));
 
-				debug("%s: %s requires TLS/SSL",__FUNCTION__,opt(TELOPT_STARTTLS));
-				hSession->need_tls_follows = 1;
-			}
-#endif /*]*/
-			break;
+					debug("%s: %s requires TLS/SSL",__FUNCTION__,opt(TELOPT_STARTTLS));
+					hSession->need_tls_follows = 1;
+				}
+				break;
+
 		    default:
-		    wont:
-			wont_opt[2] = c;
-			net_rawout(hSession, wont_opt, sizeof(wont_opt));
-			trace_dsn(hSession,"SENT %s %s\n", cmd(WONT), opt(c));
-			break;
+				wont:
+				wont_opt[2] = c;
+				net_rawout(hSession, wont_opt, sizeof(wont_opt));
+				trace_dsn(hSession,"SENT %s %s\n", cmd(WONT), opt(c));
+				break;
 		}
 		hSession->telnet_state = TNS_DATA;
 		break;
@@ -1129,12 +1021,10 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 					return -1;
 			}
 #endif /*]*/
-#if defined(HAVE_LIBSSL) /*[*/
 			else if (hSession->need_tls_follows && hSession->myopts[TELOPT_STARTTLS] && hSession->sbbuf[0] == TELOPT_STARTTLS)
 			{
 				continue_tls(hSession,hSession->sbbuf, hSession->sbptr - hSession->sbbuf);
 			}
-#endif /*]*/
 
 		} else {
 			hSession->telnet_state = TNS_SB;
@@ -1144,16 +1034,13 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 	return 0;
 }
 
-#if defined(HAVE_LIBSSL)
-/**
- * Process a STARTTLS subnegotiation.
- */
+/// @brief Process a STARTTLS subnegotiation.
 static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len)
 {
-	/* Whatever happens, we're not expecting another SB STARTTLS. */
+	// Whatever happens, we're not expecting another SB STARTTLS.
 	hSession->need_tls_follows = 0;
 
-	/* Make sure the option is FOLLOWS. */
+	// Make sure the option is FOLLOWS.
 	if (len < 2 || sbbuf[1] != TLS_FOLLOWS)
 	{
 		/* Trace the junk. */
@@ -1163,11 +1050,18 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len)
 		return;
 	}
 
-	/* Trace what we got. */
+	// Trace what we got.
 	trace_dsn(hSession,"%s FOLLOWS %s\n", opt(TELOPT_STARTTLS), cmd(SE));
-	ssl_negotiate(hSession);
+
+	hSession->ssl.host = 1;	// Set host type as SSL.
+	if(lib3270_start_tls(hSession)) {
+		lib3270_disconnect(hSession);
+		return;
+	}
+
+	lib3270_notify_tls(hSession);
+
 }
-#endif // HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) /*[*/
 /// @brief Send a TN3270E terminal type request.
@@ -1590,13 +1484,10 @@ static int process_eor(H3270 *hSession)
 	return 0;
 }
 
-
-/**
- *	@brief Called when there is an exceptional condition on the socket.
- */
+/// @brief Called when there is an exceptional condition on the socket.
 void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
 {
-	CHECK_SESSION_HANDLE(session);
+	debug("%s",__FUNCTION__);
 
 	trace_dsn(session,"RCVD urgent data indication\n");
 	if (!session->syncing)
@@ -1629,55 +1520,13 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
 
 LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len)
 {
-	int rc;
-
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con != NULL)
-		rc = SSL_write(hSession->ssl.con, (const char *) buf, len);
-	else
-		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
-#else
-		rc = send(hSession->connection.sock, (const char *) buf, len, 0);
-#endif // HAVE_LIBSSL
+	int rc = hSession->network.module->send(hSession, buf, len);
 
 	if(rc > 0)
 		return rc;
 
-	// Recv error, notify
-
-#if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con != NULL)
-	{
-		unsigned long e;
-		char err_buf[120];
-
-		e = ERR_get_error();
-		(void) ERR_error_string(e, err_buf);
-		trace_dsn(hSession,"RCVD SSL_write error %ld (%s)\n", e,err_buf);
-		popup_an_error(hSession,_( "SSL_write:\n%s" ), err_buf);
-		return -1;
-	}
-#endif // HAVE_LIBSSL
-
-	trace_dsn(hSession,"RCVD socket error %d\n", socket_errno());
-
-	switch(socket_errno())
-	{
-	case SE_EPIPE:
-		popup_an_error(hSession, "%s", _( "Broken pipe" ));
-		break;
-
-	case SE_ECONNRESET:
-		popup_an_error(hSession, "%s", _( "Connection reset by peer" ));
-		break;
-
-	case SE_EINTR:
-		return 0;
-
-	default:
-		popup_a_sockerr(NULL, "%s", _( "Socket write error" ) );
-
-	}
+	// Send error, notify
+	trace_dsn(hSession,"SND socket error %d\n", -rc);
 
 	return -1;
 }
@@ -1699,7 +1548,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len)
 
 	while (len)
 	{
-		int nw = hSession->cbk.write(hSession,buf,len);
+		int nw = lib3270_sock_send(hSession,buf,len);
 
 		if (nw > 0)
 		{
@@ -2674,9 +2523,12 @@ void net_abort(H3270 *hSession)
 #endif /*]*/
 
 /* Return the local address for the socket. */
+
+/*
 int net_getsockname(const H3270 *session, void *buf, int *len)
 {
 	if (session->connection.sock < 0)
 		return -1;
 	return getsockname(session->connection.sock, buf, (socklen_t *)(void *)len);
 }
+*/

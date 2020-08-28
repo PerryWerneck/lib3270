@@ -120,9 +120,9 @@ int main(int argc, char *argv[])
 			lib3270_set_url(h,optarg);
 			break;
 
-		case 'C':
-			lib3270_crl_set_url(h,optarg);
-			break;
+//		case 'C':
+//			lib3270_crl_set_url(h,optarg);
+//			break;
 
 		case 'r':
 			reconnect_test(h);
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	printf("HOST URL: %s\tHOST CRL: %s\n",lib3270_get_url(h),lib3270_crl_get_url(h));
+//	printf("HOST URL: %s\tHOST CRL: %s\n",lib3270_get_url(h),lib3270_crl_get_url(h));
 
 #ifdef _WIN32
 	{

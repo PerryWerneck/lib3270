@@ -42,6 +42,7 @@
 #endif // HAVE_MALLOC_H
 
 #include <internals.h>
+#include <stdlib.h>
 #include "resources.h"
 
 #include "hostc.h"
@@ -61,6 +62,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <lib3270/keyboard.h>
+#include <networking.h>
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.
@@ -102,12 +104,20 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
 
 LIB3270_EXPORT int lib3270_disconnect(H3270 *h)
 {
+	debug("%s",__FUNCTION__);
 	return host_disconnect(h,0);
 }
 
 int host_disconnect(H3270 *hSession, int failed)
 {
     CHECK_SESSION_HANDLE(hSession);
+
+    debug("%s: connected=%s half connected=%s network=%s",
+				__FUNCTION__,
+				(CONNECTED ? "Yes" : "No"),
+				(HALF_CONNECTED ? "Yes" : "No"),
+				(hSession->network.module->is_connected(hSession) ? "Active" : "Inactive")
+		);
 
 	if (CONNECTED || HALF_CONNECTED)
 	{
@@ -132,6 +142,12 @@ int host_disconnect(H3270 *hSession, int failed)
 		lib3270_set_disconnected(hSession);
 
 		return 0;
+
+	}
+
+	if(hSession->network.module->is_connected(hSession)) {
+
+		debug("%s: Disconnecting socket", __FUNCTION__);
 
 	}
 
@@ -258,12 +274,8 @@ static void update_url(H3270 *hSession)
 {
 	char * url =
 			lib3270_strdup_printf(
-				"%s%s:%s",
-#ifdef HAVE_LIBSSL
-					(hSession->ssl.enabled ? "tn3270s://" : "tn3270://"),
-#else
-					"tn3270://",
-#endif // HAVE_LIBSSL
+				"%s://%s:%s",
+					hSession->network.module->name,
 					hSession->host.current,
 					hSession->host.srvc
 	);
@@ -281,7 +293,7 @@ static void update_url(H3270 *hSession)
 	lib3270_free(hSession->host.url);
 	hSession->host.url = url;
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
 	lib3270_crl_free(hSession);
 #endif // SSL_ENABLE_CRL_CHECK
 
@@ -371,54 +383,18 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	if(!n)
 		return errno = ENOENT;
 
-	static const struct _sch
-	{
-		char			  ssl;
-		const char		* text;
-		const char		* srvc;
-	} sch[] =
-	{
-#ifdef HAVE_LIBSSL
-		{ 1, "tn3270s://",	"telnets"	},
-		{ 1, "telnets://",	"telnets"	},
-		{ 1, "L://",		"telnets"	},
-		{ 1, "L:",			"telnets"	},
-#endif // HAVE_LIBSSL
-
-		{ 0, "tn3270://",	"telnet"	},
-		{ 0, "telnet://",	"telnet"	}
-
-	};
-
 	lib3270_autoptr(char)	  str 		= strdup(n);
-	char					* hostname 	= str;
-	const char 				* srvc		= "telnet";
+	char					* hostname 	= lib3270_set_network_module_from_url(h,str);
+	const char 				* srvc;
 	char					* ptr;
 	char					* query		= "";
-	int						  f;
 
 	trace("%s(%s)",__FUNCTION__,str);
 
-#ifdef HAVE_LIBSSL
-	h->ssl.enabled = 0;
-#endif // HAVE_LIBSSL
-
-	for(f=0;f < sizeof(sch)/sizeof(sch[0]);f++)
-	{
-		size_t sz = strlen(sch[f].text);
-		if(!strncasecmp(hostname,sch[f].text,sz))
-		{
-#ifdef HAVE_LIBSSL
-			h->ssl.enabled	= sch[f].ssl;
-#endif // HAVE_LIBSSL
-			srvc			= sch[f].srvc;
-			hostname		+= sz;
-			break;
-		}
-	}
-
-	if(!*hostname)
+	if(!(hostname && *hostname))
 		return 0;
+
+	srvc = h->network.module->service;
 
 	ptr = strchr(hostname,':');
 	if(ptr)

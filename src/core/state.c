@@ -38,12 +38,12 @@ LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(const H3270 *h)
 
 LIB3270_EXPORT int lib3270_pconnected(const H3270 *h)
 {
-	return (((int) h->connection.state) >= (int)LIB3270_RESOLVING);
+	return (((int) h->connection.state) >= (int)LIB3270_CONNECTING);
 }
 
 LIB3270_EXPORT int lib3270_half_connected(const H3270 *h)
 {
-	return (h->connection.state == LIB3270_RESOLVING || h->connection.state == LIB3270_PENDING);
+	return (h->connection.state == LIB3270_CONNECTING || h->connection.state == LIB3270_PENDING);
 }
 
 LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h)

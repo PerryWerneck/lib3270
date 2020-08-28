@@ -42,7 +42,32 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
-	return hSession->cbk.popup(hSession,popup,wait);
+	int rc = hSession->cbk.popup(hSession,popup,wait);
+	debug("%s rc=%d (%s)",__FUNCTION__,rc,strerror(rc));
+	return rc;
+}
+
+int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+
+	LIB3270_POPUP translated = *popup;
+
+	if(popup->title) {
+		translated.title = dgettext(GETTEXT_PACKAGE,popup->title);
+	}
+
+	if(popup->label) {
+		translated.label = dgettext(GETTEXT_PACKAGE,popup->label);
+	}
+
+	if(popup->summary) {
+		translated.summary = dgettext(GETTEXT_PACKAGE,popup->summary);
+	}
+
+	if(popup->body) {
+		translated.body = dgettext(GETTEXT_PACKAGE,popup->body);
+	}
+
+	return hSession->cbk.popup(hSession,&translated,wait);
 }
 
 /// @brief Pop up an error dialog.
@@ -135,7 +160,14 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 	// Alocate new struct
 	LIB3270_POPUP * popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
 
-	*popup = *origin;
+	if(origin)
+	{
+		*popup = *origin;
+	}
+	else
+	{
+		memset(popup,0,sizeof(LIB3270_POPUP));
+	}
 
 	strcpy((char *)(popup+1),body);
 	popup->body = (char *)(popup+1);
@@ -154,7 +186,8 @@ static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char 
 
 	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++)
 	{
-		lib3270_write_log(hSession,"popup","%s",text[ix]);
+		if(text[ix])
+			lib3270_write_log(hSession,"popup","%s",text[ix]);
 	}
 
 	return ENOTSUP;

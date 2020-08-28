@@ -52,7 +52,7 @@ static void lib3270_autoptr_cleanup_HINTERNET(HINTERNET **hInternet)
 	*hInternet = 0;
 }
 
-char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message)
+char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char **error_message)
 {
 	wchar_t wHostname[4096];
 	wchar_t wPath[4096];
@@ -185,8 +185,6 @@ char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, co
 		return NULL;
 	}
 
-	if(length)
-		*length = (size_t) szResponse;
 
 	lib3270_write_nettrace(hSession,"Got %u bytes from %s\n",(unsigned int) szResponse, url);
 

@@ -41,17 +41,21 @@
  * @return Non zero if the host URL has SSL scheme.
  *
  */
+#ifdef HAVE_LIBSSLx
 LIB3270_EXPORT int lib3270_get_secure_host(const H3270 *hSession)
 {
-#ifdef HAVE_LIBSSL
 	return hSession->ssl.enabled ? 1 : 0;
+}
 #else
+LIB3270_EXPORT int lib3270_get_secure_host(const H3270 GNUC_UNUSED(*hSession))
+{
+	errno = ENOTSUP;
 	return 0;
+}
 #endif // HAVE_LIBSSL
 
-}
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession)
 {
 
@@ -89,7 +93,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 GNUC_UNUSED(*hSession
 
 LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession)
 {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_LIBSSLx
 	if(hSession->ssl.con)
 	{
 		X509 * peer = SSL_get_peer_certificate(hSession->ssl.con);
@@ -120,7 +124,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
  #pragma GCC diagnostic ignored "-Wunused-parameter"
  const char * lib3270_crl_get_url(const H3270 *hSession)
  {
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK)
 	if(hSession->ssl.crl.url)
 		return hSession->ssl.crl.url;
 
@@ -144,7 +148,7 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
     FAIL_IF_ONLINE(hSession);
 
-#ifdef SSL_ENABLE_CRL_CHECK
+#if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
 
 	if(hSession->ssl.crl.url)
 	{
@@ -193,46 +197,3 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
  }
 
 
- #pragma GCC diagnostic push
- #pragma GCC diagnostic ignored "-Wunused-parameter"
- const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession)
- {
-#ifdef SSL_ENABLE_CRL_CHECK
-	if(hSession->ssl.crl.prefer)
-		return hSession->ssl.crl.prefer;
-#endif
-	errno = ENODATA;
-	return "";
- }
- #pragma GCC diagnostic pop
-
- #pragma GCC diagnostic push
- #pragma GCC diagnostic ignored "-Wunused-parameter"
- int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol)
- {
-
-    FAIL_IF_ONLINE(hSession);
-
-#ifdef SSL_ENABLE_CRL_CHECK
-
-	if(hSession->ssl.crl.prefer)
-	{
-		lib3270_free(hSession->ssl.crl.prefer);
-		hSession->ssl.crl.prefer = NULL;
-	}
-
-	if(protocol)
-	{
-		hSession->ssl.crl.prefer = strdup(protocol);
-	}
-
-	return 0;
-
-#else
-
-	return errno = ENOTSUP;
-
-#endif // SSL_ENABLE_CRL_CHECK
-
- }
- #pragma GCC diagnostic pop

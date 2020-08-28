@@ -28,6 +28,7 @@
  */
 
  #include <config.h>
+ #include <stdlib.h>
  #include <internals.h>
  #include <string.h>
  #include <lib3270.h>
@@ -138,6 +139,7 @@
 			.set = NULL															// Set value.
 		},
 
+		/*
 		{
 			.name = "crl_url",													// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
@@ -145,6 +147,7 @@
 			.get = lib3270_crl_get_url,											// Get value.
 			.set = lib3270_crl_set_url,											// Set value.
 		},
+		*/
 
 		{
 			.name = "crl_preferred_protocol",									// Property name.

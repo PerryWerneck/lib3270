@@ -115,7 +115,7 @@
 	 *
 	 * @retval 0			User has confirmed, continue action.
 	 * @retval ECANCELED	Operation was canceled.
-	 * @retval ENOTSUP		No popup handler available.
+	 * @retval ENOTSUP		Can't decide, use default behavior.
 	 */
 	LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 

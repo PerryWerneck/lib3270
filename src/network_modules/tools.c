@@ -38,6 +38,9 @@
  #include <internals.h>
  #include <networking.h>
  #include <fcntl.h>
+ #ifdef _WIN32
+	#include <lib3270/win32.h>
+ #endif // _WIN32
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

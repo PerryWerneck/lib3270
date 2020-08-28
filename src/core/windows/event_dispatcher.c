@@ -36,6 +36,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <lib3270/log.h>
+#include <lib3270/win32.h>
 
 #define TN	(timeout_t *)NULL
 

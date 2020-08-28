@@ -107,12 +107,14 @@ DEPENDS= \
 	Makefile \
 	src/include/*.h \
 	src/include/lib3270/*.h \
+	src/include/@OSNAME@/lib3270/*.h \
 	$(BASEDIR)/src/include/lib3270/actions.h
 
 CFLAGS= \
 	@CFLAGS@ \
 	-g \
 	-I$(BASEDIR)/src/include \
+	-I$(BASEDIR)/src/include/@OSNAME@ \
 	@LIBSSL_CFLAGS@ \
 	@LDAP_CFLAGS@ \
 	@LIBCURL_CFLAGS@
@@ -323,7 +325,7 @@ install-dev: \
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
-		src/include/lib3270/*.h \
+		src/include/@OSNAME@/lib3270/*.h \
 		$(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \

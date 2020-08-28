@@ -36,6 +36,7 @@
 #include "telnetc.h"
 #include "utilc.h"
 #include "kybdc.h"
+#include <lib3270/os.h>
 
 #if defined(_WIN32)
 	#include <ws2tcpip.h>
@@ -45,7 +46,6 @@
 	#include <sys/ioctl.h>
 	#include <netinet/in.h>
 	#include <netdb.h>
-	#include <unistd.h>
 	#include <fcntl.h>
 #endif
 

@@ -73,7 +73,9 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+	#include <lib3270/win32.h>
+#else
 	#include <netdb.h>
 #endif
 

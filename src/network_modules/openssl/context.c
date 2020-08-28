@@ -39,6 +39,10 @@
 
 #include "private.h"
 
+#ifdef _WIN32
+	#include <lib3270/win32.h>
+#endif // _WIN32
+
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
 

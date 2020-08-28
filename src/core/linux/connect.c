@@ -39,7 +39,6 @@
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <unistd.h>
 #include <fcntl.h>
 
 #include <stdlib.h>
@@ -53,6 +52,7 @@
 #include <lib3270/internals.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/os.h>
 #include <networking.h>
 //#include <fcntl.h>
 #include <poll.h>

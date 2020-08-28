@@ -254,6 +254,8 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/include/3270ds.h" />
+		<Unit filename="src/include/X11keysym.h" />
+		<Unit filename="src/include/action_table.h" />
 		<Unit filename="src/include/ansic.h" />
 		<Unit filename="src/include/arpa_telnet.h" />
 		<Unit filename="src/include/array.h" />
@@ -269,6 +271,7 @@
 		<Unit filename="src/include/hostc.h" />
 		<Unit filename="src/include/internals.h" />
 		<Unit filename="src/include/kybdc.h" />
+		<Unit filename="src/include/lib3270++.h" />
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/actions.h" />
 		<Unit filename="src/include/lib3270/charset.h" />
@@ -284,7 +287,9 @@
 		<Unit filename="src/include/lib3270/toggle.h" />
 		<Unit filename="src/include/lib3270/trace.h" />
 		<Unit filename="src/include/linkedlist.h" />
+		<Unit filename="src/include/linux/lib3270/os.h" />
 		<Unit filename="src/include/localdefs.h" />
+		<Unit filename="src/include/macos/lib3270/os.h" />
 		<Unit filename="src/include/networking.h" />
 		<Unit filename="src/include/popupsc.h" />
 		<Unit filename="src/include/proxyc.h" />
@@ -305,6 +310,8 @@
 		<Unit filename="src/include/utilc.h" />
 		<Unit filename="src/include/w3miscc.h" />
 		<Unit filename="src/include/widec.h" />
+		<Unit filename="src/include/windows/lib3270/os.h" />
+		<Unit filename="src/include/windows/lib3270/win32.h" />
 		<Unit filename="src/include/winversc.h" />
 		<Unit filename="src/include/xioc.h" />
 		<Unit filename="src/include/xl.h" />

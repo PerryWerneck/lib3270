@@ -49,6 +49,7 @@
 #endif // HAVE_ICONV
 
 #include <lib3270/log.h>
+#include <lib3270/win32.h>
 
 #define my_isspace(c)	isspace((unsigned char)c)
 

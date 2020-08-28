@@ -37,6 +37,7 @@
 #include <internals.h>
 #include <lib3270/log.h>
 #include <lib3270/popup.h>
+#include <lib3270/win32.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

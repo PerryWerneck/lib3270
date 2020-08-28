@@ -37,13 +37,13 @@
 		#include <winsock2.h>
 		#include <windows.h>
 	#else
-		#include <unistd.h>
 		#include <fcntl.h>
 	#endif // _WIN32
 
 	#include <lib3270.h>
  	#include <lib3270/log.h>
  	#include <lib3270/popup.h>
+	#include <lib3270/os.h>
  	#include <array.h>
  	#include <internals.h>
 	#include <networking.h>

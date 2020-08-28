@@ -1,5 +1,5 @@
 /*
- * "Software G3270, desenvolvido com base nos códigos fontes do WC3270  e  X3270
+ * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
  * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
  * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
@@ -18,31 +18,26 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como internals.h e possui - linhas de código.
+ * Este programa está nomeado como lib3270.h e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
  *
  */
 
-#ifndef LIB3270_INTERNALS_H_INCLUDED
+ /**
+  * @brief TN3270 API MAC definitions.
+  *
+  * @author perry.werneck@gmail.com
+  *
+  */
 
-	#define LIB3270_INTERNALS_H_INCLUDED 1
+#ifndef LIB3270_OS_H_INCLUDED
 
-#ifdef __cplusplus
-	extern "C" {
-#endif
+	#define LIB3270_OS_H_INCLUDED 1
 
-	LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf);
-	LIB3270_EXPORT void lib3270_set_disconnected(H3270 *hSession);
-	LIB3270_EXPORT void lib3270_set_connected_initial(H3270 *hSession);
-	LIB3270_EXPORT void lib3270_setup_session(H3270 *session);
+	#include <unistd.h>
 
-
-#ifdef __cplusplus
-	}
-#endif
-
-#endif // LIB3270_INTERNALS_H_INCLUDED
-
+#endif // LIB3270_OS_H_INCLUDED

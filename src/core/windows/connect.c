@@ -32,6 +32,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <ws2tcpip.h>
+#include <lib3270/win32.h>
 
 #include <internals.h>
 #include <lib3270/log.h>

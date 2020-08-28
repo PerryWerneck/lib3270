@@ -56,6 +56,7 @@
 
 		#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
 		#define lib3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
+		#define lib3270_auto_cleanup(TypeName) TypeName __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
 
 	#endif // __GNUC__
 

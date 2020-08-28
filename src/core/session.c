@@ -359,7 +359,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 #ifdef _WIN32
 	// Get defaults from registry.
 	{
-		HKEY hKey;
+		lib3270_auto_cleanup(HKEY) hKey = 0;
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
 						HKEY_LOCAL_MACHINE,
@@ -398,7 +398,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 			}
 
-			RegCloseKey(hKey);
 		}
 	}
 #endif // _WIN32

@@ -41,4 +41,11 @@
 	#include <winsock2.h>
 	#include <windows.h>
 
+	inline void lib3270_autoptr_cleanup_HKEY(HKEY *hKey) {
+		if(*hKey) {
+			RegCloseKey(*hKey);
+			*hKey = 0;
+		}
+	}
+
 #endif // LIB3270_OS_H_INCLUDED

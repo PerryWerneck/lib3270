@@ -163,7 +163,7 @@ void initialize_toggles(H3270 *session)
 
 #ifdef _WIN32
 	{
-		HKEY hKey;
+		lib3270_auto_cleanup(HKEY) hKey = 0;
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
 						HKEY_LOCAL_MACHINE,
@@ -201,7 +201,6 @@ void initialize_toggles(H3270 *session)
 				}
 
 			}
-			RegCloseKey(hKey);
 		}
 
 	}

@@ -57,6 +57,7 @@
 
 #include <errno.h>
 #include <lib3270/internals.h>
+#include <lib3270/os.h>
 #include <lib3270/properties.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
@@ -321,7 +322,7 @@ LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hS
 {
 #ifdef _WIN32
 	{
-		HKEY hKey;
+		lib3270_auto_cleanup(HKEY) hKey;
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
 						HKEY_LOCAL_MACHINE,
@@ -349,8 +350,6 @@ LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hS
 			}
 
 			DWORD dwRet = RegQueryValueEx(hKey,"host",NULL,NULL,(LPBYTE) default_host, &cbData);
-
-			RegCloseKey(hKey);
 
 			if(dwRet == ERROR_SUCCESS)
 			{

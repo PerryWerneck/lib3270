@@ -32,6 +32,9 @@
 
 	#define LIB3270_TRACE_H_INCLUDED 1
 
+	#include <lib3270.h>
+	#include <lib3270/os.h>
+
 #ifdef __cplusplus
 	extern "C" {
 #endif

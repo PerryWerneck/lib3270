@@ -329,6 +329,10 @@ install-dev: \
 		$(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
+		src/include/lib3270/*.h \
+		$(DESTDIR)$(includedir)/lib3270
+
+	@$(INSTALL_DATA) \
 		src/include/lib3270.h \
 		$(DESTDIR)$(includedir)/lib3270.h
 

@@ -52,7 +52,6 @@
 #include "trace_dsc.h"
 #include "utilc.h"
 #include "xioc.h"
-#include "../ssl/crl.h"
 #include "screenc.h"
 
 #include <errno.h>
@@ -293,12 +292,9 @@ static void update_url(H3270 *hSession)
 	lib3270_write_event_trace(hSession,"Host URL was changed\nFrom: %s\nTo: %s\n",hSession->host.url,url);
 	lib3270_free(hSession->host.url);
 	hSession->host.url = url;
-
-#if defined(HAVE_LIBSSLx) && defined(SSL_ENABLE_CRL_CHECK)
-	lib3270_crl_free(hSession);
-#endif // SSL_ENABLE_CRL_CHECK
-
 	hSession->cbk.update_url(hSession, hSession->host.url);
+
+	hSession->network.module->reset(hSession);
 
 }
 

@@ -166,6 +166,11 @@
 		/// @return String with the CRL certificate (release it with lib3270_free); NULL if not available.
 		char * (*getcrl)(const H3270 *hSession);
 
+		/// @brief Reset.
+		///
+		/// Clear network module state (used when URL changes).
+		void (*reset)(H3270 *hSession);
+
 	} LIB3270_NET_MODULE;
 
 	/**

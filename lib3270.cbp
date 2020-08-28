@@ -366,44 +366,8 @@
 		<Unit filename="src/selection/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/ssl/crl.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/ssl/crl.h" />
-		<Unit filename="src/ssl/linux/getcrl.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/linux/init.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/linux/ldap.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/ssl/linux/private.h" />
-		<Unit filename="src/ssl/linux/url.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/negotiate.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/notify.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/properties.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/windows/getcrl.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/windows/http.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/windows/init.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/ssl/windows/ldap.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/ssl/windows/private.h" />
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />

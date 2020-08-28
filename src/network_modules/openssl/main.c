@@ -35,18 +35,21 @@
  #include "private.h"
 
 
+static void openssl_network_reset(H3270 *hSession) {
+
+	if(hSession->network.context) {
+		lib3270_openssl_crl_free(hSession->network.context);
+	}
+
+}
+
 static void openssl_network_finalize(H3270 *hSession) {
 
 	debug("%s",__FUNCTION__);
 
+	openssl_network_reset(hSession);
+
 	if(hSession->network.context) {
-
-		// Cleanupp
-		LIB3270_NET_CONTEXT *context = hSession->network.context;
-
-		lib3270_openssl_crl_free(context);
-
-		// Release network context.
 		lib3270_free(hSession->network.context);
 		hSession->network.context = NULL;
 	}
@@ -346,7 +349,8 @@ void lib3270_set_libssl_network_module(H3270 *hSession) {
 		.setsockopt = openssl_network_setsockopt,
 		.getsockopt = openssl_network_getsockopt,
 		.getcert = openssl_network_getcert,
-		.getcrl	= openssl_network_getcrl
+		.getcrl	= openssl_network_getcrl,
+		.reset = openssl_network_reset
 	};
 
  	debug("%s",__FUNCTION__);

@@ -307,16 +307,6 @@
 	//
 	hSession->ever_3270 = False;
 
-#if defined(HAVE_LIBSSLx)
-	if(hSession->ssl.enabled)
-	{
-		hSession->ssl.host = 1;
-		if(ssl_init(hSession))
-			return errno = ENOTCONN;
-
-	}
-#endif // HAVE_LIBSSL
-
 	// set options for inline out-of-band data and keepalives
 	int optval = 1;
 	if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_OOBINLINE, &optval, sizeof(optval)) < 0)

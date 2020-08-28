@@ -42,7 +42,6 @@
 #include "kybdc.h"
 #include "3270ds.h"
 #include "popupsc.h"
-#include "../ssl/crl.h"
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
@@ -73,16 +72,6 @@ void lib3270_session_free(H3270 *h)
 		lib3270_disconnect(h);
 
 	shutdown_toggles(h);
-
-#if defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LIBSSLx)
-	if(h->ssl.crl.prefer)
-	{
-		free(h->ssl.crl.prefer);
-		h->ssl.crl.prefer = NULL;
-	}
-
-	lib3270_crl_free(h);
-#endif // SSL_ENABLE_CRL_CHECK
 
 	// Release network module
 	if(h->network.module)

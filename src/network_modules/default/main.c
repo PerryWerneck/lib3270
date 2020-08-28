@@ -62,6 +62,9 @@
 	return 0;
  }
 
+ static void unsecure_network_reset(H3270 GNUC_UNUSED(*hSession)) {
+ }
+
  ssize_t unsecure_network_send(H3270 *hSession, const void *buffer, size_t length) {
 
 	ssize_t bytes = send(hSession->network.context->sock,buffer,length,0);
@@ -164,7 +167,8 @@ void lib3270_set_default_network_module(H3270 *hSession) {
 		.is_connected = unsecure_network_is_connected,
 		.getsockname = unsecure_network_getsockname,
 		.setsockopt = unsecure_network_setsockopt,
-		.getsockopt = unsecure_network_getsockopt
+		.getsockopt = unsecure_network_getsockopt,
+		.reset = unsecure_network_reset
 	};
 
  	debug("%s",__FUNCTION__);

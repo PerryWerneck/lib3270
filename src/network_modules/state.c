@@ -50,15 +50,6 @@ LIB3270_EXPORT int lib3270_is_secure(const H3270 *hSession)
 	return lib3270_get_ssl_state(hSession) == LIB3270_SSL_SECURE;
 }
 
-#if defined(HAVE_LIBSSLx)
-LIB3270_EXPORT long lib3270_get_SSL_verify_result(const H3270 *hSession)
-{
-	if(hSession->ssl.con)
-		return SSL_get_verify_result(hSession->ssl.con);
-	return -1;
-}
-#endif // HAVE_LIBSSL
-
 LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession)
 {
 	return hSession->ssl.state;

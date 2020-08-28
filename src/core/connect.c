@@ -178,7 +178,7 @@
 
 		static const LIB3270_POPUP message = {
 			.type = LIB3270_NOTIFY_CRITICAL,
-			.summary = N_( "Can't determine the TLS/SSL estate"),
+			.summary = N_( "Can't determine the TLS/SSL state"),
 			.body = N_("The network module didn't set the TLS/SSL state message, this is not supposed to happen and can be a coding error")
 		};
 

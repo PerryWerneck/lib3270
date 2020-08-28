@@ -96,7 +96,7 @@ ssize_t openssl_network_send(H3270 *hSession, const void *buffer, size_t length)
 			hSession,
 			LIB3270_NOTIFY_ERROR,
 			NULL,
-			_("Disconnected from host"),
+			_("Disconnected from host."),
 			"%s",
 			_("The secure connection has been closed cleanly.")
 		);
@@ -147,7 +147,7 @@ static ssize_t openssl_network_recv(H3270 *hSession, void *buf, size_t len) {
 			hSession,
 			LIB3270_NOTIFY_ERROR,
 			NULL,
-			_("Disconnected from host"),
+			_("Disconnected from host."),
 			"%s",
 			_("The secure connection has been closed cleanly.")
 		);

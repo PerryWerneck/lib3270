@@ -370,3 +370,10 @@ char * lib3270_build_filename(const char *str, ...)
 	return filename;
 }
 
+LIB3270_EXPORT void lib3270_autoptr_cleanup_HKEY(HKEY *hKey) {
+	if(*hKey) {
+		RegCloseKey(*hKey);
+		*hKey = 0;
+	}
+}
+

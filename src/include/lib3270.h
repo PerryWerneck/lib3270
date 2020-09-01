@@ -305,19 +305,6 @@
 	} LIB3270_HOST_TYPE_ENTRY;
 
 	/**
-	 * @brief SSL state
-	 *
-	 */
-	typedef enum lib3270_ssl_state
-	{
-		LIB3270_SSL_UNSECURE,			/**< @brief No secure connection */
-		LIB3270_SSL_SECURE,				/**< @brief Connection secure with CA check */
-		LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA, self-signed or expired CRL */
-		LIB3270_SSL_NEGOTIATING,		/**< @brief Negotiating SSL */
-		LIB3270_SSL_UNDEFINED			/**< @brief Undefined */
-	} LIB3270_SSL_STATE;
-
-	/**
 	 * @brief Field information.
 	 *
 	 */
@@ -525,27 +512,6 @@
 	 LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 *hSession);
 
 	/**
-	 * @brief Set URL for the certificate revocation list.
-	 *
-	 * @param hSession	Session handle.
-	 * @param crl		URL for the certificate revocation list.
-	 *
-	 * @return 0 on sucess, non zero on error (sets errno).
-	 *
-	 */
-	 LIB3270_EXPORT int lib3270_crl_set_url(H3270 *hSession, const char *crl);
-	 LIB3270_EXPORT const char * lib3270_crl_get_url(const H3270 *hSession);
-
-	 LIB3270_EXPORT int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol);
-	 LIB3270_EXPORT const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession);
-
-	 /**
-	  * @brief Get the available protocols for CRL download.
-	  *
-	  */
-	 LIB3270_EXPORT const char ** lib3270_get_available_crl_protocols(void);
-
-	/**
 	 * @brief Get hostname for the connect/reconnect operations.
 	 *
 	 * @param h		Session handle.
@@ -556,40 +522,6 @@
 	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_hostname(const H3270 *h));
 
 	 LIB3270_EXPORT void LIB3270_DEPRECATED(lib3270_set_hostname(H3270 *h, const char *hostname));
-
-	/**
-	 * @brief Get SSL host option.
-	 *
-	 * @return Non zero if the host URL has SSL scheme.
-	 *
-	 */
-	LIB3270_EXPORT int lib3270_get_secure_host(const H3270 *hSession);
-
-	/**
-	 * @brief Get security state.
-	 *
-	 */
-	LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *session);
-
-	LIB3270_EXPORT long 				lib3270_get_SSL_verify_result(const H3270 *session);
-
-	/**
-	 * @brief Get security state as text.
-	 *
-	 */
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_message(const H3270 *hSession);
-
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(const H3270 *hSession);
-
-	/**
-	 * @brief Get security state message.
-	 *
-	 */
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSession);
-
-	LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession);
-	LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession);
-
 
 	/**
 	 * @brief Get service or port for the connect/reconnect operations.

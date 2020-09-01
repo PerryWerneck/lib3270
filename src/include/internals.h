@@ -42,12 +42,6 @@
 #include <networking.h>
 #include <lib3270/os.h>
 
-#if defined(HAVE_LIBSSL)
-	#include <openssl/ssl.h>
-	#include <openssl/x509v3.h>
-
-#endif // HAVE_LIBSSL
-
 #if defined(X3270_TN3270E) && !defined(X3270_ANSI) /*[*/
 		#define X3270_ANSI	1	/* RFC2355 requires NVT mode */
 #endif /*]*/
@@ -56,14 +50,7 @@
 	#define _GNU_SOURCE		/* vasprintf isn't POSIX */
 #endif /*]*/
 
-/*
- * gettext stuff
- */
-#ifdef ANDROID
-	#undef HAVE_LIBINTL
-	#undef HAVE_LIBSSL
-#endif
-
+// gettext stuff
 #ifdef HAVE_LIBINTL
 	#include <locale.h>
 	#include <libintl.h>

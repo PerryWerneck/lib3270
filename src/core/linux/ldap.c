@@ -29,7 +29,7 @@
 
 #include <config.h>
 
-#if defined(HAVE_LDAP) && defined HAVE_LIBSSL
+#if defined(HAVE_LDAP) && defined(HAVE_LIBSSL)
 
 #include <internals.h>
 #include <lib3270.h>
@@ -43,7 +43,7 @@
 
 typedef char LDAPPTR;
 
-/*--[ Implement ]------------------------------------------------------------------------------------*/
+//--[ Implement ]------------------------------------------------------------------------------------
 
 static inline void lib3270_autoptr_cleanup_LDAPMessage(LDAPMessage **message)
 {

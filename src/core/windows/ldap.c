@@ -36,7 +36,7 @@
 
 #include <config.h>
 
-#if defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LDAP)
+#if defined(HAVE_LDAP) && defined(HAVE_LIBSSL)
 
 #include "private.h"
 #include <winldap.h>
@@ -51,7 +51,7 @@
 #  include <winber.h>
 # endif
 
-/*--[ Implement ]------------------------------------------------------------------------------------*/
+//--[ Implement ]------------------------------------------------------------------------------------
 
 static inline void lib3270_autoptr_cleanup_LDAP(LDAP **ptr)
 {
@@ -229,4 +229,4 @@ X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *consturl, con
 
 }
 
-#endif //  defined(HAVE_LIBSSL) && defined(SSL_ENABLE_CRL_CHECK) && defined(HAVE_LDAP)
+#endif //  defined(HAVE_LIBSSL) && defined(HAVE_LDAP)

@@ -51,6 +51,7 @@
 
 	#include <openssl/ssl.h>
 	#include <openssl/x509.h>
+	#include <openssl/x509v3.h>
 	#include <openssl/err.h>
 
 	struct _lib3270_network_popup {

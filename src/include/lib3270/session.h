@@ -41,6 +41,7 @@
 
 	#include <lib3270/popup.h>
 	#include <lib3270/toggle.h>
+	#include <lib3270/ssl.h>
 
 	struct lib3270_session_callbacks
 	{

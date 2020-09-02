@@ -274,6 +274,8 @@
 		// CRL download is enabled and verification has failed; look for CRL file.
 
 		trace_ssl(hSession,"CRL Validation has failed, requesting CRL download\n");
+		set_ssl_state(hSession,LIB3270_SSL_VERIFYING);
+
 		if(context->crl.url) {
 			import_crl(hSession, ctx_context,context,context->crl.url);
 		} else {
@@ -306,28 +308,12 @@
 	}
 
 	// Check results.
-	/*
-	switch(verify_result) {
-	case X509_V_OK:
-		trace_ssl(hSession,"TLS/SSL negotiated connection complete. Peer certificate %s presented.\n", peer ? "was" : "was not");
-		break;
-
-#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-	case X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN:
-		trace_ssl(hSession,"TLS/SSL negotiated connection complete with self signed certificate in certificate chain\n");
-		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
-		return EACCES;
-#endif
-
-	default:
-		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
-	}
-	*/
-
 	if(hSession->ssl.message)
 		trace_ssl(hSession,"%s",hSession->ssl.message->summary);
 	else
 		trace_ssl(hSession,"TLS/SSL verify result was %ld\n", verify_result);
+
+	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 
 	return 0;
 

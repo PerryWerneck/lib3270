@@ -51,6 +51,7 @@
 		LIB3270_SSL_SECURE,				/**< @brief Connection secure with CA check */
 		LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA, self-signed or expired CRL */
 		LIB3270_SSL_NEGOTIATING,		/**< @brief Negotiating SSL */
+		LIB3270_SSL_VERIFYING,			/**< @brief Verifying SSL (Getting CRL) */
 		LIB3270_SSL_UNDEFINED			/**< @brief Undefined */
 	} LIB3270_SSL_STATE;
 

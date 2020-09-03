@@ -39,6 +39,7 @@
  #include <lib3270/properties.h>
  #include <lib3270/keyboard.h>
  #include <lib3270/selection.h>
+ #include <lib3270/ssl.h>
 
  int lib3270_is_starting(const H3270 *hSession)
  {

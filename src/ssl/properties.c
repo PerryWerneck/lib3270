@@ -143,6 +143,8 @@ LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSessio
 
  #pragma GCC diagnostic push
  #pragma GCC diagnostic ignored "-Wunused-parameter"
+	 LIB3270_EXPORT int lib3270_crl_set_url(H3270 *hSession, const char *crl);
+
  int lib3270_crl_set_url(H3270 *hSession, const char *crl)
  {
 

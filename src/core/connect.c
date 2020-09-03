@@ -34,6 +34,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
+#include <lib3270/ssl.h>
 #include <trace_dsc.h>
 #include "utilc.h"
 
@@ -143,10 +144,16 @@
 	// Negotiation complete is the connection secure?
 	if(hSession->ssl.message->type != LIB3270_NOTIFY_INFO) {
 
+#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 		// Ask user what I can do!
 		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
 			lib3270_disconnect(hSession);
 		}
+#else
+
+		trace_ssl(hSession,"SSL popup message is disabled on this build");
+
+#endif
 
 	}
 

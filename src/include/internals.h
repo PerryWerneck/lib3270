@@ -766,54 +766,6 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 
-/*
-#if defined(HAVE_LIBSSL)
-
-	typedef struct ssl_status_msg
-	{
-		LIB3270_POPUP_HEAD
-
-		long			  id;
-		const char		* iconName;		///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-	} SSL_STATUS_MSG;
-
-	typedef struct _ssl_error_message
-	{
-		int code;
-#ifdef _WIN32
-		DWORD	lasterror;
-#endif // _WIN32
-
-		const char *body;
-
-		const LIB3270_POPUP *popup;	/// @brief Pointer to popup message.
-
-	} SSL_ERROR_MESSAGE;
-
-
-	LIB3270_INTERNAL int							  ssl_ctx_init(H3270 *hSession, SSL_ERROR_MESSAGE *message);
-	LIB3270_INTERNAL int							  ssl_init(H3270 *session);
-	LIB3270_INTERNAL int							  ssl_negotiate(H3270 *hSession);
-	LIB3270_INTERNAL const struct ssl_status_msg	* ssl_get_status_from_error_code(long id);
-
-
-
-	LIB3270_INTERNAL void ssl_info_callback(INFO_CONST SSL *s, int where, int ret);
-
-	 // @brief Global SSL_CTX object as framework to establish TLS/SSL or DTLS enabled connections.
-	LIB3270_INTERNAL SSL_CTX * ssl_ctx;
-
-
-
-	/// @brief Emit popup on ssl error.
-	LIB3270_INTERNAL int popup_ssl_error(H3270 *session, int rc, const SSL_ERROR_MESSAGE *message);
-
-	/// @brief Emits SSL popup.
-	LIB3270_INTERNAL void ssl_popup_message(H3270 *hSession, const SSL_ERROR_MESSAGE *msg);
-
-#endif
-*/
-
 	/// @brief Clear element at adress.
 	LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 

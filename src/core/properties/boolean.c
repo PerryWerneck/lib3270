@@ -198,7 +198,7 @@
 		},
 
 		{
-			.name = "crlget",													//  Property name.
+			.name = "crl_download",												//  Property name.
 			.description = N_( "Non zero if the download of CRL is enabled" ),	//  Property description.
 			.get = lib3270_ssl_get_crl_download,								//  Get value.
 			.set = lib3270_ssl_set_crl_download									//  Set value.

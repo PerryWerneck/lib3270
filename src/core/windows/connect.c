@@ -154,7 +154,7 @@
  	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
  	if(rc)
 	{
-		state->error_message = gai_strerror(rc);
+		state->winerror = rc;
 		return -1;
 	}
 
@@ -303,8 +303,9 @@
 		if(state.winerror)
 		{
 			syserror = lib3270_strdup_printf(
-							_("The system error was \"%s\""),
-							lib3270_win32_strerror(state.winerror)
+							"%s (Windows error %u)",
+							lib3270_win32_strerror(state.winerror),
+							(unsigned int) state.winerror
 						);
 		} else if(state.syserror == ETIMEDOUT) {
 
@@ -323,11 +324,13 @@
 						);
 
 		} else if(state.syserror) {
+
 			syserror = lib3270_strdup_printf(
 							_("The system error was \"%s\" (rc=%d)"),
 							strerror(state.syserror),
 							state.syserror
 						);
+
 		}
 
 #else

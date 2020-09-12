@@ -216,6 +216,8 @@ LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
 		}
 
 	}
+#else
+	#error NO-ICONV
 #endif // HAVE_ICONV
 
 	return buffer;

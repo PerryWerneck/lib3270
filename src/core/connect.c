@@ -166,11 +166,14 @@
 
 	non_blocking(hSession,False);
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wcast-function-type"
 	int rc = lib3270_run_task(
 			hSession,
 			(int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
 			NULL
 		);
+	#pragma GCC diagnostic pop
 
 	if(rc == ENOTSUP) {
 

@@ -42,12 +42,16 @@
 #include <networking.h>
 #include <lib3270/os.h>
 
+#if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
+	#include <openssl/x509.h>
+#endif // !HAVE_LDAP && HAVE_LIBSSL
+
 #if defined(X3270_TN3270E) && !defined(X3270_ANSI) /*[*/
-		#define X3270_ANSI	1	/* RFC2355 requires NVT mode */
+		#define X3270_ANSI	1	// RFC2355 requires NVT mode
 #endif /*]*/
 
 #if defined(HAVE_VASPRINTF) && !defined(_GNU_SOURCE) /*[*/
-	#define _GNU_SOURCE		/* vasprintf isn't POSIX */
+	#define _GNU_SOURCE		// vasprintf isn't POSIX
 #endif /*]*/
 
 // gettext stuff

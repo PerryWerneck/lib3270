@@ -512,30 +512,6 @@
 	 LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 *hSession);
 
 	/**
-	 * @brief Get hostname for the connect/reconnect operations.
-	 *
-	 * @param h		Session handle.
-	 *
-	 * @return Pointer to host id set (internal data, do not change it)
-	 *
-	 */
-	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_hostname(const H3270 *h));
-
-	 LIB3270_EXPORT void LIB3270_DEPRECATED(lib3270_set_hostname(H3270 *h, const char *hostname));
-
-	/**
-	 * @brief Get service or port for the connect/reconnect operations.
-	 *
-	 * @param h		Session handle.
-	 *
-	 * @return Pointer to service name (internal data, do not change it)
-	 *
-	 */
-	 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_srvcname(const H3270 *h));
-
-	 LIB3270_EXPORT void LIB3270_DEPRECATED(lib3270_set_srvcname(H3270 *h, const char *srvc));
-
-	/**
 	 * @brief Get HOST URL.
 	 *
 	 * @return TN3270 Connection URL.

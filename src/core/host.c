@@ -393,13 +393,17 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 		srvc  = ptr;
 		query = strchr(ptr,'?');
 
-		trace("QUERY=[%s]",query);
-
-		if(query)
-			*(query++) = 0;
-		else
-			query = "";
 	}
+	else
+	{
+		srvc = "3270";
+		query = strchr(hostname,'?');
+	}
+
+	if(query)
+		*(query++) = 0;
+	else
+		query = "";
 
 	trace("SRVC=[%s]",srvc);
 
@@ -450,35 +454,6 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	lib3270_action_group_notify(h, LIB3270_ACTION_GROUP_OFFLINE);
 
 	return 0;
-}
-
-LIB3270_EXPORT const char * lib3270_get_hostname(const H3270 *h)
-{
-	if(h->host.current)
-		return h->host.current;
-
-	return "";
-}
-
-LIB3270_EXPORT void lib3270_set_hostname(H3270 *h, const char *hostname)
-{
-    CHECK_SESSION_HANDLE(h);
-	Replace(h->host.current,strdup(hostname));
-	update_url(h);
-}
-
-LIB3270_EXPORT const char * lib3270_get_srvcname(const H3270 *h)
-{
-    if(h->host.srvc)
-		return h->host.srvc;
-	return "telnet";
-}
-
-LIB3270_EXPORT void lib3270_set_srvcname(H3270 *h, const char *srvc)
-{
-    CHECK_SESSION_HANDLE(h);
-	Replace(h->host.srvc,strdup(srvc));
-	update_url(h);
 }
 
 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h)

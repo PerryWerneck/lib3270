@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 #endif // HAVE_LDAP
 
 	if(lib3270_set_url(h,NULL))
-		lib3270_set_url(h,"tn3270://fandezhi.efglobe.com");
+		lib3270_set_url(h,"tn3270://127.0.0.1");
 
 	int long_index =0;
 	int opt;

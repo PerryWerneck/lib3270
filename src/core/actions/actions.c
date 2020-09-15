@@ -99,7 +99,7 @@ LIB3270_EXPORT int lib3270_activate_by_name(H3270 *hSession, const char *name)
 
 LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 {
-	return lib3270_activate_by_name(name,hSession);
+	return lib3270_activate_by_name(hSession,name);
 }
 
 LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_GROUP group)

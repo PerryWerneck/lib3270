@@ -219,6 +219,25 @@
 	 */
 	LIB3270_EXPORT char * lib3270_get_version_info(void);
 
+	/**
+	 * @brief Get hostname for the connect/reconnect operations.
+	 *
+	 * @param h		Session handle.
+	 *
+	 * @return Pointer to host id set (internal data, do not change it)
+	 *
+	 */
+	 LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h);
+
+	/**
+	 * @brief Get service or port for the connect/reconnect operations.
+	 *
+	 * @param h		Session handle.
+	 *
+	 * @return Pointer to service name (internal data, do not change it)
+	 *
+	 */
+	 LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h);
 
 #ifdef __cplusplus
 	}

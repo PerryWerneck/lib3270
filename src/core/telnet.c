@@ -1006,6 +1006,12 @@ static int telnet_fsm(H3270 *hSession, unsigned char c)
 				    IAC, SE);
 				net_rawout(hSession, (unsigned char *)tt_out, tb_len);
 
+				debug("\n\n\ntermtype=%s lu.try=[%s] - [%s]\n\n\n",
+				    hSession->termtype,
+				    (hSession->lu.try != CN && *hSession->lu.try) ? "@" : "",
+				    (hSession->lu.try != CN && *hSession->lu.try) ? hSession->lu.try : ""
+				);
+
 				trace_dsn(hSession,"SENT %s %s %s %.*s %s\n",
 				    cmd(SB), opt(TELOPT_TTYPE),
 				    telquals[TELQUAL_IS],

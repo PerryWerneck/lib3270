@@ -130,7 +130,15 @@
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 
-	snprintf(hSession->full_model_name,LIB3270_FULL_MODEL_NAME_LENGTH,"IBM-327%c-%d",hSession->m3279 ? '9' : '8', hSession->model_num);
+	snprintf(
+		hSession->full_model_name,
+		LIB3270_FULL_MODEL_NAME_LENGTH,
+		"IBM-327%c-%d%s",
+			hSession->m3279 ? '9' : '8',
+			hSession->model_num,
+			hSession->extended ? "-E" : ""
+	);
+
 	lib3270_write_event_trace(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
 
 	hSession->ever_3270	= False;
@@ -167,7 +175,9 @@
 	non_blocking(hSession,False);
 
 	#pragma GCC diagnostic push
+#ifdef _WIN32
 	#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif // _WIN32
 	int rc = lib3270_run_task(
 			hSession,
 			(int(*)(H3270 *h, void *)) hSession->network.module->start_tls,

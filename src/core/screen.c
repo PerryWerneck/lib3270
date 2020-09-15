@@ -416,12 +416,10 @@ void screen_update(H3270 *session, int bstart, int bend)
 
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_cursor_address(const H3270 *hSession)
+LIB3270_EXPORT int lib3270_get_cursor_address(const H3270 *hSession)
 {
-	if(check_online_session(hSession))
-		return 0;
-
-    return hSession->cursor_addr;
+	int state = check_online_session(hSession);
+    return state ? -state : hSession->cursor_addr;
 }
 
 /**
@@ -448,13 +446,13 @@ LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned 
 }
 
 
-LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int baddr)
+LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr)
 {
     FAIL_IF_NOT_ONLINE(hSession);
 
 	trace("%s(%d)",__FUNCTION__,baddr);
 
-	if(baddr > (hSession->view.rows * hSession->view.cols))
+	if( ((unsigned int) baddr) > (hSession->view.rows * hSession->view.cols))
 		return - (errno = EOVERFLOW);
 
 	if(hSession->selected && !lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_SELECTED))

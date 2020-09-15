@@ -103,14 +103,6 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
 		},
 
 		{
-			.name = "cursor_address",								// Property name.
-			.group = LIB3270_ACTION_GROUP_ONLINE,					// Property group.
-			.description = N_( "Cursor address" ),					// Property description.
-			.get = lib3270_get_cursor_address,						// Get value.
-			.set = lib3270_set_cursor_address						// Set value.
-		},
-
-		{
 			.name = "width",										//  Property name.
 			.description = N_( "Current screen width in columns" ),	//  Property description.
 			.get = lib3270_get_width,								//  Get value.

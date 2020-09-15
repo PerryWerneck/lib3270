@@ -62,6 +62,14 @@
 		},
 
 		{
+			.name = "cursor_address",								// Property name.
+			.group = LIB3270_ACTION_GROUP_ONLINE,					// Property group.
+			.description = N_( "Cursor address" ),					// Property description.
+			.get = lib3270_get_cursor_address,						// Get value.
+			.set = lib3270_set_cursor_address						// Set value.
+		},
+
+		{
 			.name = "program_message",							//  Property name.
 			.description = N_( "Latest program message" ),		//  Property description.
 			.get = lib3270_get_program_message_as_int,			//  Get value.

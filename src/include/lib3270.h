@@ -736,7 +736,7 @@
 	 * @retval -ENOTCONN	Disconnected from host.
 	 *
 	 */
-	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, unsigned int baddr);
+	LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr);
 
 	/**
 	 * @brief Set cursor position.
@@ -757,10 +757,14 @@
 	 *
 	 * @param hSession Session handle.
 	 *
-	 * @return Cursor address or 0 if invalid (sets errno).
+	 * @return Cursor address or negative if invalid (sets errno).
+	 *
+	 * @retval -ENOTCONN	Disconnected from host.
+	 * @retval -EINVAL		Invalid session handle.
+	 * @retval -1			Unexpected error.
 	 *
 	 */
-	LIB3270_EXPORT unsigned int lib3270_get_cursor_address(const H3270 *hSession);
+	LIB3270_EXPORT int lib3270_get_cursor_address(const H3270 *hSession);
 
 	/**
 	 * @brief Move cursor

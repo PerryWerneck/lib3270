@@ -77,6 +77,8 @@
 
 		int  (*popup)(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
+		int	 (*action)(H3270 *hSession, const char *name);
+
 	};
 
 	/**

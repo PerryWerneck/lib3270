@@ -87,22 +87,19 @@ LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *
 
 }
 
-LIB3270_EXPORT int lib3270_action_activate_by_name(const char *name, H3270 *hSession)
+LIB3270_EXPORT int lib3270_activate_by_name(H3270 *hSession, const char *name)
 {
 	const LIB3270_ACTION *action = lib3270_action_get_by_name(name);
 
-	if(!action)
-	{
-		lib3270_write_event_trace(hSession,"Can't find action \"%s\"\n",name);
-		return errno;
-	}
+	if(action)
+		return lib3270_action_activate(action, hSession);
 
-	return lib3270_action_activate(action, hSession);
+	return hSession->cbk.action(hSession,name);
 }
 
 LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name)
 {
-	return lib3270_action_activate_by_name(name,hSession);
+	return lib3270_activate_by_name(name,hSession);
 }
 
 LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_GROUP group)

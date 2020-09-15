@@ -257,6 +257,9 @@ static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUS
 {
 }
 
+static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*name)) {
+	return ENOENT;
+}
 
 void lib3270_reset_callbacks(H3270 *hSession)
 {
@@ -286,6 +289,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.load					= load;
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
+	hSession->cbk.action				= default_action;
 
 	lib3270_set_popup_handler(hSession, NULL);
 

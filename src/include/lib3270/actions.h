@@ -118,11 +118,12 @@
  *
  * @return The action return code.
  *
+ * @retval ENOENT	Can't find action with the supplied name.
  * @retval EPERM	Action is disabled.
  * @retval ENOTSUP	Action name is invalid.
  *
  */
- LIB3270_EXPORT int lib3270_action_activate_by_name(const char *name, H3270 *hSession);
+ LIB3270_EXPORT int lib3270_activate_by_name(H3270 *hSession, const char *name);
 
 /**
  * @brief activate an action.

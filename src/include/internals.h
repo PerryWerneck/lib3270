@@ -478,18 +478,6 @@ struct _h3270
 	int						  backslashed;
 	char					  plu_name[LIB3270_BIND_PLU_NAME_MAX+1];
 
-	/*
-	/// @brief Proxy
-	struct
-	{
-		char					* proxy;			///< Proxy server (type:host[:port])
-		int						  type;
-		char					* host;
-		char					* portname;
-		unsigned short			  port;
-	} proxy;
-	*/
-
 	/// @brief LU
 	struct
 	{

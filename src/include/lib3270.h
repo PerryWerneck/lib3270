@@ -767,6 +767,21 @@
 	LIB3270_EXPORT int lib3270_get_cursor_address(const H3270 *hSession);
 
 	/**
+	 * @brief Get row/col of the current cursor position.
+	 *
+	 * @param hSession	Session handler.
+	 * @param row		Pointer for current cursor row.
+	 * @param col		Pointer for current cursor column.
+	 *
+	 * @return 0 if ok, error code if not (sets errno).
+	 *
+	 * @retval EINVAL	Invalid session.
+	 * @retval ENOTCONN	Not connected to host.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_get_cursor_position(const H3270 *hSession, unsigned short *row, unsigned short *col);
+
+	/**
 	 * @brief Move cursor
 	 *
 	 * @param h		Session handle.

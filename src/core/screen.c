@@ -422,6 +422,27 @@ LIB3270_EXPORT int lib3270_get_cursor_address(const H3270 *hSession)
     return state ? -state : hSession->cursor_addr;
 }
 
+LIB3270_EXPORT int lib3270_get_cursor_position(const H3270 *hSession, unsigned short *row, unsigned short *col)
+{
+	int state = check_online_session(hSession);
+	if(state)
+	{
+		*row = *col = 9;
+		return state;
+	}
+
+	unsigned short addr = (unsigned short) hSession->cursor_addr;
+
+	if(row)
+		*row = (addr / ((unsigned short) hSession->view.cols))+1;
+
+	if(col)
+		*col = (addr % ((unsigned short) hSession->view.cols))+1;
+
+    return 0;
+}
+
+
 /**
  * @brief Converts row/col in a buffer address.
  *

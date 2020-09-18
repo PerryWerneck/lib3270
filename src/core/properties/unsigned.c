@@ -171,4 +171,30 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
 	return properties;
  }
 
+int lib3270_set_uint_property(H3270 *hSession, const char *name, unsigned int value, int seconds)
+{
+	size_t ix;
+	const LIB3270_UINT_PROPERTY * properties;
+
+	if(seconds)
+		lib3270_wait_for_ready(hSession, seconds);
+
+	// Check for INT Properties
+	properties = lib3270_get_unsigned_properties_list();
+
+	for(ix = 0; properties[ix].name; ix++)
+	{
+		if(!strcasecmp(name,properties[ix].name))
+		{
+			if(properties[ix].set)
+				return properties[ix].set(hSession, value);
+			else
+				return errno = EPERM;
+		}
+
+	}
+
+	return errno = ENOENT;
+
+}
 

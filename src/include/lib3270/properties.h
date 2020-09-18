@@ -131,26 +131,62 @@
 	LIB3270_EXPORT int lib3270_get_int_property(H3270 * hSession, const char *name, int seconds);
 
 	/**
-	 * @brief Set lib3270 integer property by name.
+	 * @brief Set lib3270 signed int property by name.
 	 *
 	 * @param name		Nome of the property.
 	 * @param value		New property value.
 	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
 	 *
-	 * @return 0 if ok, -1 in case of error (sets errno).
+	 * @return 0 if ok error code if not (sets errno).
+	 *
+	 * @retval EPERM	Property is ready only.
+	 * @retval ENOENT	Can't find a property with this name.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_int_property(H3270 * hSession, const char *name, int value, int seconds);
 
 	/**
-	 * @brief Set lib3270 integer property by name.
+	 * @brief Set lib3270 unsigned int property by name.
+	 *
+	 * @param name		Nome of the property.
+	 * @param value		New property value.
+	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
+	 *
+	 * @return 0 if ok error code if not (sets errno).
+	 *
+	 * @retval EPERM	Property is ready only.
+	 * @retval ENOENT	Can't find a property with this name.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_uint_property(H3270 * hSession, const char *name, unsigned int value, int seconds);
+
+	/**
+	 * @brief Set lib3270 boolean property by name.
+	 *
+	 * @param name		Nome of the property.
+	 * @param value		New property value.
+	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
+	 *
+	 * @return 0 if ok error code if not (sets errno).
+	 *
+	 * @retval EPERM	Property is ready only.
+	 * @retval ENOENT	Can't find a property with this name.
+	 *
+	 */
+	LIB3270_EXPORT int lib3270_set_boolean_property(H3270 * hSession, const char *name, int value, int seconds);
+
+	/**
+	 * @brief Set lib3270 string property by name.
 	 *
 	 * @param hSession	Session handle.
 	 * @param name		Nome of the property.
 	 * @param value		New property value.
 	 * @param seconds	Time (in seconds) whe should wait for "ready" state (0 = none).
 	 *
-	 * @return 0 if ok, -1 in case of error (sets errno).
+	 * @return 0 if ok error code if not (sets errno).
+	 *
+	 * @retval EPERM	Property is ready only.
+	 * @retval ENOENT	Can't find a property with this name.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_set_string_property(H3270 * hSession, const char *name, const char * value, int seconds);

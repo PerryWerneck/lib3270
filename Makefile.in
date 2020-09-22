@@ -213,6 +213,20 @@ install-%: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
+	all-@OSNAME@
+
+all-windows: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).a \
+	locale/$(PACKAGE_NAME).pot \
+	$(BINRLS)/$(LIBNAME).delayed.a
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).def \
+		$(BASEDIR)/win
+
+
+all-linux: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).a \
 	locale/$(PACKAGE_NAME).pot

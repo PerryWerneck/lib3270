@@ -67,6 +67,7 @@ jobs:
     #   make bootstrap
     #   make release
     - run: |
+       ./autogen.sh
        make Release
 
     - name: Perform CodeQL Analysis

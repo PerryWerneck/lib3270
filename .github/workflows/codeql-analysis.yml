@@ -68,6 +68,7 @@ jobs:
     #- run: |
     #   make bootstrap
     #   make release
+    - name: build
     - run: | 
        sudo apt-get install gettext libssl-dev libcurl4-openssl-dev
        ./autogen.sh

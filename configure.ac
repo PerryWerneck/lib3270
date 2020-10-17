@@ -55,6 +55,7 @@ AC_PROG_SED
 AC_PROG_LN_S
 AC_PATH_TOOL([AR], [ar], [ar])
 AC_PATH_TOOL([DLLTOOL], [dlltool], [dlltool])
+AC_PATH_TOOL([STRIP], [strip], [true])
 
 AC_LANG([C])
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-12 13:24-0300\n"
+"POT-Creation-Date: 2020-10-17 11:58-0300\n"
 "PO-Revision-Date: 2020-09-03 18:36-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -65,7 +65,7 @@ msgstr "%s: Caractere desconhecido depois de \\pf"
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
 
-#: src/core/telnet.c:1896
+#: src/core/telnet.c:1902
 msgid "3270 Mode"
 msgstr "Modo 3270"
 
@@ -258,7 +258,7 @@ msgstr "Não foi possível decodificar dados do CRL"
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/core/connect.c:188
+#: src/core/connect.c:201
 msgid "Can't determine the TLS/SSL state"
 msgstr "Não foi possível determinar o estado TLS/SSL"
 
@@ -368,7 +368,7 @@ msgstr "Falha na assinatura do certificado"
 msgid "Change screen size on alternative screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
-#: src/core/telnet.c:1901
+#: src/core/telnet.c:1907
 msgid "Charset"
 msgstr "Tabela de caracteres"
 
@@ -388,7 +388,7 @@ msgstr "Clear AID"
 msgid "Command incomplete: file transfer canceled"
 msgstr "Comando incompleto, transferência cancelada"
 
-#: src/core/telnet.c:1895
+#: src/core/telnet.c:1901
 msgid "Connect"
 msgstr "Conectar"
 
@@ -396,11 +396,11 @@ msgstr "Conectar"
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
-#: src/core/telnet.c:1873
+#: src/core/telnet.c:1879
 msgid "Connected initial"
 msgstr "Connected initial"
 
-#: src/core/telnet.c:1893
+#: src/core/telnet.c:1899
 msgid "Connecting"
 msgstr "Conectando"
 
@@ -426,15 +426,15 @@ msgstr "Continuar"
 msgid "Cross hair cursor"
 msgstr "Cursor mira"
 
-#: src/core/properties/unsigned.c:122
+#: src/core/properties/unsigned.c:114
 msgid "Current screen height in rows"
 msgstr "Altura atual da tela em linhas"
 
-#: src/core/properties/unsigned.c:115
+#: src/core/properties/unsigned.c:107
 msgid "Current screen width in columns"
 msgstr "Largura atua da tela em colunas"
 
-#: src/core/properties/unsigned.c:108
+#: src/core/properties/signed.c:67
 msgid "Cursor address"
 msgstr "Endereço do cursor"
 
@@ -496,7 +496,7 @@ msgstr "Apaga palavra"
 msgid "Description of the current security state"
 msgstr "Descrição do estado de segurança atual"
 
-#: src/core/telnet.c:1238
+#: src/core/telnet.c:1244
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
@@ -589,12 +589,12 @@ msgstr "Erro ao enviar dados para o servidor"
 msgid "Error"
 msgstr "Erro"
 
-#: src/core/ft/ft_cut.c:423 src/core/ft/ft_dft.c:454
+#: src/core/ft/ft_dft.c:454 src/core/ft/ft_cut.c:423
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_cut.c:528 src/core/ft/ft_dft.c:332
+#: src/core/ft/ft_dft.c:332 src/core/ft/ft_cut.c:528
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
@@ -631,7 +631,7 @@ msgstr "Erro ao gravar arquivo no host, transferência cancelada"
 msgid "Error writing to host"
 msgstr "Erro enviando dados para o servidor"
 
-#: src/core/telnet.c:1900
+#: src/core/telnet.c:1906
 msgid "Exiting"
 msgstr "Saindo"
 
@@ -687,7 +687,7 @@ msgstr "Tela formatada"
 msgid "Full Screen"
 msgstr "Tela cheia"
 
-#: src/core/telnet.c:1894
+#: src/core/telnet.c:1900
 msgid "Half connect"
 msgstr "Half connect"
 
@@ -703,7 +703,7 @@ msgstr "Página de código do host"
 msgid "Host disconnected, transfer cancelled"
 msgstr "Servidor desconectou, transferência cancelada"
 
-#: src/core/telnet.c:1296
+#: src/core/telnet.c:1302
 msgid "Host illegally added function(s)"
 msgstr "Host illegally added function(s)"
 
@@ -711,11 +711,11 @@ msgstr "Host illegally added function(s)"
 msgid "Host program error code xxxxxxxxxx: file transfer canceled"
 msgstr "Erro código xxxxxxxxxx no aplicativo do host: Transferência cancelada"
 
-#: src/core/telnet.c:1221
+#: src/core/telnet.c:1227
 msgid "Host rejected device type or request type"
 msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 
-#: src/core/telnet.c:1234
+#: src/core/telnet.c:1240
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
@@ -735,7 +735,7 @@ msgstr "IBM AS/400"
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/core/properties/signed.c:73
+#: src/core/properties/signed.c:81
 msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
@@ -893,7 +893,7 @@ msgstr "Uso da chave não permite assinatura de certificados"
 msgid "Keyboard is locked"
 msgstr "Teclado está bloqueado"
 
-#: src/core/properties/unsigned.c:166
+#: src/core/properties/unsigned.c:158
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
@@ -907,7 +907,7 @@ msgstr "Pesquisa LDAP não produziu nenhum atributo."
 msgid "LDAPSearch did not produce any values."
 msgstr "Pesquisa LDAP não produziu nenhum valor."
 
-#: src/core/properties/signed.c:66
+#: src/core/properties/signed.c:74
 msgid "Latest program message"
 msgstr "Última mensagem de programa"
 
@@ -915,7 +915,7 @@ msgstr "Última mensagem de programa"
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/core/telnet.c:1897
+#: src/core/telnet.c:1903
 msgid "Line mode"
 msgstr "Line mode"
 
@@ -927,11 +927,11 @@ msgstr "Bloqueia teclado em caso de erro do operador"
 msgid "Margined paste"
 msgstr "Colar com margem"
 
-#: src/core/properties/unsigned.c:136
+#: src/core/properties/unsigned.c:128
 msgid "Maximum screen height in rows"
 msgstr "Altura máxima da tela em linhas"
 
-#: src/core/properties/unsigned.c:129
+#: src/core/properties/unsigned.c:121
 msgid "Maximum screen width in columns"
 msgstr "Largura maxima da tela em colunas"
 
@@ -992,8 +992,8 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:314 src/core/windows/connect.c:232
-#: src/core/windows/event_dispatcher.c:150
+#: src/core/telnet.c:314 src/core/windows/event_dispatcher.c:150
+#: src/core/windows/connect.c:232
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1100,7 +1100,7 @@ msgstr "Colar com margem esquerda"
 msgid "Path length constraint exceeded"
 msgstr "Path length constraint exceeded"
 
-#: src/core/telnet.c:1872
+#: src/core/telnet.c:1878
 msgid "Pending"
 msgstr "Pendente"
 
@@ -1120,7 +1120,7 @@ msgstr "Campo anterior"
 msgid "Previous word"
 msgstr "Palavra anterior"
 
-#: src/core/telnet.c:1899
+#: src/core/telnet.c:1905
 msgid "Printer"
 msgstr "Impressão"
 
@@ -1216,7 +1216,7 @@ msgstr "RPQ: Erro em gethostbyname"
 msgid "Reconnect to the same host"
 msgstr "Reconecta ao mesmo servidor"
 
-#: src/core/telnet.c:1898
+#: src/core/telnet.c:1904
 msgid "Remodel"
 msgstr "Remodel"
 
@@ -1248,7 +1248,7 @@ msgstr "Reinicia bloqueio de teclado"
 msgid "Resize on alternate screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
-#: src/core/telnet.c:1871 src/core/telnet.c:1892
+#: src/core/telnet.c:1877 src/core/telnet.c:1898
 msgid "Resolving"
 msgstr "Resolvendo"
 
@@ -1272,7 +1272,7 @@ msgstr "Conexão SSL falhou"
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
-#: src/core/properties/unsigned.c:143
+#: src/core/properties/unsigned.c:135
 msgid "Screen buffer length in bytes"
 msgstr "Tamanho do buffer de tela em bytes"
 
@@ -1412,31 +1412,31 @@ msgstr "Sys Req"
 msgid "Sys Request"
 msgstr "Sys Request"
 
-#: src/core/telnet.c:1050
+#: src/core/telnet.c:1056
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
 
-#: src/core/telnet.c:1875
+#: src/core/telnet.c:1881
 msgid "TN3270 3270"
 msgstr "TN3270 3270"
 
-#: src/core/telnet.c:1874
+#: src/core/telnet.c:1880
 msgid "TN3270 NVT"
 msgstr "TN3270 NVT"
 
-#: src/core/telnet.c:1876
+#: src/core/telnet.c:1882
 msgid "TN3270E"
 msgstr "TN3270E"
 
-#: src/core/telnet.c:1879
+#: src/core/telnet.c:1885
 msgid "TN3270E 3270"
 msgstr "TN3270E 3270"
 
-#: src/core/telnet.c:1877
+#: src/core/telnet.c:1883
 msgid "TN3270E NVT"
 msgstr "TN3270E NVT"
 
-#: src/core/telnet.c:1878
+#: src/core/telnet.c:1884
 msgid "TN3270E SSCP-LU"
 msgstr "TN3270E SSCP-LU"
 
@@ -1623,7 +1623,7 @@ msgstr ""
 "name did not match the issuer name of the current certificate. Only "
 "displayed when the -issuer_checks option is set."
 
-#: src/core/properties/unsigned.c:159
+#: src/core/properties/unsigned.c:151
 msgid "The delay between the host unlocking the keyboard and the actual unlock"
 msgstr ""
 "Intervalo de tempo entre o desbloqueio de teclado pelo host e o desbloqueio "
@@ -1677,7 +1677,7 @@ msgstr "Nº do modelo"
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
 
-#: src/core/connect.c:189
+#: src/core/connect.c:202
 msgid ""
 "The network module didn't set the TLS/SSL state message, this is not "
 "supposed to happen and can be a coding error"
@@ -1851,8 +1851,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_cut.c:400 src/core/ft/ft_cut.c:495 src/core/ft/ft_dft.c:230
-#: src/core/ft/ft_dft.c:373
+#: src/core/ft/ft_dft.c:230 src/core/ft/ft_dft.c:373 src/core/ft/ft_cut.c:400
+#: src/core/ft/ft_cut.c:495
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 
@@ -1933,7 +1933,7 @@ msgstr "Não foi possível enviar a requisição de transferência de arquivo"
 msgid "Unable to verify the first certificate"
 msgstr "Não foi possível verificar o primeiro certificado"
 
-#: src/core/telnet.c:1870
+#: src/core/telnet.c:1876
 msgid "Unconnected"
 msgstr "Não conectado"
 
@@ -1954,7 +1954,7 @@ msgstr "Erro inesperado gravando socket"
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
 
-#: src/core/telnet.c:1883 src/core/telnet.c:1905
+#: src/core/telnet.c:1889 src/core/telnet.c:1911
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -1981,7 +1981,7 @@ msgstr "PF %d desconhecida"
 msgid "Unknown frame type from host"
 msgstr "Servidor enviou tipo de frame desconhecido"
 
-#: src/core/properties/unsigned.c:158
+#: src/core/properties/unsigned.c:150
 msgid "Unlock delay"
 msgstr "Atraso no desbloqueio"
 

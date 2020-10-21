@@ -216,6 +216,7 @@
 	}
 
 	trace_ssl(hSession, "%s","Running SSL_connect\n");
+	hSession->ssl.error = 0;
 	int rv = SSL_connect(context->con);
 	trace_ssl(hSession, "SSL_connect exits with rc=%d\n",rv);
 
@@ -223,13 +224,14 @@
 	{
 		LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_ERROR,
-			.title = N_( "SSL Connect failed" ),
-			.summary = N_("The client was unable to negotiate a secure connection with the host"),
+			.title = N_( "Connection failed" ),
+			.summary = N_("Unable to negotiate a secure connection with the host"),
 		};
 
-		int code = SSL_get_error(context->con,rv);
+		if(!hSession->ssl.error)
+			hSession->ssl.error = SSL_get_error(context->con,rv);
 
-		if(code == SSL_ERROR_SYSCALL) {
+		if(hSession->ssl.error == SSL_ERROR_SYSCALL) {
 
 			// Some I/O error occurred.
 			// The OpenSSL error queue may contain more information on the error.
@@ -248,12 +250,12 @@
 
 		} else {
 
-			message.body = ERR_reason_error_string(code);
+			message.body = ERR_reason_error_string(hSession->ssl.error);
 
 		}
 
-		debug("SSL_connect failed: %s (rc=%d)\n",message.body ? message.body : message.summary, code);
-		trace_ssl(hSession,"SSL_connect failed: %s (rc=%d)\n",message.body ? message.body : message.summary, code);
+		debug("SSL_connect failed: %s (rc=%d)\n",message.body ? message.body : message.summary, hSession->ssl.error);
+		trace_ssl(hSession,"SSL_connect failed: %s (rc=%d)\n",message.body ? message.body : message.summary, hSession->ssl.error);
 
 		hSession->ssl.message = &message;
 		return -1;

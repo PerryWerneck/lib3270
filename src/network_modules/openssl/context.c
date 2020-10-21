@@ -112,6 +112,16 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 				err_buf[0] = '\0';
 			}
 
+			debug("SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
+							ret,
+							err_buf,
+							SSL_state_string_long(s),
+							SSL_alert_type_string_long(ret)
+						);
+
+			hSession->ssl.error = e;
+			debug("hSession->ssl.error=%d",hSession->ssl.error);
+
 			trace_ssl(hSession,"SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
 							ret,
 							err_buf,

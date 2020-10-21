@@ -10,9 +10,9 @@ Installation repositories
 
  You can find instalation repositories in SuSE Build Service:
 
- * Linux (Many distributions): https://build.opensuse.org/project/show/home:PerryWerneck:pw3270
- * Windows 32 bits: https://build.opensuse.org/project/show/home:PerryWerneck:mingw32
- * Windows 64 bits: https://build.opensuse.org/project/show/home:PerryWerneck:mingw64
+ * Linux: https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270
+ * Windows cross (32 bits): https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=mingw32-lib3270
+ * Windows cross (64 bits): https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=mingw64-lib3270
 
 Building for Linux
 ==================
@@ -98,12 +98,12 @@ Windows native with MSYS2
 
 	* Add c:\msys64\usr\bin and c:\msys64\mingw64\bin to system path
 
-3. Install devel packages
+3. Install devel packages using pacman on mingw shell
 
 	```shell
 	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkg-config mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl
 	```
-	Afther thist close and reopen mingw shell.
+	Afther this close and reopen mingw shell.
 
 4. Get lib3270 sources from git using the mingw shell
 

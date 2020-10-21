@@ -67,12 +67,10 @@ MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
-GENMARSHAL=@GENMARSHAL@
-CONVERT=@CONVERT@
-OPTIPNG=@OPTIPNG@
 ZIP=@ZIP@
 DOXYGEN=@DOXYGEN@
 DLLTOOL=@DLLTOOL@
+STRIP=@STRIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -141,6 +139,11 @@ $(OBJDBG)/%.o: \
 
 	@$(CC) \
 		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CC) \
+		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
 		-o $@ -c $<
@@ -160,6 +163,12 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -213,6 +222,20 @@ install-%: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
+	all-@OSNAME@
+
+all-windows: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).a \
+	locale/$(PACKAGE_NAME).pot \
+	$(BINRLS)/$(LIBNAME).delayed.a
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).def \
+		$(BASEDIR)/win
+
+
+all-linux: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).a \
 	locale/$(PACKAGE_NAME).pot
@@ -220,6 +243,11 @@ all: \
 Release: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).a
+
+strip: \
+	$(BINRLS)/$(SONAME)
+
+	@$(STRIP) --discard-all $(BINRLS)/$(SONAME)
 
 $(BINRLS)/$(LIBNAME).delayed.a: \
 	$(BINRLS)/$(SONAME)
@@ -275,7 +303,7 @@ install-linux-lib: \
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
 
 install-windows-lib: \
-	$(BINRLS)/$(SONAME) \
+	strip \
 	$(BINRLS)/$(LIBNAME).dll.a \
 	install-locale
 
@@ -494,4 +522,6 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).d)
 

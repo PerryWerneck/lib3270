@@ -67,6 +67,8 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_ex_index);
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
+	debug("************************ %s where=%d",__FUNCTION__,where);
+
 	switch(where)
 	{
 	case SSL_CB_CONNECT_LOOP:
@@ -125,12 +127,10 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 		trace_ssl(hSession,"SSL Current state is \"%s\"\n",context->state.message);
 	}
 
-#ifdef DEBUG
 	if(where & SSL_CB_EXIT)
 	{
-		trace("%s: SSL_CB_EXIT ret=%d\n",__FUNCTION__,ret);
+		trace_ssl(hSession,"SSL_CB_EXIT ret=%d\n",ret);
 	}
-#endif
 
 	if(where & SSL_CB_ALERT)
 	{

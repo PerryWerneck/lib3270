@@ -221,19 +221,39 @@
 
 	if (rv != 1)
 	{
+		LIB3270_SSL_MESSAGE message = {
+			.type = LIB3270_NOTIFY_ERROR,
+			.title = N_( "SSL Connect failed" ),
+			.summary = N_("The client was unable to negotiate a secure connection with the host"),
+		};
+
 		int code = SSL_get_error(context->con,rv);
 
-		if(code == SSL_ERROR_SYSCALL && hSession->ssl.error)
-			code = hSession->ssl.error;
-		else
-			hSession->ssl.error = code;
+		if(code == SSL_ERROR_SYSCALL) {
 
-		trace_ssl(hSession,"SSL_connect failed: %s\n",ERR_reason_error_string(code));
+			// Some I/O error occurred.
+			// The OpenSSL error queue may contain more information on the error.
+			// If the error queue is empty (i.e. ERR_get_error() returns 0), ret
+			// can be used to find out more about the error:
+			// If ret == 0, an EOF was observed that violates the protocol.
+			// If ret == -1, the underlying BIO reported an I/O error
+			// (for socket I/O on Unix systems, consult errno for details).
 
-		static const LIB3270_SSL_MESSAGE message = {
-			.summary = N_( "SSL Connect failed" ),
-			.body = N_("The client was unable to negotiate a secure connection with the host")
-		};
+			if(rv == 0) {
+				message.body = N_("An EOF was observed that violates the protocol");
+			} else if(errno)
+				message.body = strerror(errno);
+			else
+				message.body = N_("Unexpected I/O error");
+
+		} else {
+
+			message.body = ERR_reason_error_string(code);
+
+		}
+
+		debug("SSL_connect failed: %s (rc=%d)\n",message.body ? message.body : message.summary, code);
+		trace_ssl(hSession,"SSL_connect failed: %s (rc=%d)\n",message.body ? message.body : message.summary, code);
 
 		hSession->ssl.message = &message;
 		return -1;

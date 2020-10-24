@@ -2152,10 +2152,13 @@ void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, in
 		int offset;
 		int col = 0;
 
-        time_t  ltime;
+		{
+			time_t ltime;
+			struct tm tm;
+			time(&ltime);
+			strftime(l1, 81, "%x %X", localtime_r(&ltime,&tm));
+		}
 
-        time(&ltime);
-        strftime(l1, 81, "%x %X", localtime(&ltime));
 		lib3270_write_nettrace(hSession,"%c %s %s data len=%d\n\n",direction,l1,direction == '>' ? "SEND" : "RECV", len);
 
 		for (offset = 0; offset < len; offset++)

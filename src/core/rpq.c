@@ -376,9 +376,7 @@ static Boolean select_rpq_terms(H3270 *hSession)
 	return False;
 }
 
-/**
- * @brief Utility function used by the RPQNAMES query reply.
- */
+/// @brief Utility function used by the RPQNAMES query reply.
 static int get_rpq_timezone(H3270 *hSession)
 {
 	/*
@@ -394,7 +392,7 @@ static int get_rpq_timezone(H3270 *hSession)
 	 */
 	time_t here;
 	struct tm here_tm;
-	struct tm *utc_tm;
+	struct tm utc_tm;
 	double delta;
 	char *p1, *p2;
 	struct rpq_keyword *kw;
@@ -440,22 +438,31 @@ static int get_rpq_timezone(H3270 *hSession)
 		}
 
 
-//		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
-		localtime_r(&here, &here_tm);
+		localtime_r(&here,&here_tm);
 
-		if ((utc_tm = gmtime(&here)) == NULL)
+		if(gmtime_r(&here,&utc_tm) == NULL)
 		{
 			rpq_warning(hSession, _("RPQ: Unable to determine workstation UTC time"));
 			return 2;
 		}
 
 		/*
+		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
+
+		if ((utc_tm = gmtime(&here)) == NULL)
+		{
+			rpq_warning(hSession, _("RPQ: Unable to determine workstation UTC time"));
+			return 2;
+		}
+		*/
+
+		/*
 	 	 * Do not take Daylight Saving Time into account.
 	 	 * We just want the "raw" time difference.
 	 	 */
 		here_tm.tm_isdst = 0;
-		utc_tm->tm_isdst = 0;
-		delta = difftime(mktime(&here_tm), mktime(utc_tm)) / 60L;
+		utc_tm.tm_isdst = 0;
+		delta = difftime(mktime(&here_tm), mktime(&utc_tm)) / 60L;
 	}
 
 	// sanity check: difference cannot exceed +/- 12 hours

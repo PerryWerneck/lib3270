@@ -2364,8 +2364,13 @@ void ctlr_clear(H3270 *session, Boolean can_snap)
 
 #endif
 
-	/* Clear the screen. */
-	(void) memset((char *)session->ea_buf, 0, session->view.rows * session->view.cols * sizeof(struct lib3270_ea));
+	// Clear the screen.
+	(void) memset(
+				(char *)session->ea_buf,
+				0,
+				((size_t)session->view.rows) * ((size_t) session->view.cols) * sizeof(struct lib3270_ea)
+			);
+
 	cursor_move(session,0);
 	session->buffer_addr = 0;
 

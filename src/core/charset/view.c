@@ -58,7 +58,11 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 
 	trace("%s","Showing charset table");
 
-	(void) memset((char *) hSession->ea_buf, 0, hSession->view.rows * hSession->view.cols * sizeof(struct lib3270_ea));
+	(void) memset(
+				(char *) hSession->ea_buf,
+				0,
+				((size_t) hSession->view.rows) * ((size_t) hSession->view.cols) * sizeof(struct lib3270_ea)
+			);
 
 	baddr = margin_left+hSession->max.cols;
 	s = (hSession->max.cols * 0x11);

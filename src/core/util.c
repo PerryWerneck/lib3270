@@ -264,7 +264,15 @@ void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 
 	lib3270_write_log(hSession, "3270", "Error Popup:\n%s\nrc=%d (%s)",text,errn,strerror(errn));
 
-	lib3270_popup_dialog(hSession, LIB3270_NOTIFY_ERROR, _( "Error" ), text, "%s (rc=%d)", errn, strerror(errn));
+	lib3270_popup_dialog(
+			hSession,
+			LIB3270_NOTIFY_ERROR,
+			_( "Error" ),
+			text,
+			"%s (rc=%d)",
+				strerror(errn),
+				errn
+			);
 
 	lib3270_free(text);
 

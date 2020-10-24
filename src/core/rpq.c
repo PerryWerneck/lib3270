@@ -438,7 +438,10 @@ static int get_rpq_timezone(H3270 *hSession)
 			rpq_warning(hSession, _("RPQ: Unable to determine workstation local time"));
 			return 1;
 		}
-		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
+
+
+//		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
+		localtime_r(&here, &here_tm);
 
 		if ((utc_tm = gmtime(&here)) == NULL)
 		{

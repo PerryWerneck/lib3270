@@ -20,7 +20,7 @@ Building for Linux
 1. Get lib3270 sources from git
 
 	```shell
-	$ git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./lib3270
+	$ git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 	```
 
 2. Install the required libraries

@@ -2154,9 +2154,14 @@ void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, in
 
 		{
 			time_t ltime;
-			struct tm tm;
 			time(&ltime);
+
+#ifdef HAVE_LOCALTIME_R
+			struct tm tm;
 			strftime(l1, 81, "%x %X", localtime_r(&ltime,&tm));
+#else
+			strftime(l1, 81, "%x %X", localtime(&ltime));
+#endif // HAVE_LOCALTIME_R
 		}
 
 		lib3270_write_nettrace(hSession,"%c %s %s data len=%d\n\n",direction,l1,direction == '>' ? "SEND" : "RECV", len);

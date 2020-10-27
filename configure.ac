@@ -539,6 +539,7 @@ AC_CHECK_HEADER(syslog.h, AC_DEFINE(HAVE_SYSLOG,,[do we have syslog.h?]))
 AC_CHECK_FUNCS(getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO) )
 AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )
 AC_CHECK_FUNC(strtok_r, AC_DEFINE(HAVE_STRTOK_R) )
+AC_CHECK_FUNC(localtime_r, AC_DEFINE(HAVE_LOCALTIME_R) )
 
 AC_ARG_WITH([inet-ntop], [AS_HELP_STRING([--with-inet-ntop], [Assume that inet_nto() is available])], [ app_cv_inet_ntop="$withval" ],[ app_cv_inet_ntop="auto" ])
 

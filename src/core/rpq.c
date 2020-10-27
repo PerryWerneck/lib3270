@@ -273,9 +273,7 @@ void do_qr_rpqnames(H3270 *hSession)
 	rpq_dump_warnings(hSession);
 }
 
-/**
- * @brief Utility function used by the RPQNAMES query reply.
- */
+/// @brief Utility function used by the RPQNAMES query reply.
 static Boolean select_rpq_terms(H3270 *hSession)
 {
 	int i,j,k,len;
@@ -438,6 +436,8 @@ static int get_rpq_timezone(H3270 *hSession)
 		}
 
 
+#ifdef HAVE_LOCALTIME_R
+
 		localtime_r(&here,&here_tm);
 
 		if(gmtime_r(&here,&utc_tm) == NULL)
@@ -446,23 +446,27 @@ static int get_rpq_timezone(H3270 *hSession)
 			return 2;
 		}
 
-		/*
-		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
+#else
 
-		if ((utc_tm = gmtime(&here)) == NULL)
+		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
+		struct tm * _tm = gmtime(&here);
+
+		if(_tm == NULL)
 		{
 			rpq_warning(hSession, _("RPQ: Unable to determine workstation UTC time"));
 			return 2;
 		}
-		*/
 
-		/*
-	 	 * Do not take Daylight Saving Time into account.
-	 	 * We just want the "raw" time difference.
-	 	 */
+		memcpy(&utc_tm,_tm,sizeof(struct tm));
+
+#endif // HAVE_LOCALTIME_R
+
+		// Do not take Daylight Saving Time into account.
+		// We just want the "raw" time difference.
 		here_tm.tm_isdst = 0;
 		utc_tm.tm_isdst = 0;
 		delta = difftime(mktime(&here_tm), mktime(&utc_tm)) / 60L;
+
 	}
 
 	// sanity check: difference cannot exceed +/- 12 hours
@@ -480,20 +484,20 @@ static int get_rpq_timezone(H3270 *hSession)
  */
 static int get_rpq_user(H3270 *hSession, unsigned char buf[], const int buflen)
 {
-	/*
-	 * Text may be specified in one of two ways, but not both.
-	 * An environment variable provides the user interface:
-	 *    - X3270RPQ: Keyword USER=
-	 *
-	 *    NOTE: If the string begins with 0x then no ASCII/EBCDIC
-	 *    translation is done.  The hex characters will be sent as true hex
-	 *    data.  E.g., X3270RPQ="user=0x ab 12 EF" will result in 3 bytes
-	 *    sent as 0xAB12EF.  White space is optional in hex data format.
-	 *    When hex format is required, the 0x prefix must be the first two
-	 *    characters of the string.  E.g., X3270RPQ="user= 0X AB" will
-	 *    result in 6 bytes sent as 0x40F0E740C1C2 because the text is
-	 *    accepted "as is" then translated from ASCII to EBCDIC.
-	 */
+	//
+	// Text may be specified in one of two ways, but not both.
+	// An environment variable provides the user interface:
+	//    - X3270RPQ: Keyword USER=
+	//
+	//    NOTE: If the string begins with 0x then no ASCII/EBCDIC
+	//    translation is done.  The hex characters will be sent as true hex
+	//    data.  E.g., X3270RPQ="user=0x ab 12 EF" will result in 3 bytes
+	//    sent as 0xAB12EF.  White space is optional in hex data format.
+	//    When hex format is required, the 0x prefix must be the first two
+	//    characters of the string.  E.g., X3270RPQ="user= 0X AB" will
+	//    result in 6 bytes sent as 0x40F0E740C1C2 because the text is
+	//    accepted "as is" then translated from ASCII to EBCDIC.
+	//
 	const char *rpqtext = CN;
 	int x;
 	struct rpq_keyword *kw;

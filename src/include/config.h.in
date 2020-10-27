@@ -94,6 +94,7 @@
 	#undef HAVE_PRINTER
 	#undef HAVE_MALLOC_H
 	#undef HAVE_STRTOK_R
+	#undef HAVE_LOCALTIME_R
 
 #endif /* LIB3270_CONFIG_INCLUDED */
 

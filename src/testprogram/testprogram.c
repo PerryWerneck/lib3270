@@ -91,10 +91,11 @@ int main(int argc, char *argv[])
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 	static struct option options[] = {
-		{ "crl",		required_argument,	0,	'C' },
-		{ "url",		required_argument,	0,	'U' },
-		{ "tracefile",	required_argument,	0,	't' },
-		{ "reconnect",	no_argument,		0,	'r' },
+		{ "crl",					required_argument,	0,	'C' },
+		{ "disable-crl-download",	no_argument,		0,	'D' },
+		{ "url",					required_argument,	0,	'U' },
+		{ "tracefile",				required_argument,	0,	't' },
+		{ "reconnect",				no_argument,		0,	'r' },
 
 		{ 0, 0, 0, 0}
 
@@ -122,6 +123,10 @@ int main(int argc, char *argv[])
 		switch(opt) {
 		case 'U':
 			lib3270_set_url(h,optarg);
+			break;
+
+		case 'D':
+			lib3270_ssl_set_crl_download(h,0);
 			break;
 
 //		case 'C':

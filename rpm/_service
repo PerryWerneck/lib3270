@@ -11,8 +11,7 @@
   
 	<!-- https://github.com/openSUSE/obs-service-extract_file -->
 	
-    <!--
-    <service name="extract_file">
+    	<service name="extract_file">
 		<param name="archive">*.tar</param>
 		<param name="files">*/rpm/lib3270.spec</param>
 	</service>
@@ -68,7 +67,6 @@
 		<param name="files">*/debian/postrm</param>
 		<param name="outfilename">debian.postrm</param>
 	</service>
-	-->
 
 	<service name="recompress">
 		<param name="file">*.tar</param>

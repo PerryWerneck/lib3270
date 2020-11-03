@@ -21,6 +21,7 @@ Name:           lib3270
 Version:        5.3
 Release:        0
 Summary:        TN3270 Access library
+Group:          Development/Libraries/C and C++
 License:        LGPL-3.0-only
 URL:            https://github.com/PerryWerneck/lib3270
 Source:         %{name}-%{version}.tar.xz
@@ -55,6 +56,7 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package -n %{name}-%{_libvrs}
 Summary:    TN3270 Access library
+Group:      Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
@@ -64,6 +66,7 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 %package devel
 Summary:    TN3270 Access library development files
 Requires:   %{name}-%{_libvrs} = %{version}
+Group:      Development/Libraries/C and C++
 
 %description devel
 Header files for the TN3270 access library.

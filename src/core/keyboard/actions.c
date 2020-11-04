@@ -57,7 +57,7 @@ struct ta;
 
 #include <fcntl.h>
 #include "3270ds.h"
-#include "resources.h"
+//#include "resources.h"
 
 #include "ansic.h"
 #include "ctlrc.h"
@@ -71,7 +71,7 @@ struct ta;
 #include "telnetc.h"
 #include "togglesc.h"
 #include "trace_dsc.h"
-#include "utf8c.h"
+//#include "utf8c.h"
 #include "utilc.h"
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"

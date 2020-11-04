@@ -128,16 +128,6 @@ enum iaction {
 	IA_IDLE
 };
 
-// Version strings
-/*
-LIB3270_INTERNAL const char * build;
-LIB3270_INTERNAL const char * app_defaults_version;
-LIB3270_INTERNAL const char * sccsid;
-LIB3270_INTERNAL const char * build_rpq_timestamp;
-LIB3270_INTERNAL const char * build_rpq_version;
-LIB3270_INTERNAL const char * build_rpq_revision;
-*/
-
 #if defined(X3270_DBCS) /*[*/
 	LIB3270_INTERNAL Boolean		dbcs;
 #endif /*]*/
@@ -354,21 +344,20 @@ struct _h3270
 	int						  onlcr						: 1;
 	int						  bsd_tm					: 1;
 	int 					  syncing					: 1;
-	int						  reverse 					: 1;	/**< @brief reverse-input mode */
+	int						  reverse                   : 1;    ///< @brief reverse-input mode
 	int						  dbcs						: 1;
 	int             		  linemode					: 1;
 	int						  trace_skipping			: 1;
 	int						  need_tls_follows			: 1;
 	int						  cut_xfer_in_progress		: 1;
-//		int						  auto_keymap				: 1;
-	int						  formatted					: 1;	/**< @brief Formatted screen flag */
-	int						  starting					: 1;	/**< @brief Is starting (no first screen)? */
+	int						  formatted					: 1;	///< @brief Formatted screen flag
+	int						  starting					: 1;	///< @brief Is starting (no first screen)?
 
 	struct lib3270_toggle
 	{
-		char value;																		/**< toggle value */
-		void (*upcall)(H3270 *, const struct lib3270_toggle *, LIB3270_TOGGLE_TYPE);	/**< change value */
-	}						  toggle[LIB3270_TOGGLE_COUNT];
+		char value;																		///< toggle value
+		void (*upcall)(H3270 *, const struct lib3270_toggle *, LIB3270_TOGGLE_TYPE);	///< change value
+	} toggle[LIB3270_TOGGLE_COUNT];
 
 	// Network & Termtype
 	char					* connected_type;

@@ -255,7 +255,6 @@
 		</Unit>
 		<Unit filename="src/include/3270ds.h" />
 		<Unit filename="src/include/X11keysym.h" />
-		<Unit filename="src/include/action_table.h" />
 		<Unit filename="src/include/ansic.h" />
 		<Unit filename="src/include/arpa_telnet.h" />
 		<Unit filename="src/include/array.h" />
@@ -271,7 +270,6 @@
 		<Unit filename="src/include/hostc.h" />
 		<Unit filename="src/include/internals.h" />
 		<Unit filename="src/include/kybdc.h" />
-		<Unit filename="src/include/lib3270++.h" />
 		<Unit filename="src/include/lib3270.h" />
 		<Unit filename="src/include/lib3270/actions.h" />
 		<Unit filename="src/include/lib3270/charset.h" />

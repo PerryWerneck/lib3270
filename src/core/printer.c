@@ -58,7 +58,7 @@
 #include "3270ds.h"
 #include "appres.h"
 #include "objects.h"
-#include "resources.h"
+//#include "resources.h"
 
 #include "charsetc.h"
 #include "ctlrc.h"

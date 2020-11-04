@@ -43,7 +43,7 @@
 
 #include <internals.h>
 #include <stdlib.h>
-#include "resources.h"
+//#include "resources.h"
 
 #include "hostc.h"
 #include "statusc.h"

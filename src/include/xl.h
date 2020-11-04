@@ -17,9 +17,11 @@
  *		DBCS translation table structure.
  */
 
+ /*
 typedef struct {
 	unsigned n;
 	unsigned short *data;
 } xl_t;
 
 #define XL_SIZE(e)	((sizeof(e)/sizeof(e[0]))/3)
+*/

@@ -46,7 +46,7 @@
 #include <stdlib.h>
 #include "3270ds.h"
 #include "screen.h"
-#include "resources.h"
+//#include "resources.h"
 
 #include "ctlrc.h"
 #include "ftc.h"

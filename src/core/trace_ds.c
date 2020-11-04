@@ -53,7 +53,7 @@
 #include <stdarg.h>
 #include <fcntl.h>
 #include "3270ds.h"
-#include "resources.h"
+//#include "resources.h"
 
 // #include "charsetc.h"
 #include "ctlrc.h"

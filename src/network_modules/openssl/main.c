@@ -186,6 +186,10 @@ static int openssl_network_getsockname(const H3270 *hSession, struct sockaddr *a
 	return getsockname(hSession->network.context->sock, addr, addrlen);
 }
 
+static int openssl_network_getpeername(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {
+	return getpeername(hSession->network.context->sock, addr, addrlen);
+}
+
 static void * openssl_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata) {
 	return lib3270_add_poll_fd(hSession,hSession->network.context->sock,flag,call,userdata);
 }
@@ -346,6 +350,7 @@ void lib3270_set_libssl_network_module(H3270 *hSession) {
 		.non_blocking = openssl_network_non_blocking,
 		.is_connected = openssl_network_is_connected,
 		.getsockname = openssl_network_getsockname,
+		.getpeername = openssl_network_getpeername,
 		.setsockopt = openssl_network_setsockopt,
 		.getsockopt = openssl_network_getsockopt,
 		.getcert = openssl_network_getcert,

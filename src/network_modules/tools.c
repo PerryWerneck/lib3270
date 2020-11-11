@@ -263,3 +263,16 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 
     return EINVAL;
  }
+
+ LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
+ {
+   FAIL_IF_NOT_ONLINE(hSession);
+	return hSession->network.module->getpeername(hSession, addr, addrlen);
+ }
+
+ LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
+ {
+    FAIL_IF_NOT_ONLINE(hSession);
+	return hSession->network.module->getsockname(hSession, addr, addrlen);
+ }
+

@@ -142,13 +142,21 @@
 		/// @retval 0	The session is offline.
 		int (*is_connected)(const H3270 *hSession);
 
-		/// @brief get socket name.
+		/// @brief Get socket name.
 		///
 		/// @return On success, zero is returned.  On error, -1 is returned, and errno is set appropriately.
 		///
 		/// @retval 0	Success.
 		/// @retval -1	Error (errno is set).
 		int (*getsockname)(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
+
+		/// @brief Get name of connected peer socket.
+		///
+		/// @return On success, zero is returned.  On error, -1 is returned, and errno is set appropriately.
+		///
+		/// @retval 0	Success.
+		/// @retval -1	Error (errno is set).
+		int (*getpeername)(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 
 		/// @brief Set socket options.
 		int (*setsockopt)(H3270 *hSession, int level, int optname, const void *optval, size_t optlen);

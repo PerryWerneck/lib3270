@@ -34,6 +34,7 @@
 
  #include "private.h"
  #include <lib3270/properties.h>
+ #include <utilc.h>
 
  static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *url) {
 
@@ -152,9 +153,11 @@
 		if(strncasecmp(prefer,uris->str[ix],length))
 			continue;
 
-		debug("Trying %s",uris->str[ix]);
-		if(!import_crl(hSession,ctx_context,context,uris->str[ix])) {
-			trace_ssl(hSession,"Got CRL from %s\n",uris->str[ix]);
+		lib3270_autoptr(char) url = lib3270_unescape(uris->str[ix]);
+		debug("Trying %s",url);
+
+		if(!import_crl(hSession,ctx_context,context,url)) {
+			trace_ssl(hSession,"Got CRL from %s\n",url);
 			return;
 		}
 

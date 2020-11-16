@@ -205,7 +205,7 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 //			popup_an_error(session,"Invalid %s %dx%d:\nToo big",ResOversize, ovc, ovr);
 
 		}
-		else if (ovc > 0 && ovc < session->max.cols)
+		else if (ovc < session->max.cols)
 		{
 
 			lib3270_popup_dialog(
@@ -219,7 +219,7 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 
 //			popup_an_error(session,"Invalid %s cols (%d):\nLess than model %d cols (%d)",ResOversize, ovc, session->model_num, session->maxCOLS);
 		}
-		else if (ovr > 0 && ovr < session->max.rows)
+		else if (ovr < session->max.rows)
 		{
 
 			lib3270_popup_dialog(

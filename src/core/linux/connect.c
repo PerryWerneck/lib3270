@@ -89,7 +89,7 @@
 
 		case 1:
 			// Got response.
-			if(pfd.revents && POLLOUT) {
+			if(pfd.revents & POLLOUT) {
 				debug("%s: Connection complete",__FUNCTION__);
 				return 0;
 			}
@@ -194,15 +194,23 @@
 
 	if(hSession->network.module->getsockopt(hSession, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
 	{
-		int err = errno;
+		lib3270_autoptr(char) body = lib3270_strdup_printf(
+											_("The System error was '%s' (rc=%d)"),
+											strerror(errno),
+											errno
+										);
+
 		lib3270_disconnect(hSession);
-		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Network error" ),
-			_( "Unable to get connection state." ),
-			_( "The system error was %s" ), strerror(err)
-		);
+
+		LIB3270_POPUP popup = {
+			.type = LIB3270_NOTIFY_ERROR,
+			.title = _( "Network error" ),
+			.summary = _( "Unable to get connection state." ),
+			.body = body
+		};
+
+		lib3270_popup(hSession,&popup,0);
+
 		return;
 	}
 	else if(err)

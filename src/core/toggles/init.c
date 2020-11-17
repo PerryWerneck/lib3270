@@ -100,7 +100,7 @@ static void toggle_connect(H3270 *hSession, const struct lib3270_toggle *toggle,
 {
 	if(tt != LIB3270_TOGGLE_TYPE_INITIAL && lib3270_is_disconnected(hSession) && toggle->value)
 	{
-		if(lib3270_reconnect(hSession,0))
+		if(hSession->cbk.reconnect(hSession,0))
 			lib3270_write_log(hSession,"3270","Auto-connect fails: %s",strerror(errno));
 	}
 

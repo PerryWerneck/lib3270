@@ -305,6 +305,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
 	hSession->cbk.action				= default_action;
+	hSession->cbk.reconnect				= lib3270_reconnect;
 
 	lib3270_set_popup_handler(hSession, NULL);
 
@@ -551,9 +552,11 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession)
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz)
 {
-	if(revision && strcasecmp(revision,"20200803") < 0)
+	#define REQUIRED_REVISION "20201117"
+
+	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0)
 	{
-		debug("%s: Revision test was %d",__FUNCTION__,strcasecmp(revision,"20200803"));
+		debug("%s: Revision test was %d",__FUNCTION__,strcasecmp(revision,REQUIRED_REVISION));
 		errno = EINVAL;
 		return NULL;
 	}

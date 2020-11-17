@@ -556,13 +556,15 @@ struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0)
 	{
-		debug("%s: Revision test was %d",__FUNCTION__,strcasecmp(revision,REQUIRED_REVISION));
 		errno = EINVAL;
+		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid revision %s when setting callback table",revision);
 		return NULL;
 	}
 
 	if(sz != sizeof(struct lib3270_session_callbacks))
 	{
+
+		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid callback table (sz=%u expected=%u)",sz,(unsigned int) sizeof(struct lib3270_session_callbacks));
 		errno = EINVAL;
 		return NULL;
 	}

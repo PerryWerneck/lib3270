@@ -53,32 +53,6 @@
 
  }
 
-/*
- void connection_failed(H3270 *hSession, const char *message)
- {
-	lib3270_disconnect(hSession);
-
-	lib3270_autoptr(char) summary = lib3270_strdup_printf(
-										_( "Can't connect to %s:%s"),
-										hSession->host.current,
-										hSession->host.srvc
-									);
-
-	LIB3270_POPUP popup = {
-		.name = "CantConnect",
-//		.title = _( "Connection failed" ),
-		.type = LIB3270_NOTIFY_INFO,
-		.summary = summary,
-		.body = message,
-		.label = _("Try again")
-	};
-
-	if(hSession->cbk.popup(hSession,&popup,!hSession->auto_reconnect_inprogress) == 0)
-		lib3270_activate_auto_reconnect(hSession,1000);
-
- }
-*/
-
  int lib3270_allow_reconnect(const H3270 *hSession)
  {
 	//
@@ -103,7 +77,8 @@
 	// Do I have a defined host?
 	if(!(hSession->host.current && hSession->host.srvc && *hSession->host.current && *hSession->host.srvc))
 	{
-		errno = EINVAL;
+		debug("%s('%s')",__FUNCTION__,hSession->host.url);
+		errno = ENODATA;
 		return 0;
 	}
 

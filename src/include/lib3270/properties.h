@@ -275,6 +275,16 @@
 	 */
 	 LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h);
 
+	 /**
+	  * @brief Check if there's an active task.
+	  *
+	  * @param h	Session handle.
+	  *
+	  * @return Number of background tasks.
+	  *
+	  */
+	 LIB3270_EXPORT unsigned int lib3270_get_task_count(const H3270 *h);
+
 #ifdef __cplusplus
 	}
 #endif

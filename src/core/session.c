@@ -67,9 +67,24 @@ void lib3270_session_free(H3270 *h)
 	if(!h)
 		return;
 
-	// Terminate session
 	if(lib3270_is_connected(h))
+	{
+		// Connected, disconnect
 		lib3270_disconnect(h);
+	}
+	else if(lib3270_get_connection_state(h) == LIB3270_CONNECTING)
+	{
+		// Connecting, disconnect
+		debug("%s: Stopping while connecting",__FUNCTION__);
+		lib3270_disconnect(h);
+
+	}
+
+	// Do we have pending tasks?
+	if(h->tasks)
+	{
+		lib3270_write_log(h,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),"Destroying session with %u active task(s)",h->tasks);
+	}
 
 	shutdown_toggles(h);
 

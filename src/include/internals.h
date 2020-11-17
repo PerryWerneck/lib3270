@@ -674,6 +674,7 @@ struct _h3270
 
 	} listeners;
 
+	unsigned int tasks;
 
 };
 

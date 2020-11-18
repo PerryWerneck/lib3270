@@ -324,34 +324,34 @@ struct _h3270
 	// flags
 	LIB3270_HOST_TYPE		  host_type;						///< @brief Host type.
 
-	int					  	  selected					: 1;	///< @brief Has selected region?
-	int						  has_copy					: 1;	///< @brief Has copy?
-	int						  rectsel					: 1;	///< @brief Selected region is a rectangle ?
-	int						  vcontrol					: 1;	///< @brief Visible control ?
-	int						  modified_sel				: 1;
-	int						  mono						: 1;	///< @brief Forces monochrome display
-	int						  m3279						: 1;
-	int 					  extended					: 1;	///< @brief Extended data stream.
-	int						  typeahead					: 1;
-	int						  numeric_lock				: 1;
-	int						  oerr_lock					: 1;	///< @brief If true, operator errors will lock the keyboard.
-	int						  unlock_delay				: 1;	///< @brief If true the unlock delay feature is enabled. @see lib3270_set_unlock_delay
-	int			 			  auto_reconnect_inprogress	: 1;
+	unsigned int		  	  selected					: 1;	///< @brief Has selected region?
+	unsigned int			  has_copy					: 1;	///< @brief Has copy?
+	unsigned int			  rectsel					: 1;	///< @brief Selected region is a rectangle ?
+	unsigned int			  vcontrol					: 1;	///< @brief Visible control ?
+	unsigned int			  modified_sel				: 1;
+	unsigned int			  mono						: 1;	///< @brief Forces monochrome display
+	unsigned int			  m3279						: 1;
+	unsigned int 			  extended					: 1;	///< @brief Extended data stream.
+	unsigned int			  typeahead					: 1;
+	unsigned int			  numeric_lock				: 1;
+	unsigned int			  oerr_lock					: 1;	///< @brief If true, operator errors will lock the keyboard.
+	unsigned int			  unlock_delay				: 1;	///< @brief If true the unlock delay feature is enabled. @see lib3270_set_unlock_delay
+	unsigned int 			  auto_reconnect_inprogress	: 1;
 	unsigned int			  colors					: 5;
-	int						  apl_mode					: 1;	///< @brief If true enables APL mode.
-	int						  icrnl						: 1;
-	int						  inlcr						: 1;
-	int						  onlcr						: 1;
-	int						  bsd_tm					: 1;
-	int 					  syncing					: 1;
-	int						  reverse                   : 1;    ///< @brief reverse-input mode
-	int						  dbcs						: 1;
-	int             		  linemode					: 1;
-	int						  trace_skipping			: 1;
-	int						  need_tls_follows			: 1;
-	int						  cut_xfer_in_progress		: 1;
-	int						  formatted					: 1;	///< @brief Formatted screen flag
-	int						  starting					: 1;	///< @brief Is starting (no first screen)?
+	unsigned int			  apl_mode					: 1;	///< @brief If true enables APL mode.
+	unsigned int			  icrnl						: 1;
+	unsigned int			  inlcr						: 1;
+	unsigned int			  onlcr						: 1;
+	unsigned int			  bsd_tm					: 1;
+	unsigned int			  syncing					: 1;
+	unsigned int			  reverse                   : 1;    ///< @brief reverse-input mode
+	unsigned int			  dbcs						: 1;
+	unsigned int	   		  linemode					: 1;
+	unsigned int			  trace_skipping			: 1;
+	unsigned int			  need_tls_follows			: 1;
+	unsigned int			  cut_xfer_in_progress		: 1;
+	unsigned int			  formatted					: 1;	///< @brief Formatted screen flag
+	unsigned int			  starting					: 1;	///< @brief Is starting (no first screen)?
 
 	struct lib3270_toggle
 	{
@@ -440,9 +440,9 @@ struct _h3270
 	unsigned char			  default_cs;
 	unsigned char			  default_ic;
 	char					  reply_mode;
-	int 					  trace_primed 		: 1;
-	int						  ticking			: 1;
-	int						  mticking			: 1;
+	unsigned int 			  trace_primed 		: 1;
+	unsigned int			  ticking			: 1;
+	unsigned int			  mticking			: 1;
 	int						  crm_nattr;
 	unsigned char			  crm_attr[16];
 	unsigned char 			* zero_buf;				/**< @brief Empty buffer, for area clears */
@@ -532,9 +532,9 @@ struct _h3270
 	int						  dft_buffersize;		///< @brief Buffer size (LIMIN, LIMOUT)
 
 	// rpq.c
-	int						  rpq_complained : 1;
+	unsigned int			  rpq_complained : 1;
 #if !defined(_WIN32)
-	int						  omit_due_space_limit : 1;
+	unsigned int			  omit_due_space_limit : 1;
 #endif
 
 	char					* rpq_warnbuf;
@@ -557,28 +557,28 @@ struct _h3270
 	int						  once_cset;
 	int						  saved_cursor;
 
-	int						  held_wrap					: 1;
+	unsigned int			  held_wrap					: 1;
 
-	int						  insert_mode				: 1;
-	int						  auto_newline_mode			: 1;
+	unsigned int			  insert_mode				: 1;
+	unsigned int			  auto_newline_mode			: 1;
 
-	int						  appl_cursor				: 1;
-	int						  saved_appl_cursor			: 1;
+	unsigned int			  appl_cursor				: 1;
+	unsigned int			  saved_appl_cursor			: 1;
 
-	int  					  wraparound_mode			: 1;
-	int						  saved_wraparound_mode		: 1;
+	unsigned int  			  wraparound_mode			: 1;
+	unsigned int			  saved_wraparound_mode		: 1;
 
-	int						  rev_wraparound_mode 		: 1;
-	int						  saved_rev_wraparound_mode	: 1;
+	unsigned int			  rev_wraparound_mode 		: 1;
+	unsigned int			  saved_rev_wraparound_mode	: 1;
 
-	int						  allow_wide_mode			: 1;
-	int						  saved_allow_wide_mode		: 1;
+	unsigned int			  allow_wide_mode			: 1;
+	unsigned int			  saved_allow_wide_mode		: 1;
 
-	int						  wide_mode 				: 1;
-	int						  saved_wide_mode			: 1;
+	unsigned int			  wide_mode 				: 1;
+	unsigned int			  saved_wide_mode			: 1;
 
-	int						  saved_altbuffer			: 1;
-	int						  ansi_reset				: 1;	/**< @brief Non zero if the ansi_reset() was called in this session */
+	unsigned int			  saved_altbuffer			: 1;
+	unsigned int			  ansi_reset				: 1;	/**< @brief Non zero if the ansi_reset() was called in this session */
 
 	int      				  ansi_ch;
 	int						  cs_to_change;
@@ -652,8 +652,8 @@ struct _h3270
 
 	struct
 	{
-		int								  host			: 1;		///< @brief Non zero if host requires SSL.
-		int								  download_crl	: 1;		///< @brief Non zero to download CRL.
+		unsigned int					  host			: 1;		///< @brief Non zero if host requires SSL.
+		unsigned int					  download_crl	: 1;		///< @brief Non zero to download CRL.
 		LIB3270_SSL_STATE				  state;
 		int 							  error;
 		const LIB3270_SSL_MESSAGE		* message;					///< @brief Pointer to SSL messages for current state.

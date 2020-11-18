@@ -79,6 +79,7 @@
 
 		int	 (*action)(H3270 *hSession, const char *name);
 
+		int  (*reconnect)(H3270 *hSession,int seconds);
 	};
 
 	/**

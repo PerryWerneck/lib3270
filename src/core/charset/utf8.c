@@ -39,7 +39,7 @@
 // #include "api.h"
 
 #include "popupsc.h"
-#include "utf8c.h"
+//#include "utf8c.h"
 
 // char *locale_codeset = CN;
 
@@ -350,6 +350,7 @@ static char *utf8_tab[U_MAX][96] = {
  * character set.
  * Returns 0 if the lookup fails.
  */
+ /*
 unsigned char utf8_lookup(char GNUC_UNUSED(*mbs), enum ulfail *fail, int GNUC_UNUSED(*consumed))
 {
 	if (fail != NULL)
@@ -357,3 +358,4 @@ unsigned char utf8_lookup(char GNUC_UNUSED(*mbs), enum ulfail *fail, int GNUC_UN
 
 	return 0;
 }
+*/

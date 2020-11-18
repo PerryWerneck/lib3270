@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-17 11:58-0300\n"
-"PO-Revision-Date: 2020-09-03 18:36-0300\n"
+"PO-Revision-Date: 2020-11-04 20:42-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -16,8 +16,7 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=4; plural= (n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != "
-"11) ? 2 : 3;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
 #: src/core/ctlr.c:187
@@ -898,12 +897,10 @@ msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
 #: src/core/windows/ldap.c:193
-#, fuzzy
 msgid "LDAP Search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu nenhum atributo."
 
 #: src/core/windows/ldap.c:201
-#, fuzzy
 msgid "LDAPSearch did not produce any values."
 msgstr "Pesquisa LDAP não produziu nenhum valor."
 

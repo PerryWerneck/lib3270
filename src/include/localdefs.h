@@ -33,50 +33,23 @@
 /* These first definitions were cribbed from X11 -- but no X code is used. */
 #define False 0
 #define True 1
-//typedef void *XtPointer;
-// typedef void *Widget;
-// typedef void *XEvent;
+
 #ifdef __APPLE__
     typedef unsigned char Boolean;
 #else
     typedef char Boolean;
 #endif
+
 typedef char *String;
-// typedef unsigned int Cardinal;
-typedef unsigned long KeySym;
+//typedef unsigned long KeySym;
 #define Bool int
 
-/*
-typedef void (*XtActionProc)(
-    Widget 		// widget,
-    XEvent*		// event,
-    String*		// params,
-    Cardinal*		// num_param
-);
-*/
-
-/*
-typedef struct _XtActionsRec{
-    String	 string;
-    XtActionProc proc;
-} XtActionsRec;
-*/
-
-#define XtNumber(n)	(sizeof(n)/sizeof((n)[0]))
-#define NoSymbol		0L
+//#define XtNumber(n)	(sizeof(n)/sizeof((n)[0]))
+//#define NoSymbol		0L
 
 /* These are local functions with similar semantics to X functions. */
-
-// void * Malloc(size_t);
-// void   Free(void *);
-// void * Calloc(size_t, size_t);
-// void * Realloc(void *, size_t);
-
-// #define Malloc(x) lib3270_malloc(x)
-// #define Free(x)	lib3270_free(x)
 #define Calloc(e,n)	lib3270_calloc(e,n,NULL)
 #define Realloc(x,n) lib3270_realloc(x,n)
 
 #define NewString(x) strdup(x)
-//extern char *NewString(const char *);
 

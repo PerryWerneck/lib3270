@@ -546,6 +546,10 @@
 	 *
 	 * @return zero if reconnect is unavailable (sets errno), non zero if available.
 	 *
+	 * @retval ENODATA	Invalid or empty hostname.
+	 * @retval EBUSY	Auto reconnect in progress.
+	 * @retval EISCONN	Session is connected.
+	 *
 	 */
 	LIB3270_EXPORT int lib3270_allow_reconnect(const H3270 *hSession);
 
@@ -556,6 +560,11 @@
 	 * @param seconds	Seconds to wait for connection.
 	 *
 	 * @return 0 for success, non zero if fails (sets errno).
+	 *
+	 * @retval ENODATA	Invalid or empty hostname.
+	 * @retval EBUSY	Auto reconnect in progress.
+	 * @retval EISCONN	Session is connected.
+	 * @retval -1		Unexpected error.
 	 *
 	 */
 	LIB3270_EXPORT int lib3270_reconnect(H3270 *hSession,int seconds);

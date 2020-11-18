@@ -74,7 +74,7 @@
 	#define KYBDLOCK_IS_OERR(hSession)	(hSession->kybdlock && !(hSession->kybdlock & ~KL_OERR_MASK))
 
 	/* other functions */
-	LIB3270_INTERNAL void add_xk(KeySym key, KeySym assoc);
+	//LIB3270_INTERNAL void add_xk(KeySym key, KeySym assoc);
 	LIB3270_INTERNAL void clear_xks(void);
 	LIB3270_INTERNAL void do_reset(H3270 *session, Boolean explicit);
 

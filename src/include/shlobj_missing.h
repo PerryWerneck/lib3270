@@ -1,5 +1,7 @@
 /* IShellLinkDataList, missing from mingw's <shlobj.h>. */
 
+#error Deprecated
+
 LIB3270_INTERNAL const GUID IID_IShellLinkDataList;
 
 #define INTERFACE IShellLinkDataList

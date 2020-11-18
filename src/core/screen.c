@@ -37,7 +37,7 @@
 #include <internals.h>
 #include <signal.h>
 #include "3270ds.h"
-#include "resources.h"
+//#include "resources.h"
 #include "ctlrc.h"
 #include "hostc.h"
 #include "kybdc.h"

@@ -18,6 +18,8 @@
  *		x3270/c3270/s3270/tcl3270 resource and option names.
  */
 
+#error Deprecated
+
 /* Resources. */
 #define ResActiveIcon		"activeIcon"
 #define ResAdVersion		"adVersion"

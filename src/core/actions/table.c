@@ -48,7 +48,7 @@
 
  static int connect_host(H3270 *hSession)
  {
-	return lib3270_reconnect(hSession,0);
+	return hSession->cbk.reconnect(hSession,0);
  }
 
  static int select_up(H3270 *hSession)

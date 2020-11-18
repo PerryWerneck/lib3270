@@ -27,7 +27,7 @@
  *
  */
 
-/// @brief Get CRL infro from X509 cert.
+/// @brief Get CRL info from X509 cert.
 ///
 /// References:
 ///
@@ -35,6 +35,7 @@
 
 
 #include "private.h"
+#include <utilc.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -79,7 +80,13 @@ LIB3270_STRING_ARRAY * lib3270_openssl_get_crls_from_peer(H3270 *hSession, X509 
 #endif // OpenSSL 1.1.0+
 
 				if(data && length > 0)
-					lib3270_string_array_append_with_length(uris,(char *) data, (size_t) length);
+				{
+					lib3270_autoptr(char) uri = lib3270_malloc( ((size_t) length) + 1);
+					strncpy(uri,(char *) data, (size_t) length);
+
+					lib3270_autoptr(char) unescaped = lib3270_unescape(uri);
+					lib3270_string_array_append(uris,unescaped);
+				}
 
 			}
 

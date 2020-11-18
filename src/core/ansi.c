@@ -59,7 +59,7 @@
 #include "screenc.h"
 #include "telnetc.h"
 #include "trace_dsc.h"
-#include "utf8c.h"
+//#include "utf8c.h"
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/

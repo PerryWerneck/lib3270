@@ -67,9 +67,24 @@ void lib3270_session_free(H3270 *h)
 	if(!h)
 		return;
 
-	// Terminate session
 	if(lib3270_is_connected(h))
+	{
+		// Connected, disconnect
 		lib3270_disconnect(h);
+	}
+	else if(lib3270_get_connection_state(h) == LIB3270_CONNECTING)
+	{
+		// Connecting, disconnect
+		debug("%s: Stopping while connecting",__FUNCTION__);
+		lib3270_disconnect(h);
+
+	}
+
+	// Do we have pending tasks?
+	if(h->tasks)
+	{
+		lib3270_write_log(h,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),"Destroying session with %u active task(s)",h->tasks);
+	}
 
 	shutdown_toggles(h);
 
@@ -290,6 +305,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.update_luname			= default_update_luname;
 	hSession->cbk.update_url			= default_update_url;
 	hSession->cbk.action				= default_action;
+	hSession->cbk.reconnect				= lib3270_reconnect;
 
 	lib3270_set_popup_handler(hSession, NULL);
 
@@ -536,15 +552,19 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession)
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz)
 {
-	if(revision && strcasecmp(revision,"20200803") < 0)
+	#define REQUIRED_REVISION "20201117"
+
+	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0)
 	{
-		debug("%s: Revision test was %d",__FUNCTION__,strcasecmp(revision,"20200803"));
 		errno = EINVAL;
+		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid revision %s when setting callback table",revision);
 		return NULL;
 	}
 
 	if(sz != sizeof(struct lib3270_session_callbacks))
 	{
+
+		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid callback table (sz=%u expected=%u)",sz,(unsigned int) sizeof(struct lib3270_session_callbacks));
 		errno = EINVAL;
 		return NULL;
 	}

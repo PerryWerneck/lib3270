@@ -465,9 +465,10 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, vo
         CHECK_SESSION_HANDLE(hSession);
 
 		hSession->cbk.set_timer(hSession,1);
+		hSession->tasks++;
 		rc = run_task(hSession,callback,parm);
 		hSession->cbk.set_timer(hSession,0);
-
+		hSession->tasks--;
         return rc;
 
 }

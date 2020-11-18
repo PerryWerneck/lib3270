@@ -92,6 +92,10 @@ static int unsecure_network_getsockname(const H3270 *hSession, struct sockaddr *
 	return getsockname(hSession->network.context->sock, addr, addrlen);
 }
 
+static int unsecure_network_getpeername(const H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {
+	return getpeername(hSession->network.context->sock, addr, addrlen);
+}
+
 static void * unsecure_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata) {
 	return lib3270_add_poll_fd(hSession,hSession->network.context->sock,flag,call,userdata);
 }
@@ -166,6 +170,7 @@ void lib3270_set_default_network_module(H3270 *hSession) {
 		.non_blocking = unsecure_network_non_blocking,
 		.is_connected = unsecure_network_is_connected,
 		.getsockname = unsecure_network_getsockname,
+		.getpeername = unsecure_network_getpeername,
 		.setsockopt = unsecure_network_setsockopt,
 		.getsockopt = unsecure_network_getsockopt,
 		.reset = unsecure_network_reset

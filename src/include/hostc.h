@@ -35,12 +35,7 @@
  *	@brief Global declarations for host.c.
  */
 
-// #include "api.h"
-
-
-/**
- * @brief Signal a state change.
- */
+ /// @brief Signal a state change.
  LIB3270_INTERNAL void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode);
 
  LIB3270_INTERNAL void host_in3270(H3270 *session, LIB3270_CSTATE);

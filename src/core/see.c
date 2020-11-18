@@ -47,9 +47,9 @@
 #include "3270ds.h"
 
 // #include "tablesc.h"
-#if !defined(PR3287) /*[*/
-#include "utf8c.h"
-#endif /*]*/
+//#if !defined(PR3287) /*[*/
+//#include "utf8c.h"
+//#endif /*]*/
 #include "seec.h"
 
 const char *

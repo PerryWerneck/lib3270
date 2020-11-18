@@ -198,3 +198,8 @@ int lib3270_set_uint_property(H3270 *hSession, const char *name, unsigned int va
 
 }
 
+LIB3270_EXPORT unsigned int lib3270_get_task_count(const H3270 *h)
+{
+	return h->tasks;
+}
+

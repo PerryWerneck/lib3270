@@ -18,15 +18,17 @@
  *		UTF-8 conversions
  */
 
+ /*
 enum ulfail {
-    	ULFAIL_NOUTF8,		/* not using UTF-8 */
-	ULFAIL_INCOMPLETE,	/* incomplete sequence */
-	ULFAIL_INVALID		/* invalid sequence */
+    	ULFAIL_NOUTF8,		// not using UTF-8
+	ULFAIL_INCOMPLETE,	// incomplete sequence
+	ULFAIL_INVALID		// invalid sequence
 };
+*/
 
 // LIB3270_INTERNAL char *locale_codeset;
 
 // LIB3270_INTERNAL void set_codeset(char *codeset_name);
 // LIB3270_INTERNAL Boolean utf8_set_display_charsets(char *cslist, char *csname);
- LIB3270_INTERNAL char *utf8_expand(unsigned char c);
- LIB3270_INTERNAL unsigned char utf8_lookup(char *mbs, enum ulfail *fail, int *consumed);
+// LIB3270_INTERNAL char *utf8_expand(unsigned char c);
+// LIB3270_INTERNAL unsigned char utf8_lookup(char *mbs, enum ulfail *fail, int *consumed);

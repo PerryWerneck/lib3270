@@ -58,7 +58,7 @@ struct ta;
 
 #include <fcntl.h>
 #include "3270ds.h"
-#include "resources.h"
+//#include "resources.h"
 
 #include "ansic.h"
 #include "ctlrc.h"
@@ -72,7 +72,7 @@ struct ta;
 #include "telnetc.h"
 #include "togglesc.h"
 #include "trace_dsc.h"
-#include "utf8c.h"
+//#include "utf8c.h"
 #include "utilc.h"
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
@@ -110,11 +110,13 @@ static void	kybdlock_set(H3270 *session, unsigned int bits);
 
 /* Composite key mappings. */
 
+/*
 struct akeysym
 {
 	KeySym keysym;
 	enum keytype keytype;
 };
+*/
 
 #define ak_eq(k1, k2)	(((k1).keysym  == (k2).keysym) && \
 			 ((k1).keytype == (k2).keytype))

@@ -43,7 +43,7 @@
 
 #include <internals.h>
 #include <stdlib.h>
-#include "resources.h"
+//#include "resources.h"
 
 #include "hostc.h"
 #include "statusc.h"
@@ -74,7 +74,7 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
 	{
 		lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
 		hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
-		if(lib3270_reconnect(hSession,0))
+		if(hSession->cbk.reconnect(hSession,0))
 			lib3270_write_log(hSession,"3270","Auto-reconnect fails: %s",strerror(errno));
 	}
 

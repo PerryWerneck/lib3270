@@ -30,9 +30,6 @@
 LIB3270_INTERNAL void 		status_compose(int on, unsigned char c, enum keytype keytype);
 LIB3270_INTERNAL void 		status_ctlr_done(H3270 *session);
 
-// LIB3270_INTERNAL void 		status_timing(H3270 *session, struct timeval *t0, struct timeval *t1);
-// LIB3270_INTERNAL void 		status_untiming(H3270 *session);
-
 LIB3270_INTERNAL void 		status_lu(H3270 *session, const char *);
 LIB3270_INTERNAL void 		status_oerr(H3270 *session, int error_type);
 LIB3270_INTERNAL void 		status_reset(H3270 *session);

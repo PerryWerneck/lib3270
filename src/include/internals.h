@@ -640,7 +640,7 @@ struct _h3270
 	struct
 	{
 		struct lib3270_linked_list_head	list;
-		int changed : 1;
+		unsigned int changed : 1;
 	} input;
 
 	// Trace methods.

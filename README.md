@@ -10,7 +10,6 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 ![Downloads](https://img.shields.io/github/downloads/PerryWerneck/lib3270/total.svg)
 
 
-
 Installation repositories
 =========================
 

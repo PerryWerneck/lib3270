@@ -228,7 +228,7 @@ AC_PATH_TOOL([CONVERT], [convert], [no])
 AC_PATH_TOOL([OPTIPNG],[optipng],[no])
 
 AC_CHECK_HEADER(libintl.h, [
-	AC_DEFINE(HAVE_LIBINTL, 1)
+	AC_DEFINE(HAVE_LIBINTL, 1, [Is libintl available])
 
 	case "$host" in
 	*-mingw32|*-pc-msys)
@@ -478,7 +478,7 @@ AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])],
 AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname)
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname")
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname",[Define to the gettext package name.])
 AC_SUBST(GETTEXT_PACKAGE,"lib$app_cv_libname")
 
 dnl ---------------------------------------------------------------------------
@@ -514,7 +514,9 @@ AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library 
 AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 
-AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], [ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST,"$withval") ],[ AC_MSG_NOTICE(No default host)])
+AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], 
+	[ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST,"$withval",["Define the default tn3270 host"]) ],
+	[ AC_MSG_NOTICE(No default host)])
 
 AC_ARG_ENABLE([static],
  	[AS_HELP_STRING([--enable-static], [Enable build and install the static library])],
@@ -561,14 +563,14 @@ if test "$app_cv_inet_ntop" == "auto"; then
 fi
 
 if test "$app_cv_inet_ntop" == "yes"; then
-	AC_DEFINE(HAVE_INET_NTOP)
+	AC_DEFINE(HAVE_INET_NTOP,[],[True if inet_ntop() is available])
 fi
 
 dnl ---------------------------------------------------------------------------
 dnl Check for SSL
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL), AC_MSG_ERROR([libssl not present.]) )
+PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL,[],[Is libssl available]), AC_MSG_ERROR([libssl not present.]) )
 
 AC_SUBST(LIBSSL_LIBS)
 AC_SUBST(LIBSSL_CFLAGS)
@@ -644,7 +646,7 @@ AC_ARG_ENABLE([curl],
 
 
 if test "x${have_curl}" != xno ; then
-	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL), AC_MSG_ERROR([libcurl not present.]) )
+	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Is the libcurl available]), AC_MSG_ERROR([libcurl not present.]) )
 fi
 
 AC_SUBST(LIBCURL_LIBS)

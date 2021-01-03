@@ -340,18 +340,21 @@ dnl ---------------------------------------------------------------------------
 dnl Check for compiler visibility flag
 dnl ---------------------------------------------------------------------------
 AC_MSG_CHECKING(whether $CC accepts -fvisibility=hidden)
-AC_CACHE_VAL(app_cv_fvisibility_ok,
-[ac_save_cc="$CC"
-CC="$CC -fvisibility=hidden"
-AC_TRY_RUN([int main() { return 0; }],
-  app_cv_fvisibility_ok=yes,
-  app_cv_fvisibility_ok=no,
-  app_cv_fvisibility_ok=no)
-CC="$ac_save_cc"])
+app_cv_fvisibility_ok="yes"
+
+dnl AC_CACHE_VAL(app_cv_fvisibility_ok,
+dnl [ac_save_cc="$CC"
+dnl CC="$CC -fvisibility=hidden"
+dnl AC_TRY_RUN([int main() { return 0; }],
+dnl   app_cv_fvisibility_ok=yes,
+dnl   app_cv_fvisibility_ok=no,
+dnl   app_cv_fvisibility_ok=no)
+dnl CC="$ac_save_cc"])
+
 AC_MSG_RESULT($app_cv_fvisibility_ok)
 if test $app_cv_fvisibility_ok = yes; then
-  CFLAGS="$CFLAGS -fvisibility=hidden"
-  CXXFLAGS="$CXXFLAGS -fvisibility=hidden"
+    CFLAGS="$CFLAGS -fvisibility=hidden"
+    CXXFLAGS="$CXXFLAGS -fvisibility=hidden"
 fi
 
 dnl ---------------------------------------------------------------------------

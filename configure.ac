@@ -167,7 +167,7 @@ dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product="pw3270" ])
 
-AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product)
+AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product, [The product name])
 AC_SUBST(PRODUCT_NAME,$app_cv_product)
 
 AC_SUBST(PACKAGE_DESCRIPTION,"3270 C Access Library")
@@ -175,8 +175,8 @@ AC_SUBST(PACKAGE_DESCRIPTION,"3270 C Access Library")
 app_vrs_major=$(echo $VERSION | cut -d. -f1)
 app_vrs_minor=$(echo $VERSION | cut -d. -f2)
 
-AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major)
-AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor)
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major, [The library major version])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor, [The library minor version])
 
 AC_SUBST(PACKAGE_MAJOR_VERSION,$app_vrs_major)
 AC_SUBST(PACKAGE_MINOR_VERSION,$app_vrs_minor)
@@ -186,9 +186,9 @@ AC_ARG_WITH([release], [AS_HELP_STRING([--with-release], [Set release])], [ app_
 app_rls_major=$(echo $app_cv_release.0.0 | cut -d. -f1)
 app_rls_minor=$(echo $app_cv_release.0.0 | cut -d. -f2)
 
-AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_RELEASE, $app_rls_major)
-AC_DEFINE_UNQUOTED(PACKAGE_MINOR_RELEASE, $app_rls_minor)
-AC_DEFINE_UNQUOTED(PACKAGE_RELEASE, "$app_cv_release")
+AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_RELEASE, $app_rls_major, [The library major release])
+AC_DEFINE_UNQUOTED(PACKAGE_MINOR_RELEASE, $app_rls_minor, [The library minor release])
+AC_DEFINE_UNQUOTED(PACKAGE_RELEASE, "$app_cv_release", [The package release])
 
 AC_SUBST(PACKAGE_RELEASE,"$app_cv_release")
 AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
@@ -202,13 +202,13 @@ rpq_revision=`$date +"%Y%m%d"`
 sccs_date=`$date +%Y/%m/%d`
 sccs_user=$USER
 
-AC_DEFINE_UNQUOTED(RPQ_BUILD_DATE,"$rpq_build_date")
-AC_DEFINE_UNQUOTED(RPQ_TIMESTAMP_VALUE,"$rpq_timestamp")
+AC_DEFINE_UNQUOTED(RPQ_BUILD_DATE,"$rpq_build_date",[The RPQ build date])
+AC_DEFINE_UNQUOTED(RPQ_TIMESTAMP_VALUE,"$rpq_timestamp",[The RPQ timestamp])
 
-AC_DEFINE_UNQUOTED(SCCS_USER,"$USER")
-AC_DEFINE_UNQUOTED(SCCS_DATE,"$sccs_date")
+AC_DEFINE_UNQUOTED(SCCS_USER,"$USER",[The build user])
+AC_DEFINE_UNQUOTED(SCCS_DATE,"$sccs_date",[The build date])
 
-AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision")
+AC_DEFINE_UNQUOTED(RPQ_REVISION,"$rpq_revision",[The RPQ revision])
 AC_SUBST(RPQ_REVISION,"$rpq_revision")
 
 dnl ---------------------------------------------------------------------------
@@ -228,7 +228,7 @@ AC_PATH_TOOL([CONVERT], [convert], [no])
 AC_PATH_TOOL([OPTIPNG],[optipng],[no])
 
 AC_CHECK_HEADER(libintl.h, [
-	AC_DEFINE(HAVE_LIBINTL, 1, [Is libintl available])
+	AC_DEFINE(HAVE_LIBINTL, 1, [Libintl is available])
 
 	case "$host" in
 	*-mingw32|*-pc-msys)
@@ -391,7 +391,7 @@ AC_ARG_ENABLE([self-signed-cert-check],
 ])
 
 if test "$app_cv_self_signed_certs" == "yes"; then
-	AC_DEFINE(SSL_ENABLE_SELF_SIGNED_CERT_CHECK)
+	AC_DEFINE(SSL_ENABLE_SELF_SIGNED_CERT_CHECK,[],[Should we accept self signed cert?])
 fi
 
 AC_ARG_ENABLE([ssl-crl-check],
@@ -403,7 +403,7 @@ AC_ARG_ENABLE([ssl-crl-check],
 ])
 
 if test "$app_cv_enable_crl_check" == "yes"; then
-	AC_DEFINE(SSL_ENABLE_CRL_CHECK)
+	AC_DEFINE(SSL_ENABLE_CRL_CHECK,[],[Should we check the CRL?])
 fi
 
 AC_ARG_ENABLE([crl-expiration-check],
@@ -415,14 +415,14 @@ AC_ARG_ENABLE([crl-expiration-check],
 ])
 
 if test "$app_cv_expired_crl" == "yes"; then
-	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK)
+	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK,[],[Should we check the CRL expiration])
 fi
 
 
 AC_ARG_WITH([crl-url],
 	[AS_HELP_STRING([--with-crl-url], [Set a hardcoded URL for CRL download])],
 [
-	AC_DEFINE_UNQUOTED(SSL_CRL_URL,"$withval")
+	AC_DEFINE_UNQUOTED(SSL_CRL_URL,"$withval",[The default URL for CRL download])
 ],[
 	AC_MSG_NOTICE(No default crl url)
 ])
@@ -436,7 +436,7 @@ AC_ARG_ENABLE([ssl-error-notification],
 ])
 
 if test "$app_cv_enable_ssl_notification" == "yes"; then
-	AC_DEFINE(SSL_ENABLE_NOTIFICATION_WHEN_FAILED)
+	AC_DEFINE(SSL_ENABLE_NOTIFICATION_WHEN_FAILED,[],[Should we emit a notification when ssl validation fails?])
 else
 	AC_MSG_NOTICE(No notifications when SSL negotiation fails)
 fi
@@ -475,10 +475,10 @@ dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])], [ app_cv_libname="$withval" ],[ app_cv_libname="3270" ])
 
-AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname)
+AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname,[The protocol library name])
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname",[Define to the gettext package name.])
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname",[The gettext package name.])
 AC_SUBST(GETTEXT_PACKAGE,"lib$app_cv_libname")
 
 dnl ---------------------------------------------------------------------------
@@ -511,11 +511,11 @@ esac
 
 AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library version for SDK])], [ app_cv_sdkversion="$withval" ],[ app_cv_sdkversion=$VERSION ])
 
-AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion)
+AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion,[The SDK version number])
 AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 
 AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], 
-	[ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST,"$withval",["Define the default tn3270 host"]) ],
+	[ AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST,"$withval",["The default tn3270 host"]) ],
 	[ AC_MSG_NOTICE(No default host)])
 
 AC_ARG_ENABLE([static],
@@ -527,7 +527,7 @@ AC_ARG_ENABLE([static],
 ])
 
 if test "$app_cv_expired_crl" == "yes"; then
-	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK)
+	AC_DEFINE(SSL_ENABLE_CRL_EXPIRATION_CHECK,[],[Should we check the CRL expiration date?])
 fi
 
 if test "$app_cv_static" == "yes"; then
@@ -542,9 +542,9 @@ AC_CHECK_HEADER(malloc.h, AC_DEFINE(HAVE_MALLOC_H,,[do we have malloc.h?]))
 AC_CHECK_HEADER(syslog.h, AC_DEFINE(HAVE_SYSLOG,,[do we have syslog.h?]))
 
 AC_CHECK_FUNCS(getaddrinfo, AC_DEFINE(HAVE_GETADDRINFO) )
-AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )
-AC_CHECK_FUNC(strtok_r, AC_DEFINE(HAVE_STRTOK_R) )
-AC_CHECK_FUNC(localtime_r, AC_DEFINE(HAVE_LOCALTIME_R) )
+AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF, [], [Do we have vasprintf?]) )
+AC_CHECK_FUNC(strtok_r, AC_DEFINE(HAVE_STRTOK_R, [], [Do we have strtok_r?]) )
+AC_CHECK_FUNC(localtime_r, AC_DEFINE(HAVE_LOCALTIME_R, [], [Do we have localtime_r?]) )
 
 AC_ARG_WITH([inet-ntop], [AS_HELP_STRING([--with-inet-ntop], [Assume that inet_nto() is available])], [ app_cv_inet_ntop="$withval" ],[ app_cv_inet_ntop="auto" ])
 
@@ -563,14 +563,14 @@ if test "$app_cv_inet_ntop" == "auto"; then
 fi
 
 if test "$app_cv_inet_ntop" == "yes"; then
-	AC_DEFINE(HAVE_INET_NTOP,[],[True if inet_ntop() is available])
+	AC_DEFINE(HAVE_INET_NTOP,[],[Do we have inet_ntop()?])
 fi
 
 dnl ---------------------------------------------------------------------------
 dnl Check for SSL
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL,[],[Is libssl available]), AC_MSG_ERROR([libssl not present.]) )
+PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL,[],[Do we have libssl?]), AC_MSG_ERROR([libssl not present.]) )
 
 AC_SUBST(LIBSSL_LIBS)
 AC_SUBST(LIBSSL_CFLAGS)
@@ -646,7 +646,7 @@ AC_ARG_ENABLE([curl],
 
 
 if test "x${have_curl}" != xno ; then
-	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Is the libcurl available]), AC_MSG_ERROR([libcurl not present.]) )
+	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?]), AC_MSG_ERROR([libcurl not present.]) )
 fi
 
 AC_SUBST(LIBCURL_LIBS)

@@ -1,100 +1,160 @@
-/*
- * Software pw3270, desenvolvido com base nos códigos fontes do  C3270  e  X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
- *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
- *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
- *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA, 02111-1307, USA
- *
- * Este programa está nomeado como config.h.in e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
- *
- */
+/* src/include/config.h.in.  Generated from configure.ac by autoheader.  */
 
-#ifndef LIB3270_CONFIG_INCLUDED
+/* The gettext package name. */
+#undef GETTEXT_PACKAGE
 
-	#define LIB3270_CONFIG_INCLUDED 1
+/* Define to 1 if you have the `getaddrinfo' function. */
+#undef HAVE_GETADDRINFO
 
-	/* Version info */
-	#undef PACKAGE_NAME
-	#undef PRODUCT_NAME
-	#undef PACKAGE_VERSION
-	#undef PACKAGE_RELEASE
-	#undef LIB3270_NAME
-	#undef GETTEXT_PACKAGE
+/* supports GCC visibility attributes */
+#undef HAVE_GNUC_VISIBILITY
 
-	#undef RPQ_BUILD_DATE
-	#undef RPQ_TIMESTAMP_VALUE
-	#undef RPQ_REVISION
-	#undef SCCS_USER
-	#undef SCCS_DATE
+/* Define if you have the iconv() function and it works. */
+#undef HAVE_ICONV
 
-	/* Default settings */
+/* Do we have inet_ntop()? */
+#undef HAVE_INET_NTOP
 
-	/** @brief The lib3270's default host URL */
-	#undef LIB3270_DEFAULT_HOST
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
 
-	#undef LIB3270_DATADIR
+/* LDAP is available */
+#undef HAVE_LDAP
 
-	/** @brief the delay, in miliseconds, between the host unlocking the keyboard and lib3270 actually performing the unlock */
-	#define UNLOCK_MS 350
+/* Define to 1 if you have the <ldap.h> header file. */
+#undef HAVE_LDAP_H
 
-	/* Library options */
-	#undef HAVE_GNUC_VISIBILITY
-	#undef HAVE_LIBINTL
-	#undef HAVE_GETADDRINFO
-	#undef HAVE_VASPRINTF
-	#undef HAVE_INET_NTOP
-	#undef HAVE_LIBCURL
-	#undef HAVE_SYSLOG
+/* Do we have libcurl? */
+#undef HAVE_LIBCURL
 
-	#undef HAVE_ICONV
-	#undef ICONV_CONST
+/* Libintl is available */
+#undef HAVE_LIBINTL
 
-	/* Security options */
-	#undef HAVE_LDAP
-	#undef HAVE_LIBSSL
+/* Do we have libssl? */
+#undef HAVE_LIBSSL
 
-	#undef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+/* Do we have localtime_r? */
+#undef HAVE_LOCALTIME_R
 
-	#undef SSL_ENABLE_CRL_CHECK
-	#undef SSL_ENABLE_CRL_EXPIRATION_CHECK
-	#undef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+/* do we have malloc.h? */
+#undef HAVE_MALLOC_H
 
-	/* If defined uses a hardcoded CRL path */
-	#undef SSL_CRL_URL
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
 
-	/* Optional parts. */
-	#undef X3270_DBCS
-	#undef X3270_SCRIPT
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
 
-	#define X3270_TN3270E
-	#define X3270_ANSI
-	#define X3270_APL
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
 
-	#define X3270_TRACE
-	#define X3270_FT
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
 
-	#undef HAVE_PRINTER
-	#undef HAVE_MALLOC_H
-	#undef HAVE_STRTOK_R
-	#undef HAVE_LOCALTIME_R
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
 
-#endif /* LIB3270_CONFIG_INCLUDED */
+/* Do we have strtok_r? */
+#undef HAVE_STRTOK_R
 
+/* do we have syslog.h? */
+#undef HAVE_SYSLOG
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Do we have vasprintf? */
+#undef HAVE_VASPRINTF
+
+/* Define as const if the declaration of iconv() needs const. */
+#undef ICONV_CONST
+
+/* "The default tn3270 host" */
+#undef LIB3270_DEFAULT_HOST
+
+/* The protocol library name */
+#undef LIB3270_NAME
+
+/* The SDK version number */
+#undef LIB3270_SDK_VERSION
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* The library major release */
+#undef PACKAGE_MAJOR_RELEASE
+
+/* The library major version */
+#undef PACKAGE_MAJOR_VERSION
+
+/* The library minor release */
+#undef PACKAGE_MINOR_RELEASE
+
+/* The library minor version */
+#undef PACKAGE_MINOR_VERSION
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* The package release */
+#undef PACKAGE_RELEASE
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The product name */
+#undef PRODUCT_NAME
+
+/* The RPQ build date */
+#undef RPQ_BUILD_DATE
+
+/* The RPQ revision */
+#undef RPQ_REVISION
+
+/* The RPQ timestamp */
+#undef RPQ_TIMESTAMP_VALUE
+
+/* The build date */
+#undef SCCS_DATE
+
+/* The build user */
+#undef SCCS_USER
+
+/* The default URL for CRL download */
+#undef SSL_CRL_URL
+
+/* Should we check the CRL? */
+#undef SSL_ENABLE_CRL_CHECK
+
+/* Should we check the CRL expiration date? */
+#undef SSL_ENABLE_CRL_EXPIRATION_CHECK
+
+/* Should we emit a notification when ssl validation fails? */
+#undef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+
+/* Should we accept self signed cert? */
+#undef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION

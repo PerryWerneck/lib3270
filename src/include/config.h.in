@@ -3,6 +3,9 @@
 /* The gettext package name. */
 #undef GETTEXT_PACKAGE
 
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
 /* Define to 1 if you have the `getaddrinfo' function. */
 #undef HAVE_GETADDRINFO
 
@@ -84,6 +87,9 @@
 /* The SDK version number */
 #undef LIB3270_SDK_VERSION
 
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
+#undef LT_OBJDIR
+
 /* Name of package */
 #undef PACKAGE
 
@@ -156,5 +162,24 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* The delay, in miliseconds, between the host unlocking the keyboard and
+   lib3270 actually performing the unlock */
+#undef UNLOCK_MS
+
 /* Version number of package */
 #undef VERSION
+
+/* X3270 compatibility */
+#undef X3270_ANSI
+
+/* X3270 compatibility */
+#undef X3270_APL
+
+/* X3270 compatibility */
+#undef X3270_FT
+
+/* X3270 compatibility */
+#undef X3270_TN3270E
+
+/* X3270 compatibility */
+#undef X3270_TRACE

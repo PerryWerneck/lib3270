@@ -39,6 +39,12 @@ AC_CONFIG_AUX_DIR([scripts])
 dnl Compute the canonical host-system type
 AC_CANONICAL_HOST
 
+AC_CONFIG_MACRO_DIRS([m4])
+
+dnl Initialize libtool.
+LT_INIT
+
+
 dnl Put macro definitions here (though they aren't used).
 AC_CONFIG_HEADERS([src/include/config.h])
 
@@ -151,6 +157,20 @@ else
 fi
 
 AC_SUBST(HOST_CC)
+
+
+dnl ---------------------------------------------------------------------------
+dnl Compatibility definitions
+dnl ---------------------------------------------------------------------------
+
+AC_DEFINE(UNLOCK_MS, 350, [The delay, in miliseconds, between the host unlocking the keyboard and lib3270 actually performing the unlock])
+
+AC_DEFINE(X3270_TN3270E,[],[X3270 compatibility])
+AC_DEFINE(X3270_ANSI,[],[X3270 compatibility])
+AC_DEFINE(X3270_APL,[],[X3270 compatibility])
+
+AC_DEFINE(X3270_TRACE,[],[X3270 compatibility])
+AC_DEFINE(X3270_FT,[],[X3270 compatibility])
 
 dnl ---------------------------------------------------------------------------
 dnl Check for other programs

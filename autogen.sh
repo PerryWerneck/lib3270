@@ -21,11 +21,11 @@ if test $? != 0 ; then
 	exit -1
 fi
 
-autoheader --force
-if test $? != 0 ; then
-	echo "autoheader failed."
-	exit -1
-fi
+#autoheader --force
+#if test $? != 0 ; then
+#	echo "autoheader failed."
+#	exit -1
+#fi
 
 autoconf --force
 if test $? != 0 ; then

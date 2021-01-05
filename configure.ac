@@ -359,27 +359,7 @@ fi
 dnl ---------------------------------------------------------------------------
 dnl Check for compiler visibility flag
 dnl ---------------------------------------------------------------------------
-AC_MSG_CHECKING(whether $CC accepts -fvisibility=hidden)
-app_cv_fvisibility_ok="yes"
 
-dnl AC_CACHE_VAL(app_cv_fvisibility_ok,
-dnl [ac_save_cc="$CC"
-dnl CC="$CC -fvisibility=hidden"
-dnl AC_TRY_RUN([int main() { return 0; }],
-dnl   app_cv_fvisibility_ok=yes,
-dnl   app_cv_fvisibility_ok=no,
-dnl   app_cv_fvisibility_ok=no)
-dnl CC="$ac_save_cc"])
-
-AC_MSG_RESULT($app_cv_fvisibility_ok)
-if test $app_cv_fvisibility_ok = yes; then
-    CFLAGS="$CFLAGS -fvisibility=hidden"
-    CXXFLAGS="$CXXFLAGS -fvisibility=hidden"
-fi
-
-dnl ---------------------------------------------------------------------------
-dnl Check for C++ 2011 support
-dnl ---------------------------------------------------------------------------
 AC_DEFUN([AX_CHECK_COMPILE_FLAG],
 [AC_PREREQ(2.59)dnl for _AC_LANG_PREFIX
 AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
@@ -396,7 +376,7 @@ AS_IF([test x"AS_VAR_GET(CACHEVAR)" = xyes],
 AS_VAR_POPDEF([CACHEVAR])dnl
 ])dnl AX_CHECK_COMPILE_FLAGS
 
-AX_CHECK_COMPILE_FLAG([-std=c++11], [CPPFLAGS="$CPPFLAGS -std=c++11"])
+AX_CHECK_COMPILE_FLAG([-fvisibility=hidden], [CFLAGS="$CFLAGS -fvisibility=hidden"])
 
 dnl ---------------------------------------------------------------------------
 dnl SSL Security options

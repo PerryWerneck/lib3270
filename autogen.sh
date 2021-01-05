@@ -7,7 +7,7 @@ olddir=`pwd`
 cd "$srcdir"
 
 mkdir -p scripts
-automake --add-missing 2> /dev/null | true
+mkdir -p m4
 
 libtoolize --force
 if test $? != 0 ; then
@@ -32,6 +32,8 @@ if test $? != 0 ; then
 	echo "autoconf failed."
 	exit -1
 fi
+
+automake --add-missing 2> /dev/null | true
 
 cd "$olddir"
 test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"

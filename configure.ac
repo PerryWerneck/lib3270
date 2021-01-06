@@ -478,8 +478,8 @@ AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])],
 AC_DEFINE_UNQUOTED(LIB3270_NAME,$app_cv_libname,[The protocol library name])
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
 
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname",[The gettext package name.])
-AC_SUBST(GETTEXT_PACKAGE,"lib$app_cv_libname")
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"lib$app_cv_libname-$app_vrs_major.$app_vrs_minor",[The gettext package name.])
+AC_SUBST(GETTEXT_PACKAGE,"lib$app_cv_libname-$app_vrs_major.$app_vrs_minor")
 
 dnl ---------------------------------------------------------------------------
 dnl OS Defs

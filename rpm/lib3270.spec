@@ -18,7 +18,7 @@
 
 
 Name:           lib3270
-Version:        5.3
+Version:        5.4
 Release:        0
 Summary:        TN3270 Access library
 Group:          Development/Libraries/C and C++
@@ -74,14 +74,14 @@ Header files for the TN3270 access library.
 %prep
 %setup -q
 NOCONFIGURE=1 ./autogen.sh
-%configure --with-release=%{release}
+%configure --with-release=%{release} --disable-static
 
 %build
 make all %{?_smp_mflags}
 
 %install
 %make_install
-%find_lang %{name} langfiles
+%find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %fdupes %{buildroot}/%{_prefix}
 

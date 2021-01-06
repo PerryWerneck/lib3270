@@ -29,7 +29,7 @@ build-stamp:
 	mkdir -p scripts
 	automake --add-missing 2> /dev/null | true
  
-	./configure --prefix=/usr
+	./configure --prefix=/usr --disable-static
     
 	make all
 	# --- end custom part for compiling

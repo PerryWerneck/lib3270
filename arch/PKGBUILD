@@ -2,14 +2,14 @@
 
 pkgname=lib3270
 
-pkgver=5.3
+pkgver=5.4
 pkgrel=0
 pkgdesc="TN3270 Access library"
-url="https://github.com/PerryWerneck/lib3270/"
+url="https://github.com/PerryWerneck/lib3270"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()
-makedepends=(autoconf automake make openssl)
+makedepends=(autoconf automake make openssl libtool)
 checkdepends=()
 
 #groups=(gnome)
@@ -17,13 +17,15 @@ checkdepends=()
 source=($pkgname-$pkgver.tar.xz)
 sha256sums=('SKIP')
 
-provides=($pkgname)
+provides=($pkgname) 
 conflicts=($pkgname)
 
 prepare() {
   cd $pkgname-$pkgver
+  mkdir -p scripts
+  touch scripts/config.rpath
   NOCONFIGURE=1 ./autogen.sh
-  ./configure --prefix=/usr
+  ./configure --prefix=/usr --disable-static
 }
 
 build() {
@@ -35,4 +37,5 @@ package() {
   cd $pkgname-$pkgver
   DESTDIR="$pkgdir" make install
 }
+
 

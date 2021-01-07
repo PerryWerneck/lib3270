@@ -7,7 +7,8 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/lib3270/workflows/CodeQL/badge.svg)
-
+![Analytics](https://ga-beacon.appspot.com/G-RSMGQ9Q5BG/github/lib3270)
+![Downloads](https://img.shields.io/github/downloads/PerryWerneck/lib3270/total.svg)
 
 Installation repositories
 =========================

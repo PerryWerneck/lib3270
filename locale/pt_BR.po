@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-17 11:58-0300\n"
+"POT-Creation-Date: 2021-01-06 11:33-0300\n"
 "PO-Revision-Date: 2020-11-04 20:42-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -34,32 +34,32 @@ msgstr "Tela %dx%d é maior que o tamanho máximo"
 msgid "%s"
 msgstr "%s"
 
-#: src/core/keyboard/kybd.c:1923
+#: src/core/keyboard/kybd.c:1925
 #, c-format
 msgid "%s: Bell not supported"
 msgstr "%s: Alerta sonoro não suportado"
 
-#: src/core/keyboard/kybd.c:2082
+#: src/core/keyboard/kybd.c:2084
 #, c-format
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
 
-#: src/core/keyboard/kybd.c:2022
+#: src/core/keyboard/kybd.c:2024
 #, c-format
 msgid "%s: Unknown character after \\p"
 msgstr "%s: Caractere desconhecido depois de \\p"
 
-#: src/core/keyboard/kybd.c:2058
+#: src/core/keyboard/kybd.c:2060
 #, c-format
 msgid "%s: Unknown character after \\pa"
 msgstr "%s: Caractere desconhecido depois de \\pa"
 
-#: src/core/keyboard/kybd.c:2036
+#: src/core/keyboard/kybd.c:2038
 #, c-format
 msgid "%s: Unknown character after \\pf"
 msgstr "%s: Caractere desconhecido depois de \\pf"
 
-#: src/core/keyboard/kybd.c:1974
+#: src/core/keyboard/kybd.c:1976
 #, c-format
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
@@ -103,6 +103,10 @@ msgstr "Ação falhou"
 #: src/core/toggles/table.c:264
 msgid "Alert sound"
 msgstr "Aviso sonoro"
+
+#: src/network_modules/openssl/start.c:268
+msgid "An EOF was observed that violates the protocol"
+msgstr ""
 
 #: src/core/ft/ftmessages.c:67
 msgid "An error exists in the PC's file name."
@@ -175,10 +179,6 @@ msgstr "Back space"
 msgid "Backspaces the cursor until it hits the front of a word"
 msgstr "Volta o cursor até que atinga o início de uma palavra"
 
-#: src/core/windows/connect.c:125
-msgid "Bad winsock version"
-msgstr "Versão winsock inválida"
-
 #: src/core/toggles/table.c:265
 msgid "Beep on errors"
 msgstr "Emitir som nos erros"
@@ -223,41 +223,29 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:391
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:339
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/core/windows/ldap.c:161
-msgid "Can't bind to LDAP server"
-msgstr "Não foi possível conectar ao servidor LDAP"
-
-#: src/core/windows/connect.c:243 src/core/windows/connect.c:289
+#: src/core/linux/connect.c:221 src/core/linux/connect.c:268
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
 
-#: src/core/windows/http.c:114
-msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP"
-
-#: src/core/windows/connect.c:204
+#: src/core/linux/connect.c:170
 msgid "Can't connect to host"
 msgstr "Não foi possível conectar no host"
 
-#: src/core/windows/http.c:126
-msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP"
-
-#: src/network_modules/openssl/start.c:70
+#: src/network_modules/openssl/start.c:71
 msgid "Can't decode CRL data"
 msgstr "Não foi possível decodificar dados do CRL"
 
-#: src/core/windows/ldap.c:221
+#: src/core/linux/ldap.c:171
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/core/connect.c:201
+#: src/core/connect.c:176
 msgid "Can't determine the TLS/SSL state"
 msgstr "Não foi possível determinar o estado TLS/SSL"
 
@@ -265,41 +253,25 @@ msgstr "Não foi possível determinar o estado TLS/SSL"
 msgid "Can't get file size"
 msgstr "Não foi possível obter o tamanho do arquivo"
 
-#: src/core/windows/ldap.c:143
-msgid "Can't initialize LDAP"
-msgstr "Erro ao inicializar LDAP"
+#: src/core/linux/curl.c:181
+msgid "Can't initialize curl operation"
+msgstr "Erro ao inicializar operação CURL"
 
-#: src/network_modules/openssl/context.c:169
+#: src/network_modules/openssl/context.c:179
 msgid "Can't initialize the TLS/SSL context."
 msgstr "Erro ao inicializar contexto TLS/SSL"
 
-#: src/core/session.c:201
+#: src/core/session.c:216
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/core/windows/http.c:102
-msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir sessão HTTP"
-
-#: src/core/session.c:187
+#: src/core/session.c:202
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/core/windows/http.c:181
-msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP"
-
-#: src/core/session.c:194
+#: src/core/session.c:209
 msgid "Can't save"
 msgstr "Não é possível salvar"
-
-#: src/core/windows/http.c:140
-msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP"
-
-#: src/core/windows/ldap.c:152
-msgid "Can't set LDAP protocol version"
-msgstr "Não é possível setar a versão do protocolo LDAP"
 
 #: src/network_modules/tools.c:213
 msgid "Can't set socket to blocking mode."
@@ -313,10 +285,6 @@ msgstr "Não foi possível setar o socket para o modo não blocante."
 msgid "Can't start file transfer."
 msgstr "Não foi possível iniciar transferência de arquivo."
 
-#: src/core/windows/connect.c:126
-msgid "Can't use this system winsock"
-msgstr "Não posso usar a winsock do sistema"
-
 #: src/core/ft/ft.c:160
 msgid "Cancelled by user"
 msgstr "Cancelado pelo usuário"
@@ -325,13 +293,13 @@ msgstr "Cancelado pelo usuário"
 msgid "Cannot connect to specified LU"
 msgstr "Não foi possível conectar na LU pedida"
 
-#: src/network_modules/openssl/start.c:193
+#: src/network_modules/openssl/start.c:215
 msgid "Cant create a new SSL structure for current connection."
 msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
-#: src/network_modules/openssl/start.c:210
+#: src/network_modules/openssl/start.c:233
 msgid ""
 "Cant set the file descriptor for the input/output facility for the TLS/SSL "
 "(encrypted) side of ssl."
@@ -403,10 +371,14 @@ msgstr "Connected initial"
 msgid "Connecting"
 msgstr "Conectando"
 
-#: src/core/windows/connect.c:376 src/core/windows/connect.c:395
+#: src/core/linux/connect.c:325 src/core/linux/connect.c:343
 #: src/network_modules/tools.c:181
 msgid "Connection error"
 msgstr "Erro de conexão"
+
+#: src/network_modules/openssl/start.c:250
+msgid "Connection failed"
+msgstr "Conexão falhou"
 
 #: src/network_modules/tools.c:139
 msgid "Connection reset by peer"
@@ -528,10 +500,6 @@ msgstr "Dup"
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
 
-#: src/core/windows/http.c:165
-msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP"
-
 #: src/core/toggles/table.c:305
 msgid "Enable network in/out trace"
 msgstr "Habilitar trace de entrada/saída de rede"
@@ -584,7 +552,7 @@ msgstr "Apagar campos"
 msgid "Erro sending data to host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/core/util.c:267
+#: src/core/util.c:270
 msgid "Error"
 msgstr "Erro"
 
@@ -609,10 +577,6 @@ msgstr "Erro ao ler arquivo do host: Transferência cancelada"
 #: src/network_modules/openssl/main.c:176
 msgid "Error reading from host"
 msgstr "Erro lendo do servidor"
-
-#: src/core/windows/http.c:152
-msgid "Error receiving HTTP response."
-msgstr "Erro recebendo resposta HTTP."
 
 #: src/network_modules/tools.c:65 src/network_modules/tools.c:90
 msgid "Error receiving data from host"
@@ -896,12 +860,14 @@ msgstr "Teclado está bloqueado"
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
-#: src/core/windows/ldap.c:193
-msgid "LDAP Search did not produce any attributes."
+#: src/core/linux/ldap.c:151
+#, fuzzy
+msgid "LDAP search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu nenhum atributo."
 
-#: src/core/windows/ldap.c:201
-msgid "LDAPSearch did not produce any values."
+#: src/core/linux/ldap.c:161
+#, fuzzy
+msgid "LDAP search did not produce any values."
 msgstr "Pesquisa LDAP não produziu nenhum valor."
 
 #: src/core/properties/signed.c:74
@@ -989,8 +955,8 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:314 src/core/windows/event_dispatcher.c:150
-#: src/core/windows/connect.c:232
+#: src/core/telnet.c:314 src/core/linux/event_dispatcher.c:143
+#: src/core/linux/connect.c:207
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1010,15 +976,15 @@ msgstr "Próximo campo"
 msgid "Next word"
 msgstr "Próxima palavra"
 
-#: src/network_modules/openssl/start.c:52
+#: src/network_modules/openssl/start.c:53
 msgid "No LDAP support"
 msgstr "Sem suporte LDAP"
 
-#: src/network_modules/default/main.c:145
+#: src/network_modules/default/main.c:149
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
-#: src/core/windows/download.c:62
+#: src/core/linux/download.c:55
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
@@ -1045,10 +1011,6 @@ msgstr "Diferente de zero se o host é AS400"
 #: src/core/properties/boolean.c:89
 msgid "Non zero if the host is TSO."
 msgstr "Diferente de zero se o host é TSO"
-
-#: src/core/windows/connect.c:322
-msgid "Not connected to host"
-msgstr "Sem conexão com servidor"
 
 #: src/core/ft/ft.c:692
 msgid "Not in 3270 mode, transfer cancelled"
@@ -1138,17 +1100,17 @@ msgstr "Program Action 3"
 msgid "RPQ %s term omitted due to insufficient space"
 msgstr "Termo RPQ %s omitido por falta de espaço"
 
-#: src/core/rpq.c:348
+#: src/core/rpq.c:346
 #, c-format
 msgid "RPQ %s term override ignored"
 msgstr "RPQ %s term override ignored"
 
-#: src/core/rpq.c:642 src/core/rpq.c:712
+#: src/core/rpq.c:656 src/core/rpq.c:726
 #, c-format
 msgid "RPQ ADDRESS term has unrecognized family %u"
 msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
 
-#: src/core/rpq.c:650 src/core/rpq.c:679 src/core/rpq.c:719
+#: src/core/rpq.c:664 src/core/rpq.c:693 src/core/rpq.c:733
 msgid "RPQ ADDRESS term incomplete due to space limit"
 msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 
@@ -1156,29 +1118,29 @@ msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 msgid "RPQ Error"
 msgstr "Erro RPQ"
 
-#: src/core/rpq.c:416 src/core/rpq.c:425
+#: src/core/rpq.c:412 src/core/rpq.c:421
 msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
 msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
 
-#: src/core/rpq.c:519
+#: src/core/rpq.c:533
 msgid "RPQ USER term has non-hex character"
 msgstr "Termo RPQ USER tem caractere não hexadecimal"
 
-#: src/core/rpq.c:544
+#: src/core/rpq.c:558
 msgid "RPQ USER term has odd number of hex digits"
 msgstr "RPQ USER term has odd number of hex digits"
 
-#: src/core/rpq.c:525
+#: src/core/rpq.c:539
 #, c-format
 msgid "RPQ USER term truncated after %d bytes"
 msgstr "Termo RPQ USER truncado depois de %d bytes"
 
-#: src/core/rpq.c:569
+#: src/core/rpq.c:583
 #, c-format
 msgid "RPQ USER term truncated after %d characters"
 msgstr "Termo RPQ USER truncado depois de %d caracteres"
 
-#: src/core/rpq.c:360
+#: src/core/rpq.c:358
 #, c-format
 msgid "RPQ term \"%s\" is unrecognized"
 msgstr "Termo RPQ desconhecido: \"%s\" "
@@ -1188,24 +1150,24 @@ msgstr "Termo RPQ desconhecido: \"%s\" "
 msgid "RPQ term %d is unknown"
 msgstr "Termo RPM %d não foi reconhecido"
 
-#: src/core/rpq.c:463
+#: src/core/rpq.c:477
 msgid "RPQ timezone exceeds 12 hour UTC offset"
 msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
 
-#: src/core/rpq.c:445
+#: src/core/rpq.c:445 src/core/rpq.c:456
 msgid "RPQ: Unable to determine workstation UTC time"
 msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
 
-#: src/core/rpq.c:438
+#: src/core/rpq.c:434
 msgid "RPQ: Unable to determine workstation local time"
 msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
 
-#: src/core/rpq.c:655
+#: src/core/rpq.c:669
 #, c-format
 msgid "RPQ: can't resolve '%s': %s"
 msgstr "RPQ: Não foi possível resolver '%s': %s"
 
-#: src/core/rpq.c:668
+#: src/core/rpq.c:682
 msgid "RPQ: gethostbyname error"
 msgstr "RPQ: Erro em gethostbyname"
 
@@ -1261,11 +1223,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/network_modules/openssl/start.c:234
-msgid "SSL Connect failed"
-msgstr "Conexão SSL falhou"
-
-#: src/network_modules/openssl/start.c:209
+#: src/network_modules/openssl/start.c:232
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
@@ -1317,7 +1275,7 @@ msgstr "Seleciona a direita"
 msgid "Select word"
 msgstr "Seleciona palavra"
 
-#: src/core/windows/event_dispatcher.c:151
+#: src/core/linux/event_dispatcher.c:144
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1510,7 +1468,12 @@ msgstr ""
 msgid "The SSL error message was %s"
 msgstr "A mensagem de erro SSL foi \"%s\""
 
-#: src/core/windows/ldap.c:108 src/core/windows/ldap.c:118
+#: src/core/linux/connect.c:198
+#, fuzzy, c-format
+msgid "The System error was '%s' (rc=%d)"
+msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
+
+#: src/core/linux/ldap.c:86 src/core/linux/ldap.c:95
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
@@ -1563,10 +1526,6 @@ msgstr ""
 "The certificate signature could not be decrypted. This means that the actual "
 "signature value could not be determined rather than it not matching the "
 "expected value, this is only meaningful for RSA keys."
-
-#: src/network_modules/openssl/start.c:235
-msgid "The client was unable to negotiate a secure connection with the host"
-msgstr "O cliente foi incapaz de negociar uma conexão segura com o servidor"
 
 #: src/core/properties/unsigned.c:78
 msgid "The color type"
@@ -1674,7 +1633,7 @@ msgstr "Nº do modelo"
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
 
-#: src/core/connect.c:202
+#: src/core/connect.c:177
 msgid ""
 "The network module didn't set the TLS/SSL state message, this is not "
 "supposed to happen and can be a coding error"
@@ -1736,7 +1695,7 @@ msgstr "A conexão segura foi fechada corretamente"
 msgid "The security state"
 msgstr "O estado da segurança"
 
-#: src/network_modules/default/main.c:144
+#: src/network_modules/default/main.c:148
 msgid "The session is not secure"
 msgstr "A sessão não é segura"
 
@@ -1761,22 +1720,10 @@ msgstr "O erro do sistema operacional foi %d"
 msgid "The system error code was %d (%s)"
 msgstr "O erro do sistema operacional foi \"%d\" (%s)"
 
-#: src/core/windows/connect.c:250
-#, c-format
-msgid "The system error was \"%s\""
-msgstr "O erro do sistema operacional foi \"%s\""
-
-#: src/core/windows/connect.c:313 src/core/windows/connect.c:321
-#: src/core/windows/connect.c:329 src/core/windows/connect.c:340
+#: src/core/linux/connect.c:228 src/core/linux/connect.c:283
 #, c-format
 msgid "The system error was \"%s\" (rc=%d)"
 msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
-
-#: src/core/windows/connect.c:234 src/core/windows/connect.c:378
-#: src/core/windows/connect.c:397
-#, c-format
-msgid "The system error was %s"
-msgstr "O erro do sistema operacional foi \"%s\""
 
 #: src/network_modules/tools.c:113
 #, c-format
@@ -1795,10 +1742,6 @@ msgstr "Não existe espaço suficiente no host para os dados."
 #: src/core/ft/ftmessages.c:223
 msgid "This is a host program error."
 msgstr "Este é um erro no programa do host."
-
-#: src/core/windows/connect.c:314
-msgid "Timeout conneting to host"
-msgstr "Timeout ao conectar com o host"
 
 #: src/core/toggles/table.c:93 src/core/toggles/table.c:94
 msgid "Trace Data Stream"
@@ -1865,7 +1808,7 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
-#: src/core/windows/connect.c:205
+#: src/core/linux/connect.c:171
 msgid "Try again"
 msgstr "Tentar novamente"
 
@@ -1894,7 +1837,7 @@ msgstr "Incapaz de decifrar a assinatura do certificado"
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
-#: src/core/windows/connect.c:233
+#: src/core/linux/connect.c:208
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
@@ -1906,19 +1849,24 @@ msgstr "Não foi possível obter emissor do certificado"
 msgid "Unable to get local issuer certificate"
 msgstr "Unable to get local issuer certificate"
 
-#: src/core/session.c:201
+#: src/core/session.c:216
 msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
+
+#: src/network_modules/openssl/start.c:251
+#, fuzzy
+msgid "Unable to negotiate a secure connection with the host"
+msgstr "O cliente foi incapaz de negociar uma conexão segura com o servidor"
 
 #: src/core/paste.c:399
 msgid "Unable to paste text"
 msgstr "Incapaz de colar texto"
 
-#: src/core/session.c:187
+#: src/core/session.c:202
 msgid "Unable to print"
 msgstr "Incapaz de imprimir"
 
-#: src/core/session.c:194
+#: src/core/session.c:209
 msgid "Unable to save"
 msgstr "Incapaz de salvar"
 
@@ -1938,6 +1886,11 @@ msgstr "Não conectado"
 msgid "Underline"
 msgstr "Sublinhados"
 
+#: src/network_modules/openssl/start.c:272
+#, fuzzy
+msgid "Unexpected I/O error"
+msgstr "Erro inesperado"
+
 #: src/core/paste.c:400
 msgid "Unexpected error"
 msgstr "Erro inesperado"
@@ -1946,7 +1899,7 @@ msgstr "Erro inesperado"
 msgid "Unexpected error writing to network socket"
 msgstr "Erro inesperado gravando socket"
 
-#: src/core/keyboard/kybd.c:279
+#: src/core/keyboard/kybd.c:281
 #, c-format
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
@@ -1964,12 +1917,12 @@ msgstr "Unknown 3270 Data Stream command: 0x%X"
 msgid "Unknown FT control code from host"
 msgstr "Servidor enviou código de controle FT desconhecido"
 
-#: src/core/keyboard/kybd.c:1686
+#: src/core/keyboard/kybd.c:1688
 #, c-format
 msgid "Unknown PA key %d"
 msgstr "PA %d desconhecida"
 
-#: src/core/keyboard/kybd.c:1701
+#: src/core/keyboard/kybd.c:1703
 #, c-format
 msgid "Unknown PF key %d"
 msgstr "PF %d desconhecida"
@@ -2006,10 +1959,6 @@ msgstr "Usar teclas +/- para navegar por campos"
 msgid "Use the keys +/- from keypad to select editable fields"
 msgstr "Use the keys +/- from keypad to select editable fields"
 
-#: src/core/windows/connect.c:112
-msgid "WSAStartup failed"
-msgstr "WSAStartup falhou"
-
 #: src/core/ft/ft.c:537
 msgid "Waiting for GET response"
 msgstr "Aguardando resposta do pedido de download"
@@ -2021,11 +1970,6 @@ msgstr "Aguardando resposta do pedido de upload"
 #: src/core/telnet.c:776
 msgid "Warning"
 msgstr "Alerta"
-
-#: src/core/windows/util.c:132 src/core/windows/util.c:181
-#, c-format
-msgid "Windows error %d"
-msgstr "Erro windows foi %d"
 
 #: src/core/toggles/table.c:103 src/core/toggles/table.c:104
 msgid "Wrap around"
@@ -2114,15 +2058,15 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/windows/connect.c:357
+#: src/core/linux/connect.c:305
 msgid "_Retry"
 msgstr "_Repetir"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:391
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:339
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:89 src/core/windows/connect.c:391
+#: src/core/toggles/init.c:89 src/core/linux/connect.c:339
 msgid "enable"
 msgstr "habilitar"
 
@@ -2146,7 +2090,7 @@ msgstr "Versão da lib3270"
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/windows/connect.c:377
+#: src/core/linux/connect.c:326
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) has failed"
 
@@ -2369,6 +2313,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Background"
 #~ msgstr "Fundo"
 
+#~ msgid "Bad winsock version"
+#~ msgstr "Versão winsock inválida"
+
 #~ msgid "Black"
 #~ msgstr "Preto"
 
@@ -2411,8 +2358,17 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't add activity"
 #~ msgstr "Não é possível adicionar atividade"
 
+#~ msgid "Can't bind to LDAP server"
+#~ msgstr "Não foi possível conectar ao servidor LDAP"
+
+#~ msgid "Can't connect to HTTP server."
+#~ msgstr "Não foi possível conectar ao servidor HTTP"
+
 #~ msgid "Can't convert line %lu from %s to %s"
 #~ msgstr "Não foi possível converter a linha %lu de %s para %s"
+
+#~ msgid "Can't create HTTP request."
+#~ msgstr "Não foi possível criar requisição HTTP"
 
 #~ msgid "Can't cut rectangular regions"
 #~ msgstr "Recortar não permitido em seleção retangular"
@@ -2439,8 +2395,8 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't get screen contents"
 #~ msgstr "Não foi possível obter o conteúdo da tela"
 
-#~ msgid "Can't initialize curl operation"
-#~ msgstr "Erro ao inicializar operação CURL"
+#~ msgid "Can't initialize LDAP"
+#~ msgstr "Erro ao inicializar LDAP"
 
 #~ msgid "Can't load \"%s\": %s"
 #~ msgstr "Não foi possível carregar \"%s\": %s"
@@ -2465,6 +2421,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't open CRL File"
 #~ msgstr "Não foi possível abrir arquivo CRL"
+
+#~ msgid "Can't open HTTP session"
+#~ msgstr "Não foi possível abrir sessão HTTP"
 
 #~ msgid "Can't open file"
 #~ msgstr "Não foi possível abrir arquivo"
@@ -2495,6 +2454,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't read \"%s\": %s"
 #~ msgstr "Não foi possível ler \"%s\": %s"
+
+#~ msgid "Can't read HTTP response size."
+#~ msgstr "Não posso obter tamanho da resposta HTTP"
 
 #~ msgid "Can't recognize \"%s\" as a valid host type"
 #~ msgstr "Não reconheço \"%s\" como um tipo de host válido"
@@ -2532,6 +2494,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't search LDAP server"
 #~ msgstr "Não foi possível conectar ao servidor LDAP"
 
+#~ msgid "Can't send HTTP request."
+#~ msgstr "Não posso enviar requisição HTTP"
+
+#~ msgid "Can't set LDAP protocol version"
+#~ msgstr "Não é possível setar a versão do protocolo LDAP"
+
 #~ msgid "Can't set callback table"
 #~ msgstr "Não foi possível setar a tabela de retornos"
 
@@ -2549,6 +2517,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't start upload."
 #~ msgstr "Não foi possível iniciar upload."
+
+#~ msgid "Can't use this system winsock"
+#~ msgstr "Não posso usar a winsock do sistema"
 
 #~ msgid "Can't use winsock version %d.%d"
 #~ msgstr "Não posso usar versão winsock %d.%d"
@@ -2651,9 +2622,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Configure host"
 #~ msgstr "Configurar host"
 
-#~ msgid "Connection failed"
-#~ msgstr "Conexão falhou"
-
 #~ msgid "Copiar tudo"
 #~ msgstr "Copiar tudo"
 
@@ -2749,6 +2717,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Empty port name"
 #~ msgstr "Porta em branco"
 
+#~ msgid "Empty response from HTTP server."
+#~ msgstr "Recebi resposta vazia do servidor HTTP"
+
 #~ msgid ""
 #~ "Erase\n"
 #~ "Input"
@@ -2776,6 +2747,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Error loading CRL"
 #~ msgstr "Erro lendo CRL"
+
+#~ msgid "Error receiving HTTP response."
+#~ msgstr "Erro recebendo resposta HTTP."
 
 #~ msgid "Error resolving %s: %s"
 #~ msgstr "Erro ao resolver %s: %s"
@@ -3103,6 +3077,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Not available"
 #~ msgstr "Não disponível"
+
+#~ msgid "Not connected to host"
+#~ msgstr "Sem conexão com servidor"
 
 #~ msgid "Not the same terminal type"
 #~ msgstr "O tipo de terminal é diferente"
@@ -3477,6 +3454,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "SOCKS5 proxy: %s/%u: %s"
 #~ msgstr "SOCKS5 proxy: %s/%u: %s"
+
+#~ msgid "SSL Connect failed"
+#~ msgstr "Conexão SSL falhou"
 
 #~ msgid "SSL Error"
 #~ msgstr "Erro SSL"
@@ -3869,6 +3849,12 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ "O certificado de segurança apresentado pelo servidor não foi assinado por "
 #~ "uma autoridade certificadora confiável."
 
+#~ msgid "The system error was \"%s\""
+#~ msgstr "O erro do sistema operacional foi \"%s\""
+
+#~ msgid "The system error was %s"
+#~ msgstr "O erro do sistema operacional foi \"%s\""
+
 #~ msgid "There's no available settings for charset \"%s\""
 #~ msgstr "Não encontrei configuração para a tabela de caracteres \"%s\""
 
@@ -3911,6 +3897,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ "(SSL)."
 #~ msgstr ""
 #~ "Esta versão do %s foi gerada sem suporte para conexões seguras (SSL)."
+
+#~ msgid "Timeout conneting to host"
+#~ msgstr "Timeout ao conectar com o host"
 
 #~ msgid "To"
 #~ msgstr "Para"
@@ -4068,6 +4057,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "WSAEventSelect failed"
 #~ msgstr "WSAEventSelect falhou"
 
+#~ msgid "WSAStartup failed"
+#~ msgstr "WSAStartup falhou"
+
 #~ msgid "WaitForMultipleObjects() failed when processing for events."
 #~ msgstr "WaitForMultipleObjects() falhou ao processar eventos"
 
@@ -4085,6 +4077,9 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Windows Western languages (CP1252)"
 #~ msgstr "Windows ocidental (CP1252)"
+
+#~ msgid "Windows error %d"
+#~ msgstr "Erro windows foi %d"
 
 #~ msgid "Windows error was \"%s\" (%u)"
 #~ msgstr "Erro windows foi \"%s\" (%u)"

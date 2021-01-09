@@ -34,7 +34,6 @@
 
  #include "private.h"
 
-
 static void openssl_network_reset(H3270 *hSession) {
 
 	if(hSession->network.context) {

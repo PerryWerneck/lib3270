@@ -106,14 +106,14 @@
 	{
 		struct lib3270_ft_callbacks	  cbk;				///< @brief Callback table - Always the first one.
 
-		int						  ft_last_cr	: 1;	///< @brief CR was last char in local file
-		int 					  remap_flag	: 1;	///< @brief Remap ASCII<->EBCDIC
-		int						  cr_flag		: 1;	///< @brief Add crlf to each line
-		int						  unix_text		: 1;	///< @brief Following the convention for UNIX text files.
-		int						  message_flag	: 1;	///< @brief Open Request for msg received
-		int						  ascii_flag	: 1;	///< @brief Convert to ascii
-		int						  ft_is_cut		: 1;	///< @brief File transfer is CUT-style
-		int						  dft_eof		: 1;
+		unsigned int				  ft_last_cr	: 1;	///< @brief CR was last char in local file
+		unsigned int 				  remap_flag	: 1;	///< @brief Remap ASCII<->EBCDIC
+		unsigned int				  cr_flag		: 1;	///< @brief Add crlf to each line
+		unsigned int				  unix_text		: 1;	///< @brief Following the convention for UNIX text files.
+		unsigned int				  message_flag	: 1;	///< @brief Open Request for msg received
+		unsigned int				  ascii_flag	: 1;	///< @brief Convert to ascii
+		unsigned int				  ft_is_cut		: 1;	///< @brief File transfer is CUT-style
+		unsigned int				  dft_eof		: 1;
 
 
 		H3270					* host;

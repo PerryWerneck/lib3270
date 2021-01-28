@@ -701,3 +701,24 @@ LIB3270_EXPORT LIB3270_FT_STATE lib3270_get_ft_state(H3270 *session)
 
 	return ((H3270FT *) session->ft)->state;
 }
+
+LIB3270_EXPORT int lib3270_send(H3270 *hSession, const char *from, const char *to, const char **args)
+{
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	if(hSession->ft)
+		return EBUSY;
+
+	return hSession->cbk.send(hSession,from,to,args);
+}
+
+LIB3270_EXPORT int lib3270_receive(H3270 *hSession, const char *from, const char *to, const char **args)
+{
+	FAIL_IF_NOT_ONLINE(hSession);
+
+	if(hSession->ft)
+		return EBUSY;
+
+	return hSession->cbk.receive(hSession,from,to,args);
+}
+

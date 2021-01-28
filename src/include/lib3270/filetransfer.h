@@ -197,6 +197,34 @@
 	LIB3270_EXPORT struct lib3270_ft_callbacks	* lib3270_get_ft_callbacks(H3270 *session, unsigned short sz);
 
 	/**
+	 * @brief Send file.
+	 *
+	 * @param from	Origin filename
+	 * @param to	Destination filename
+	 * @param args	Null terminated file transfer options.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 * @retval	EBUSY	File transfer is already active.
+	 *
+	 */
+	LIB3270_EXPORT int							  lib3270_send(H3270 *hSession, const char *from, const char *to, const char **args);
+
+	/**
+	 * @brief Receive file.
+	 *
+	 * @param from	Origin filename
+	 * @param to	Destination filename
+	 * @param args	Null terminated file transfer options.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 * @retval	EBUSY	File transfer is already active.
+	 *
+	 */
+	LIB3270_EXPORT int							  lib3270_receive(H3270 *hSession, const char *from, const char *to, const char **args);
+
+	/**
 	 * @brief Set all FT callbacks to default valides.
 	 *
 	 * @param hSession	TN3270 session to reset.

@@ -217,28 +217,6 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename))
 	return errno = ENOTSUP;
 }
 
-/*
-static void def_message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *title, const char *msg, const char *text)
-{
-#ifdef ANDROID
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",title);
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",msg);
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",text);
-#else
-	lib3270_write_log(session,"lib3270","%s",title);
-	lib3270_write_log(session,"lib3270","%s",msg);
-	lib3270_write_log(session,"lib3270","%s",text);
-#endif // ANDROID
-}
-*/
-
-/*
-static void def_popup(H3270 *hSession, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
-{
-	lib3270_popup_va(hSession,type,title,msg,fmt,args);
-}
-*/
-
 static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
@@ -276,6 +254,10 @@ static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*
 	return ENOENT;
 }
 
+static int default_ft(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*from), const char GNUC_UNUSED(*to), const char GNUC_UNUSED(**args)) {
+	return ENOTSUP;
+}
+
 void lib3270_reset_callbacks(H3270 *hSession)
 {
 	// Default calls
@@ -306,6 +288,8 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.update_url			= default_update_url;
 	hSession->cbk.action				= default_action;
 	hSession->cbk.reconnect				= lib3270_reconnect;
+	hSession->cbk.send					= default_ft;
+	hSession->cbk.receive				= default_ft;
 
 	lib3270_set_popup_handler(hSession, NULL);
 

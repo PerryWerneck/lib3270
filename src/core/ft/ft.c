@@ -290,8 +290,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	}
 
 	// Set options
-	session->dft_buffersize = dft;
-	set_dft_buffersize(session);
+	lib3270_set_dft_buffersize(session, dft);
 
 	// Create & Initialize ft control structure.
 	ftHandle = lib3270_malloc(sizeof(H3270FT)+strlen(local)+strlen(remote)+3);
@@ -337,6 +336,61 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	lib3270_reset_ft_callbacks(session);
 
  	return ftHandle;
+ }
+
+ LIB3270_EXPORT int	lib3270_ft_set_lrecl(H3270 *hSession, int lrecl)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+ 	if(!hSession->ft)
+		return errno = EINVAL;
+
+
+	return 0;
+ }
+
+ LIB3270_EXPORT int	lib3270_ft_set_blksize(H3270 *hSession, int blksize)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+ 	if(!hSession->ft)
+		return errno = EINVAL;
+
+
+	return 0;
+ }
+
+ LIB3270_EXPORT int	lib3270_ft_set_primspace(H3270 *hSession, int primspace)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+ 	if(!hSession->ft)
+		return errno = EINVAL;
+
+
+	return 0;
+ }
+
+ LIB3270_EXPORT int	lib3270_ft_set_secspace(H3270 *hSession, int secspace)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+ 	if(!hSession->ft)
+		return errno = EINVAL;
+
+
+	return 0;
+ }
+
+ LIB3270_EXPORT int lib3270_ft_set_option(H3270 *hSession, LIB3270_FT_OPTION option)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+ 	if(!hSession->ft)
+		return errno = EINVAL;
+
+
+	return 0;
  }
 
  LIB3270_EXPORT int lib3270_reset_ft_callbacks(H3270 *hSession)

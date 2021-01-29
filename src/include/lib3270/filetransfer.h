@@ -196,6 +196,19 @@
 
 	LIB3270_EXPORT struct lib3270_ft_callbacks	* lib3270_get_ft_callbacks(H3270 *session, unsigned short sz);
 
+	LIB3270_EXPORT int							  lib3270_ft_set_lrecl(H3270 *hSession, int lrecl);
+	LIB3270_EXPORT int							  lib3270_ft_set_blksize(H3270 *hSession, int blksize);
+	LIB3270_EXPORT int							  lib3270_ft_set_primspace(H3270 *hSession, int primspace);
+	LIB3270_EXPORT int							  lib3270_ft_set_secspace(H3270 *hSession, int secspace);
+
+	/**
+	 * @brief Update the buffersize for generating a Query Reply.
+	 */
+	LIB3270_EXPORT int							  lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize);
+
+
+	LIB3270_EXPORT int							  lib3270_ft_set_option(H3270 *hSession, LIB3270_FT_OPTION option);
+
 	/**
 	 * @brief Send file.
 	 *

@@ -42,6 +42,7 @@
 #endif // WIN32
 
 #include <lib3270.h>
+#include <lib3270/filetransfer.h>
 #include <internals.h>
 
 #if defined(X3270_FT) /*[*/
@@ -375,7 +376,7 @@ static void dft_get_request(H3270 *hSession)
 	}
 
 	/* Read a buffer's worth. */
-	set_dft_buffersize(hSession);
+	lib3270_set_dft_buffersize(hSession,hSession->dft_buffersize);
 	space3270out(hSession,hSession->dft_buffersize);
 	numbytes = hSession->dft_buffersize - 27; /* always read 5 bytes less than we're allowed */
 	bufptr = hSession->output.buf + 17;
@@ -589,9 +590,7 @@ void dft_read_modified(H3270 *hSession)
 	}
 }
 
-/**
- * Update the buffersize for generating a Query Reply.
- */
+/*
 void set_dft_buffersize(H3270 *hSession)
 {
 	if (hSession->dft_buffersize == 0)
@@ -603,6 +602,25 @@ void set_dft_buffersize(H3270 *hSession)
 	if (hSession->dft_buffersize < DFT_MIN_BUF)
 		hSession->dft_buffersize = DFT_MIN_BUF;
 }
-
+*/
 
 #endif /*]*/
+
+ LIB3270_EXPORT int	lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize)
+ {
+ 	CHECK_SESSION_HANDLE(hSession);
+
+	hSession->dft_buffersize = dft_buffersize;
+
+	if (hSession->dft_buffersize == 0)
+		hSession->dft_buffersize = DFT_BUF;
+
+	if (hSession->dft_buffersize > DFT_MAX_BUF)
+		hSession->dft_buffersize = DFT_MAX_BUF;
+
+	if (hSession->dft_buffersize < DFT_MIN_BUF)
+		hSession->dft_buffersize = DFT_MIN_BUF;
+
+	return 0;
+ }
+

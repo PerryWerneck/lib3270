@@ -345,6 +345,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
  	if(!hSession->ft)
 		return errno = EINVAL;
 
+	hSession->ft->lrecl	= lrecl;
 
 	return 0;
  }
@@ -356,6 +357,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
  	if(!hSession->ft)
 		return errno = EINVAL;
 
+	hSession->ft->blksize = blksize;
 
 	return 0;
  }
@@ -367,6 +369,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
  	if(!hSession->ft)
 		return errno = EINVAL;
 
+	hSession->ft->primspace	= primspace;
 
 	return 0;
  }
@@ -378,17 +381,23 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
  	if(!hSession->ft)
 		return errno = EINVAL;
 
+	hSession->ft->secspace = secspace;
 
 	return 0;
  }
 
- LIB3270_EXPORT int lib3270_ft_set_option(H3270 *hSession, LIB3270_FT_OPTION option)
+ LIB3270_EXPORT int lib3270_ft_set_options(H3270 *hSession, LIB3270_FT_OPTION options)
  {
  	CHECK_SESSION_HANDLE(hSession);
 
  	if(!hSession->ft)
 		return errno = EINVAL;
 
+	hSession->ft->ascii_flag	= (options & LIB3270_FT_OPTION_ASCII)	? 1 : 0;
+	hSession->ft->cr_flag   	= (options & LIB3270_FT_OPTION_CRLF)	? 1 : 0;
+	hSession->ft->remap_flag	= (options & LIB3270_FT_OPTION_REMAP)	? 1 : 0;
+	hSession->ft->unix_text		= (options & LIB3270_FT_OPTION_UNIX)	? 1 : 0;
+	hSession->ft->flags			|= options;
 
 	return 0;
  }

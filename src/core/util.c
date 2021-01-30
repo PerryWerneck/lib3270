@@ -279,25 +279,19 @@ LIB3270_EXPORT char * lib3270_get_version_info(void)
 void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 {
 	va_list	  args;
-	char	* text;
 
 	va_start(args, fmt);
-	text = lib3270_vsprintf(fmt, args);
+	lib3270_autoptr(char) summary = lib3270_vsprintf(fmt, args);
+	lib3270_autoptr(char) body = lib3270_strdup_printf( _( "The system error was '%s' (rc=%d)" ),strerror(errn),errn);
 	va_end(args);
 
-	lib3270_write_log(hSession, "3270", "Error Popup:\n%s\nrc=%d (%s)",text,errn,strerror(errn));
+	LIB3270_POPUP popup = {
+		.type = LIB3270_NOTIFY_ERROR,
+		.summary = summary,
+		.body = body
+	};
 
-	lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Error" ),
-			text,
-			"%s (rc=%d)",
-				strerror(errn),
-				errn
-			);
-
-	lib3270_free(text);
+	lib3270_popup(hSession,&popup,0);
 
 }
 

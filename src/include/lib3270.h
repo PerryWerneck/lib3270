@@ -1404,9 +1404,55 @@
 	 */
 	LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr);
 
+	/**
+	 * @brief Get a block of memory, fill it with zeros.
+	 *
+	 * @param len	Length of memory block to get.
+	 *
+	 * @return Pointer to new memory block.
+	 *
+	 */
 	LIB3270_EXPORT void * lib3270_malloc(int len);
+
 	LIB3270_EXPORT void * lib3270_realloc(void *p, int len);
 	LIB3270_EXPORT void * lib3270_strdup(const char *str);
+
+	/**
+	 * @brief Removes trailing white space from a string.
+	 *
+	 * This function doesn't allocate or reallocate any memory;
+	 * it modifies in place. Therefore, it cannot be used
+	 * on statically allocated strings.
+	 *
+	 * Reference: <https://git.gnome.org/browse/glib/tree/glib/gstrfuncs.c>
+	 *
+	 * @see chug() and strip().
+	 *
+	 * @return pointer to string.
+	 *
+	 */
+	LIB3270_EXPORT char * lib3270_chomp(char *str);
+
+	/**
+	 * @brief Remove the leading white space from the string.
+	 *
+	 * Removes leading white space from a string, by moving the rest
+	 * of the characters forward.
+	 *
+	 * This function doesn't allocate or reallocate any memory;
+	 * it modifies the string in place. Therefore, it cannot be used on
+	 * statically allocated strings.
+	 *
+	 * Reference: <https://git.gnome.org/browse/glib/tree/glib/gstrfuncs.c>
+	 *
+	 * @see chomp() and strip().
+	 *
+	 * @return pointer to string.
+	 *
+	 */
+	LIB3270_EXPORT char * lib3270_chug(char *str);
+
+	LIB3270_EXPORT char * lib3270_strip(char *str);
 
 	/**
 	 * @brief Release allocated memory.
@@ -1425,7 +1471,7 @@
 	 * @return Internal's lib3270 session handle.
 	 *
 	 */
-	LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void);
+	LIB3270_EXPORT H3270 * LIB3270_DEPRECATED(lib3270_get_default_session_handle(void));
 
 	/**
 	 * Get library version.

@@ -465,14 +465,12 @@ void check_session_handle(H3270 **hSession)
 	if(*hSession)
 		return;
 
-	*hSession = lib3270_get_default_session_handle();
+//	*hSession = lib3270_get_default_session_handle();
 
-#if defined(ANDROID)
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s called with empty session\n", __FUNCTION__);
-#elif defined(DEBUG)
-	lib3270_write_log(*hSession, "lib3270", "%s called with empty session from %s",__FUNCTION__,fname);
+#if defined(DEBUG)
+	lib3270_write_log(NULL, "lib3270", "%s called with empty session from %s",__FUNCTION__,fname);
 #else
-	lib3270_write_log(*hSession, "lib3270", "%s called with empty session",__FUNCTION__);
+	lib3270_write_log(NULL, "lib3270", "%s called with empty session",__FUNCTION__);
 #endif // ANDROID
 }
 

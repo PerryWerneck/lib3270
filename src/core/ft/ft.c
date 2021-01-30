@@ -258,24 +258,16 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
  	H3270FT				* ftHandle		= (H3270FT *) session->ft;
  	FILE				* ft_local_file	= NULL;
  	int                   f;
-// 	unsigned long		  length		= 0L;
 
-//	trace("%s(%s)",__FUNCTION__,local);
 	if(!lib3270_is_connected(session))
-	{
 		return ft_creation_failed(session,ENOTCONN,message,_( "Disconnected from host." ));
-	}
 
 	if(ftHandle)
-	{
 		return ft_creation_failed(session,EBUSY,message,_( "File transfer is already active in this session." ));
-	}
 
 	// Check remote file
 	if(!*remote)
-	{
 		return ft_creation_failed(session,EINVAL,message,_( "The remote file name is invalid." ));
-	}
 
 	// Open local file
 #ifdef _WIN32
@@ -285,9 +277,7 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 #endif // _WIN32
 
 	if(!ft_local_file)
-	{
 		return ft_creation_failed(session,errno,message,strerror(errno));
-	}
 
 	// Set options
 	lib3270_set_dft_buffersize(session, dft);
@@ -296,14 +286,15 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	ftHandle = lib3270_malloc(sizeof(H3270FT)+strlen(local)+strlen(remote)+3);
 
 	ftHandle->host				= session;
+	session->ft					= ftHandle;
 
 	ftHandle->ft_last_cr		= 0;
+	ftHandle->ft_is_cut  		= 0;
 
 	ftHandle->ascii_flag		= (flags & LIB3270_FT_OPTION_ASCII)	? 1 : 0;
 	ftHandle->cr_flag   		= (flags & LIB3270_FT_OPTION_CRLF)	? 1 : 0;
 	ftHandle->remap_flag		= (flags & LIB3270_FT_OPTION_REMAP)	? 1 : 0;
 	ftHandle->unix_text			= (flags & LIB3270_FT_OPTION_UNIX)	? 1 : 0;
-	ftHandle->ft_is_cut  		= 0;
 	ftHandle->flags				= flags;
 	ftHandle->local_file		= ft_local_file;
 	ftHandle->state				= LIB3270_FT_STATE_AWAIT_ACK;
@@ -331,7 +322,6 @@ static void set_ft_state(H3270FT *session, LIB3270_FT_STATE state);
 	ftHandle->remote		= ftHandle->local + strlen(ftHandle->local)+1;
 	strcpy((char *) ftHandle->remote,remote);
 
-	session->ft				= ftHandle;
 
 	lib3270_reset_ft_callbacks(session);
 

@@ -98,6 +98,9 @@
 		<Unit filename="src/core/ft/ftmessages.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/ft/set.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/host.c">
 			<Option compilerVar="CC" />
 		</Unit>

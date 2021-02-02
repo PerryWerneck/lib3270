@@ -206,7 +206,6 @@
 	 */
 	LIB3270_EXPORT int							  lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize);
 
-
 	LIB3270_EXPORT int							  lib3270_ft_set_options(H3270 *hSession, LIB3270_FT_OPTION options);
 
 	/**

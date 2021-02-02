@@ -254,10 +254,6 @@ static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*
 	return ENOENT;
 }
 
-static int default_ft(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*from), const char GNUC_UNUSED(*to), const char GNUC_UNUSED(**args)) {
-	return ENOTSUP;
-}
-
 void lib3270_reset_callbacks(H3270 *hSession)
 {
 	// Default calls
@@ -288,8 +284,6 @@ void lib3270_reset_callbacks(H3270 *hSession)
 	hSession->cbk.update_url			= default_update_url;
 	hSession->cbk.action				= default_action;
 	hSession->cbk.reconnect				= lib3270_reconnect;
-	hSession->cbk.send					= default_ft;
-	hSession->cbk.receive				= default_ft;
 
 	lib3270_set_popup_handler(hSession, NULL);
 

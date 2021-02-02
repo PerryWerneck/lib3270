@@ -81,9 +81,6 @@
 
 		int  (*reconnect)(H3270 *hSession,int seconds);
 
-		int  (*send)(H3270 *hSession, const char *from, const char *to, const char **args);
-		int  (*receive)(H3270 *hSession, const char *from, const char *to, const char **args);
-
 	};
 
 	/**

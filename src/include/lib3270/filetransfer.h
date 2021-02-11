@@ -106,14 +106,14 @@
 	{
 		struct lib3270_ft_callbacks	  cbk;				///< @brief Callback table - Always the first one.
 
-		int						  ft_last_cr	: 1;	///< @brief CR was last char in local file
-		int 					  remap_flag	: 1;	///< @brief Remap ASCII<->EBCDIC
-		int						  cr_flag		: 1;	///< @brief Add crlf to each line
-		int						  unix_text		: 1;	///< @brief Following the convention for UNIX text files.
-		int						  message_flag	: 1;	///< @brief Open Request for msg received
-		int						  ascii_flag	: 1;	///< @brief Convert to ascii
-		int						  ft_is_cut		: 1;	///< @brief File transfer is CUT-style
-		int						  dft_eof		: 1;
+		unsigned int				  ft_last_cr	: 1;	///< @brief CR was last char in local file
+		unsigned int 				  remap_flag	: 1;	///< @brief Remap ASCII<->EBCDIC
+		unsigned int				  cr_flag		: 1;	///< @brief Add crlf to each line
+		unsigned int				  unix_text		: 1;	///< @brief Following the convention for UNIX text files.
+		unsigned int				  message_flag	: 1;	///< @brief Open Request for msg received
+		unsigned int				  ascii_flag	: 1;	///< @brief Convert to ascii
+		unsigned int				  ft_is_cut		: 1;	///< @brief File transfer is CUT-style
+		unsigned int				  dft_eof		: 1;
 
 
 		H3270					* host;
@@ -195,6 +195,46 @@
 	LIB3270_EXPORT LIB3270_FT_STATE				  lib3270_get_ft_state(H3270 *session);
 
 	LIB3270_EXPORT struct lib3270_ft_callbacks	* lib3270_get_ft_callbacks(H3270 *session, unsigned short sz);
+
+	LIB3270_EXPORT int							  lib3270_ft_set_lrecl(H3270 *hSession, int lrecl);
+	LIB3270_EXPORT int							  lib3270_ft_set_blksize(H3270 *hSession, int blksize);
+	LIB3270_EXPORT int							  lib3270_ft_set_primspace(H3270 *hSession, int primspace);
+	LIB3270_EXPORT int							  lib3270_ft_set_secspace(H3270 *hSession, int secspace);
+
+	/**
+	 * @brief Update the buffersize for generating a Query Reply.
+	 */
+	LIB3270_EXPORT int							  lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize);
+
+	LIB3270_EXPORT int							  lib3270_ft_set_options(H3270 *hSession, LIB3270_FT_OPTION options);
+
+	/**
+	 * @brief Send file.
+	 *
+	 * @param from	Origin filename
+	 * @param to	Destination filename
+	 * @param args	Null terminated file transfer options.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 * @retval	EBUSY	File transfer is already active.
+	 *
+	 */
+	LIB3270_EXPORT int							  lib3270_send(H3270 *hSession, const char *from, const char *to, const char **args);
+
+	/**
+	 * @brief Receive file.
+	 *
+	 * @param from	Origin filename
+	 * @param to	Destination filename
+	 * @param args	Null terminated file transfer options.
+	 *
+	 * @return 0 if ok, error code if not.
+	 *
+	 * @retval	EBUSY	File transfer is already active.
+	 *
+	 */
+	LIB3270_EXPORT int							  lib3270_receive(H3270 *hSession, const char *from, const char *to, const char **args);
 
 	/**
 	 * @brief Set all FT callbacks to default valides.

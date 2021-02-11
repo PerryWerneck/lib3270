@@ -542,7 +542,7 @@
 			.name = "erase-input",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.keys = NULL,
+			.keys = "",
 			.icon = "edit-clear",
 			.label = N_("Erase input"),
 			.summary = N_("Erase all unprotected fields"),
@@ -598,7 +598,7 @@
 			.name = "clear",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
-			.keys = NULL,
+			.keys = "<Alt>F1",
 			.icon = "edit-clear-all",
 			.label = N_("Clear"),
 			.summary = N_( "Clear AID key" ),

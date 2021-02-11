@@ -124,19 +124,6 @@
 	#define E_OPT(n)	(1 << (n))
 #endif // X3270_TN3270E
 
-/*
-#if defined(X3270_ANSI)
-static char     vintr;
-static char     vquit;
-static char     verase;
-static char     vkill;
-static char     veof;
-static char     vwerase;
-static char     vrprnt;
-static char     vlnext;
-#endif
-*/
-
 struct _ansictl ansictl = { 0 };
 
 static int telnet_fsm(H3270 *session, unsigned char c);
@@ -2090,27 +2077,23 @@ static void check_linemode(H3270 *hSession, Boolean init)
 	}
 }
 
-
 #if defined(X3270_TRACE)
 
-/*
- * nnn
- *	Expands a number to a character string, for displaying unknown telnet
- *	commands and options.
- */
+///
+/// @brief Expands a number to a character string, for displaying unknown telnet commands and options.
+///
 static const char *
 nnn(int c)
 {
 	static char	buf[64];
-
-	(void) sprintf(buf, "%d", c);
+	memset(buf,0,sizeof(buf));
+	(void) snprintf(buf, 63, "%d", c);
 	return buf;
 }
 
-/*
- * cmd
- *	Expands a TELNET command into a character string.
- */
+///
+/// @brief Expands a TELNET command into a character string.
+///
 static const char * cmd(int c)
 {
 	if (TELCMD_OK(c))
@@ -2119,20 +2102,17 @@ static const char * cmd(int c)
 		return nnn(c);
 }
 
-/***
- *
- * @brief Expands a TELNET option into a character string.
- */
+///
+/// @brief Expands a TELNET option into a character string.
+///
 static const char * opt(unsigned char c)
 {
-	if (TELOPT_OK(c))
-		return TELOPT(c);
-	else if (c == TELOPT_TN3270E)
+	if (c == TELOPT_TN3270E)
 		return "TN3270E";
-#if defined(HAVE_LIBSSL) /*[*/
 	else if (c == TELOPT_STARTTLS)
 		return "START-TLS";
-#endif /*]*/
+	else if (TELOPT_OK(c))
+		return TELOPT(c);
 	else
 		return nnn((int)c);
 }

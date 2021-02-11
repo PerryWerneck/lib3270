@@ -217,28 +217,6 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename))
 	return errno = ENOTSUP;
 }
 
-/*
-static void def_message(H3270 *session, LIB3270_NOTIFY GNUC_UNUSED(id), const char *title, const char *msg, const char *text)
-{
-#ifdef ANDROID
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",title);
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",msg);
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s\n",text);
-#else
-	lib3270_write_log(session,"lib3270","%s",title);
-	lib3270_write_log(session,"lib3270","%s",msg);
-	lib3270_write_log(session,"lib3270","%s",text);
-#endif // ANDROID
-}
-*/
-
-/*
-static void def_popup(H3270 *hSession, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
-{
-	lib3270_popup_va(hSession,type,title,msg,fmt,args);
-}
-*/
-
 static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
 {
 	vfprintf(stdout,fmt,args);
@@ -481,14 +459,12 @@ void check_session_handle(H3270 **hSession)
 	if(*hSession)
 		return;
 
-	*hSession = lib3270_get_default_session_handle();
+//	*hSession = lib3270_get_default_session_handle();
 
-#if defined(ANDROID)
-	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, "%s called with empty session\n", __FUNCTION__);
-#elif defined(DEBUG)
-	lib3270_write_log(*hSession, "lib3270", "%s called with empty session from %s",__FUNCTION__,fname);
+#if defined(DEBUG)
+	lib3270_write_log(NULL, "lib3270", "%s called with empty session from %s",__FUNCTION__,fname);
 #else
-	lib3270_write_log(*hSession, "lib3270", "%s called with empty session",__FUNCTION__);
+	lib3270_write_log(NULL, "lib3270", "%s called with empty session",__FUNCTION__);
 #endif // ANDROID
 }
 

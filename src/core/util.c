@@ -60,7 +60,7 @@ char * lib3270_vsprintf(const char *fmt, va_list args)
 #if defined(HAVE_VASPRINTF)
 
 	if(vasprintf(&r, fmt, args) < 0 || !r)
-		lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
+		lib3270_write_log(NULL, "lib3270", "Error in vasprintf");
 
 #else
 
@@ -70,7 +70,7 @@ char * lib3270_vsprintf(const char *fmt, va_list args)
 	nc = vsnprintf(buf, sizeof(buf), fmt, args);
 	if(nc < 0)
 	{
-		lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
+		lib3270_write_log(NULL, "lib3270", "Error on vsnprintf");
 	}
 	else if (nc < sizeof(buf))
 	{
@@ -82,7 +82,11 @@ char * lib3270_vsprintf(const char *fmt, va_list args)
 	{
 		r = lib3270_malloc(nc + 1);
 		if(vsnprintf(r, nc, fmt, args) < 0)
-			lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
+		{
+			lib3270_write_log(NULL, "lib3270", "Error on vsnprintf");
+			free(r);
+			return NULL;
+		}
 
 	}
 
@@ -176,8 +180,8 @@ LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr)
 LIB3270_EXPORT void * lib3270_realloc(void *p, int len)
 {
 	p = realloc(p, len);
-	if(!p)
-		lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
+	if(p == NULL)
+		perror("realloc");
 	return p;
 }
 
@@ -190,42 +194,64 @@ LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr)
 	else
 		ptr = malloc(sz);
 
-	if(ptr)
-		memset(ptr,0,sz);
-	else
-		lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
+	if(!ptr)
+		perror("calloc");
 
+	memset(ptr,0,sz);
 	return ptr;
 }
 
 LIB3270_EXPORT void * lib3270_malloc(int len)
 {
-	char *r;
+	char *r = malloc(len);
+	if(r)
+		memset(r,0,len);
 
-	r = malloc(len);
-	if (r == (char *)NULL)
-	{
-		lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
-		return 0;
-	}
-
-	memset(r,0,len);
 	return r;
 }
 
 LIB3270_EXPORT void * lib3270_strdup(const char *str)
 {
-	char *r;
+	return strdup(str);
+}
 
-	r = strdup(str);
-	if (r == (char *)NULL)
+LIB3270_EXPORT char * lib3270_chomp(char *str)
+{
+
+	size_t len = strlen(str);
+
+	while(len--)
 	{
-		lib3270_popup_dialog(lib3270_get_default_session_handle(),LIB3270_NOTIFY_ERROR,_("Internal error"),"Out of memory",NULL);
-		return 0;
+
+		if(isspace(str[len]))
+		{
+			str[len] = 0;
+		} else {
+			break;
+		}
 	}
 
-	return r;
+	return str;
+
 }
+
+LIB3270_EXPORT char * lib3270_chug(char *str)
+{
+
+	char *start;
+
+	for (start = (char*) str; *start && isspace(*start); start++);
+
+	memmove(str, start, strlen ((char *) start) + 1);
+
+	return str;
+}
+
+LIB3270_EXPORT char * lib3270_strip(char *str)
+{
+	return lib3270_chomp(lib3270_chug(str));
+}
+
 
 LIB3270_EXPORT const char * lib3270_get_version(void)
 {
@@ -256,25 +282,19 @@ LIB3270_EXPORT char * lib3270_get_version_info(void)
 void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 {
 	va_list	  args;
-	char	* text;
 
 	va_start(args, fmt);
-	text = lib3270_vsprintf(fmt, args);
+	lib3270_autoptr(char) summary = lib3270_vsprintf(fmt, args);
+	lib3270_autoptr(char) body = lib3270_strdup_printf( _( "The system error was '%s' (rc=%d)" ),strerror(errn),errn);
 	va_end(args);
 
-	lib3270_write_log(hSession, "3270", "Error Popup:\n%s\nrc=%d (%s)",text,errn,strerror(errn));
+	LIB3270_POPUP popup = {
+		.type = LIB3270_NOTIFY_ERROR,
+		.summary = summary,
+		.body = body
+	};
 
-	lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Error" ),
-			text,
-			"%s (rc=%d)",
-				strerror(errn),
-				errn
-			);
-
-	lib3270_free(text);
+	lib3270_popup(hSession,&popup,0);
 
 }
 

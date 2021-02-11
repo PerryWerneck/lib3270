@@ -37,6 +37,7 @@
  */
 
 #include <internals.h>
+#include <lib3270/filetransfer.h>
 #include <lib3270/trace.h>
 
 #include <errno.h>
@@ -997,7 +998,7 @@ static void do_qr_charsets(H3270 *hSession)
 #if defined(X3270_FT) /*[*/
 static void do_qr_ddm(H3270 *hSession)
 {
-	set_dft_buffersize(hSession);
+	lib3270_set_dft_buffersize(hSession,hSession->dft_buffersize);
 
 	trace_ds(hSession,"> QueryReply(DistributedDataManagement)\n");
 	space3270out(hSession,8);

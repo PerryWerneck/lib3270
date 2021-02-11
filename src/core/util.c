@@ -180,6 +180,8 @@ LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr)
 LIB3270_EXPORT void * lib3270_realloc(void *p, int len)
 {
 	p = realloc(p, len);
+	if(p == NULL)
+		perror("realloc");
 	return p;
 }
 
@@ -192,9 +194,10 @@ LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr)
 	else
 		ptr = malloc(sz);
 
-	if(ptr)
-		memset(ptr,0,sz);
+	if(!ptr)
+		perror("calloc");
 
+	memset(ptr,0,sz);
 	return ptr;
 }
 

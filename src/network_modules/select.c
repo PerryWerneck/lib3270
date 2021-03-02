@@ -27,19 +27,19 @@
  *
  */
 
- /**
-  * @brief Select network methods.
-  *
-  */
+/**
+ * @brief Select network methods.
+ *
+ */
 
- #include <config.h>
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <lib3270/trace.h>
- #include <networking.h>
- #include <string.h>
+#include <config.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
+#include <networking.h>
+#include <string.h>
 
- /*--[ Implement ]------------------------------------------------------------------------------------*/
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
 char * lib3270_set_network_module_from_url(H3270 *hSession, char *url) {
 
@@ -64,7 +64,7 @@ char * lib3270_set_network_module_from_url(H3270 *hSession, char *url) {
 
 	size_t ix;
 
-	for(ix=0;ix < (sizeof(modules)/sizeof(modules[0])); ix++) {
+	for(ix=0; ix < (sizeof(modules)/sizeof(modules[0])); ix++) {
 
 		size_t len = strlen(modules[ix].scheme);
 		if(!strncasecmp(url,modules[ix].scheme,len)) {
@@ -75,4 +75,4 @@ char * lib3270_set_network_module_from_url(H3270 *hSession, char *url) {
 	}
 
 	return NULL;
- }
+}

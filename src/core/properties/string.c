@@ -27,39 +27,34 @@
  *
  */
 
- #include <config.h>
- #include <stdlib.h>
- #include <internals.h>
- #include <string.h>
- #include <lib3270.h>
- #include <lib3270/properties.h>
- #include <lib3270/keyboard.h>
- #include <lib3270/log.h>
- #include <lib3270/ssl.h>
+#include <config.h>
+#include <stdlib.h>
+#include <internals.h>
+#include <string.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
+#include <lib3270/keyboard.h>
+#include <lib3270/log.h>
+#include <lib3270/ssl.h>
 
- static const char * get_version(const H3270 GNUC_UNUSED(*hSession))
- {
+static const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
 	return lib3270_get_version();
- }
+}
 
- static const char * get_revision(const H3270 GNUC_UNUSED(*hSession))
- {
+static const char * get_revision(const H3270 GNUC_UNUSED(*hSession)) {
 	return lib3270_get_revision();
- }
+}
 
- static const char * lib3270_get_termtype(const H3270 *hSession)
- {
- 	return hSession->termtype;
- }
+static const char * lib3270_get_termtype(const H3270 *hSession) {
+	return hSession->termtype;
+}
 
- static const char * lib3270_get_termname(const H3270 *hSession)
- {
- 	return hSession->termname;
- }
+static const char * lib3270_get_termname(const H3270 *hSession) {
+	return hSession->termname;
+}
 
- LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void)
- {
-	 static const LIB3270_STRING_PROPERTY properties[] = {
+LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void) {
+	static const LIB3270_STRING_PROPERTY properties[] = {
 
 		{
 			.name = "associated_lu",												//  Property name.
@@ -194,18 +189,16 @@
 			.set = NULL
 		}
 
-	 };
+	};
 
-	 return properties;
+	return properties;
 
- }
+}
 
-int lib3270_set_string_property(H3270 *hSession, const char *name, const char * value, int seconds)
-{
+int lib3270_set_string_property(H3270 *hSession, const char *name, const char * value, int seconds) {
 	size_t ix;
 
-	if(seconds)
-	{
+	if(seconds) {
 		lib3270_wait_for_ready(hSession, seconds);
 	}
 
@@ -214,16 +207,11 @@ int lib3270_set_string_property(H3270 *hSession, const char *name, const char * 
 	//
 	{
 		const LIB3270_STRING_PROPERTY * properties = lib3270_get_string_properties_list();
-		for(ix = 0; properties[ix].name; ix++)
-		{
-			if(!strcasecmp(name,properties[ix].name))
-			{
-				if(properties[ix].set)
-				{
+		for(ix = 0; properties[ix].name; ix++) {
+			if(!strcasecmp(name,properties[ix].name)) {
+				if(properties[ix].set) {
 					return properties[ix].set(hSession, value);
-				}
-				else
-				{
+				} else {
 					return errno = EPERM;
 				}
 			}
@@ -234,79 +222,62 @@ int lib3270_set_string_property(H3270 *hSession, const char *name, const char * 
 	//
 	// Check for signed int property
 	//
-    {
+	{
 		const LIB3270_INT_PROPERTY * properties = lib3270_get_int_properties_list();
-		for(ix = 0; properties[ix].name; ix++)
-		{
-			if(!strcasecmp(name,properties[ix].name))
-			{
-				if(properties[ix].set)
-				{
+		for(ix = 0; properties[ix].name; ix++) {
+			if(!strcasecmp(name,properties[ix].name)) {
+				if(properties[ix].set) {
 					return properties[ix].set(hSession, atoi(value));
-				}
-				else
-				{
+				} else {
 					return errno = EPERM;
 				}
 			}
 
 		}
-    }
+	}
 
-    //
-    // Check for unsigned int property
-    //
-    {
+	//
+	// Check for unsigned int property
+	//
+	{
 		const LIB3270_UINT_PROPERTY * properties = lib3270_get_unsigned_properties_list();
-		for(ix = 0; properties[ix].name; ix++)
-		{
-			if(!strcasecmp(name,properties[ix].name))
-			{
-				if(properties[ix].set)
-				{
+		for(ix = 0; properties[ix].name; ix++) {
+			if(!strcasecmp(name,properties[ix].name)) {
+				if(properties[ix].set) {
 					return properties[ix].set(hSession, strtoul(value,NULL,0));
-				}
-				else
-				{
+				} else {
 					return errno = EPERM;
 				}
 			}
 
 		}
-    }
+	}
 
-    //
-    // Check for boolean property
-    //
-    {
+	//
+	// Check for boolean property
+	//
+	{
 		const LIB3270_INT_PROPERTY * properties = lib3270_get_int_properties_list();
-		for(ix = 0; properties[ix].name; ix++)
-		{
-			if(!strcasecmp(name,properties[ix].name))
-			{
-				if(properties[ix].set)
-				{
+		for(ix = 0; properties[ix].name; ix++) {
+			if(!strcasecmp(name,properties[ix].name)) {
+				if(properties[ix].set) {
 					return properties[ix].set(hSession, atoi(value));
-				}
-				else
-				{
+				} else {
 					return errno = EPERM;
 				}
 			}
 
 		}
-    }
+	}
 
 	return errno = ENOENT;
 
 }
 
-LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *lunames)
-{
-    FAIL_IF_ONLINE(hSession);
+LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *lunames) {
+	FAIL_IF_ONLINE(hSession);
 
-    if(hSession->lu.names)
-	{
+	if(hSession->lu.names) {
 		lib3270_free(hSession->lu.names);
 		hSession->lu.names = NULL;
 	}
@@ -324,8 +295,7 @@ LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *lunames)
 	int n_lus = 1;
 
 	lu = (char *) lunames;
-	while ((comma = strchr(lu, ',')) != CN)
-	{
+	while ((comma = strchr(lu, ',')) != CN) {
 		n_lus++;
 		lu++;
 	}
@@ -341,12 +311,10 @@ LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *lunames)
 	(void) strcpy(lu, lunames);
 
 	size_t i = 0;
-	do
-	{
+	do {
 		hSession->lu.names[i++] = lu;
 		comma = strchr(lu, ',');
-		if (comma != CN)
-		{
+		if (comma != CN) {
 			*comma = '\0';
 			lu = comma + 1;
 		}
@@ -354,21 +322,18 @@ LIB3270_EXPORT int lib3270_set_lunames(H3270 *hSession, const char *lunames)
 
 	hSession->lu.names[i]	= CN;
 
-    return 0;
+	return 0;
 }
 
-LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession)
-{
+LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession) {
 	return (const char **) hSession->lu.names;
 }
 
-LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h)
-{
+LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h) {
 	return h->host.current;
 }
 
-LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h)
-{
+LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h) {
 	return h->host.srvc;
 }
 

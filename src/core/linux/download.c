@@ -32,7 +32,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- char * lib3270_url_get(H3270 *hSession, const char *u, const char **error) {
+char * lib3270_url_get(H3270 *hSession, const char *u, const char **error) {
 
 	lib3270_autoptr(char) url = lib3270_unescape(u);
 
@@ -60,4 +60,4 @@
 #endif // HAVE_LIBCURL
 
 
- }
+}

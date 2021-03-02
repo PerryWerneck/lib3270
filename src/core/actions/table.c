@@ -41,80 +41,65 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
- static int paste_file(H3270 *hSession)
- {
- 	return lib3270_load(hSession,NULL);
- }
+static int paste_file(H3270 *hSession) {
+	return lib3270_load(hSession,NULL);
+}
 
- static int connect_host(H3270 *hSession)
- {
+static int connect_host(H3270 *hSession) {
 	return hSession->cbk.reconnect(hSession,0);
- }
+}
 
- static int select_up(H3270 *hSession)
- {
- 	return lib3270_move_cursor(hSession,LIB3270_DIR_UP,1);
- }
+static int select_up(H3270 *hSession) {
+	return lib3270_move_cursor(hSession,LIB3270_DIR_UP,1);
+}
 
- static int select_down(H3270 *hSession)
- {
- 	return lib3270_move_cursor(hSession,LIB3270_DIR_DOWN,1);
- }
+static int select_down(H3270 *hSession) {
+	return lib3270_move_cursor(hSession,LIB3270_DIR_DOWN,1);
+}
 
- static int select_left(H3270 *hSession)
- {
- 	return lib3270_move_cursor(hSession,LIB3270_DIR_LEFT,1);
- }
+static int select_left(H3270 *hSession) {
+	return lib3270_move_cursor(hSession,LIB3270_DIR_LEFT,1);
+}
 
- static int select_right(H3270 *hSession)
- {
- 	return lib3270_move_cursor(hSession,LIB3270_DIR_RIGHT,1);
- }
+static int select_right(H3270 *hSession) {
+	return lib3270_move_cursor(hSession,LIB3270_DIR_RIGHT,1);
+}
 
- static int selection_up(H3270 *hSession)
- {
- 	return lib3270_move_selection(hSession,LIB3270_DIR_UP);
- }
+static int selection_up(H3270 *hSession) {
+	return lib3270_move_selection(hSession,LIB3270_DIR_UP);
+}
 
- static int selection_down(H3270 *hSession)
- {
- 	return lib3270_move_selection(hSession,LIB3270_DIR_DOWN);
- }
+static int selection_down(H3270 *hSession) {
+	return lib3270_move_selection(hSession,LIB3270_DIR_DOWN);
+}
 
- static int selection_left(H3270 *hSession)
- {
- 	return lib3270_move_selection(hSession,LIB3270_DIR_LEFT);
- }
+static int selection_left(H3270 *hSession) {
+	return lib3270_move_selection(hSession,LIB3270_DIR_LEFT);
+}
 
- static int selection_right(H3270 *hSession)
- {
- 	return lib3270_move_selection(hSession,LIB3270_DIR_RIGHT);
- }
+static int selection_right(H3270 *hSession) {
+	return lib3270_move_selection(hSession,LIB3270_DIR_RIGHT);
+}
 
- static int pa1(H3270 *hSession)
- {
- 	return lib3270_pakey(hSession,1);
- }
+static int pa1(H3270 *hSession) {
+	return lib3270_pakey(hSession,1);
+}
 
- static int pa2(H3270 *hSession)
- {
- 	return lib3270_pakey(hSession,1);
- }
+static int pa2(H3270 *hSession) {
+	return lib3270_pakey(hSession,1);
+}
 
- static int pa3(H3270 *hSession)
- {
- 	return lib3270_pakey(hSession,1);
- }
+static int pa3(H3270 *hSession) {
+	return lib3270_pakey(hSession,1);
+}
 
 /**
  * @brief Get LIB3270 action table;
  *
  */
- const LIB3270_ACTION * lib3270_get_actions()
- {
+const LIB3270_ACTION * lib3270_get_actions() {
 
-	static const LIB3270_ACTION actions[] =
-	{
+	static const LIB3270_ACTION actions[] = {
 		//
 		// Network actions
 		//
@@ -124,7 +109,7 @@
 
 			.keys = NULL,
 			.icon = "gtk-connect",
-			.label = N_( "_Reconnect" ) ,
+			.label = N_( "_Reconnect" ),
 			.summary = N_( "Reconnect to the same host" ),
 			.activate = connect_host,
 
@@ -802,7 +787,7 @@
 			.activatable = lib3270_is_connected
 		},
 
-			{
+		{
 			.name = "PA2",
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
@@ -836,31 +821,30 @@
 	};
 
 	return actions;
- }
+}
 
- static int default_activatable_state(const H3270 *hSession)
- {
- 	return hSession == NULL ? 0 : 1;
- }
+static int default_activatable_state(const H3270 *hSession) {
+	return hSession == NULL ? 0 : 1;
+}
 
- LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group) {
+LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group) {
 
 	static const struct {
 		int (*get)(const H3270 *);
 	} activatable[LIB3270_ACTION_GROUP_CUSTOM] = {
 		{ default_activatable_state		},	// LIB3270_ACTION_GROUP_NONE
- 		{ lib3270_is_connected			},	// LIB3270_ACTION_GROUP_ONLINE
- 		{ lib3270_is_disconnected		},	// LIB3270_ACTION_GROUP_OFFLINE
- 		{ lib3270_get_has_selection		},	// LIB3270_ACTION_GROUP_SELECTION
- 		{ lib3270_is_unlocked			},	// LIB3270_ACTION_GROUP_LOCK_STATE
- 		{ lib3270_is_formatted			},	// LIB3270_ACTION_GROUP_FORMATTED
- 		{ lib3270_get_has_copy			},	// LIB3270_ACTION_GROUP_COPY
- 	};
+		{ lib3270_is_connected			},	// LIB3270_ACTION_GROUP_ONLINE
+		{ lib3270_is_disconnected		},	// LIB3270_ACTION_GROUP_OFFLINE
+		{ lib3270_get_has_selection		},	// LIB3270_ACTION_GROUP_SELECTION
+		{ lib3270_is_unlocked			},	// LIB3270_ACTION_GROUP_LOCK_STATE
+		{ lib3270_is_formatted			},	// LIB3270_ACTION_GROUP_FORMATTED
+		{ lib3270_get_has_copy			},	// LIB3270_ACTION_GROUP_COPY
+	};
 
- 	if(group < (sizeof(activatable)/sizeof(activatable[0]))) {
+	if(group < (sizeof(activatable)/sizeof(activatable[0]))) {
 		return activatable[group].get(hSession);
- 	}
+	}
 
- 	return default_activatable_state(hSession);
+	return default_activatable_state(hSession);
 
- }
+}

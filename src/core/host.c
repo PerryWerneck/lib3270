@@ -38,7 +38,7 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
 #ifdef HAVE_MALLOC_H
-	#include <malloc.h>
+#include <malloc.h>
 #endif // HAVE_MALLOC_H
 
 #include <internals.h>
@@ -67,11 +67,9 @@
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata))
-{
+static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)) {
 
-	if(hSession->auto_reconnect_inprogress)
-	{
+	if(hSession->auto_reconnect_inprogress) {
 		lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
 		hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
 		if(hSession->cbk.reconnect(hSession,0))
@@ -91,8 +89,7 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
  *
  * @retval EBUSY	Auto reconnect is already active.
  */
-int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
-{
+int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 	if(hSession->auto_reconnect_inprogress)
 		return EBUSY;
 
@@ -102,25 +99,22 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_disconnect(H3270 *h)
-{
+LIB3270_EXPORT int lib3270_disconnect(H3270 *h) {
 	debug("%s",__FUNCTION__);
 	return host_disconnect(h,0);
 }
 
-int host_disconnect(H3270 *hSession, int failed)
-{
-    CHECK_SESSION_HANDLE(hSession);
+int host_disconnect(H3270 *hSession, int failed) {
+	CHECK_SESSION_HANDLE(hSession);
 
-    debug("%s: connected=%s half connected=%s network=%s",
-				__FUNCTION__,
-				(CONNECTED ? "Yes" : "No"),
-				(HALF_CONNECTED ? "Yes" : "No"),
-				(hSession->network.module->is_connected(hSession) ? "Active" : "Inactive")
-		);
+	debug("%s: connected=%s half connected=%s network=%s",
+	      __FUNCTION__,
+	      (CONNECTED ? "Yes" : "No"),
+	      (HALF_CONNECTED ? "Yes" : "No"),
+	      (hSession->network.module->is_connected(hSession) ? "Active" : "Inactive")
+	     );
 
-	if (CONNECTED || HALF_CONNECTED)
-	{
+	if (CONNECTED || HALF_CONNECTED) {
 		// Disconecting, disable input
 		remove_input_calls(hSession);
 		net_disconnect(hSession);
@@ -155,17 +149,15 @@ int host_disconnect(H3270 *hSession, int failed)
 
 }
 
-int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate)
-{
+int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate) {
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(cstate),(int) cstate);
 
-	if(hSession->connection.state != cstate)
-	{
+	if(hSession->connection.state != cstate) {
 		trace_dsn(
-			hSession,
-			"Connection state changes from %s to %s.\n",
-				lib3270_connection_state_get_name(hSession->connection.state),
-				lib3270_connection_state_get_name(cstate)
+		    hSession,
+		    "Connection state changes from %s to %s.\n",
+		    lib3270_connection_state_get_name(hSession->connection.state),
+		    lib3270_connection_state_get_name(cstate)
 		);
 
 		// Salve old states.
@@ -197,19 +189,17 @@ int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate)
 /**
  * @brief The host has entered 3270 or ANSI mode, or switched between them.
  */
-void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate)
-{
+void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate) {
 	Boolean now3270 = (new_cstate == LIB3270_CONNECTED_3270 ||
-			   new_cstate == LIB3270_CONNECTED_SSCP ||
-			   new_cstate == LIB3270_CONNECTED_TN3270E);
+	                   new_cstate == LIB3270_CONNECTED_SSCP ||
+	                   new_cstate == LIB3270_CONNECTED_TN3270E);
 
 	lib3270_set_cstate(hSession,new_cstate);
 	hSession->ever_3270 = now3270;
 	lib3270_st_changed(hSession, LIB3270_STATE_3270_MODE, now3270);
 }
 
-void lib3270_set_connected_initial(H3270 *hSession)
-{
+void lib3270_set_connected_initial(H3270 *hSession) {
 	lib3270_set_cstate(hSession,LIB3270_CONNECTED_INITIAL);
 
 	hSession->starting	= 1;	// Enable autostart
@@ -219,8 +209,7 @@ void lib3270_set_connected_initial(H3270 *hSession)
 		hSession->cbk.update_connect(hSession,1);
 }
 
-void lib3270_set_disconnected(H3270 *hSession)
-{
+void lib3270_set_disconnected(H3270 *hSession) {
 	CHECK_SESSION_HANDLE(hSession);
 
 	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
@@ -246,37 +235,33 @@ void lib3270_set_disconnected(H3270 *hSession)
 /**
  * @brief Signal a state change.
  */
-void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode)
-{
+void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode) {
 	struct lib3270_linked_list_node * node;
 
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_state_get_name(tx),mode);
-    trace_dsn(
-        hSession,
-        "Notifying state %s with mode %d.\n",
-            lib3270_state_get_name(tx),
-            mode
-    );
+	trace_dsn(
+	    hSession,
+	    "Notifying state %s with mode %d.\n",
+	    lib3270_state_get_name(tx),
+	    mode
+	);
 
-	for(node = hSession->listeners.state[tx].first; node; node = node->next)
-	{
+	for(node = hSession->listeners.state[tx].first; node; node = node->next) {
 		((struct lib3270_state_callback *) node)->func(hSession,mode,node->userdata);
 	}
 
 }
 
-static void update_url(H3270 *hSession)
-{
+static void update_url(H3270 *hSession) {
 	char * url =
-			lib3270_strdup_printf(
-				"%s://%s:%s",
-					hSession->network.module->name,
-					hSession->host.current,
-					hSession->host.srvc
-	);
+	    lib3270_strdup_printf(
+	        "%s://%s:%s",
+	        hSession->network.module->name,
+	        hSession->host.current,
+	        hSession->host.srvc
+	    );
 
-	if(hSession->host.url && !strcmp(hSession->host.url,url))
-	{
+	if(hSession->host.url && !strcmp(hSession->host.url,url)) {
 		debug("%s: Same url, ignoring",__FUNCTION__);
 		lib3270_free(url);
 		return;
@@ -293,60 +278,52 @@ static void update_url(H3270 *hSession)
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession)
-{
+LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession) {
 	if(check_online_session(hSession))
 		return NULL;
 
 	return hSession->lu.associated;
 }
 
-LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession)
-{
+LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession) {
 	if(hSession->host.url)
 		return hSession->host.url;
 
 	return lib3270_get_default_host(hSession);
 }
 
-LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hSession))
-{
+LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hSession)) {
 #ifdef _WIN32
 	{
 		lib3270_auto_cleanup(HKEY) hKey;
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
-						HKEY_LOCAL_MACHINE,
-						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
-						0,
-						NULL,
-						REG_OPTION_NON_VOLATILE,
-						KEY_QUERY_VALUE|KEY_READ,
-						NULL,
-						&hKey,
-						&disp);
+		    HKEY_LOCAL_MACHINE,
+		    "Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
+		    0,
+		    NULL,
+		    REG_OPTION_NON_VOLATILE,
+		    KEY_QUERY_VALUE|KEY_READ,
+		    NULL,
+		    &hKey,
+		    &disp);
 
-		if(rc == ERROR_SUCCESS)
-		{
+		if(rc == ERROR_SUCCESS) {
 			static char * default_host = NULL;
 			DWORD cbData = 4096;
 
-			if(!default_host)
-			{
+			if(!default_host) {
 				default_host = (char *) malloc(cbData+1);
-			}
-			else
-			{
+			} else {
 				default_host = (char *) realloc(default_host,cbData+1);
 			}
 
 			DWORD dwRet = RegQueryValueEx(hKey,"host",NULL,NULL,(LPBYTE) default_host, &cbData);
 
-			if(dwRet == ERROR_SUCCESS)
-			{
+			if(dwRet == ERROR_SUCCESS) {
 				default_host = (char *) realloc(default_host,cbData+1);
-                default_host[cbData] = 0;
-                return default_host;
+				default_host[cbData] = 0;
+				return default_host;
 			}
 
 			free(default_host);
@@ -363,9 +340,8 @@ LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hS
 #endif // LIB3270_DEFAULT_HOST
 }
 
-LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
-{
-    FAIL_IF_ONLINE(h);
+LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n) {
+	FAIL_IF_ONLINE(h);
 
 	if(!n)
 		n = lib3270_get_default_host(h);
@@ -387,15 +363,12 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	srvc = h->network.module->service;
 
 	ptr = strchr(hostname,':');
-	if(ptr)
-	{
+	if(ptr) {
 		*(ptr++) = 0;
 		srvc  = ptr;
 		query = strchr(ptr,'?');
 
-	}
-	else
-	{
+	} else {
 		srvc = "3270";
 		query = strchr(hostname,'?');
 	}
@@ -411,22 +384,20 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	Replace(h->host.srvc,strdup(srvc));
 
 	// Verifica parâmetros
-	if(query && *query)
-	{
+	if(query && *query) {
 		lib3270_autoptr(char) str = strdup(query);
 		char *ptr;
 
 #ifdef HAVE_STRTOK_R
 		char *saveptr	= NULL;
-		for(ptr = strtok_r(str,"&",&saveptr);ptr;ptr=strtok_r(NULL,"&",&saveptr))
+		for(ptr = strtok_r(str,"&",&saveptr); ptr; ptr=strtok_r(NULL,"&",&saveptr))
 #else
-		for(ptr = strtok(str,"&");ptr;ptr=strtok(NULL,"&"))
+		for(ptr = strtok(str,"&"); ptr; ptr=strtok(NULL,"&"))
 #endif
 		{
 			char *var = ptr;
 			char *val = strchr(ptr,'=');
-			if(val)
-			{
+			if(val) {
 				*(val++) = 0;
 
 				if(lib3270_set_string_property(h, var, val, 0) == 0)
@@ -434,9 +405,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 
 				lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
 
-			}
-			else
-			{
+			} else {
 				if(lib3270_set_int_property(h,var,1,0))
 					continue;
 
@@ -456,27 +425,22 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n)
 	return 0;
 }
 
-LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h)
-{
+LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h) {
 	return h->host.url;
 }
 
-LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h) {
 	return (h->oia.flag[LIB3270_FLAG_SCRIPT] != 0);
 }
 
-LIB3270_EXPORT int lib3270_get_typeahead(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_get_typeahead(const H3270 *h) {
 	return (h->oia.flag[LIB3270_FLAG_TYPEAHEAD] != 0);
 }
 
-LIB3270_EXPORT int lib3270_get_undera(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_get_undera(const H3270 *h) {
 	return (h->oia.flag[LIB3270_FLAG_UNDERA] != 0);
 }
 
-LIB3270_EXPORT int lib3270_get_oia_box_solid(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_get_oia_box_solid(const H3270 *h) {
 	return (h->oia.flag[LIB3270_FLAG_BOXSOLID] != 0);
 }

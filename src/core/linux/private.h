@@ -29,20 +29,20 @@
 
 #ifndef PRIVATE_H_INCLUDED
 
-	#define PRIVATE_H_INCLUDED
+#define PRIVATE_H_INCLUDED
 
-	#include <config.h>
-	#include <internals.h>
+#include <config.h>
+#include <internals.h>
 
-	#include <lib3270.h>
- 	#include <lib3270/log.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
 
- #if defined(HAVE_LIBCURL)
-	LIB3270_INTERNAL char * lib3270_url_get_using_curl(H3270 *hSession, const char *u, const char **error);
- #endif // HAVE_LIBCURL
+#if defined(HAVE_LIBCURL)
+LIB3270_INTERNAL char * lib3270_url_get_using_curl(H3270 *hSession, const char *u, const char **error);
+#endif // HAVE_LIBCURL
 
- #if defined(HAVE_LDAP)
-	LIB3270_INTERNAL char * lib3270_url_get_using_ldap(H3270 *hSession, const char *u, const char **error);
- #endif // HAVE_LDAP
+#if defined(HAVE_LDAP)
+LIB3270_INTERNAL char * lib3270_url_get_using_ldap(H3270 *hSession, const char *u, const char **error);
+#endif // HAVE_LDAP
 
 #endif // !PRIVATE_H_INCLUDED

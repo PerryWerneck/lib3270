@@ -18,11 +18,11 @@
  *		UTF-8 conversions
  */
 
- /*
+/*
 enum ulfail {
-    	ULFAIL_NOUTF8,		// not using UTF-8
-	ULFAIL_INCOMPLETE,	// incomplete sequence
-	ULFAIL_INVALID		// invalid sequence
+   	ULFAIL_NOUTF8,		// not using UTF-8
+ULFAIL_INCOMPLETE,	// incomplete sequence
+ULFAIL_INVALID		// invalid sequence
 };
 */
 

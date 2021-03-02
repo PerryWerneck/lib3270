@@ -30,7 +30,7 @@
  *
  */
 
- #pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wsign-compare"
 
 /**
  * @brief RPQNAMES structured field support.
@@ -50,7 +50,7 @@
 #endif /*]*/
 
 #ifndef ANDROID
-	#include <stdlib.h>
+#include <stdlib.h>
 #endif // !ANDROID
 
 // #include "api.h"
@@ -106,8 +106,7 @@ static void rpq_dump_warnings(H3270 *hSession);
  * specifies abbreviations, they work in a predictable manner.  E.g., "TIME"
  * should match TIMESTAMP instead of TIMEZONE.
  */
-static struct rpq_keyword
-{
+static struct rpq_keyword {
 	Boolean omit;	/**< set from X3270RPQ="kw1:kw2..." environment var */
 	int oride;		/**< displacement */
 	const Boolean allow_oride;
@@ -128,9 +127,8 @@ static char *x3270rpq;
 /**
  * @brief RPQNAMES query reply.
  */
-void do_qr_rpqnames(H3270 *hSession)
-{
-	#define TERM_PREFIX_SIZE 2	/* Each term has 1 byte length and 1 byte id */
+void do_qr_rpqnames(H3270 *hSession) {
+#define TERM_PREFIX_SIZE 2	/* Each term has 1 byte length and 1 byte id */
 
 	unsigned char *rpql, *p_term;
 	int term_id,i,j,x;
@@ -180,8 +178,7 @@ void do_qr_rpqnames(H3270 *hSession)
 		 */
 		remaining -= TERM_PREFIX_SIZE;
 
-		switch (term_id) /* build the term based on id */
-		{
+		switch (term_id) { /* build the term based on id */
 		case RPQ_USER:		/* User text from env. vars */
 			hSession->output.ptr += get_rpq_user(hSession,hSession->output.ptr, remaining);
 			break;
@@ -201,10 +198,8 @@ void do_qr_rpqnames(H3270 *hSession)
 		case RPQ_VERSION:	/* program version */
 			x = strlen(PACKAGE_VERSION);
 			omit_due_space_limit = (x > remaining);
-			if (!omit_due_space_limit)
-			{
-				for (i = 0; i < x; i++)
-				{
+			if (!omit_due_space_limit) {
+				for (i = 0; i < x; i++) {
 					*hSession->output.ptr++ = hSession->charset.asc2ebc[(int)(*(PACKAGE_VERSION+i) & 0xff)];
 				}
 			}
@@ -213,22 +208,20 @@ void do_qr_rpqnames(H3270 *hSession)
 		case RPQ_TIMESTAMP:	/* program build time (yyyymmddhhmmss bcd) */
 			x = strlen(RPQ_TIMESTAMP_VALUE);
 			omit_due_space_limit = ((x+1)/2 > remaining) ? 1 : 0;
-			if (!omit_due_space_limit)
-			{
-				for (i=0; i < x; i+=2)
-				{
+			if (!omit_due_space_limit) {
+				for (i=0; i < x; i+=2) {
 					*hSession->output.ptr++ = ((*(RPQ_TIMESTAMP_VALUE+i) - '0') << 4)
-						+ (*(RPQ_TIMESTAMP_VALUE+i+1) - '0');
+					                          + (*(RPQ_TIMESTAMP_VALUE+i+1) - '0');
 				}
 			}
 			break;
 
 		default:		/* unsupported ID, (can't happen) */
 			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "RPQ Error" ),
-									_( "Unsupported RPQ term" ),
-									_( "RPQ term %d is unknown" ), term_id );
+			                        LIB3270_NOTIFY_ERROR,
+			                        _( "RPQ Error" ),
+			                        _( "Unsupported RPQ term" ),
+			                        _( "RPQ term %d is unknown" ), term_id );
 			break;
 		}
 
@@ -274,8 +267,7 @@ void do_qr_rpqnames(H3270 *hSession)
 }
 
 /// @brief Utility function used by the RPQNAMES query reply.
-static Boolean select_rpq_terms(H3270 *hSession)
-{
+static Boolean select_rpq_terms(H3270 *hSession) {
 	int i,j,k,len;
 	char *uplist;
 	char *p1, *p2;
@@ -375,8 +367,7 @@ static Boolean select_rpq_terms(H3270 *hSession)
 }
 
 /// @brief Utility function used by the RPQNAMES query reply.
-static int get_rpq_timezone(H3270 *hSession)
-{
+static int get_rpq_timezone(H3270 *hSession) {
 	/*
 	 * Return the signed number of minutes we're offset from UTC.
 	 * Example: North America Pacific Standard Time = UTC - 8 Hours, so we
@@ -429,8 +420,7 @@ static int get_rpq_timezone(H3270 *hSession)
 		 * No override specified, try to get information from the
 		 * system.
 		 */
-		if ((here = time(NULL)) == (time_t)(-1))
-		{
+		if ((here = time(NULL)) == (time_t)(-1)) {
 			rpq_warning(hSession, _("RPQ: Unable to determine workstation local time"));
 			return 1;
 		}
@@ -440,8 +430,7 @@ static int get_rpq_timezone(H3270 *hSession)
 
 		localtime_r(&here,&here_tm);
 
-		if(gmtime_r(&here,&utc_tm) == NULL)
-		{
+		if(gmtime_r(&here,&utc_tm) == NULL) {
 			rpq_warning(hSession, _("RPQ: Unable to determine workstation UTC time"));
 			return 2;
 		}
@@ -451,8 +440,7 @@ static int get_rpq_timezone(H3270 *hSession)
 		memcpy(&here_tm, localtime(&here), sizeof(struct tm));
 		struct tm * _tm = gmtime(&here);
 
-		if(_tm == NULL)
-		{
+		if(_tm == NULL) {
 			rpq_warning(hSession, _("RPQ: Unable to determine workstation UTC time"));
 			return 2;
 		}
@@ -471,7 +459,7 @@ static int get_rpq_timezone(H3270 *hSession)
 
 	// sanity check: difference cannot exceed +/- 12 hours
 #ifdef _WIN32
-	#pragma GCC diagnostic ignored "-Wabsolute-value"
+#pragma GCC diagnostic ignored "-Wabsolute-value"
 #endif // _WIN32
 	if (labs(delta) > 720L)
 		rpq_warning(hSession, _("RPQ timezone exceeds 12 hour UTC offset"));
@@ -482,8 +470,7 @@ static int get_rpq_timezone(H3270 *hSession)
 /**
  * @brief Utility function used by the RPQNAMES query reply.
  */
-static int get_rpq_user(H3270 *hSession, unsigned char buf[], const int buflen)
-{
+static int get_rpq_user(H3270 *hSession, unsigned char buf[], const int buflen) {
 	//
 	// Text may be specified in one of two ways, but not both.
 	// An environment variable provides the user interface:
@@ -598,8 +585,7 @@ static int get_rpq_user(H3270 *hSession, unsigned char buf[], const int buflen)
 }
 
 #if !defined(_WIN32) /*[*/
-static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen)
-{
+static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen) {
 	struct rpq_keyword *kw;
 	int x = 0;
 
@@ -624,7 +610,7 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 
 		p1 = x3270rpq + kw->oride;
 		rpqtext = (char *) lib3270_malloc(strlen(p1) + 1);
-		for (p2=rpqtext;*p1; p2++) {
+		for (p2=rpqtext; *p1; p2++) {
 			if (*p1 == ':')
 				break;
 			if ((*p1 == '\\') && (*(p1+1) == ':'))
@@ -741,8 +727,7 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 //static char * rpq_warnbuf	= CN;
 //static int    rpq_wbcnt 	= 0;
 
-static void rpq_warning(H3270 *hSession, const char *fmt, ...)
-{
+static void rpq_warning(H3270 *hSession, const char *fmt, ...) {
 	va_list a;
 
 	va_start(a, fmt);
@@ -753,31 +738,26 @@ static void rpq_warning(H3270 *hSession, const char *fmt, ...)
 	 * Only accumulate RPQ warnings if they
 	 * have not been displayed already.
 	 */
-	if (!hSession->rpq_complained)
-	{
+	if (!hSession->rpq_complained) {
 		va_start(a, fmt);
 		if (hSession->rpq_warnbuf == CN)
 			hSession->rpq_warnbuf = lib3270_malloc(RPQ_WARNBUF_SIZE);
 
-		if (hSession->rpq_wbcnt < RPQ_WARNBUF_SIZE)
-		{
+		if (hSession->rpq_wbcnt < RPQ_WARNBUF_SIZE) {
 			*(hSession->rpq_warnbuf + hSession->rpq_wbcnt++) = '\n';
 			*(hSession->rpq_warnbuf + hSession->rpq_wbcnt) = '\0';
 		}
 
-		if (hSession->rpq_wbcnt < RPQ_WARNBUF_SIZE)
-		{
+		if (hSession->rpq_wbcnt < RPQ_WARNBUF_SIZE) {
 			hSession->rpq_wbcnt += vsnprintf(hSession->rpq_warnbuf + hSession->rpq_wbcnt,RPQ_WARNBUF_SIZE - hSession->rpq_wbcnt, fmt, a);
 		}
 		va_end(a);
 	}
 }
 
-static void rpq_dump_warnings(H3270 *hSession)
-{
+static void rpq_dump_warnings(H3270 *hSession) {
 	/* If there's something to complain about, only complain once. */
-	if (!hSession->rpq_complained && hSession->rpq_wbcnt)
-	{
+	if (!hSession->rpq_complained && hSession->rpq_wbcnt) {
 		popup_an_error(hSession,"%s",hSession->rpq_warnbuf);
 		hSession->rpq_wbcnt = 0;
 		hSession->rpq_complained = 1;

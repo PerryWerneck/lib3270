@@ -27,23 +27,23 @@
  *
  */
 
- #include <config.h>
- #include <internals.h>
- #include <string.h>
- #include <lib3270.h>
- #include <lib3270/properties.h>
- #include <utilc.h>
+#include <config.h>
+#include <internals.h>
+#include <string.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
+#include <utilc.h>
 
- LIB3270_EXPORT const char * lib3270_property_get_name(const LIB3270_PROPERTY * property) {
+LIB3270_EXPORT const char * lib3270_property_get_name(const LIB3270_PROPERTY * property) {
 
 	if(property && property->name)
 		return property->name;
 
 	return "";
 
- }
+}
 
- LIB3270_EXPORT const char * lib3270_property_get_tooltip(const LIB3270_PROPERTY * property) {
+LIB3270_EXPORT const char * lib3270_property_get_tooltip(const LIB3270_PROPERTY * property) {
 
 	if(property) {
 
@@ -56,49 +56,49 @@
 	}
 
 	return "";
- }
+}
 
- LIB3270_EXPORT const char * lib3270_property_get_label(const LIB3270_PROPERTY * property) {
+LIB3270_EXPORT const char * lib3270_property_get_label(const LIB3270_PROPERTY * property) {
 
 	if(property && property->label)
 		return dgettext(GETTEXT_PACKAGE,property->label);
 
 	return "";
 
- }
+}
 
- LIB3270_EXPORT const char * lib3270_property_get_description(const LIB3270_PROPERTY * property) {
+LIB3270_EXPORT const char * lib3270_property_get_description(const LIB3270_PROPERTY * property) {
 
 	if(property && property->description)
 		return dgettext(GETTEXT_PACKAGE,property->description);
 
 	return "";
 
- }
+}
 
- LIB3270_EXPORT const char * lib3270_property_get_summary(const LIB3270_PROPERTY * property) {
+LIB3270_EXPORT const char * lib3270_property_get_summary(const LIB3270_PROPERTY * property) {
 
 	if(property && property->summary)
 		return dgettext(GETTEXT_PACKAGE,property->summary);
 
 	return "";
 
- }
+}
 
- LIB3270_EXPORT const LIB3270_PROPERTY * lib3270_property_get_by_name(const char *name) {
+LIB3270_EXPORT const LIB3270_PROPERTY * lib3270_property_get_by_name(const char *name) {
 
 	// Search string properties
 	{
-		 const LIB3270_STRING_PROPERTY * property = lib3270_get_string_properties_list();
+		const LIB3270_STRING_PROPERTY * property = lib3270_get_string_properties_list();
 
-		 while(property->name) {
+		while(property->name) {
 
 			if(!lib3270_compare_alnum(name,property->name))
 				return (const LIB3270_PROPERTY *) property;
 
 			property++;
 
-		 }
+		}
 
 	}
 
@@ -106,18 +106,18 @@
 	{
 		const LIB3270_UINT_PROPERTY * property = lib3270_get_unsigned_properties_list();
 
-		 while(property->name) {
+		while(property->name) {
 
 			if(!lib3270_compare_alnum(name,property->name))
 				return (const LIB3270_PROPERTY *) property;
 
 			property++;
 
-		 }
+		}
 
 	}
 
 	// Not found!
 	errno = ENOENT;
 	return NULL;
- }
+}

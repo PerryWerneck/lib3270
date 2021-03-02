@@ -69,8 +69,7 @@ LIB3270_STRING_ARRAY * lib3270_openssl_get_crls_from_peer(H3270 *hSession, X509 
 			GENERAL_NAME *gen = sk_GENERAL_NAME_value(gens, i);
 			ASN1_STRING *uri = GENERAL_NAME_get0_value(gen, &gtype);
 
-			if(uri && gtype == GEN_URI)
-			{
+			if(uri && gtype == GEN_URI) {
 				int length = ASN1_STRING_length(uri);
 
 #if (OPENSSL_VERSION_NUMBER >= 0x10100000L) // OpenSSL 1.1.0+
@@ -79,8 +78,7 @@ LIB3270_STRING_ARRAY * lib3270_openssl_get_crls_from_peer(H3270 *hSession, X509 
 				const unsigned char * data = ASN1_STRING_data(uri);
 #endif // OpenSSL 1.1.0+
 
-				if(data && length > 0)
-				{
+				if(data && length > 0) {
 					lib3270_autoptr(char) uri = lib3270_malloc( ((size_t) length) + 1);
 					strncpy(uri,(char *) data, (size_t) length);
 

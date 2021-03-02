@@ -35,8 +35,7 @@
 
 /*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
 
- static const LIB3270_HOST_TYPE_ENTRY host_type[] =
- {
+static const LIB3270_HOST_TYPE_ENTRY host_type[] = {
 	{
 		LIB3270_HOST_S390,
 		"S390",
@@ -68,34 +67,29 @@
 		NULL,
 		NULL
 	}
- };
+};
 
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(const H3270 *hSession)
-{
+LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(const H3270 *hSession) {
 	return hSession->host_type;
 }
 
-LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt)
-{
-    FAIL_IF_ONLINE(hSession);
+LIB3270_EXPORT int lib3270_set_host_type(H3270 *hSession, LIB3270_HOST_TYPE opt) {
+	FAIL_IF_ONLINE(hSession);
 	hSession->host_type = opt;
 	return 0;
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_color_type(const H3270 *hSession)
-{
+LIB3270_EXPORT unsigned int lib3270_get_color_type(const H3270 *hSession) {
 	return (unsigned int) (hSession->mono ? 2 : hSession->colors);
 }
 
-LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned int colortype)
-{
+LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned int colortype) {
 	FAIL_IF_ONLINE(hSession);
 
-	switch(colortype)
-	{
+	switch(colortype) {
 	case 0:
 	case 16:
 		hSession->colors 	= 16;
@@ -123,21 +117,18 @@ LIB3270_EXPORT int lib3270_set_color_type(H3270 *hSession, unsigned int colortyp
 }
 
 
-LIB3270_EXPORT const LIB3270_HOST_TYPE_ENTRY * lib3270_get_option_list(void)
-{
+LIB3270_EXPORT const LIB3270_HOST_TYPE_ENTRY * lib3270_get_option_list(void) {
 	return host_type;
 }
 
-LIB3270_EXPORT int lib3270_is_tso(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_is_tso(const H3270 *hSession) {
 	return (hSession->host_type & LIB3270_HOST_TSO) != 0;
 }
 
-LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on)
-{
-    FAIL_IF_ONLINE(hSession);
+LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on) {
+	FAIL_IF_ONLINE(hSession);
 
-    if(on)
+	if(on)
 		hSession->host_type = LIB3270_HOST_TSO;
 	else
 		hSession->host_type &= ~LIB3270_HOST_TSO;
@@ -145,16 +136,14 @@ LIB3270_EXPORT int lib3270_set_tso(H3270 *hSession, int on)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_is_as400(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_is_as400(const H3270 *hSession) {
 	return (hSession->host_type & LIB3270_HOST_AS400) != 0;
 }
 
-LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on)
-{
-    FAIL_IF_ONLINE(hSession);
+LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on) {
+	FAIL_IF_ONLINE(hSession);
 
-    if(on)
+	if(on)
 		hSession->host_type |= LIB3270_HOST_AS400;
 	else
 		hSession->host_type &= ~LIB3270_HOST_AS400;
@@ -162,13 +151,11 @@ LIB3270_EXPORT int lib3270_set_as400(H3270 *hSession, int on)
 	return 0;
 }
 
-LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_parse_host_type(const char *name)
-{
+LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_parse_host_type(const char *name) {
 
 	int f;
 
-	for(f=0;host_type[f].name;f++)
-	{
+	for(f=0; host_type[f].name; f++) {
 		if(!strcasecmp(host_type[f].name,name))
 			return host_type[f].type;
 	}
@@ -177,15 +164,12 @@ LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_parse_host_type(const char *name)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *name)
-{
+LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *name) {
 	FAIL_IF_ONLINE(hSession);
 
 	size_t f;
-	for(f=0;f<(sizeof(host_type)/sizeof(host_type[0]));f++)
-	{
-		if(host_type[f].name && !strcasecmp(host_type[f].name,name))
-		{
+	for(f=0; f<(sizeof(host_type)/sizeof(host_type[0])); f++) {
+		if(host_type[f].name && !strcasecmp(host_type[f].name,name)) {
 			hSession->host_type = host_type[f].type;
 			return 0;
 		}
@@ -194,14 +178,11 @@ LIB3270_EXPORT int lib3270_set_host_type_by_name(H3270 *hSession, const char *na
 	return errno = EINVAL;
 }
 
-LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession)
-{
+LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession) {
 	size_t f;
 
-	for(f=0;f<(sizeof(host_type)/sizeof(host_type[0]));f++)
-	{
-		if(hSession->host_type == host_type[f].type)
-		{
+	for(f=0; f<(sizeof(host_type)/sizeof(host_type[0])); f++) {
+		if(hSession->host_type == host_type[f].type) {
 			return host_type[f].name;
 		}
 	}

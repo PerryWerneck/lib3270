@@ -40,63 +40,54 @@
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
- LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int seconds)
- {
+LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int seconds) {
 	CHECK_SESSION_HANDLE(hSession);
 
-	if(url && *url)
-	{
+	if(url && *url) {
 		lib3270_set_url(hSession,url);
 	}
 
 	return hSession->cbk.reconnect(hSession, seconds);
 
- }
+}
 
- int lib3270_allow_reconnect(const H3270 *hSession)
- {
+int lib3270_allow_reconnect(const H3270 *hSession) {
 	//
 	// Can't reconnect if already reconnecting *OR* there's an open popup
 	// (to avoid open more than one connect error popup).
 	//
-	if(hSession->auto_reconnect_inprogress)
-	{
+	if(hSession->auto_reconnect_inprogress) {
 		debug("%s: auto_reconnect_inprogress",__FUNCTION__);
 		errno = EBUSY;
 		return 0;
 	}
 
- 	// Is the session disconnected?
-	if(!lib3270_is_disconnected(hSession))
-	{
+	// Is the session disconnected?
+	if(!lib3270_is_disconnected(hSession)) {
 		debug("%s: is_disconnected=FALSE",__FUNCTION__);
 		errno = EISCONN;
 		return 0;
 	}
 
 	// Do I have a defined host?
-	if(!(hSession->host.current && hSession->host.srvc && *hSession->host.current && *hSession->host.srvc))
-	{
+	if(!(hSession->host.current && hSession->host.srvc && *hSession->host.current && *hSession->host.srvc)) {
 		debug("%s('%s')",__FUNCTION__,hSession->host.url);
 		errno = ENODATA;
 		return 0;
 	}
 
-	if(hSession->network.module->is_connected(hSession))
-	{
+	if(hSession->network.module->is_connected(hSession)) {
 		errno = EISCONN;
 		return 0;
 	}
 
 	return 1;
- }
+}
 
- int lib3270_reconnect(H3270 *hSession, int seconds)
- {
- 	debug("%s",__FUNCTION__);
+int lib3270_reconnect(H3270 *hSession, int seconds) {
+	debug("%s",__FUNCTION__);
 
- 	if(!lib3270_allow_reconnect(hSession))
-	{
+	if(!lib3270_allow_reconnect(hSession)) {
 		return errno == 0 ? -1 : errno;
 	}
 
@@ -106,12 +97,12 @@
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 
 	snprintf(
-		hSession->full_model_name,
-		LIB3270_FULL_MODEL_NAME_LENGTH,
-		"IBM-327%c-%d%s",
-			hSession->m3279 ? '9' : '8',
-			hSession->model_num,
-			hSession->extended ? "-E" : ""
+	    hSession->full_model_name,
+	    LIB3270_FULL_MODEL_NAME_LENGTH,
+	    "IBM-327%c-%d%s",
+	    hSession->m3279 ? '9' : '8',
+	    hSession->model_num,
+	    hSession->extended ? "-E" : ""
 	);
 
 	lib3270_write_event_trace(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
@@ -120,9 +111,9 @@
 
 	return net_reconnect(hSession,seconds);
 
- }
+}
 
- void lib3270_notify_tls(H3270 *hSession) {
+void lib3270_notify_tls(H3270 *hSession) {
 
 	// Negotiation complete is the connection secure?
 	if(hSession->ssl.message->type != LIB3270_NOTIFY_INFO) {
@@ -140,25 +131,24 @@
 
 	}
 
- }
+}
 
- int lib3270_start_tls(H3270 *hSession)
- {
+int lib3270_start_tls(H3270 *hSession) {
 	hSession->ssl.message = NULL;	// Reset message.
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	non_blocking(hSession,False);
 
-	#pragma GCC diagnostic push
+#pragma GCC diagnostic push
 #ifdef _WIN32
-	#pragma GCC diagnostic ignored "-Wcast-function-type"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif // _WIN32
 	int rc = lib3270_run_task(
-			hSession,
-			(int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
-			NULL
-		);
-	#pragma GCC diagnostic pop
+	             hSession,
+	             (int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
+	             NULL
+	         );
+#pragma GCC diagnostic pop
 
 	if(rc == ENOTSUP) {
 
@@ -199,6 +189,6 @@
 	non_blocking(hSession,True);
 
 	return 0;
- }
+}
 
 

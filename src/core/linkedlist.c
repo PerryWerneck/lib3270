@@ -32,34 +32,30 @@
  * @brief Handle linked lists.
  */
 
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <linkedlist.h>
- #include <string.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
+#include <linkedlist.h>
+#include <string.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, size_t szBlock, void *userdata)
-{
+void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, size_t szBlock, void *userdata) {
 	struct lib3270_linked_list_node * node = lib3270_malloc(szBlock);
 
 	memset(node,0,szBlock);
 	node->userdata = userdata;
 
-	if(head->last)
-	{
-        head->last->next = node;
-        node->prev = head->last;
-	}
-	else
-	{
+	if(head->last) {
+		head->last->next = node;
+		node->prev = head->last;
+	} else {
 		head->first = node;
 	}
 
 	head->last = node;
 
 	/*
-#ifdef DEBUG
+	#ifdef DEBUG
 	{
 		struct lib3270_linked_list_node * dCurrent;
 
@@ -71,23 +67,20 @@ void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, si
 		}
 
 	}
-#endif // DEBUG
+	#endif // DEBUG
 	*/
 
 	return (void *) node;
 
 }
 
-int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const void *node)
-{
+int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const void *node) {
 
 	struct lib3270_linked_list_node * current;
 
-	for(current = head->first;current;current = current->next)
-	{
+	for(current = head->first; current; current = current->next) {
 
-		if(current == node)
-		{
+		if(current == node) {
 
 			if(current->prev)
 				current->prev->next = current->next;
@@ -102,7 +95,7 @@ int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const
 			lib3270_free(current);
 
 			/*
-#ifdef DEBUG
+			#ifdef DEBUG
 			{
 				struct lib3270_linked_list_node * dCurrent;
 
@@ -114,8 +107,8 @@ int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const
 				}
 
 			}
-#endif // DEBUG
-		*/
+			#endif // DEBUG
+			*/
 
 			return 0;
 
@@ -126,12 +119,10 @@ int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const
 	return errno = ENOENT;
 }
 
-void lib3270_linked_list_free(struct lib3270_linked_list_head *head)
-{
+void lib3270_linked_list_free(struct lib3270_linked_list_head *head) {
 	struct lib3270_linked_list_node * node = head->first;
 
-	while(node)
-	{
+	while(node) {
 		void * ptr = (void *) node;
 		node = node->next;
 		lib3270_free(ptr);

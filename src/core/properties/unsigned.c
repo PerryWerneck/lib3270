@@ -27,47 +27,41 @@
  *
  */
 
- #include <config.h>
- #include <internals.h>
- #include <string.h>
- #include <lib3270.h>
- #include <lib3270/properties.h>
- #include <lib3270/keyboard.h>
+#include <config.h>
+#include <internals.h>
+#include <string.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
+#include <lib3270/keyboard.h>
 
- unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession)
- {
+unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession) {
 	return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
- }
+}
 
- const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name)
- {
- 	size_t ix;
+const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_name(const char *name) {
+	size_t ix;
 	const LIB3270_UINT_PROPERTY * list = lib3270_get_unsigned_properties_list();
 
- 	for(ix = 0;list[ix].name;ix++)
-	{
+	for(ix = 0; list[ix].name; ix++) {
 		if(!strcasecmp(list[ix].name,name))
 			return &list[ix];
 	}
 
 	errno = ENOENT;
-    return NULL;
- }
+	return NULL;
+}
 
-int lib3270_set_host_type_number(H3270 *hSession, unsigned int host_type)
-{
+int lib3270_set_host_type_number(H3270 *hSession, unsigned int host_type) {
 	FAIL_IF_ONLINE(hSession);
 	hSession->host_type = host_type;
 	return 0;
 }
 
-static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
-{
+static unsigned int lib3270_get_host_type_number(const H3270 *hSession) {
 	return (unsigned int) hSession->host_type;
 }
 
- const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void)
- {
+const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
@@ -169,10 +163,9 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession)
 	};
 
 	return properties;
- }
+}
 
-int lib3270_set_uint_property(H3270 *hSession, const char *name, unsigned int value, int seconds)
-{
+int lib3270_set_uint_property(H3270 *hSession, const char *name, unsigned int value, int seconds) {
 	size_t ix;
 	const LIB3270_UINT_PROPERTY * properties;
 
@@ -182,10 +175,8 @@ int lib3270_set_uint_property(H3270 *hSession, const char *name, unsigned int va
 	// Check for INT Properties
 	properties = lib3270_get_unsigned_properties_list();
 
-	for(ix = 0; properties[ix].name; ix++)
-	{
-		if(!strcasecmp(name,properties[ix].name))
-		{
+	for(ix = 0; properties[ix].name; ix++) {
+		if(!strcasecmp(name,properties[ix].name)) {
 			if(properties[ix].set)
 				return properties[ix].set(hSession, value);
 			else
@@ -198,8 +189,7 @@ int lib3270_set_uint_property(H3270 *hSession, const char *name, unsigned int va
 
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_task_count(const H3270 *h)
-{
+LIB3270_EXPORT unsigned int lib3270_get_task_count(const H3270 *h) {
 	return h->tasks;
 }
 

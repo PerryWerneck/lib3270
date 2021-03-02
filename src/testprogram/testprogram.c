@@ -43,26 +43,23 @@
 #include <lib3270/charset.h>
 
 #ifdef _WIN32
-	#include <lib3270/win32.h>
+#include <lib3270/win32.h>
 #endif // _WIN32
 
 #define MAX_ARGS 10
 
 const char *trace_file = "test.trace";
 
-static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
-{
+static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
 	FILE *out = fopen(trace_file,"a");
-	if(out)
-	{
+	if(out) {
 
 		vfprintf(out,fmt,args);
 		fclose(out);
 	}
 }
 
-static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_UNUSED(*dunno))
-{
+static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_UNUSED(*dunno)) {
 	printf("\n\n%s\n\n",__FUNCTION__);
 }
 
@@ -76,8 +73,7 @@ static void reconnect_test(H3270 *hSession) {
 
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 #ifdef _WIN32
 	debug("Process %s running on pid %u\n",argv[0],(unsigned int) GetCurrentProcessId());
 #endif // _WIN32
@@ -181,20 +177,17 @@ int main(int argc, char *argv[])
 	rc = lib3270_reconnect(h,0);
 	printf("\n\nConnect exits with rc=%d (%s)\n\n",rc,strerror(rc));
 
-	if(!rc)
-	{
+	if(!rc) {
 		rc = lib3270_wait_for_cstate(h,LIB3270_CONNECTED_TN3270E, 60);
 		printf("\n\nWait for LIB3270_CONNECTED_TN3270E exits with rc=%d (%s)\n\n",rc,strerror(rc));
 	}
 
-	if(!rc)
-	{
+	if(!rc) {
 		rc = lib3270_wait_for_ready(h,60);
 		printf("\n\nWait for ready exits with rc=%d (%s)\n\n",rc,strerror(rc));
 	}
 
-	if(!rc)
-	{
+	if(!rc) {
 
 		lib3270_wait_for_ready(h,10);
 

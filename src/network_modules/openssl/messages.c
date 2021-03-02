@@ -162,11 +162,11 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		{
 			.id = X509_V_ERR_CRL_HAS_EXPIRED,
 			.message = {
-	#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
+#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
 				.type = LIB3270_NOTIFY_SECURE,
-	#else
+#else
 				.type = LIB3270_NOTIFY_INFO,
-	#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
+#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
 				.icon = "security-medium",
 				.summary = N_( "The CRL has expired." ),
 				.body = N_( "The Certificate revocation list (CRL) has expired.")
@@ -236,11 +236,11 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		{
 			.id = X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN,
 			.message = {
-	#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 				.type = LIB3270_NOTIFY_SECURE,
-	#else
+#else
 				.type = LIB3270_NOTIFY_INFO,
-	#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 				.name = "SelfSignedCertInChain",
 				.icon = "security-low",
 				.label = N_("Continue"),

@@ -45,7 +45,7 @@
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
- static int sock_connect(H3270 *hSession, int sock, const struct sockaddr *address, socklen_t address_len) {
+static int sock_connect(H3270 *hSession, int sock, const struct sockaddr *address, socklen_t address_len) {
 
 	lib3270_socket_set_non_blocking(hSession, sock, 1);
 
@@ -54,13 +54,13 @@
 	if(!connect(sock,address,address_len))
 		return 0;
 
-		/*
+	/*
 	if(WSAGetLastError() != WSAEINPROGRESS) {
-		debug("Can't connect WSAGetLastError=%d",(int) WSAGetLastError());
-		errno = ENOTCONN;
-		return -1;
+	debug("Can't connect WSAGetLastError=%d",(int) WSAGetLastError());
+	errno = ENOTCONN;
+	return -1;
 	}
-		*/
+	*/
 
 	unsigned int timer;
 	for(timer = 0; timer < hSession->connection.timeout; timer += 10) {
@@ -91,10 +91,10 @@
 	debug("Timeout! WSAGetLastError=%d",(int) WSAGetLastError());
 	return errno = ETIMEDOUT;
 
- }
+}
 
 
- int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
+int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	// Do we need to start wsa?
 	static unsigned char wsa_is_started = 0;
@@ -105,8 +105,7 @@
 
 		wVersionRequested = MAKEWORD(2, 2);
 
-		if (WSAStartup(wVersionRequested, &wsaData) != 0)
-		{
+		if (WSAStartup(wVersionRequested, &wsaData) != 0) {
 			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_CRITICAL,
 				.summary = N_("WSAStartup failed")
@@ -118,8 +117,7 @@
 			return -1;
 		}
 
-		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2)
-		{
+		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
 			static const LIB3270_POPUP popup = {
 				.type = LIB3270_NOTIFY_CRITICAL,
 				.summary = N_("Bad winsock version"),
@@ -142,7 +140,7 @@
 	// Resolve hostname
 	//
 	struct addrinfo	  hints;
- 	struct addrinfo * result	= NULL;
+	struct addrinfo * result	= NULL;
 	memset(&hints,0,sizeof(hints));
 	hints.ai_family 	= AF_UNSPEC;	// Allow IPv4 or IPv6
 	hints.ai_socktype	= SOCK_STREAM;	// Stream socket
@@ -151,9 +149,8 @@
 
 	status_resolving(hSession);
 
- 	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
- 	if(rc)
-	{
+	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
+	if(rc) {
 		state->winerror = rc;
 		return -1;
 	}
@@ -166,20 +163,17 @@
 
 	status_connecting(hSession);
 
-	for(rp = result; sock < 0 && rp != NULL && state->syserror != ECANCELED; rp = rp->ai_next)
-	{
+	for(rp = result; sock < 0 && rp != NULL && state->syserror != ECANCELED; rp = rp->ai_next) {
 		// Got socket from host definition.
 		sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-		if(sock < 0)
-		{
+		if(sock < 0) {
 			// Can't get socket.
 			state->syserror = errno;
 			continue;
 		}
 
 		// Try connect.
-		if(sock_connect(hSession, sock, rp->ai_addr, rp->ai_addrlen))
-		{
+		if(sock_connect(hSession, sock, rp->ai_addr, rp->ai_addrlen)) {
 			// Can't connect to host
 			state->winerror = WSAGetLastError();
 			if(state->winerror == WSAEWOULDBLOCK) {
@@ -196,8 +190,7 @@
 
 	freeaddrinfo(result);
 
-	if(sock < 0)
-	{
+	if(sock < 0) {
 		static const LIB3270_POPUP popup = {
 			.name = "CantConnect",
 			.type = LIB3270_NOTIFY_ERROR,
@@ -210,10 +203,9 @@
 	}
 
 	return sock;
- }
+}
 
- static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
- {
+static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
 	int 		err;
 	socklen_t	len		= sizeof(err);
 
@@ -223,33 +215,30 @@
 		hSession->xio.write = NULL;
 	}
 
-	if(hSession->network.module->getsockopt(hSession, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
-	{
+	if(hSession->network.module->getsockopt(hSession, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0) {
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Network error" ),
-			_( "Unable to get connection state." ),
-			_( "The system error was %s" ), lib3270_win32_strerror(WSAGetLastError())
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    _( "Network error" ),
+		    _( "Unable to get connection state." ),
+		    _( "The system error was %s" ), lib3270_win32_strerror(WSAGetLastError())
 		);
 		return;
-	}
-	else if(err)
-	{
+	} else if(err) {
 		lib3270_autoptr(LIB3270_POPUP) popup =
-			lib3270_popup_clone_printf(
-				NULL,
-				_( "Can't connect to %s:%s"),
-				hSession->host.current,
-				hSession->host.srvc
-			);
+		    lib3270_popup_clone_printf(
+		        NULL,
+		        _( "Can't connect to %s:%s"),
+		        hSession->host.current,
+		        hSession->host.srvc
+		    );
 
 		lib3270_autoptr(char) syserror =
-						lib3270_strdup_printf(
-							_("The system error was \"%s\""),
-							lib3270_win32_strerror(WSAGetLastError())
-						);
+		    lib3270_strdup_printf(
+		        _("The system error was \"%s\""),
+		        lib3270_win32_strerror(WSAGetLastError())
+		    );
 
 		if(lib3270_popup(hSession,popup,!hSession->auto_reconnect_inprogress) == 0)
 			lib3270_activate_auto_reconnect(hSession,1000);
@@ -270,29 +259,26 @@
 
 	lib3270_notify_tls(hSession);
 
- }
+}
 
- int net_reconnect(H3270 *hSession, int seconds)
- {
+int net_reconnect(H3270 *hSession, int seconds) {
 	LIB3270_NETWORK_STATE state;
 	memset(&state,0,sizeof(state));
 
- 	// Initialize and connect to host
+	// Initialize and connect to host
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
 
-	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state))
-	{
+	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state)) {
 		lib3270_autoptr(LIB3270_POPUP) popup =
-			lib3270_popup_clone_printf(
-				NULL,
-				_( "Can't connect to %s:%s"),
-				hSession->host.current,
-				hSession->host.srvc
-			);
+		    lib3270_popup_clone_printf(
+		        NULL,
+		        _( "Can't connect to %s:%s"),
+		        hSession->host.current,
+		        hSession->host.srvc
+		    );
 
-		if(!popup->summary)
-		{
+		if(!popup->summary) {
 			popup->summary = popup->body;
 			popup->body = NULL;
 		}
@@ -300,52 +286,49 @@
 		lib3270_autoptr(char) syserror = NULL;
 
 #ifdef _WIN32
-		if(state.winerror)
-		{
+		if(state.winerror) {
 			syserror = lib3270_strdup_printf(
-							"%s (Windows error %u)",
-							lib3270_win32_strerror(state.winerror),
-							(unsigned int) state.winerror
-						);
+			               "%s (Windows error %u)",
+			               lib3270_win32_strerror(state.winerror),
+			               (unsigned int) state.winerror
+			           );
 		} else if(state.syserror == ETIMEDOUT) {
 
 			syserror = lib3270_strdup_printf(
-							_("The system error was \"%s\" (rc=%d)"),
-							_("Timeout conneting to host"),
-							state.syserror
-						);
+			               _("The system error was \"%s\" (rc=%d)"),
+			               _("Timeout conneting to host"),
+			               state.syserror
+			           );
 
 		} else if(state.syserror == ENOTCONN) {
 
 			syserror = lib3270_strdup_printf(
-							_("The system error was \"%s\" (rc=%d)"),
-							_("Not connected to host"),
-							state.syserror
-						);
+			               _("The system error was \"%s\" (rc=%d)"),
+			               _("Not connected to host"),
+			               state.syserror
+			           );
 
 		} else if(state.syserror) {
 
 			syserror = lib3270_strdup_printf(
-							_("The system error was \"%s\" (rc=%d)"),
-							strerror(state.syserror),
-							state.syserror
-						);
+			               _("The system error was \"%s\" (rc=%d)"),
+			               strerror(state.syserror),
+			               state.syserror
+			           );
 
 		}
 
 #else
-		if(state.syserror)
-		{
+		if(state.syserror) {
 			syserror = lib3270_strdup_printf(
-							_("The system error was \"%s\" (rc=%d)"),
-							strerror(state.syserror),
-							state.syserror
-						);
+			               _("The system error was \"%s\" (rc=%d)"),
+			               strerror(state.syserror),
+			               state.syserror
+			           );
 		}
 #endif // _WIN32
 
-		if(!popup->body)
-		{
+		if(!popup->body) {
 			if(state.error_message)
 				popup->body = state.error_message;
 			else
@@ -368,41 +351,37 @@
 
 	// set options for inline out-of-band data and keepalives
 	int optval = 1;
-	if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_OOBINLINE, &optval, sizeof(optval)) < 0)
-	{
+	if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_OOBINLINE, &optval, sizeof(optval)) < 0) {
 		int rc = errno;
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								_( "setsockopt(SO_OOBINLINE) has failed" ),
-								_( "The system error was %s" ),
-								lib3270_win32_strerror(WSAGetLastError())
-							);
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Connection error" ),
+		                        _( "setsockopt(SO_OOBINLINE) has failed" ),
+		                        _( "The system error was %s" ),
+		                        lib3270_win32_strerror(WSAGetLastError())
+		                    );
 		hSession->network.module->disconnect(hSession);
 		return rc;
 	}
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
-	if (hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0)
-	{
+	if (hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0) {
 		int rc = errno;
 
 		char buffer[4096];
 		snprintf(buffer,4095,_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								buffer,
-								_( "The system error was %s" ),
-								lib3270_win32_strerror(WSAGetLastError())
-							);
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Connection error" ),
+		                        buffer,
+		                        _( "The system error was %s" ),
+		                        lib3270_win32_strerror(WSAGetLastError())
+		                    );
 
 		hSession->network.module->disconnect(hSession);
 		return rc;
-	}
-	else
-	{
+	} else {
 		trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
 	}
 
@@ -414,11 +393,9 @@
 
 	trace("%s: Connection in progress",__FUNCTION__);
 
-	if(seconds)
-	{
+	if(seconds) {
 		int rc = lib3270_wait_for_cstate(hSession,LIB3270_CONNECTED_TN3270E,seconds);
-		if(rc)
-		{
+		if(rc) {
 			lib3270_disconnect(hSession);
 			lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 			return errno = rc;
@@ -428,5 +405,5 @@
 
 	return 0;
 
- }
+}
 

@@ -44,7 +44,7 @@ struct ta;
 #include <lib3270/log.h>
 
 #ifndef ANDROID
-	#include <stdlib.h>
+#include <stdlib.h>
 #endif // !ANDROID
 
 #if defined(X3270_DISPLAY) /*[*/
@@ -79,8 +79,7 @@ struct ta;
 
 #include <lib3270/actions.h>
 
-LIB3270_EXPORT int lib3270_break(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_break(H3270 *hSession) {
 	if (!IN_3270)
 		return errno = ENOTCONN;
 
@@ -92,8 +91,7 @@ LIB3270_EXPORT int lib3270_break(H3270 *hSession)
 /***
  * @brief ATTN key, per RFC 2355.  Sends IP, regardless.
  */
-LIB3270_EXPORT int lib3270_attn(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_attn(H3270 *hSession) {
 	if (!IN_3270)
 		return errno = ENOTCONN;
 
@@ -102,26 +100,21 @@ LIB3270_EXPORT int lib3270_attn(H3270 *hSession)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession) {
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
-		if(KYBDLOCK_IS_OERR(hSession))
-		{
+	if (hSession->kybdlock) {
+		if(KYBDLOCK_IS_OERR(hSession)) {
 			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);
 			status_reset(hSession);
-		} else
-		{
+		} else {
 			enq_action(hSession, lib3270_nextfield);
 			return 0;
 		}
 	}
 #if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI)
-	{
+	if (IN_ANSI) {
 		net_sendc(hSession,'\t');
 		return 0;
 	}
@@ -133,22 +126,17 @@ LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession)
 /**
  * @brief Tab backward to previous field.
  */
-LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession) {
 	register int	baddr, nbaddr;
 	int		sbaddr;
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
-		if (KYBDLOCK_IS_OERR(hSession))
-		{
+	if (hSession->kybdlock) {
+		if (KYBDLOCK_IS_OERR(hSession)) {
 			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);
 			status_reset(hSession);
-		}
-		else
-		{
+		} else {
 			enq_action(hSession, lib3270_previousfield);
 			return 0;
 		}
@@ -164,8 +152,8 @@ LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession)
 		nbaddr = baddr;
 		INC_BA(nbaddr);
 		if (hSession->ea_buf[baddr].fa &&
-		    !FA_IS_PROTECTED(hSession->ea_buf[baddr].fa) &&
-		    !hSession->ea_buf[nbaddr].fa)
+		        !FA_IS_PROTECTED(hSession->ea_buf[baddr].fa) &&
+		        !hSession->ea_buf[nbaddr].fa)
 			break;
 		DEC_BA(baddr);
 		if (baddr == sbaddr) {
@@ -181,12 +169,10 @@ LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession)
 /**
  * @brief Move to first unprotected field on screen.
  */
-LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
+	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_firstfield);
 		return 0;
 	}
@@ -196,8 +182,7 @@ LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession)
 		return 0;
 	}
 #endif /*]*/
-	if (!hSession->formatted)
-	{
+	if (!hSession->formatted) {
 		cursor_move(hSession,0);
 		return 0;
 	}
@@ -210,8 +195,7 @@ LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession)
 /**
  * @brief Cursor left 1 position.
  */
-static void do_left(H3270 *hSession)
-{
+static void do_left(H3270 *hSession) {
 	register int	baddr;
 	enum dbcs_state d;
 
@@ -230,8 +214,7 @@ static void do_left(H3270 *hSession)
  *
  * @Return "True" if succeeds, "False" otherwise.
  */
-static Boolean do_delete(H3270 *hSession)
-{
+static Boolean do_delete(H3270 *hSession) {
 	register int	baddr, end_baddr;
 	int xaddr;
 	register unsigned char	fa;
@@ -242,65 +225,50 @@ static Boolean do_delete(H3270 *hSession)
 
 	/* Can't delete a field attribute. */
 	fa = get_field_attribute(hSession,baddr);
-	if (FA_IS_PROTECTED(fa) || hSession->ea_buf[baddr].fa)
-	{
+	if (FA_IS_PROTECTED(fa) || hSession->ea_buf[baddr].fa) {
 		operator_error(hSession,KL_OERR_PROTECTED);
 		return False;
 	}
 
-	if (hSession->ea_buf[baddr].cc == EBC_so || hSession->ea_buf[baddr].cc == EBC_si)
-	{
+	if (hSession->ea_buf[baddr].cc == EBC_so || hSession->ea_buf[baddr].cc == EBC_si) {
 		/*
 		 * Can't delete SO or SI, unless it's adjacent to its
 		 * opposite.
 		 */
 		xaddr = baddr;
 		INC_BA(xaddr);
-		if (hSession->ea_buf[xaddr].cc == SOSI(hSession->ea_buf[baddr].cc))
-		{
+		if (hSession->ea_buf[xaddr].cc == SOSI(hSession->ea_buf[baddr].cc)) {
 			ndel = 2;
-		}
-		else
-		{
+		} else {
 			operator_error(hSession,KL_OERR_PROTECTED);
 			return False;
 		}
-	}
-	else if (IS_DBCS(hSession->ea_buf[baddr].db))
-	{
+	} else if (IS_DBCS(hSession->ea_buf[baddr].db)) {
 		if (IS_RIGHT(hSession->ea_buf[baddr].db))
 			DEC_BA(baddr);
 		ndel = 2;
-	}
-	else
+	} else
 		ndel = 1;
 
 	/* find next fa */
-	if (hSession->formatted)
-	{
+	if (hSession->formatted) {
 		end_baddr = baddr;
-		do
-		{
+		do {
 			INC_BA(end_baddr);
 			if (hSession->ea_buf[end_baddr].fa)
 				break;
 		} while (end_baddr != baddr);
 		DEC_BA(end_baddr);
-	}
-	else
-	{
+	} else {
 		if ((baddr % hSession->view.cols) == hSession->view.cols - ndel)
 			return True;
 		end_baddr = baddr + (hSession->view.cols - (baddr % hSession->view.cols)) - 1;
 	}
 
 	/* Shift the remainder of the field left. */
-	if (end_baddr > baddr)
-	{
+	if (end_baddr > baddr) {
 		ctlr_bcopy(hSession,baddr + ndel, baddr, end_baddr - (baddr + ndel) + 1, 0);
-	}
-	else if (end_baddr != baddr)
-	{
+	} else if (end_baddr != baddr) {
 		/* XXX: Need to verify this. */
 		ctlr_bcopy(hSession,baddr + ndel, baddr,((hSession->view.rows * hSession->view.cols) - 1) - (baddr + ndel) + 1, 0);
 		ctlr_bcopy(hSession,0, (hSession->view.rows * hSession->view.cols) - ndel, ndel, 0);
@@ -319,26 +287,22 @@ static Boolean do_delete(H3270 *hSession)
 	return True;
 }
 
-LIB3270_EXPORT int lib3270_delete(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_delete(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
+	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_delete);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI)
-	{
+	if (IN_ANSI) {
 		net_sendc(hSession,'\177');
 		return 0;
 	}
 #endif /*]*/
 	if (!do_delete(hSession))
 		return 0;
-	if (hSession->reverse)
-	{
+	if (hSession->reverse) {
 		int baddr = hSession->cursor_addr;
 
 		DEC_BA(baddr);
@@ -352,12 +316,10 @@ LIB3270_EXPORT int lib3270_delete(H3270 *hSession)
 /**
  * @brief 3270-style backspace.
  */
-LIB3270_EXPORT int lib3270_backspace(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_backspace(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
+	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_backspace );
 		return 0;
 	}
@@ -385,15 +347,13 @@ LIB3270_EXPORT int lib3270_backspace(H3270 *hSession)
 /**
  * @brief Destructive backspace, like Unix "erase".
  */
-static void do_erase(H3270 *hSession)
-{
+static void do_erase(H3270 *hSession) {
 	int	baddr, faddr;
 	enum dbcs_state d;
 
 	baddr = hSession->cursor_addr;
 	faddr = lib3270_field_addr(hSession,baddr);
-	if (faddr == baddr || FA_IS_PROTECTED(hSession->ea_buf[baddr].fa))
-	{
+	if (faddr == baddr || FA_IS_PROTECTED(hSession->ea_buf[baddr].fa)) {
 		operator_error(hSession,KL_OERR_PROTECTED);
 		return;
 	}
@@ -406,8 +366,7 @@ static void do_erase(H3270 *hSession)
 	/*
 	 * If we are now on an SI, move left again.
 	 */
-	if (hSession->ea_buf[hSession->cursor_addr].cc == EBC_si)
-	{
+	if (hSession->ea_buf[hSession->cursor_addr].cc == EBC_si) {
 		baddr = hSession->cursor_addr;
 		DEC_BA(baddr);
 		cursor_move(hSession,baddr);
@@ -420,8 +379,7 @@ static void do_erase(H3270 *hSession)
 	 * land on the SI, instead of on the character following.
 	 */
 	d = ctlr_dbcs_state(hSession->cursor_addr);
-	if (IS_RIGHT(d))
-	{
+	if (IS_RIGHT(d)) {
 		baddr = hSession->cursor_addr;
 		DEC_BA(baddr);
 		cursor_move(hSession,baddr);
@@ -439,26 +397,22 @@ static void do_erase(H3270 *hSession)
 	 */
 	baddr = hSession->cursor_addr;
 	DEC_BA(baddr);
-	if (hSession->ea_buf[baddr].cc == EBC_so && hSession->ea_buf[hSession->cursor_addr].cc == EBC_si)
-	{
+	if (hSession->ea_buf[baddr].cc == EBC_so && hSession->ea_buf[hSession->cursor_addr].cc == EBC_si) {
 		cursor_move(hSession,baddr);
 		(void) do_delete(hSession);
 	}
 	hSession->cbk.display(hSession);
 }
 
-int lib3270_erase(H3270 *hSession)
-{
+int lib3270_erase(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
+	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_erase);
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI)
-	{
+	if (IN_ANSI) {
 		net_send_erase(hSession);
 		return 0;
 	}
@@ -470,8 +424,7 @@ int lib3270_erase(H3270 *hSession)
 /**
  * @brief Cursor to previous word.
  */
-LIB3270_EXPORT int lib3270_previousword(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_previousword(H3270 *hSession) {
 	register int baddr;
 	int baddr0;
 	unsigned char  c;
@@ -544,8 +497,7 @@ LIB3270_EXPORT int lib3270_previousword(H3270 *hSession)
  *
  * Which is to say, does a ^W.
  */
-LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession) {
 	register int baddr;
 	register unsigned char	fa;
 
@@ -556,8 +508,7 @@ LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession)
 		return 0;
 	}
 #if defined(X3270_ANSI) /*[*/
-	if (IN_ANSI)
-	{
+	if (IN_ANSI) {
 		net_send_werase(hSession);
 		return 0;
 	}
@@ -581,21 +532,20 @@ LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession)
 		if (hSession->ea_buf[baddr].fa)
 			return 0;
 		if (hSession->ea_buf[baddr].cc == EBC_null ||
-		    hSession->ea_buf[baddr].cc == EBC_space)
+		        hSession->ea_buf[baddr].cc == EBC_space)
 			do_erase(hSession);
 		else
 			break;
 	}
 
 	/* Backspace until the character to the left of the cursor is blank. */
-	for (;;)
-	{
+	for (;;) {
 		baddr = hSession->cursor_addr;
 		DEC_BA(baddr);
 		if (hSession->ea_buf[baddr].fa)
 			return 0;
 		if (hSession->ea_buf[baddr].cc == EBC_null ||
-		    hSession->ea_buf[baddr].cc == EBC_space)
+		        hSession->ea_buf[baddr].cc == EBC_space)
 			break;
 		else
 			do_erase(hSession);

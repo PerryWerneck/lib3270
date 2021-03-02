@@ -5,8 +5,7 @@
 LIB3270_INTERNAL const GUID IID_IShellLinkDataList;
 
 #define INTERFACE IShellLinkDataList
-DECLARE_INTERFACE_(IShellLinkDataList, IUnknown)
-{
+DECLARE_INTERFACE_(IShellLinkDataList, IUnknown) {
 	STDMETHOD(QueryInterface)(THIS_ REFIID,PVOID*) PURE;
 	STDMETHOD_(ULONG,AddRef)(THIS) PURE;
 	STDMETHOD_(ULONG,Release)(THIS) PURE;

@@ -58,8 +58,7 @@
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
 
-static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno))
-{
+static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
 	int 		err;
 	socklen_t	len		= sizeof(err);
 
@@ -69,31 +68,28 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		hSession->xio.write = NULL;
 	}
 
-	if(getsockopt(hSession->connection.sock, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0)
-	{
+	if(getsockopt(hSession->connection.sock, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0) {
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Network error" ),
-			_( "Unable to get connection state." ),
-			_( "%s" ), strerror(errno)
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    _( "Network error" ),
+		    _( "Unable to get connection state." ),
+		    _( "%s" ), strerror(errno)
 		);
 		return;
-	}
-	else if(err)
-	{
+	} else if(err) {
 		char buffer[4096];
 
 		snprintf(buffer,4095,_( "Can't connect to %s" ), lib3270_get_url(hSession) );
 
 		lib3270_disconnect(hSession);
 		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			_( "Connection failed" ),
-			buffer,
-			_( "%s" ), strerror(err)
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    _( "Connection failed" ),
+		    buffer,
+		    _( "%s" ), strerror(err)
 		);
 		return;
 	}
@@ -102,8 +98,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	hSession->xio.read		= lib3270_add_poll_fd(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,net_input,0);
 
 #if defined(HAVE_LIBSSL)
-	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED)
-	{
+	if(hSession->ssl.con && hSession->ssl.state == LIB3270_SSL_UNDEFINED) {
 		if(ssl_negotiate(hSession))
 			return;
 	}
@@ -114,16 +109,14 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 }
 
- struct resolver
- {
+struct resolver {
 	const char 			* message;
- };
+};
 
- static int background_connect(H3270 *hSession, void *host)
- {
+static int background_connect(H3270 *hSession, void *host) {
 
 	struct addrinfo	  hints;
- 	struct addrinfo * result	= NULL;
+	struct addrinfo * result	= NULL;
 	struct addrinfo * rp		= NULL;
 
 	memset(&hints,0,sizeof(hints));
@@ -134,27 +127,23 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	status_resolving(hSession);
 
- 	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
- 	if(rc != 0)
-	{
+	int rc = getaddrinfo(hSession->host.current, hSession->host.srvc, &hints, &result);
+	if(rc != 0) {
 		((struct resolver *) host)->message = gai_strerror(rc);
 		return -1;
 	}
 
 	status_connecting(hSession);
 
-	for(rp = result; hSession->connection.sock < 0 && rp != NULL; rp = rp->ai_next)
-	{
+	for(rp = result; hSession->connection.sock < 0 && rp != NULL; rp = rp->ai_next) {
 		hSession->connection.sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-		if(hSession->connection.sock < 0)
-		{
+		if(hSession->connection.sock < 0) {
 			((struct resolver *) host)->message = strerror(errno);
 			continue;
 		}
 
 		// Connected!
-		if(connect(hSession->connection.sock, rp->ai_addr, rp->ai_addrlen))
-		{
+		if(connect(hSession->connection.sock, rp->ai_addr, rp->ai_addrlen)) {
 			SOCK_CLOSE(hSession);
 			((struct resolver *) host)->message = strerror(errno);
 			continue;
@@ -166,25 +155,23 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	return 0;
 
- }
+}
 
- int net_reconnect(H3270 *hSession, int seconds)
- {
+int net_reconnect(H3270 *hSession, int seconds) {
 	struct resolver		  host;
 	memset(&host,0,sizeof(host));
 
 	// Connect to host
-	if(lib3270_run_task(hSession, background_connect, &host) || hSession->connection.sock < 0)
-	{
+	if(lib3270_run_task(hSession, background_connect, &host) || hSession->connection.sock < 0) {
 		char buffer[4096];
 		snprintf(buffer,4095,_( "Can't connect to %s:%s"), hSession->host.current, hSession->host.srvc);
 
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								buffer,
-								"%s",
-								host.message);
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Connection error" ),
+		                        buffer,
+		                        "%s",
+		                        host.message);
 
 		lib3270_set_disconnected(hSession);
 		return errno = ENOTCONN;
@@ -198,8 +185,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 #if defined(HAVE_LIBSSL)
 	debug("%s: TLS/SSL is %s",__FUNCTION__,hSession->ssl.enabled ? "ENABLED" : "DISABLED")
 	trace_dsn(hSession,"TLS/SSL is %s\n", hSession->ssl.enabled ? "enabled" : "disabled" );
-	if(hSession->ssl.enabled)
-	{
+	if(hSession->ssl.enabled) {
 		hSession->ssl.host = 1;
 		if(ssl_init(hSession))
 			return errno = ENOTCONN;
@@ -209,50 +195,46 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	// set options for inline out-of-band data and keepalives
 	int optval = 1;
-	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0)
-	{
+	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_OOBINLINE, (char *)&optval,sizeof(optval)) < 0) {
 		int rc = errno;
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								_( "setsockopt(SO_OOBINLINE) has failed" ),
-								"%s",
-								strerror(rc));
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Connection error" ),
+		                        _( "setsockopt(SO_OOBINLINE) has failed" ),
+		                        "%s",
+		                        strerror(rc));
 		SOCK_CLOSE(hSession);
 		return rc;
 	}
 
 	optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
-	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0)
-	{
+	if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&optval, sizeof(optval)) < 0) {
 		int rc = errno;
 
 		char buffer[4096];
 		snprintf(buffer,4095,_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Connection error" ),
-								buffer,
-								"%s",
-								strerror(rc));
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Connection error" ),
+		                        buffer,
+		                        "%s",
+		                        strerror(rc));
 		SOCK_CLOSE(hSession);
 		return rc;
-	}
-	else
-	{
+	} else {
 		trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
 	}
 
 
 	/*
-#if defined(OMTU)
+	#if defined(OMTU)
 	else if (setsockopt(hSession->sock, SOL_SOCKET, SO_SNDBUF, (char *)&mtu,sizeof(mtu)) < 0)
 	{
 		popup_a_sockerr(hSession, _( "setsockopt(%s)" ), "SO_SNDBUF");
 		SOCK_CLOSE(hSession);
 	}
-#endif
+	#endif
 
 	*/
 
@@ -265,16 +247,13 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	trace("%s: Connection in progress",__FUNCTION__);
 
-	if(seconds)
-	{
+	if(seconds) {
 		time_t end = time(0)+seconds;
 
-		while(time(0) < end)
-		{
+		while(time(0) < end) {
 			lib3270_main_iterate(hSession,1);
 
-			switch(hSession->connection.state)
-			{
+			switch(hSession->connection.state) {
 			case LIB3270_PENDING:
 			case LIB3270_CONNECTED_INITIAL:
 			case LIB3270_CONNECTED_ANSI:
@@ -308,5 +287,5 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	return 0;
 
- }
+}
 

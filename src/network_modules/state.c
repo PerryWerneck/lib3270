@@ -39,24 +39,21 @@
 #include <networking.h>
 
 #ifdef HAVE_LIBSSL
-	#include <openssl/ssl.h>
-	#include <openssl/err.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 #endif // HAVE_LIBSSL
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_is_secure(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_is_secure(const H3270 *hSession) {
 	return lib3270_get_ssl_state(hSession) == LIB3270_SSL_SECURE;
 }
 
-LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession)
-{
+LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *hSession) {
 	return hSession->ssl.state;
 }
 
-void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state)
-{
+void set_ssl_state(H3270 *hSession, LIB3270_SSL_STATE state) {
 	if(state == hSession->ssl.state)
 		return;
 

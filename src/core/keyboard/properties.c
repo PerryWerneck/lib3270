@@ -31,45 +31,38 @@
 #include <lib3270/keyboard.h>
 #include <lib3270/properties.h>
 
-LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(const H3270 *hSession)
-{
+LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_get_keyboard_lock_state(const H3270 *hSession) {
 	if(check_online_session(hSession))
 		return LIB3270_KL_NOT_CONNECTED;
 
 	return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;
 }
 
-LIB3270_EXPORT int lib3270_set_lock_on_operator_error(H3270 *hSession, int enable)
-{
+LIB3270_EXPORT int lib3270_set_lock_on_operator_error(H3270 *hSession, int enable) {
 	hSession->oerr_lock = (enable ? 1 : 0);
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_set_numeric_lock(H3270 *hSession, int enable)
-{
+LIB3270_EXPORT int lib3270_set_numeric_lock(H3270 *hSession, int enable) {
 	hSession->numeric_lock = (enable ? 1 : 0);
 	return 0;
 }
 
-int lib3270_get_lock_on_operator_error(const H3270 *hSession)
-{
- 	return (int) hSession->oerr_lock;
+int lib3270_get_lock_on_operator_error(const H3270 *hSession) {
+	return (int) hSession->oerr_lock;
 }
 
-int lib3270_get_numeric_lock(const H3270 *hSession)
-{
- 	return (int) hSession->numeric_lock;
+int lib3270_get_numeric_lock(const H3270 *hSession) {
+	return (int) hSession->numeric_lock;
 }
 
-LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *hSession, unsigned int delay)
-{
+LIB3270_EXPORT int lib3270_set_unlock_delay(H3270 *hSession, unsigned int delay) {
 	hSession->unlock_delay		= (delay == 0 ? 0 : 1);
 	hSession->unlock_delay_ms 	= (unsigned short) delay;
 	return 0;
 }
 
-LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *hSession)
-{
+LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *hSession) {
 	return (unsigned int) hSession->unlock_delay_ms;
 }
 

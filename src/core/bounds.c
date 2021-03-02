@@ -45,8 +45,7 @@
  * @return Non zero if invalid or not connected (sets errno).
  *
  */
-LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *start, int *end)
-{
+LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *start, int *end) {
 	int first;
 
 	first = lib3270_field_addr(hSession,baddr);
@@ -59,8 +58,7 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *sta
 	if(start)
 		*start = first;
 
-	if(end)
-	{
+	if(end) {
 		int maxlen = (hSession->view.rows * hSession->view.cols)-1;
 		*end	= first + lib3270_field_length(hSession,first);
 		if(*end > maxlen)
@@ -70,8 +68,7 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *sta
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start, int *end)
-{
+LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start, int *end) {
 	int pos;
 
 	CHECK_SESSION_HANDLE(session);
@@ -86,17 +83,15 @@ LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start
 	if(!lib3270_is_connected(session))
 		return errno = ENOTCONN;
 
-	if(start)
-	{
-		for(pos = baddr; pos > 0 && !isspace(session->text[pos].chr);pos--);
+	if(start) {
+		for(pos = baddr; pos > 0 && !isspace(session->text[pos].chr); pos--);
 
 		*start = pos > 0 ? pos+1 : 0;
 	}
 
-	if(end)
-	{
+	if(end) {
 		int maxlen = session->view.rows * session->view.cols;
-		for(pos = baddr; pos < maxlen && !isspace(session->text[pos].chr);pos++);
+		for(pos = baddr; pos < maxlen && !isspace(session->text[pos].chr); pos++);
 
 		*end = pos < maxlen ? pos-1 : maxlen;
 	}

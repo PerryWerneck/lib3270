@@ -43,13 +43,11 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT const char * lib3270_get_default_charset(void)
-{
+LIB3270_EXPORT const char * lib3270_get_default_charset(void) {
 	return "ISO-8859-1";
 }
 
-LIB3270_EXPORT const char * lib3270_get_display_charset(const H3270 *hSession)
-{
+LIB3270_EXPORT const char * lib3270_get_display_charset(const H3270 *hSession) {
 	return hSession->charset.display ? hSession->charset.display : "ISO-8859-1";
 }
 

@@ -27,12 +27,12 @@
  *
  */
 
- /**
-  * @brief OpenSSL based networking methods.
-  *
-  */
+/**
+ * @brief OpenSSL based networking methods.
+ *
+ */
 
- #include "private.h"
+#include "private.h"
 
 static void openssl_network_reset(H3270 *hSession) {
 
@@ -95,12 +95,12 @@ ssize_t openssl_network_send(H3270 *hSession, const void *buffer, size_t length)
 		trace_ssl(hSession,"%s","The secure connection has been closed cleanly");
 
 		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			NULL,
-			_("Disconnected from host."),
-			"%s",
-			_("The secure connection has been closed cleanly.")
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    NULL,
+		    _("Disconnected from host."),
+		    "%s",
+		    _("The secure connection has been closed cleanly.")
 		);
 		return 0;
 
@@ -146,12 +146,12 @@ static ssize_t openssl_network_recv(H3270 *hSession, void *buf, size_t len) {
 		trace_ssl(hSession,"%s","The secure connection has been closed cleanly");
 
 		lib3270_popup_dialog(
-			hSession,
-			LIB3270_NOTIFY_ERROR,
-			NULL,
-			_("Disconnected from host."),
-			"%s",
-			_("The secure connection has been closed cleanly.")
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    NULL,
+		    _("Disconnected from host."),
+		    "%s",
+		    _("The secure connection has been closed cleanly.")
 		);
 		return 0;
 
@@ -291,28 +291,22 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 		// https://stackoverflow.com/questions/23407376/testing-x509-certificate-expiry-date-with-c
 		// X509_CRL_get_nextUpdate is deprecated in openssl 1.1.0
 
-		#if OPENSSL_VERSION_NUMBER < 0x10100000L
-			const ASN1_TIME * next_update = X509_CRL_get_nextUpdate(context->crl.cert);
-		#else
-			const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(context->crl.cert);
-		#endif
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+		const ASN1_TIME * next_update = X509_CRL_get_nextUpdate(context->crl.cert);
+#else
+		const ASN1_TIME * next_update = X509_CRL_get0_nextUpdate(context->crl.cert);
+#endif
 
-		if(X509_cmp_current_time(next_update) == 1)
-		{
+		if(X509_cmp_current_time(next_update) == 1) {
 			int day, sec;
-			if(ASN1_TIME_diff(&day, &sec, NULL, next_update))
-			{
+			if(ASN1_TIME_diff(&day, &sec, NULL, next_update)) {
 				trace_ssl(hSession,"CRL is valid for %d day(s) and %d second(s)\n",day,sec);
-			}
-			else
-			{
+			} else {
 				trace_ssl(hSession,"Can't get CRL next update, discarding it\n");
 				lib3270_openssl_crl_free(context);
 			}
 
-		}
-		else
-		{
+		} else {
 			trace_ssl(hSession,"CRL is no longer valid\n");
 			lib3270_openssl_crl_free(context);
 		}
@@ -357,7 +351,7 @@ void lib3270_set_libssl_network_module(H3270 *hSession) {
 		.reset = openssl_network_reset
 	};
 
- 	debug("%s",__FUNCTION__);
+	debug("%s",__FUNCTION__);
 
 	if(hSession->network.context) {
 		// Has context, finalize it.

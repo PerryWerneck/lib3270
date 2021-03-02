@@ -80,8 +80,7 @@ static void ctlr_add_ic(H3270 *session, int baddr, unsigned char ic);
  * code_table is used to translate buffer addresses and attributes to the 3270
  * datastream representation
  */
-static const unsigned char code_table[64] =
-{
+static const unsigned char code_table[64] = {
 	0x40, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7,
 	0xC8, 0xC9, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F,
 	0x50, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7,
@@ -117,8 +116,7 @@ static const unsigned char code_table[64] =
 /**
  * @brief Initialize the emulated 3270 hardware.
  */
-void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask))
-{
+void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask)) {
 	/* Register callback routines. */
 	lib3270_register_schange(session,LIB3270_STATE_HALF_CONNECT, ctlr_half_connect, 0);
 	lib3270_register_schange(session,LIB3270_STATE_CONNECT, ctlr_connect, 0);
@@ -128,8 +126,7 @@ void ctlr_init(H3270 *session, unsigned GNUC_UNUSED(cmask))
 /**
  * @brief Reinitialize the emulated 3270 hardware on model change
  */
-void ctlr_model_changed(H3270 *session)
-{
+void ctlr_model_changed(H3270 *session) {
 	// Allocate buffers
 	struct lib3270_ea *tmp;
 	size_t sz = (session->max.rows * session->max.cols);
@@ -147,14 +144,11 @@ void ctlr_model_changed(H3270 *session)
 	session->buffer_addr = 0;
 }
 
-void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
-{
-	static const struct _sz
-	{
+void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr) {
+	static const struct _sz {
 		unsigned char cols;
 		unsigned char rows;
-	} sz[] =
-	{
+	} sz[] = {
 		{  80, 24 },	// 2
 		{  80, 32 },	// 3
 		{  80, 43 },	// 4
@@ -163,8 +157,7 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 
 	int idx = mn -2;
 
-	if(idx < 0 || idx >= (sizeof(sz)/sizeof(struct _sz)))
-	{
+	if(idx < 0 || idx >= (sizeof(sz)/sizeof(struct _sz))) {
 		idx = 2;
 		popup_an_error(session,"Unknown model: %d - Defaulting to 4 (%dx%d)", mn, sz[idx].cols,sz[idx].rows);
 		mn  = 4;
@@ -175,67 +168,57 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 	// Apply oversize.
 	session->oversize.cols = 0;
 	session->oversize.rows = 0;
-	if (ovc != 0 || ovr != 0)
-	{
-		if (ovc <= 0 || ovr <= 0)
-		{
+	if (ovc != 0 || ovr != 0) {
+		if (ovc <= 0 || ovr <= 0) {
 			lib3270_popup_dialog(
-					session,
-					LIB3270_NOTIFY_ERROR,
-					_( "Invalid oversize" ),
-					_( "The oversize values are invalid." ), \
-					_( "%dx%d is negative or zero" ),
-					ovc, ovr
+			    session,
+			    LIB3270_NOTIFY_ERROR,
+			    _( "Invalid oversize" ),
+			    _( "The oversize values are invalid." ), \
+			    _( "%dx%d is negative or zero" ),
+			    ovc, ovr
 			);
 
 			// popup_an_error(session,"Invalid %s %dx%d:\nNegative or zero",ResOversize, ovc, ovr);
 
-		}
-		else if (ovc * ovr >= 0x4000)
-		{
+		} else if (ovc * ovr >= 0x4000) {
 			lib3270_popup_dialog(
-					session,
-					LIB3270_NOTIFY_ERROR,
-					_( "Invalid oversize" ),
-					_( "The oversize values are too big." ), \
-					_( "%dx%d screen size is bigger than the maximum size" ),
-					ovc, ovr
+			    session,
+			    LIB3270_NOTIFY_ERROR,
+			    _( "Invalid oversize" ),
+			    _( "The oversize values are too big." ), \
+			    _( "%dx%d screen size is bigger than the maximum size" ),
+			    ovc, ovr
 			);
 
 //			popup_an_error(session,"Invalid %s %dx%d:\nToo big",ResOversize, ovc, ovr);
 
-		}
-		else if (ovc < session->max.cols)
-		{
+		} else if (ovc < session->max.cols) {
 
 			lib3270_popup_dialog(
-					session,
-					LIB3270_NOTIFY_ERROR,
-					_( "Invalid oversize" ),
-					_( "The oversize width is too small." ), \
-					_( "The width %d is less than model %d columns (%d)" ),
-					ovc, session->model_num, session->max.cols
+			    session,
+			    LIB3270_NOTIFY_ERROR,
+			    _( "Invalid oversize" ),
+			    _( "The oversize width is too small." ), \
+			    _( "The width %d is less than model %d columns (%d)" ),
+			    ovc, session->model_num, session->max.cols
 			);
 
 //			popup_an_error(session,"Invalid %s cols (%d):\nLess than model %d cols (%d)",ResOversize, ovc, session->model_num, session->maxCOLS);
-		}
-		else if (ovr < session->max.rows)
-		{
+		} else if (ovr < session->max.rows) {
 
 			lib3270_popup_dialog(
-					session,
-					LIB3270_NOTIFY_ERROR,
-					_( "Invalid oversize" ),
-					_( "The oversize height is too small." ), \
-					_( "The height %d is less than model %d rows (%d)" ),
-					ovr, session->model_num, session->max.rows
+			    session,
+			    LIB3270_NOTIFY_ERROR,
+			    _( "Invalid oversize" ),
+			    _( "The oversize height is too small." ), \
+			    _( "The height %d is less than model %d rows (%d)" ),
+			    ovr, session->model_num, session->max.rows
 			);
 
 //			popup_an_error(session,"Invalid %s rows (%d):\nLess than model %d rows (%d)",ResOversize, ovr, session->model_num, session->maxROWS);
 
-		}
-		else
-		{
+		} else {
 			update_model_info(session,mn,session->oversize.cols = ovc,session->oversize.rows = ovr);
 		}
 	}
@@ -244,10 +227,8 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr)
 
 }
 
-static void set_formatted(H3270 *hSession, int state)
-{
-	if(state != hSession->formatted)
-	{
+static void set_formatted(H3270 *hSession, int state) {
+	if(state != hSession->formatted) {
 		hSession->formatted = state;
 		lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_LOCK_STATE);
 	}
@@ -260,17 +241,14 @@ static void set_formatted(H3270 *hSession, int state)
  *
  * @param hSession	Session Handle
  */
-static void update_formatted(H3270 *hSession)
-{
+static void update_formatted(H3270 *hSession) {
 	register int baddr;
 
 	CHECK_SESSION_HANDLE(hSession);
 
 	baddr = 0;
-	do
-	{
-		if(hSession->ea_buf[baddr].fa)
-		{
+	do {
+		if(hSession->ea_buf[baddr].fa) {
 			set_formatted(hSession,1);
 			return;
 		}
@@ -284,16 +262,14 @@ static void update_formatted(H3270 *hSession)
 ///
 /// @brief Called when a host is half connected.
 ///
-static void ctlr_half_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
-{
+static void ctlr_half_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno)) {
 	hSession->cbk.set_timer(hSession,1);
 }
 
 ///
 /// @brief Called when a host connects, disconnects, or changes ANSI/3270 modes.
 ///
-static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno))
-{
+static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno)) {
 	hSession->cbk.set_timer(hSession,0);
 //	ticking_stop(hSession);
 //	status_untiming(hSession);
@@ -303,8 +279,7 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	else
 		hSession->ea_buf[-1].fa = FA_PRINTABLE | FA_PROTECT;
 
-	if (!IN_3270 || (IN_SSCP && (hSession->kybdlock & KL_OIA_TWAIT)))
-	{
+	if (!IN_3270 || (IN_SSCP && (hSession->kybdlock & KL_OIA_TWAIT))) {
 		lib3270_kybdlock_clear(hSession,KL_OIA_TWAIT);
 		status_reset(hSession);
 	}
@@ -318,8 +293,7 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	hSession->crm_nattr = 0;
 }
 
-LIB3270_EXPORT int lib3270_is_formatted(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_is_formatted(const H3270 *hSession) {
 	if(check_online_session(hSession))
 		return 0;
 
@@ -332,8 +306,7 @@ LIB3270_EXPORT int lib3270_is_formatted(const H3270 *hSession)
  * @return Negative on error(sets errno) or field address.
  *
  */
-LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr) {
 	int sbaddr;
 
 	if(check_online_session(hSession))
@@ -342,12 +315,11 @@ LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr)
 	if (!hSession->formatted)
 		return - (errno = ENOTSUP);
 
-    if(baddr < 0)
+	if(baddr < 0)
 		baddr = hSession->cursor_addr;
 
 	sbaddr = baddr;
-	do
-	{
+	do {
 		if(hSession->ea_buf[baddr].fa)
 			return baddr;
 		DEC_BA(baddr);
@@ -357,8 +329,7 @@ LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr)
 
 }
 
-LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr) {
 	int saddr;
 	int addr;
 	int width = 0;
@@ -378,8 +349,7 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 
 	saddr = addr;
 	INC_BA(addr);
-	do
-	{
+	do {
 		if(hSession->ea_buf[addr].fa)
 			return width;
 		INC_BA(addr);
@@ -389,8 +359,7 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr)
 	return -(errno = ENODATA);
 }
 
-LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr) {
 	int sbaddr;
 
 	if(!lib3270_is_connected(hSession))
@@ -406,8 +375,7 @@ LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr)
 		return -(errno = EOVERFLOW);
 
 	sbaddr = baddr;
-	do
-	{
+	do {
 		if(hSession->ea_buf[baddr].fa)
 			return baddr;
 		DEC_BA(baddr);
@@ -416,14 +384,12 @@ LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr)
 	return -(errno = ENODATA);
 }
 
-LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr) {
 	int sbaddr;
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!hSession->formatted)
-	{
+	if(!hSession->formatted) {
 		errno = ENOTCONN;
 		return LIB3270_FIELD_ATTRIBUTE_INVALID;
 	}
@@ -432,8 +398,7 @@ LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSessi
 		baddr = lib3270_get_cursor_address(hSession);
 
 	sbaddr = baddr;
-	do
-	{
+	do {
 		if(hSession->ea_buf[baddr].fa)
 			return (LIB3270_FIELD_ATTRIBUTE) hSession->ea_buf[baddr].fa;
 
@@ -454,8 +419,7 @@ LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSessi
  * @return field length or negative if invalid or not connected (sets errno).
  *
  */
-int lib3270_field_length(H3270 *hSession, int baddr)
-{
+int lib3270_field_length(H3270 *hSession, int baddr) {
 	int saddr;
 	int addr;
 	int width = 0;
@@ -466,8 +430,7 @@ int lib3270_field_length(H3270 *hSession, int baddr)
 
 	saddr = addr;
 	INC_BA(addr);
-	do
-	{
+	do {
 		if(hSession->ea_buf[addr].fa)
 			return width;
 		INC_BA(addr);
@@ -484,8 +447,7 @@ int lib3270_field_length(H3270 *hSession, int baddr)
  * @return Field attribute.
  *
  */
-unsigned char get_field_attribute(H3270 *hSession, int baddr)
-{
+unsigned char get_field_attribute(H3270 *hSession, int baddr) {
 	baddr = lib3270_field_addr(hSession,baddr);
 	if(baddr < 0)
 		return 0;
@@ -501,8 +463,7 @@ unsigned char get_field_attribute(H3270 *hSession, int baddr)
  * @return address following the unprotected attribute byte, or 0 if no nonzero-width unprotected field can be found, negative if failed.
  *
  */
-LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
-{
+LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0) {
 	register int baddr, nbaddr;
 
 	FAIL_IF_NOT_ONLINE(hSession);
@@ -514,8 +475,7 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0)
 		baddr0 = hSession->cursor_addr;
 
 	nbaddr = baddr0;
-	do
-	{
+	do {
 		baddr = nbaddr;
 		INC_BA(nbaddr);
 		if(hSession->ea_buf[baddr].fa &&!FA_IS_PROTECTED(hSession->ea_buf[baddr].fa) &&!hSession->ea_buf[nbaddr].fa)
@@ -529,11 +489,10 @@ LIB3270_EXPORT int lib3270_get_is_protected_at(const H3270 *h, unsigned int row,
 	return lib3270_get_is_protected(h, lib3270_translate_to_address(h,row,col));
 }
 
-LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-    if(baddr < 0)
+	if(baddr < 0)
 		baddr = hSession->cursor_addr;
 
 	int faddr = lib3270_field_addr(hSession,baddr);
@@ -541,8 +500,7 @@ LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr)
 	return FA_IS_PROTECTED(hSession->ea_buf[faddr].fa) ? 1 : 0;
 }
 
-LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
-{
+LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr) {
 	return lib3270_get_is_protected(h, baddr);
 }
 
@@ -551,8 +509,7 @@ LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr)
  * @brief Perform an erase command, which may include changing the (virtual) screen size.
  *
  */
-void ctlr_erase(H3270 *session, int alt)
-{
+void ctlr_erase(H3270 *session, int alt) {
 	CHECK_SESSION_HANDLE(session);
 
 	kybd_inhibit(session,False);
@@ -562,20 +519,15 @@ void ctlr_erase(H3270 *session, int alt)
 	if(alt == session->screen_alt)
 		return;
 
-	if (alt)
-	{
+	if (alt) {
 		// Going from 24x80 to maximum.
 		lib3270_write_screen_trace(session,"Going from 24x80 to %dx%d\n",session->max.rows,session->max.cols);
 		set_viewsize(session,session->max.rows,session->max.cols);
-	}
-	else
-	{
+	} else {
 		// Going from maximum to 24x80.
 		lib3270_write_screen_trace(session,"Going from %dx%d to 24x80\n",session->max.rows,session->max.cols);
-		if (session->max.rows > 24 || session->max.cols > 80)
-		{
-			if(session->vcontrol)
-			{
+		if (session->max.rows > 24 || session->max.cols > 80) {
+			if(session->vcontrol) {
 				ctlr_blanks(session);
 				session->cbk.display(session);
 			}
@@ -595,8 +547,7 @@ void ctlr_erase(H3270 *session, int alt)
 /**
  * @brief Interpret an incoming 3270 command.
  */
-enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen)
-{
+enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen) {
 	enum pds rv;
 
 	if (!buflen)
@@ -604,8 +555,7 @@ enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen)
 
 	trace_ds(hSession,"< ");
 
-	switch (buf[0]) /* 3270 command */
-	{
+	switch (buf[0]) { /* 3270 command */
 	case CMD_EAU:	/* erase all unprotected */
 	case SNA_CMD_EAU:
 		trace_ds(hSession, "EraseAllUnprotected\n");
@@ -681,8 +631,7 @@ enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen)
 /**
  * @brief Functions to insert SA attributes into the inbound data stream.
  */
-static void insert_sa1(H3270 *hSession, unsigned char attr, unsigned char value, unsigned char *currentp, Boolean *anyp)
-{
+static void insert_sa1(H3270 *hSession, unsigned char attr, unsigned char value, unsigned char *currentp, Boolean *anyp) {
 	if (value == *currentp)
 		return;
 	*currentp = value;
@@ -699,21 +648,19 @@ static void insert_sa1(H3270 *hSession, unsigned char attr, unsigned char value,
 /**
  * @brief Translate an internal character set number to a 3270DS characte set number.
  */
-static unsigned char host_cs(unsigned char cs)
-{
+static unsigned char host_cs(unsigned char cs) {
 	switch (cs & CS_MASK) {
 	case CS_APL:
 	case CS_LINEDRAW:
-	    return 0xf0 | (cs & CS_MASK);
+		return 0xf0 | (cs & CS_MASK);
 	case CS_DBCS:
-	    return 0xf8;
+		return 0xf8;
 	default:
-	    return 0;
+		return 0;
 	}
 }
 
-static void insert_sa(H3270 *hSession, int baddr, unsigned char *current_fgp, unsigned char *current_bgp,unsigned char *current_grp, unsigned char *current_csp, Boolean *anyp)
-{
+static void insert_sa(H3270 *hSession, int baddr, unsigned char *current_fgp, unsigned char *current_bgp,unsigned char *current_grp, unsigned char *current_csp, Boolean *anyp) {
 	if (hSession->reply_mode != SF_SRM_CHAR)
 		return;
 
@@ -723,8 +670,7 @@ static void insert_sa(H3270 *hSession, int baddr, unsigned char *current_fgp, un
 	if (memchr((char *) hSession->crm_attr, XA_BACKGROUND, hSession->crm_nattr))
 		insert_sa1(hSession, XA_BACKGROUND, hSession->ea_buf[baddr].bg, current_bgp, anyp);
 
-	if (memchr((char *) hSession->crm_attr, XA_HIGHLIGHTING, hSession->crm_nattr))
-	{
+	if (memchr((char *) hSession->crm_attr, XA_HIGHLIGHTING, hSession->crm_nattr)) {
 		unsigned char gr;
 
 		gr = hSession->ea_buf[baddr].gr;
@@ -733,8 +679,7 @@ static void insert_sa(H3270 *hSession, int baddr, unsigned char *current_fgp, un
 		insert_sa1(hSession, XA_HIGHLIGHTING, gr, current_grp, anyp);
 	}
 
-	if (memchr((char *) hSession->crm_attr, XA_CHARSET, hSession->crm_nattr))
-	{
+	if (memchr((char *) hSession->crm_attr, XA_CHARSET, hSession->crm_nattr)) {
 		insert_sa1(hSession, XA_CHARSET, host_cs(hSession->ea_buf[baddr].cs), current_csp,anyp);
 	}
 }
@@ -743,8 +688,7 @@ static void insert_sa(H3270 *hSession, int baddr, unsigned char *current_fgp, un
 /**
  * @brief Process a 3270 Read-Modified command and transmit the data back to the host.
  */
-void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
-{
+void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all) {
 	register int	baddr, sbaddr;
 	Boolean			send_data = True;
 	Boolean			short_read = False;
@@ -757,8 +701,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 		return;
 
 #if defined(X3270_FT) /*[*/
-	if (aid_byte == AID_SF)
-	{
+	if (aid_byte == AID_SF) {
 		dft_read_modified(hSession);
 		return;
 	}
@@ -767,8 +710,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 	trace_ds(hSession,"> ");
 	hSession->output.ptr = hSession->output.buf;
 
-	switch (aid_byte)
-	{
+	switch (aid_byte) {
 	case AID_SYSREQ:				/* test request */
 		space3270out(hSession,4);
 		*hSession->output.ptr++ = 0x01;	/* soh */
@@ -784,16 +726,15 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 	case AID_CLEAR:
 		if (!all)
 			short_read = True;
-		/* fall through... */
+	/* fall through... */
 
 	case AID_SELECT:			/* No data on READ MODIFIED */
 		if (!all)
 			send_data = False;
-		/* fall through... */
+	/* fall through... */
 
 	default:				/* ordinary AID */
-		if (!IN_SSCP)
-		{
+		if (!IN_SSCP) {
 			space3270out(hSession,3);
 			*hSession->output.ptr++ = aid_byte;
 			trace_ds(hSession,"%s",see_aid(aid_byte));
@@ -803,30 +744,24 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 
 			ENCODE_BADDR(hSession->output.ptr, hSession->cursor_addr);
 			trace_ds(hSession,"%s",rcba(hSession,hSession->cursor_addr));
-		}
-		else
-		{
+		} else {
 			space3270out(hSession,1);	/* just in case */
 		}
 		break;
 	}
 
 	baddr = 0;
-	if (hSession->formatted)
-	{
+	if (hSession->formatted) {
 		/* find first field attribute */
-		do
-		{
+		do {
 			if (hSession->ea_buf[baddr].fa)
 				break;
 			INC_BA(baddr);
 		} while (baddr != 0);
 
 		sbaddr = baddr;
-		do
-		{
-			if (FA_IS_MODIFIED(hSession->ea_buf[baddr].fa))
-			{
+		do {
+			if (FA_IS_MODIFIED(hSession->ea_buf[baddr].fa)) {
 				Boolean	any = False;
 
 				INC_BA(baddr);
@@ -834,14 +769,11 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 				*hSession->output.ptr++ = ORDER_SBA;
 				ENCODE_BADDR(hSession->output.ptr, baddr);
 				trace_ds(hSession," SetBufferAddress%s (Cols: %d Rows: %d)", rcba(hSession,baddr), hSession->view.cols, hSession->view.rows);
-				while (!hSession->ea_buf[baddr].fa)
-				{
+				while (!hSession->ea_buf[baddr].fa) {
 
-					if (send_data && hSession->ea_buf[baddr].cc)
-					{
+					if (send_data && hSession->ea_buf[baddr].cc) {
 						insert_sa(hSession,baddr,&current_fg,&current_bg,&current_gr,&current_cs,&any);
-						if (hSession->ea_buf[baddr].cs & CS_GE)
-						{
+						if (hSession->ea_buf[baddr].cs & CS_GE) {
 							space3270out(hSession,1);
 							*hSession->output.ptr++ = ORDER_GE;
 							if (any)
@@ -861,19 +793,15 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 				}
 				if (any)
 					trace_ds(hSession,"'");
-			}
-			else
-			{	/* not modified - skip */
-				do
-				{
+			} else {
+				/* not modified - skip */
+				do {
 					INC_BA(baddr);
 				} while (!hSession->ea_buf[baddr].fa);
 			}
 		} while (baddr != sbaddr);
 
-	}
-	else
-	{
+	} else {
 		Boolean	any = False;
 		int nbytes = 0;
 
@@ -884,13 +812,10 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 		if (IN_SSCP)
 			baddr = hSession->sscp_start;
 
-		do
-		{
-			if (hSession->ea_buf[baddr].cc)
-			{
+		do {
+			if (hSession->ea_buf[baddr].cc) {
 				insert_sa(hSession,baddr,&current_fg,&current_bg,&current_gr,&current_cs,&any);
-				if (hSession->ea_buf[baddr].cs & CS_GE)
-				{
+				if (hSession->ea_buf[baddr].cs & CS_GE) {
 					space3270out(hSession,1);
 					*hSession->output.ptr++ = ORDER_GE;
 					if (any)
@@ -922,7 +847,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
 			trace_ds(hSession,"'");
 	}
 
-    rm_done:
+rm_done:
 	trace_ds(hSession,"\n");
 	net_output(hSession);
 }
@@ -931,8 +856,7 @@ void ctlr_read_modified(H3270 *hSession, unsigned char aid_byte, Boolean all)
  * Process a 3270 Read-Buffer command and transmit the data back to the
  * host.
  */
-void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
-{
+void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte) {
 	register int	baddr;
 	unsigned char	fa;
 	Boolean		any = False;
@@ -943,8 +867,7 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 	unsigned char	current_cs = 0x00;
 
 #if defined(X3270_FT) /*[*/
-	if (aid_byte == AID_SF)
-	{
+	if (aid_byte == AID_SF) {
 		dft_read_modified(hSession);
 		return;
 	}
@@ -960,15 +883,11 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 
 	baddr = 0;
 	do {
-		if (hSession->ea_buf[baddr].fa)
-		{
-			if (hSession->reply_mode == SF_SRM_FIELD)
-			{
+		if (hSession->ea_buf[baddr].fa) {
+			if (hSession->reply_mode == SF_SRM_FIELD) {
 				space3270out(hSession,2);
 				*hSession->output.ptr++ = ORDER_SF;
-			}
-			else
-			{
+			} else {
 				space3270out(hSession,4);
 				*hSession->output.ptr++ = ORDER_SFE;
 				attr_count = hSession->output.ptr - hSession->output.buf;
@@ -981,11 +900,10 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 			if (any)
 				trace_ds(hSession,"'");
 			trace_ds(hSession," StartField%s%s%s",
-			    (hSession->reply_mode == SF_SRM_FIELD) ? "" : "Extended",
-			    rcba(hSession,baddr), see_attr(fa));
+			         (hSession->reply_mode == SF_SRM_FIELD) ? "" : "Extended",
+			         rcba(hSession,baddr), see_attr(fa));
 
-			if (hSession->reply_mode != SF_SRM_FIELD)
-			{
+			if (hSession->reply_mode != SF_SRM_FIELD) {
 				if (hSession->ea_buf[baddr].fg) {
 					space3270out(hSession,2);
 					*hSession->output.ptr++ = XA_FOREGROUND;
@@ -1005,7 +923,7 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 					*hSession->output.ptr++ = XA_HIGHLIGHTING;
 					*hSession->output.ptr++ = hSession->ea_buf[baddr].gr | 0xf0;
 					trace_ds(hSession,"%s", see_efa(XA_HIGHLIGHTING,
-					    hSession->ea_buf[baddr].gr | 0xf0));
+					                                hSession->ea_buf[baddr].gr | 0xf0));
 					(*(hSession->output.buf + attr_count))++;
 				}
 				if (hSession->ea_buf[baddr].cs & CS_MASK) {
@@ -1030,7 +948,7 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 			space3270out(hSession,1);
 			*hSession->output.ptr++ = hSession->ea_buf[baddr].cc;
 			if (hSession->ea_buf[baddr].cc <= 0x3f ||
-			    hSession->ea_buf[baddr].cc == 0xff) {
+			        hSession->ea_buf[baddr].cc == 0xff) {
 				if (any)
 					trace_ds(hSession,"'");
 
@@ -1055,16 +973,14 @@ void ctlr_read_buffer(H3270 *hSession, unsigned char aid_byte)
 /*
  * Process a 3270 Erase All Unprotected command.
  */
-void ctlr_erase_all_unprotected(H3270 *hSession)
-{
+void ctlr_erase_all_unprotected(H3270 *hSession) {
 	register int	baddr, sbaddr;
 	unsigned char	fa;
 	Boolean		f;
 
 	kybd_inhibit(hSession,False);
 
-	if (hSession->formatted)
-	{
+	if (hSession->formatted) {
 		/* find first field attribute */
 		baddr = 0;
 		do {
@@ -1088,8 +1004,7 @@ void ctlr_erase_all_unprotected(H3270 *hSession)
 						ctlr_add(hSession,baddr, EBC_null, 0);
 					}
 				} while (!hSession->ea_buf[baddr].fa);
-			}
-			else {
+			} else {
 				do {
 					INC_BA(baddr);
 				} while (!hSession->ea_buf[baddr].fa);
@@ -1108,8 +1023,7 @@ void ctlr_erase_all_unprotected(H3270 *hSession)
 /**
  * @brief Process a 3270 Write command.
  */
-enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean erase)
-{
+enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean erase) {
 	register unsigned char	*cp;
 	register int	baddr;
 	unsigned char	current_fa;
@@ -1141,7 +1055,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 #define END_TEXT0		{ if (previous == TEXT) trace_ds(hSession,"'"); }
 #define END_TEXT(cmd)	{ END_TEXT0; trace_ds(hSession," %s", cmd); }
 
-/* XXX: Should there be a ctlr_add_cs call here? */
+	/* XXX: Should there be a ctlr_add_cs call here? */
 #define START_FIELD(fa) { \
 			current_fa = fa; \
 			ctlr_add_fa(hSession,hSession->buffer_addr, fa, 0); \
@@ -1167,16 +1081,14 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 
 	hSession->trace_primed = 1;
 	hSession->buffer_addr = hSession->cursor_addr;
-	if (WCC_RESET(buf[1]))
-	{
+	if (WCC_RESET(buf[1])) {
 		if (erase)
 			hSession->reply_mode = SF_SRM_FIELD;
 		trace_ds(hSession,"%sreset", paren);
 		paren = ",";
 	}
 	wcc_sound_alarm = WCC_SOUND_ALARM(buf[1]);
-	if (wcc_sound_alarm)
-	{
+	if (wcc_sound_alarm) {
 		trace_ds(hSession,"%salarm", paren);
 		paren = ",";
 	}
@@ -1184,23 +1096,19 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 	if (wcc_keyboard_restore)
 		hSession->cbk.set_timer(hSession,0);
 
-	if (wcc_keyboard_restore)
-	{
+	if (wcc_keyboard_restore) {
 		trace_ds(hSession,"%srestore", paren);
 		paren = ",";
 	}
 
-	if (WCC_RESET_MDT(buf[1]))
-	{
+	if (WCC_RESET_MDT(buf[1])) {
 		trace_ds(hSession,"%sresetMDT", paren);
 		paren = ",";
 		baddr = 0;
 		if (hSession->modified_sel)
 			ALL_CHANGED(hSession);
-		do
-		{
-			if (hSession->ea_buf[baddr].fa)
-			{
+		do {
+			if (hSession->ea_buf[baddr].fa) {
 				mdt_clear(hSession,baddr);
 			}
 			INC_BA(baddr);
@@ -1223,10 +1131,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 	ABORT_WRITEx; \
 } \
 
-	for (cp = &buf[2]; !aborted && cp < (buf + buflen); cp++)
-	{
-		switch (*cp)
-		{
+	for (cp = &buf[2]; !aborted && cp < (buf + buflen); cp++) {
+		switch (*cp) {
 		case ORDER_SF:	/* start field */
 			END_TEXT("StartField");
 			if (previous != SBA)
@@ -1247,8 +1153,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			END_TEXT("SetBufferAddress");
 			previous = SBA;
 			trace_ds(hSession,"%s",rcba(hSession,hSession->buffer_addr));
-			if(hSession->buffer_addr >= hSession->view.cols * hSession->view.rows)
-			{
+			if(hSession->buffer_addr >= hSession->view.cols * hSession->view.rows) {
 				ABORT_WRITE("invalid SBA address");
 			}
 			current_fa = get_field_attribute(hSession,hSession->buffer_addr);
@@ -1274,8 +1179,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			 * of an unprotected field, simply advance one
 			 * position.
 			 */
-			if (hSession->ea_buf[hSession->buffer_addr].fa && !FA_IS_PROTECTED(hSession->ea_buf[hSession->buffer_addr].fa))
-			{
+			if (hSession->ea_buf[hSession->buffer_addr].fa && !FA_IS_PROTECTED(hSession->ea_buf[hSession->buffer_addr].fa)) {
 				INC_BA(hSession->buffer_addr);
 				last_zpt = False;
 				last_cmd = True;
@@ -1295,12 +1199,10 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			 * a null-filling PT that left the buffer address at 0.
 			 * XXX: There's some funky DBCS rule here.
 			 */
-			if (!last_cmd || last_zpt)
-			{
+			if (!last_cmd || last_zpt) {
 				trace_ds(hSession,"(nulling)");
 
-				while((hSession->buffer_addr != baddr) && (!hSession->ea_buf[hSession->buffer_addr].fa))
-				{
+				while((hSession->buffer_addr != baddr) && (!hSession->ea_buf[hSession->buffer_addr].fa)) {
 					ctlr_add(hSession,hSession->buffer_addr, EBC_null, 0);
 					ctlr_add_cs(hSession,hSession->buffer_addr, 0);
 					ctlr_add_fg(hSession,hSession->buffer_addr, 0);
@@ -1311,8 +1213,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				}
 				if (baddr == 0)
 					last_zpt = True;
-			}
-			else
+			} else
 				last_zpt = False;
 
 			hSession->buffer_addr = baddr;
@@ -1329,35 +1230,27 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			ra_ge = False;
 			previous = ORDER;
 #if defined(X3270_DBCS) /*[*/
-			if (dbcs)
-			{
+			if (dbcs) {
 				d = ctlr_lookleft_state(buffer_addr, &why);
-				if (d == DBCS_RIGHT)
-				{
+				if (d == DBCS_RIGHT) {
 					ABORT_WRITE("RA over right half of DBCS character");
 				}
-				if (default_cs == CS_DBCS || d == DBCS_LEFT)
-				{
+				if (default_cs == CS_DBCS || d == DBCS_LEFT) {
 					add_dbcs = True;
 				}
 			}
-			if (add_dbcs)
-			{
-				if ((baddr - buffer_addr) % 2)
-				{
+			if (add_dbcs) {
+				if ((baddr - buffer_addr) % 2) {
 					ABORT_WRITE("DBCS RA with odd length");
 				}
 				add_c1 = *cp;
 				cp++;
-				if (cp >= buf + buflen)
-				{
+				if (cp >= buf + buflen) {
 					ABORT_WRITE("missing second half of DBCS character");
 				}
 				add_c2 = *cp;
-				if (add_c1 == EBC_null)
-				{
-					switch (add_c2)
-					{
+				if (add_c1 == EBC_null) {
+					switch (add_c2) {
 					case EBC_null:
 					case EBC_nl:
 					case EBC_em:
@@ -1371,20 +1264,16 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 						trace_ds(hSession," [invalid DBCS RA control character X'%02x%02x'; write aborted]",add_c1, add_c2);
 						ABORT_WRITEx;
 					}
-				}
-				else if (add_c1 < 0x40 || add_c1 > 0xfe || add_c2 < 0x40 || add_c2 > 0xfe)
-				{
+				} else if (add_c1 < 0x40 || add_c1 > 0xfe || add_c2 < 0x40 || add_c2 > 0xfe) {
 					trace_ds(hSession," [invalid DBCS RA character X'%02x%02x'; write aborted]",add_c1, add_c2);
 					ABORT_WRITEx;
 				}
 				dbcs_to_mb(add_c1, add_c2, mb);
 				trace_ds_nb(hSession,"'%s'", mb);
-			}
-			else
+			} else
 #endif /*]*/
 			{
-				if (*cp == ORDER_GE)
-				{
+				if (*cp == ORDER_GE) {
 					ra_ge = True;
 					trace_ds(hSession,"GraphicEscape");
 					cp++;
@@ -1398,18 +1287,13 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 					trace_ds(hSession,"'");
 
 			}
-			if (baddr >= hSession->view.cols * hSession->view.rows)
-			{
+			if (baddr >= hSession->view.cols * hSession->view.rows) {
 				ABORT_WRITE("invalid RA address");
 			}
-			do
-			{
-				if (add_dbcs)
-				{
+			do {
+				if (add_dbcs) {
 					ctlr_add(hSession,hSession->buffer_addr, add_c1,hSession->default_cs);
-				}
-				else
-				{
+				} else {
 					if (ra_ge)
 						ctlr_add(hSession,hSession->buffer_addr, add_c1,CS_GE);
 					else if (hSession->default_cs)
@@ -1422,8 +1306,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				ctlr_add_ic(hSession,hSession->buffer_addr, hSession->default_ic);
 
 				INC_BA(hSession->buffer_addr);
-				if (add_dbcs)
-				{
+				if (add_dbcs) {
 					ctlr_add(hSession,hSession->buffer_addr, add_c2,hSession->default_cs);
 					ctlr_add_fg(hSession,hSession->buffer_addr, hSession->default_fg);
 					ctlr_add_bg(hSession,hSession->buffer_addr, hSession->default_bg);
@@ -1446,26 +1329,21 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				trace_ds(hSession,"%s",rcba(hSession,baddr));
 
 			previous = ORDER;
-			if (baddr >= hSession->view.cols * hSession->view.rows)
-			{
+			if (baddr >= hSession->view.cols * hSession->view.rows) {
 				ABORT_WRITE("invalid EUA address");
 			}
 			d = ctlr_lookleft_state(buffer_addr, &why);
-			if (d == DBCS_RIGHT)
-			{
+			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("EUA overwriting right half of DBCS character");
 			}
 			d = ctlr_lookleft_state(baddr, &why);
-			if (d == DBCS_LEFT)
-			{
+			if (d == DBCS_LEFT) {
 				ABORT_WRITE("EUA overwriting left half of DBCS character");
 			}
-			do
-			{
+			do {
 				if (hSession->ea_buf[hSession->buffer_addr].fa)
 					current_fa = hSession->ea_buf[hSession->buffer_addr].fa;
-				else if (!FA_IS_PROTECTED(current_fa))
-				{
+				else if (!FA_IS_PROTECTED(current_fa)) {
 					ctlr_add(hSession,hSession->buffer_addr, EBC_null,CS_BASE);
 				}
 				INC_BA(hSession->buffer_addr);
@@ -1505,40 +1383,29 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			previous = ORDER;
 			cp++;
 			na = *cp;
-			if (hSession->ea_buf[hSession->buffer_addr].fa)
-			{
-				for (i = 0; i < (int)na; i++)
-				{
+			if (hSession->ea_buf[hSession->buffer_addr].fa) {
+				for (i = 0; i < (int)na; i++) {
 					cp++;
-					if (*cp == XA_3270)
-					{
+					if (*cp == XA_3270) {
 						trace_ds(hSession," 3270");
 						cp++;
 						ctlr_add_fa(hSession,hSession->buffer_addr, *cp,hSession->ea_buf[hSession->buffer_addr].cs);
 						trace_ds(hSession,"%s",see_attr(*cp));
-					}
-					else if (*cp == XA_FOREGROUND)
-					{
+					} else if (*cp == XA_FOREGROUND) {
 						trace_ds(hSession,"%s",see_efa(*cp,*(cp + 1)));
 						cp++;
 						if (hSession->m3279)
 							ctlr_add_fg(hSession,hSession->buffer_addr, *cp);
-					}
-					else if (*cp == XA_BACKGROUND)
-					{
+					} else if (*cp == XA_BACKGROUND) {
 						trace_ds(hSession,"%s",see_efa(*cp,*(cp + 1)));
 						cp++;
 						if (hSession->m3279)
 							ctlr_add_bg(hSession,hSession->buffer_addr, *cp);
-					}
-					else if (*cp == XA_HIGHLIGHTING)
-					{
+					} else if (*cp == XA_HIGHLIGHTING) {
 						trace_ds(hSession,"%s",see_efa(*cp,*(cp + 1)));
 						cp++;
 						ctlr_add_gr(hSession,hSession->buffer_addr, *cp & 0x0f);
-					}
-					else if (*cp == XA_CHARSET)
-					{
+					} else if (*cp == XA_CHARSET) {
 						int cs = 0;
 
 						trace_ds(hSession,"%s",see_efa(*cp,*(cp + 1)));
@@ -1548,27 +1415,20 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 						else if (*cp == 0xf8)
 							cs = CS_DBCS;
 						ctlr_add_cs(hSession,hSession->buffer_addr, cs);
-					}
-					else if (*cp == XA_ALL)
-					{
+					} else if (*cp == XA_ALL) {
 						trace_ds(hSession,"%s",see_efa(*cp,*(cp + 1)));
 						cp++;
-					}
-					else if (*cp == XA_INPUT_CONTROL)
-					{
+					} else if (*cp == XA_INPUT_CONTROL) {
 						trace_ds(hSession,"%s",see_efa(*cp,*(cp + 1)));
 						ctlr_add_ic(hSession,hSession->buffer_addr,(*(cp + 1) == 1));
 						cp++;
-					}
-					else
-					{
+					} else {
 						trace_ds(hSession,"%s[unsupported]", see_efa(*cp, *(cp + 1)));
 						cp++;
 					}
 				}
 				INC_BA(hSession->buffer_addr);
-			}
-			else
+			} else
 				cp += na * 2;
 
 			last_cmd = True;
@@ -1624,7 +1484,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				} else if (*cp == XA_INPUT_CONTROL) {
 					trace_ds(hSession,"%s", see_efa(*cp, *(cp + 1)));
 					if (hSession->dbcs)
-					    efa_ic = (*(cp + 1) == 1);
+						efa_ic = (*(cp + 1) == 1);
 					cp++;
 				} else {
 					trace_ds(hSession,"%s[unsupported]", see_efa(*cp, *(cp + 1)));
@@ -1668,14 +1528,14 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				trace_ds(hSession,"%s", see_efa(*cp, *(cp + 1)));
 				switch (*(cp + 1)) {
 				case 0xf1:
-				    hSession->default_cs = CS_APL;
-				    break;
+					hSession->default_cs = CS_APL;
+					break;
 				case 0xf8:
-				    hSession->default_cs = CS_DBCS;
-				    break;
+					hSession->default_cs = CS_DBCS;
+					break;
 				default:
-				    hSession->default_cs = CS_BASE;
-				    break;
+					hSession->default_cs = CS_BASE;
+					break;
 				}
 			} else if (*cp == XA_INPUT_CONTROL) {
 				trace_ds(hSession,"%s", see_efa(*cp, *(cp + 1)));
@@ -1750,8 +1610,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			baddr = hSession->buffer_addr;
 			DEC_BA(baddr);
 			while (!aborted &&
-			       ((fa_addr >= 0 && baddr != fa_addr) ||
-			        (fa_addr < 0 && baddr != hSession->view.rows*hSession->view.cols - 1))) {
+			        ((fa_addr >= 0 && baddr != fa_addr) ||
+			         (fa_addr < 0 && baddr != hSession->view.rows*hSession->view.cols - 1))) {
 				if (hSession->ea_buf[baddr].cc == FCORDER_SI) {
 					ABORT_WRITE("double SI");
 				}
@@ -1824,8 +1684,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			ctlr_add_gr(hSession,hSession->buffer_addr, hSession->default_gr);
 			ctlr_add_ic(hSession,hSession->buffer_addr, hSession->default_ic);
 			INC_BA(hSession->buffer_addr);
-			if (add_dbcs)
-			{
+			if (add_dbcs) {
 				ctlr_add(hSession,hSession->buffer_addr, add_c2, hSession->default_cs);
 				ctlr_add_fg(hSession,hSession->buffer_addr, hSession->default_fg);
 				ctlr_add_bg(hSession,hSession->buffer_addr, hSession->default_bg);
@@ -1862,13 +1721,13 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				}
 				add_c2 = *cp;
 				if (add_c1 < 0x40 || add_c1 > 0xfe ||
-				    add_c2 < 0x40 || add_c2 > 0xfe) {
+				        add_c2 < 0x40 || add_c2 > 0xfe) {
 					trace_ds(hSession," [invalid DBCS character X'%02x%02x'; write aborted]",add_c1, add_c2);
 					ABORT_WRITEx;
-			       }
-			       add_dbcs = True;
-			       dbcs_to_mb(add_c1, add_c2, mb);
-			       trace_ds_nb(hSession,"%s", mb);
+				}
+				add_dbcs = True;
+				dbcs_to_mb(add_c1, add_c2, mb);
+				trace_ds_nb(hSession,"%s", mb);
 			} else {
 #endif /*]*/
 				add_c1 = *cp;
@@ -1936,8 +1795,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 /**
  * @brief Write SSCP-LU data, which is quite a bit dumber than regular 3270 output.
  */
-void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen)
-{
+void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen) {
 	int i;
 	unsigned char *cp = buf;
 	int s_row;
@@ -1960,8 +1818,7 @@ void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen)
 			 * the beginning of the next line.
 			 */
 			s_row = hSession->buffer_addr / hSession->view.cols;
-			while ((hSession->buffer_addr / hSession->view.cols) == s_row)
-			{
+			while ((hSession->buffer_addr / hSession->view.cols) == s_row) {
 				ctlr_add(hSession,hSession->buffer_addr, EBC_null, hSession->default_cs);
 				ctlr_add_fg(hSession,hSession->buffer_addr, hSession->default_fg);
 				ctlr_add_bg(hSession,hSession->buffer_addr, hSession->default_bg);
@@ -2049,8 +1906,7 @@ void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen)
  * DBCS or SBCS character at baddr.
  */
 enum dbcs_state
-ctlr_lookleft_state(int baddr, enum dbcs_why *why)
-{
+ctlr_lookleft_state(int baddr, enum dbcs_why *why) {
 	int faddr;
 	int fdist;
 	int xaddr;
@@ -2059,8 +1915,8 @@ ctlr_lookleft_state(int baddr, enum dbcs_why *why)
 	(((f) < 0 && (b) == ROWS*COLS - 1) || \
 	 ((f) >= 0 && (b) == (f)))
 
-	 /* If we're not in DBCS state, everything is DBCS_NONE. */
-	 if (!dbcs)
+	/* If we're not in DBCS state, everything is DBCS_NONE. */
+	if (!dbcs)
 		return DBCS_NONE;
 
 	/* Find the field attribute, if any. */
@@ -2087,9 +1943,9 @@ ctlr_lookleft_state(int baddr, enum dbcs_why *why)
 			return DBCS_NONE;
 		xaddr = baddr;
 		while (!AT_END(faddr, xaddr) &&
-		       ea_buf[xaddr].cs == CS_DBCS &&
-		       ea_buf[xaddr].cc != EBC_so &&
-		       ea_buf[xaddr].cc != EBC_si) {
+		        ea_buf[xaddr].cs == CS_DBCS &&
+		        ea_buf[xaddr].cc != EBC_so &&
+		        ea_buf[xaddr].cc != EBC_si) {
 			DEC_BA(xaddr);
 		}
 		*why = DBCS_ATTRIBUTE;
@@ -2122,8 +1978,7 @@ ctlr_lookleft_state(int baddr, enum dbcs_why *why)
 }
 
 static Boolean
-valid_dbcs_char(unsigned char c1, unsigned char c2)
-{
+valid_dbcs_char(unsigned char c1, unsigned char c2) {
 	if (c1 >= 0x40 && c1 < 0xff && c2 >= 0x40 && c2 < 0xff)
 		return True;
 	if (c1 != 0x00 || c2 < 0x40 || c2 >= 0xff)
@@ -2156,8 +2011,7 @@ valid_dbcs_char(unsigned char c1, unsigned char c2)
  *
  * Returns 0 for success, -1 for failure.
  */
-int ctlr_dbcs_postprocess(H3270 *hSession)
-{
+int ctlr_dbcs_postprocess(H3270 *hSession) {
 	int baddr;		/* current buffer address */
 	int faddr0;		/* address of first field attribute */
 	int faddr;		/* address of current field attribute */
@@ -2207,73 +2061,73 @@ int ctlr_dbcs_postprocess(H3270 *hSession)
 		} else {
 			switch (ea_buf[baddr].cc) {
 			case EBC_so:
-			    /* Two SO's or SO in DBCS field are invalid. */
-			    if (so || dbcs_field) {
-				    trace_ds(hSession,"DBCS postprocess: invalid SO found at %s\n", rcba(baddr));
-				    rc = -1;
-			    } else {
-				    dbaddr = baddr;
-				    INC_BA(dbaddr);
-			    }
-			    ea_buf[baddr].db = DBCS_NONE;
-			    so = True;
-			    si = False;
-			    break;
+				/* Two SO's or SO in DBCS field are invalid. */
+				if (so || dbcs_field) {
+					trace_ds(hSession,"DBCS postprocess: invalid SO found at %s\n", rcba(baddr));
+					rc = -1;
+				} else {
+					dbaddr = baddr;
+					INC_BA(dbaddr);
+				}
+				ea_buf[baddr].db = DBCS_NONE;
+				so = True;
+				si = False;
+				break;
 			case EBC_si:
-			    /* Two SI's or SI in DBCS field are invalid. */
-			    if (si || dbcs_field) {
-				    trace_ds(hSession,"Postprocess: Invalid SO found at %s\n", rcba(baddr));
-				    rc = -1;
-				    ea_buf[baddr].db = DBCS_NONE;
-			    } else {
-				    ea_buf[baddr].db = DBCS_SI;
-			    }
-			    dbaddr = -1;
-			    si = True;
-			    so = False;
-			    break;
+				/* Two SI's or SI in DBCS field are invalid. */
+				if (si || dbcs_field) {
+					trace_ds(hSession,"Postprocess: Invalid SO found at %s\n", rcba(baddr));
+					rc = -1;
+					ea_buf[baddr].db = DBCS_NONE;
+				} else {
+					ea_buf[baddr].db = DBCS_SI;
+				}
+				dbaddr = -1;
+				si = True;
+				so = False;
+				break;
 			default:
-			    /* Non-base CS in DBCS subfield is invalid. */
-			    if (so && ea_buf[baddr].cs != CS_BASE) {
-				    trace_ds(hSession,"DBCS postprocess: invalid character set found at %s\n",rcba(baddr));
-				    rc = -1;
-				    ea_buf[baddr].cs = CS_BASE;
-			    }
-			    if ((ea_buf[baddr].cs & CS_MASK) == CS_DBCS) {
-				    /*
-				     * Beginning or continuation of an SA DBCS
-				     * subfield.
-				     */
-				    if (dbaddr < 0) {
-					    dbaddr = baddr;
-				    }
-			    } else if (!so && !dbcs_field) {
-				    /*
-				     * End of SA DBCS subfield.
-				     */
-				    dbaddr = -1;
-			    }
-			    if (dbaddr >= 0) {
-				    /*
-				     * Turn invalid characters into spaces,
-				     * silently.
-				     */
-				    if ((baddr + ROWS*COLS - dbaddr) % 2) {
-					    if (!valid_dbcs_char(
-							ea_buf[pbaddr].cc,
-							ea_buf[baddr].cc)) {
-						    ea_buf[pbaddr].cc =
-							EBC_space;
-						    ea_buf[baddr].cc =
-							EBC_space;
-					    }
-					    MAKE_RIGHT(baddr);
-				    } else {
-					    MAKE_LEFT(baddr);
-				    }
-			    } else
-				    ea_buf[baddr].db = DBCS_NONE;
-			    break;
+				/* Non-base CS in DBCS subfield is invalid. */
+				if (so && ea_buf[baddr].cs != CS_BASE) {
+					trace_ds(hSession,"DBCS postprocess: invalid character set found at %s\n",rcba(baddr));
+					rc = -1;
+					ea_buf[baddr].cs = CS_BASE;
+				}
+				if ((ea_buf[baddr].cs & CS_MASK) == CS_DBCS) {
+					/*
+					 * Beginning or continuation of an SA DBCS
+					 * subfield.
+					 */
+					if (dbaddr < 0) {
+						dbaddr = baddr;
+					}
+				} else if (!so && !dbcs_field) {
+					/*
+					 * End of SA DBCS subfield.
+					 */
+					dbaddr = -1;
+				}
+				if (dbaddr >= 0) {
+					/*
+					 * Turn invalid characters into spaces,
+					 * silently.
+					 */
+					if ((baddr + ROWS*COLS - dbaddr) % 2) {
+						if (!valid_dbcs_char(
+						            ea_buf[pbaddr].cc,
+						            ea_buf[baddr].cc)) {
+							ea_buf[pbaddr].cc =
+							    EBC_space;
+							ea_buf[baddr].cc =
+							    EBC_space;
+						}
+						MAKE_RIGHT(baddr);
+					} else {
+						MAKE_LEFT(baddr);
+					}
+				} else
+					ea_buf[baddr].db = DBCS_NONE;
+				break;
 			}
 		}
 
@@ -2282,9 +2136,9 @@ int ctlr_dbcs_postprocess(H3270 *hSession)
 		 * Turn them into NULLs, silently.
 		 */
 		if (pbaddr >= 0 &&
-		    IS_LEFT(ea_buf[pbaddr].db) &&
-		    !IS_RIGHT(ea_buf[baddr].db) &&
-		    ea_buf[pbaddr].db != DBCS_DEAD) {
+		        IS_LEFT(ea_buf[pbaddr].db) &&
+		        !IS_RIGHT(ea_buf[baddr].db) &&
+		        ea_buf[pbaddr].db != DBCS_DEAD) {
 			if (!ea_buf[baddr].fa) {
 				trace_ds(hSession,"DBCS postprocess: dead position at %s\n", rcba(pbaddr));
 				rc = -1;
@@ -2312,20 +2166,18 @@ int ctlr_dbcs_postprocess(H3270 *hSession)
  *
  * @param hSession	Session handle.
  */
-void ps_process(H3270 *hSession)
-{
+void ps_process(H3270 *hSession) {
 	while(run_ta(hSession));
 
 	screen_update(hSession,0,hSession->view.rows * hSession->view.cols);
 
 	/* Process file transfers. */
 	if (lib3270_get_ft_state(hSession) != LIB3270_FT_STATE_NONE &&		/* transfer in progress */
-	    hSession->formatted &&          								/* screen is formatted */
-	    !hSession->screen_alt &&        								/* 24x80 screen */
-	    !hSession->kybdlock &&                							/* keyboard not locked */
-	    /* magic field */
-	    hSession->ea_buf[1919].fa && FA_IS_SKIP(hSession->ea_buf[1919].fa))
-	{
+	        hSession->formatted &&          								/* screen is formatted */
+	        !hSession->screen_alt &&        								/* 24x80 screen */
+	        !hSession->kybdlock &&                							/* keyboard not locked */
+	        /* magic field */
+	        hSession->ea_buf[1919].fa && FA_IS_SKIP(hSession->ea_buf[1919].fa)) {
 		ft_cut_data(hSession);
 	}
 
@@ -2334,12 +2186,10 @@ void ps_process(H3270 *hSession)
 /*
  * Tell me if there is any data on the screen.
  */
-int ctlr_any_data(H3270 *session)
-{
+int ctlr_any_data(H3270 *session) {
 	register int i;
 
-	for(i = 0; i < session->view.rows * session->view.cols; i++)
-	{
+	for(i = 0; i < session->view.rows * session->view.cols; i++) {
 		if (!IsBlank(session->ea_buf[i].cc))
 			return 1;
 	}
@@ -2349,13 +2199,11 @@ int ctlr_any_data(H3270 *session)
 /**
  * @brief Clear the text (non-status) portion of the display.  Also resets the cursor and buffer addresses and extended attributes.
  */
-void ctlr_clear(H3270 *session, Boolean can_snap)
-{
+void ctlr_clear(H3270 *session, Boolean can_snap) {
 	/* Snap any data that is about to be lost into the trace file. */
 #if defined(X3270_TRACE)
 
-	if (ctlr_any_data(session))
-	{
+	if (ctlr_any_data(session)) {
 		if (can_snap && !session->trace_skipping && lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE))
 			trace_screen(session);
 	}
@@ -2366,10 +2214,10 @@ void ctlr_clear(H3270 *session, Boolean can_snap)
 
 	// Clear the screen.
 	(void) memset(
-				(char *)session->ea_buf,
-				0,
-				((size_t)session->view.rows) * ((size_t) session->view.cols) * sizeof(struct lib3270_ea)
-			);
+	    (char *)session->ea_buf,
+	    0,
+	    ((size_t)session->view.rows) * ((size_t) session->view.cols) * sizeof(struct lib3270_ea)
+	);
 
 	cursor_move(session,0);
 	session->buffer_addr = 0;
@@ -2395,12 +2243,10 @@ void ctlr_clear(H3270 *session, Boolean can_snap)
  *
  * @param session	Session handle
  */
-static void ctlr_blanks(H3270 *session)
-{
+static void ctlr_blanks(H3270 *session) {
 	int baddr;
 
-	for (baddr = 0; baddr < session->view.rows * session->view.cols; baddr++)
-	{
+	for (baddr = 0; baddr < session->view.rows * session->view.cols; baddr++) {
 		if (!session->ea_buf[baddr].fa)
 			session->ea_buf[baddr].cc = EBC_space;
 	}
@@ -2415,14 +2261,11 @@ static void ctlr_blanks(H3270 *session)
  * @brief Change a character in the 3270 buffer, removes any field attribute defined at that location.
  *
  */
-void ctlr_add(H3270 *hSession, int baddr, unsigned char c, unsigned char cs)
-{
+void ctlr_add(H3270 *hSession, int baddr, unsigned char c, unsigned char cs) {
 	unsigned char oc = 0;
 
-	if(hSession->ea_buf[baddr].fa || ((oc = hSession->ea_buf[baddr].cc) != c || hSession->ea_buf[baddr].cs != cs))
-	{
-		if (hSession->trace_primed && !IsBlank(oc))
-		{
+	if(hSession->ea_buf[baddr].fa || ((oc = hSession->ea_buf[baddr].cc) != c || hSession->ea_buf[baddr].cs != cs)) {
+		if (hSession->trace_primed && !IsBlank(oc)) {
 #if defined(X3270_TRACE) /*[*/
 			if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE))
 				trace_screen(hSession);
@@ -2440,8 +2283,7 @@ void ctlr_add(H3270 *hSession, int baddr, unsigned char c, unsigned char cs)
 /*
  * Set a field attribute in the 3270 buffer.
  */
-void ctlr_add_fa(H3270 *hSession, int baddr, unsigned char fa, unsigned char cs)
-{
+void ctlr_add_fa(H3270 *hSession, int baddr, unsigned char fa, unsigned char cs) {
 	/* Put a null in the display buffer. */
 	ctlr_add(hSession, baddr, EBC_null, cs);
 
@@ -2456,10 +2298,8 @@ void ctlr_add_fa(H3270 *hSession, int baddr, unsigned char fa, unsigned char cs)
  * Change the character set for a field in the 3270 buffer.
  */
 void
-ctlr_add_cs(H3270 *hSession, int baddr, unsigned char cs)
-{
-	if (hSession->ea_buf[baddr].cs != cs)
-	{
+ctlr_add_cs(H3270 *hSession, int baddr, unsigned char cs) {
+	if (hSession->ea_buf[baddr].cs != cs) {
 		/*
 		if (SELECTED(baddr))
 			unselect(baddr, 1);
@@ -2472,10 +2312,8 @@ ctlr_add_cs(H3270 *hSession, int baddr, unsigned char cs)
 /*
  * Change the graphic rendition of a character in the 3270 buffer.
  */
-void ctlr_add_gr(H3270 *hSession, int baddr, unsigned char gr)
-{
-	if (hSession->ea_buf[baddr].gr != gr)
-	{
+void ctlr_add_gr(H3270 *hSession, int baddr, unsigned char gr) {
+	if (hSession->ea_buf[baddr].gr != gr) {
 		hSession->ea_buf[baddr].gr = gr;
 //		if (gr & GR_BLINK)
 //			blink_start();
@@ -2486,16 +2324,14 @@ void ctlr_add_gr(H3270 *hSession, int baddr, unsigned char gr)
 /*
  * Change the foreground color for a character in the 3270 buffer.
  */
-void ctlr_add_fg(H3270 *hSession, int baddr, unsigned char color)
-{
+void ctlr_add_fg(H3270 *hSession, int baddr, unsigned char color) {
 	if (!hSession->m3279)
 		return;
 
 	if ((color & 0xf0) != 0xf0)
 		color = 0;
 
-	if (hSession->ea_buf[baddr].fg != color)
-	{
+	if (hSession->ea_buf[baddr].fg != color) {
 		hSession->ea_buf[baddr].fg = color;
 		ONE_CHANGED(hSession,baddr);
 	}
@@ -2504,16 +2340,14 @@ void ctlr_add_fg(H3270 *hSession, int baddr, unsigned char color)
 /*
  * Change the background color for a character in the 3270 buffer.
  */
-void ctlr_add_bg(H3270 *hSession, int baddr, unsigned char color)
-{
+void ctlr_add_bg(H3270 *hSession, int baddr, unsigned char color) {
 	if (!hSession->m3279)
 		return;
 
 	if ((color & 0xf0) != 0xf0)
 		color = 0;
 
-	if (hSession->ea_buf[baddr].bg != color)
-	{
+	if (hSession->ea_buf[baddr].bg != color) {
 		hSession->ea_buf[baddr].bg = color;
 		ONE_CHANGED(hSession,baddr);
 	}
@@ -2522,16 +2356,14 @@ void ctlr_add_bg(H3270 *hSession, int baddr, unsigned char color)
 /*
  * Change the input control bit for a character in the 3270 buffer.
  */
-static void ctlr_add_ic(H3270 *hSession, int baddr, unsigned char ic)
-{
+static void ctlr_add_ic(H3270 *hSession, int baddr, unsigned char ic) {
 	hSession->ea_buf[baddr].ic = ic;
 }
 
 /**
  * @brief Wrapping bersion of ctlr_bcopy.
  */
-void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int count)
-{
+void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int count) {
 	/*
 	 * The 'to' region, the 'from' region, or both can wrap the screen,
 	 * and can overlap each other.  memmove() is smart enough to deal with
@@ -2541,22 +2373,22 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
 	 * location-at-a-time version only if it happens.
 	 */
 	if (baddr_from + count <= hSession->view.rows * hSession->view.cols &&
-	    baddr_to + count <= hSession->view.rows * hSession->view.cols) {
+	        baddr_to + count <= hSession->view.rows * hSession->view.cols) {
 		ctlr_bcopy(hSession,baddr_from, baddr_to, count, True);
 	} else {
 		int i, from, to;
 
 		for (i = 0; i < count; i++) {
-		    if (baddr_to > baddr_from) {
-			/* Shifting right, move left. */
-			to = (baddr_to + count - 1 - i) % hSession->view.rows * hSession->view.cols;
-			from = (baddr_from + count - 1 - i) % hSession->view.rows * hSession->view.cols;
-		    } else {
-			/* Shifting left, move right. */
-			to = (baddr_to + i) % hSession->view.rows * hSession->view.cols;
-			from = (baddr_from + i) % hSession->view.rows * hSession->view.cols;
-		    }
-		    ctlr_bcopy(hSession,from, to, 1, True);
+			if (baddr_to > baddr_from) {
+				/* Shifting right, move left. */
+				to = (baddr_to + count - 1 - i) % hSession->view.rows * hSession->view.cols;
+				from = (baddr_from + count - 1 - i) % hSession->view.rows * hSession->view.cols;
+			} else {
+				/* Shifting left, move right. */
+				to = (baddr_to + i) % hSession->view.rows * hSession->view.cols;
+				from = (baddr_from + i) % hSession->view.rows * hSession->view.cols;
+			}
+			ctlr_bcopy(hSession,from, to, 1, True);
 		}
 	}
 }
@@ -2570,11 +2402,9 @@ void ctlr_wrapping_memmove(H3270 *hSession, int baddr_to, int baddr_from, int co
  *
  * @param hSession	Session handle
  */
-void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int GNUC_UNUSED(move_ea))
-{
+void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int GNUC_UNUSED(move_ea)) {
 	/* Move the characters. */
-	if (memcmp((char *) &hSession->ea_buf[baddr_from],(char *) &hSession->ea_buf[baddr_to],count * sizeof(struct lib3270_ea)))
-	{
+	if (memcmp((char *) &hSession->ea_buf[baddr_from],(char *) &hSession->ea_buf[baddr_to],count * sizeof(struct lib3270_ea))) {
 		(void) memmove(&hSession->ea_buf[baddr_to], &hSession->ea_buf[baddr_from],count * sizeof(struct lib3270_ea));
 		REGION_CHANGED(hSession,baddr_to, baddr_to + count);
 	}
@@ -2588,12 +2418,11 @@ void ctlr_bcopy(H3270 *hSession, int baddr_from, int baddr_to, int count, int GN
  * @param hSession	Session handle
  *
  */
-void ctlr_aclear(H3270 *hSession, int baddr, int count, int GNUC_UNUSED(clear_ea))
-{
+void ctlr_aclear(H3270 *hSession, int baddr, int count, int GNUC_UNUSED(clear_ea)) {
 	if (memcmp((char *) &hSession->ea_buf[baddr], (char *) hSession->zero_buf,
-		    count * sizeof(struct lib3270_ea))) {
+	           count * sizeof(struct lib3270_ea))) {
 		(void) memset((char *) &hSession->ea_buf[baddr], 0,
-				count * sizeof(struct lib3270_ea));
+		              count * sizeof(struct lib3270_ea));
 		REGION_CHANGED(hSession,baddr, baddr + count);
 	}
 	/* XXX: What about clear_ea? */
@@ -2605,8 +2434,7 @@ void ctlr_aclear(H3270 *hSession, int baddr, int count, int GNUC_UNUSED(clear_ea
  * This could be accomplished with ctlr_bcopy() and ctlr_aclear(), but this
  * operation is common enough to warrant a separate path.
  */
-void ctlr_scroll(H3270 *hSession)
-{
+void ctlr_scroll(H3270 *hSession) {
 	int qty = (hSession->view.rows - 1) * hSession->view.cols;
 
 	/* Make sure nothing is selected. (later this can be fixed) */
@@ -2628,12 +2456,10 @@ void ctlr_scroll(H3270 *hSession)
 /**
  * @brief Swap the regular and alternate screen buffers
  */
-void ctlr_altbuffer(H3270 *session, int alt)
-{
-    CHECK_SESSION_HANDLE(session);
+void ctlr_altbuffer(H3270 *session, int alt) {
+	CHECK_SESSION_HANDLE(session);
 
-	if (alt != session->is_altbuffer)
-	{
+	if (alt != session->is_altbuffer) {
 		struct lib3270_ea *etmp;
 
 		etmp = session->ea_buf;
@@ -2656,25 +2482,21 @@ void ctlr_altbuffer(H3270 *session, int alt)
 /**
  * @brief Set or clear the MDT on an attribute
  */
-void mdt_set(H3270 *hSession, int baddr)
-{
+void mdt_set(H3270 *hSession, int baddr) {
 	int faddr;
 
 	faddr = lib3270_field_addr(hSession,baddr);
-	if (faddr >= 0 && !(hSession->ea_buf[faddr].fa & FA_MODIFY))
-	{
+	if (faddr >= 0 && !(hSession->ea_buf[faddr].fa & FA_MODIFY)) {
 		hSession->ea_buf[faddr].fa |= FA_MODIFY;
 		if (hSession->modified_sel)
 			ALL_CHANGED(hSession);
 	}
 }
 
-void mdt_clear(H3270 *hSession, int baddr)
-{
+void mdt_clear(H3270 *hSession, int baddr) {
 	int faddr = lib3270_field_addr(hSession,baddr);
 
-	if (faddr >= 0 && (hSession->ea_buf[faddr].fa & FA_MODIFY))
-	{
+	if (faddr >= 0 && (hSession->ea_buf[faddr].fa & FA_MODIFY)) {
 		hSession->ea_buf[faddr].fa &= ~FA_MODIFY;
 		if (hSession->modified_sel)
 			ALL_CHANGED(hSession);
@@ -2696,8 +2518,7 @@ void mdt_clear(H3270 *hSession, int baddr)
  * @retval DBCS_SB		Buffer position is an SBCS character after an SI (treated as DBCS_RIGHT for wide cursor tests)
  *
  */
-enum dbcs_state ctlr_dbcs_state(int baddr)
-{
+enum dbcs_state ctlr_dbcs_state(int baddr) {
 	return dbcs? ea_buf[baddr].db: DBCS_NONE;
 }
 #endif /*]*/

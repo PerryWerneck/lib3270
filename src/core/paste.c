@@ -38,7 +38,7 @@
 #define XK_3270
 
 #if defined(X3270_APL)
-	#define XK_APL
+#define XK_APL
 #endif
 
 #include <fcntl.h>
@@ -83,13 +83,12 @@
 
 /*---[ Struct ]-------------------------------------------------------------------------------------------------*/
 
- typedef struct _paste_data
- {
- 	int qtd;
- 	int row;
+typedef struct _paste_data {
+	int qtd;
+	int row;
 	int orig_addr;
 	int orig_col;
- } PASTE_DATA;
+} PASTE_DATA;
 
 /*---[ Implement ]----------------------------------------------------------------------------------------------*/
 
@@ -98,29 +97,24 @@
  *
  * @return A Boolean indicating success.
  */
- static int remargin(H3270 *hSession, int lmargin)
- {
+static int remargin(H3270 *hSession, int lmargin) {
 	int ever = False;
 	int baddr, b0 = 0;
 	int faddr;
 	unsigned char fa;
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE))
-	{
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE)) {
 		baddr = hSession->cursor_addr;
-		while(BA_TO_COL(baddr) < ((unsigned int) lmargin))
-		{
+		while(BA_TO_COL(baddr) < ((unsigned int) lmargin)) {
 			baddr = ROWCOL_TO_BA(BA_TO_ROW(baddr), lmargin);
-			if (!ever)
-			{
+			if (!ever) {
 				b0 = baddr;
 				ever = True;
 			}
 
 			faddr = lib3270_field_addr(hSession,baddr);
 			fa = hSession->ea_buf[faddr].fa;
-			if (faddr == baddr || FA_IS_PROTECTED(fa))
-			{
+			if (faddr == baddr || FA_IS_PROTECTED(fa)) {
 				baddr = lib3270_get_next_unprotected(hSession,baddr);
 				if (baddr <= b0)
 					return 0;
@@ -131,46 +125,40 @@
 	}
 
 	return -1;
- }
+}
 
- static int paste_char(H3270 *hSession, PASTE_DATA *data, unsigned char c)
- {
+static int paste_char(H3270 *hSession, PASTE_DATA *data, unsigned char c) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SMART_PASTE))
-	{
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SMART_PASTE)) {
 		int faddr = lib3270_field_addr(hSession,hSession->cursor_addr);
 		if(FA_IS_PROTECTED(hSession->ea_buf[faddr].fa))
 			hSession->cursor_addr++;
 		else
 			key_ACharacter(hSession, c, KT_STD, IA_PASTE, NULL);
-	}
-	else
-	{
+	} else {
 		key_ACharacter(hSession, c, KT_STD, IA_PASTE, NULL);
 	}
 
 	data->qtd++;
 
- 	if(BA_TO_ROW(hSession->cursor_addr) != ((unsigned int) data->row))
- 	{
- 		trace("Row changed from %d to %d",data->row,BA_TO_ROW(hSession->cursor_addr));
+	if(BA_TO_ROW(hSession->cursor_addr) != ((unsigned int) data->row)) {
+		trace("Row changed from %d to %d",data->row,BA_TO_ROW(hSession->cursor_addr));
 		if(!remargin(hSession,data->orig_col))
 			return 0;
 		data->row = BA_TO_ROW(hSession->cursor_addr);
- 		return '\n';
- 	}
+		return '\n';
+	}
 
- 	return c;
+	return c;
 }
 
-static int set_string(H3270 *hSession, const unsigned char *str, int length)
-{
+static int set_string(H3270 *hSession, const unsigned char *str, int length) {
 	PASTE_DATA data;
 	unsigned char last = 1;
 	int ix;
 
 	memset(&data,0,sizeof(data));
- 	data.row		= BA_TO_ROW(hSession->cursor_addr);
+	data.row		= BA_TO_ROW(hSession->cursor_addr);
 	data.orig_addr	= hSession->cursor_addr;
 	data.orig_col	= BA_TO_COL(hSession->cursor_addr);
 
@@ -178,17 +166,14 @@ static int set_string(H3270 *hSession, const unsigned char *str, int length)
 		length = (int) strlen((const char *) str);
 
 //	while(*str && last && !hSession->kybdlock && hSession->cursor_addr >= data.orig_addr)
-	for(ix = 0; ix < length && *str && last && !hSession->kybdlock && hSession->cursor_addr >= data.orig_addr; ix++)
-	{
-		switch(*str)
-		{
+	for(ix = 0; ix < length && *str && last && !hSession->kybdlock && hSession->cursor_addr >= data.orig_addr; ix++) {
+		switch(*str) {
 		case '\t':
 			last = paste_char(hSession,&data, ' ');
 			break;
 
 		case '\n':
-			if(last != '\n')
-			{
+			if(last != '\n') {
 				int baddr;
 				int faddr;
 				unsigned char fa;
@@ -214,8 +199,7 @@ static int set_string(H3270 *hSession, const unsigned char *str, int length)
 
 		str++;
 
-		if(IN_3270 && lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE) && BA_TO_COL(hSession->cursor_addr) < ((unsigned int) data.orig_col))
-		{
+		if(IN_3270 && lib3270_get_toggle(hSession,LIB3270_TOGGLE_MARGINED_PASTE) && BA_TO_COL(hSession->cursor_addr) < ((unsigned int) data.orig_col)) {
 			if(!remargin(hSession,data.orig_col))
 				last = 0;
 		}
@@ -228,9 +212,8 @@ static int set_string(H3270 *hSession, const unsigned char *str, int length)
 }
 
 /// @brief Set string at defined position.
-LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str, int length)
-{
-    int rc = 0;
+LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsigned int col, const unsigned char *str, int length) {
+	int rc = 0;
 
 	if(!(str && *str))
 		return 0;
@@ -262,8 +245,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 	return rc;
 }
 
-LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str, int length)
-{
+LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, const unsigned char *str, int length) {
 	int rc = -1;
 
 	if(!(str && *str))
@@ -278,8 +260,7 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	if(hSession->kybdlock)
 		return - (errno = EPERM);
 
-	if(baddr >= 0)
-	{
+	if(baddr >= 0) {
 		rc = lib3270_set_cursor_address(hSession,baddr);
 		if(rc < 0)
 			return rc;
@@ -295,8 +276,7 @@ LIB3270_EXPORT int lib3270_set_string_at_address(H3270 *hSession, int baddr, con
 	return rc;
 }
 
-LIB3270_EXPORT int lib3270_set_field(H3270 *hSession, const char *text, int length)
-{
+LIB3270_EXPORT int lib3270_set_field(H3270 *hSession, const char *text, int length) {
 	int addr;
 	int numchars = 0;
 
@@ -343,13 +323,12 @@ LIB3270_EXPORT int lib3270_set_field(H3270 *hSession, const char *text, int leng
 			return addr;
 	}
 
-    return hSession->cursor_addr;
+	return hSession->cursor_addr;
 
 }
 
 
-LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str, int length)
-{
+LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str, int length) {
 	int rc;
 
 	if(!(str && *str))
@@ -371,40 +350,35 @@ LIB3270_EXPORT int lib3270_set_string(H3270 *hSession, const unsigned char *str,
 	return rc;
 }
 
-LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str)
-{
+LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str) {
 	if(check_online_session(hSession))
 		return -errno;
 
-	if(!str)
-	{
+	if(!str) {
 		lib3270_ring_bell(hSession);
 		return -(errno = EINVAL);
 	}
 
-	if(hSession->paste_buffer)
-	{
+	if(hSession->paste_buffer) {
 		lib3270_free(hSession->paste_buffer);
 		hSession->paste_buffer = NULL;
 	}
 
 	int sz = lib3270_set_string(hSession,str,-1);
-	if(sz < 0)
-	{
+	if(sz < 0) {
 		// Can´t paste
 		lib3270_popup_dialog(
-				hSession,
-				LIB3270_NOTIFY_WARNING,
-				_( "Action failed" ),
-				_( "Unable to paste text" ),
-				"%s", sz == -EPERM ? _( "Keyboard is locked" ) : _( "Unexpected error" )
+		    hSession,
+		    LIB3270_NOTIFY_WARNING,
+		    _( "Action failed" ),
+		    _( "Unable to paste text" ),
+		    "%s", sz == -EPERM ? _( "Keyboard is locked" ) : _( "Unexpected error" )
 		);
 
 		return sz;
 	}
 
-	if((int) strlen((char *) str) > sz)
-	{
+	if((int) strlen((char *) str) > sz) {
 		hSession->paste_buffer = strdup((char *) (str+sz));
 		lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_COPY);
 		return strlen(hSession->paste_buffer);
@@ -413,23 +387,20 @@ LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_can_paste_next(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_can_paste_next(const H3270 *hSession) {
 	if(!(lib3270_is_connected(hSession) && hSession->paste_buffer))
 		return 0;
 
 	return strlen(hSession->paste_buffer);
 }
 
-LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession) {
 	char	* ptr;
 	int		  rc;
 
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if(!(lib3270_is_connected(hSession) && hSession->paste_buffer))
-	{
+	if(!(lib3270_is_connected(hSession) && hSession->paste_buffer)) {
 		lib3270_ring_bell(hSession);
 		return 0;
 	}

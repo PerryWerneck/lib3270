@@ -27,14 +27,13 @@
 
 #ifndef LIB3270_ACTIONS_H_INCLUDED
 
-	#define LIB3270_ACTIONS_H_INCLUDED 1
+#define LIB3270_ACTIONS_H_INCLUDED 1
 
 #ifdef __cplusplus
-	extern "C" {
+extern "C" {
 #endif
 
- typedef enum _lib3270_action_type
- {
+typedef enum _lib3270_action_type {
 	LIB3270_ACTION_TYPE_GENERIC,				///< @brief Generic action.
 	LIB3270_ACTION_TYPE_NAVIGATION,				///< @brief Cursor and field navigation.
 	LIB3270_ACTION_TYPE_NETWORK,				///< @brief Connection action.
@@ -43,20 +42,19 @@
 	LIB3270_ACTION_TYPE_PRINTER,				///< @brief Printer actions.
 
 	LIB3270_ACTION_CUSTOM						///< @brief Custom action/Number of actions.
- } LIB3270_ACTION_TYPE;
+} LIB3270_ACTION_TYPE;
 
- typedef struct _lib3270_action
- {
- 	LIB3270_PROPERTY_HEAD
+typedef struct _lib3270_action {
+	LIB3270_PROPERTY_HEAD
 
 	LIB3270_ACTION_TYPE type;					///< @brief Action type.
 
-    int (*activate)(H3270 *hSession);			///< @brief lib3270 associated method.
-    int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?
+	int (*activate)(H3270 *hSession);			///< @brief lib3270 associated method.
+	int (*activatable)(const H3270 *hSession);	///< @brief Is the action activatable?
 
-    const char *keys;							///< @brief Default accelerators (or NULL if no default).
+	const char *keys;							///< @brief Default accelerators (or NULL if no default).
 
- } LIB3270_ACTION;
+} LIB3270_ACTION;
 
 /**
  * @brief Query if the action group can be activated.
@@ -67,7 +65,7 @@
  * @return The current state of the group.
  *
  */
- LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group);
+LIB3270_EXPORT int lib3270_action_group_get_activatable(const H3270 *hSession, const LIB3270_ACTION_GROUP group);
 
 /**
  * @brief Register an action group listener.
@@ -80,7 +78,7 @@
  * @return Listener ID (for removal) or NULL if error.
  *
  */
- LIB3270_EXPORT const void * lib3270_register_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, void (*func)(H3270 *, void *),void *data);
+LIB3270_EXPORT const void * lib3270_register_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, void (*func)(H3270 *, void *),void *data);
 
 /**
  * @brief Unregister an action group listener.
@@ -92,7 +90,7 @@
  * @return 0 if ok, error code if not.
  *
  */
- LIB3270_EXPORT int lib3270_unregister_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, const void *id);
+LIB3270_EXPORT int lib3270_unregister_action_group_listener(H3270 *hSession, LIB3270_ACTION_GROUP group, const void *id);
 
 /**
  *
@@ -107,7 +105,7 @@
  * @retval ENOTSUP	Action name is invalid.
  *
  */
- LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_action(H3270 *hSession, const char *name));
+LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_action(H3270 *hSession, const char *name));
 
 /**
  *
@@ -123,7 +121,7 @@
  * @retval ENOTSUP	Action name is invalid.
  *
  */
- LIB3270_EXPORT int lib3270_activate_by_name(H3270 *hSession, const char *name);
+LIB3270_EXPORT int lib3270_activate_by_name(H3270 *hSession, const char *name);
 
 /**
  * @brief activate an action.
@@ -136,7 +134,7 @@
  * @retval EPERM	Action is disabled.
  *
  */
- LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *hSession);
+LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *hSession);
 
 /**
  * @brief Check if the action is activatable
@@ -147,7 +145,7 @@
  * @return Non zero if action is activatable.
  *
  */
- LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H3270 *hSession);
+LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H3270 *hSession);
 
 /**
  *
@@ -158,7 +156,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_enter(H3270 *hSession);
+LIB3270_EXPORT int lib3270_enter(H3270 *hSession);
 
 /**
  *
@@ -170,7 +168,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_pfkey(H3270 *hSession, int keycode);
+LIB3270_EXPORT int lib3270_pfkey(H3270 *hSession, int keycode);
 
 /**
  *
@@ -182,7 +180,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_pakey(H3270 *hSession, int keycode);
+LIB3270_EXPORT int lib3270_pakey(H3270 *hSession, int keycode);
 
 /**
  *
@@ -193,7 +191,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession);
+LIB3270_EXPORT int lib3270_cursor_up(H3270 *hSession);
 
 /**
  *
@@ -204,7 +202,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_cursor_down(H3270 *hSession);
+LIB3270_EXPORT int lib3270_cursor_down(H3270 *hSession);
 
 /**
  *
@@ -215,7 +213,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_cursor_left(H3270 *hSession);
+LIB3270_EXPORT int lib3270_cursor_left(H3270 *hSession);
 
 /**
  *
@@ -226,7 +224,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_cursor_right(H3270 *hSession);
+LIB3270_EXPORT int lib3270_cursor_right(H3270 *hSession);
 
 /**
  *
@@ -237,7 +235,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_newline(H3270 *hSession);
+LIB3270_EXPORT int lib3270_newline(H3270 *hSession);
 
 /**
  *
@@ -248,7 +246,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_kybdreset(H3270 *hSession);
+LIB3270_EXPORT int lib3270_kybdreset(H3270 *hSession);
 
 /**
  *
@@ -259,7 +257,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_clear(H3270 *hSession);
+LIB3270_EXPORT int lib3270_clear(H3270 *hSession);
 
 /**
  *
@@ -270,7 +268,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_eraseinput(H3270 *hSession);
+LIB3270_EXPORT int lib3270_eraseinput(H3270 *hSession);
 
 /**
  *
@@ -281,7 +279,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_select_field(H3270 *hSession);
+LIB3270_EXPORT int lib3270_select_field(H3270 *hSession);
 
 /**
  *
@@ -292,7 +290,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_select_all(H3270 *hSession);
+LIB3270_EXPORT int lib3270_select_all(H3270 *hSession);
 
 /**
  *
@@ -303,7 +301,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_unselect(H3270 *hSession);
+LIB3270_EXPORT int lib3270_unselect(H3270 *hSession);
 
 /**
  *
@@ -314,7 +312,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_reselect(H3270 *hSession);
+LIB3270_EXPORT int lib3270_reselect(H3270 *hSession);
 
 /**
  *
@@ -325,7 +323,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession);
+LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession);
 
 /**
  *
@@ -336,7 +334,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession);
+LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession);
 
 /**
  *
@@ -347,7 +345,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_erase(H3270 *hSession);
+LIB3270_EXPORT int lib3270_erase(H3270 *hSession);
 
 /**
  *
@@ -358,7 +356,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_delete(H3270 *hSession);
+LIB3270_EXPORT int lib3270_delete(H3270 *hSession);
 
 /**
  *
@@ -369,7 +367,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_dup(H3270 *hSession);
+LIB3270_EXPORT int lib3270_dup(H3270 *hSession);
 
 /**
  *
@@ -380,7 +378,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_fieldmark(H3270 *hSession);
+LIB3270_EXPORT int lib3270_fieldmark(H3270 *hSession);
 
 /**
  *
@@ -391,7 +389,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_backspace(H3270 *hSession);
+LIB3270_EXPORT int lib3270_backspace(H3270 *hSession);
 
 /**
  *
@@ -402,7 +400,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_previousword(H3270 *hSession);
+LIB3270_EXPORT int lib3270_previousword(H3270 *hSession);
 
 /**
  *
@@ -413,7 +411,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_nextword(H3270 *hSession);
+LIB3270_EXPORT int lib3270_nextword(H3270 *hSession);
 
 /**
  *
@@ -424,7 +422,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_fieldend(H3270 *hSession);
+LIB3270_EXPORT int lib3270_fieldend(H3270 *hSession);
 
 /**
  *
@@ -435,7 +433,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession);
+LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession);
 
 /**
  *
@@ -446,7 +444,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession);
+LIB3270_EXPORT int lib3270_nextfield(H3270 *hSession);
 
 /**
  *
@@ -457,7 +455,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession);
+LIB3270_EXPORT int lib3270_previousfield(H3270 *hSession);
 
 /**
  *
@@ -468,7 +466,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_attn(H3270 *hSession);
+LIB3270_EXPORT int lib3270_attn(H3270 *hSession);
 
 /**
  *
@@ -479,7 +477,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_break(H3270 *hSession);
+LIB3270_EXPORT int lib3270_break(H3270 *hSession);
 
 /**
  *
@@ -490,7 +488,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession);
+LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession);
 
 /**
  *
@@ -501,7 +499,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession);
+LIB3270_EXPORT int lib3270_deleteword(H3270 *hSession);
 
 /**
  *
@@ -512,7 +510,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_deletefield(H3270 *hSession);
+LIB3270_EXPORT int lib3270_deletefield(H3270 *hSession);
 
 /**
  *
@@ -523,7 +521,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_sysreq(H3270 *hSession);
+LIB3270_EXPORT int lib3270_sysreq(H3270 *hSession);
 
 /**
  *
@@ -534,7 +532,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession);
+LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession);
 
 /**
  *
@@ -545,7 +543,7 @@
  * @return 0 if Ok, non zero if not (sets errno)
  *
  */
- LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession);
+LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession);
 
 /**
  * @brief Get lib3270 action by name.
@@ -553,9 +551,9 @@
  * @return Action descriptor or NULL if failed (sets errno).
  *
  */
- LIB3270_EXPORT const LIB3270_ACTION * lib3270_action_get_by_name(const char *name);
+LIB3270_EXPORT const LIB3270_ACTION * lib3270_action_get_by_name(const char *name);
 
- LIB3270_EXPORT const LIB3270_ACTION * LIB3270_DEPRECATED(lib3270_get_action(const char *name));
+LIB3270_EXPORT const LIB3270_ACTION * LIB3270_DEPRECATED(lib3270_get_action(const char *name));
 
 /**
  *
@@ -563,10 +561,10 @@
  *
  * @return Array with all the supported actions.
  */
- LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_actions();
+LIB3270_EXPORT const LIB3270_ACTION * lib3270_get_actions();
 
 #ifdef __cplusplus
-	}
+}
 #endif
 
 #endif // LIB3270_ACTIONS_H_INCLUDED

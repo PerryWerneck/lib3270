@@ -52,7 +52,7 @@ static Boolean is_gb18030 = False;
 
 /* Various types of 8-bit character sets we understand. */
 enum UTF_IX {
-    	/* Real translations from 8-bit encodings to UTF-8. */
+	/* Real translations from 8-bit encodings to UTF-8. */
 	U_ISO8859_1,
 	U_ISO8859_2,
 	U_ISO8859_7,
@@ -350,12 +350,12 @@ static char *utf8_tab[U_MAX][96] = {
  * character set.
  * Returns 0 if the lookup fails.
  */
- /*
+/*
 unsigned char utf8_lookup(char GNUC_UNUSED(*mbs), enum ulfail *fail, int GNUC_UNUSED(*consumed))
 {
-	if (fail != NULL)
-		*fail = ULFAIL_NOUTF8;
+if (fail != NULL)
+	*fail = ULFAIL_NOUTF8;
 
-	return 0;
+return 0;
 }
 */

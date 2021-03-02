@@ -42,8 +42,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 	static const char * hChars = "0123456789ABCDEF";
 	static const char * label  = "Name:";
 
@@ -59,15 +58,14 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 	trace("%s","Showing charset table");
 
 	(void) memset(
-				(char *) hSession->ea_buf,
-				0,
-				((size_t) hSession->view.rows) * ((size_t) hSession->view.cols) * sizeof(struct lib3270_ea)
-			);
+	    (char *) hSession->ea_buf,
+	    0,
+	    ((size_t) hSession->view.rows) * ((size_t) hSession->view.cols) * sizeof(struct lib3270_ea)
+	);
 
 	baddr = margin_left+hSession->max.cols;
 	s = (hSession->max.cols * 0x11);
-	for(f=4;f<=0x0f;f++)
-	{
+	for(f=4; f<=0x0f; f++) {
 		baddr += 2;
 		hSession->ea_buf[baddr+s].fg = hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_GRAY;
 		hSession->ea_buf[baddr+s].bg = hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
@@ -78,8 +76,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 
 	baddr = margin_left+(hSession->max.cols*2);
 	s = 0x1a;
-	for(f=0;f<=0x0f;f++)
-	{
+	for(f=0; f<=0x0f; f++) {
 		hSession->ea_buf[baddr+s].fg = hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_GRAY;
 		hSession->ea_buf[baddr+s].bg = hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr+s].cs = hSession->ea_buf[baddr].cs = 0;
@@ -90,11 +87,9 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 
 	chr = 0x40;
 
-	for(f=0;f<0x0c;f++)
-	{
+	for(f=0; f<0x0c; f++) {
 		baddr = (margin_left+(hSession->max.cols*2))+(f*2)+2;
-		for(r=0;r<=0x0f;r++)
-		{
+		for(r=0; r<=0x0f; r++) {
 			hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_YELLOW;
 			hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 			hSession->ea_buf[baddr].cs = 0;
@@ -105,8 +100,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 	}
 
 	baddr = margin_left+0x1d+(hSession->max.cols*2);
-	for(ptr=label;*ptr;ptr++)
-	{
+	for(ptr=label; *ptr; ptr++) {
 		hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_WHITE;
 		hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr].cs = 0;
@@ -116,8 +110,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession)
 	}
 	baddr++;
 
-	for(ptr=hSession->charset.host;*ptr;ptr++)
-	{
+	for(ptr=hSession->charset.host; *ptr; ptr++) {
 		hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_YELLOW;
 		hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr].cs = 0;

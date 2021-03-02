@@ -40,8 +40,7 @@
 #include <iconv.h>
 #include <string.h>
 
-struct _lib3270_iconv
-{
+struct _lib3270_iconv {
 	/// @brief Convert strings from host codepage to local codepage.
 	iconv_t local;
 
@@ -51,8 +50,7 @@ struct _lib3270_iconv
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
- LIB3270_ICONV * lib3270_iconv_new(const char *remote, const char *local)
- {
+LIB3270_ICONV * lib3270_iconv_new(const char *remote, const char *local) {
 	LIB3270_ICONV * converter = lib3270_malloc(sizeof(LIB3270_ICONV));
 	memset(converter,0,sizeof(LIB3270_ICONV));
 
@@ -70,10 +68,9 @@ struct _lib3270_iconv
 	}
 
 	return converter;
- }
+}
 
- void lib3270_iconv_free(LIB3270_ICONV *conv)
- {
+void lib3270_iconv_free(LIB3270_ICONV *conv) {
 	if(conv->local != (iconv_t) (-1))
 		iconv_close(conv->local);
 
@@ -83,15 +80,13 @@ struct _lib3270_iconv
 	conv->local = conv->host = (iconv_t) (-1);
 
 	lib3270_free(conv);
- }
+}
 
- static char *convert(iconv_t *converter, const char * str, int length)
- {
+static char *convert(iconv_t *converter, const char * str, int length) {
 	if(length < 0)
 		length = (int) strlen(str);
 
-	if(length && converter != (iconv_t)(-1))
-	{
+	if(length && converter != (iconv_t)(-1)) {
 
 		size_t				  in		= length;
 		size_t				  out		= (length << 1);
@@ -113,14 +108,12 @@ struct _lib3270_iconv
 	rc[length] = 0;
 
 	return rc;
- }
+}
 
- char * lib3270_iconv_from_host(LIB3270_ICONV *conv, const char *str, int len)
- {
+char * lib3270_iconv_from_host(LIB3270_ICONV *conv, const char *str, int len) {
 	return convert(conv->local,str,len);
- }
+}
 
- char * lib3270_iconv_to_host(LIB3270_ICONV *conv, const char *str, int len)
- {
+char * lib3270_iconv_to_host(LIB3270_ICONV *conv, const char *str, int len) {
 	return convert(conv->host,str,len);
- }
+}

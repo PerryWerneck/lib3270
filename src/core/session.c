@@ -28,7 +28,7 @@
  */
 
 #ifndef ANDROID
-	#include <stdlib.h>
+#include <stdlib.h>
 #endif // !ANDROID
 
 #include <internals.h>
@@ -48,7 +48,7 @@
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
- static H3270 *default_session = NULL;
+static H3270 *default_session = NULL;
 
 /*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -60,20 +60,16 @@
  * @param h handle of the session to close.
  *
  */
-void lib3270_session_free(H3270 *h)
-{
+void lib3270_session_free(H3270 *h) {
 	size_t f;
 
 	if(!h)
 		return;
 
-	if(lib3270_is_connected(h))
-	{
+	if(lib3270_is_connected(h)) {
 		// Connected, disconnect
 		lib3270_disconnect(h);
-	}
-	else if(lib3270_get_connection_state(h) == LIB3270_CONNECTING)
-	{
+	} else if(lib3270_get_connection_state(h) == LIB3270_CONNECTING) {
 		// Connecting, disconnect
 		debug("%s: Stopping while connecting",__FUNCTION__);
 		lib3270_disconnect(h);
@@ -81,42 +77,39 @@ void lib3270_session_free(H3270 *h)
 	}
 
 	// Do we have pending tasks?
-	if(h->tasks)
-	{
+	if(h->tasks) {
 		lib3270_write_log(h,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),"Destroying session with %u active task(s)",h->tasks);
 	}
 
 	shutdown_toggles(h);
 
 	// Release network module
-	if(h->network.module)
-	{
+	if(h->network.module) {
 		h->network.module->finalize(h);
 		h->network.module = NULL;
 	}
 
 	// Release state change callbacks
-	for(f=0;f<LIB3270_STATE_USER;f++)
+	for(f=0; f<LIB3270_STATE_USER; f++)
 		lib3270_linked_list_free(&h->listeners.state[f]);
 
 	// Release toggle change listeners.
-	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
+	for(f=0; f<LIB3270_TOGGLE_COUNT; f++)
 		lib3270_linked_list_free(&h->listeners.toggle[f]);
 
 	// Release action listeners.
-	for(f=0;f<LIB3270_ACTION_GROUP_CUSTOM;f++)
+	for(f=0; f<LIB3270_ACTION_GROUP_CUSTOM; f++)
 		lib3270_linked_list_free(&h->listeners.actions[f]);
 
 	// Release Lu names
-    if(h->lu.names)
-	{
+	if(h->lu.names) {
 		lib3270_free(h->lu.names);
 		h->lu.names = NULL;
 	}
 
 
 	// Release memory
-	#define release_pointer(x) lib3270_free(x); x = NULL;
+#define release_pointer(x) lib3270_free(x); x = NULL;
 
 	// release_pointer(h->charset.display);
 	release_pointer(h->paste_buffer);
@@ -124,8 +117,7 @@ void lib3270_session_free(H3270 *h)
 	release_pointer(h->ibuf);
 	h->ibuf_size = 0;
 
-	for(f=0;f<(sizeof(h->buffer)/sizeof(h->buffer[0]));f++)
-	{
+	for(f=0; f<(sizeof(h->buffer)/sizeof(h->buffer[0])); f++) {
 		release_pointer(h->buffer[f]);
 	}
 
@@ -160,102 +152,82 @@ void lib3270_session_free(H3270 *h)
 
 }
 
-static void update_char(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(addr), unsigned char GNUC_UNUSED(chr), unsigned short GNUC_UNUSED(attr), unsigned char GNUC_UNUSED(cursor))
-{
+static void update_char(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(addr), unsigned char GNUC_UNUSED(chr), unsigned short GNUC_UNUSED(attr), unsigned char GNUC_UNUSED(cursor)) {
 }
 
-static void nop_char(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(chr))
-{
+static void nop_char(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(chr)) {
 }
 
-static void nop(H3270 GNUC_UNUSED(*session))
-{
+static void nop(H3270 GNUC_UNUSED(*session)) {
 }
 
-static void update_model(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name), int GNUC_UNUSED(model), int GNUC_UNUSED(rows), int GNUC_UNUSED(cols))
-{
+static void update_model(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name), int GNUC_UNUSED(model), int GNUC_UNUSED(rows), int GNUC_UNUSED(cols)) {
 }
 
-static void changed(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(bstart), int GNUC_UNUSED(bend))
-{
+static void changed(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(bstart), int GNUC_UNUSED(bend)) {
 }
 
-static void update_cursor(H3270 GNUC_UNUSED(*session), unsigned short GNUC_UNUSED(row), unsigned short GNUC_UNUSED(col), unsigned char GNUC_UNUSED(c), unsigned short GNUC_UNUSED(attr))
-{
+static void update_cursor(H3270 GNUC_UNUSED(*session), unsigned short GNUC_UNUSED(row), unsigned short GNUC_UNUSED(col), unsigned char GNUC_UNUSED(c), unsigned short GNUC_UNUSED(attr)) {
 }
 
-static void update_oia(H3270 GNUC_UNUSED(*session), LIB3270_FLAG GNUC_UNUSED(id), unsigned char GNUC_UNUSED(on))
-{
+static void update_oia(H3270 GNUC_UNUSED(*session), LIB3270_FLAG GNUC_UNUSED(id), unsigned char GNUC_UNUSED(on)) {
 }
 
-static void update_selection(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(start), int GNUC_UNUSED(end))
-{
+static void update_selection(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(start), int GNUC_UNUSED(end)) {
 }
 
-static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(id))
-{
+static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(id)) {
 }
 
-static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode))
-{
+static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode)) {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't print" ), _( "Unable to print" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 
-static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char GNUC_UNUSED(*filename))
-{
+static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char GNUC_UNUSED(*filename)) {
 	lib3270_write_log(session, "save", "%s", "Saving is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't save" ), _( "Unable to save" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 
-static int load(H3270 *session, const char GNUC_UNUSED(*filename))
-{
+static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 	lib3270_write_log(session, "load", "%s", "Loading from file is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't load" ), _( "Unable to load from file" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 
-static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args)
-{
+static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
 	vfprintf(stdout,fmt,args);
 	fflush(stdout);
 }
 
-static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state))
-{
+static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
 }
 
-static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on))
-{
+static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on)) {
 }
 
-static void screen_disp(H3270 *session)
-{
+static void screen_disp(H3270 *session) {
 	CHECK_SESSION_HANDLE(session);
 	screen_update(session,0,session->view.rows*session->view.cols);
 }
 
-static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width))
-{
+static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width)) {
 	return;
 }
 
-static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name))
-{
+static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name)) {
 }
 
-static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*url))
-{
+static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*url)) {
 }
 
 static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*name)) {
 	return ENOENT;
 }
 
-void lib3270_reset_callbacks(H3270 *hSession)
-{
+void lib3270_reset_callbacks(H3270 *hSession) {
 	// Default calls
 	memset(&hSession->cbk,0,sizeof(hSession->cbk));
 
@@ -289,8 +261,7 @@ void lib3270_reset_callbacks(H3270 *hSession)
 
 }
 
-static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset)
-{
+static void lib3270_session_init(H3270 *hSession, const char *model, const char *charset) {
 	int f;
 
 	memset(hSession,0,sizeof(H3270));
@@ -340,7 +311,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 #endif // UNLOCK_MS
 
 	// CSD
-	for(f=0;f<4;f++)
+	for(f=0; f<4; f++)
 		hSession->csd[f] = hSession->saved_csd[f] = LIB3270_ANSI_CSD_US;
 
 #ifdef _WIN32
@@ -349,23 +320,21 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 		lib3270_auto_cleanup(HKEY) hKey = 0;
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
-						HKEY_LOCAL_MACHINE,
-						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\protocol",
-						0,
-						NULL,
-						REG_OPTION_NON_VOLATILE,
-						KEY_QUERY_VALUE|KEY_READ,
-						NULL,
-						&hKey,
-						&disp);
+		                 HKEY_LOCAL_MACHINE,
+		                 "Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\protocol",
+		                 0,
+		                 NULL,
+		                 REG_OPTION_NON_VOLATILE,
+		                 KEY_QUERY_VALUE|KEY_READ,
+		                 NULL,
+		                 &hKey,
+		                 &disp);
 
-		if(rc == ERROR_SUCCESS)
-		{
+		if(rc == ERROR_SUCCESS) {
 			size_t property;
 			const LIB3270_UINT_PROPERTY * uiProps = lib3270_get_unsigned_properties_list();
 
-			for(property = 0; uiProps[property].name;property++)
-			{
+			for(property = 0; uiProps[property].name; property++) {
 				if(!(uiProps[property].set && uiProps[property].group == LIB3270_ACTION_GROUP_OFFLINE))
 					continue;
 
@@ -373,13 +342,10 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 				DWORD cbData = sizeof(DWORD);
 				DWORD dwRet = RegQueryValueEx(hKey, uiProps[property].name, NULL, NULL, (LPBYTE) &val, &cbData);
 
-				if(dwRet == ERROR_SUCCESS)
-				{
+				if(dwRet == ERROR_SUCCESS) {
 					debug("%s=%u",uiProps[property].name,(unsigned int) val);
 					uiProps[property].set(hSession,(unsigned int) val);
-				}
-				else
-				{
+				} else {
 					uiProps[property].set(hSession,uiProps[property].default_value);
 				}
 
@@ -396,16 +362,14 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 }
 
-LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata)
-{
+LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
 	CHECK_SESSION_HANDLE(hSession);
 
 	hSession->trace.handler		= handler ? handler : def_trace;
 	hSession->trace.userdata	= userdata;
 }
 
-LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata)
-{
+LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
 	CHECK_SESSION_HANDLE(hSession);
 
 	*handler	= hSession->trace.handler;
@@ -413,8 +377,7 @@ LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HAN
 
 }
 
-H3270 * lib3270_session_new(const char *model)
-{
+H3270 * lib3270_session_new(const char *model) {
 	H3270 * hSession;
 
 	trace("%s - configured=%s",__FUNCTION__,default_session ? "Yes" : "No");
@@ -494,51 +457,43 @@ LIB3270_INTERNAL int check_offline_session(const H3270 *hSession) {
 	return 0;
 }
 
-LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void)
-{
+LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void) {
 	if(default_session)
 		return default_session;
 
 	return lib3270_session_new("");
 }
 
-LIB3270_EXPORT void lib3270_set_user_data(H3270 *h, void *ptr)
-{
+LIB3270_EXPORT void lib3270_set_user_data(H3270 *h, void *ptr) {
 	CHECK_SESSION_HANDLE(h);
 	h->user_data = ptr;
 }
 
-LIB3270_EXPORT void * lib3270_get_user_data(H3270 *h)
-{
+LIB3270_EXPORT void * lib3270_get_user_data(H3270 *h) {
 	CHECK_SESSION_HANDLE(h);
 	return h->user_data;
 }
 
-LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id)
-{
+LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id) {
 	CHECK_SESSION_HANDLE(hSession);
 	hSession->id = id;
 }
 
-LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession)
-{
+LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 	CHECK_SESSION_HANDLE(hSession);
 	return hSession->id;
 }
 
-struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz)
-{
-	#define REQUIRED_REVISION "20201117"
+struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
+#define REQUIRED_REVISION "20201117"
 
-	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0)
-	{
+	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;
 		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid revision %s when setting callback table",revision);
 		return NULL;
 	}
 
-	if(sz != sizeof(struct lib3270_session_callbacks))
-	{
+	if(sz != sizeof(struct lib3270_session_callbacks)) {
 
 		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid callback table (sz=%u expected=%u)",sz,(unsigned int) sizeof(struct lib3270_session_callbacks));
 		errno = EINVAL;

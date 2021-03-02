@@ -33,37 +33,37 @@
  */
 
 #ifdef _WIN32
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 #endif // _WIN32
 
 #include <config.h>
 #include <locale.h>
 
 #ifdef HAVE_LIBCURL
-	#include <curl/curl.h>
+#include <curl/curl.h>
 #endif // HAVE_LIBCURL
 
 #include <lib3270.h>
 
 #ifdef _WIN32
-	#include <winsock2.h>
-	#include <windows.h>
-	#include "winversc.h"
+#include <winsock2.h>
+#include <windows.h>
+#include "winversc.h"
 #endif // _WIN32
 
 #include <lib3270/log.h>
 #include <internals.h>
 
 #ifdef HAVE_SYSLOG
-	#include <syslog.h>
+#include <syslog.h>
 #endif // HAVE_SYSLOG
 
 #if defined WIN32
-	BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
+BOOL WINAPI DllMain(HANDLE hinst, DWORD dwcallpurpose, LPVOID lpvResvd);
 #else
-	int lib3270_loaded(void) __attribute__((constructor));
-	int lib3270_unloaded(void) __attribute__((destructor));
+int lib3270_loaded(void) __attribute__((constructor));
+int lib3270_unloaded(void) __attribute__((destructor));
 #endif
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
@@ -77,13 +77,11 @@ HANDLE hModule = 0;
 /**
  * @brief Parse an stty control-character specification; a cheap, non-complaining implementation.
  */
-static char parse_ctlchar(char *s)
-{
+static char parse_ctlchar(char *s) {
 	if (!s || !*s)
 		return 0;
 
-	if ((int) strlen(s) > 1)
-	{
+	if ((int) strlen(s) > 1) {
 		if (*s != '^')
 			return 0;
 		else if (*(s+1) == '?')
@@ -94,8 +92,7 @@ static char parse_ctlchar(char *s)
 		return *s;
 }
 
-int lib3270_loaded(void)
-{
+int lib3270_loaded(void) {
 	trace("%s",__FUNCTION__);
 
 	ansictl.vintr   = parse_ctlchar("^C");
@@ -133,11 +130,10 @@ int lib3270_loaded(void)
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 #endif // HAVE_LIBCURL
 
-    return 0;
+	return 0;
 }
 
-int lib3270_unloaded(void)
-{
+int lib3270_unloaded(void) {
 	trace("%s",__FUNCTION__);
 
 #ifdef HAVE_LIBCURL
@@ -146,26 +142,23 @@ int lib3270_unloaded(void)
 #endif // HAVE_LIBCURL
 
 #ifdef HAVE_SYSLOG
-	if(use_syslog)
-	{
+	if(use_syslog) {
 		closelog();
 	}
 #endif // HAVE_SYSLOG
 
-    return 0;
+	return 0;
 }
 
 
 #if defined WIN32
 
-BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lpvResvd))
-{
+BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lpvResvd)) {
 	debug("%s starts",__FUNCTION__);
 
-    switch(dwcallpurpose)
-    {
-    case DLL_PROCESS_ATTACH:
-    	hModule = hInstance;
+	switch(dwcallpurpose) {
+	case DLL_PROCESS_ATTACH:
+		hModule = hInstance;
 		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 		get_version_info();
 		lib3270_loaded();
@@ -173,18 +166,17 @@ BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lp
 
 	case DLL_PROCESS_DETACH:
 		lib3270_unloaded();
-		if(hEventLog)
-		{
+		if(hEventLog) {
 			DeregisterEventSource(hEventLog);
 		}
 		hEventLog = NULL;
 		break;
 
-    }
+	}
 
-    debug("%s ends",__FUNCTION__);
+	debug("%s ends",__FUNCTION__);
 
-    return TRUE;
+	return TRUE;
 }
 
 #endif

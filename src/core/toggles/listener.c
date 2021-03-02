@@ -44,8 +44,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *),void *data)
-{
+LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *),void *data) {
 	struct lib3270_toggle_callback *st = (struct lib3270_toggle_callback *) lib3270_linked_list_append_node(&hSession->listeners.toggle[tx], sizeof(struct lib3270_toggle_callback), data);
 
 	st->func = func;
@@ -54,8 +53,7 @@ LIB3270_EXPORT const void * lib3270_register_toggle_listener(H3270 *hSession, LI
 
 }
 
-LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, const void *id)
-{
+LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_TOGGLE_ID tx, const void *id) {
 	return lib3270_linked_list_delete_node(&hSession->listeners.toggle[tx], id);
 }
 
@@ -70,8 +68,7 @@ LIB3270_EXPORT int lib3270_unregister_toggle_listener(H3270 *hSession, LIB3270_T
  * @return State change identifier.
  *
  */
-LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data)
-{
+LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_STATE tx, void (*func)(H3270 *, int, void *),void *data) {
 	struct lib3270_state_callback * st = (struct lib3270_state_callback *) lib3270_linked_list_append_node(&hSession->listeners.state[tx], sizeof(struct lib3270_state_callback), data);
 
 	st->func = func;
@@ -79,8 +76,7 @@ LIB3270_EXPORT const void * lib3270_register_schange(H3270 *hSession, LIB3270_ST
 	return (void *) st;
 }
 
-LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, const void * id)
-{
+LIB3270_EXPORT int lib3270_unregister_schange(H3270 *hSession, LIB3270_STATE tx, const void * id) {
 	return lib3270_linked_list_delete_node(&hSession->listeners.state[tx], id);
 }
 

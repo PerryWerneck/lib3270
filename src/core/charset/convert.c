@@ -42,30 +42,26 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT const char * lib3270_asc2ebc(H3270 *hSession, unsigned char *buffer, int sz)
-{
+LIB3270_EXPORT const char * lib3270_asc2ebc(H3270 *hSession, unsigned char *buffer, int sz) {
 	int f;
 	if(sz < 0)
 		sz = strlen((const char *) buffer);
 
-	if(sz > 0)
-	{
-		for(f=0;f<sz;f++)
+	if(sz > 0) {
+		for(f=0; f<sz; f++)
 			buffer[f] = hSession->charset.asc2ebc[buffer[f]];
 	}
 
 	return (const char *) buffer;
 }
 
-LIB3270_EXPORT const char * lib3270_ebc2asc(H3270 *hSession, unsigned char *buffer, int sz)
-{
+LIB3270_EXPORT const char * lib3270_ebc2asc(H3270 *hSession, unsigned char *buffer, int sz) {
 	int f;
 	if(sz < 0)
 		sz = strlen((const char *) buffer);
 
-	if(sz > 0)
-	{
-		for(f=0;f<sz;f++)
+	if(sz > 0) {
+		for(f=0; f<sz; f++)
 			buffer[f] = hSession->charset.ebc2asc[buffer[f]];
 	}
 

@@ -27,30 +27,26 @@
  *
  */
 
- #include <config.h>
- #include <internals.h>
- #include <string.h>
- #include <lib3270.h>
- #include <lib3270/properties.h>
- #include <lib3270/keyboard.h>
+#include <config.h>
+#include <internals.h>
+#include <string.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
+#include <lib3270/keyboard.h>
 
- static int lib3270_get_connection_state_as_int(const H3270 *hSession)
- {
+static int lib3270_get_connection_state_as_int(const H3270 *hSession) {
 	return (int) lib3270_get_connection_state(hSession);
- }
+}
 
- static int lib3270_get_program_message_as_int(const H3270 *hSession)
- {
+static int lib3270_get_program_message_as_int(const H3270 *hSession) {
 	return (int) lib3270_get_program_message(hSession);
- }
+}
 
- static int lib3270_get_ssl_state_as_int(const H3270 * hSession)
- {
- 	return (int) lib3270_get_ssl_state(hSession);
- }
+static int lib3270_get_ssl_state_as_int(const H3270 * hSession) {
+	return (int) lib3270_get_ssl_state(hSession);
+}
 
- const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void)
- {
+const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void) {
 
 	static const LIB3270_INT_PROPERTY properties[] = {
 
@@ -89,34 +85,27 @@
 			.get = NULL,
 			.set = NULL
 		}
-	 };
+	};
 
-	 return properties;
- }
+	return properties;
+}
 
 
-int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
-{
+int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds) {
 	size_t ix;
 	const LIB3270_INT_PROPERTY * properties;
 
-	if(seconds)
-	{
+	if(seconds) {
 		lib3270_wait_for_ready(hSession, seconds);
 	}
 
 	// Check for boolean properties
 	properties = lib3270_get_boolean_properties_list();
-	for(ix = 0; properties[ix].name; ix++)
-	{
-		if(!strcasecmp(name,properties[ix].name))
-		{
-			if(properties[ix].get)
-			{
+	for(ix = 0; properties[ix].name; ix++) {
+		if(!strcasecmp(name,properties[ix].name)) {
+			if(properties[ix].get) {
 				return properties[ix].get(hSession);
-			}
-			else
-			{
+			} else {
 				errno = EPERM;
 				return -1;
 			}
@@ -127,16 +116,11 @@ int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
 
 	// Check for int properties
 	properties = lib3270_get_int_properties_list();
-	for(ix = 0; properties[ix].name; ix++)
-	{
-		if(!strcasecmp(name,properties[ix].name))
-		{
-			if(properties[ix].get)
-			{
+	for(ix = 0; properties[ix].name; ix++) {
+		if(!strcasecmp(name,properties[ix].name)) {
+			if(properties[ix].get) {
 				return properties[ix].get(hSession);
-			}
-			else
-			{
+			} else {
 				errno = EPERM;
 				return -1;
 			}
@@ -149,8 +133,7 @@ int lib3270_get_int_property(H3270 *hSession, const char *name, int seconds)
 	return -1;
 }
 
-int lib3270_set_int_property(H3270 *hSession, const char *name, int value, int seconds)
-{
+int lib3270_set_int_property(H3270 *hSession, const char *name, int value, int seconds) {
 	size_t ix;
 	const LIB3270_INT_PROPERTY * properties;
 
@@ -159,10 +142,8 @@ int lib3270_set_int_property(H3270 *hSession, const char *name, int value, int s
 
 	// Check for INT Properties
 	properties = lib3270_get_int_properties_list();
-	for(ix = 0; properties[ix].name; ix++)
-	{
-		if(!strcasecmp(name,properties[ix].name))
-		{
+	for(ix = 0; properties[ix].name; ix++) {
+		if(!strcasecmp(name,properties[ix].name)) {
 			if(properties[ix].set)
 				return properties[ix].set(hSession, value);
 			else
@@ -173,10 +154,8 @@ int lib3270_set_int_property(H3270 *hSession, const char *name, int value, int s
 
 	// Check for boolean properties
 	properties = lib3270_get_boolean_properties_list();
-	for(ix = 0; properties[ix].name; ix++)
-	{
-		if(!strcasecmp(name,properties[ix].name))
-		{
+	for(ix = 0; properties[ix].name; ix++) {
+		if(!strcasecmp(name,properties[ix].name)) {
 			if(properties[ix].set)
 				return properties[ix].set(hSession, value);
 			else

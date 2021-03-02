@@ -31,8 +31,8 @@
  */
 
 #ifdef WIN32
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 #endif // WIN32
 
 #include <internals.h>
@@ -45,31 +45,31 @@
 
 /*---[ Constants ]------------------------------------------------------------------------------------------*/
 
- static void (*loghandler)(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr) = default_log_writer;
+static void (*loghandler)(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr) = default_log_writer;
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
 
- LIB3270_EXPORT void lib3270_set_log_handler(void (*handler)(H3270 *, const char *, int, const char *, va_list)) {
+LIB3270_EXPORT void lib3270_set_log_handler(void (*handler)(H3270 *, const char *, int, const char *, va_list)) {
 	loghandler = handler ? handler : default_log_writer;
- }
+}
 
- LIB3270_EXPORT int lib3270_write_log(H3270 *session, const char *module, const char *fmt, ...) {
+LIB3270_EXPORT int lib3270_write_log(H3270 *session, const char *module, const char *fmt, ...) {
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 	loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
 	va_end(arg_ptr);
-    return 0;
- }
+	return 0;
+}
 
- LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) {
+LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) {
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 	loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
 	va_end(arg_ptr);
-    return rc;
- }
+	return rc;
+}
 
- LIB3270_EXPORT void lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg) {
+LIB3270_EXPORT void lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg) {
 	loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);
- }
+}
 

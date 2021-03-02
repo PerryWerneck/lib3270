@@ -40,20 +40,20 @@
 #include "private.h"
 
 #ifdef _WIN32
-	#include <lib3270/win32.h>
+#include <lib3270/win32.h>
 #endif // _WIN32
 
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
 
 #ifndef SSL_ST_OK
-	#define SSL_ST_OK 3
+#define SSL_ST_OK 3
 #endif // !SSL_ST_OK
 
 #if OPENSSL_VERSION_NUMBER >= 0x00907000L
-	#define INFO_CONST const
+#define INFO_CONST const
 #else
-	#define INFO_CONST
+#define INFO_CONST
 #endif
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -62,15 +62,13 @@
 static int ssl_ex_index = 0;
 
 /// @brief Callback for tracing protocol negotiation.
-static void info_callback(INFO_CONST SSL *s, int where, int ret)
-{
+static void info_callback(INFO_CONST SSL *s, int where, int ret) {
 	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_ex_index);
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
 	debug("************************ %s where=%d",__FUNCTION__,where);
 
-	switch(where)
-	{
+	switch(where) {
 	case SSL_CB_CONNECT_LOOP:
 		trace_ssl(hSession,"SSL_connect: %s %s\n",SSL_state_string(s), SSL_state_string_long(s));
 		break;
@@ -79,55 +77,48 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 
 		trace_ssl(hSession,"%s: SSL_CB_CONNECT_EXIT\n",__FUNCTION__);
 
-		if (ret == 0)
-		{
+		if (ret == 0) {
 			context->state.message = SSL_state_string_long(s);
 			trace_ssl(hSession,"SSL_connect: failed in %s\n",context->state.message);
-		}
-		else if (ret < 0)
-		{
+		} else if (ret < 0) {
 			unsigned long e = ERR_get_error();
 			context->state.message = NULL;
 
 			char err_buf[1024];
 
-			if(e != 0)
-			{
+			if(e != 0) {
 				context->state.error = e;
 				(void) ERR_error_string_n(e, err_buf, 1023);
 			}
 #if defined(_WIN32)
-			else if (GetLastError() != 0)
-			{
+			else if (GetLastError() != 0) {
 				strncpy(err_buf,lib3270_win32_strerror(GetLastError()),1023);
 			}
 #else
-			else if (errno != 0)
-			{
+			else if (errno != 0) {
 				strncpy(err_buf, strerror(errno),1023);
 			}
 #endif
-			else
-			{
+			else {
 				err_buf[0] = '\0';
 			}
 
 			debug("SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
-							ret,
-							err_buf,
-							SSL_state_string_long(s),
-							SSL_alert_type_string_long(ret)
-						);
+			      ret,
+			      err_buf,
+			      SSL_state_string_long(s),
+			      SSL_alert_type_string_long(ret)
+			     );
 
 			hSession->ssl.error = e;
 			debug("hSession->ssl.error=%d",hSession->ssl.error);
 
 			trace_ssl(hSession,"SSL Connect error %d\nMessage: %s\nState: %s\nAlert: %s\n",
-							ret,
-							err_buf,
-							SSL_state_string_long(s),
-							SSL_alert_type_string_long(ret)
-						);
+			          ret,
+			          err_buf,
+			          SSL_state_string_long(s),
+			          SSL_alert_type_string_long(ret)
+			         );
 
 		}
 		break;
@@ -137,19 +128,16 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret)
 		trace_ssl(hSession,"SSL Current state is \"%s\"\n",context->state.message);
 	}
 
-	if(where & SSL_CB_EXIT)
-	{
+	if(where & SSL_CB_EXIT) {
 		trace_ssl(hSession,"SSL_CB_EXIT ret=%d\n",ret);
 	}
 
-	if(where & SSL_CB_ALERT)
-	{
+	if(where & SSL_CB_ALERT) {
 		context->state.alert = SSL_alert_type_string_long(ret);
 		trace_ssl(hSession,"SSL ALERT: %s\n",context->state.alert);
 	}
 
-	if(where & SSL_CB_HANDSHAKE_DONE)
-	{
+	if(where & SSL_CB_HANDSHAKE_DONE) {
 		trace_ssl(hSession,"%s: SSL_CB_HANDSHAKE_DONE state=%04x\n",__FUNCTION__,SSL_get_state(s));
 		if(SSL_get_state(s) == SSL_ST_OK)
 			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
@@ -171,8 +159,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	SSL_library_init();
 
 	context = SSL_CTX_new(SSLv23_method());
-	if(context == NULL)
-	{
+	if(context == NULL) {
 		static const LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.icon = "dialog-error",

@@ -35,50 +35,40 @@
 #include <lib3270/log.h>
 
 #ifdef HAVE_SYSLOG
-	#include <syslog.h>
+#include <syslog.h>
 #endif // HAVE_SYSLOG
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
 
- int use_syslog = 0;
+int use_syslog = 0;
 
- void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int GNUC_UNUSED(rc), const char *fmt, va_list arg_ptr)
- {
+void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int GNUC_UNUSED(rc), const char *fmt, va_list arg_ptr) {
 #ifdef HAVE_SYSLOG
-	if(use_syslog)
-	{
+	if(use_syslog) {
 		vsyslog(LOG_INFO, fmt, arg_ptr);
-	}
-	else
-	{
+	} else {
 		printf("%s:\t",module);
 		vprintf(fmt,arg_ptr);
 		printf("\n");
 		fflush(stdout);
 	}
 #else
- 	printf("%s:\t",module);
+	printf("%s:\t",module);
 	vprintf(fmt,arg_ptr);
 	printf("\n");
 	fflush(stdout);
 #endif
- }
+}
 
- LIB3270_EXPORT int lib3270_set_syslog(int flag)
- {
+LIB3270_EXPORT int lib3270_set_syslog(int flag) {
 #ifdef HAVE_SYSLOG
-	if(flag)
-	{
-		if(!use_syslog)
-		{
+	if(flag) {
+		if(!use_syslog) {
 			openlog(LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), LOG_CONS, LOG_USER);
 			use_syslog = 1;
 		}
-	}
-	else
-	{
-		if(use_syslog)
-		{
+	} else {
+		if(use_syslog) {
 			closelog();
 			use_syslog = 0;
 		}
@@ -87,6 +77,6 @@
 	return 0;
 
 #else
- 	return errno  = ENOENT;
+	return errno  = ENOENT;
 #endif // HAVE_SYSLOG
- }
+}

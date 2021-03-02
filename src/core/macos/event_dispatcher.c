@@ -27,10 +27,10 @@
  *
  */
 
- /**
-  * @brief Implements the default event dispatcher for linux.
-  *
-  */
+/**
+ * @brief Implements the default event dispatcher for linux.
+ *
+ */
 
 #include <internals.h>
 #include <sys/time.h>
@@ -50,8 +50,7 @@
  * @param block		If non zero, the method blocks waiting for event.
  *
  */
-int lib3270_default_event_dispatcher(H3270 *hSession, int block)
-{
+int lib3270_default_event_dispatcher(H3270 *hSession, int block) {
 	int ns;
 	struct timeval now, twait, *tp;
 	int events;
@@ -75,37 +74,30 @@ retry:
 	FD_ZERO(&wfds);
 	FD_ZERO(&xfds);
 
-	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next)
-	{
-		if(!ip->enabled)
-		{
+	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next) {
+		if(!ip->enabled) {
 			debug("Socket %d is disabled",ip->fd);
 			continue;
 		}
 
-		if(ip->flag & LIB3270_IO_FLAG_READ)
-		{
+		if(ip->flag & LIB3270_IO_FLAG_READ) {
 			FD_SET(ip->fd, &rfds);
 			events++;
 		}
 
-		if(ip->flag & LIB3270_IO_FLAG_WRITE)
-		{
+		if(ip->flag & LIB3270_IO_FLAG_WRITE) {
 			FD_SET(ip->fd, &wfds);
 			events++;
 		}
 
-		if(ip->flag & LIB3270_IO_FLAG_EXCEPTION)
-		{
+		if(ip->flag & LIB3270_IO_FLAG_EXCEPTION) {
 			FD_SET(ip->fd, &xfds);
 			events++;
 		}
 	}
 
-	if (block)
-	{
-		if (hSession->timeouts.first)
-		{
+	if (block) {
+		if (hSession->timeouts.first) {
 			(void) gettimeofday(&now, (void *)NULL);
 			twait.tv_sec = ((timeout_t *) hSession->timeouts.first)->tv.tv_sec - now.tv_sec;
 			twait.tv_usec = ((timeout_t *) hSession->timeouts.first)->tv.tv_usec - now.tv_usec;
@@ -116,16 +108,12 @@ retry:
 			if (twait.tv_sec < 0L)
 				twait.tv_sec = twait.tv_usec = 0L;
 			tp = &twait;
-		}
-		else
-		{
+		} else {
 			twait.tv_sec = 1;
 			twait.tv_usec = 0L;
 			tp = &twait;
 		}
-	}
-	else
-	{
+	} else {
 		twait.tv_sec  = 0;
 		twait.tv_usec = 10L;
 		tp = &twait;
@@ -136,37 +124,30 @@ retry:
 
 	ns = select(FD_SETSIZE, &rfds, &wfds, &xfds, tp);
 
-	if (ns < 0 && errno != EINTR)
-	{
+	if (ns < 0 && errno != EINTR) {
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Network error" ),
-								_( "Select() failed when processing for events." ),
-								"%s",
-								strerror(errno));
-	}
-	else
-	{
-		for (ip = (input_t *) hSession->input.list.first; ip != (input_t *) NULL; ip = (input_t *) ip->next)
-		{
-			if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds))
-			{
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Network error" ),
+		                        _( "Select() failed when processing for events." ),
+		                        "%s",
+		                        strerror(errno));
+	} else {
+		for (ip = (input_t *) hSession->input.list.first; ip != (input_t *) NULL; ip = (input_t *) ip->next) {
+			if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds)) {
 				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
 				processed_any = True;
 				if (hSession->input.changed)
 					goto retry;
 			}
 
-			if((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds))
-			{
+			if((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds)) {
 				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
 				processed_any = True;
 				if (hSession->input.changed)
 					goto retry;
 			}
 
-			if((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds))
-			{
+			if((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds)) {
 				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
 				processed_any = True;
 				if (hSession->input.changed)
@@ -176,26 +157,21 @@ retry:
 	}
 
 	// See what's expired.
-	if (hSession->timeouts.first)
-	{
+	if (hSession->timeouts.first) {
 		struct timeout *t;
 		(void) gettimeofday(&now, (void *)NULL);
 
-		while(hSession->timeouts.first)
-		{
-            t = (struct timeout *) hSession->timeouts.first;
+		while(hSession->timeouts.first) {
+			t = (struct timeout *) hSession->timeouts.first;
 
-			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec))
-			{
+			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec)) {
 				t->in_play = True;
 				(*t->proc)(hSession);
 				processed_any = True;
 
 				lib3270_linked_list_delete_node(&hSession->timeouts,t);
 
-			}
-			else
-			{
+			} else {
 				break;
 			}
 

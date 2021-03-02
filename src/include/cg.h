@@ -216,7 +216,7 @@
 #define CG_semicolon	0xbe
 #define CG_asterisk	0xbf
 
-    /* codes 0xc0 through 0xcf are for field attributes */
+/* codes 0xc0 through 0xcf are for field attributes */
 
 #define CG_copyright	0xd0
 #define CG_registered	0xd1
@@ -235,7 +235,7 @@
 #define CG_boxquestion	0xde	/* status boxed question mark */
 #define CG_boxsolid	0xdf	/* status solid block */
 
-    /* codes 0xe0 through 0xef are for field attributes */
+/* codes 0xe0 through 0xef are for field attributes */
 
 #define CG_badcommhi	0xf0	/* status bad communication indicator */
 #define CG_commhi	0xf1	/* status communication indicator */

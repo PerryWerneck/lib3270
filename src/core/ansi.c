@@ -37,7 +37,7 @@
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
 #ifdef _WIN32
-	#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
 #endif // _WIN32
 
 #include <internals.h>
@@ -190,247 +190,247 @@ static enum lib3270_ansi_state ansi_multibyte(H3270 *, int, int);
 typedef enum lib3270_ansi_state (*afn_t)(H3270 *, int, int);
 
 static const afn_t ansi_fn[] = {
-/* 0 */		&ansi_data_mode,
-/* 1 */		&dec_save_cursor,
-/* 2 */		&dec_restore_cursor,
-/* 3 */		&ansi_newline,
-/* 4 */		&ansi_cursor_up,
-/* 5 */		&ansi_esc2,
-/* 6 */		&ansi_reset,
-/* 7 */		&ansi_insert_chars,
-/* 8 */		&ansi_cursor_down,
-/* 9 */		&ansi_cursor_right,
-/* 10 */	&ansi_cursor_left,
-/* 11 */	&ansi_cursor_motion,
-/* 12 */	&ansi_erase_in_display,
-/* 13 */	&ansi_erase_in_line,
-/* 14 */	&ansi_insert_lines,
-/* 15 */	&ansi_delete_lines,
-/* 16 */	&ansi_delete_chars,
-/* 17 */	&ansi_sgr,
-/* 18 */	&ansi_bell,
-/* 19 */	&ansi_newpage,
-/* 20 */	&ansi_backspace,
-/* 21 */	&ansi_cr,
-/* 22 */	&ansi_lf,
-/* 23 */	&ansi_htab,
-/* 24 */	&ansi_escape,
-/* 25 */	&ansi_nop,
-/* 26 */	&ansi_printing,
-/* 27 */	&ansi_semicolon,
-/* 28 */	&ansi_digit,
-/* 29 */	&ansi_reverse_index,
-/* 30 */	&ansi_send_attributes,
-/* 31 */	&ansi_set_mode,
-/* 32 */	&ansi_reset_mode,
-/* 33 */	&dec_return_terminal_id,
-/* 34 */	&ansi_status_report,
-/* 35 */	&ansi_cs_designate,
-/* 36 */	&ansi_esc3,
-/* 37 */	&dec_set,
-/* 38 */	&dec_reset,
-/* 39 */	&dec_save,
-/* 40 */	&dec_restore,
-/* 41 */	&dec_scrolling_region,
-/* 42 */	&xterm_text_mode,
-/* 43 */	&xterm_text_semicolon,
-/* 44 */	&xterm_text,
-/* 45 */	&xterm_text_do,
-/* 46 */	&ansi_htab_set,
-/* 47 */	&ansi_htab_clear,
-/* 48 */	&ansi_cs_designate2,
-/* 49 */	&ansi_select_g0,
-/* 50 */	&ansi_select_g1,
-/* 51 */	&ansi_select_g2,
-/* 52 */	&ansi_select_g3,
-/* 53 */	&ansi_one_g2,
-/* 54 */	&ansi_one_g3,
-/* 55 */	&ansi_multibyte,
+	/* 0 */		&ansi_data_mode,
+	/* 1 */		&dec_save_cursor,
+	/* 2 */		&dec_restore_cursor,
+	/* 3 */		&ansi_newline,
+	/* 4 */		&ansi_cursor_up,
+	/* 5 */		&ansi_esc2,
+	/* 6 */		&ansi_reset,
+	/* 7 */		&ansi_insert_chars,
+	/* 8 */		&ansi_cursor_down,
+	/* 9 */		&ansi_cursor_right,
+	/* 10 */	&ansi_cursor_left,
+	/* 11 */	&ansi_cursor_motion,
+	/* 12 */	&ansi_erase_in_display,
+	/* 13 */	&ansi_erase_in_line,
+	/* 14 */	&ansi_insert_lines,
+	/* 15 */	&ansi_delete_lines,
+	/* 16 */	&ansi_delete_chars,
+	/* 17 */	&ansi_sgr,
+	/* 18 */	&ansi_bell,
+	/* 19 */	&ansi_newpage,
+	/* 20 */	&ansi_backspace,
+	/* 21 */	&ansi_cr,
+	/* 22 */	&ansi_lf,
+	/* 23 */	&ansi_htab,
+	/* 24 */	&ansi_escape,
+	/* 25 */	&ansi_nop,
+	/* 26 */	&ansi_printing,
+	/* 27 */	&ansi_semicolon,
+	/* 28 */	&ansi_digit,
+	/* 29 */	&ansi_reverse_index,
+	/* 30 */	&ansi_send_attributes,
+	/* 31 */	&ansi_set_mode,
+	/* 32 */	&ansi_reset_mode,
+	/* 33 */	&dec_return_terminal_id,
+	/* 34 */	&ansi_status_report,
+	/* 35 */	&ansi_cs_designate,
+	/* 36 */	&ansi_esc3,
+	/* 37 */	&dec_set,
+	/* 38 */	&dec_reset,
+	/* 39 */	&dec_save,
+	/* 40 */	&dec_restore,
+	/* 41 */	&dec_scrolling_region,
+	/* 42 */	&xterm_text_mode,
+	/* 43 */	&xterm_text_semicolon,
+	/* 44 */	&xterm_text,
+	/* 45 */	&xterm_text_do,
+	/* 46 */	&ansi_htab_set,
+	/* 47 */	&ansi_htab_clear,
+	/* 48 */	&ansi_cs_designate2,
+	/* 49 */	&ansi_select_g0,
+	/* 50 */	&ansi_select_g1,
+	/* 51 */	&ansi_select_g2,
+	/* 52 */	&ansi_select_g3,
+	/* 53 */	&ansi_one_g2,
+	/* 54 */	&ansi_one_g3,
+	/* 55 */	&ansi_multibyte,
 };
 
 static const unsigned char st[8][256] = {
-/*
- * State table for base processing (state == DATA)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,BL,BS,HT,LF,LF,NP,CR,G1,G0,
-/* 10 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,E1,Xx,Xx,Xx,Xx,
-/* 20 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* 30 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* 40 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* 50 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* 60 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* 70 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Xx,
-/* 80 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,
-/* 90 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,
-/* a0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* b0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* c0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* d0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* e0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
-/* f0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc
-},
+	/*
+	 * State table for base processing (state == DATA)
+	 */
+	{
+		/* 				0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,BL,BS,HT,LF,LF,NP,CR,G1,G0,
+		/* 10 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,E1,Xx,Xx,Xx,Xx,
+		/* 20 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* 30 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* 40 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* 50 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* 60 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* 70 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Xx,
+		/* 80 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,
+		/* 90 */       Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,Xx,
+		/* a0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* b0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* c0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* d0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* e0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,
+		/* f0 */       Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc,Pc
+	},
 
-/*
- * State table for ESC processing (state == ESC)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 20 */	0, 0, 0, 0, 0, 0, 0, 0,CS,CS,CS,CS, 0, 0, 0, 0,
-/* 30 */	0, 0, 0, 0, 0, 0, 0,SC,RC, 0, 0, 0, 0, 0, 0, 0,
-/* 40 */	0, 0, 0, 0, 0,NL, 0, 0,TS, 0, 0, 0, 0,RI,S2,S3,
-/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,E2, 0,TM, 0, 0,
-/* 60 */	0, 0, 0,rS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,G2,G3,
-/* 70 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-},
+	/*
+	 * State table for ESC processing (state == ESC)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 20 */	0, 0, 0, 0, 0, 0, 0, 0,CS,CS,CS,CS, 0, 0, 0, 0,
+		/* 30 */	0, 0, 0, 0, 0, 0, 0,SC,RC, 0, 0, 0, 0, 0, 0, 0,
+		/* 40 */	0, 0, 0, 0, 0,NL, 0, 0,TS, 0, 0, 0, 0,RI,S2,S3,
+		/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,E2, 0,TM, 0, 0,
+		/* 60 */	0, 0, 0,rS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,G2,G3,
+		/* 70 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	},
 
-/*
- * State table for ESC ()*+ C processing (state == CSDES)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 30 */       C2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 40 */	0,C2,C2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 60 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 70 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-},
+	/*
+	 * State table for ESC ()*+ C processing (state == CSDES)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 30 */       C2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 40 */	0,C2,C2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 60 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 70 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	},
 
-/*
- * State table for ESC [ processing (state == N1)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 30 */       Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg, 0,Sc, 0, 0, 0,E3,
-/* 40 */       IC,UP,DN,RT,LT, 0, 0, 0,CM, 0,ED,EL,IL,DL, 0, 0,
-/* 50 */       DC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 60 */	0, 0, 0,DA, 0, 0,CM,TC,SM, 0, 0, 0,RM,SG,SR, 0,
-/* 70 */	0, 0,SS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-},
+	/*
+	 * State table for ESC [ processing (state == N1)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 30 */       Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg, 0,Sc, 0, 0, 0,E3,
+		/* 40 */       IC,UP,DN,RT,LT, 0, 0, 0,CM, 0,ED,EL,IL,DL, 0, 0,
+		/* 50 */       DC, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 60 */	0, 0, 0,DA, 0, 0,CM,TC,SM, 0, 0, 0,RM,SG,SR, 0,
+		/* 70 */	0, 0,SS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	},
 
-/*
- * State table for ESC [ ? processing (state == DECP)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 30 */       Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg, 0, 0, 0, 0, 0, 0,
-/* 40 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 60 */	0, 0, 0, 0, 0, 0, 0, 0,DS, 0, 0, 0,DR, 0, 0, 0,
-/* 70 */	0, 0,DT,DV, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-},
+	/*
+	 * State table for ESC [ ? processing (state == DECP)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 30 */       Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg, 0, 0, 0, 0, 0, 0,
+		/* 40 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 60 */	0, 0, 0, 0, 0, 0, 0, 0,DS, 0, 0, 0,DR, 0, 0, 0,
+		/* 70 */	0, 0,DT,DV, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	},
 
-/*
- * State table for ESC ] processing (state == TEXT)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 30 */       Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg, 0,T2, 0, 0, 0, 0,
-/* 40 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 60 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 70 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-},
+	/*
+	 * State table for ESC ] processing (state == TEXT)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 10 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 20 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 30 */       Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg,Dg, 0,T2, 0, 0, 0, 0,
+		/* 40 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 50 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 60 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 70 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 80 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 90 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* a0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* b0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* c0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* d0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* e0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* f0 */	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	},
 
-/*
- * State table for ESC ] n ; processing (state == TEXT2)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */        0, 0, 0, 0, 0, 0, 0,TB, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 10 */        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-/* 20 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* 30 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* 40 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* 50 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* 60 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* 70 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,Xx,
-/* 80 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* 90 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* a0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* b0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* c0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* d0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* e0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
-/* f0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX
-},
-/*
- * State table for multi-byte characters (state == MBPEND)
- */
-{
-	     /* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
-/* 00 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 10 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 20 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 30 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 40 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 50 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 60 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 70 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 80 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* 90 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* a0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* b0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* c0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* d0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* e0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
-/* f0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB
-},
+	/*
+	 * State table for ESC ] n ; processing (state == TEXT2)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */        0, 0, 0, 0, 0, 0, 0,TB, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 10 */        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		/* 20 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* 30 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* 40 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* 50 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* 60 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* 70 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,Xx,
+		/* 80 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* 90 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* a0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* b0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* c0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* d0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* e0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,
+		/* f0 */       TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX,TX
+	},
+	/*
+	 * State table for multi-byte characters (state == MBPEND)
+	 */
+	{
+		/* 0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f  */
+		/* 00 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 10 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 20 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 30 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 40 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 50 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 60 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 70 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 80 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* 90 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* a0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* b0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* c0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* d0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* e0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,
+		/* f0 */       MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB,MB
+	},
 };
 
 #define CS_G0		LIB3270_ANSI_CS_G0
@@ -494,14 +494,12 @@ static int	dbcs_process(H3270 *hSession, int ch, unsigned char ebc[]);
 static void	ansi_scroll(H3270 *hSession);
 
 static enum lib3270_ansi_state
-ansi_data_mode(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_data_mode(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-dec_save_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+dec_save_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	hSession->saved_cursor = hSession->cursor_addr;
@@ -514,8 +512,7 @@ dec_save_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 	return DATA;
 }
 
-static enum lib3270_ansi_state dec_restore_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state dec_restore_cursor(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	hSession->cset = hSession->saved_cset;
@@ -529,8 +526,7 @@ static enum lib3270_ansi_state dec_restore_cursor(H3270 *hSession, int GNUC_UNUS
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int nc;
 
 	cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->view.cols));
@@ -546,8 +542,7 @@ static enum lib3270_ansi_state ansi_newline(H3270 *hSession, int GNUC_UNUSED(ig1
 }
 
 static enum lib3270_ansi_state
-ansi_cursor_up(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_cursor_up(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int rr;
 
 	if (nn < 1)
@@ -562,8 +557,7 @@ ansi_cursor_up(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_esc2(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_esc2(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	register int	i;
 
 	for (i = 0; i < NN; i++)
@@ -572,8 +566,7 @@ ansi_esc2(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig
 	return N1;
 }
 
-static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 //	static Boolean first = True;
 
@@ -586,7 +579,7 @@ static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1),
 	hSession->cset = CS_G0;
 	hSession->saved_cset = CS_G0;
 
-	for(i=0;i<4;i++)
+	for(i=0; i<4; i++)
 		hSession->csd[i] = hSession->saved_csd[i] = LIB3270_ANSI_CSD_US;
 
 	hSession->once_cset = -1;
@@ -614,8 +607,7 @@ static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1),
 		hSession->tabs[i] = 0x01;
 
 	hSession->held_wrap = 0;
-	if (!hSession->ansi_reset)
-	{
+	if (!hSession->ansi_reset) {
 		ctlr_altbuffer(hSession,True);
 		ctlr_aclear(hSession, 0, hSession->view.rows * hSession->view.cols, 1);
 		ctlr_altbuffer(hSession,False);
@@ -627,9 +619,7 @@ static enum lib3270_ansi_state ansi_reset(H3270 *hSession, int GNUC_UNUSED(ig1),
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_insert_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_insert_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int cc = hSession->cursor_addr % hSession->view.cols;	/* current col */
 	int mc = hSession->view.cols - cc;		/* max chars that can be inserted */
 	int ns;				/* chars that are shifting */
@@ -649,9 +639,7 @@ ansi_insert_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_cursor_down(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_cursor_down(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int rr;
 
 	if (nn < 1)
@@ -665,8 +653,7 @@ ansi_cursor_down(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_cursor_right(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_cursor_right(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int cc;
 
 	if (nn < 1)
@@ -681,13 +668,10 @@ static enum lib3270_ansi_state ansi_cursor_right(H3270 *hSession, int nn, int GN
 	return DATA;
 }
 
-static enum lib3270_ansi_state
-ansi_cursor_left(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_cursor_left(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int cc;
 
-	if (hSession->held_wrap)
-	{
+	if (hSession->held_wrap) {
 		hSession->held_wrap = 0;
 		return DATA;
 	}
@@ -703,8 +687,7 @@ ansi_cursor_left(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_cursor_motion(H3270 *hSession, int n1, int n2)
-{
+ansi_cursor_motion(H3270 *hSession, int n1, int n2) {
 	if (n1 < 1) n1 = 1;
 	if (n1 > hSession->view.rows) n1 = hSession->view.rows;
 	if (n2 < 1) n2 = 1;
@@ -715,16 +698,15 @@ ansi_cursor_motion(H3270 *hSession, int n1, int n2)
 }
 
 static enum lib3270_ansi_state
-ansi_erase_in_display(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_erase_in_display(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	switch (nn) {
-	    case 0:	/* below */
-		ctlr_aclear(hSession, hSession->cursor_addr, (hSession->view.rows * hSession->view.cols) - hSession->cursor_addr, 1);
+	case 0:	/* below */
+				ctlr_aclear(hSession, hSession->cursor_addr, (hSession->view.rows * hSession->view.cols) - hSession->cursor_addr, 1);
 		break;
-	    case 1:	/* above */
+	case 1:	/* above */
 		ctlr_aclear(hSession, 0, hSession->cursor_addr + 1, 1);
 		break;
-	    case 2:	/* all (without moving cursor) */
+	case 2:	/* all (without moving cursor) */
 //		if (hSession->cursor_addr == 0 && !hSession->is_altbuffer) scroll_save(hSession->rows, True);
 		ctlr_aclear(hSession, 0, hSession->view.rows * hSession->view.cols, 1);
 		break;
@@ -733,18 +715,17 @@ ansi_erase_in_display(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_erase_in_line(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_erase_in_line(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int nc = hSession->cursor_addr % hSession->view.cols;
 
 	switch (nn) {
-	    case 0:	/* to right */
+	case 0:	/* to right */
 		ctlr_aclear(hSession, hSession->cursor_addr, hSession->view.cols - nc, 1);
 		break;
-	    case 1:	/* to left */
+	case 1:	/* to left */
 		ctlr_aclear(hSession, hSession->cursor_addr - nc, nc+1, 1);
 		break;
-	    case 2:	/* all */
+	case 2:	/* all */
 		ctlr_aclear(hSession, hSession->cursor_addr - nc, hSession->view.cols, 1);
 		break;
 	}
@@ -752,8 +733,7 @@ ansi_erase_in_line(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_insert_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_insert_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int rr = hSession->cursor_addr / hSession->view.cols;	/* current row */
 	int mr = hSession->scroll_bottom - rr;		/* rows left at and below this one */
 	int ns;										/* rows that are shifting */
@@ -778,8 +758,7 @@ ansi_insert_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_delete_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_delete_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int rr = hSession->cursor_addr / hSession->view.cols;	/* current row */
 	int mr = hSession->scroll_bottom - rr;				/* max rows that can be deleted */
 	int ns;												/* rows that are shifting */
@@ -804,8 +783,7 @@ ansi_delete_lines(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_delete_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_delete_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	int cc = hSession->cursor_addr % hSession->view.cols;	/* current col */
 	int mc = hSession->view.cols - cc;						/* max chars that can be deleted */
 	int ns;													/* chars that are shifting */
@@ -826,140 +804,131 @@ ansi_delete_chars(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_sgr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_sgr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	for (i = 0; i <= nx && i < NN; i++)
-	    switch (n[i]) {
+		switch (n[i]) {
 		case 0:
-		    hSession->gr = 0;
-		    hSession->fg = 0;
-		    hSession->bg = 0;
-		    break;
+			hSession->gr = 0;
+			hSession->fg = 0;
+			hSession->bg = 0;
+			break;
 		case 1:
-		    hSession->gr |= GR_INTENSIFY;
-		    break;
+			hSession->gr |= GR_INTENSIFY;
+			break;
 		case 4:
-		    hSession->gr |= GR_UNDERLINE;
-		    break;
+			hSession->gr |= GR_UNDERLINE;
+			break;
 		case 5:
-		    hSession->gr |= GR_BLINK;
-		    break;
+			hSession->gr |= GR_BLINK;
+			break;
 		case 7:
-		    hSession->gr |= GR_REVERSE;
-		    break;
+			hSession->gr |= GR_REVERSE;
+			break;
 		case 30:
-		    hSession->fg = 0xf0;	/* black */
-		    break;
+			hSession->fg = 0xf0;	/* black */
+			break;
 		case 31:
-		    hSession->fg = 0xf2;	/* red */
-		    break;
+			hSession->fg = 0xf2;	/* red */
+			break;
 		case 32:
-		    hSession->fg = 0xf4;	/* green */
-		    break;
+			hSession->fg = 0xf4;	/* green */
+			break;
 		case 33:
-		    hSession->fg = 0xf6;	/* yellow */
-		    break;
+			hSession->fg = 0xf6;	/* yellow */
+			break;
 		case 34:
-		    hSession->fg = 0xf1;	/* blue */
-		    break;
+			hSession->fg = 0xf1;	/* blue */
+			break;
 		case 35:
-		    hSession->fg = 0xf3;	/* magenta */
-		    break;
+			hSession->fg = 0xf3;	/* magenta */
+			break;
 		case 36:
 #if defined(WC3270) /*[*/
-		    hSession->fg = 0xf6;	/* turquoise */
+			hSession->fg = 0xf6;	/* turquoise */
 #else /*][*/
-		    hSession->fg = 0xfd;	/* cyan */
+			hSession->fg = 0xfd;	/* cyan */
 #endif /*]*/
-		    break;
+			break;
 		case 37:
 #if defined(WC3270) /*[*/
-		    hSession->fg = 0xf7;	/* white */
+			hSession->fg = 0xf7;	/* white */
 #else /*][*/
-		    hSession->fg = 0xff;	/* white */
+			hSession->fg = 0xff;	/* white */
 #endif /*]*/
-		    break;
+			break;
 		case 39:
-		    hSession->fg = 0;	/* default */
-		    break;
+			hSession->fg = 0;	/* default */
+			break;
 		case 40:
-		    hSession->bg = 0xf0;	/* black */
-		    break;
+			hSession->bg = 0xf0;	/* black */
+			break;
 		case 41:
-		    hSession->bg = 0xf2;	/* red */
-		    break;
+			hSession->bg = 0xf2;	/* red */
+			break;
 		case 42:
-		    hSession->bg = 0xf4;	/* green */
-		    break;
+			hSession->bg = 0xf4;	/* green */
+			break;
 		case 43:
-		    hSession->bg = 0xf6;	/* yellow */
-		    break;
+			hSession->bg = 0xf6;	/* yellow */
+			break;
 		case 44:
-		    hSession->bg = 0xf1;	/* blue */
-		    break;
+			hSession->bg = 0xf1;	/* blue */
+			break;
 		case 45:
-		    hSession->bg = 0xf3;	/* magenta */
-		    break;
+			hSession->bg = 0xf3;	/* magenta */
+			break;
 		case 46:
 #if defined(WC3270) /*[*/
-		    hSession->bg = 0xf6;	/* turquoise */
+			hSession->bg = 0xf6;	/* turquoise */
 #else /*][*/
-		    hSession->bg = 0xfd;	/* cyan */
+			hSession->bg = 0xfd;	/* cyan */
 #endif /*]*/
-		    break;
+			break;
 		case 47:
 #if defined(WC3270) /*[*/
-		    hSession->bg = 0xf7;	/* white */
+			hSession->bg = 0xf7;	/* white */
 #else /*][*/
-		    hSession->bg = 0xff;	/* white */
+			hSession->bg = 0xff;	/* white */
 #endif /*]*/
-		    break;
+			break;
 		case 49:
-		    hSession->bg = 0;	/* default */
-		    break;
-	    }
+			hSession->bg = 0;	/* default */
+			break;
+		}
 
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_bell(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_bell(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	lib3270_ring_bell(hSession);
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_newpage(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_newpage(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	ctlr_clear(hSession,False);
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
-	if (hSession->held_wrap)
-	{
+static enum lib3270_ansi_state ansi_backspace(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
+	if (hSession->held_wrap) {
 		hSession->held_wrap = 0;
 		return DATA;
 	}
 
-	if (hSession->rev_wraparound_mode)
-	{
+	if (hSession->rev_wraparound_mode) {
 		if (hSession->cursor_addr > (hSession->scroll_top - 1) * hSession->view.cols)
 			cursor_move(hSession,hSession->cursor_addr - 1);
-	}
-	else
-	{
+	} else {
 		if (hSession->cursor_addr % hSession->view.cols)
 			cursor_move(hSession,hSession->cursor_addr - 1);
 	}
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_cr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_cr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	if (hSession->cursor_addr % hSession->view.cols)
 		cursor_move(hSession,hSession->cursor_addr - (hSession->cursor_addr % hSession->view.cols));
 
@@ -970,15 +939,13 @@ static enum lib3270_ansi_state ansi_cr(H3270 *hSession, int GNUC_UNUSED(ig1), in
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_lf(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_lf(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int nc = hSession->cursor_addr + hSession->view.cols;
 
 	hSession->held_wrap = 0;
 
 	// If we're below the scrolling region, don't scroll.
-	if((hSession->cursor_addr / hSession->view.cols) >= hSession->scroll_bottom)
-	{
+	if((hSession->cursor_addr / hSession->view.cols) >= hSession->scroll_bottom) {
 		if (nc < hSession->view.rows * hSession->view.cols)
 			cursor_move(hSession,nc);
 		return DATA;
@@ -991,8 +958,7 @@ static enum lib3270_ansi_state ansi_lf(H3270 *hSession, int GNUC_UNUSED(ig1), in
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_htab(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_htab(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int col = hSession->cursor_addr % hSession->view.cols;
 	int i;
 
@@ -1006,13 +972,11 @@ static enum lib3270_ansi_state ansi_htab(H3270 *hSession, int GNUC_UNUSED(ig1), 
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_escape(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_escape(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	return ESC;
 }
 
-static enum lib3270_ansi_state ansi_nop(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_nop(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	return DATA;
 }
 
@@ -1031,8 +995,7 @@ static enum lib3270_ansi_state ansi_nop(H3270 GNUC_UNUSED(*hSession), int GNUC_U
 }
 
 static enum lib3270_ansi_state
-ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int nc;
 	unsigned char ebc_ch;
 	int default_cs = CS_BASE;
@@ -1041,41 +1004,40 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 	Boolean preserve_right = False;
 #endif /*]*/
 
-/*
-	if ((hSession->pmi == 0) && (hSession->ansi_ch & 0x80)) {
-	    	char mbs[2];
-		enum ulfail fail;
-		unsigned char ch;
+	/*
+		if ((hSession->pmi == 0) && (hSession->ansi_ch & 0x80)) {
+		    	char mbs[2];
+			enum ulfail fail;
+			unsigned char ch;
 
-		mbs[0] = (char)hSession->ansi_ch;
-		mbs[1] = '\0';
+			mbs[0] = (char)hSession->ansi_ch;
+			mbs[1] = '\0';
 
-		ch = utf8_lookup(mbs, &fail, NULL);
-		if (ch == 0) {
-			switch (fail) {
-			case ULFAIL_NOUTF8:
-			    	// Leave it alone.
-				break;
-			case ULFAIL_INCOMPLETE:
-				// Start munching multi-byte.
-				hSession->pmi = 0;
-				hSession->pending_mbs[hSession->pmi++] = (char)hSession->ansi_ch;
-				return MBPEND;
-			case ULFAIL_INVALID:
-				// Invalid multi-byte -> '?'
-				hSession->ansi_ch = '?';
-				// XXX: If DBCS, we should let
-				// ICU have a crack at it
-				//
-				break;
+			ch = utf8_lookup(mbs, &fail, NULL);
+			if (ch == 0) {
+				switch (fail) {
+				case ULFAIL_NOUTF8:
+				    	// Leave it alone.
+					break;
+				case ULFAIL_INCOMPLETE:
+					// Start munching multi-byte.
+					hSession->pmi = 0;
+					hSession->pending_mbs[hSession->pmi++] = (char)hSession->ansi_ch;
+					return MBPEND;
+				case ULFAIL_INVALID:
+					// Invalid multi-byte -> '?'
+					hSession->ansi_ch = '?';
+					// XXX: If DBCS, we should let
+					// ICU have a crack at it
+					//
+					break;
+				}
 			}
 		}
-	}
-	*/
+		*/
 	hSession->pmi = 0;
 
-	if (hSession->held_wrap)
-	{
+	if (hSession->held_wrap) {
 		PWRAP;
 		hSession->held_wrap = 0;
 	}
@@ -1083,21 +1045,20 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 	if (hSession->insert_mode)
 		(void) ansi_insert_chars(hSession,1, 0);
 
-	switch(hSession->csd[(hSession->once_cset != -1) ? hSession->once_cset : hSession->cset])
-	{
-	    case CSD_LD:	/* line drawing "0" */
+	switch(hSession->csd[(hSession->once_cset != -1) ? hSession->once_cset : hSession->cset]) {
+	case CSD_LD:	/* line drawing "0" */
 		if (hSession->ansi_ch >= 0x5f && hSession->ansi_ch <= 0x7e)
 			ctlr_add(hSession,hSession->cursor_addr, (unsigned char)(hSession->ansi_ch - 0x5f),CS_LINEDRAW);
 		else
 			ctlr_add(hSession,hSession->cursor_addr, hSession->charset.asc2ebc[hSession->ansi_ch], CS_BASE);
 		break;
-	    case CSD_UK:	/* UK "A" */
+	case CSD_UK:	/* UK "A" */
 		if (hSession->ansi_ch == '#')
 			ctlr_add(hSession,hSession->cursor_addr, 0x1e, CS_LINEDRAW);
 		else
 			ctlr_add(hSession,hSession->cursor_addr, hSession->charset.asc2ebc[hSession->ansi_ch], CS_BASE);
 		break;
-	    case CSD_US:	/* US "B" */
+	case CSD_US:	/* US "B" */
 		ebc_ch = hSession->charset.asc2ebc[hSession->ansi_ch];
 #if defined(X3270_DBCS) /*[*/
 		d = ctlr_dbcs_state(cursor_addr);
@@ -1108,15 +1069,15 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 
 				len = dbcs_process(hSession, ansi_ch, ebc);
 				switch (len) {
-				    default:
-				    case 0:
+				default:
+				case 0:
 					/* Translation failed. */
 					return DATA;
-				    case 1:
+				case 1:
 					/* It was really SBCS. */
 					ebc_ch = ebc[0];
 					break;
-				    case 2:
+				case 2:
 					/* DBCS. */
 					if ((cursor_addr % COLS) == (COLS-1)) {
 						ebc_ch = EBC_space;
@@ -1154,7 +1115,7 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 
 		/* Handle conflicts with existing DBCS characters. */
 		if (!preserve_right &&
-		    (d == DBCS_RIGHT || d == DBCS_RIGHT_WRAP)) {
+		        (d == DBCS_RIGHT || d == DBCS_RIGHT_WRAP)) {
 			int xaddr;
 
 			xaddr = cursor_addr;
@@ -1210,15 +1171,13 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_multibyte(H3270 *hSession, int ig1, int ig2)
-{
+static enum lib3270_ansi_state ansi_multibyte(H3270 *hSession, int ig1, int ig2) {
 	char mbs[MB_MAX];
 	unsigned char ch;
 //	enum ulfail fail;
 	afn_t fn;
 
-	if (hSession->pmi >= MB_MAX - 2)
-	{
+	if (hSession->pmi >= MB_MAX - 2) {
 		/* String too long. */
 		hSession->pmi = 0;
 		hSession->ansi_ch = '?';
@@ -1241,7 +1200,7 @@ static enum lib3270_ansi_state ansi_multibyte(H3270 *hSession, int ig1, int ig2)
 	if (fail == ULFAIL_INCOMPLETE)
 	{
 	   	// Go get more.
-    	hSession->pending_mbs[hSession->pmi++] = (char)hSession->ansi_ch;
+		hSession->pending_mbs[hSession->pmi++] = (char)hSession->ansi_ch;
 		return MBPEND;
 	}
 	*/
@@ -1261,22 +1220,19 @@ static enum lib3270_ansi_state ansi_multibyte(H3270 *hSession, int ig1, int ig2)
 	return (*fn)(hSession,n[0], n[1]);
 }
 
-static enum lib3270_ansi_state ansi_semicolon(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_semicolon(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	if (nx >= NN)
 		return DATA;
 	nx++;
 	return hSession->state;
 }
 
-static enum lib3270_ansi_state ansi_digit(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_digit(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	n[nx] = (n[nx] * 10) + (hSession->ansi_ch - '0');
 	return hSession->state;
 }
 
-static enum lib3270_ansi_state ansi_reverse_index(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_reverse_index(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int rr = hSession->cursor_addr / hSession->view.cols;	/* current row */
 	int np = (hSession->scroll_top - 1) - rr;				/* number of rows in the scrolling region, above this line */
 	int ns;													/* number of rows to scroll */
@@ -1309,24 +1265,20 @@ static enum lib3270_ansi_state ansi_reverse_index(H3270 *hSession, int GNUC_UNUS
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_send_attributes(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_send_attributes(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	if (!nn)
 		net_sends(hSession,"\033[?1;2c");
 	return DATA;
 }
 
-static enum lib3270_ansi_state dec_return_terminal_id(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state dec_return_terminal_id(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	return ansi_send_attributes(hSession, 0, 0);
 }
 
-static enum lib3270_ansi_state ansi_set_mode(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
-	switch (nn)
-	{
+static enum lib3270_ansi_state ansi_set_mode(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
+	switch (nn) {
 	case 4:
-		hSession->insert_mode = 1;
+				hSession->insert_mode = 1;
 		break;
 	case 20:
 		hSession->auto_newline_mode = 1;
@@ -1335,12 +1287,10 @@ static enum lib3270_ansi_state ansi_set_mode(H3270 *hSession, int nn, int GNUC_U
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_reset_mode(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
-	switch (nn)
-	{
+static enum lib3270_ansi_state ansi_reset_mode(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
+	switch (nn) {
 	case 4:
-		hSession->insert_mode = 0;
+				hSession->insert_mode = 0;
 		break;
 	case 20:
 		hSession->auto_newline_mode = 0;
@@ -1349,12 +1299,10 @@ static enum lib3270_ansi_state ansi_reset_mode(H3270 *hSession, int nn, int GNUC
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_status_report(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_status_report(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	static char cpr[22];
 
-	switch (nn)
-	{
+	switch (nn) {
 	case 5:
 		net_sends(hSession,"\033[0n");
 		break;
@@ -1367,72 +1315,61 @@ static enum lib3270_ansi_state ansi_status_report(H3270 *hSession, int nn, int G
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_cs_designate(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_cs_designate(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->cs_to_change = strchr(gnnames, hSession->ansi_ch) - gnnames;
 	return CSDES;
 }
 
-static enum lib3270_ansi_state ansi_cs_designate2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_cs_designate2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->csd[hSession->cs_to_change] = strchr(csnames, hSession->ansi_ch) - csnames;
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_select_g0(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_select_g0(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->cset = CS_G0;
 	return DATA;
 }
 
-static enum lib3270_ansi_state ansi_select_g1(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state ansi_select_g1(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->cset = CS_G1;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_select_g2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_select_g2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->cset = CS_G2;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_select_g3(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_select_g3(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->cset = CS_G3;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_one_g2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_one_g2(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->once_cset = CS_G2;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_one_g3(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_one_g3(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	hSession->once_cset = CS_G3;
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_esc3(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_esc3(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	return DECP;
 }
 
 static enum lib3270_ansi_state
-dec_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+dec_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	for (i = 0; i <= nx && i < NN; i++)
-		switch (n[i])
-		{
+		switch (n[i]) {
 		case 1:	/* application cursor keys */
 			hSession->appl_cursor = 1;
 			break;
@@ -1440,8 +1377,7 @@ dec_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 			hSession->csd[0] = hSession->csd[1] = hSession->csd[2] = hSession->csd[3] = CSD_US;
 			break;
 		case 3:	/* 132-column mode */
-			if(hSession->allow_wide_mode)
-			{
+			if(hSession->allow_wide_mode) {
 				hSession->wide_mode = 1;
 				hSession->cbk.set_width(hSession,132);
 			}
@@ -1463,19 +1399,16 @@ dec_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-dec_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+dec_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	for (i = 0; i <= nx && i < NN; i++)
-		switch (n[i])
-		{
+		switch (n[i]) {
 		case 1:	/* normal cursor keys */
 			hSession->appl_cursor = 0;
 			break;
 		case 3:	/* 132-column mode */
-			if (hSession->allow_wide_mode)
-			{
+			if (hSession->allow_wide_mode) {
 				hSession->wide_mode = 0;
 				hSession->cbk.set_width(hSession,80);
 			}
@@ -1496,13 +1429,11 @@ dec_reset(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 	return DATA;
 }
 
-static enum lib3270_ansi_state dec_save(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+static enum lib3270_ansi_state dec_save(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	for (i = 0; i <= nx && i < NN; i++)
-		switch (n[i])
-		{
+		switch (n[i]) {
 		case 1:	/* application cursor keys */
 			hSession->saved_appl_cursor = hSession->appl_cursor;
 			break;
@@ -1526,19 +1457,16 @@ static enum lib3270_ansi_state dec_save(H3270 *hSession, int GNUC_UNUSED(ig1), i
 }
 
 static enum lib3270_ansi_state
-dec_restore(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+dec_restore(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	int i;
 
 	for (i = 0; i <= nx && i < NN; i++)
-		switch (n[i])
-		{
+		switch (n[i]) {
 		case 1:	/* application cursor keys */
 			hSession->appl_cursor = hSession->saved_appl_cursor;
 			break;
 		case 3:	/* 132-column mode */
-			if (hSession->allow_wide_mode)
-			{
+			if (hSession->allow_wide_mode) {
 				hSession->wide_mode = hSession->saved_wide_mode;
 				hSession->cbk.set_width(hSession,hSession->wide_mode ? 132 : 80);
 			}
@@ -1560,21 +1488,17 @@ dec_restore(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-dec_scrolling_region(H3270 *hSession, int top, int bottom)
-{
+dec_scrolling_region(H3270 *hSession, int top, int bottom) {
 	if (top < 1)
 		top = 1;
 	if (bottom > hSession->view.rows)
 		bottom = hSession->view.rows;
 
-	if (top <= bottom && (top > 1 || bottom < hSession->view.rows))
-	{
+	if (top <= bottom && (top > 1 || bottom < hSession->view.rows)) {
 		hSession->scroll_top = top;
 		hSession->scroll_bottom = bottom;
 		cursor_move(hSession,0);
-	}
-	else
-	{
+	} else {
 		hSession->scroll_top = 1;
 		hSession->scroll_bottom = hSession->view.rows;
 	}
@@ -1582,75 +1506,70 @@ dec_scrolling_region(H3270 *hSession, int top, int bottom)
 }
 
 static enum lib3270_ansi_state
-xterm_text_mode(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+xterm_text_mode(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	nx = 0;
 	n[0] = 0;
 	return LIB3270_ANSI_STATE_TEXT;
 }
 
 static enum lib3270_ansi_state
-xterm_text_semicolon(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+xterm_text_semicolon(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	tx = 0;
 	return LIB3270_ANSI_STATE_TEXT2;
 }
 
 static enum lib3270_ansi_state
-xterm_text(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+xterm_text(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	if (tx < NT)
 		text[tx++] = hSession->ansi_ch;
 	return hSession->state;
 }
 
 static enum lib3270_ansi_state
-xterm_text_do(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
-/*
-#if defined(X3270_DISPLAY) || defined(WC3270)
-	text[tx] = '\0';
-#endif
+xterm_text_do(H3270 GNUC_UNUSED(*hSession), int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
+	/*
+	#if defined(X3270_DISPLAY) || defined(WC3270)
+		text[tx] = '\0';
+	#endif
 
-#if defined(X3270_DISPLAY)
-	switch (n[0]) {
-	    case 0:	// icon name and window title
-		XtVaSetValues(toplevel, XtNiconName, text, NULL);
-		XtVaSetValues(toplevel, XtNtitle, text, NULL);
-		break;
-	    case 1:	// icon name
-		XtVaSetValues(toplevel, XtNiconName, text, NULL);
-		break;
-	    case 2:	// window_title
-		XtVaSetValues(toplevel, XtNtitle, text, NULL);
-		break;
-	    case 50:	// font
-		screen_newfont(text, False, False);
-		break;
-	    default:
-		break;
-	}
-#endif
+	#if defined(X3270_DISPLAY)
+		switch (n[0]) {
+		    case 0:	// icon name and window title
+			XtVaSetValues(toplevel, XtNiconName, text, NULL);
+			XtVaSetValues(toplevel, XtNtitle, text, NULL);
+			break;
+		    case 1:	// icon name
+			XtVaSetValues(toplevel, XtNiconName, text, NULL);
+			break;
+		    case 2:	// window_title
+			XtVaSetValues(toplevel, XtNtitle, text, NULL);
+			break;
+		    case 50:	// font
+			screen_newfont(text, False, False);
+			break;
+		    default:
+			break;
+		}
+	#endif
 
 
-#if defined(WC3270)
-	switch (n[0]) {
-	    case 0:	// icon name and window title
-	    case 2:	// window_title
-		screen_title(text);
-		break;
-	    default:
-		break;
-	}
-#endif
-*/
+	#if defined(WC3270)
+		switch (n[0]) {
+		    case 0:	// icon name and window title
+		    case 2:	// window_title
+			screen_title(text);
+			break;
+		    default:
+			break;
+		}
+	#endif
+	*/
 
 	return DATA;
 }
 
 static enum lib3270_ansi_state
-ansi_htab_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
-{
+ansi_htab_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 	register int col = hSession->cursor_addr % hSession->view.cols;
 
 	hSession->tabs[col/8] |= 1<<(col%8);
@@ -1658,12 +1577,10 @@ ansi_htab_set(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2))
 }
 
 static enum lib3270_ansi_state
-ansi_htab_clear(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
-{
+ansi_htab_clear(H3270 *hSession, int nn, int GNUC_UNUSED(ig2)) {
 	register int col, i;
 
-	switch (nn)
-	{
+	switch (nn) {
 	case 0:
 		col = hSession->cursor_addr % hSession->view.cols;
 		hSession->tabs[col/8] &= ~(1<<(col%8));
@@ -1679,13 +1596,11 @@ ansi_htab_clear(H3270 *hSession, int nn, int GNUC_UNUSED(ig2))
 /*
  * Scroll the screen or the scrolling region.
  */
-static void ansi_scroll(H3270 *hSession)
-{
+static void ansi_scroll(H3270 *hSession) {
 	hSession->held_wrap = 0;
 
 	/* Save the top line */
-	if (hSession->scroll_top == 1 && hSession->scroll_bottom == hSession->view.rows)
-	{
+	if (hSession->scroll_top == 1 && hSession->scroll_bottom == hSession->view.rows) {
 //		if (!hSession->is_altbuffer)
 //			scroll_save(1, False);
 		ctlr_scroll(hSession);
@@ -1695,28 +1610,25 @@ static void ansi_scroll(H3270 *hSession)
 	/* Scroll all but the last line up */
 	if (hSession->scroll_bottom > hSession->scroll_top)
 		ctlr_bcopy(hSession,hSession->scroll_top * hSession->view.cols,
-		    (hSession->scroll_top - 1) * hSession->view.cols,
-		    (hSession->scroll_bottom - hSession->scroll_top) * hSession->view.cols,
-		    1);
+		           (hSession->scroll_top - 1) * hSession->view.cols,
+		           (hSession->scroll_bottom - hSession->scroll_top) * hSession->view.cols,
+		           1);
 
 	/* Clear the last line */
 	ctlr_aclear(hSession, (hSession->scroll_bottom - 1) * hSession->view.cols, hSession->view.cols, 1);
 }
 
 /* Callback for when we enter ANSI mode. */
-void ansi_in3270(H3270 *session, int in3270, void GNUC_UNUSED(*dunno))
-{
+void ansi_in3270(H3270 *session, int in3270, void GNUC_UNUSED(*dunno)) {
 	if (!in3270)
 		(void) ansi_reset(session, 0, 0);
 }
 
 #if defined(X3270_DBCS) /*[*/
-static void trace_pending_mb(H3270 *hSession)
-{
+static void trace_pending_mb(H3270 *hSession) {
 	int i;
 
-	for (i = 0; i < mb_pending; i++)
-	{
+	for (i = 0; i < mb_pending; i++) {
 		trace_ds(hSession," %02x", mb_buffer[i] & 0xff);
 	}
 }
@@ -1727,8 +1639,7 @@ static void trace_pending_mb(H3270 *hSession)
  * External entry points
  */
 void
-ansi_process(H3270 *hSession, unsigned int c)
-{
+ansi_process(H3270 *hSession, unsigned int c) {
 	afn_t fn;
 
 	c &= 0xff;
@@ -1744,8 +1655,7 @@ ansi_process(H3270 *hSession, unsigned int c)
 	fn = ansi_fn[st[(int)hSession->state][c]];
 
 #if defined(X3270_DBCS) /*[*/
-	if (mb_pending && fn != &ansi_printing)
-	{
+	if (mb_pending && fn != &ansi_printing) {
 		trace_ds(hSession,"Dropped incomplete multi-byte character");
 		trace_pending_mb(hSession);
 		trace_ds(hSession,"\n");
@@ -1757,8 +1667,7 @@ ansi_process(H3270 *hSession, unsigned int c)
 }
 
 void
-ansi_send_up(H3270 *hSession)
-{
+ansi_send_up(H3270 *hSession) {
 	if (hSession->appl_cursor)
 		net_sends(hSession,"\033OA");
 	else
@@ -1766,8 +1675,7 @@ ansi_send_up(H3270 *hSession)
 }
 
 void
-ansi_send_down(H3270 *hSession)
-{
+ansi_send_down(H3270 *hSession) {
 	if (hSession->appl_cursor)
 		net_sends(hSession,"\033OB");
 	else
@@ -1775,8 +1683,7 @@ ansi_send_down(H3270 *hSession)
 }
 
 void
-ansi_send_right(H3270 *hSession)
-{
+ansi_send_right(H3270 *hSession) {
 	if (hSession->appl_cursor)
 		net_sends(hSession,"\033OC");
 	else
@@ -1784,8 +1691,7 @@ ansi_send_right(H3270 *hSession)
 }
 
 void
-ansi_send_left(H3270 *hSession)
-{
+ansi_send_left(H3270 *hSession) {
 	if (hSession->appl_cursor)
 		net_sends(hSession,"\033OD");
 	else
@@ -1793,20 +1699,17 @@ ansi_send_left(H3270 *hSession)
 }
 
 void
-ansi_send_home(H3270 *hSession)
-{
+ansi_send_home(H3270 *hSession) {
 	net_sends(hSession,"\033[H");
 }
 
 void
-ansi_send_clear(H3270 *hSession)
-{
+ansi_send_clear(H3270 *hSession) {
 	net_sends(hSession,"\033[2K");
 }
 
 void
-ansi_send_pf(H3270 *hSession, int nn)
-{
+ansi_send_pf(H3270 *hSession, int nn) {
 	static char fn_buf[6];
 	static int code[] = {
 		/*
@@ -1830,8 +1733,7 @@ ansi_send_pf(H3270 *hSession, int nn)
 	net_sends(hSession,fn_buf);
 }
 
-void ansi_send_pa(H3270 *hSession, int nn)
-{
+void ansi_send_pa(H3270 *hSession, int nn) {
 	static char fn_buf[4];
 	static char code[4] = { 'P', 'Q', 'R', 'S' };
 
@@ -1841,8 +1743,7 @@ void ansi_send_pa(H3270 *hSession, int nn)
 	net_sends(hSession,fn_buf);
 }
 
-void toggle_lineWrap(H3270 *hSession, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(type))
-{
+void toggle_lineWrap(H3270 *hSession, struct lib3270_toggle GNUC_UNUSED(*t), LIB3270_TOGGLE_TYPE GNUC_UNUSED(type)) {
 	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_LINE_WRAP))
 		hSession->wraparound_mode = 1;
 	else
@@ -1851,8 +1752,7 @@ void toggle_lineWrap(H3270 *hSession, struct lib3270_toggle GNUC_UNUSED(*t), LIB
 
 #if defined(X3270_DBCS) /*[*/
 /* Accumulate and process pending DBCS characters. */
-static int dbcs_process(H3270 *hSession, int ch, unsigned char ebc[])
-{
+static int dbcs_process(H3270 *hSession, int ch, unsigned char ebc[]) {
 	UChar Ubuf[2];
 	UErrorCode err = U_ZERO_ERROR;
 
@@ -1870,7 +1770,7 @@ static int dbcs_process(H3270 *hSession, int ch, unsigned char ebc[])
 	mb_buffer[mb_pending++] = ch & 0xff;
 	// An interesting idea.
 	if (mb_pending == 1)
-	    	return 0;
+		return 0;
 
 	if (mb_to_unicode(mb_buffer, mb_pending, Ubuf, 2, &err) > 0) {
 		// It translated!
@@ -1884,7 +1784,7 @@ static int dbcs_process(H3270 *hSession, int ch, unsigned char ebc[])
 			trace_ds(hSession,"Can't map multi-byte character");
 			trace_pending_mb(hSession);
 			trace_ds(hSession," -> U+%04x to SBCS or DBCS, dropping\n",
-			    Ubuf[0] & 0xffff);
+			         Ubuf[0] & 0xffff);
 			mb_pending = 0;
 			return 0;
 		}

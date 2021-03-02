@@ -41,8 +41,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
-{
+const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_MONOCASE,
 		.name = "monocase",
@@ -329,33 +328,28 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] =
 
 };
 
-LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggles()
-{
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggles() {
 	return toggle_descriptor;
 }
 
-LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggle_list()
-{
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_get_toggle_list() {
 	return toggle_descriptor;
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE_ID ix)
-{
+LIB3270_EXPORT const char * lib3270_get_toggle_summary(LIB3270_TOGGLE_ID ix) {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return lib3270_toggle_get_summary(toggle_descriptor+ix);
 	return "";
 }
 
-LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix)
-{
+LIB3270_EXPORT const char * lib3270_get_toggle_label(LIB3270_TOGGLE_ID ix) {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return lib3270_toggle_get_label(toggle_descriptor+ix);
 	return "";
 }
 
 
-LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix)
-{
+LIB3270_EXPORT const char * lib3270_get_toggle_description(LIB3270_TOGGLE_ID ix) {
 	if(ix < LIB3270_TOGGLE_COUNT)
 		return lib3270_toggle_get_description(toggle_descriptor+ix);
 	return "";
@@ -367,13 +361,10 @@ LIB3270_EXPORT const char * lib3270_get_toggle_name(LIB3270_TOGGLE_ID ix) {
 	return "";
 }
 
-LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_by_name(const char *name)
-{
-	if(name)
-	{
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_by_name(const char *name) {
+	if(name) {
 		int ix;
-		for(ix=0;ix<LIB3270_TOGGLE_COUNT;ix++)
-		{
+		for(ix=0; ix<LIB3270_TOGGLE_COUNT; ix++) {
 			if(!lib3270_compare_alnum(name,toggle_descriptor[ix].name))
 				return &toggle_descriptor[ix];
 		}
@@ -381,13 +372,10 @@ LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_by_name(const char *nam
 	return NULL;
 }
 
-LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name)
-{
-	if(name)
-	{
+LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name) {
+	if(name) {
 		int f;
-		for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
-		{
+		for(f=0; f<LIB3270_TOGGLE_COUNT; f++) {
 			if(!lib3270_compare_alnum(name,toggle_descriptor[f].name))
 				return f;
 		}
@@ -395,8 +383,7 @@ LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name)
 	return -1;
 }
 
-LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_from_id(LIB3270_TOGGLE_ID id)
-{
+LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_from_id(LIB3270_TOGGLE_ID id) {
 	if(id < LIB3270_TOGGLE_COUNT)
 		return &toggle_descriptor[id];
 	return NULL;

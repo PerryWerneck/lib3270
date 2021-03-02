@@ -27,104 +27,103 @@
  *
  */
 
- /**
-  * @brief TN3270 SSL definitions.
-  *
-  * @author perry.werneck@gmail.com
-  *
-  */
+/**
+ * @brief TN3270 SSL definitions.
+ *
+ * @author perry.werneck@gmail.com
+ *
+ */
 
 #ifndef LIB3270_SSL_H_INCLUDED
 
-	#define LIB3270_SSL_H_INCLUDED 1
+#define LIB3270_SSL_H_INCLUDED 1
 
-	#include <lib3270.h>
+#include <lib3270.h>
 
 #ifdef __cplusplus
-	extern "C" {
+extern "C" {
 #endif
 
-	/// @brief SSL state
-	typedef enum lib3270_ssl_state
-	{
-		LIB3270_SSL_UNSECURE,			/**< @brief No secure connection */
-		LIB3270_SSL_SECURE,				/**< @brief Connection secure with CA check */
-		LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA, self-signed or expired CRL */
-		LIB3270_SSL_NEGOTIATING,		/**< @brief Negotiating SSL */
-		LIB3270_SSL_VERIFYING,			/**< @brief Verifying SSL (Getting CRL) */
-		LIB3270_SSL_UNDEFINED			/**< @brief Undefined */
-	} LIB3270_SSL_STATE;
+/// @brief SSL state
+typedef enum lib3270_ssl_state {
+	LIB3270_SSL_UNSECURE,			/**< @brief No secure connection */
+	LIB3270_SSL_SECURE,				/**< @brief Connection secure with CA check */
+	LIB3270_SSL_NEGOTIATED,			/**< @brief Connection secure, no CA, self-signed or expired CRL */
+	LIB3270_SSL_NEGOTIATING,		/**< @brief Negotiating SSL */
+	LIB3270_SSL_VERIFYING,			/**< @brief Verifying SSL (Getting CRL) */
+	LIB3270_SSL_UNDEFINED			/**< @brief Undefined */
+} LIB3270_SSL_STATE;
 
-	/**
-	 * @brief Set URL for the certificate revocation list.
-	 *
-	 * @param hSession	Session handle.
-	 * @param crl		URL for the certificate revocation list.
-	 *
-	 * @return 0 on sucess, non zero on error (sets errno).
-	 *
-	 */
-	 LIB3270_EXPORT int lib3270_crl_set_url(H3270 *hSession, const char *crl);
-	 LIB3270_EXPORT const char * lib3270_crl_get_url(const H3270 *hSession);
+/**
+ * @brief Set URL for the certificate revocation list.
+ *
+ * @param hSession	Session handle.
+ * @param crl		URL for the certificate revocation list.
+ *
+ * @return 0 on sucess, non zero on error (sets errno).
+ *
+ */
+LIB3270_EXPORT int lib3270_crl_set_url(H3270 *hSession, const char *crl);
+LIB3270_EXPORT const char * lib3270_crl_get_url(const H3270 *hSession);
 
-	 LIB3270_EXPORT int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol);
-	 LIB3270_EXPORT const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession);
+LIB3270_EXPORT int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol);
+LIB3270_EXPORT const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession);
 
-	 /**
-	  * @brief Get the available protocols for CRL download.
-	  *
-	  */
-	 LIB3270_EXPORT const char ** lib3270_get_available_crl_protocols(void);
+/**
+ * @brief Get the available protocols for CRL download.
+ *
+ */
+LIB3270_EXPORT const char ** lib3270_get_available_crl_protocols(void);
 
-	/**
-	 * @brief Get SSL host option.
-	 *
-	 * @return Non zero if the host URL has SSL scheme.
-	 *
-	 */
-	LIB3270_EXPORT int lib3270_get_secure_host(const H3270 *hSession);
+/**
+ * @brief Get SSL host option.
+ *
+ * @return Non zero if the host URL has SSL scheme.
+ *
+ */
+LIB3270_EXPORT int lib3270_get_secure_host(const H3270 *hSession);
 
-	/**
-	 * @brief Get security state.
-	 *
-	 */
-	LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *session);
+/**
+ * @brief Get security state.
+ *
+ */
+LIB3270_EXPORT LIB3270_SSL_STATE lib3270_get_ssl_state(const H3270 *session);
 
-	/**
-	 * @brief Get security state as text.
-	 *
-	 */
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_message(const H3270 *hSession);
+/**
+ * @brief Get security state as text.
+ *
+ */
+LIB3270_EXPORT const char * lib3270_get_ssl_state_message(const H3270 *hSession);
 
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(const H3270 *hSession);
+LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(const H3270 *hSession);
 
-	/**
-	 * @brief Get security state message.
-	 *
-	 */
-	LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSession);
+/**
+ * @brief Get security state message.
+ *
+ */
+LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSession);
 
-	LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession);
-	LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession);
+LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession);
+LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession);
 
-	/**
-	 * @brief Disable automatic download of the CRL.
-	 *
-	 * @param hSession	Session handle.
-	 * @param Value		Non zero to enable automatic download of CRL.
-	 *
-	 * @return 0 if ok or error code if not (Sets errno).
-	 *
-	 * @retval	0 		Success, the property was set.
-	 * @retval	ENOTSUP	No SSL/TLS support.
-	 */
-	LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled);
+/**
+ * @brief Disable automatic download of the CRL.
+ *
+ * @param hSession	Session handle.
+ * @param Value		Non zero to enable automatic download of CRL.
+ *
+ * @return 0 if ok or error code if not (Sets errno).
+ *
+ * @retval	0 		Success, the property was set.
+ * @retval	ENOTSUP	No SSL/TLS support.
+ */
+LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled);
 
-	LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession);
+LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession);
 
 
 #ifdef __cplusplus
-	}
+}
 #endif
 
 #endif // LIB3270_SSL_H_INCLUDED

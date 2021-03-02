@@ -27,35 +27,29 @@
  *
  */
 
- #include <internals.h>
- #include <lib3270.h>
- #include <lib3270/actions.h>
- #include <lib3270/session.h>
- #include <lib3270/selection.h>
- #include <lib3270/log.h>
- #include "3270ds.h"
- #include "kybdc.h"
+#include <internals.h>
+#include <lib3270.h>
+#include <lib3270/actions.h>
+#include <lib3270/session.h>
+#include <lib3270/selection.h>
+#include <lib3270/log.h>
+#include "3270ds.h"
+#include "kybdc.h"
 
- /*--[ Implement ]------------------------------------------------------------------------------------*/
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void get_selected_addr(H3270 *session, int *start, int *end)
-{
-	if(session->select.start > session->select.end)
-	{
+static void get_selected_addr(H3270 *session, int *start, int *end) {
+	if(session->select.start > session->select.end) {
 		*end   = session->select.start;
 		*start = session->select.end;
-	}
-	else
-	{
+	} else {
 		*start = session->select.start;
 		*end   = session->select.end;
 	}
 }
 
-static void update_selected_rectangle(H3270 *session)
-{
-	struct
-	{
+static void update_selected_rectangle(H3270 *session) {
+	struct {
 		int row;
 		int col;
 	} p[2];
@@ -70,15 +64,13 @@ static void update_selected_rectangle(H3270 *session)
 	p[1].row = (end/session->view.cols);
 	p[1].col = (end%session->view.cols);
 
-	if(p[0].row > p[1].row)
-	{
+	if(p[0].row > p[1].row) {
 		int swp = p[0].row;
 		p[0].row = p[1].row;
 		p[1].row = swp;
 	}
 
-	if(p[0].col > p[1].col)
-	{
+	if(p[0].col > p[1].col) {
 		int swp = p[0].col;
 		p[0].col = p[1].col;
 		p[1].col = swp;
@@ -86,12 +78,9 @@ static void update_selected_rectangle(H3270 *session)
 
 	// First remove unselected areas
 	baddr = 0;
-	for(row=0;row < ((int) session->view.rows);row++)
-	{
-		for(col = 0; col < ((int) session->view.cols);col++)
-		{
-			if(!(row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && (session->text[baddr].attr & LIB3270_ATTR_SELECTED))
-			{
+	for(row=0; row < ((int) session->view.rows); row++) {
+		for(col = 0; col < ((int) session->view.cols); col++) {
+			if(!(row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && (session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 				session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
 				session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
 			}
@@ -101,12 +90,9 @@ static void update_selected_rectangle(H3270 *session)
 
 	// Then, draw selected ones
 	baddr = 0;
-	for(row=0;row < ((int) session->view.rows);row++)
-	{
-		for(col = 0; col < ((int) session->view.cols);col++)
-		{
-			if((row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && !(session->text[baddr].attr & LIB3270_ATTR_SELECTED))
-			{
+	for(row=0; row < ((int) session->view.rows); row++) {
+		for(col = 0; col < ((int) session->view.cols); col++) {
+			if((row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && !(session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 				session->text[baddr].attr |= LIB3270_ATTR_SELECTED;
 				session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
 			}
@@ -116,37 +102,30 @@ static void update_selected_rectangle(H3270 *session)
 
 }
 
-static void update_selected_region(H3270 *session)
-{
+static void update_selected_region(H3270 *session) {
 	int baddr,begin,end;
 	int len = session->view.rows * session->view.cols;
 
 	get_selected_addr(session,&begin,&end);
 
 	// First remove unselected areas
-	for(baddr = 0; baddr < begin; baddr++)
-	{
-		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED)
-		{
+	for(baddr = 0; baddr < begin; baddr++) {
+		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 			session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
 			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
 		}
 	}
 
-	for(baddr = end+1; baddr < len; baddr++)
-	{
-		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED)
-		{
+	for(baddr = end+1; baddr < len; baddr++) {
+		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 			session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
 			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
 		}
 	}
 
 	// Then draw the selected ones
-	for(baddr = begin; baddr <= end; baddr++)
-	{
-		if(!(session->text[baddr].attr & LIB3270_ATTR_SELECTED))
-		{
+	for(baddr = begin; baddr <= end; baddr++) {
+		if(!(session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 			session->text[baddr].attr |= LIB3270_ATTR_SELECTED;
 			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
 		}
@@ -154,8 +133,7 @@ static void update_selected_region(H3270 *session)
 
 }
 
-void toggle_rectselect(H3270 *hSession, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt))
-{
+void toggle_rectselect(H3270 *hSession, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE GNUC_UNUSED(tt)) {
 	if(!hSession->selected)
 		return;
 
@@ -167,8 +145,7 @@ void toggle_rectselect(H3270 *hSession, const struct lib3270_toggle *t, LIB3270_
 		update_selected_region(hSession);
 }
 
-int do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned int rect)
-{
+int do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned int rect) {
 	unsigned int length = (hSession->view.rows * hSession->view.cols);
 
 	if(end > length || start > length)
@@ -182,19 +159,15 @@ int do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned in
 	hSession->select.start		= start;
 	hSession->select.end 		= end;
 
-	if(rect)
-	{
+	if(rect) {
 		hSession->rectsel = 1;
 		update_selected_rectangle(hSession);
-	}
-	else
-	{
+	} else {
 		hSession->rectsel = 0;
 		update_selected_region(hSession);
 	}
 
-	if(!hSession->selected)
-	{
+	if(!hSession->selected) {
 		hSession->selected = 1;
 		hSession->cbk.set_selection(hSession,1);
 		lib3270_action_group_notify(hSession,LIB3270_ACTION_GROUP_SELECTION);
@@ -205,8 +178,7 @@ int do_select(H3270 *hSession, unsigned int start, unsigned int end, unsigned in
 	return 0;
 }
 
-LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int baddr) {
 	int row,col;
 	unsigned char rc = 0;
 
@@ -219,12 +191,9 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 	col = baddr % hSession->view.cols;
 	rc |= SELECTION_ACTIVE;
 
-	if( (hSession->select.start % hSession->view.cols) == (hSession->select.end % hSession->view.cols) )
-	{
+	if( (hSession->select.start % hSession->view.cols) == (hSession->select.end % hSession->view.cols) ) {
 		rc |= SELECTION_SINGLE_COL;
-	}
-	else
-	{
+	} else {
 		if( (col == 0) || !(hSession->text[baddr-1].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_LEFT;
 
@@ -234,12 +203,9 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 			rc |= SELECTION_RIGHT;
 	}
 
-	if( (hSession->select.start / hSession->view.cols) == (hSession->select.end / hSession->view.cols) )
-	{
+	if( (hSession->select.start / hSession->view.cols) == (hSession->select.end / hSession->view.cols) ) {
 		rc |= SELECTION_SINGLE_ROW;
-	}
-	else
-	{
+	} else {
 		if( (row == 0) || !(hSession->text[baddr-hSession->view.cols].attr & LIB3270_ATTR_SELECTED) )
 			rc |= SELECTION_TOP;
 
@@ -250,8 +216,7 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 	return rc;
 }
 
-LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, unsigned char all)
-{
+LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, unsigned char all) {
 	char *	text;
 	int 	maxlen;
 	int		sz = 0;
@@ -267,8 +232,7 @@ LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, u
 
 	text = lib3270_malloc(maxlen);
 
-	for(baddr=start_pos;baddr<end_pos;baddr++)
-	{
+	for(baddr=start_pos; baddr<end_pos; baddr++) {
 		if(all || h->text[baddr].attr & LIB3270_ATTR_SELECTED)
 			text[sz++] = (h->text[baddr].attr & LIB3270_ATTR_CG) ? ' ' : h->text[baddr].chr;
 
@@ -280,16 +244,14 @@ LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, u
 	return lib3270_realloc(text,sz);
 }
 
-LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf)
-{
+LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf) {
 	char * buffer;
 	int    maxlen;
 	char * ptr;
 
 	CHECK_SESSION_HANDLE(h);
 
-	if(!lib3270_is_connected(h))
-	{
+	if(!lib3270_is_connected(h)) {
 		errno = ENOTCONN;
 		return NULL;
 	}
@@ -298,8 +260,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 		offset = lib3270_get_cursor_address(h);
 
 	maxlen = (h->view.rows * (h->view.cols+ (lf ? 1 : 0) )) - offset;
-	if(maxlen <= 0 || offset < 0)
-	{
+	if(maxlen <= 0 || offset < 0) {
 		errno = EOVERFLOW;
 		return NULL;
 	}
@@ -314,8 +275,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 
 	// trace("len=%d buffer=%p",len,buffer);
 
-	while(len > 0)
-	{
+	while(len > 0) {
 		if(h->text[offset].attr & LIB3270_ATTR_CG)
 			*ptr = ' ';
 		else if(h->text[offset].chr)
@@ -327,8 +287,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 		offset++;
 		len--;
 
-		if(lf && (offset%h->view.cols) == 0 && len > 0)
-		{
+		if(lf && (offset%h->view.cols) == 0 && len > 0) {
 			*(ptr++) = lf;
 			len--;
 		}
@@ -340,8 +299,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	return buffer;
 }
 
-LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf)
-{
+LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf) {
 	CHECK_SESSION_HANDLE(h);
 
 	int baddr = lib3270_translate_to_address(h,row,col);
@@ -351,8 +309,7 @@ LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned
 	return lib3270_get_string_at_address(h, baddr, len, lf);
 }
 
-LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf)
-{
+LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf) {
 	int baddr = lib3270_translate_to_address(h,row,col);
 	if(baddr < 0)
 		return -1;
@@ -360,8 +317,7 @@ LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned in
 	return lib3270_cmp_string_at_address(h,baddr,text,lf);
 }
 
- LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf)
- {
+LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf) {
 	int		  rc;
 	size_t	  sz		= strlen(text);
 	char	* contents;
@@ -375,7 +331,7 @@ LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned in
 	lib3270_free(contents);
 
 	return rc;
- }
+}
 
 
 /**
@@ -386,8 +342,7 @@ LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned in
  *
  * @return String with the field contents (release it with lib3270_free()
  */
-LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr)
-{
+LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr) {
 	int first = lib3270_field_addr(session,baddr);
 
 	if(first < 0)
@@ -396,8 +351,7 @@ LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr)
 	return lib3270_get_string_at_address(session,first,lib3270_field_length(session,first)+1,0);
 }
 
-LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession) {
 	errno = 0;
 	if(check_online_session(hSession))
 		return 0;
@@ -409,8 +363,7 @@ LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession) {
 	return lib3270_get_has_selection(hSession);
 }
 
-LIB3270_EXPORT int lib3270_get_has_copy(const H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_get_has_copy(const H3270 *hSession) {
 	errno = 0;
 	if(check_online_session(hSession))
 		return 0;
@@ -425,8 +378,7 @@ LIB3270_EXPORT void lib3270_set_has_copy(H3270 *hSession, int has_copy) {
 
 
 
-LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height)
-{
+LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height) {
 	unsigned int r, c, minRow, minCol, maxRow, maxCol, baddr, count;
 
 	if(check_online_session(hSession))
@@ -442,12 +394,9 @@ LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int
 	baddr  = 0;
 	count  = 0;
 
-	for(r=0;r < hSession->view.rows;r++)
-	{
-		for(c = 0; c < hSession->view.cols;c++)
-		{
-			if(hSession->text[baddr].attr & LIB3270_ATTR_SELECTED)
-			{
+	for(r=0; r < hSession->view.rows; r++) {
+		for(c = 0; c < hSession->view.cols; c++) {
+			if(hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 				count++;
 
 				if(c < minCol)
@@ -479,12 +428,10 @@ LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_erase_selected(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_erase_selected(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	if (hSession->kybdlock)
-	{
+	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_erase_selected);
 		return 0;
 	}
@@ -492,17 +439,15 @@ LIB3270_EXPORT int lib3270_erase_selected(H3270 *hSession)
 	unsigned int baddr = 0;
 	unsigned char fa = 0;
 
-	for(baddr = 0; baddr < lib3270_get_length(hSession); baddr++)
-	{
+	for(baddr = 0; baddr < lib3270_get_length(hSession); baddr++) {
 		if(hSession->ea_buf[baddr].fa) {
 			fa = hSession->ea_buf[baddr].fa;
 		}
 
-		if( (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) && !FA_IS_PROTECTED(fa))
-		{
+		if( (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) && !FA_IS_PROTECTED(fa)) {
 			clear_chr(hSession,baddr);
 		}
 	}
 
-    return -1;
+	return -1;
 }

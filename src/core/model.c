@@ -27,30 +27,27 @@
  *
  */
 
- #include <internals.h>
- #include <stdlib.h>
- #include "screen.h"
- #include "ctlrc.h"
- #include "popupsc.h"
- #include <lib3270/trace.h>
- #include <lib3270/log.h>
- #include <lib3270/properties.h>
+#include <internals.h>
+#include <stdlib.h>
+#include "screen.h"
+#include "ctlrc.h"
+#include "popupsc.h"
+#include <lib3270/trace.h>
+#include <lib3270/log.h>
+#include <lib3270/properties.h>
 
- const char * lib3270_get_oversize(const H3270 *hSession)
- {
- 	return hSession->oversize.str;
- }
+const char * lib3270_get_oversize(const H3270 *hSession) {
+	return hSession->oversize.str;
+}
 
- int lib3270_set_oversize(H3270 *hSession, const char *value)
- {
+int lib3270_set_oversize(H3270 *hSession, const char *value) {
 	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
 
 	if(!hSession->extended)
 		return errno = ENOTSUP;
 
-	if(hSession->oversize.str)
-	{
+	if(hSession->oversize.str) {
 		// Do nothing if it's the same value!
 		if(value && !strcasecmp(hSession->oversize.str,value))
 			return 0;
@@ -61,8 +58,7 @@
 
 	int ovc = 0, ovr = 0;
 
-	if(value)
-	{
+	if(value) {
 		char junk;
 
 		if(sscanf(value, "%dx%d%c", &ovc, &ovr, &junk) != 2)
@@ -78,7 +74,7 @@
 
 	return 0;
 
- }
+}
 
 /**
  * @brief Get current 3270 model.
@@ -86,31 +82,27 @@
  * @param hSession selected 3270 session.
  * @return Current model number.
  */
-unsigned int lib3270_get_model_number(const H3270 *hSession)
-{
+unsigned int lib3270_get_model_number(const H3270 *hSession) {
 	return hSession->model_num;
 }
 
-const char * lib3270_get_model(const H3270 *hSession)
-{
+const char * lib3270_get_model(const H3270 *hSession) {
 	return hSession->model_name;
 }
 
-const char * lib3270_get_model_name(const H3270 *hSession)
-{
+const char * lib3270_get_model_name(const H3270 *hSession) {
 	return hSession->model_name;
 }
 
- /**
-  * @brief Parse the model number.
-  *
-  * @param session	Session Handle.
-  * @param m		Model number (NULL for "2").
-  *
-  * @return -1 (error), 0 (default), or the specified number.
-  */
-static int parse_model_number(H3270 *session, const char *m)
-{
+/**
+ * @brief Parse the model number.
+ *
+ * @param session	Session Handle.
+ * @param m		Model number (NULL for "2").
+ *
+ * @return -1 (error), 0 (default), or the specified number.
+ */
+static int parse_model_number(H3270 *session, const char *m) {
 	int sl;
 	int n;
 
@@ -128,16 +120,11 @@ static int parse_model_number(H3270 *session, const char *m)
 		// If it's longer than one character, it needs to start with
 		// '327[89]', and it sets the m3279 resource.
 
-		if (!strncmp(m, "3278", 4))
-		{
+		if (!strncmp(m, "3278", 4)) {
 			session->m3279 = 0;
-		}
-		else if (!strncmp(m, "3279", 4))
-		{
+		} else if (!strncmp(m, "3279", 4)) {
 			session->m3279 = 1;
-		}
-		else
-		{
+		} else {
 			return -1;
 		}
 		m += 4;
@@ -179,26 +166,22 @@ static int parse_model_number(H3270 *session, const char *m)
 
 }
 
-int lib3270_set_model_name(H3270 *hSession, const char *model_name)
-{
+int lib3270_set_model_name(H3270 *hSession, const char *model_name) {
 	return lib3270_set_model_number(hSession,parse_model_number(hSession, model_name));
 }
 
-int lib3270_set_model(H3270 *hSession, const char *model_name)
-{
+int lib3270_set_model(H3270 *hSession, const char *model_name) {
 	return lib3270_set_model_number(hSession,parse_model_number(hSession, model_name));
 }
 
-int lib3270_set_model_number(H3270 *hSession, unsigned int model_number)
-{
+int lib3270_set_model_number(H3270 *hSession, unsigned int model_number) {
 	if(hSession->connection.state != LIB3270_NOT_CONNECTED)
 		return errno = EISCONN;
 
 	strncpy(hSession->full_model_name,"IBM-",LIB3270_FULL_MODEL_NAME_LENGTH);
 	hSession->model_name = &hSession->full_model_name[4];
 
-	if (!model_number)
-	{
+	if (!model_number) {
 #if defined(RESTRICT_3279)
 		model_number = 3;
 #else
@@ -211,8 +194,7 @@ int lib3270_set_model_number(H3270 *hSession, unsigned int model_number)
 	else
 		hSession->m3279 = 1;
 
-	if(!hSession->extended)
-	{
+	if(!hSession->extended) {
 		if(hSession->oversize.str)
 			lib3270_free(hSession->oversize.str);
 		hSession->oversize.str = CN;
@@ -229,8 +211,7 @@ int lib3270_set_model_number(H3270 *hSession, unsigned int model_number)
 	char junk;
 	int ovc, ovr;
 
-	if (!hSession->extended || hSession->oversize.str == CN || sscanf(hSession->oversize.str, "%dx%d%c", &ovc, &ovr, &junk) != 2)
-	{
+	if (!hSession->extended || hSession->oversize.str == CN || sscanf(hSession->oversize.str, "%dx%d%c", &ovc, &ovr, &junk) != 2) {
 		ovc = 0;
 		ovr = 0;
 	}

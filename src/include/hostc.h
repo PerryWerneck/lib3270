@@ -35,10 +35,10 @@
  *	@brief Global declarations for host.c.
  */
 
- /// @brief Signal a state change.
- LIB3270_INTERNAL void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode);
+/// @brief Signal a state change.
+LIB3270_INTERNAL void lib3270_st_changed(H3270 *h, LIB3270_STATE tx, int mode);
 
- LIB3270_INTERNAL void host_in3270(H3270 *session, LIB3270_CSTATE);
+LIB3270_INTERNAL void host_in3270(H3270 *session, LIB3270_CSTATE);
 
- LIB3270_INTERNAL int host_disconnect(H3270 *h, int failed);
+LIB3270_INTERNAL int host_disconnect(H3270 *h, int failed);
 

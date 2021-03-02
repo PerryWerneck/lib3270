@@ -130,7 +130,7 @@ static const LIB3270_FT_MESSAGE ftmsg[] = {
 		N_("Missing or incorrect CMS data set name: file transfer canceled"),
 		N_("You did not specify the CMS data set name, or the specified CMS data set name is incorrect.")
 	},
-*/
+	*/
 
 	{
 		"TRANS18",
@@ -227,14 +227,11 @@ static const LIB3270_FT_MESSAGE ftmsg[] = {
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT const LIB3270_FT_MESSAGE * lib3270_translate_ft_message(const char *msg)
-{
+LIB3270_EXPORT const LIB3270_FT_MESSAGE * lib3270_translate_ft_message(const char *msg) {
 	size_t ix;
 
-	for(ix = 0; ix < (sizeof(ftmsg)/sizeof(ftmsg[0])); ix++)
-	{
-		if(strncasecmp(msg,ftmsg[ix].id,7) == 0)
-		{
+	for(ix = 0; ix < (sizeof(ftmsg)/sizeof(ftmsg[0])); ix++) {
+		if(strncasecmp(msg,ftmsg[ix].id,7) == 0) {
 			return &ftmsg[ix];
 		}
 	}

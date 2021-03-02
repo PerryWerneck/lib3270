@@ -27,34 +27,30 @@
  *
  */
 
- #include <internals.h>
- #include <lib3270.h>
- #include <lib3270/actions.h>
- #include <lib3270/session.h>
- #include <lib3270/selection.h>
- #include <lib3270/log.h>
- #include <lib3270/trace.h>
- #include <lib3270/toggle.h>
- #include "3270ds.h"
+#include <internals.h>
+#include <lib3270.h>
+#include <lib3270/actions.h>
+#include <lib3270/session.h>
+#include <lib3270/selection.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
+#include <lib3270/toggle.h>
+#include "3270ds.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_unselect(H3270 *hSession) {
 	int a;
 
 	CHECK_SESSION_HANDLE(hSession);
 
 	trace("%s",__FUNCTION__);
 
-	if(hSession->selected)
-	{
+	if(hSession->selected) {
 		hSession->selected = 0;
 
-		for(a = 0; a < ((int) (hSession->view.rows * hSession->view.cols)); a++)
-		{
-			if(hSession->text[a].attr & LIB3270_ATTR_SELECTED)
-			{
+		for(a = 0; a < ((int) (hSession->view.rows * hSession->view.cols)); a++) {
+			if(hSession->text[a].attr & LIB3270_ATTR_SELECTED) {
 				hSession->text[a].attr &= ~LIB3270_ATTR_SELECTED;
 				if(hSession->cbk.update)
 					hSession->cbk.update(hSession,a,hSession->text[a].chr,hSession->text[a].attr,a == hSession->cursor_addr);
@@ -71,8 +67,7 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession)
 	return 0;
 }
 
-LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr)
-{
+LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr) {
 	int start, end;
 
 	CHECK_SESSION_HANDLE(session);
@@ -88,8 +83,7 @@ LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr)
 
 }
 
-LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
-{
+LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end) {
 	int maxlen;
 
 	CHECK_SESSION_HANDLE(h);
@@ -108,13 +102,11 @@ LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_select_word(H3270 *session)
-{
+LIB3270_EXPORT int lib3270_select_word(H3270 *session) {
 	return lib3270_select_word_at(session,-1);
 }
 
-LIB3270_EXPORT int lib3270_select_word_at(H3270 *session, int baddr)
-{
+LIB3270_EXPORT int lib3270_select_word_at(H3270 *session, int baddr) {
 	int start, end;
 
 	if(lib3270_get_word_bounds(session,baddr,&start,&end))
@@ -127,8 +119,7 @@ LIB3270_EXPORT int lib3270_select_word_at(H3270 *session, int baddr)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_select_field_at(H3270 *session, int baddr)
-{
+LIB3270_EXPORT int lib3270_select_field_at(H3270 *session, int baddr) {
 	int start, end;
 
 	if(lib3270_get_field_bounds(session,baddr,&start,&end))
@@ -139,15 +130,13 @@ LIB3270_EXPORT int lib3270_select_field_at(H3270 *session, int baddr)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_select_field(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_select_field(H3270 *hSession) {
 	CHECK_SESSION_HANDLE(hSession);
 	lib3270_select_field_at(hSession,hSession->cursor_addr);
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_select_all(H3270 * hSession)
-{
+LIB3270_EXPORT int lib3270_select_all(H3270 * hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	do_select(hSession,0,(hSession->view.rows * hSession->view.cols)-1,0);
@@ -155,8 +144,7 @@ LIB3270_EXPORT int lib3270_select_all(H3270 * hSession)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_reselect(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_reselect(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(hSession->select.start == hSession->select.end || hSession->selected)
@@ -167,8 +155,7 @@ LIB3270_EXPORT int lib3270_reselect(H3270 *hSession)
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int *end)
-{
+LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int *end) {
 	int first, last;
 
 	CHECK_SESSION_HANDLE(hSession);
@@ -176,13 +163,10 @@ LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int
 	if(!hSession->selected || hSession->select.start == hSession->select.end)
 		return 0;
 
-	if(hSession->select.end > hSession->select.start)
-	{
+	if(hSession->select.end > hSession->select.start) {
 		first = hSession->select.start;
 		last  = hSession->select.end;
-	}
-	else
-	{
+	} else {
 		first = hSession->select.end;
 		last  = hSession->select.start;
 	}
@@ -196,8 +180,7 @@ LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int
 	return 1;
 }
 
-LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to)
-{
+LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to) {
 	int pos[2];
 	int rows, cols, f, step;
 
@@ -210,8 +193,7 @@ LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to)
 	rows = (to / hSession->view.cols) - (from / hSession->view.cols);
 	cols = (to % hSession->view.cols) - (from % hSession->view.cols);
 
-	for(f=0;f<2;f++)
-	{
+	for(f=0; f<2; f++) {
 		int row  = (pos[f] / hSession->view.cols) + rows;
 		int col  = (pos[f] % hSession->view.cols) + cols;
 
@@ -236,22 +218,21 @@ LIB3270_EXPORT int lib3270_move_selected_area(H3270 *hSession, int from, int to)
 	return from+step;
 }
 
-LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int origin, int baddr)
-{
+LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int origin, int baddr) {
 	int first, last, row, col;
 
 	if(!lib3270_get_selection_bounds(h,&first,&last))
 		return origin;
 
-/*
-	trace("%s: flag=%04x %s %s %s %s",__FUNCTION__,
-				flag,
-				flag & SELECTION_LEFT	? "Left"	: "-",
-				flag & SELECTION_TOP	? "Top"		: "-",
-				flag & SELECTION_RIGHT	? "Right"	: "-",
-				flag & SELECTION_BOTTOM	? "Bottom"	: "-"
-				);
-*/
+	/*
+		trace("%s: flag=%04x %s %s %s %s",__FUNCTION__,
+					flag,
+					flag & SELECTION_LEFT	? "Left"	: "-",
+					flag & SELECTION_TOP	? "Top"		: "-",
+					flag & SELECTION_RIGHT	? "Right"	: "-",
+					flag & SELECTION_BOTTOM	? "Bottom"	: "-"
+					);
+	*/
 
 	if(!flag)
 		return origin;
@@ -285,8 +266,7 @@ LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int orig
 	return origin;
 }
 
-LIB3270_EXPORT int lib3270_move_selection(H3270 *hSession, LIB3270_DIRECTION dir)
-{
+LIB3270_EXPORT int lib3270_move_selection(H3270 *hSession, LIB3270_DIRECTION dir) {
 	int start, end;
 
 	if(!hSession->selected || hSession->select.start == hSession->select.end)
@@ -295,8 +275,7 @@ LIB3270_EXPORT int lib3270_move_selection(H3270 *hSession, LIB3270_DIRECTION dir
 	start = hSession->select.start;
 	end   = hSession->select.end;
 
-	switch(dir)
-	{
+	switch(dir) {
 	case LIB3270_DIR_UP:
 		if(start <= ((int) hSession->view.cols))
 			return EINVAL;

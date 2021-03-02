@@ -29,16 +29,16 @@
 
 #ifndef LIB3270_DEFAULT_MODULE_PRIVATE_H_INCLUDED
 
-	#define LIB3270_DEFAULT_MODULE_PRIVATE_H_INCLUDED
+#define LIB3270_DEFAULT_MODULE_PRIVATE_H_INCLUDED
 
-	#include <config.h>
-	#include <lib3270.h>
- 	#include <lib3270/log.h>
- 	#include <internals.h>
+#include <config.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
+#include <internals.h>
 
-	struct _lib3270_net_context {
-		int sock;
-	};
+struct _lib3270_net_context {
+	int sock;
+};
 
 
 #endif // !LIB3270_OPENSSL_MODULE_PRIVATE_H_INCLUDED

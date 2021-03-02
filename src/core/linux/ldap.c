@@ -45,32 +45,28 @@ typedef char LDAPPTR;
 
 //--[ Implement ]------------------------------------------------------------------------------------
 
-static inline void lib3270_autoptr_cleanup_LDAPMessage(LDAPMessage **message)
-{
+static inline void lib3270_autoptr_cleanup_LDAPMessage(LDAPMessage **message) {
 	debug("%s(%p)",__FUNCTION__,*message);
 	if(message)
 		ldap_msgfree(*message);
 	*message = NULL;
 }
 
-static inline void lib3270_autoptr_cleanup_LDAP(LDAP **ld)
-{
+static inline void lib3270_autoptr_cleanup_LDAP(LDAP **ld) {
 	debug("%s(%p)",__FUNCTION__,*ld);
 	if(*ld)
 		ldap_unbind_ext(*ld, NULL, NULL);
 	*ld = NULL;
 }
 
-static inline void lib3270_autoptr_cleanup_BerElement(BerElement **ber)
-{
+static inline void lib3270_autoptr_cleanup_BerElement(BerElement **ber) {
 	debug("%s(%p)",__FUNCTION__,*ber);
 	if(*ber)
 		ber_free(*ber, 0);
 	*ber = NULL;
 }
 
-static inline void lib3270_autoptr_cleanup_LDAPPTR(char **ptr)
-{
+static inline void lib3270_autoptr_cleanup_LDAPPTR(char **ptr) {
 	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
 		ldap_memfree(*ptr);
@@ -128,18 +124,18 @@ X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *url, const ch
 
 	lib3270_autoptr(LDAPMessage) results = NULL;
 	rc = ldap_search_ext_s(
-				ld,						// Specifies the LDAP pointer returned by a previous call to ldap_init(), ldap_ssl_init(), or ldap_open().
-				base,					// Specifies the DN of the entry at which to start the search.
-				LDAP_SCOPE_BASE,		// Specifies the scope of the search.
-				NULL,					// Specifies a string representation of the filter to apply in the search.
-				(char **)  &attrs,		// Specifies a null-terminated array of character string attribute types to return from entries that match filter.
-				0,						// Should be set to 1 to request attribute types only. Set to 0 to request both attributes types and attribute values.
-				NULL,
-				NULL,
-				NULL,
-				0,
-				&results
-			);
+	         ld,						// Specifies the LDAP pointer returned by a previous call to ldap_init(), ldap_ssl_init(), or ldap_open().
+	         base,					// Specifies the DN of the entry at which to start the search.
+	         LDAP_SCOPE_BASE,		// Specifies the scope of the search.
+	         NULL,					// Specifies a string representation of the filter to apply in the search.
+	         (char **)  &attrs,		// Specifies a null-terminated array of character string attribute types to return from entries that match filter.
+	         0,						// Should be set to 1 to request attribute types only. Set to 0 to request both attributes types and attribute values.
+	         NULL,
+	         NULL,
+	         NULL,
+	         0,
+	         &results
+	     );
 
 	if(rc != LDAP_SUCCESS) {
 		*error = ldap_err2string(rc);

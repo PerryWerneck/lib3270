@@ -29,18 +29,18 @@
  *
  */
 
- /**
-  * @brief Popup calls
-  *
-  */
+/**
+ * @brief Popup calls
+ *
+ */
 
- #include <lib3270.h>
+#include <lib3270.h>
 
- #define popup_an_errno(hSession, errn, fmt, ...) lib3270_popup_an_errno(hSession, errn, fmt, __VA_ARGS__)
+#define popup_an_errno(hSession, errn, fmt, ...) lib3270_popup_an_errno(hSession, errn, fmt, __VA_ARGS__)
 
- LIB3270_INTERNAL void popup_an_error(H3270 *session, const char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
- LIB3270_INTERNAL void popup_system_error(H3270 *session, const char *title, const char *message, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
- LIB3270_INTERNAL void popup_a_sockerr(H3270 *session, char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
+LIB3270_INTERNAL void popup_an_error(H3270 *session, const char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
+LIB3270_INTERNAL void popup_system_error(H3270 *session, const char *title, const char *message, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
+LIB3270_INTERNAL void popup_a_sockerr(H3270 *session, char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
 
- LIB3270_INTERNAL void Error(H3270 *session, const char *fmt, ...);
- LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
+LIB3270_INTERNAL void Error(H3270 *session, const char *fmt, ...);
+LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);

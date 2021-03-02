@@ -28,8 +28,8 @@
  */
 
 #ifdef WIN32
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 #endif // WIN32
 
 #include <config.h>				/* autoconf settings */
@@ -43,26 +43,26 @@
 #include <lib3270/os.h>
 
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
-	#include <openssl/x509.h>
+#include <openssl/x509.h>
 #endif // !HAVE_LDAP && HAVE_LIBSSL
 
 #if defined(X3270_TN3270E) && !defined(X3270_ANSI) /*[*/
-		#define X3270_ANSI	1	// RFC2355 requires NVT mode
+#define X3270_ANSI	1	// RFC2355 requires NVT mode
 #endif /*]*/
 
 #if defined(HAVE_VASPRINTF) && !defined(_GNU_SOURCE) /*[*/
-	#define _GNU_SOURCE		// vasprintf isn't POSIX
+#define _GNU_SOURCE		// vasprintf isn't POSIX
 #endif /*]*/
 
 // gettext stuff
 #ifdef HAVE_LIBINTL
-	#include <locale.h>
-	#include <libintl.h>
-	#define _( x ) 			dgettext(GETTEXT_PACKAGE,x)
-	#define N_( x ) 		x
+#include <locale.h>
+#include <libintl.h>
+#define _( x ) 			dgettext(GETTEXT_PACKAGE,x)
+#define N_( x ) 		x
 #else
-	#define _( x ) 			x
-	#define N_( x ) 		x
+#define _( x ) 			x
+#define N_( x ) 		x
 #endif // HAVE_LIBINTL
 
 #define action_name(x)  #x
@@ -74,25 +74,25 @@
 //
 #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
 
-	#define GNUC_UNUSED \
+#define GNUC_UNUSED \
 		__attribute__((__unused__))
 
 #else
 
-	#define unused
-	#define GNUC_UNUSED
-	#define printflike(s, f)
+#define unused
+#define GNUC_UNUSED
+#define printflike(s, f)
 
 #endif
 
 #if defined(_WIN32) || defined(_MSC_VER)
 
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 
 #else
 
-	#include <sys/time.h>			/* System time-related data types */
+#include <sys/time.h>			/* System time-related data types */
 
 #endif // _WIN32
 
@@ -110,8 +110,8 @@
  * Cancel out contradictory parts.
  */
 #if !defined(X3270_DISPLAY) /*[*/
-	#undef X3270_KEYPAD
-	#undef X3270_MENUS
+#undef X3270_KEYPAD
+#undef X3270_MENUS
 #endif /*]*/
 
 #define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
@@ -129,7 +129,7 @@ enum iaction {
 };
 
 #if defined(X3270_DBCS) /*[*/
-	LIB3270_INTERNAL Boolean		dbcs;
+LIB3270_INTERNAL Boolean		dbcs;
 #endif /*]*/
 
 /// @brief State macros
@@ -170,33 +170,31 @@ enum iaction {
 /*   Equivalent of setlinebuf */
 
 #if defined(_IOLBF) /*[*/
-	#define SETLINEBUF(s)	setvbuf(s, (char *)NULL, _IOLBF, BUFSIZ)
+#define SETLINEBUF(s)	setvbuf(s, (char *)NULL, _IOLBF, BUFSIZ)
 #else /*][*/
-	#define SETLINEBUF(s)	setlinebuf(s)
+#define SETLINEBUF(s)	setlinebuf(s)
 #endif /*]*/
 
 /*   Motorola version of gettimeofday */
 
 #if defined(MOTOROLA)
-	#define gettimeofday(tp,tz)	gettimeofday(tp)
+#define gettimeofday(tp,tz)	gettimeofday(tp)
 #endif
 
 /* Default DFT file transfer buffer size. */
 #if defined(X3270_FT) && !defined(DFT_BUF) /*[*/
-	#define DFT_BUF		(4 * 1024)
+#define DFT_BUF		(4 * 1024)
 #endif /*]*/
 
 /**
  * @brief input key type
  */
-enum keytype
-{
+enum keytype {
 	KT_STD,
 	KT_GE
 };
 
-LIB3270_INTERNAL struct _ansictl
-{
+LIB3270_INTERNAL struct _ansictl {
 	char     vintr;
 	char     vquit;
 	char     verase;
@@ -210,8 +208,7 @@ LIB3270_INTERNAL struct _ansictl
 /**
  * @brief Extended attributes
  */
-struct lib3270_ea
-{
+struct lib3270_ea {
 	unsigned char cc;		///< @brief EBCDIC or ASCII character code
 	unsigned char fa;		///< @brief field attribute, it nonzero
 	unsigned char fg;		///< @brief foreground color (0x00 or 0xf<n>)
@@ -222,14 +219,13 @@ struct lib3270_ea
 	unsigned char db;		///< @brief DBCS state
 };
 
-struct lib3270_text
-{
+struct lib3270_text {
 	unsigned char  chr;		///< @brief ASCII character code
 	unsigned short attr;	///< @brief Converted character attribute (color & etc)
 };
 
 #ifndef LIB3270_TA
-	#define LIB3270_TA void
+#define LIB3270_TA void
 #endif // !LIB3270_TA
 
 #define LIB3270_MB_MAX					16
@@ -244,8 +240,7 @@ struct lib3270_text
  * @brief Timeout control structure.
  *
  */
-typedef struct timeout
-{
+typedef struct timeout {
 	LIB3270_LINKED_LIST_HEAD
 
 	unsigned char in_play;
@@ -266,8 +261,7 @@ typedef struct timeout
  * @brief I/O events.
  *
  */
-typedef struct _input_t
-{
+typedef struct _input_t {
 	LIB3270_LINKED_LIST_HEAD
 
 	unsigned char	  enabled;
@@ -278,15 +272,13 @@ typedef struct _input_t
 
 } input_t;
 
-struct lib3270_state_callback
-{
+struct lib3270_state_callback {
 	LIB3270_LINKED_LIST_HEAD
 
 	void (*func)(H3270 *, int, void *);							/**< @brief Function to call */
 };
 
-struct lib3270_toggle_callback
-{
+struct lib3270_toggle_callback {
 	LIB3270_LINKED_LIST_HEAD
 
 	void (*func)(H3270 *, LIB3270_TOGGLE_ID, char, void *);		/**< @brief Function to call */
@@ -297,8 +289,7 @@ struct lib3270_toggle_callback
  * @brief lib3270 session data
  *
  */
-struct _h3270
-{
+struct _h3270 {
 	struct lib3270_session_callbacks	  cbk;					///< @brief Callback table - Always the first one.
 
 	/// @brief Session Identifier.
@@ -353,8 +344,7 @@ struct _h3270
 	unsigned int			  formatted					: 1;	///< @brief Formatted screen flag
 	unsigned int			  starting					: 1;	///< @brief Is starting (no first screen)?
 
-	struct lib3270_toggle
-	{
+	struct lib3270_toggle {
 		char value;																		///< toggle value
 		void (*upcall)(H3270 *, const struct lib3270_toggle *, LIB3270_TOGGLE_TYPE);	///< change value
 	} toggle[LIB3270_TOGGLE_COUNT];
@@ -366,8 +356,7 @@ struct _h3270
 	unsigned int			  model_num;
 	char  	     	    	* termtype;
 
-	struct
-	{
+	struct {
 		char 	   	    	* url;				/**< The host URL, for use in reconnecting */
 		char				* current;			/**< The hostname part, stripped of qualifiers, luname and port number */
 		char				* srvc;				/**< The service name */
@@ -378,8 +367,7 @@ struct _h3270
 
 	struct lib3270_charset	  charset;
 
-	struct
-	{
+	struct {
 		LIB3270_MESSAGE		  status;
 		unsigned char		  flag[LIB3270_FLAG_COUNT];
 	} oia;
@@ -392,16 +380,14 @@ struct _h3270
 	// screen info
 
 	// Oversize.
-	struct
-	{
+	struct {
 		char				* str;
 		unsigned int		  rows;
 		unsigned int		  cols;
 	} oversize;
 
 	// Maximum screen size.
-	struct
-	{
+	struct {
 		unsigned int		  rows;
 		unsigned int		  cols;
 	} max;
@@ -468,8 +454,7 @@ struct _h3270
 	char					  plu_name[LIB3270_BIND_PLU_NAME_MAX+1];
 
 	/// @brief LU
-	struct
-	{
+	struct {
 		char		  reported[LIB3270_LU_MAX+1];
 		const char	* associated;						///< @brief The LU name associated with the session.
 		char		**names;							///< @brief Array with the LU names to try.
@@ -481,8 +466,7 @@ struct _h3270
 	char					  reported_type[LIB3270_LU_MAX+1];
 
 	// TN3270e
-	enum
-	{
+	enum {
 		E_NONE,
 		E_3270,
 		E_NVT,
@@ -501,8 +485,7 @@ struct _h3270
 	unsigned char 			* ibptr;
 
 	// Output buffer.
-	struct
-	{
+	struct {
 		unsigned char		* buf;				///< @brief 3270 output buffer */
 		unsigned char 		* base;
 		int					  length;			///< @brief Length of the output buffer.
@@ -545,8 +528,7 @@ struct _h3270
 
 	// selection
 	char					* paste_buffer;
-	struct
-	{
+	struct {
 		int start;
 		int end;
 	} select;
@@ -584,8 +566,7 @@ struct _h3270
 	int						  cs_to_change;
 
 	/** @brief ANSI Character sets. */
-	enum lib3270_ansi_cs
-	{
+	enum lib3270_ansi_cs {
 		LIB3270_ANSI_CS_G0 = 0,
 		LIB3270_ANSI_CS_G1 = 1,
 		LIB3270_ANSI_CS_G2 = 2,
@@ -594,16 +575,14 @@ struct _h3270
 	enum lib3270_ansi_cs	  saved_cset;
 
 	/** @brief Character set designations. */
-	enum lib3270_ansi_csd
-	{
+	enum lib3270_ansi_csd {
 		LIB3270_ANSI_CSD_LD = 0,
 		LIB3270_ANSI_CSD_UK = 1,
 		LIB3270_ANSI_CSD_US = 2
 	} 						  csd[4];
 	enum lib3270_ansi_csd 	  saved_csd[4];
 
-	enum lib3270_ansi_state
-	{
+	enum lib3270_ansi_state {
 		LIB3270_ANSI_STATE_DATA		= 0,
 		LIB3270_ANSI_STATE_ESC		= 1,
 		LIB3270_ANSI_STATE_CSDES	= 2,
@@ -637,21 +616,18 @@ struct _h3270
 
 	struct lib3270_linked_list_head timeouts;
 
-	struct
-	{
+	struct {
 		struct lib3270_linked_list_head	list;
 		unsigned int changed : 1;
 	} input;
 
 	// Trace methods.
-	struct
-	{
+	struct {
 		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
 		void *userdata;
 	} trace;
 
-	struct
-	{
+	struct {
 		unsigned int					  host			: 1;		///< @brief Non zero if host requires SSL.
 		unsigned int					  download_crl	: 1;		///< @brief Non zero to download CRL.
 		LIB3270_SSL_STATE				  state;
@@ -661,8 +637,7 @@ struct _h3270
 	} ssl;
 
 	/// @brief Event Listeners.
-	struct
-	{
+	struct {
 		/// @brief State listeners.
 		struct lib3270_linked_list_head state[LIB3270_STATE_USER];
 
@@ -716,11 +691,11 @@ LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, 
 LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
 
 #if defined(DEBUG)
-	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);
-	LIB3270_INTERNAL void check_session_handle(H3270 **hSession, const char *fname);
+#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);
+LIB3270_INTERNAL void check_session_handle(H3270 **hSession, const char *fname);
 #else
-	#define CHECK_SESSION_HANDLE(x) check_session_handle(&x);
-	LIB3270_INTERNAL void check_session_handle(H3270 **hSession);
+#define CHECK_SESSION_HANDLE(x) check_session_handle(&x);
+LIB3270_INTERNAL void check_session_handle(H3270 **hSession);
 #endif // DEBUG
 
 /**
@@ -748,84 +723,84 @@ LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 
 LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 
-	/// @brief Clear element at adress.
-	LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
+/// @brief Clear element at adress.
+LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 
-	LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
+LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
 
-	/// @brief Default log writer.
-	LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
+/// @brief Default log writer.
+LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
 
-	LIB3270_INTERNAL char * lib3270_get_user_name();
+LIB3270_INTERNAL char * lib3270_get_user_name();
 
-	/// @brief Query data from URL.
-	///
-	/// @param hSession		Handle of the TN3270 Session.
-	/// @param url			The url to get.
-	/// @param length		Pointer to the response lenght (can be NULL).
-	/// @param error		Pointer to the detailed error message.
-	///
-	/// @return The data from URL (release it with lib3270_free) or NULL on error.
-	///
-	LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, const char **error);
+/// @brief Query data from URL.
+///
+/// @param hSession		Handle of the TN3270 Session.
+/// @param url			The url to get.
+/// @param length		Pointer to the response lenght (can be NULL).
+/// @param error		Pointer to the detailed error message.
+///
+/// @return The data from URL (release it with lib3270_free) or NULL on error.
+///
+LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, const char **error);
 
-	/// @brief Load text file.
-	///
-	/// @param hSession		Handle of the TN3270 Session.
-	/// @param filename		The file name.
-	///
-	/// @return The file contents (release it with lib3270_free or NULL on error (sets errno).
-	///
-	LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 *hSession, const char *filename);
-
-
-	/// @brief Fire CState change.
-	LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
-
-	///
-	/// @brief Start TLS/SSL
-	///
-	/// @param hSession	Session handle.
-	/// @param required	Non zero if the SSL/TLS is not optional.
-	///
-	/// @return 0 if ok, non zero if failed.
-	///
-	/// @retval ENOTSUP	TLS/SSL is not supported by library.
-	///
-	LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
-
-	LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
+/// @brief Load text file.
+///
+/// @param hSession		Handle of the TN3270 Session.
+/// @param filename		The file name.
+///
+/// @return The file contents (release it with lib3270_free or NULL on error (sets errno).
+///
+LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 *hSession, const char *filename);
 
 
-	/**
-	 * @brief Emit translated popup message.
-	 *
-	 * @param hSession	TN3270 Session handle.
-	 * @param popup		Popup descriptor.
-	 * @param wait		If non zero waits for user response.
-	 *
-	 * @return User action.
-	 *
-	 * @retval 0			User has confirmed, continue action.
-	 * @retval ECANCELED	Operation was canceled.
-	 * @retval ENOTSUP		No popup handler available.
-	 */
-	LIB3270_INTERNAL int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+/// @brief Fire CState change.
+LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
+
+///
+/// @brief Start TLS/SSL
+///
+/// @param hSession	Session handle.
+/// @param required	Non zero if the SSL/TLS is not optional.
+///
+/// @return 0 if ok, non zero if failed.
+///
+/// @retval ENOTSUP	TLS/SSL is not supported by library.
+///
+LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
+
+LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
+
+
+/**
+ * @brief Emit translated popup message.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param popup		Popup descriptor.
+ * @param wait		If non zero waits for user response.
+ *
+ * @return User action.
+ *
+ * @retval 0			User has confirmed, continue action.
+ * @retval ECANCELED	Operation was canceled.
+ * @retval ENOTSUP		No popup handler available.
+ */
+LIB3270_INTERNAL int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
-	/**
-	 * @brief Download X509 CRL using LDAP backend.
-	 *
-	 * @param hSession	tn3270 session handle.
-	 * @param url		URL for Ldap access.
-	 * @param error		pointer to error message.
-	 *
-	 */
-	LIB3270_INTERNAL X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *url, const char **error);
+/**
+ * @brief Download X509 CRL using LDAP backend.
+ *
+ * @param hSession	tn3270 session handle.
+ * @param url		URL for Ldap access.
+ * @param error		pointer to error message.
+ *
+ */
+LIB3270_INTERNAL X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *url, const char **error);
 #endif // HAVE_LDAP
 
 #ifdef _WIN32
 
-	LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, const char **error_message);
+LIB3270_INTERNAL char * lib3270_get_from_url(H3270 *hSession, const char *url, const char **error_message);
 
 #endif // _WIN32

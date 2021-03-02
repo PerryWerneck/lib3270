@@ -28,20 +28,20 @@
 
 #ifndef LIB3270_INTERNALS_H_INCLUDED
 
-	#define LIB3270_INTERNALS_H_INCLUDED 1
+#define LIB3270_INTERNALS_H_INCLUDED 1
 
 #ifdef __cplusplus
-	extern "C" {
+extern "C" {
 #endif
 
-	LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf);
-	LIB3270_EXPORT void lib3270_set_disconnected(H3270 *hSession);
-	LIB3270_EXPORT void lib3270_set_connected_initial(H3270 *hSession);
-	LIB3270_EXPORT void lib3270_setup_session(H3270 *session);
+LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf);
+LIB3270_EXPORT void lib3270_set_disconnected(H3270 *hSession);
+LIB3270_EXPORT void lib3270_set_connected_initial(H3270 *hSession);
+LIB3270_EXPORT void lib3270_setup_session(H3270 *session);
 
 
 #ifdef __cplusplus
-	}
+}
 #endif
 
 #endif // LIB3270_INTERNALS_H_INCLUDED

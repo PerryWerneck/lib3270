@@ -76,10 +76,10 @@
 
 /* TN3270E data header. */
 typedef struct {
-    unsigned char data_type;
-    unsigned char request_flag;
-    unsigned char response_flag;
-    unsigned char seq_number[2]; /* actually, 16 bits, unaligned (!) */
+	unsigned char data_type;
+	unsigned char request_flag;
+	unsigned char response_flag;
+	unsigned char seq_number[2]; /* actually, 16 bits, unaligned (!) */
 } tn3270e_header;
 
 #define EH_SIZE 5

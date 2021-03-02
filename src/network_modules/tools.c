@@ -27,24 +27,24 @@
  *
  */
 
- /**
-  * @brief Common methods for send/recv errors.
-  *
-  */
+/**
+ * @brief Common methods for send/recv errors.
+ *
+ */
 
- #include <config.h>
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <internals.h>
- #include <networking.h>
- #include <fcntl.h>
- #ifdef _WIN32
-	#include <lib3270/win32.h>
- #endif // _WIN32
+#include <config.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
+#include <internals.h>
+#include <networking.h>
+#include <fcntl.h>
+#ifdef _WIN32
+#include <lib3270/win32.h>
+#endif // _WIN32
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int lib3270_socket_recv_failed(H3270 *hSession) {
+int lib3270_socket_recv_failed(H3270 *hSession) {
 
 #ifdef _WIN32
 
@@ -79,10 +79,10 @@
 	int rc = -errno;
 
 	lib3270_autoptr(char) body = lib3270_strdup_printf(
-										_("The system error code was %d (%s)"),
-										errno,
-										strerror(errno)
-								);
+	                                 _("The system error code was %d (%s)"),
+	                                 errno,
+	                                 strerror(errno)
+	                             );
 
 	LIB3270_POPUP popup = {
 		.name = "RecvFailed",
@@ -97,72 +97,72 @@
 
 	return rc;
 
- }
+}
 
- int lib3270_socket_send_failed(H3270 *hSession) {
+int lib3270_socket_send_failed(H3270 *hSession) {
 
- #ifdef _WIN32
+#ifdef _WIN32
 
 	int rc = WSAGetLastError();
 
 	lib3270_popup_dialog(
-		hSession,
-		LIB3270_NOTIFY_ERROR,
-		NULL,
-		_("Erro sending data to host"),
-		_( "The system error was %s (%d)" ),
-		lib3270_win32_strerror(rc),
-		rc
+	    hSession,
+	    LIB3270_NOTIFY_ERROR,
+	    NULL,
+	    _("Erro sending data to host"),
+	    _( "The system error was %s (%d)" ),
+	    lib3270_win32_strerror(rc),
+	    rc
 	);
 
- #else
+#else
 
 	int rc = errno;
 
 	switch(rc) {
 	case EPIPE:
-		   lib3270_popup_dialog(
-				   hSession,
-				   LIB3270_NOTIFY_ERROR,
-				   NULL,
-				   _("Broken pipe"),
-				   _("The system error code was %d"),
-				   rc
-		   );
-		   break;
+		lib3270_popup_dialog(
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    NULL,
+		    _("Broken pipe"),
+		    _("The system error code was %d"),
+		    rc
+		);
+		break;
 
 	case ECONNRESET:
-		   lib3270_popup_dialog(
-				   hSession,
-				   LIB3270_NOTIFY_ERROR,
-				   NULL,
-				   _("Connection reset by peer"),
-				   _("The system error code was %d"),
-				   rc
-		   );
-		   break;
+		lib3270_popup_dialog(
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    NULL,
+		    _("Connection reset by peer"),
+		    _("The system error code was %d"),
+		    rc
+		);
+		break;
 
 	case EINTR:
-		   return 0;
+		return 0;
 
 	default:
-		   lib3270_popup_dialog(
-				   hSession,
-				   LIB3270_NOTIFY_ERROR,
-				   NULL,
-				   _("Unexpected error writing to network socket"),
-				   _("The system error code was %d (%s)"),
-				   rc, strerror(rc)
-		   );
+		lib3270_popup_dialog(
+		    hSession,
+		    LIB3270_NOTIFY_ERROR,
+		    NULL,
+		    _("Unexpected error writing to network socket"),
+		    _("The system error code was %d (%s)"),
+		    rc, strerror(rc)
+		);
 
 	}
 
 
- #endif // _WIN32
+#endif // _WIN32
 
 	return -1;
 
- }
+}
 
 int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on) {
 
@@ -171,31 +171,29 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 
 #ifdef WIN32
 
-		WSASetLastError(0);
-		u_long iMode= on ? 1 : 0;
+	WSASetLastError(0);
+	u_long iMode= on ? 1 : 0;
 
-		if(ioctlsocket(sock,FIONBIO,&iMode))
-		{
-			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Connection error" ),
-									_( "ioctlsocket(FIONBIO) failed." ),
-									"%s", lib3270_win32_strerror(GetLastError()));
-			return -1;
-		}
+	if(ioctlsocket(sock,FIONBIO,&iMode)) {
+		lib3270_popup_dialog(	hSession,
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Connection error" ),
+		                        _( "ioctlsocket(FIONBIO) failed." ),
+		                        "%s", lib3270_win32_strerror(GetLastError()));
+		return -1;
+	}
 
 #else
 
 	int f;
 
-	if ((f = fcntl(sock, F_GETFL, 0)) == -1)
-	{
+	if ((f = fcntl(sock, F_GETFL, 0)) == -1) {
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								_( "fcntl() error when getting socket state." ),
-								_( "%s" ), strerror(errno)
-							);
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Socket error" ),
+		                        _( "fcntl() error when getting socket state." ),
+		                        _( "%s" ), strerror(errno)
+		                    );
 
 		return -1;
 	}
@@ -205,14 +203,13 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 	else
 		f &= ~O_NDELAY;
 
-	if (fcntl(sock, F_SETFL, f) < 0)
-	{
+	if (fcntl(sock, F_SETFL, f) < 0) {
 		lib3270_popup_dialog(	hSession,
-								LIB3270_NOTIFY_ERROR,
-								_( "Socket error" ),
-								on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
-								_( "%s" ), strerror(errno)
-							);
+		                        LIB3270_NOTIFY_ERROR,
+		                        _( "Socket error" ),
+		                        on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
+		                        _( "%s" ), strerror(errno)
+		                    );
 		return -1;
 	}
 
@@ -224,55 +221,51 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 
 }
 
- static const char * crl_download_protocols[] = {
- 	NULL,
+static const char * crl_download_protocols[] = {
+	NULL,
 	"http",
 	"https",
 #ifdef HAVE_LDAP
 	"ldap",
 	"ldaps"
 #endif // HAVE_LDAP
- };
+};
 
- const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession)
- {
- 	debug("%s: selected: %d",__FUNCTION__,(int) hSession->ssl.crl_preferred_protocol);
- 	if(hSession->ssl.crl_preferred_protocol < (sizeof(crl_download_protocols)/sizeof(crl_download_protocols[0])))
+const char * lib3270_crl_get_preferred_protocol(const H3270 *hSession) {
+	debug("%s: selected: %d",__FUNCTION__,(int) hSession->ssl.crl_preferred_protocol);
+	if(hSession->ssl.crl_preferred_protocol < (sizeof(crl_download_protocols)/sizeof(crl_download_protocols[0])))
 		return crl_download_protocols[hSession->ssl.crl_preferred_protocol];
 
 	errno = EINVAL;
 	return NULL;
- }
+}
 
- int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol)
- {
-    FAIL_IF_ONLINE(hSession);
+int lib3270_crl_set_preferred_protocol(H3270 *hSession, const char *protocol) {
+	FAIL_IF_ONLINE(hSession);
 
-    debug("%s(%s)",__FUNCTION__,protocol);
-    size_t ix;
-    for(ix = 0; ix < (sizeof(crl_download_protocols)/sizeof(crl_download_protocols[0])); ix++) {
+	debug("%s(%s)",__FUNCTION__,protocol);
+	size_t ix;
+	for(ix = 0; ix < (sizeof(crl_download_protocols)/sizeof(crl_download_protocols[0])); ix++) {
 
 		debug("[%s] [%s]",protocol,crl_download_protocols[ix]);
 		if(crl_download_protocols[ix] && !strcasecmp(protocol,crl_download_protocols[ix])) {
 			hSession->ssl.crl_preferred_protocol = (unsigned short) ix;
 			return 0;
 		}
-    }
+	}
 
-    debug("Unsupported protocol: %s",protocol);
+	debug("Unsupported protocol: %s",protocol);
 
-    return EINVAL;
- }
+	return EINVAL;
+}
 
- LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
- {
-   FAIL_IF_NOT_ONLINE(hSession);
+LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {
+	FAIL_IF_NOT_ONLINE(hSession);
 	return hSession->network.module->getpeername(hSession, addr, addrlen);
- }
+}
 
- LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen)
- {
-    FAIL_IF_NOT_ONLINE(hSession);
+LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen) {
+	FAIL_IF_NOT_ONLINE(hSession);
 	return hSession->network.module->getsockname(hSession, addr, addrlen);
- }
+}
 

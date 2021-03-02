@@ -41,16 +41,14 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static inline void lib3270_autoptr_cleanup_CURL(CURL **ptr)
-{
+static inline void lib3270_autoptr_cleanup_CURL(CURL **ptr) {
 	debug("%s(%p)",__FUNCTION__,*ptr);
 	if(*ptr)
 		curl_easy_cleanup(*ptr);
 	*ptr = NULL;
 }
 
-typedef struct _curldata
-{
+typedef struct _curldata {
 	size_t		  		  length;
 	H3270				* hSession;
 	char 				  errbuf[CURL_ERROR_SIZE];
@@ -60,11 +58,9 @@ typedef struct _curldata
 	} data;
 } CURLDATA;
 
-static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
-{
+static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr) {
 	debug("%s(%p)",__FUNCTION__,*ptr);
-	if(*ptr)
-	{
+	if(*ptr) {
 		CURLDATA *cdata = *ptr;
 
 		if(cdata->data.contents) {
@@ -76,8 +72,7 @@ static inline void lib3270_autoptr_cleanup_CURLDATA(CURLDATA **ptr)
 	*ptr = NULL;
 }
 
-static size_t internal_curl_write_callback(void *contents, size_t size, size_t nmemb, void *userp)
-{
+static size_t internal_curl_write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
 	CURLDATA * data = (CURLDATA *) userp;
 
 	debug("%s",__FUNCTION__);
@@ -86,8 +81,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 
 	debug("%s size=%d data->length=%d crldatalength=%d",__FUNCTION__,(int) size, (int) data->length, CRL_DATA_LENGTH);
 
-	if((realsize + data->length) > data->data.length)
-	{
+	if((realsize + data->length) > data->data.length) {
 		data->data.length += (CRL_DATA_LENGTH + realsize);
 		data->data.contents = lib3270_realloc(data->data.contents,data->data.length);
 		memset(&(data->data.contents[data->length]),0,data->data.length-data->length);
@@ -95,13 +89,12 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 
 	debug("%s",__FUNCTION__);
 
-	if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE))
-	{
+	if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 		lib3270_trace_data(
-			data->hSession,
-			"Received",
-			(const unsigned char *) contents,
-			realsize
+		    data->hSession,
+		    "Received",
+		    (const unsigned char *) contents,
+		    realsize
 		);
 	}
 
@@ -115,8 +108,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	return realsize;
 }
 
-static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype type, char *data, size_t size, void *userp)
-{
+static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype type, char *data, size_t size, void *userp) {
 	const char * text = NULL;
 
 	switch (type) {
@@ -154,17 +146,16 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 	}
 
 	lib3270_trace_data(
-		((CURLDATA *) userp)->hSession,
-		text,
-		(const unsigned char *) data,
-		size
+	    ((CURLDATA *) userp)->hSession,
+	    text,
+	    (const unsigned char *) data,
+	    size
 	);
 
 	return 0;
 }
 
-char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char **error)
-{
+char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char **error) {
 	lib3270_write_event_trace(hSession,"Getting data from %s",url);
 
 	// Use CURL to download the CRL
@@ -176,8 +167,7 @@ char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char *
 	curl_data->data.length		= CRL_DATA_LENGTH;
 	curl_data->data.contents	= lib3270_malloc(curl_data->data.length);
 
-	if(!hCurl)
-	{
+	if(!hCurl) {
 		*error = _( "Can't initialize curl operation" );
 		return NULL;
 	}
@@ -194,8 +184,7 @@ char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char *
 
 	curl_easy_setopt(hCurl, CURLOPT_USERNAME, "");
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-	{
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 		curl_easy_setopt(hCurl, CURLOPT_VERBOSE, 1L);
 		curl_easy_setopt(hCurl, CURLOPT_DEBUGFUNCTION, internal_curl_trace_callback);
 		curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) curl_data);
@@ -203,8 +192,7 @@ char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char *
 
 	res = curl_easy_perform(hCurl);
 
-	if(res != CURLE_OK)
-	{
+	if(res != CURLE_OK) {
 		if(curl_data->errbuf[0])
 			lib3270_write_log(hSession,"curl","%s: %s",url, curl_data->errbuf);
 

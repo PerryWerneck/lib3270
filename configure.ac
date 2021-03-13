@@ -83,6 +83,10 @@ dnl ---------------------------------------------------------------------------
 
 DLLPREFIX="lib"
 
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(LIBS)
+
 case "$host" in
 	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"

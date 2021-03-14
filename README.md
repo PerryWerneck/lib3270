@@ -97,7 +97,7 @@ Windows native with MSYS2
 
 1. Install and update MSYS2 
 
-	* Download and install msys2 from https://www.msys2.org/ (Don't forget to update the package database and core system packages)
+	* Download and install msys2 from https://www.msys2.org/ (Don't forget to update the package database and core system packages using pacman -Syu)
 
 2. Update system path
 

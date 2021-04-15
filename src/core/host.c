@@ -334,7 +334,7 @@ LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hS
 #endif // _WIN32
 
 #ifdef LIB3270_DEFAULT_HOST
-	return LIB3270_DEFAULT_HOST;
+	return LIB3270_STRINGIZE_VALUE_OF(LIB3270_DEFAULT_HOST);
 #else
 	return getenv("LIB3270_DEFAULT_HOST");
 #endif // LIB3270_DEFAULT_HOST

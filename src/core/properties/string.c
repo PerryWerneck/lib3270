@@ -66,7 +66,7 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 		{
 			.name = "url",															// Property name.
 #ifdef LIB3270_DEFAULT_HOST
-			.default_value = LIB3270_DEFAULT_HOST,									// Default value.
+			.default_value = LIB3270_STRINGIZE_VALUE_OF(LIB3270_DEFAULT_HOST),		// Default value.
 #endif // LIB3270_DEFAULT_HOST
 			.group = LIB3270_ACTION_GROUP_OFFLINE,									// Property group.
 			.icon = "network-server",												// Property icon.

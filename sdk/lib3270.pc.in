@@ -8,6 +8,7 @@ version_minor=@PACKAGE_MINOR_VERSION@
 sdk_version=@LIB3270_SDK_VERSION@
 library_name=@LIB3270_NAME@
 product_name=@PRODUCT_NAME@
+default_host=@LIB3270_DEFAULT_HOST@
 
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@

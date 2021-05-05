@@ -42,7 +42,7 @@
 
 #include <errno.h>
 #if !defined(_WIN32) /*[*/
-	#include <netinet/in.h>
+#include <netinet/in.h>
 #endif /*]*/
 
 #include "3270ds.h"
@@ -51,7 +51,7 @@
 #include "ctlrc.h"
 
 #if defined(X3270_FT)
-	#include "ft_dftc.h"
+#include "ft_dftc.h"
 #endif
 
 #include "kybdc.h"
@@ -118,29 +118,29 @@ static struct reply {
 	qr_single_fn_t *single_fn;
 	qr_multi_fn_t *multi_fn;
 } replies[] = {
-    { QR_SUMMARY,      do_qr_summary,      NULL },		/* 0x80 */
-    { QR_USABLE_AREA,  do_qr_usable_area,  NULL },		/* 0x81 */
-    { QR_ALPHA_PART,   do_qr_alpha_part,   NULL },		/* 0x84 */
-    { QR_CHARSETS,     do_qr_charsets,     NULL },		/* 0x85 */
-    { QR_COLOR,        do_qr_color,        NULL },		/* 0x86 */
-    { QR_HIGHLIGHTING, do_qr_highlighting, NULL },		/* 0x87 */
-    { QR_REPLY_MODES,  do_qr_reply_modes,  NULL },		/* 0x88 */
+	{ QR_SUMMARY,      do_qr_summary,      NULL },		/* 0x80 */
+	{ QR_USABLE_AREA,  do_qr_usable_area,  NULL },		/* 0x81 */
+	{ QR_ALPHA_PART,   do_qr_alpha_part,   NULL },		/* 0x84 */
+	{ QR_CHARSETS,     do_qr_charsets,     NULL },		/* 0x85 */
+	{ QR_COLOR,        do_qr_color,        NULL },		/* 0x86 */
+	{ QR_HIGHLIGHTING, do_qr_highlighting, NULL },		/* 0x87 */
+	{ QR_REPLY_MODES,  do_qr_reply_modes,  NULL },		/* 0x88 */
 #if defined(X3270_DBCS) /*[*/
-    { QR_DBCS_ASIA,    do_qr_dbcs_asia,    NULL },		/* 0x91 */
+	{ QR_DBCS_ASIA,    do_qr_dbcs_asia,    NULL },		/* 0x91 */
 #endif /*]*/
 
 #if defined(X3270_FT) /*[*/
-    { QR_DDM,          do_qr_ddm,          NULL },		/* 0x95 */
+	{ QR_DDM,          do_qr_ddm,          NULL },		/* 0x95 */
 #endif /*]*/
 
 #ifndef ANDROID
-    { QR_RPQNAMES,     do_qr_rpqnames,     NULL },		/* 0xa1 */
+	{ QR_RPQNAMES,     do_qr_rpqnames,     NULL },		/* 0xa1 */
 #endif // !ANDROID
 
-    { QR_IMP_PART,     do_qr_imp_part,     NULL },		/* 0xa6 */
+	{ QR_IMP_PART,     do_qr_imp_part,     NULL },		/* 0xa6 */
 
-    /* QR_NULL must be last in the table */
-    { QR_NULL,         do_qr_null,         NULL },		/* 0xff */
+	/* QR_NULL must be last in the table */
+	{ QR_NULL,         do_qr_null,         NULL },		/* 0xff */
 };
 
 /*
@@ -153,8 +153,7 @@ static struct reply {
 /**
  * Process a 3270 Write Structured Field command
  */
-enum pds write_structured_field(H3270 *hSession, unsigned char buf[], int buflen)
-{
+enum pds write_structured_field(H3270 *hSession, unsigned char buf[], int buflen) {
 	unsigned short fieldlen;
 	unsigned char *cp = buf;
 	Boolean first = True;
@@ -167,8 +166,7 @@ enum pds write_structured_field(H3270 *hSession, unsigned char buf[], int buflen
 	buflen--;
 
 	/* Interpret fields. */
-	while (buflen > 0)
-	{
+	while (buflen > 0) {
 
 		if (first)
 			trace_ds(hSession," ");
@@ -177,61 +175,57 @@ enum pds write_structured_field(H3270 *hSession, unsigned char buf[], int buflen
 		first = False;
 
 		/* Pick out the field length. */
-		if (buflen < 2)
-		{
+		if (buflen < 2) {
 			trace_ds(hSession,"error: single byte at end of message\n");
 			return rv ? rv : PDS_BAD_CMD;
 		}
 		fieldlen = (cp[0] << 8) + cp[1];
 		if (fieldlen == 0)
 			fieldlen = buflen;
-		if (fieldlen < 3)
-		{
+		if (fieldlen < 3) {
 			trace_ds(hSession,"error: field length %d too small\n",fieldlen);
 			return rv ? rv : PDS_BAD_CMD;
 		}
-		if ((int)fieldlen > buflen)
-		{
+		if ((int)fieldlen > buflen) {
 			trace_ds(hSession,"error: field length %d exceeds remaining message length %d\n",fieldlen, buflen);
 			return rv ? rv : PDS_BAD_CMD;
 		}
 
 		/* Dispatch on the ID. */
-		switch (cp[2])
-		{
-	    case SF_READ_PART:
+		switch (cp[2]) {
+		case SF_READ_PART:
 			trace_ds(hSession,"ReadPartition");
 			rv_this = sf_read_part(hSession, cp, (int)fieldlen);
 			break;
 
-	    case SF_ERASE_RESET:
+		case SF_ERASE_RESET:
 			trace_ds(hSession,"EraseReset");
 			rv_this = sf_erase_reset(hSession, cp, (int)fieldlen);
 			break;
 
-	    case SF_SET_REPLY_MODE:
+		case SF_SET_REPLY_MODE:
 			trace_ds(hSession,"SetReplyMode");
 			rv_this = sf_set_reply_mode(hSession, cp, (int)fieldlen);
 			break;
 
-	    case SF_CREATE_PART:
+		case SF_CREATE_PART:
 			trace_ds(hSession,"CreatePartition");
 			rv_this = sf_create_partition(hSession, cp, (int)fieldlen);
 			break;
 
-	    case SF_OUTBOUND_DS:
+		case SF_OUTBOUND_DS:
 			trace_ds(hSession,"OutboundDS");
 			rv_this = sf_outbound_ds(hSession, cp, (int)fieldlen);
 			break;
 
 #if defined(X3270_FT)
-	    case SF_TRANSFER_DATA:   /* File transfer data         */
+		case SF_TRANSFER_DATA:   /* File transfer data         */
 			trace_ds(hSession,"FileTransferData");
 			ft_dft_data(hSession, cp, (int)fieldlen);
 			break;
 #endif
 
-	    default:
+		default:
 			trace_ds(hSession,"unsupported ID 0x%02x\n", cp[2]);
 			rv_this = PDS_BAD_CMD;
 			break;
@@ -262,15 +256,13 @@ enum pds write_structured_field(H3270 *hSession, unsigned char buf[], int buflen
 		return rv;
 }
 
-static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned buflen)
-{
+static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned buflen) {
 	unsigned char partition;
 	unsigned i;
 	int any = 0;
 	const char *comma = "";
 
-	if (buflen < 5)
-	{
+	if (buflen < 5) {
 		trace_ds(hSession," error: field length %d too small\n", buflen);
 		return PDS_BAD_CMD;
 	}
@@ -279,7 +271,7 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 	trace_ds(hSession,"(0x%02x)", partition);
 
 	switch (buf[4]) {
-	    case SF_RP_QUERY:
+	case SF_RP_QUERY:
 		trace_ds(hSession," Query");
 		if (partition != 0xff) {
 			trace_ds(hSession," error: illegal partition\n");
@@ -293,9 +285,9 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 #endif /*]*/
 				do_query_reply(hSession, replies[i].code);
 		}
- 		query_reply_end(hSession);
+		query_reply_end(hSession);
 		break;
-	    case SF_RP_QLIST:
+	case SF_RP_QLIST:
 		trace_ds(hSession," QueryList ");
 		if (partition != 0xff) {
 			trace_ds(hSession,"error: illegal partition\n");
@@ -307,7 +299,7 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 		}
 		query_reply_start(hSession);
 		switch (buf[5]) {
-		    case SF_RPQ_LIST:
+		case SF_RPQ_LIST:
 			trace_ds(hSession,"List(");
 			if (buflen < 7) {
 				trace_ds(hSession,")\n");
@@ -320,13 +312,13 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 				trace_ds(hSession,")\n");
 				for (i = 0; i < NSR; i++) {
 					if (memchr((char *)&buf[6],
-						   (char)replies[i].code,
-						   buflen-6)
+					           (char)replies[i].code,
+					           buflen-6)
 #if defined(X3270_DBCS) /*[*/
-						   && (dbcs ||
-						       replies[i].code != QR_DBCS_ASIA)
+					        && (dbcs ||
+					            replies[i].code != QR_DBCS_ASIA)
 #endif /*]*/
-						   ) {
+					   ) {
 						do_query_reply(hSession, replies[i].code);
 						any++;
 					}
@@ -336,7 +328,7 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 				}
 			}
 			break;
-		    case SF_RPQ_EQUIV:
+		case SF_RPQ_EQUIV:
 			trace_ds(hSession,"Equivlent+List(");
 			for (i = 6; i < buflen; i++) {
 				trace_ds(hSession,"%s%s", comma, see_qcode(buf[i]));
@@ -349,7 +341,7 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 #endif /*]*/
 					do_query_reply(hSession, replies[i].code);
 			break;
-		    case SF_RPQ_ALL:
+		case SF_RPQ_ALL:
 			trace_ds(hSession,"All\n");
 			for (i = 0; i < NSR; i++)
 #if defined(X3270_DBCS) /*[*/
@@ -357,13 +349,13 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 #endif /*]*/
 					do_query_reply(hSession, replies[i].code);
 			break;
-		    default:
+		default:
 			trace_ds(hSession,"unknown request type 0x%02x\n", buf[5]);
 			return PDS_BAD_CMD;
 		}
 		query_reply_end(hSession);
 		break;
-	    case SNA_CMD_RMA:
+	case SNA_CMD_RMA:
 		trace_ds(hSession," ReadModifiedAll");
 		if (partition != 0x00) {
 			trace_ds(hSession," error: illegal partition\n");
@@ -372,7 +364,7 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 		trace_ds(hSession,"\n");
 		ctlr_read_modified(hSession, AID_QREPLY, True);
 		break;
-	    case SNA_CMD_RB:
+	case SNA_CMD_RB:
 		trace_ds(hSession," ReadBuffer");
 		if (partition != 0x00) {
 			trace_ds(hSession," error: illegal partition\n");
@@ -381,7 +373,7 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 		trace_ds(hSession,"\n");
 		ctlr_read_buffer(hSession,AID_QREPLY);
 		break;
-	    case SNA_CMD_RM:
+	case SNA_CMD_RM:
 		trace_ds(hSession," ReadModified");
 		if (partition != 0x00) {
 			trace_ds(hSession," error: illegal partition\n");
@@ -390,23 +382,20 @@ static enum pds sf_read_part(H3270 *hSession, unsigned char buf[], unsigned bufl
 		trace_ds(hSession,"\n");
 		ctlr_read_modified(hSession, AID_QREPLY, False);
 		break;
-	    default:
+	default:
 		trace_ds(hSession," unknown type 0x%02x\n", buf[4]);
 		return PDS_BAD_CMD;
 	}
 	return PDS_OKAY_OUTPUT;
 }
 
-static enum pds sf_erase_reset(H3270 *hSession, unsigned char buf[], int buflen)
-{
-	if (buflen != 4)
-	{
+static enum pds sf_erase_reset(H3270 *hSession, unsigned char buf[], int buflen) {
+	if (buflen != 4) {
 		trace_ds(hSession," error: wrong field length %d\n", buflen);
 		return PDS_BAD_CMD;
 	}
 
-	switch (buf[3])
-	{
+	switch (buf[3]) {
 	case SF_ER_DEFAULT:
 		trace_ds(hSession," Default\n");
 		ctlr_erase(hSession,0);
@@ -424,52 +413,46 @@ static enum pds sf_erase_reset(H3270 *hSession, unsigned char buf[], int buflen)
 	return PDS_OKAY_NO_OUTPUT;
 }
 
-static enum pds sf_set_reply_mode(H3270 *hSession, unsigned char buf[], int buflen)
-{
+static enum pds sf_set_reply_mode(H3270 *hSession, unsigned char buf[], int buflen) {
 	unsigned char partition;
 	int i;
 	const char *comma = "(";
 
-	if (buflen < 5)
-	{
+	if (buflen < 5) {
 		trace_ds(hSession," error: wrong field length %d\n", buflen);
 		return PDS_BAD_CMD;
 	}
 
 	partition = buf[3];
 	trace_ds(hSession,"(0x%02x)", partition);
-	if (partition != 0x00)
-	{
+	if (partition != 0x00) {
 		trace_ds(hSession," error: illegal partition\n");
 		return PDS_BAD_CMD;
 	}
 
-	switch (buf[4])
-	{
-    case SF_SRM_FIELD:
+	switch (buf[4]) {
+	case SF_SRM_FIELD:
 		trace_ds(hSession," Field\n");
 		break;
 
-    case SF_SRM_XFIELD:
+	case SF_SRM_XFIELD:
 		trace_ds(hSession," ExtendedField\n");
 		break;
 
-    case SF_SRM_CHAR:
+	case SF_SRM_CHAR:
 		trace_ds(hSession," Character");
 		break;
 
-    default:
+	default:
 		trace_ds(hSession," unknown mode 0x%02x\n", buf[4]);
 		return PDS_BAD_CMD;
 	}
 
 	hSession->reply_mode = buf[4];
 
-	if (buf[4] == SF_SRM_CHAR)
-	{
+	if (buf[4] == SF_SRM_CHAR) {
 		hSession->crm_nattr = buflen - 5;
-		for (i = 5; i < buflen; i++)
-		{
+		for (i = 5; i < buflen; i++) {
 			hSession->crm_attr[i - 5] = buf[i];
 			trace_ds(hSession,"%s%s", comma, see_efa_only(buf[i]));
 			comma = ",";
@@ -479,8 +462,7 @@ static enum pds sf_set_reply_mode(H3270 *hSession, unsigned char buf[], int bufl
 	return PDS_OKAY_NO_OUTPUT;
 }
 
-static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int buflen)
-{
+static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int buflen) {
 	unsigned char pid;
 	unsigned char uom;		/* unit of measure */
 	unsigned char am;		/* addressing mode */
@@ -499,33 +481,28 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 	unsigned short ph;		/* character cell point height */
 
 #if defined(X3270_TRACE)
-	static const char *bit4[16] =
-	{
-	    "0000", "0001", "0010", "0011",
-	    "0100", "0101", "0110", "0111",
-	    "1000", "1001", "1010", "1011",
-	    "1100", "1101", "1110", "1111"
+	static const char *bit4[16] = {
+		"0000", "0001", "0010", "0011",
+		"0100", "0101", "0110", "0111",
+		"1000", "1001", "1010", "1011",
+		"1100", "1101", "1110", "1111"
 	};
 #endif
 
-	if (buflen > 3)
-	{
+	if (buflen > 3) {
 		trace_ds(hSession,"(");
 
 		/* Partition. */
 		pid = buf[3];
 		trace_ds(hSession,"pid=0x%02x", pid);
-		if (pid != 0x00)
-		{
+		if (pid != 0x00) {
 			trace_ds(hSession,") error: illegal partition\n");
 			return PDS_BAD_CMD;
 		}
-	}
-	else
+	} else
 		pid = 0x00;
 
-	if (buflen > 4)
-	{
+	if (buflen > 4) {
 		uom = (buf[4] & 0xf0) >> 4;
 		trace_ds(hSession,",uom=B'%s'", bit4[uom]);
 		if (uom != 0x0 && uom != 0x02) {
@@ -534,48 +511,40 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 		}
 		am = buf[4] & 0x0f;
 		trace_ds(hSession,",am=B'%s'", bit4[am]);
-		if (am > 0x2)
-		{
+		if (am > 0x2) {
 			trace_ds(hSession,") error: illegal a-mode\n");
 			return PDS_BAD_CMD;
 		}
-	}
-	else
-	{
+	} else {
 		uom = 0;
 		am = 0;
 	}
 
-	if (buflen > 5)
-	{
+	if (buflen > 5) {
 		flags = buf[5];
 		trace_ds(hSession,",flags=0x%02x", flags);
 	} else
 		flags = 0;
 
-	if (buflen > 7)
-	{
+	if (buflen > 7) {
 		GET16(h, &buf[6]);
 		trace_ds(hSession,",h=%d", h);
 	} else
 		h = hSession->max.rows;
 
-	if (buflen > 9)
-	{
+	if (buflen > 9) {
 		GET16(w, &buf[8]);
 		trace_ds(hSession,",w=%d", w);
 	} else
 		w = hSession->max.cols;
 
-	if (buflen > 11)
-	{
+	if (buflen > 11) {
 		GET16(rv, &buf[10]);
 		trace_ds(hSession,",rv=%d", rv);
 	} else
 		rv = 0;
 
-	if (buflen > 13)
-	{
+	if (buflen > 13) {
 		GET16(cv, &buf[12]);
 		trace_ds(hSession,",cv=%d", cv);
 	} else
@@ -587,22 +556,19 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 	} else
 		hv = (h > hSession->max.rows)? hSession->max.rows: h;
 
-	if (buflen > 17)
-	{
+	if (buflen > 17) {
 		GET16(wv, &buf[16]);
 		trace_ds(hSession,",wv=%d", wv);
 	} else
 		wv = (w > hSession->max.cols)? hSession->max.cols: w;
 
-	if (buflen > 19)
-	{
+	if (buflen > 19) {
 		GET16(rw, &buf[18]);
 		trace_ds(hSession,",rw=%d", rw);
 	} else
 		rw = 0;
 
-	if (buflen > 21)
-	{
+	if (buflen > 21) {
 		GET16(cw, &buf[20]);
 		trace_ds(hSession,",cw=%d", cw);
 	} else
@@ -634,29 +600,24 @@ static enum pds sf_create_partition(H3270 *hSession, unsigned char buf[], int bu
 	return PDS_OKAY_NO_OUTPUT;
 }
 
-static enum pds sf_outbound_ds(H3270 *hSession, unsigned char buf[], int buflen)
-{
+static enum pds sf_outbound_ds(H3270 *hSession, unsigned char buf[], int buflen) {
 	enum pds rv;
 
-	if (buflen < 5)
-	{
+	if (buflen < 5) {
 		trace_ds(hSession," error: field length %d too short\n", buflen);
 		return PDS_BAD_CMD;
 	}
 
 	trace_ds(hSession,"(0x%02x)", buf[3]);
-	if (buf[3] != 0x00)
-	{
+	if (buf[3] != 0x00) {
 		trace_ds(hSession," error: illegal partition 0x%0x\n", buf[3]);
 		return PDS_BAD_CMD;
 	}
 
-	switch (buf[4])
-	{
+	switch (buf[4]) {
 	case SNA_CMD_W:
 		trace_ds(hSession," Write");
-		if (buflen > 5)
-		{
+		if (buflen > 5) {
 			if ((rv = ctlr_write(hSession,&buf[4], buflen-4, False)) < 0)
 				return rv;
 		} else
@@ -666,19 +627,17 @@ static enum pds sf_outbound_ds(H3270 *hSession, unsigned char buf[], int buflen)
 	case SNA_CMD_EW:
 		trace_ds(hSession," EraseWrite");
 		ctlr_erase(hSession,hSession->screen_alt);
-		if (buflen > 5)
-		{
+		if (buflen > 5) {
 			if ((rv = ctlr_write(hSession,&buf[4], buflen-4, True)) < 0)
 				return rv;
 		} else
-		trace_ds(hSession,"\n");
+			trace_ds(hSession,"\n");
 		break;
 
 	case SNA_CMD_EWA:
 		trace_ds(hSession," EraseWriteAlternate");
 		ctlr_erase(hSession,hSession->screen_alt);
-		if (buflen > 5)
-		{
+		if (buflen > 5) {
 			if ((rv = ctlr_write(hSession,&buf[4], buflen-4, True)) < 0)
 				return rv;
 		} else
@@ -697,16 +656,14 @@ static enum pds sf_outbound_ds(H3270 *hSession, unsigned char buf[], int buflen)
 	return PDS_OKAY_NO_OUTPUT;
 }
 
-static void query_reply_start(H3270 *hSession)
-{
+static void query_reply_start(H3270 *hSession) {
 	hSession->output.ptr = hSession->output.buf;
 	space3270out(hSession,1);
 	*hSession->output.ptr++ = AID_SF;
 	qr_in_progress = True;
 }
 
-static void do_query_reply(H3270 *hSession, unsigned char code)
-{
+static void do_query_reply(H3270 *hSession, unsigned char code) {
 	size_t i;
 	unsigned subindex = 0;
 	Boolean more = False;
@@ -717,17 +674,15 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 			break;
 	}
 	if (i >= NSR_ALL ||
-	    (replies[i].single_fn == NULL && replies[i].multi_fn == NULL))
+	        (replies[i].single_fn == NULL && replies[i].multi_fn == NULL))
 		return;
 
-	if (qr_in_progress)
-	{
+	if (qr_in_progress) {
 		trace_ds(hSession,"> StructuredField\n");
 		qr_in_progress = False;
 	}
 
-	do
-	{
+	do {
 		int obptr0 = hSession->output.ptr - hSession->output.buf;
 		Boolean full = True;
 
@@ -742,8 +697,7 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 		else
 			full = replies[i].multi_fn(hSession,&subindex, &more);
 
-		if (full)
-		{
+		if (full) {
 			int len;
 			unsigned char *obptr_len;
 
@@ -753,13 +707,12 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 			SET16(obptr_len, len);
 
 #ifdef DEBUG
-			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
-			{
+			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 				lib3270_trace_data(
-					hSession,
-					see_qcode(replies[i].code),
-					hSession->output.buf + obptr0,
-					len
+				    hSession,
+				    see_qcode(replies[i].code),
+				    hSession->output.buf + obptr0,
+				    len
 				);
 			}
 #endif // DEBUG
@@ -771,23 +724,19 @@ static void do_query_reply(H3270 *hSession, unsigned char code)
 	} while (more);
 }
 
-static void do_qr_null(H3270 *hSession)
-{
+static void do_qr_null(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(Null)\n");
 }
 
-static void do_qr_summary(H3270 *hSession)
-{
+static void do_qr_summary(H3270 *hSession) {
 	size_t i;
 	const char *comma = "";
 
 	trace_ds(hSession,"> QueryReply(Summary(");
 	space3270out(hSession,NSR);
-	for (i = 0; i < NSR; i++)
-	{
+	for (i = 0; i < NSR; i++) {
 #if defined(X3270_DBCS) /*[*/
-		if (dbcs || replies[i].code != QR_DBCS_ASIA)
-		{
+		if (dbcs || replies[i].code != QR_DBCS_ASIA) {
 #endif /*]*/
 			trace_ds(hSession,"%s%s", comma, see_qcode(replies[i].code));
 			comma = ",";
@@ -799,8 +748,7 @@ static void do_qr_summary(H3270 *hSession)
 	trace_ds(hSession,"))\n");
 }
 
-static void do_qr_usable_area(H3270 *hSession)
-{
+static void do_qr_usable_area(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(UsableArea)\n");
 	space3270out(hSession,19);
 	*hSession->output.ptr++ = 0x01;											/* 12/14-bit addressing */
@@ -824,8 +772,7 @@ static void do_qr_usable_area(H3270 *hSession)
 
 }
 
-static void do_qr_color(H3270 *hSession)
-{
+static void do_qr_color(H3270 *hSession) {
 	int i;
 	int color_max;
 
@@ -838,8 +785,7 @@ static void do_qr_color(H3270 *hSession)
 	*hSession->output.ptr++ = color_max; 				/* report on 8 or 16 colors */
 	*hSession->output.ptr++ = 0x00;						/* default color: */
 	*hSession->output.ptr++ = 0xf0 + COLOR_GREEN;		/*  green */
-	for (i = 0xf1; i < 0xf1 + color_max - 1; i++)
-	{
+	for (i = 0xf1; i < 0xf1 + color_max - 1; i++) {
 		*hSession->output.ptr++ = i;
 		if (hSession->m3279)
 			*hSession->output.ptr++ = i;
@@ -847,22 +793,21 @@ static void do_qr_color(H3270 *hSession)
 			*hSession->output.ptr++ = 0x00;
 	}
 
-/*
-#if !defined(X3270_DISPLAY)
-	// Add background color.
-	if (hSession->m3279) {
-		space3270out(4);
-		*hSession->output.ptr++ = 4;		// length
-		*hSession->output.ptr++ = 0x02;	// background color
-		*hSession->output.ptr++ = 0x00;	// attribute
-		*hSession->output.ptr++ = 0xf0;	// default color
-	}
-#endif
-*/
+	/*
+	#if !defined(X3270_DISPLAY)
+		// Add background color.
+		if (hSession->m3279) {
+			space3270out(4);
+			*hSession->output.ptr++ = 4;		// length
+			*hSession->output.ptr++ = 0x02;	// background color
+			*hSession->output.ptr++ = 0x00;	// attribute
+			*hSession->output.ptr++ = 0xf0;	// default color
+		}
+	#endif
+	*/
 }
 
-static void do_qr_highlighting(H3270 *hSession)
-{
+static void do_qr_highlighting(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(Highlighting)\n");
 	space3270out(hSession,11);
 	*hSession->output.ptr++ = 5;					/* report on 5 pairs */
@@ -878,8 +823,7 @@ static void do_qr_highlighting(H3270 *hSession)
 	*hSession->output.ptr++ = XAH_INTENSIFY;		/*  intensify */
 }
 
-static void do_qr_reply_modes(H3270 *hSession)
-{
+static void do_qr_reply_modes(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(ReplyModes)\n");
 	space3270out(hSession,3);
 	*hSession->output.ptr++ = SF_SRM_FIELD;
@@ -888,8 +832,7 @@ static void do_qr_reply_modes(H3270 *hSession)
 }
 
 #if defined(X3270_DBCS) /*[*/
-static void do_qr_dbcs_asia(H3270 *hSession)
-{
+static void do_qr_dbcs_asia(H3270 *hSession) {
 	/* XXX: Should we support this, even when not in DBCS mode? */
 	trace_ds(hSession,"> QueryReply(DbcsAsia)\n");
 	space3270out(hSession,7);
@@ -903,8 +846,7 @@ static void do_qr_dbcs_asia(H3270 *hSession)
 }
 #endif /*]*/
 
-static void do_qr_alpha_part(H3270 *hSession)
-{
+static void do_qr_alpha_part(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(AlphanumericPartitions)\n");
 	space3270out(hSession,4);
 	*hSession->output.ptr++ = 0;		/* 1 partition */
@@ -912,8 +854,7 @@ static void do_qr_alpha_part(H3270 *hSession)
 	*hSession->output.ptr++ = 0;		/* no special features */
 }
 
-static void do_qr_charsets(H3270 *hSession)
-{
+static void do_qr_charsets(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(CharacterSets)\n");
 	space3270out(hSession,64);
 #if defined(X3270_DBCS) /*[*/
@@ -957,18 +898,16 @@ static void do_qr_charsets(H3270 *hSession)
 	}
 #endif /*]*/
 	SET32(hSession->output.ptr, hSession->charset.cgcsgid);		/*  CGCSGID */
-	if (!*standard_font)
-	{
+	if (!*standard_font) {
 		/* special 3270 font, includes APL */
 		*hSession->output.ptr++ = 0x01;/* SET 1: */
 		if (hSession->apl_mode)
-		    *hSession->output.ptr++ = 0x00;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
+			*hSession->output.ptr++ = 0x00;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
 		else
-		    *hSession->output.ptr++ = 0x10;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
+			*hSession->output.ptr++ = 0x10;/*  FLAGS: non-loadable, single-plane, single-byte, no compare */
 		*hSession->output.ptr++ = 0xf1;/*  LCID */
 #if defined(X3270_DBCS) /*[*/
-		if (dbcs)
-		{
+		if (dbcs) {
 			*hSession->output.ptr++ = 0x00;/*  SW 0 */
 			*hSession->output.ptr++ = 0x00;/*  SH 0 */
 			*hSession->output.ptr++ = 0x00;/*  SUBSN */
@@ -981,8 +920,7 @@ static void do_qr_charsets(H3270 *hSession)
 		*hSession->output.ptr++ = 0x36;
 	}
 #if defined(X3270_DBCS) /*[*/
-	if (dbcs)
-	{
+	if (dbcs) {
 		*hSession->output.ptr++ = 0x80;	/* SET 0x80: */
 		*hSession->output.ptr++ = 0x20;	/*  FLAGS: DBCS */
 		*hSession->output.ptr++ = 0xf8;	/*  LCID: 0xf8 */
@@ -996,8 +934,7 @@ static void do_qr_charsets(H3270 *hSession)
 }
 
 #if defined(X3270_FT) /*[*/
-static void do_qr_ddm(H3270 *hSession)
-{
+static void do_qr_ddm(H3270 *hSession) {
 	lib3270_set_dft_buffersize(hSession,hSession->dft_buffersize);
 
 	trace_ds(hSession,"> QueryReply(DistributedDataManagement)\n");
@@ -1009,8 +946,7 @@ static void do_qr_ddm(H3270 *hSession)
 }
 #endif /*]*/
 
-static void do_qr_imp_part(H3270 *hSession)
-{
+static void do_qr_imp_part(H3270 *hSession) {
 	trace_ds(hSession,"> QueryReply(ImplicitPartition)\n");
 	space3270out(hSession,13);
 	*hSession->output.ptr++ = 0x0;				/* reserved */
@@ -1024,8 +960,7 @@ static void do_qr_imp_part(H3270 *hSession)
 	SET16(hSession->output.ptr, hSession->max.rows);	/* alternate width */
 }
 
-static void query_reply_end(H3270 *hSession)
-{
+static void query_reply_end(H3270 *hSession) {
 	net_output(hSession);
 	kybd_inhibit(hSession,True);
 }

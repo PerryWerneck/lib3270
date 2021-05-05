@@ -21,14 +21,14 @@
 
 LIB3270_INTERNAL int wide_init(char *dbcs_converters, char *local_name);
 LIB3270_INTERNAL void dbcs_to_display(unsigned char ebc1, unsigned char ebc2,
-    unsigned char c[]);
+                                      unsigned char c[]);
 LIB3270_INTERNAL void dbcs_to_unicode16(unsigned char ebc1, unsigned char ebc2,
-    unsigned char c[]);
+                                        unsigned char c[]);
 
 LIB3270_INTERNAL int dbcs_to_mb(unsigned char ebc1, unsigned char ebc2, char *mb);
 LIB3270_INTERNAL int sbcs_to_mb(unsigned char ebc, char *mb);
 LIB3270_INTERNAL int mb_to_unicode(char *mb, int mblen, UChar *u, int ulen,
-    UErrorCode *err);
+                                   UErrorCode *err);
 LIB3270_INTERNAL int dbcs_map8(UChar, unsigned char *);
 LIB3270_INTERNAL int dbcs_map16(UChar, unsigned char *);
 #endif /*]*/

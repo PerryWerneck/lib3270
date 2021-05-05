@@ -27,64 +27,64 @@
  *
  */
 
- #ifndef LIB3270_LOG_H_INCLUDED
+#ifndef LIB3270_LOG_H_INCLUDED
 
-	#include <stdarg.h>
+#include <stdarg.h>
 
-	#define LIB3270_LOG_H_INCLUDED 1
+#define LIB3270_LOG_H_INCLUDED 1
 
-	#ifdef ANDROID
+#ifdef ANDROID
 
-		#include <android/log.h>
+#include <android/log.h>
 
-		#define DEBUG 1
+#define DEBUG 1
 
-		#define lib3270_write_log(s,m,f,...)	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, f "\n", __VA_ARGS__ )
-		#define lib3270_write_rc(s,m,r,f,...)	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, f "\n", __VA_ARGS__ )
-		#define lib3270_write_va_log(s,m,f,a)	__android_log_vprint(ANDROID_LOG_VERBOSE, PACKAGE_NAME, f "\n", a)
+#define lib3270_write_log(s,m,f,...)	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, f "\n", __VA_ARGS__ )
+#define lib3270_write_rc(s,m,r,f,...)	__android_log_print(ANDROID_LOG_VERBOSE, PACKAGE_NAME, f "\n", __VA_ARGS__ )
+#define lib3270_write_va_log(s,m,f,a)	__android_log_vprint(ANDROID_LOG_VERBOSE, PACKAGE_NAME, f "\n", a)
 
-		// #define trace( fmt, ... )	__android_log_print(ANDROID_LOG_DEBUG, PACKAGE_NAME, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ );
-		#define trace(x, ...) 		// __VA_ARGS__
+// #define trace( fmt, ... )	__android_log_print(ANDROID_LOG_DEBUG, PACKAGE_NAME, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ );
+#define trace(x, ...) 		// __VA_ARGS__
 
-	#else
+#else
 
-	#ifdef __cplusplus
-		extern "C" {
-	#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-		LIB3270_EXPORT void	  lib3270_set_log_handler(void (*loghandler)(H3270 *, const char *, int, const char *, va_list));
-		LIB3270_EXPORT int	  lib3270_write_log(H3270 *session, const char *module, const char *fmt, ...) LIB3270_GNUC_FORMAT(3,4);
-		LIB3270_EXPORT int	  lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
-		LIB3270_EXPORT void	  lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg);
+LIB3270_EXPORT void	  lib3270_set_log_handler(void (*loghandler)(H3270 *, const char *, int, const char *, va_list));
+LIB3270_EXPORT int	  lib3270_write_log(H3270 *session, const char *module, const char *fmt, ...) LIB3270_GNUC_FORMAT(3,4);
+LIB3270_EXPORT int	  lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
+LIB3270_EXPORT void	  lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg);
 
-		/**
-		 * @brief Send logs to system log (if available)
-		 *
-		 * @param flag	Non-zero to use syslog.
-		 *
-		 * @return 0 if ok, non zero if not.
-		 *
-		 */
-		LIB3270_EXPORT int	  lib3270_set_syslog(int flag);
+/**
+ * @brief Send logs to system log (if available)
+ *
+ * @param flag	Non-zero to use syslog.
+ *
+ * @return 0 if ok, non zero if not.
+ *
+ */
+LIB3270_EXPORT int	  lib3270_set_syslog(int flag);
 
-		#ifdef DEBUG
-			#include <stdio.h>
-			#undef trace
-			#define trace( fmt, ... )	fprintf(stderr, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ ); fflush(stderr);
-			#define debug( fmt, ... )	fprintf(stderr, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ ); fflush(stderr);
-		#else
-			#undef trace
-			#define trace(x, ...) 		// __VA_ARGS__
-			#define debug(x, ...) 		// __VA_ARGS__
-		#endif
+#ifdef DEBUG
+#include <stdio.h>
+#undef trace
+#define trace( fmt, ... )	fprintf(stderr, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ ); fflush(stderr);
+#define debug( fmt, ... )	fprintf(stderr, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ ); fflush(stderr);
+#else
+#undef trace
+#define trace(x, ...) 		// __VA_ARGS__
+#define debug(x, ...) 		// __VA_ARGS__
+#endif
 
-	#ifdef __cplusplus
-		}
-	#endif
+#ifdef __cplusplus
+}
+#endif
 
-	#endif // ANDROID
+#endif // ANDROID
 
 
- #endif // LIB3270_LOG_H_INCLUDED
+#endif // LIB3270_LOG_H_INCLUDED
 
 

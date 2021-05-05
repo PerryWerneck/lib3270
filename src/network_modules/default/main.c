@@ -27,14 +27,14 @@
  *
  */
 
- /**
-  * @brief Default networking methods.
-  *
-  */
+/**
+ * @brief Default networking methods.
+ *
+ */
 
- #include "private.h"
+#include "private.h"
 
- static void unsecure_network_finalize(H3270 *hSession) {
+static void unsecure_network_finalize(H3270 *hSession) {
 
 	debug("%s",__FUNCTION__);
 
@@ -43,9 +43,9 @@
 		hSession->network.context = NULL;
 	}
 
- }
+}
 
- static int unsecure_network_disconnect(H3270 *hSession) {
+static int unsecure_network_disconnect(H3270 *hSession) {
 
 	debug("%s",__FUNCTION__);
 
@@ -60,12 +60,12 @@
 	}
 
 	return 0;
- }
+}
 
- static void unsecure_network_reset(H3270 GNUC_UNUSED(*hSession)) {
- }
+static void unsecure_network_reset(H3270 GNUC_UNUSED(*hSession)) {
+}
 
- ssize_t unsecure_network_send(H3270 *hSession, const void *buffer, size_t length) {
+ssize_t unsecure_network_send(H3270 *hSession, const void *buffer, size_t length) {
 
 	ssize_t bytes = send(hSession->network.context->sock,buffer,length,0);
 
@@ -74,9 +74,9 @@
 
 	return lib3270_socket_send_failed(hSession);
 
- }
+}
 
- static ssize_t unsecure_network_recv(H3270 *hSession, void *buf, size_t len) {
+static ssize_t unsecure_network_recv(H3270 *hSession, void *buf, size_t len) {
 
 	ssize_t bytes = recv(hSession->network.context->sock, (char *) buf, len, 0);
 
@@ -176,7 +176,7 @@ void lib3270_set_default_network_module(H3270 *hSession) {
 		.reset = unsecure_network_reset
 	};
 
- 	debug("%s",__FUNCTION__);
+	debug("%s",__FUNCTION__);
 
 	if(hSession->network.context) {
 		// Has context, finalize it.

@@ -41,8 +41,7 @@
 #include <CoreFoundation/CFURL.h>
 #include <sys/syslimits.h>
 
-static char * concat(char *path, const char *name, size_t *length)
-{
+static char * concat(char *path, const char *name, size_t *length) {
 	size_t szCurrent = strlen(path);
 
 	if(szCurrent > 1 && path[szCurrent-1] != '/')
@@ -50,8 +49,7 @@ static char * concat(char *path, const char *name, size_t *length)
 
 	szCurrent += strlen(name);
 
-	if(szCurrent >= *length)
-	{
+	if(szCurrent >= *length) {
 		*length += (szCurrent + 1024);
 		path = lib3270_realloc(path,*length);
 	}
@@ -61,8 +59,7 @@ static char * concat(char *path, const char *name, size_t *length)
 	return path;
 }
 
-static char * build_filename(const char *root, const char *str, va_list args)
-{
+static char * build_filename(const char *root, const char *str, va_list args) {
 	size_t szFilename = 1024 + strlen(root);
 	char * filename = (char *) lib3270_malloc(szFilename);
 
@@ -76,15 +73,14 @@ static char * build_filename(const char *root, const char *str, va_list args)
 	return (char *) lib3270_realloc(filename,strlen(filename)+1);
 }
 
-char * lib3270_build_data_filename(const char *str, ...)
-{
+char * lib3270_build_data_filename(const char *str, ...) {
 	va_list args;
 	va_start (args, str);
 
 	char *filename;
 	CFBundleRef mainBundle = CFBundleGetMainBundle();
 	if (mainBundle) {
-	    CFURLRef url = CFBundleCopyBundleURL(mainBundle);
+		CFURLRef url = CFBundleCopyBundleURL(mainBundle);
 		if (url) {
 			size_t szPath = PATH_MAX;
 			char *path = (char *) lib3270_malloc(szPath);
@@ -105,8 +101,7 @@ char * lib3270_build_data_filename(const char *str, ...)
 	return filename;
 }
 
-char * lib3270_build_config_filename(const char *str, ...)
-{
+char * lib3270_build_config_filename(const char *str, ...) {
 	va_list args;
 	va_start (args, str);
 
@@ -117,8 +112,7 @@ char * lib3270_build_config_filename(const char *str, ...)
 	return filename;
 }
 
-char * lib3270_build_filename(const char *str, ...)
-{
+char * lib3270_build_filename(const char *str, ...) {
 	size_t szFilename = 1024;
 	char * filename = (char *) lib3270_malloc(szFilename);
 	char * tempname;
@@ -137,19 +131,16 @@ char * lib3270_build_filename(const char *str, ...)
 	// Check paths
 	size_t ix;
 
-	static const char * paths[] =
-	{
+	static const char * paths[] = {
 		LIB3270_STRINGIZE_VALUE_OF(DATADIR),
 		LIB3270_STRINGIZE_VALUE_OF(CONFDIR),
 		"."
 	};
 
-	for(ix = 0; ix < (sizeof(paths)/sizeof(paths[0])); ix++)
-	{
+	for(ix = 0; ix < (sizeof(paths)/sizeof(paths[0])); ix++) {
 		tempname = lib3270_strdup_printf("%s/%s",paths[ix],filename);
 
-		if(access(tempname, F_OK) == 0)
-		{
+		if(access(tempname, F_OK) == 0) {
 			lib3270_free(filename);
 			return tempname;
 		}

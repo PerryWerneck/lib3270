@@ -64,8 +64,7 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 
 	// Notify customers.
 	struct lib3270_linked_list_node * node;
-	for(node = session->listeners.toggle[ix].first; node; node = node->next)
-	{
+	for(node = session->listeners.toggle[ix].first; node; node = node->next) {
 		((struct lib3270_toggle_callback *) node)->func(session, ix, t->value, node->userdata);
 	}
 

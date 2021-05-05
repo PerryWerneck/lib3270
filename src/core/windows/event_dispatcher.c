@@ -27,10 +27,10 @@
  *
  */
 
- /**
-  * @brief Implements the default event dispatcher for windows.
-  *
-  */
+/**
+ * @brief Implements the default event dispatcher for windows.
+ *
+ */
 
 #include <internals.h>
 #include <sys/time.h>
@@ -42,8 +42,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-static void ms_ts(unsigned long long *u)
-{
+static void ms_ts(unsigned long long *u) {
 	FILETIME t;
 
 	/* Get the system time, in 100ns units. */
@@ -61,8 +60,7 @@ static void ms_ts(unsigned long long *u)
  * @param block		If non zero, the method blocks waiting for event.
  *
  */
-int lib3270_default_event_dispatcher(H3270 *hSession, int block)
-{
+int lib3270_default_event_dispatcher(H3270 *hSession, int block) {
 	unsigned long long now;
 	int maxSock;
 	DWORD tmo;
@@ -86,56 +84,44 @@ retry:
 	FD_ZERO(&wfds);
 	FD_ZERO(&xfds);
 
-	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next)
-	{
-		if(!ip->enabled)
-		{
+	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next) {
+		if(!ip->enabled) {
 			debug("Socket %d is disabled",ip->fd);
 			continue;
 		}
 
-		if(ip->flag & LIB3270_IO_FLAG_READ)
-		{
+		if(ip->flag & LIB3270_IO_FLAG_READ) {
 			FD_SET(ip->fd, &rfds);
 			maxSock = max(ip->fd,maxSock);
 		}
 
-		if(ip->flag & LIB3270_IO_FLAG_WRITE)
-		{
+		if(ip->flag & LIB3270_IO_FLAG_WRITE) {
 			FD_SET(ip->fd, &wfds);
 			maxSock = max(ip->fd,maxSock);
 		}
 
-		if(ip->flag & LIB3270_IO_FLAG_EXCEPTION)
-		{
+		if(ip->flag & LIB3270_IO_FLAG_EXCEPTION) {
 			FD_SET(ip->fd, &xfds);
 			maxSock = max(ip->fd,maxSock);
 		}
 	}
 
-	if (block)
-	{
-		if (hSession->timeouts.first)
-		{
+	if (block) {
+		if (hSession->timeouts.first) {
 			ms_ts(&now);
 			if (now > ((timeout_t *) hSession->timeouts.first)->ts)
 				tmo = 0;
 			else
 				tmo = ((timeout_t *) hSession->timeouts.first)->ts - now;
-		}
-		else
-		{
+		} else {
 			// Block for 1 second (at maximal)
 			tmo = 1000;
 		}
-	}
-	else
-	{
+	} else {
 		tmo = 1000;
 	}
 
-	if(maxSock)
-	{
+	if(maxSock) {
 		struct timeval tm;
 
 		tm.tv_sec 	= 0;
@@ -143,36 +129,29 @@ retry:
 
 		int ns = select(maxSock+1, &rfds, &wfds, &xfds, &tm);
 
-		if (ns < 0 && errno != EINTR)
-		{
+		if (ns < 0 && errno != EINTR) {
 			lib3270_popup_dialog(	hSession,
-									LIB3270_NOTIFY_ERROR,
-									_( "Network error" ),
-									_( "Select() failed when processing for events." ),
-									lib3270_win32_strerror(WSAGetLastError()));
-		}
-		else
-		{
-			for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next)
-			{
-				if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds))
-				{
+			                        LIB3270_NOTIFY_ERROR,
+			                        _( "Network error" ),
+			                        _( "Select() failed when processing for events." ),
+			                        lib3270_win32_strerror(WSAGetLastError()));
+		} else {
+			for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next) {
+				if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds)) {
 					(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
 					processed_any = True;
 					if (hSession->input.changed)
 						goto retry;
 				}
 
-				if ((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds))
-				{
+				if ((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds)) {
 					(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
 					processed_any = True;
 					if (hSession->input.changed)
 						goto retry;
 				}
 
-				if ((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds))
-				{
+				if ((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds)) {
 					(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
 					processed_any = True;
 					if (hSession->input.changed)
@@ -180,24 +159,19 @@ retry:
 				}
 			}
 		}
-	}
-	else if(block)
-	{
+	} else if(block) {
 		Sleep(tmo);
 	}
 
 	// See what's expired.
-	if (hSession->timeouts.first)
-	{
+	if (hSession->timeouts.first) {
 		struct timeout *t;
 		ms_ts(&now);
 
-		while(hSession->timeouts.first)
-		{
-            t = (struct timeout *) hSession->timeouts.first;
+		while(hSession->timeouts.first) {
+			t = (struct timeout *) hSession->timeouts.first;
 
-			if (t->ts <= now)
-			{
+			if (t->ts <= now) {
 
 				t->in_play = True;
 				(*t->proc)(hSession,t->userdata);
@@ -205,9 +179,7 @@ retry:
 
 				lib3270_linked_list_delete_node(&hSession->timeouts,t);
 
-			}
-			else
-			{
+			} else {
 				break;
 			}
 		}

@@ -46,15 +46,13 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void lib3270_autoptr_cleanup_HINTERNET(HINTERNET **hInternet)
-{
+static void lib3270_autoptr_cleanup_HINTERNET(HINTERNET **hInternet) {
 	if(*hInternet)
 		WinHttpCloseHandle(*hInternet);
 	*hInternet = 0;
 }
 
-char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char **error_message)
-{
+char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char **error_message) {
 	wchar_t wHostname[4096];
 	wchar_t wPath[4096];
 
@@ -94,8 +92,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	/// @TODO Use WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY when available!
 	lib3270_autoptr(HINTERNET) httpSession = WinHttpOpen(wUserAgent, WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0 );
 
-	if(!httpSession)
-	{
+	if(!httpSession) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Can't open session for %s: %s\n",url, windows_error);
 
@@ -106,8 +103,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 
 	// Connect to server
 	lib3270_autoptr(HINTERNET) hConnect = WinHttpConnect(httpSession, wHostname, INTERNET_DEFAULT_HTTP_PORT, 0);
-	if(!hConnect)
-	{
+	if(!hConnect) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Can't connect to %s: %s\n", url, windows_error);
 
@@ -118,8 +114,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 
 	// Create request.
 	lib3270_autoptr(HINTERNET) hRequest = WinHttpOpenRequest(hConnect, L"GET", wPath, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_ESCAPE_PERCENT);
-	if(!hConnect)
-	{
+	if(!hConnect) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Can't open request for %s: %s\n", url, windows_error);
 
@@ -132,8 +127,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	WinHttpSetOption(hRequest, WINHTTP_OPTION_CLIENT_CERT_CONTEXT, WINHTTP_NO_CLIENT_CERT_CONTEXT, 0);
 
 	// Send request.
-	if(!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0))
-	{
+	if(!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0)) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Can't send request for %s: %s\n", url, windows_error);
 
@@ -144,8 +138,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	}
 
 	// Get response
-	if(!WinHttpReceiveResponse(hRequest, NULL))
-	{
+	if(!WinHttpReceiveResponse(hRequest, NULL)) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Can't receive response for %s: %s\n", url, windows_error);
 
@@ -157,8 +150,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	}
 
 	DWORD szResponse = 0;
-	if(!WinHttpQueryDataAvailable(hRequest, &szResponse))
-	{
+	if(!WinHttpQueryDataAvailable(hRequest, &szResponse)) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Error checking for available data after response to %s: %s\n", url, windows_error);
 
@@ -174,7 +166,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	debug("Data block: %p",httpText);
 	debug("Response before: %u", (unsigned int) szResponse);
 
-	if(!WinHttpReadData(hRequest,httpText,szResponse,&szResponse)){
+	if(!WinHttpReadData(hRequest,httpText,szResponse,&szResponse)) {
 		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
 		lib3270_write_nettrace(hSession,"Can't read response size for %s: %s\n", url, windows_error);
 

@@ -27,20 +27,20 @@
  *
  */
 
- /**
-  * @brief TN3270 API windows definitions.
-  *
-  * @author perry.werneck@gmail.com
-  *
-  */
+/**
+ * @brief TN3270 API windows definitions.
+ *
+ * @author perry.werneck@gmail.com
+ *
+ */
 
 #ifndef LIB3270_OS_H_INCLUDED
 
-	#define LIB3270_OS_H_INCLUDED 1
+#define LIB3270_OS_H_INCLUDED 1
 
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 
-	LIB3270_EXPORT void lib3270_autoptr_cleanup_HKEY(HKEY *hKey);
+LIB3270_EXPORT void lib3270_autoptr_cleanup_HKEY(HKEY *hKey);
 
 #endif // LIB3270_OS_H_INCLUDED

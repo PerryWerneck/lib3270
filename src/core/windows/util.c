@@ -45,7 +45,7 @@
 #include <malloc.h>
 
 #ifdef HAVE_ICONV
-	#include <iconv.h>
+#include <iconv.h>
 #endif // HAVE_ICONV
 
 #include <lib3270/log.h>
@@ -56,15 +56,13 @@
 int is_nt = 1;
 int has_ipv6 = 1;
 
-int get_version_info(void)
-{
+int get_version_info(void) {
 	OSVERSIONINFO info;
 
 	// Figure out what version of Windows this is.
 	memset(&info, '\0', sizeof(info));
 	info.dwOSVersionInfoSize = sizeof(info);
-	if(GetVersionEx(&info) == 0)
-	{
+	if(GetVersionEx(&info) == 0) {
 		lib3270_write_log(NULL,"lib3270","%s","Can't get Windows version");
 		return -1;
 	}
@@ -74,8 +72,7 @@ int get_version_info(void)
 		is_nt = 0;
 
 	// Win2K and earlier is IPv4-only.  WinXP and later can have IPv6.
-	if (!is_nt || info.dwMajorVersion < 5 || (info.dwMajorVersion == 5 && info.dwMinorVersion < 1))
-	{
+	if (!is_nt || info.dwMajorVersion < 5 || (info.dwMajorVersion == 5 && info.dwMinorVersion < 1)) {
 		has_ipv6 = 0;
 	}
 
@@ -84,10 +81,9 @@ int get_version_info(void)
 
 // Convert a network address to a string.
 #ifndef HAVE_INET_NTOP
-const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
-{
-    	union {
-	    	struct sockaddr sa;
+const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt) {
+	union {
+		struct sockaddr sa;
 		struct sockaddr_in sin;
 		struct sockaddr_in6 sin6;
 	} sa;
@@ -98,15 +94,15 @@ const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
 
 	switch (af) {
 	case AF_INET:
-	    	sa.sin = *(struct sockaddr_in *)src;	// struct copy
+		sa.sin = *(struct sockaddr_in *)src;	// struct copy
 		ssz = sizeof(struct sockaddr_in);
 		break;
 	case AF_INET6:
-	    	sa.sin6 = *(struct sockaddr_in6 *)src;	// struct copy
+		sa.sin6 = *(struct sockaddr_in6 *)src;	// struct copy
 		ssz = sizeof(struct sockaddr_in6);
 		break;
 	default:
-	    	if (cnt > 0)
+		if (cnt > 0)
 			dst[0] = '\0';
 		return NULL;
 	}
@@ -114,7 +110,7 @@ const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
 	sa.sa.sa_family = af;
 
 	if (WSAAddressToString(&sa.sa, ssz, NULL, dst, &sz) != 0) {
-	    	if (cnt > 0)
+		if (cnt > 0)
 			dst[0] = '\0';
 		return NULL;
 	}
@@ -123,13 +119,11 @@ const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt)
 }
 #endif // HAVE_INET_NTOP
 
-LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
-{
+LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror) {
 	char * buffer = lib3270_malloc(4096);
 
-	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,lasterror,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,4096,NULL) == 0)
-	{
-	    snprintf(buffer, 4095, _( "Windows error %d" ), lasterror);
+	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,lasterror,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,4096,NULL) == 0) {
+		snprintf(buffer, 4095, _( "Windows error %d" ), lasterror);
 	}
 
 #ifdef HAVE_ICONV
@@ -139,12 +133,9 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
 
 		trace("[%s]",buffer);
 
-		if(hConv == (iconv_t) -1)
-		{
+		if(hConv == (iconv_t) -1) {
 			lib3270_write_log(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
-		}
-		else
-		{
+		} else {
 			size_t				  in 		= strlen(buffer);
 			size_t				  out 		= (in << 1);
 			char				* ptr;
@@ -155,8 +146,7 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
 
 			iconv(hConv,NULL,NULL,NULL,NULL);	// Reset state
 
-			if(iconv(hConv,&inBuffer,&in,&ptr,&out) != ((size_t) -1))
-			{
+			if(iconv(hConv,&inBuffer,&in,&ptr,&out) != ((size_t) -1)) {
 				strncpy(buffer,outBuffer,4095);
 			}
 
@@ -172,13 +162,11 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror)
 }
 
 // Decode a Win32 error number.
-LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
-{
+LIB3270_EXPORT const char * lib3270_win32_strerror(int e) {
 	static char buffer[4096];
 
-	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,e,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL) == 0)
-	{
-	    snprintf(buffer, 4095, _( "Windows error %d" ), e);
+	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,e,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,sizeof(buffer),NULL) == 0) {
+		snprintf(buffer, 4095, _( "Windows error %d" ), e);
 		return buffer;
 	}
 
@@ -189,12 +177,9 @@ LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
 
 		trace("[%s]",buffer);
 
-		if(hConv == (iconv_t) -1)
-		{
+		if(hConv == (iconv_t) -1) {
 			lib3270_write_log(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
-		}
-		else
-		{
+		} else {
 			size_t				  in 		= strlen(buffer);
 			size_t				  out 		= (in << 1);
 			char				* ptr;
@@ -205,8 +190,7 @@ LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
 
 			iconv(hConv,NULL,NULL,NULL,NULL);	// Reset state
 
-			if(iconv(hConv,&inBuffer,&in,&ptr,&out) != ((size_t) -1))
-			{
+			if(iconv(hConv,&inBuffer,&in,&ptr,&out) != ((size_t) -1)) {
 				strncpy(buffer,outBuffer,4095);
 			}
 
@@ -217,14 +201,13 @@ LIB3270_EXPORT const char * lib3270_win32_strerror(int e)
 
 	}
 #else
-	#error NO-ICONV
+#error NO-ICONV
 #endif // HAVE_ICONV
 
 	return buffer;
 }
 
-LIB3270_EXPORT const char * lib3270_win32_local_charset(void)
-{
+LIB3270_EXPORT const char * lib3270_win32_local_charset(void) {
 	// Reference:
 	// http://msdn.microsoft.com/en-us/library/windows/desktop/dd318070(v=vs.85).aspx
 
@@ -238,8 +221,7 @@ LIB3270_EXPORT const char * lib3270_win32_local_charset(void)
 #define SECS_BETWEEN_EPOCHS	11644473600ULL
 #define SECS_TO_100NS		10000000ULL /* 10^7 */
 
-LIB3270_EXPORT char	* lib3270_get_installation_path()
-{
+LIB3270_EXPORT char	* lib3270_get_installation_path() {
 	char lpFilename[4096];
 
 	memset(lpFilename,0,sizeof(lpFilename));
@@ -253,8 +235,7 @@ LIB3270_EXPORT char	* lib3270_get_installation_path()
 	return strdup(lpFilename);
 }
 
-char * lib3270_get_user_name()
-{
+char * lib3270_get_user_name() {
 	char	username[UNLEN + 1];
 	DWORD	szName = UNLEN;
 
@@ -265,13 +246,11 @@ char * lib3270_get_user_name()
 
 }
 
-static char * concat(char *path, const char *name, size_t *length)
-{
+static char * concat(char *path, const char *name, size_t *length) {
 	char *ptr;
-    size_t szCurrent = strlen(path);
+	size_t szCurrent = strlen(path);
 
-	for(ptr=path;*ptr;ptr++)
-	{
+	for(ptr=path; *ptr; ptr++) {
 		if(*ptr == '/')
 			*ptr = '\\';
 	}
@@ -281,8 +260,7 @@ static char * concat(char *path, const char *name, size_t *length)
 
 	szCurrent += strlen(name);
 
-	if(szCurrent >= *length)
-	{
+	if(szCurrent >= *length) {
 		*length += (szCurrent + 1024);
 		path = lib3270_realloc(path,*length);
 	}
@@ -292,8 +270,7 @@ static char * concat(char *path, const char *name, size_t *length)
 	return path;
 }
 
-static char * build_filename(const char *str, va_list args)
-{
+static char * build_filename(const char *str, va_list args) {
 	size_t szFilename = MAX_PATH;
 	char *ptr;
 	char * filename = (char *) lib3270_malloc(szFilename);
@@ -320,8 +297,7 @@ static char * build_filename(const char *str, va_list args)
 	return (char *) lib3270_realloc(filename,strlen(filename)+1);
 }
 
-char * lib3270_build_data_filename(const char *str, ...)
-{
+char * lib3270_build_data_filename(const char *str, ...) {
 	va_list args;
 	va_start (args, str);
 
@@ -332,8 +308,7 @@ char * lib3270_build_data_filename(const char *str, ...)
 	return filename;
 }
 
-char * lib3270_build_config_filename(const char *str, ...)
-{
+char * lib3270_build_config_filename(const char *str, ...) {
 	va_list args;
 	va_start (args, str);
 
@@ -344,8 +319,7 @@ char * lib3270_build_config_filename(const char *str, ...)
 	return filename;
 }
 
-char * lib3270_build_filename(const char *str, ...)
-{
+char * lib3270_build_filename(const char *str, ...) {
 	va_list args;
 	va_start (args, str);
 

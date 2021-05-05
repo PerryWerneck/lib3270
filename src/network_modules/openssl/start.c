@@ -27,16 +27,16 @@
  *
  */
 
- /**
-  * @brief Negotiate OpenSSL session.
-  *
-  */
+/**
+ * @brief Negotiate OpenSSL session.
+ *
+ */
 
- #include "private.h"
- #include <lib3270/properties.h>
- #include <utilc.h>
+#include "private.h"
+#include <lib3270/properties.h>
+#include <utilc.h>
 
- static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *url) {
+static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *url) {
 
 	X509_CRL * x509_crl = NULL;
 
@@ -111,9 +111,9 @@
 
 	return -1;
 
- }
+}
 
- static int download_crl_from_peer(H3270 *hSession, SSL_CTX * ctx_context, LIB3270_NET_CONTEXT * context, X509 *peer) {
+static int download_crl_from_peer(H3270 *hSession, SSL_CTX * ctx_context, LIB3270_NET_CONTEXT * context, X509 *peer) {
 
 	debug("%s peer=%p",__FUNCTION__,(void *) peer);
 
@@ -176,28 +176,27 @@
 
 	return -1;
 
- }
+}
 
-int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
-{
+int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx)) {
 	debug("%s(%d)",__FUNCTION__,ok);
 
-/*
-  55     {
-  56         if (!ok) {
-  57             Category::getInstance("OpenSSL").error(
-  58                 "path validation failure at depth(%d): %s",
-  59                 X509_STORE_CTX_get_error_depth(ctx),
-  60                 X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx))
-  61                 );
-  62         }
-  63         return ok;
-  64     }
-*/
+	/*
+	  55     {
+	  56         if (!ok) {
+	  57             Category::getInstance("OpenSSL").error(
+	  58                 "path validation failure at depth(%d): %s",
+	  59                 X509_STORE_CTX_get_error_depth(ctx),
+	  60                 X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx))
+	  61                 );
+	  62         }
+	  63         return ok;
+	  64     }
+	*/
 	return ok;
 }
 
- int openssl_network_start_tls(H3270 *hSession) {
+int openssl_network_start_tls(H3270 *hSession) {
 
 	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession);
 	if(!ctx_context)
@@ -208,8 +207,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 	debug("%s",__FUNCTION__);
 
 	context->con = SSL_new(ctx_context);
-	if(context->con == NULL)
-	{
+	if(context->con == NULL) {
 		static const LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_SECURE,
 			.summary = N_( "Cant create a new SSL structure for current connection." )
@@ -224,8 +222,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 //	SSL_set_verify(context->con, SSL_VERIFY_PEER, NULL);
 	SSL_set_verify(context->con, SSL_VERIFY_NONE, NULL);
 
-	if(SSL_set_fd(context->con, context->sock) != 1)
-	{
+	if(SSL_set_fd(context->con, context->sock) != 1) {
 		trace_ssl(hSession,"%s","SSL_set_fd failed!\n");
 
 		static const LIB3270_SSL_MESSAGE message = {
@@ -243,8 +240,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 	int rv = SSL_connect(context->con);
 	trace_ssl(hSession, "SSL_connect exits with rc=%d\n",rv);
 
-	if (rv != 1)
-	{
+	if (rv != 1) {
 		LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_ERROR,
 			.title = N_( "Connection failed" ),
@@ -290,8 +286,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 
 	if(peer) {
 
-		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-		{
+		if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 			BIO				* out	= BIO_new(BIO_s_mem());
 			unsigned char	* data;
 			unsigned char	* text;
@@ -332,8 +327,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 
 		debug("Download rc=%d",rc_download);
 
-		if(!rc_download)
-		{
+		if(!rc_download) {
 			// Got CRL, verify it!
 			// Reference: https://stackoverflow.com/questions/10510850/how-to-verify-the-certificate-for-the-ongoing-ssl-session
 
@@ -366,8 +360,7 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 	debug("Verify message: %s",hSession->ssl.message->summary);
 
 	// Trace cypher
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE))
-	{
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 		char				  buffer[4096];
 		int 				  alg_bits		= 0;
 		const SSL_CIPHER	* cipher		= SSL_get_current_cipher(context->con);
@@ -375,9 +368,9 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx))
 		trace_ssl(hSession,"TLS/SSL cipher description: %s",SSL_CIPHER_description((SSL_CIPHER *) cipher, buffer, 4095));
 		SSL_CIPHER_get_bits(cipher, &alg_bits);
 		trace_ssl(hSession,"%s version %s with %d bits\n",
-						SSL_CIPHER_get_name(cipher),
-						SSL_CIPHER_get_version(cipher),
-						alg_bits);
+		          SSL_CIPHER_get_name(cipher),
+		          SSL_CIPHER_get_version(cipher),
+		          alg_bits);
 	}
 
 	// Check results.

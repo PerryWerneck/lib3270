@@ -71,13 +71,11 @@ int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsign
 }
 
 /// @brief Pop up an error dialog.
-void popup_an_error(H3270 *hSession, const char *fmt, ...)
-{
+void popup_an_error(H3270 *hSession, const char *fmt, ...) {
 
 	lib3270_autoptr(char) summary = NULL;
 
-	if(fmt)
-	{
+	if(fmt) {
 		va_list	args;
 		va_start(args, fmt);
 		summary = lib3270_vsprintf(fmt,args);
@@ -93,13 +91,11 @@ void popup_an_error(H3270 *hSession, const char *fmt, ...)
 
 }
 
-void popup_system_error(H3270 *hSession, const char *title, const char *summary, const char *fmt, ...)
-{
+void popup_system_error(H3270 *hSession, const char *title, const char *summary, const char *fmt, ...) {
 
 	lib3270_autoptr(char) body = NULL;
 
-	if(fmt)
-	{
+	if(fmt) {
 		va_list	args;
 		va_start(args, fmt);
 		body = lib3270_vsprintf(fmt,args);
@@ -117,16 +113,14 @@ void popup_system_error(H3270 *hSession, const char *title, const char *summary,
 
 }
 
-LIB3270_EXPORT void lib3270_popup_dialog(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, ...)
-{
+LIB3270_EXPORT void lib3270_popup_dialog(H3270 *session, LIB3270_NOTIFY id, const char *title, const char *message, const char *fmt, ...) {
 	va_list	args;
 	va_start(args, fmt);
-    lib3270_popup_va(session, id, title, message, fmt, args);
+	lib3270_popup_va(session, id, title, message, fmt, args);
 	va_end(args);
 }
 
-LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id , const char *title, const char *message, const char *fmt, va_list args)
-{
+LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id, const char *title, const char *message, const char *fmt, va_list args) {
 	CHECK_SESSION_HANDLE(hSession);
 
 	lib3270_autoptr(char) body = NULL;
@@ -146,8 +140,7 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id , const 
 
 }
 
-LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...)
-{
+LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...) {
 	va_list args;
 
 	// Create body
@@ -160,12 +153,9 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 	// Alocate new struct
 	LIB3270_POPUP * popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
 
-	if(origin)
-	{
+	if(origin) {
 		*popup = *origin;
-	}
-	else
-	{
+	} else {
 		memset(popup,0,sizeof(LIB3270_POPUP));
 	}
 
@@ -174,8 +164,7 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 	return popup;
 }
 
-static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait)
-{
+static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait) {
 	const char * text[] = {
 		popup->title,
 		popup->summary,
@@ -184,8 +173,7 @@ static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char 
 
 	size_t ix;
 
-	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++)
-	{
+	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++) {
 		if(text[ix])
 			lib3270_write_log(hSession,"popup","%s",text[ix]);
 	}

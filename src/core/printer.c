@@ -48,7 +48,7 @@
 */
 
 #if defined(_WIN32)
-	#include "windows.h"
+#include "windows.h"
 #endif
 
 #include <errno.h>
@@ -69,7 +69,7 @@
 #include "savec.h"
 
 #if defined(C3270)
-	#include "screenc.h"
+#include "screenc.h"
 #endif
 
 #include "tablesc.h"
@@ -115,8 +115,7 @@ static void	printer_exiting(H3270 *session, int b, void *dunno);
  * Printer initialization function.
  */
 void
-printer_init(void)
-{
+printer_init(void) {
 	/* Register interest in host connects and mode changes. */
 	register_schange(ST_CONNECT, printer_host_connect);
 	register_schange(ST_3270_MODE, printer_host_connect);
@@ -129,8 +128,7 @@ printer_init(void)
  * If not, use the assoc form.
  */
 void
-printer_start(const char *lu)
-{
+printer_start(const char *lu) {
 	const char *cmdlineName;
 	const char *cmdline;
 #if !defined(_WIN32) /*[*/
@@ -226,7 +224,7 @@ printer_start(const char *lu)
 	/* Construct proxy option. */
 	if (appres.proxy != CN) {
 #if !defined(_WIN32) /*[*/
-	    	proxy_cmd = xs_buffer("-proxy \"%s\"", appres.proxy);
+		proxy_cmd = xs_buffer("-proxy \"%s\"", appres.proxy);
 #else /*][ */
 		proxy_cmd = xs_buffer("-proxy %s", appres.proxy);
 #endif /*]*/
@@ -292,7 +290,7 @@ printer_start(const char *lu)
 				s += 2;
 				continue;
 			} else if (!strncmp(s+1, "P%", 2)) {
-			    	if (proxy_cmd != CN)
+				if (proxy_cmd != CN)
 					(void) strcat(cmd_text, proxy_cmd);
 				s += 2;
 				continue;
@@ -310,33 +308,33 @@ printer_start(const char *lu)
 		int i;
 
 		if (f == NULL) {
-		    popup_an_errno(errno, charset_file);
-		    Free(cmd_text);
-		    if (proxy_cmd != CN)
-			    Free(proxy_cmd);
-		    return;
+			popup_an_errno(errno, charset_file);
+			Free(cmd_text);
+			if (proxy_cmd != CN)
+				Free(proxy_cmd);
+			return;
 		}
 		(void) fprintf(f, "# EBCDIC-to-ASCII conversion file "
-		    "for pr3287\n");
+		               "for pr3287\n");
 		(void) fprintf(f, "# Created by %s\n", build);
 		(void) fprintf(f, "# Chararter set is '%s'\n",
-		    lib3270_get_charset(&h3270));
+		               lib3270_get_charset(&h3270));
 		(void) fprintf(f, "cgcsgid=0x%08lx\n", cgcsgid);
 #if defined(X3270_DBCS) /*[*/
 		if (dbcs) {
 			(void) fprintf(f, "cgcsgid_dbcs=0x%08lx\n",
-				       cgcsgid_dbcs);
+			               cgcsgid_dbcs);
 			if (encoding != CN)
 				(void) fprintf(f, "encoding=%s\n",
-					       encoding);
+				               encoding);
 			(void) fprintf(f, "converters=%s\n",
-				       converter_names);
+			               converter_names);
 		}
 #endif /*]*/
 		for (i = 0x40; i <= 0xff; i++) {
-		    if (ebc2asc[i] != ebc2asc0[i]) {
-			(void) fprintf(f, " %u=%u", i, ebc2asc[i]);
-		    }
+			if (ebc2asc[i] != ebc2asc0[i]) {
+				(void) fprintf(f, " %u=%u", i, ebc2asc[i]);
+			}
 		}
 		(void) fprintf(f, "\n");
 		(void) fclose(f);
@@ -366,7 +364,7 @@ printer_start(const char *lu)
 	/* Fork and exec the printer session. */
 	trace_dsn("Printer command line: %s\n", cmd_text);
 	switch (printer_pid = fork()) {
-	    case 0:	/* child process */
+	case 0:	/* child process */
 		(void) dup2(stdout_pipe[1], 1);
 		(void) close(stdout_pipe[1]);
 		(void) dup2(stderr_pipe[1], 2);
@@ -378,7 +376,7 @@ printer_start(const char *lu)
 		(void) execlp("/bin/sh", "sh", "-c", cmd_text, CN);
 		(void) perror("exec(printer)");
 		_exit(1);
-	    default:	/* parent process */
+	default:	/* parent process */
 		(void) close(stdout_pipe[1]);
 		printer_stdout.fd = stdout_pipe[0];
 		(void) close(stderr_pipe[1]);
@@ -387,7 +385,7 @@ printer_start(const char *lu)
 		printer_stderr.input_id = AddInput(printer_stderr.fd,&h3270,printer_error);
 		++children;
 		break;
-	    case -1:	/* error */
+	case -1:	/* error */
 		popup_an_errno(errno, "fork()");
 		(void) close(stdout_pipe[0]);
 		(void) close(stdout_pipe[1]);
@@ -417,10 +415,10 @@ printer_start(const char *lu)
 	}
 
 	if (!strcasecmp(subcommand, "wpr3287.exe") ||
-	    !strcasecmp(subcommand, "wpr3287")) {
-	    	char *pc;
+	        !strcasecmp(subcommand, "wpr3287")) {
+		char *pc;
 
-	    	pc = xs_buffer("%s%s", ".", subcommand);
+		pc = xs_buffer("%s%s", ".", subcommand);
 		Free(subcommand);
 		subcommand = pc;
 
@@ -434,16 +432,16 @@ printer_start(const char *lu)
 
 	trace_dsn("Printer command line: %s\n", cmd_text);
 	if (CreateProcess(
-	    subcommand,
-	    cmd_text,
-	    NULL,
-	    NULL,
-	    FALSE,
-	    0, /* creation flags */
-	    NULL,
-	    NULL,
-	    &startupinfo,
-	    &process_information) == 0) {
+	            subcommand,
+	            cmd_text,
+	            NULL,
+	            NULL,
+	            FALSE,
+	            0, /* creation flags */
+	            NULL,
+	            NULL,
+	            &startupinfo,
+	            &process_information) == 0) {
 		popup_an_error(NULL,"CreateProcess(%s) failed: %s", subcommand,win32_strerror(GetLastError()));
 	}
 	printer_handle = process_information.hProcess;
@@ -465,8 +463,7 @@ printer_start(const char *lu)
 #if !defined(_WIN32) /*[*/
 /* There's data from the printer session. */
 static void
-printer_data(struct pr3o *p, Boolean is_err)
-{
+printer_data(struct pr3o *p, Boolean is_err) {
 	int space;
 	int nr;
 	static char exitmsg[] = "Printer session exited";
@@ -522,21 +519,18 @@ printer_data(struct pr3o *p, Boolean is_err)
 }
 
 /* The printer process has some output for us. */
-static void printer_output(H3270 *session)
-{
+static void printer_output(H3270 *session) {
 	printer_data(&printer_stdout, False);
 }
 
 /* The printer process has some error output for us. */
-static void printer_error(H3270 *session)
-{
+static void printer_error(H3270 *session) {
 	printer_data(&printer_stderr, True);
 }
 
 /* Timeout from printer output or error output. */
 static void
-printer_timeout(struct pr3o *p, Boolean is_err)
-{
+printer_timeout(struct pr3o *p, Boolean is_err) {
 	/* Forget the timeout ID. */
 	p->timeout_id = 0L;
 
@@ -546,22 +540,19 @@ printer_timeout(struct pr3o *p, Boolean is_err)
 
 /* Timeout from printer output. */
 static void
-printer_otimeout(H3270 *session)
-{
+printer_otimeout(H3270 *session) {
 	printer_timeout(&printer_stdout, False);
 }
 
 /* Timeout from printer error output. */
 static void
-printer_etimeout(H3270 *session)
-{
+printer_etimeout(H3270 *session) {
 	printer_timeout(&printer_stderr, True);
 }
 
 /* Dump pending printer process output. */
 static void
-printer_dump(struct pr3o *p, Boolean is_err, Boolean is_dead)
-{
+printer_dump(struct pr3o *p, Boolean is_err, Boolean is_dead) {
 	if (p->count) {
 		/*
 		 * Strip any trailing newline, and make sure the buffer is
@@ -575,7 +566,7 @@ printer_dump(struct pr3o *p, Boolean is_err, Boolean is_dead)
 		/* Dump it and clear the buffer. */
 #if defined(X3270_DISPLAY) /*[*/
 		popup_printer_output(is_err, is_dead? NULL: printer_stop,
-		    "%s", p->buf);
+		                     "%s", p->buf);
 #else /*][*/
 		action_output("%s", p->buf);
 #endif
@@ -587,20 +578,19 @@ printer_dump(struct pr3o *p, Boolean is_err, Boolean is_dead)
 #if defined(_WIN32) /*[*/
 /* Check for an exited printer session. */
 void
-printer_check(void)
-{
+printer_check(void) {
 	DWORD exit_code;
 
 	if (printer_pid != -1 &&
-	    GetExitCodeProcess(printer_handle, &exit_code) != 0 &&
-	    exit_code != STILL_ACTIVE) {
+	        GetExitCodeProcess(printer_handle, &exit_code) != 0 &&
+	        exit_code != STILL_ACTIVE) {
 
 		printer_pid = -1;
 		CloseHandle(printer_handle);
 		printer_handle = NULL;
 
 		if (need_cs)
-		    (void) unlink(charset_file);
+			(void) unlink(charset_file);
 
 		st_changed(ST_PRINTER, False);
 
@@ -611,8 +601,7 @@ printer_check(void)
 
 /* Close the printer session. */
 void
-printer_stop(void)
-{
+printer_stop(void) {
 	/* Remove inputs. */
 	if (printer_stdout.input_id) {
 		RemoveInput(printer_stdout.input_id);
@@ -652,7 +641,7 @@ printer_stop(void)
 
 	/* Delete the character set file. */
 	if (need_cs)
-	    (void) unlink(charset_file);
+		(void) unlink(charset_file);
 
 	/* Tell everyone else. */
 	st_changed(ST_PRINTER, False);
@@ -660,16 +649,14 @@ printer_stop(void)
 
 /* The emulator is exiting.  Make sure the printer session is cleaned up. */
 static void
-printer_exiting(H3270 *session, int GNUC_UNUSED(b), void *dunno)
-{
+printer_exiting(H3270 *session, int GNUC_UNUSED(b), void *dunno) {
 	printer_stop();
 }
 
 #if defined(X3270_DISPLAY) /*[*/
 /* Callback for "OK" button on printer specific-LU popup */
 static void
-lu_callback(Widget w, XtPointer client_data, XtPointer G_GNUC_UNUSED(call_data))
-{
+lu_callback(Widget w, XtPointer client_data, XtPointer G_GNUC_UNUSED(call_data)) {
 	char *lu;
 
 	if (w) {
@@ -687,8 +674,7 @@ lu_callback(Widget w, XtPointer client_data, XtPointer G_GNUC_UNUSED(call_data))
 
 /* Host connect/disconnect/3270-mode event. */
 static void
-printer_host_connect(H3270 *session, int GNUC_UNUSED(connected), void *dunno)
-{
+printer_host_connect(H3270 *session, int GNUC_UNUSED(connected), void *dunno) {
 	if (IN_3270) {
 		char *printer_lu = appres.printer_lu;
 
@@ -697,19 +683,19 @@ printer_host_connect(H3270 *session, int GNUC_UNUSED(connected), void *dunno)
 				if (IN_TN3270E) {
 					/* Associate with TN3270E session. */
 					trace_dsn("Starting associated printer "
-						  "session.\n");
+					          "session.\n");
 					printer_start(CN);
 				}
 			} else {
 				/* Specific LU. */
 				trace_dsn("Starting %s printer session.\n",
-				    printer_lu);
+				          printer_lu);
 				printer_start(printer_lu);
 			}
 		} else if (!IN_E &&
-			   printer_lu != CN &&
-			   !strcmp(printer_lu, ".") &&
-			   printer_running()) {
+		           printer_lu != CN &&
+		           !strcmp(printer_lu, ".") &&
+		           printer_running()) {
 
 			/* Stop an automatic associated printer. */
 			trace_dsn("Stopping printer session.\n");
@@ -730,18 +716,16 @@ printer_host_connect(H3270 *session, int GNUC_UNUSED(connected), void *dunno)
 #if defined(X3270_DISPLAY) /*[*/
 /* Pop up the LU dialog box. */
 void
-printer_lu_dialog(void)
-{
+printer_lu_dialog(void) {
 	if (lu_shell == NULL)
 		lu_shell = create_form_popup("printerLu",
-		    lu_callback, (XtCallbackProc)NULL, FORM_NO_WHITE);
+		                             lu_callback, (XtCallbackProc)NULL, FORM_NO_WHITE);
 	popup_popup(lu_shell, XtGrabExclusive);
 }
 #endif /*]*/
 
 Boolean
-printer_running(void)
-{
+printer_running(void) {
 	return printer_pid != -1;
 }
 

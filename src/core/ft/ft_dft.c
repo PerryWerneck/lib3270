@@ -37,8 +37,8 @@
  */
 
 #ifdef WIN32
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 #endif // WIN32
 
 #include <lib3270.h>
@@ -67,8 +67,7 @@
 #define DFT_MAX_BUF	32768
 
 /* Typedefs. */
-struct data_buffer
-{
+struct data_buffer {
 	char sf_length[2];			/**< SF length = 0x0023 */
 	char sf_d0;					/**< 0xD0 */
 	char sf_request_type[2];	/**< request type */
@@ -92,14 +91,12 @@ static int  filter_len(char *s, register int len);
  * @brief Process a Transfer Data structured field from the host.
  *
  */
-void ft_dft_data(H3270 *hSession, unsigned char *data, int GNUC_UNUSED(length))
-{
+void ft_dft_data(H3270 *hSession, unsigned char *data, int GNUC_UNUSED(length)) {
 	struct data_buffer *data_bufr = (struct data_buffer *)data;
 	unsigned short data_length, data_type;
 	unsigned char *cp;
 
-	if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_NONE)
-	{
+	if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_NONE) {
 		trace_ds(hSession," (no transfer in progress)\n");
 		return;
 	}
@@ -113,25 +110,24 @@ void ft_dft_data(H3270 *hSession, unsigned char *data, int GNUC_UNUSED(length))
 	GET16(data_type, cp);
 
 	/* Handle the requests */
-	switch (data_type)
-	{
-    case TR_OPEN_REQ:
+	switch (data_type) {
+	case TR_OPEN_REQ:
 		dft_open_request(hSession,data_length, cp);
 		break;
 
-    case TR_INSERT_REQ:	/* Insert Request */
+	case TR_INSERT_REQ:	/* Insert Request */
 		dft_insert_request(hSession);
 		break;
 
-    case TR_DATA_INSERT:
+	case TR_DATA_INSERT:
 		dft_data_insert(hSession,data_bufr);
 		break;
 
-    case TR_SET_CUR_REQ:
+	case TR_SET_CUR_REQ:
 		dft_set_cur_req(hSession);
 		break;
 
-    case TR_GET_REQ:
+	case TR_GET_REQ:
 		dft_get_request(hSession);
 		break;
 
@@ -139,35 +135,29 @@ void ft_dft_data(H3270 *hSession, unsigned char *data, int GNUC_UNUSED(length))
 		dft_close_request(hSession);
 		break;
 
-    default:
+	default:
 		trace_ds(hSession," Unsupported(0x%04x)\n", data_type);
 		break;
 	}
 }
 
 /* Process an Open request. */
-static void dft_open_request(H3270 *hSession, unsigned short len, unsigned char *cp)
-{
+static void dft_open_request(H3270 *hSession, unsigned short len, unsigned char *cp) {
 	H3270FT			* ft = get_ft_handle(hSession);
 	char			* name = "?";
 	char			  namebuf[8];
 	char			* s;
 	unsigned short	  recsz = 0;
 
-	if (len == 0x23)
-	{
+	if (len == 0x23) {
 		name = (char *)cp + 25;
-	}
-	else if (len == 0x29)
-	{
+	} else if (len == 0x29) {
 		unsigned char *recszp;
 
 		recszp = cp + 27;
 		GET16(recsz, recszp);
 		name = (char *)cp + 31;
-	}
-	else
-	{
+	} else {
 		dft_abort(hSession,TR_OPEN_REQ, "%s", _("Uknown DFT Open type from host") );
 		return;
 	}
@@ -175,24 +165,19 @@ static void dft_open_request(H3270 *hSession, unsigned short len, unsigned char 
 	(void) memcpy(namebuf, name, 7);
 	namebuf[7] = '\0';
 	s = &namebuf[6];
-	while (s >= namebuf && *s == ' ')
-	{
+	while (s >= namebuf && *s == ' ') {
 		*s-- = '\0';
 	}
 
-	if (recsz)
-	{
+	if (recsz) {
 		trace_ds(hSession," Open('%s',recsz=%u)\n", namebuf, recsz);
-	}
-	else
-	{
+	} else {
 		trace_ds(hSession," Open('%s')\n", namebuf);
 	}
 
 	if (!strcmp(namebuf, OPEN_MSG))
 		ft->message_flag = 1;
-	else
-	{
+	else {
 		ft->message_flag = 0;
 		ft_running(ft,False);
 	}
@@ -212,22 +197,19 @@ static void dft_open_request(H3270 *hSession, unsigned short len, unsigned char 
 }
 
 /* Process an Insert request. */
-static void dft_insert_request(H3270 *hSession)
-{
+static void dft_insert_request(H3270 *hSession) {
 	trace_ds(hSession," Insert\n");
 	/* Doesn't currently do anything. */
 }
 
 /* Process a Data Insert request. */
-static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
-{
+static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr) {
 	/* Received a data buffer, get the length and process it */
 	H3270FT			* ft = get_ft_handle(hSession);
 	int				  my_length;
 	unsigned char	* cp;
 
-	if(!ft->message_flag && lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT)
-	{
+	if(!ft->message_flag && lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT) {
 		dft_abort(hSession,TR_DATA_INSERT, "%s", _("Transfer cancelled by user") );
 		return;
 	}
@@ -246,8 +228,7 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 	 * First, check to see if we have message data or file data.
 	 * Message data will result in a popup.
 	 */
-	if (ft->message_flag)
-	{
+	if (ft->message_flag) {
 		/* Data is from a message */
 		unsigned char *msgp;
 		unsigned char *dollarp;
@@ -270,16 +251,12 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 			trace_ds(hSession,"END_TRANSFER\n");
 			ft_complete(hSession->ft,(const char *) msgp);
 			lib3270_free(msgp);
-		}
-		else if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_SENT && ((H3270FT *) hSession->ft)->abort_string != CN)
-		{
+		} else if (lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_SENT && ((H3270FT *) hSession->ft)->abort_string != CN) {
 			trace_ds(hSession,"ABORT_TRANSFER [%s]\n",msgp);
 			lib3270_free(msgp);
 			ft_failed(ft,ft->abort_string);
 			lib3270_free(ft->abort_string);
-		}
-		else
-		{
+		} else {
 			ft_failed(hSession->ft,(char *)msgp);
 			lib3270_free(msgp);
 		}
@@ -287,22 +264,19 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 		/* Write the data out to the file. */
 		int rv = 1;
 
-		if (ft->ascii_flag && ft->remap_flag)
-		{
+		if (ft->ascii_flag && ft->remap_flag) {
 			/* Filter. */
 			unsigned char *s = (unsigned char *)data_bufr->data;
 			unsigned len = my_length;
 
-			while (len--)
-			{
+			while (len--) {
 				*s = ft->charset.ebc2asc[*s];
 				s++;
 			}
 		}
 
 //		if (ft->ascii_flag && ft->cr_flag)
-		if (ft->unix_text)
-		{
+		if (ft->unix_text) {
 			/* Delete CRs and ^Zs. */
 
 			char *s = (char *)data_bufr->data;
@@ -311,8 +285,7 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 			while (len) {
 				unsigned l = filter_len(s, len);
 
-				if (l)
-				{
+				if (l) {
 					rv = fwrite(s, l, (size_t)1,ft->local_file);
 					if (rv == 0)
 						break;
@@ -330,7 +303,7 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 
 		if (!rv) {
 			/* write failed */
-			dft_abort(hSession,TR_DATA_INSERT, _( "Error \"%s\" writing to local file (rc=%d)" ) , strerror(errno), errno);
+			dft_abort(hSession,TR_DATA_INSERT, _( "Error \"%s\" writing to local file (rc=%d)" ), strerror(errno), errno);
 		}
 
 		/* Add up amount transferred. */
@@ -352,15 +325,13 @@ static void dft_data_insert(H3270 *hSession, struct data_buffer *data_bufr)
 }
 
 /* Process a Set Cursor request. */
-static void dft_set_cur_req(H3270 *hSession)
-{
+static void dft_set_cur_req(H3270 *hSession) {
 	trace_ds(hSession," SetCursor\n");
 	/* Currently doesn't do anything. */
 }
 
 /* Process a Get request. */
-static void dft_get_request(H3270 *hSession)
-{
+static void dft_get_request(H3270 *hSession) {
 	int				  numbytes;
 	size_t			  numread;
 	size_t 			  total_read = 0;
@@ -369,8 +340,7 @@ static void dft_get_request(H3270 *hSession)
 
 	trace_ds(hSession," Get\n");
 
-	if (!ft->message_flag && lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT)
-	{
+	if (!ft->message_flag && lib3270_get_ft_state(hSession) == LIB3270_FT_STATE_ABORT_WAIT) {
 		dft_abort(hSession,TR_GET_REQ, _( "Transfer cancelled by user" ) );
 		return;
 	}
@@ -381,24 +351,19 @@ static void dft_get_request(H3270 *hSession)
 	numbytes = hSession->dft_buffersize - 27; /* always read 5 bytes less than we're allowed */
 	bufptr = hSession->output.buf + 17;
 
-	while (!ft->dft_eof && numbytes)
-	{
-		if (ft->unix_text)
-		{
+	while (!ft->dft_eof && numbytes) {
+		if (ft->unix_text) {
 			// ASCII text file
 
 			int c;
 
 			/* Read one byte and do CR/LF translation. */
 			c = fgetc(ft->local_file);
-			if (c == EOF)
-			{
+			if (c == EOF) {
 				break;
 			}
-			if (!ft->ft_last_cr && c == '\n')
-			{
-				if (numbytes < 2)
-				{
+			if (!ft->ft_last_cr && c == '\n') {
+				if (numbytes < 2) {
 					/*
 					 * Not enough room to expand NL to
 					 * CR/LF.
@@ -414,25 +379,20 @@ static void dft_get_request(H3270 *hSession)
 			*bufptr++ = ft->remap_flag ? ft->charset.asc2ebc[c]: c;
 			numbytes--;
 			total_read++;
-		}
-		else
-		{
+		} else {
 			/* Binary read. */
 			numread = fread(bufptr, 1, numbytes, ft->local_file);
-			if (numread <= 0)
-			{
+			if (numread <= 0) {
 				lib3270_write_log(hSession,"Error %s reading source file (rc=%d)",strerror(errno),errno);
 				break;
 			}
 
-			if (ft->ascii_flag && ft->remap_flag)
-			{
+			if (ft->ascii_flag && ft->remap_flag) {
 				// Remap charset
 				unsigned char *s = bufptr;
 				int i = numread;
 
-				while (i)
-				{
+				while (i) {
 					*s = ft->charset.asc2ebc[*s];
 					s++;
 					i--;
@@ -443,15 +403,13 @@ static void dft_get_request(H3270 *hSession)
 			total_read	+= numread;
 		}
 
-		if (feof(ft->local_file) || ferror(ft->local_file))
-		{
+		if (feof(ft->local_file) || ferror(ft->local_file)) {
 			break;
 		}
 	}
 
 	/* Check for read error. */
-	if (ferror(((H3270FT *) hSession->ft)->local_file))
-	{
+	if (ferror(((H3270FT *) hSession->ft)->local_file)) {
 		dft_abort(hSession,TR_GET_REQ, _( "Error \"%s\" reading from local file (rc=%d)" ), strerror(errno), errno);
 		return;
 	}
@@ -462,8 +420,7 @@ static void dft_get_request(H3270 *hSession)
 	hSession->output.ptr += 2;	/* skip SF length for now */
 	*hSession->output.ptr++ = SF_TRANSFER_DATA;
 
-	if (total_read)
-	{
+	if (total_read) {
 		trace_ds(hSession,"> WriteStructuredField FileTransferData Data(rec=%lu) %d bytes\n",(unsigned long) ft->recnum, (int) total_read);
 		SET16(hSession->output.ptr, TR_GET_REPLY);
 		SET16(hSession->output.ptr, TR_RECNUM_HDR);
@@ -476,14 +433,11 @@ static void dft_get_request(H3270 *hSession)
 
 		ft->ft_length += total_read;
 
-		if (feof(ft->local_file))
-		{
+		if (feof(ft->local_file)) {
 			ft->dft_eof = 1;
 		}
 
-	}
-	else
-	{
+	} else {
 		trace_ds(hSession,"> WriteStructuredField FileTransferData EOF\n");
 		*hSession->output.ptr++ = HIGH8(TR_GET_REQ);
 		*hSession->output.ptr++ = TR_ERROR_REPLY;
@@ -499,8 +453,7 @@ static void dft_get_request(H3270 *hSession)
 
 	/* Save the data. */
 	ft->dft_savebuf_len = hSession->output.ptr - hSession->output.buf;
-	if (ft->dft_savebuf_len > ft->dft_savebuf_max)
-	{
+	if (ft->dft_savebuf_len > ft->dft_savebuf_max) {
 		ft->dft_savebuf_max = ft->dft_savebuf_len;
 		Replace(ft->dft_savebuf, (unsigned char *)lib3270_malloc(ft->dft_savebuf_max));
 	}
@@ -513,8 +466,7 @@ static void dft_get_request(H3270 *hSession)
 }
 
 /* Process a Close request. */
-static void dft_close_request(H3270 *hSession)
-{
+static void dft_close_request(H3270 *hSession) {
 	/*
 	 * Recieved a close request from the system.
 	 * Return a close acknowledgement.
@@ -531,8 +483,7 @@ static void dft_close_request(H3270 *hSession)
 }
 
 /* Abort a transfer. */
-static void dft_abort(H3270 *hSession, unsigned short code, const char *fmt, ...)
-{
+static void dft_abort(H3270 *hSession, unsigned short code, const char *fmt, ...) {
 	H3270FT *ft = (H3270FT *) hSession->ft;
 	va_list args;
 
@@ -561,8 +512,7 @@ static void dft_abort(H3270 *hSession, unsigned short code, const char *fmt, ...
 
 /* Returns the number of bytes in s, limited by len, that aren't CRs or ^Zs. */
 static int
-filter_len(char *s, register int len)
-{
+filter_len(char *s, register int len) {
 	register char *t = s;
 
 	while (len && *t != '\r' && *t != 0x1a) {
@@ -575,12 +525,10 @@ filter_len(char *s, register int len)
 /**
  * Processes a Read Modified command when there is upload data pending.
  */
-void dft_read_modified(H3270 *hSession)
-{
+void dft_read_modified(H3270 *hSession) {
 	H3270FT	*ft = get_ft_handle(hSession);
 
-	if(ft->dft_savebuf_len)
-	{
+	if(ft->dft_savebuf_len) {
 		trace_ds(hSession,"> WriteStructuredField FileTransferData\n");
 		hSession->output.ptr = hSession->output.buf;
 		space3270out(hSession,ft->dft_savebuf_len);
@@ -606,9 +554,8 @@ void set_dft_buffersize(H3270 *hSession)
 
 #endif /*]*/
 
- LIB3270_EXPORT int	lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize)
- {
- 	CHECK_SESSION_HANDLE(hSession);
+LIB3270_EXPORT int	lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize) {
+	CHECK_SESSION_HANDLE(hSession);
 
 	hSession->dft_buffersize = dft_buffersize;
 
@@ -622,5 +569,5 @@ void set_dft_buffersize(H3270 *hSession)
 		hSession->dft_buffersize = DFT_MIN_BUF;
 
 	return 0;
- }
+}
 

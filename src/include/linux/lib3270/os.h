@@ -27,17 +27,17 @@
  *
  */
 
- /**
-  * @brief TN3270 API linux definitions.
-  *
-  * @author perry.werneck@gmail.com
-  *
-  */
+/**
+ * @brief TN3270 API linux definitions.
+ *
+ * @author perry.werneck@gmail.com
+ *
+ */
 
 #ifndef LIB3270_OS_H_INCLUDED
 
-	#define LIB3270_OS_H_INCLUDED 1
+#define LIB3270_OS_H_INCLUDED 1
 
-	#include <unistd.h>
+#include <unistd.h>
 
 #endif // LIB3270_OS_H_INCLUDED

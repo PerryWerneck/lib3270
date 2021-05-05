@@ -35,9 +35,9 @@
 #define True 1
 
 #ifdef __APPLE__
-    typedef unsigned char Boolean;
+typedef unsigned char Boolean;
 #else
-    typedef char Boolean;
+typedef char Boolean;
 #endif
 
 typedef char *String;

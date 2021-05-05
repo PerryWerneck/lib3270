@@ -27,39 +27,35 @@
  *
  */
 
- /**
-  * @brief Implements the boolean properties.
-  *
-  */
+/**
+ * @brief Implements the boolean properties.
+ *
+ */
 
- #include <config.h>
- #include <internals.h>
- #include <string.h>
- #include <lib3270.h>
- #include <lib3270/properties.h>
- #include <lib3270/keyboard.h>
- #include <lib3270/selection.h>
- #include <lib3270/ssl.h>
+#include <config.h>
+#include <internals.h>
+#include <string.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
+#include <lib3270/keyboard.h>
+#include <lib3270/selection.h>
+#include <lib3270/ssl.h>
 
- int lib3270_is_starting(const H3270 *hSession)
- {
+int lib3270_is_starting(const H3270 *hSession) {
 	return hSession->starting != 0;
- }
+}
 
-  LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled)
-  {
+LIB3270_EXPORT int lib3270_ssl_set_crl_download(H3270 *hSession, int enabled) {
 	FAIL_IF_ONLINE(hSession);
 	hSession->ssl.download_crl = (enabled ? 1 : 0);
 	return 0;
-  }
+}
 
- LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession)
- {
+LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession) {
 	return hSession->ssl.download_crl;
- }
+}
 
- const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void)
- {
+const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void) {
 
 	static const LIB3270_INT_PROPERTY properties[] = {
 		{
@@ -220,23 +216,19 @@
 
 	return properties;
 
- }
+}
 
-int lib3270_set_boolean_property(H3270 *hSession, const char *name, int value, int seconds)
-{
+int lib3270_set_boolean_property(H3270 *hSession, const char *name, int value, int seconds) {
 	size_t ix;
 	const LIB3270_INT_PROPERTY * properties;
 
-	if(seconds)
-	{
+	if(seconds) {
 		lib3270_wait_for_ready(hSession, seconds);
 	}
 
 	properties = lib3270_get_boolean_properties_list();
-	for(ix = 0; properties[ix].name; ix++)
-	{
-		if(!strcasecmp(name,properties[ix].name))
-		{
+	for(ix = 0; properties[ix].name; ix++) {
+		if(!strcasecmp(name,properties[ix].name)) {
 			if(properties[ix].set)
 				return properties[ix].set(hSession, value);
 			else

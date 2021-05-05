@@ -53,40 +53,38 @@
 #include "seec.h"
 
 const char *
-unknown(unsigned char value)
-{
+unknown(unsigned char value) {
 	static char buf[64];
 
 	(void) sprintf(buf, "unknown[0x%x]", value);
 	return buf;
 }
 
-const char *see_ebc(H3270 *hSession, unsigned char ch)
-{
+const char *see_ebc(H3270 *hSession, unsigned char ch) {
 	static char buf[8];
 
 	switch (ch) {
-	    case FCORDER_NULL:
+	case FCORDER_NULL:
 		return "NULL";
-	    case FCORDER_SUB:
+	case FCORDER_SUB:
 		return "SUB";
-	    case FCORDER_DUP:
+	case FCORDER_DUP:
 		return "DUP";
-	    case FCORDER_FM:
+	case FCORDER_FM:
 		return "FM";
-	    case FCORDER_FF:
+	case FCORDER_FF:
 		return "FF";
-	    case FCORDER_CR:
+	case FCORDER_CR:
 		return "CR";
-	    case FCORDER_NL:
+	case FCORDER_NL:
 		return "NL";
-	    case FCORDER_EM:
+	case FCORDER_EM:
 		return "EM";
-	    case FCORDER_EO:
+	case FCORDER_EO:
 		return "EO";
-	    case FCORDER_SI:
+	case FCORDER_SI:
 		return "SI";
-	    case FCORDER_SO:
+	case FCORDER_SO:
 		return "SO";
 	}
 
@@ -98,8 +96,7 @@ const char *see_ebc(H3270 *hSession, unsigned char ch)
 	return buf;
 }
 
-const char * see_aid(unsigned char code)
-{
+const char * see_aid(unsigned char code) {
 	switch (code) {
 	case AID_NO:
 		return "NoAID";
@@ -176,8 +173,7 @@ const char * see_aid(unsigned char code)
 	}
 }
 
-const char * see_attr(unsigned char fa)
-{
+const char * see_attr(unsigned char fa) {
 	static char buf[256];
 	const char *paren = "(";
 
@@ -229,45 +225,43 @@ const char * see_attr(unsigned char fa)
 	return buf;
 }
 
-static const char * see_highlight(unsigned char setting)
-{
+static const char * see_highlight(unsigned char setting) {
 	switch (setting) {
-	    case XAH_DEFAULT:
+	case XAH_DEFAULT:
 		return "default";
-	    case XAH_NORMAL:
+	case XAH_NORMAL:
 		return "normal";
-	    case XAH_BLINK:
+	case XAH_BLINK:
 		return "blink";
-	    case XAH_REVERSE:
+	case XAH_REVERSE:
 		return "reverse";
-	    case XAH_UNDERSCORE:
+	case XAH_UNDERSCORE:
 		return "underscore";
-	    case XAH_INTENSIFY:
+	case XAH_INTENSIFY:
 		return "intensify";
-	    default:
+	default:
 		return unknown(setting);
 	}
 }
 
-const char * see_color(unsigned char setting)
-{
+const char * see_color(unsigned char setting) {
 	static const char *color_name[] = {
-	    "neutralBlack",
-	    "blue",
-	    "red",
-	    "pink",
-	    "green",
-	    "turquoise",
-	    "yellow",
-	    "neutralWhite",
-	    "black",
-	    "deepBlue",
-	    "orange",
-	    "purple",
-	    "paleGreen",
-	    "paleTurquoise",
-	    "grey",
-	    "white"
+		"neutralBlack",
+		"blue",
+		"red",
+		"pink",
+		"green",
+		"turquoise",
+		"yellow",
+		"neutralWhite",
+		"black",
+		"deepBlue",
+		"orange",
+		"purple",
+		"paleGreen",
+		"paleTurquoise",
+		"grey",
+		"white"
 	};
 
 	if (setting == XAC_DEFAULT)
@@ -278,24 +272,22 @@ const char * see_color(unsigned char setting)
 		return color_name[setting - 0xf0];
 }
 
-static const char * see_transparency(unsigned char setting)
-{
+static const char * see_transparency(unsigned char setting) {
 	switch (setting) {
-	    case XAT_DEFAULT:
+	case XAT_DEFAULT:
 		return "default";
-	    case XAT_OR:
+	case XAT_OR:
 		return "or";
-	    case XAT_XOR:
+	case XAT_XOR:
 		return "xor";
-	    case XAT_OPAQUE:
+	case XAT_OPAQUE:
 		return "opaque";
-	    default:
+	default:
 		return unknown(setting);
 	}
 }
 
-static const char * see_validation(unsigned char setting)
-{
+static const char * see_validation(unsigned char setting) {
 	static char buf[64];
 	const char *paren = "(";
 
@@ -322,8 +314,7 @@ static const char * see_validation(unsigned char setting)
 	return buf;
 }
 
-static const char * see_outline(unsigned char setting)
-{
+static const char * see_outline(unsigned char setting) {
 	static char buf[64];
 	const char *paren = "(";
 
@@ -355,119 +346,114 @@ static const char * see_outline(unsigned char setting)
 	return buf;
 }
 
-static const char * see_input_control(unsigned char setting)
-{
+static const char * see_input_control(unsigned char setting) {
 	switch (setting) {
-	    case XAI_DISABLED:
+	case XAI_DISABLED:
 		return "disabled";
-	    case XAI_ENABLED:
+	case XAI_ENABLED:
 		return "enabled";
-	    default:
+	default:
 		return unknown(setting);
 	}
 }
 
-const char * see_efa(unsigned char efa, unsigned char value)
-{
+const char * see_efa(unsigned char efa, unsigned char value) {
 	static char buf[80];
 
 	switch (efa) {
-	    case XA_ALL:
+	case XA_ALL:
 		(void) snprintf(buf, sizeof(buf), " all(%x)", value);
 		break;
-	    case XA_3270:
+	case XA_3270:
 		(void) snprintf(buf, sizeof(buf), " 3270%s", see_attr(value));
 		break;
-	    case XA_VALIDATION:
+	case XA_VALIDATION:
 		(void) snprintf(buf, sizeof(buf), " validation%s", see_validation(value));
 		break;
-	    case XA_OUTLINING:
+	case XA_OUTLINING:
 		(void) snprintf(buf, sizeof(buf), " outlining(%s)", see_outline(value));
 		break;
-	    case XA_HIGHLIGHTING:
+	case XA_HIGHLIGHTING:
 		(void) snprintf(buf, sizeof(buf), " highlighting(%s)", see_highlight(value));
 		break;
-	    case XA_FOREGROUND:
+	case XA_FOREGROUND:
 		(void) snprintf(buf, sizeof(buf), " foreground(%s)", see_color(value));
 		break;
-	    case XA_CHARSET:
+	case XA_CHARSET:
 		(void) snprintf(buf, sizeof(buf), " charset(%x)", value);
 		break;
-	    case XA_BACKGROUND:
+	case XA_BACKGROUND:
 		(void) sprintf(buf, " background(%s)", see_color(value));
 		break;
-	    case XA_TRANSPARENCY:
+	case XA_TRANSPARENCY:
 		(void) snprintf(buf, sizeof(buf), " transparency(%s)",
-		    see_transparency(value));
+		                see_transparency(value));
 		break;
-	    case XA_INPUT_CONTROL:
+	case XA_INPUT_CONTROL:
 		(void) snprintf(buf, sizeof(buf), " input-control(%s)",
-		    see_input_control(value));
+		                see_input_control(value));
 		break;
-	    default:
+	default:
 		(void) snprintf(buf, sizeof(buf), " %s[0x%x]", unknown(efa), value);
 		break;
 	}
 	return buf;
 }
 
-const char * see_efa_only(unsigned char efa)
-{
+const char * see_efa_only(unsigned char efa) {
 	switch (efa) {
-	    case XA_ALL:
+	case XA_ALL:
 		return "all";
-	    case XA_3270:
+	case XA_3270:
 		return "3270";
-	    case XA_VALIDATION:
+	case XA_VALIDATION:
 		return "validation";
-	    case XA_OUTLINING:
+	case XA_OUTLINING:
 		return "outlining";
-	    case XA_HIGHLIGHTING:
+	case XA_HIGHLIGHTING:
 		return "highlighting";
-	    case XA_FOREGROUND:
+	case XA_FOREGROUND:
 		return "foreground";
-	    case XA_CHARSET:
+	case XA_CHARSET:
 		return "charset";
-	    case XA_BACKGROUND:
+	case XA_BACKGROUND:
 		return "background";
-	    case XA_TRANSPARENCY:
+	case XA_TRANSPARENCY:
 		return "transparency";
-	    default:
+	default:
 		return unknown(efa);
 	}
 }
 
-const char * see_qcode(unsigned char id)
-{
+const char * see_qcode(unsigned char id) {
 	static char buf[64];
 
-	switch (id)
-	{
-	    case QR_CHARSETS:
-			return "CharacterSets";
-	    case QR_IMP_PART:
-			return "ImplicitPartition";
-	    case QR_SUMMARY:
-			return "Summary";
-	    case QR_USABLE_AREA:
-			return "UsableArea";
-	    case QR_COLOR:
-			return "Color";
-	    case QR_HIGHLIGHTING:
-			return "Highlighting";
-	    case QR_REPLY_MODES:
-			return "ReplyModes";
-	    case QR_DBCS_ASIA:
-			return "DbcsAsia";
-	    case QR_ALPHA_PART:
-			return "AlphanumericPartitions";
-	    case QR_DDM:
-			return "DistributedDataManagement";
-	    case QR_RPQNAMES:
-			return "RPQNames";
-	    default:
-			(void) sprintf(buf, "unknown[0x%x]", id);
-			return buf;
+	switch (id) {
+	case QR_CHARSETS:
+		return "CharacterSets";
+	case QR_IMP_PART:
+		return "ImplicitPartition";
+	case QR_SUMMARY:
+		return "Summary";
+	case QR_USABLE_AREA:
+		return "UsableArea";
+	case QR_COLOR:
+		return "Color";
+	case QR_HIGHLIGHTING:
+		return "Highlighting";
+	case QR_REPLY_MODES:
+		return "ReplyModes";
+	case QR_DBCS_ASIA:
+		return "DbcsAsia";
+	case QR_ALPHA_PART:
+		return "AlphanumericPartitions";
+	case QR_DDM:
+		return "DistributedDataManagement";
+	case QR_RPQNAMES:
+		return "RPQNames";
+	default:
+		(void) sprintf(buf, "unknown[0x%x]", id);
+		return buf;
 	}
 }
 

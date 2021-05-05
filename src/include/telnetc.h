@@ -57,8 +57,8 @@ LIB3270_INTERNAL void net_send_werase(H3270 *hSession);
 LIB3270_INTERNAL void space3270out(H3270 *hSession, int n);
 
 #if defined(X3270_TRACE)
-	LIB3270_INTERNAL void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, int len);
+LIB3270_INTERNAL void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, int len);
 #else
-	#define trace_netdata(direction, buf, len) /* */
+#define trace_netdata(direction, buf, len) /* */
 #endif // X3270_TRACE
 

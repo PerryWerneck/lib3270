@@ -34,29 +34,27 @@
 
 #ifndef LIB3270_LINKED_LIST_H_INCLUDED
 
-	#define LIB3270_LINKED_LIST_H_INCLUDED
+#define LIB3270_LINKED_LIST_H_INCLUDED
 
-	#include <stddef.h>
-	#include <lib3270.h>
+#include <stddef.h>
+#include <lib3270.h>
 
-	#define LIB3270_LINKED_LIST_HEAD	\
+#define LIB3270_LINKED_LIST_HEAD	\
 		struct lib3270_linked_list_node * prev; \
 		struct lib3270_linked_list_node * next; \
 		void * userdata;
 
-	struct lib3270_linked_list_node
-	{
-		LIB3270_LINKED_LIST_HEAD
-	};
+struct lib3270_linked_list_node {
+	LIB3270_LINKED_LIST_HEAD
+};
 
-	struct lib3270_linked_list_head
-	{
-		struct lib3270_linked_list_node * first;
-		struct lib3270_linked_list_node * last;
-	};
+struct lib3270_linked_list_head {
+	struct lib3270_linked_list_node * first;
+	struct lib3270_linked_list_node * last;
+};
 
-	LIB3270_INTERNAL void	* lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, size_t szBlock, void *userdata);
-	LIB3270_INTERNAL int	  lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const void *node);
-	LIB3270_INTERNAL void	  lib3270_linked_list_free(struct lib3270_linked_list_head *head);
+LIB3270_INTERNAL void	* lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, size_t szBlock, void *userdata);
+LIB3270_INTERNAL int	  lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const void *node);
+LIB3270_INTERNAL void	  lib3270_linked_list_free(struct lib3270_linked_list_head *head);
 
 #endif // LIB3270_LINKED_LIST_H_INCLUDED

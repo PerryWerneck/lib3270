@@ -46,8 +46,7 @@
 ///
 /// @brief Process a single character definition.
 ///
-LIB3270_EXPORT void lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way)
-{
+LIB3270_EXPORT void lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way) {
 	//	unsigned char cg;
 	CHECK_SESSION_HANDLE(hSession);
 
@@ -61,12 +60,9 @@ LIB3270_EXPORT void lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsi
 	if (iso == 0x20)
 		one_way = True;
 
-	if (iso <= 0xff)
-	{
-		if (scope == BOTH || scope == CS_ONLY)
-		{
-			if (ebc > 0x40)
-			{
+	if (iso <= 0xff) {
+		if (scope == BOTH || scope == CS_ONLY) {
+			if (ebc > 0x40) {
 				hSession->charset.ebc2asc[ebc] = iso;
 				if (!one_way)
 					hSession->charset.asc2ebc[iso] = ebc;
@@ -76,16 +72,13 @@ LIB3270_EXPORT void lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsi
 	}
 }
 
-LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id)
-{
+LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id) {
 
-	static const struct
-	{
+	static const struct {
 		const char		* name;
 		unsigned short	  keysym;
 	}
-	latin[] =
-	{
+	latin[] = {
 		{ "space", XK_space },
 		{ "exclam", XK_exclam },
 		{ "quotedbl", XK_quotedbl },
@@ -284,43 +277,41 @@ LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id)
 
 		// The following are, umm, hacks to allow symbolic names for
 		// control codes.
-	#if !defined(_WIN32)
+#if !defined(_WIN32)
 		{ "BackSpace", 0x08 },
 		{ "Tab", 0x09 },
 		{ "Linefeed", 0x0a },
 		{ "Return", 0x0d },
 		{ "Escape", 0x1b },
 		{ "Delete", 0x7f },
-	#endif
+#endif
 	};
 
 	size_t ix;
 
- 	if(strncasecmp(id,"0x",2) == 0) {
+	if(strncasecmp(id,"0x",2) == 0) {
 
-        unsigned int rc = 0;
+		unsigned int rc = 0;
 
-		if(sscanf(id + 2, "%x", &rc) != 1)
-		{
+		if(sscanf(id + 2, "%x", &rc) != 1) {
 			errno = EINVAL;
 			return 0;
 		}
 
 		return (unsigned short) rc;
 
- 	}
+	}
 
- 	for(ix=0;ix < (sizeof(latin)/sizeof(latin[0])); ix++) {
+	for(ix=0; ix < (sizeof(latin)/sizeof(latin[0])); ix++) {
 		if(!strcasecmp(id,latin[ix].name))
 			return latin[ix].keysym;
- 	}
+	}
 
- 	if(strlen(id) != 1)
-	{
+	if(strlen(id) != 1) {
 		errno = EINVAL;
 		return 0;
 	}
 
- 	return (unsigned short) *id;
+	return (unsigned short) *id;
 
 }

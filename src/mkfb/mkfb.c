@@ -37,10 +37,10 @@
 
 
 #if defined( WIN32 )
-	#include <windows.h>
-	#define tmpfile w32_tmpfile
+#include <windows.h>
+#define tmpfile w32_tmpfile
 #elif defined( __APPLE__ )
-	#define tmpfile osx_tmpfile
+#define tmpfile osx_tmpfile
 #endif // OS
 
 #include <sys/stat.h>
@@ -105,63 +105,63 @@ struct {
 unsigned long is_defined =
     MODE_COLOR |
 #if defined(X3270_FT)
-	MODE_FT
+    MODE_FT
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_TRACE)
-	MODE_TRACE
+    MODE_TRACE
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_MENUS)
-	MODE_MENUS
+    MODE_MENUS
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_ANSI)
-	MODE_ANSI
+    MODE_ANSI
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_KEYPAD)
-	MODE_KEYPAD
+    MODE_KEYPAD
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_APL)
-	MODE_APL
+    MODE_APL
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_PRINTER)
-	MODE_PRINTER
+    MODE_PRINTER
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_SCRIPT)
-	MODE_SCRIPT
+    MODE_SCRIPT
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(X3270_DBCS)
-	MODE_DBCS
+    MODE_DBCS
 #else
-	0
+    0
 #endif
-|
+    |
 #if defined(_WIN32)
-	MODE__WIN32
+    MODE__WIN32
 #else
-	0
+    0
 #endif
     ;
 unsigned long is_undefined;
@@ -171,15 +171,13 @@ char *me;
 void emit(FILE *t, int ix, char c);
 
 void
-usage(void)
-{
+usage(void) {
 	fprintf(stderr, "usage: %s [infile [outfile]]\n", me);
 	exit(1);
 }
 
 int
-main(int argc, char *argv[])
-{
+main(int argc, char *argv[]) {
 	char buf[BUFSZ];
 	int lno = 0;
 	int cc = 0;
@@ -198,16 +196,16 @@ main(int argc, char *argv[])
 	else
 		me = argv[0];
 	if (argc > 1 && !strcmp(argv[1], "-c")) {
-	    cmode = 1;
-	    is_defined |= MODE_STANDALONE;
-	    argc--;
-	    argv++;
+		cmode = 1;
+		is_defined |= MODE_STANDALONE;
+		argc--;
+		argv++;
 	}
 	switch (argc) {
-	    case 1:
+	case 1:
 		break;
-	    case 2:
-	    case 3:
+	case 2:
+	case 3:
 		if (strcmp(argv[1], "-")) {
 			if (freopen(argv[1], "r", stdin) == (FILE *)NULL) {
 				perror(argv[1]);
@@ -216,7 +214,7 @@ main(int argc, char *argv[])
 			filename = argv[1];
 		}
 		break;
-	    default:
+	default:
 		usage();
 	}
 
@@ -240,7 +238,7 @@ main(int argc, char *argv[])
 		while (isspace(*s))
 			s++;
 		if (cmode &&
-		    (!strncmp(s, "x3270.", 6) || !strncmp(s, "x3270*", 6))) {
+		        (!strncmp(s, "x3270.", 6) || !strncmp(s, "x3270*", 6))) {
 			s += 6;
 		}
 
@@ -257,13 +255,13 @@ main(int argc, char *argv[])
 			int ifnd = 1;
 
 			if (!strncmp(s, "#ifdef ", 7) ||
-			    !(ifnd = strncmp(s, "#ifndef ", 8))) {
+			        !(ifnd = strncmp(s, "#ifndef ", 8))) {
 				char *tk;
 
 				if (ssp >= SSSZ) {
 					fprintf(stderr,
-					    "%s, line %d: Stack overflow\n",
-					    filename, lno);
+					        "%s, line %d: Stack overflow\n",
+					        filename, lno);
 					exit(1);
 				}
 				ss[ssp].ifdefs = 0L;
@@ -284,8 +282,8 @@ main(int argc, char *argv[])
 				}
 				if (i >= NPARTS) {
 					fprintf(stderr,
-					    "%s, line %d: Unknown condition\n",
-					    filename, lno);
+					        "%s, line %d: Unknown condition\n",
+					        filename, lno);
 					exit(1);
 				}
 				continue;
@@ -296,8 +294,8 @@ main(int argc, char *argv[])
 
 				if (!ssp) {
 					fprintf(stderr,
-					    "%s, line %d: Missing #if[n]def\n",
-					    filename, lno);
+					        "%s, line %d: Missing #if[n]def\n",
+					        filename, lno);
 					exit(1);
 				}
 				tmp = ss[ssp-1].ifdefs;
@@ -306,15 +304,15 @@ main(int argc, char *argv[])
 			} else if (!strcmp(s, "#endif")) {
 				if (!ssp) {
 					fprintf(stderr,
-					    "%s, line %d: Missing #if[n]def\n",
-					    filename, lno);
+					        "%s, line %d: Missing #if[n]def\n",
+					        filename, lno);
 					exit(1);
 				}
 				ssp--;
 			} else {
 				fprintf(stderr,
-				    "%s, line %d: Unrecognized # directive\n",
-				    filename, lno);
+				        "%s, line %d: Unrecognized # directive\n",
+				        filename, lno);
 				exit(1);
 			}
 			continue;
@@ -382,7 +380,7 @@ main(int argc, char *argv[])
 
 	/* Emit the initial boilerplate. */
 	fprintf(t, "/* This file was created automatically from %s by mkfb. */\n\n",
-	    filename);
+	        filename);
 	if (cmode) {
 		fprintf(t, "#include \"internals.h\"\n");
 		fprintf(t, "static unsigned char fsd[] = {\n");
@@ -446,10 +444,10 @@ main(int argc, char *argv[])
 				white = 0;
 			}
 			switch (c) {
-			    case ' ':
-			    case '\t':
+			case ' ':
+			case '\t':
 				break;
-			    case '#':
+			case '#':
 				if (!cmode) {
 					emit(t_this, ix, '\\');
 					emit(t_this, ix, '#');
@@ -459,24 +457,24 @@ main(int argc, char *argv[])
 					cc++;
 				}
 				break;
-			    case '\\':
+			case '\\':
 				if (*s == '\0') {
 					continued = 1;
 					break;
 				} else if (cmode) {
-				    switch ((c = *s++)) {
-				    case 't':
-					c = '\t';
-					break;
-				    case 'n':
-					c = '\n';
-					break;
-				    default:
-					break;
-				    }
+					switch ((c = *s++)) {
+					case 't':
+						c = '\t';
+						break;
+					case 'n':
+						c = '\n';
+						break;
+					default:
+						break;
+					}
 				}
-				/* else fall through */
-			    default:
+			/* else fall through */
+			default:
 				emit(t_this, ix, c);
 				cc++;
 				break;
@@ -541,8 +539,8 @@ main(int argc, char *argv[])
 		fprintf(o, "String fallbacks[%u] = {\n", n_fallbacks + 1);
 		for (i = 0; i < n_fallbacks; i++) {
 			fprintf(o, "\t(String)&fsd[%u], /* line %u */\n",
-					aix[i],
-			    xlno[i]);
+			        aix[i],
+			        xlno[i]);
 		}
 		fprintf(o, "\t(String)NULL\n};\n\n");
 
@@ -575,8 +573,7 @@ main(int argc, char *argv[])\n\
 static int n_out[3] = { 0, 0, 0 };
 
 void
-emit(FILE *t, int ix, char c)
-{
+emit(FILE *t, int ix, char c) {
 	if (n_out[ix] >= 19) {
 		fprintf(t, "\n");
 		n_out[ix] = 0;
@@ -586,8 +583,7 @@ emit(FILE *t, int ix, char c)
 }
 
 #if defined(_WIN32)
-FILE * w32_tmpfile( void )
-{
+FILE * w32_tmpfile( void ) {
 	char *dir;
 	char *xtemplate;
 	DWORD retval;
@@ -607,40 +603,35 @@ FILE * w32_tmpfile( void )
 	if (retval == 0 || retval >= PATH_MAX - 1)
 		goto done;
 
-	do
-	{
+	do {
 		char *tempname = tempnam(dir,"XXXXXX");
 		if(!tempname)
 			goto done;
 
 		fd = _open (tempname,_O_BINARY | _O_CREAT | _O_TEMPORARY | _O_EXCL | _O_RDWR,_S_IREAD | _S_IWRITE);
-	}
-	while (fd < 0 && errno == EEXIST);
+	} while (fd < 0 && errno == EEXIST);
 
 	if (fd < 0)
 		goto done;
 
 	file = _fdopen (fd, "w+b");
-	if (file == NULL)
-	{
+	if (file == NULL) {
 		int save_errno = errno;
 		_close (fd);
 		errno = save_errno;
 	}
 
-	done:
+done:
 	free(xtemplate);
 	free(dir);
 	return file;
 }
 #elif defined( __APPLE__ )
-FILE * osx_tmpfile( void )
-{
+FILE * osx_tmpfile( void ) {
 	int fd = -1;
 	FILE *file = NULL;
 
-	do
-	{
+	do {
 		char *tempname = tempnam(NULL,"XXXXXX");
 		if(!tempname)
 			return NULL;
@@ -649,8 +640,7 @@ FILE * osx_tmpfile( void )
 
 
 	file = fdopen (fd, "w+b");
-	if (file == NULL)
-	{
+	if (file == NULL) {
 		int save_errno = errno;
 		close (fd);
 		errno = save_errno;

@@ -35,59 +35,54 @@
 
 /*---[ Implement ]-------------------------------------------------------------------------------------------------------*/
 
- LIB3270_EXPORT int	lib3270_ft_set_lrecl(H3270 *hSession, int lrecl)
- {
- 	CHECK_SESSION_HANDLE(hSession);
+LIB3270_EXPORT int	lib3270_ft_set_lrecl(H3270 *hSession, int lrecl) {
+	CHECK_SESSION_HANDLE(hSession);
 
- 	if(!hSession->ft)
+	if(!hSession->ft)
 		return errno = EINVAL;
 
 	hSession->ft->lrecl	= lrecl;
 
 	return 0;
- }
+}
 
- LIB3270_EXPORT int	lib3270_ft_set_blksize(H3270 *hSession, int blksize)
- {
- 	CHECK_SESSION_HANDLE(hSession);
+LIB3270_EXPORT int	lib3270_ft_set_blksize(H3270 *hSession, int blksize) {
+	CHECK_SESSION_HANDLE(hSession);
 
- 	if(!hSession->ft)
+	if(!hSession->ft)
 		return errno = EINVAL;
 
 	hSession->ft->blksize = blksize;
 
 	return 0;
- }
+}
 
- LIB3270_EXPORT int	lib3270_ft_set_primspace(H3270 *hSession, int primspace)
- {
- 	CHECK_SESSION_HANDLE(hSession);
+LIB3270_EXPORT int	lib3270_ft_set_primspace(H3270 *hSession, int primspace) {
+	CHECK_SESSION_HANDLE(hSession);
 
- 	if(!hSession->ft)
+	if(!hSession->ft)
 		return errno = EINVAL;
 
 	hSession->ft->primspace	= primspace;
 
 	return 0;
- }
+}
 
- LIB3270_EXPORT int	lib3270_ft_set_secspace(H3270 *hSession, int secspace)
- {
- 	CHECK_SESSION_HANDLE(hSession);
+LIB3270_EXPORT int	lib3270_ft_set_secspace(H3270 *hSession, int secspace) {
+	CHECK_SESSION_HANDLE(hSession);
 
- 	if(!hSession->ft)
+	if(!hSession->ft)
 		return errno = EINVAL;
 
 	hSession->ft->secspace = secspace;
 
 	return 0;
- }
+}
 
- LIB3270_EXPORT int lib3270_ft_set_options(H3270 *hSession, LIB3270_FT_OPTION options)
- {
- 	CHECK_SESSION_HANDLE(hSession);
+LIB3270_EXPORT int lib3270_ft_set_options(H3270 *hSession, LIB3270_FT_OPTION options) {
+	CHECK_SESSION_HANDLE(hSession);
 
- 	if(!hSession->ft)
+	if(!hSession->ft)
 		return errno = EINVAL;
 
 	hSession->ft->ascii_flag	= (options & LIB3270_FT_OPTION_ASCII)	? 1 : 0;
@@ -97,4 +92,4 @@
 	hSession->ft->flags			|= options;
 
 	return 0;
- }
+}

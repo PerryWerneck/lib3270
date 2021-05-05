@@ -29,20 +29,20 @@
 
 #ifndef PRIVATE_H_INCLUDED
 
-	#define PRIVATE_H_INCLUDED
+#define PRIVATE_H_INCLUDED
 
-	#include <config.h>
+#include <config.h>
 
-	#include <winsock2.h>
-	#include <windows.h>
+#include <winsock2.h>
+#include <windows.h>
 
-	#include <internals.h>
+#include <internals.h>
 
-	#include <lib3270.h>
- 	#include <lib3270/log.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
 
-	LIB3270_INTERNAL char * lib3270_url_get_using_ldap(H3270 *hSession, const char *u, const char **error);
-	LIB3270_INTERNAL char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char **error);
+LIB3270_INTERNAL char * lib3270_url_get_using_ldap(H3270 *hSession, const char *u, const char **error);
+LIB3270_INTERNAL char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char **error);
 
 
 #endif // !PRIVATE_H_INCLUDED

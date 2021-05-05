@@ -56,8 +56,7 @@ LIB3270_EXPORT LSTATUS lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDe
 	return rc;
 }
 
-LIB3270_EXPORT DWORD lib3270_win32_get_dword(HKEY hKey, const char *name, DWORD def)
-{
+LIB3270_EXPORT DWORD lib3270_win32_get_dword(HKEY hKey, const char *name, DWORD def) {
 	DWORD val = def;
 	DWORD cbData = sizeof(DWORD);
 

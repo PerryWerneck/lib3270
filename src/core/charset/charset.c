@@ -51,8 +51,7 @@
 
 /*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
 
-const unsigned short ebc2asc0[256] =
-{
+const unsigned short ebc2asc0[256] = {
 	/*00*/	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
 	/*08*/	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
 	/*10*/	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
@@ -87,8 +86,7 @@ const unsigned short ebc2asc0[256] =
 	/*f8*/	0x38, 0x39, 0xb3, 0xdb, 0xdc, 0xd9, 0xda, 0x20
 };
 
-static const unsigned short asc2ebc0[256] =
-{
+static const unsigned short asc2ebc0[256] = {
 	/*00*/  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	/*08*/  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	/*10*/  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -123,8 +121,7 @@ static const unsigned short asc2ebc0[256] =
 	/*f8*/  0x70, 0xdd, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf
 };
 
-static const unsigned short asc2uc[UT_SIZE] =
-{
+static const unsigned short asc2uc[UT_SIZE] = {
 	/*40*/	      0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,
 	/*48*/	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
 	/*50*/	0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,
@@ -151,20 +148,17 @@ static const unsigned short asc2uc[UT_SIZE] =
 	/*f8*/	0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde
 };
 
-typedef struct _info
-{
+typedef struct _info {
 	const char				* name;
 	unsigned long			  cgcsgid;
 	const unsigned short	* chr;
 } remap;
 
-static const remap charset[] =
-{
+static const remap charset[] = {
 	{
 		"us",
 		LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET,
-		(const unsigned short [])
-		{
+		(const unsigned short []) {
 			0x0000,	0x0000
 		}
 	},
@@ -172,8 +166,7 @@ static const remap charset[] =
 	{
 		"bracket",
 		LIB3270_DEFAULT_CGEN|LIB3270_DEFAULT_CSET,
-		(const unsigned short [])
-		{
+		(const unsigned short []) {
 			0x00ad, '[',
 			0x00ba, XK_Yacute,
 			0x00bd, ']',
@@ -185,8 +178,7 @@ static const remap charset[] =
 	{
 		"cp500",
 		LIB3270_DEFAULT_CGEN|0x000001F4,
-		(const unsigned short [])
-		{
+		(const unsigned short []) {
 			0x004a, '[',
 			0x004f, '!',
 			0x005a, ']',
@@ -206,18 +198,16 @@ static const remap charset[] =
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-static void copy_charset(const unsigned short *from, unsigned short *to)
-{
+static void copy_charset(const unsigned short *from, unsigned short *to) {
 	int f;
-	for(f=0;f < UT_SIZE;f++)
+	for(f=0; f < UT_SIZE; f++)
 		to[f+UT_OFFSET] = from[f];
 }
 
-LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, const char * display, unsigned long cgcsgid)
-{
+LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, const char * display, unsigned long cgcsgid) {
 	int f;
 
-	#define replace_pointer(x,v) if(x) { lib3270_free(x); }; x = strdup(v)
+#define replace_pointer(x,v) if(x) { lib3270_free(x); }; x = strdup(v)
 
 	if(!host)
 		host = "us";
@@ -235,41 +225,35 @@ LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, co
 	memcpy(hSession->charset.ebc2asc,	ebc2asc0,	sizeof(hSession->charset.ebc2asc));
 	memcpy(hSession->charset.asc2ebc,	asc2ebc0,	sizeof(hSession->charset.asc2ebc));
 
-	for(f=0;f<UT_OFFSET;f++)
+	for(f=0; f<UT_OFFSET; f++)
 		hSession->charset.asc2uc[f] = f;
 
 	copy_charset(asc2uc,hSession->charset.asc2uc);
 
 }
 
-LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name)
-{
+LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name) {
 	int f;
 
 	debug("%s(%s)",__FUNCTION__,name);
 
-	if(name && hSession->charset.host && !strcasecmp(name,hSession->charset.host))
-	{
+	if(name && hSession->charset.host && !strcasecmp(name,hSession->charset.host)) {
 		debug("Charset is \"%s\", returning",hSession->charset.host);
 		return 0;
 	}
 
-	if(!name)
-	{
+	if(!name) {
 		name = hSession->charset.host;
 		debug("Resetting to charset \"%s\"",name);
 	}
 
-	if(!name)
-	{
+	if(!name) {
 		lib3270_reset_charset(hSession, NULL, NULL, LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET);
 		return 0;
 	}
 
-	for(f=0;charset[f].name != NULL;f++)
-	{
-		if(!strcasecmp(name,charset[f].name))
-		{
+	for(f=0; charset[f].name != NULL; f++) {
+		if(!strcasecmp(name,charset[f].name)) {
 			// Found required charset
 			int c;
 
@@ -277,7 +261,7 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name)
 
 			lib3270_reset_charset(hSession,charset[f].name,"ISO-8859-1", charset[f].cgcsgid);
 
-			for(c=0;charset[f].chr[c];c+=2)
+			for(c=0; charset[f].chr[c]; c+=2)
 				lib3270_remap_char(hSession,charset[f].chr[c],charset[f].chr[c+1], BOTH, 0);
 
 			debug("Charset is now \"%s\"",charset[f].name);
@@ -290,7 +274,6 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name)
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_host_charset(const H3270 *hSession)
-{
+LIB3270_EXPORT const char * lib3270_get_host_charset(const H3270 *hSession) {
 	return hSession->charset.host;
 }

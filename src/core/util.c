@@ -43,18 +43,17 @@
 #include <fcntl.h>
 
 #if defined(HAVE_LIBSSL)
-	#include <openssl/opensslv.h>
+#include <openssl/opensslv.h>
 #endif // HAVE_LIBSSL
 
 #if defined(HAVE_MALLOC_H)
-	#include <malloc.h>
+#include <malloc.h>
 #endif // defined
 
 #define my_isspace(c)	isspace((unsigned char)c)
 
 ///  @brief Cheesy internal version of sprintf that allocates its own memory.
-char * lib3270_vsprintf(const char *fmt, va_list args)
-{
+char * lib3270_vsprintf(const char *fmt, va_list args) {
 	char *r = NULL;
 
 #if defined(HAVE_VASPRINTF)
@@ -68,21 +67,15 @@ char * lib3270_vsprintf(const char *fmt, va_list args)
 	int nc;
 
 	nc = vsnprintf(buf, sizeof(buf), fmt, args);
-	if(nc < 0)
-	{
+	if(nc < 0) {
 		lib3270_write_log(NULL, "lib3270", "Error on vsnprintf");
-	}
-	else if (nc < sizeof(buf))
-	{
+	} else if (nc < sizeof(buf)) {
 		r = lib3270_malloc(nc + 1);
 		strcpy(r, buf);
 
-	}
-	else
-	{
+	} else {
 		r = lib3270_malloc(nc + 1);
-		if(vsnprintf(r, nc, fmt, args) < 0)
-		{
+		if(vsnprintf(r, nc, fmt, args) < 0) {
 			lib3270_write_log(NULL, "lib3270", "Error on vsnprintf");
 			free(r);
 			return NULL;
@@ -95,8 +88,7 @@ char * lib3270_vsprintf(const char *fmt, va_list args)
 	return r;
 }
 
-LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...)
-{
+LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...) {
 	va_list args;
 	char *r;
 
@@ -112,8 +104,7 @@ LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...)
  * @param format	A printf format string with '%s's in it.
  *
  */
-char * xs_buffer(const char *fmt, ...)
-{
+char * xs_buffer(const char *fmt, ...) {
 	va_list args;
 	char *r;
 
@@ -127,8 +118,7 @@ char * xs_buffer(const char *fmt, ...)
  *	@brief Expands a character in the manner of "cat -v".
  */
 char *
-ctl_see(int c)
-{
+ctl_see(int c) {
 	static char	buf[64];
 	char	*p = buf;
 
@@ -152,41 +142,34 @@ ctl_see(int c)
 	return buf;
 }
 
-LIB3270_EXPORT void * lib3270_free(void *p)
-{
+LIB3270_EXPORT void * lib3270_free(void *p) {
 	if(p)
 		free(p);
 	return NULL;
 }
 
-LIB3270_EXPORT void lib3270_autoptr_cleanup_char(char **ptr)
-{
-	if(ptr && *ptr)
-	{
+LIB3270_EXPORT void lib3270_autoptr_cleanup_char(char **ptr) {
+	if(ptr && *ptr) {
 		free((void *) *ptr);
 		*ptr = NULL;
 	}
 }
 
-LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr)
-{
-	if(ptr && *ptr)
-	{
+LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr) {
+	if(ptr && *ptr) {
 		free((void *) *ptr);
 		*ptr = NULL;
 	}
 }
 
-LIB3270_EXPORT void * lib3270_realloc(void *p, int len)
-{
+LIB3270_EXPORT void * lib3270_realloc(void *p, int len) {
 	p = realloc(p, len);
 	if(p == NULL)
 		perror("realloc");
 	return p;
 }
 
-LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr)
-{
+LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr) {
 	size_t sz = ((size_t) nelem) * ((size_t) elsize);
 
 	if(ptr)
@@ -201,8 +184,7 @@ LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr)
 	return ptr;
 }
 
-LIB3270_EXPORT void * lib3270_malloc(int len)
-{
+LIB3270_EXPORT void * lib3270_malloc(int len) {
 	char *r = malloc(len);
 	if(r)
 		memset(r,0,len);
@@ -210,21 +192,17 @@ LIB3270_EXPORT void * lib3270_malloc(int len)
 	return r;
 }
 
-LIB3270_EXPORT void * lib3270_strdup(const char *str)
-{
+LIB3270_EXPORT void * lib3270_strdup(const char *str) {
 	return strdup(str);
 }
 
-LIB3270_EXPORT char * lib3270_chomp(char *str)
-{
+LIB3270_EXPORT char * lib3270_chomp(char *str) {
 
 	size_t len = strlen(str);
 
-	while(len--)
-	{
+	while(len--) {
 
-		if(isspace(str[len]))
-		{
+		if(isspace(str[len])) {
 			str[len] = 0;
 		} else {
 			break;
@@ -235,8 +213,7 @@ LIB3270_EXPORT char * lib3270_chomp(char *str)
 
 }
 
-LIB3270_EXPORT char * lib3270_chug(char *str)
-{
+LIB3270_EXPORT char * lib3270_chug(char *str) {
 
 	char *start;
 
@@ -247,40 +224,35 @@ LIB3270_EXPORT char * lib3270_chug(char *str)
 	return str;
 }
 
-LIB3270_EXPORT char * lib3270_strip(char *str)
-{
+LIB3270_EXPORT char * lib3270_strip(char *str) {
 	return lib3270_chomp(lib3270_chug(str));
 }
 
 
-LIB3270_EXPORT const char * lib3270_get_version(void)
-{
+LIB3270_EXPORT const char * lib3270_get_version(void) {
 	return PACKAGE_VERSION;
 }
 
-LIB3270_EXPORT const char * lib3270_get_revision(void)
-{
+LIB3270_EXPORT const char * lib3270_get_revision(void) {
 	return RPQ_REVISION;
 }
 
-LIB3270_EXPORT char * lib3270_get_version_info(void)
-{
+LIB3270_EXPORT char * lib3270_get_version_info(void) {
 #if defined(HAVE_LIBSSL)
 	return lib3270_strdup_printf(
-				"%s version %s-%s build %s (%s)",
-				PACKAGE_NAME,
-				PACKAGE_VERSION,
-				PACKAGE_RELEASE,
-				RPQ_TIMESTAMP_VALUE,
-				OPENSSL_VERSION_TEXT
-			);
+	           "%s version %s-%s build %s (%s)",
+	           PACKAGE_NAME,
+	           PACKAGE_VERSION,
+	           PACKAGE_RELEASE,
+	           RPQ_TIMESTAMP_VALUE,
+	           OPENSSL_VERSION_TEXT
+	       );
 #else
 	return lib3270_strdup_printf("%s version %s-%s build %s",PACKAGE_NAME,PACKAGE_VERSION,PACKAGE_RELEASE,RPQ_TIMESTAMP_VALUE);
 #endif // HAVE_LIBSSL
 }
 
-void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
-{
+void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...) {
 	va_list	  args;
 
 	va_start(args, fmt);
@@ -298,24 +270,21 @@ void lib3270_popup_an_errno(H3270 *hSession, int errn, const char *fmt, ...)
 
 }
 
-LIB3270_EXPORT int lib3270_print(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_print(H3270 *hSession) {
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
 	return hSession->cbk.print(hSession, (hSession->selected ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL));
 }
 
-LIB3270_EXPORT int lib3270_print_all(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_print_all(H3270 *hSession) {
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
 	return hSession->cbk.print(hSession,LIB3270_CONTENT_ALL);
 }
 
-LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession) {
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
@@ -325,50 +294,43 @@ LIB3270_EXPORT int lib3270_print_selected(H3270 *hSession)
 	return errno = ENODATA;
 }
 
-LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession)
-{
+LIB3270_EXPORT int lib3270_print_copy(H3270 *hSession) {
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
 	return hSession->cbk.print(hSession,LIB3270_CONTENT_COPY);
 }
 
-LIB3270_EXPORT int lib3270_load(H3270 *hSession, const char *filename)
-{
+LIB3270_EXPORT int lib3270_load(H3270 *hSession, const char *filename) {
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
 	return hSession->cbk.load(hSession, filename);
 }
 
-LIB3270_EXPORT int lib3270_save(H3270 *hSession, LIB3270_CONTENT_OPTION mode, const char *filename)
-{
+LIB3270_EXPORT int lib3270_save(H3270 *hSession, LIB3270_CONTENT_OPTION mode, const char *filename) {
 	return hSession->cbk.save(hSession, mode, filename);
 }
 
-LIB3270_EXPORT int lib3270_save_all(H3270 *hSession, const char *filename)
-{
+LIB3270_EXPORT int lib3270_save_all(H3270 *hSession, const char *filename) {
 	if(check_online_session(hSession))
 		return errno = ENOTCONN;
 
 	return lib3270_save(hSession,LIB3270_CONTENT_ALL,filename);
 }
 
-LIB3270_EXPORT int lib3270_save_selected(H3270 *hSession, const char *filename)
-{
+LIB3270_EXPORT int lib3270_save_selected(H3270 *hSession, const char *filename) {
 	if(hSession->selected)
 		return lib3270_save(hSession,LIB3270_CONTENT_SELECTED,filename);
 
 	return errno = ENODATA;
 }
 
-LIB3270_EXPORT int lib3270_save_copy(H3270 *hSession, const char *filename)
-{
+LIB3270_EXPORT int lib3270_save_copy(H3270 *hSession, const char *filename) {
 	return lib3270_save(hSession,LIB3270_CONTENT_COPY,filename);
 }
 
-LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
-{
+LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr) {
 	static const struct _ptr {
 		unsigned short	id;
 		LIB3270_POINTER	value;
@@ -390,10 +352,8 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
 	if(!lib3270_is_connected(hSession) || baddr < 0)
 		return LIB3270_POINTER_LOCKED;
 
-	for(f = 0; f < (sizeof(ptr)/sizeof(ptr[0]));f++)
-	{
-		if(ptr[f].id == id)
-		{
+	for(f = 0; f < (sizeof(ptr)/sizeof(ptr[0])); f++) {
+		if(ptr[f].id == id) {
 			return ptr[f].value;
 		}
 	}
@@ -402,8 +362,7 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr)
 
 }
 
-static int xdigit_value(const char scanner)
-{
+static int xdigit_value(const char scanner) {
 
 	if(scanner >= '0' && scanner <= '9') {
 		return scanner - '0';
@@ -420,24 +379,22 @@ static int xdigit_value(const char scanner)
 	return -1;
 }
 
-static int unescape_character(const char *scanner)
-{
+static int unescape_character(const char *scanner) {
 
-		int first_digit 	= xdigit_value(*scanner++);
-		int second_digit 	= xdigit_value(*scanner++);
+	int first_digit 	= xdigit_value(*scanner++);
+	int second_digit 	= xdigit_value(*scanner++);
 
-		if (first_digit < 0)
-				return -1;
+	if (first_digit < 0)
+		return -1;
 
-		if (second_digit < 0)
-				return -1;
+	if (second_digit < 0)
+		return -1;
 
-		return (first_digit << 4) | second_digit;
+	return (first_digit << 4) | second_digit;
 
 }
 
-char * lib3270_unescape(const char *text)
-{
+char * lib3270_unescape(const char *text) {
 	if(!text)
 		return NULL;
 
@@ -449,25 +406,18 @@ char * lib3270_unescape(const char *text)
 
 	memset(outString,0,sz+1);
 
-	while(ptr)
-	{
-		if(ptr[1] == '%')
-		{
+	while(ptr) {
+		if(ptr[1] == '%') {
 			src = ptr+2;
-		}
-		else
-		{
+		} else {
 			size_t sz = (ptr - src);
 			memcpy(dst,src,sz);
 			dst += sz;
 
 			int chr = unescape_character(ptr+1);
-			if(chr < 0)
-			{
+			if(chr < 0) {
 				*(dst++) = '?';
-			}
-			else
-			{
+			} else {
 				*(dst++) = (char) chr;
 			}
 
@@ -482,8 +432,7 @@ char * lib3270_unescape(const char *text)
 	return outString;
 }
 
-int lib3270_compare_alnum(const char *s1, const char *s2)
-{
+int lib3270_compare_alnum(const char *s1, const char *s2) {
 	while(*s1 && *s2) {
 
 		char c1 = toupper(*s1);

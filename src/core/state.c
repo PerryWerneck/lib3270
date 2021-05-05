@@ -31,63 +31,51 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(const H3270 *h)
-{
+LIB3270_EXPORT LIB3270_CSTATE lib3270_get_connection_state(const H3270 *h) {
 	return h->connection.state;
 }
 
-LIB3270_EXPORT int lib3270_pconnected(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_pconnected(const H3270 *h) {
 	return (((int) h->connection.state) >= (int)LIB3270_CONNECTING);
 }
 
-LIB3270_EXPORT int lib3270_half_connected(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_half_connected(const H3270 *h) {
 	return (h->connection.state == LIB3270_CONNECTING || h->connection.state == LIB3270_PENDING);
 }
 
-LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_is_disconnected(const H3270 *h) {
 	return ((int) h->connection.state == (int)LIB3270_NOT_CONNECTED);
 }
 
-LIB3270_EXPORT int lib3270_in_neither(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_in_neither(const H3270 *h) {
 	return (h->connection.state == LIB3270_CONNECTED_INITIAL);
 }
 
-LIB3270_EXPORT int lib3270_in_ansi(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_in_ansi(const H3270 *h) {
 	return (h->connection.state == LIB3270_CONNECTED_ANSI || h->connection.state == LIB3270_CONNECTED_NVT);
 }
 
-LIB3270_EXPORT int lib3270_in_3270(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_in_3270(const H3270 *h) {
 	return (h->connection.state == LIB3270_CONNECTED_3270 || h->connection.state == LIB3270_CONNECTED_TN3270E || h->connection.state == LIB3270_CONNECTED_SSCP);
 }
 
-LIB3270_EXPORT int lib3270_in_sscp(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_in_sscp(const H3270 *h) {
 	return (h->connection.state == LIB3270_CONNECTED_SSCP);
 }
 
-LIB3270_EXPORT int lib3270_in_tn3270e(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_in_tn3270e(const H3270 *h) {
 	return (h->connection.state == LIB3270_CONNECTED_TN3270E);
 }
 
-LIB3270_EXPORT int lib3270_is_connected(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_is_connected(const H3270 *h) {
 	return ((int) h->connection.state >= (int)LIB3270_CONNECTED_INITIAL);
 }
 
-LIB3270_EXPORT int lib3270_in_e(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_in_e(const H3270 *h) {
 	return (h->connection.state >= LIB3270_CONNECTED_INITIAL_E);
 }
 
-LIB3270_EXPORT int lib3270_is_unlocked(const H3270 *h)
-{
+LIB3270_EXPORT int lib3270_is_unlocked(const H3270 *h) {
 	return (h->pointer == LIB3270_POINTER_UNLOCKED) && lib3270_is_connected(h);
 }
 

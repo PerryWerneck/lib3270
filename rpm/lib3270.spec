@@ -35,10 +35,8 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig
-BuildRequires:  pkgconfig(libcrypto)
-BuildRequires:  pkgconfig(libssl)
-BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(libcurl)
+BuildRequires:  pkgconfig(libssl)
 BuildRequires:  xz
 
 %if 0%{?centos_version}

@@ -32,27 +32,24 @@
  * @brief Handle text arrays.
  */
 
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <array.h>
- #include <string.h>
+#include <lib3270.h>
+#include <lib3270/log.h>
+#include <array.h>
+#include <string.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-LIB3270_STRING_ARRAY * lib3270_string_array_new(void)
-{
+LIB3270_STRING_ARRAY * lib3270_string_array_new(void) {
 	LIB3270_STRING_ARRAY * array = lib3270_malloc(sizeof(LIB3270_STRING_ARRAY));
 	memset(array,0,sizeof(LIB3270_STRING_ARRAY));
 
 	return array;
 }
 
-void lib3270_string_array_free(LIB3270_STRING_ARRAY *array)
-{
+void lib3270_string_array_free(LIB3270_STRING_ARRAY *array) {
 	size_t ix;
 
-	if(array)
-	{
+	if(array) {
 		for(ix = 0; ix < array->length; ix++)
 			lib3270_free((char *) array->str[ix]);
 
@@ -61,28 +58,22 @@ void lib3270_string_array_free(LIB3270_STRING_ARRAY *array)
 	}
 }
 
-static void lib3270_string_array_realloc(LIB3270_STRING_ARRAY *array)
-{
-	if(array->str)
-	{
+static void lib3270_string_array_realloc(LIB3270_STRING_ARRAY *array) {
+	if(array->str) {
 		array->str = lib3270_realloc(array->str,(array->length + 1) * sizeof(char *));
-	}
-	else
-	{
+	} else {
 		array->str = lib3270_malloc(sizeof(char *));
 		array->length = 0; // Just in case.
 	}
 
 }
 
-void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str)
-{
+void lib3270_string_array_append(LIB3270_STRING_ARRAY *array, const char *str) {
 	lib3270_string_array_realloc(array);
 	array->str[array->length++] = strdup(str);
 }
 
-void lib3270_string_array_append_with_length(LIB3270_STRING_ARRAY *array, const char *str, size_t length)
-{
+void lib3270_string_array_append_with_length(LIB3270_STRING_ARRAY *array, const char *str, size_t length) {
 	lib3270_string_array_realloc(array);
 
 	char * buffer = lib3270_malloc(length+1);
@@ -92,8 +83,7 @@ void lib3270_string_array_append_with_length(LIB3270_STRING_ARRAY *array, const 
 	array->str[array->length++] = buffer;
 }
 
-void lib3270_autoptr_cleanup_LIB3270_STRING_ARRAY(LIB3270_STRING_ARRAY **ptr)
-{
+void lib3270_autoptr_cleanup_LIB3270_STRING_ARRAY(LIB3270_STRING_ARRAY **ptr) {
 	lib3270_string_array_free(*ptr);
 }
 

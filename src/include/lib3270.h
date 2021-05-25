@@ -279,10 +279,10 @@ typedef enum lib3270_field_attribute {
  *
  */
 typedef enum lib3270_host_type {
+	LIB3270_HOST_OTHER		= 0x0000,	///< @brief Other.
 	LIB3270_HOST_AS400		= 0x0001,	///< @brief AS400 host - Prefix every PF with PA1
 	LIB3270_HOST_TSO		= 0x0002,	///< @brief Host is TSO
 	LIB3270_HOST_S390		= 0x0006,	///< @brief Host is S390 (TSO included)
-
 } LIB3270_HOST_TYPE;
 
 #define LIB3270_HOSTTYPE_DEFAULT LIB3270_HOST_S390

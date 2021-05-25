@@ -37,35 +37,35 @@
 
 static const LIB3270_HOST_TYPE_ENTRY host_type[] = {
 	{
-		LIB3270_HOST_S390,
-		"S390",
-		N_( "IBM S/390" ),
-		NULL
+		.type = LIB3270_HOST_S390,
+		.name = "S390",
+		.description = N_( "IBM S/390" ),
+		.tooltip = NULL
 	},
 	{
-		LIB3270_HOST_AS400,
-		"AS400",
-		N_( "IBM AS/400" ),
-		NULL
+		.type = LIB3270_HOST_AS400,
+		.name = "AS400",
+		.description = N_( "IBM AS/400" ),
+		.tooltip = NULL
 	},
 	{
-		LIB3270_HOST_TSO,
-		"TSO",
-		N_( "Other (TSO)" ),
-		NULL
+		.type = LIB3270_HOST_TSO,
+		.name = "TSO",
+		.description = N_( "Other (TSO)" ),
+		.tooltip = NULL
 	},
 	{
-		0,
-		"VM/CMS",
-		N_( "Other (VM/CMS)"	),
-		NULL
+		.type = LIB3270_HOST_OTHER,
+		.name = "VM/CMS",
+		.description = N_( "Other (VM/CMS)"	),
+		.tooltip = NULL
 	},
 
 	{
-		0,
-		NULL,
-		NULL,
-		NULL
+		.type = LIB3270_HOST_OTHER,
+		.name = NULL,
+		.description = NULL,
+		.tooltip = NULL
 	}
 };
 

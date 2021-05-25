@@ -110,8 +110,9 @@ int main(int argc, char *argv[]) {
 	lib3270_crl_set_preferred_protocol(h,"ldap");
 #endif // HAVE_LDAP
 
-	if(lib3270_set_url(h,NULL))
-		lib3270_set_url(h,"tn3270://127.0.0.1");
+	//if(lib3270_set_url(h,NULL))
+	//	lib3270_set_url(h,"tn3270://127.0.0.1");
+	lib3270_set_url(h,"tn3270://localhost:3270");
 
 	int long_index =0;
 	int opt;

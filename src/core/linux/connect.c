@@ -177,8 +177,8 @@ int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 }
 
 static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
-	int 		err;
-	socklen_t	len		= sizeof(err);
+	int 		err	= 0;
+	socklen_t	len	= sizeof(err);
 
 	if(hSession->xio.write) {
 		trace("%s write=%p",__FUNCTION__,hSession->xio.write);
@@ -205,23 +205,35 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		lib3270_popup(hSession,&popup,0);
 
 		return;
+
 	} else if(err) {
-		lib3270_autoptr(LIB3270_POPUP) popup =
-		    lib3270_popup_clone_printf(
-		        NULL,
+
+		lib3270_disconnect(hSession);
+
+		lib3270_autoptr(char) summary =
+		    lib3270_strdup_printf(
 		        _( "Can't connect to %s:%s"),
 		        hSession->host.current,
 		        hSession->host.srvc
 		    );
 
-		lib3270_autoptr(char) syserror =
+		lib3270_autoptr(char) body =
 		    lib3270_strdup_printf(
 		        _("The system error was \"%s\" (rc=%d)"),
 		        strerror(err),
 		        err
 		    );
 
-		if(hSession->cbk.popup(hSession,popup,!hSession->auto_reconnect_inprogress) == 0)
+
+		LIB3270_POPUP popup = {
+			.type = LIB3270_NOTIFY_ERROR,
+			.title = _( "Connection error" ),
+			.summary = summary,
+			.body = body,
+			.label = _("_Retry")
+		};
+
+		if(lib3270_popup(hSession,&popup,!hSession->auto_reconnect_inprogress) == 0)
 			lib3270_activate_auto_reconnect(hSession,1000);
 
 		return;

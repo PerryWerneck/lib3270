@@ -25,7 +25,7 @@ Building for Linux
 1. Get lib3270 sources from git
 
 	```shell
-	$ git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 	```
 
 2. Install the required libraries
@@ -47,9 +47,9 @@ Building for Linux
 3. Configure and build
 
 	```shell
-	$ ./autogen.sh
-	$ make clean
-	$ make all
+	./autogen.sh
+	make clean
+	make all
 	```
 
 Building for Windows
@@ -61,35 +61,35 @@ Cross-compiling on SuSE Linux (Native or WSL)
 1. First add the MinGW Repositories for your SuSE version from:
 
 	```shell
-	$ sudo zypper ar obs://windows:mingw:win32 mingw32
-	$ sudo zypper ar obs://windows:mingw:win64 mingw64
-	$ sudo zypper ref
+	sudo zypper ar obs://windows:mingw:win32 mingw32
+	sudo zypper ar obs://windows:mingw:win64 mingw64
+	sudo zypper ref
 	```
 
 2. Get lib3270 sources from git
 
 	```shell
-	$ git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 	```
 
 3. Install cross compilers
 
 	```shell
-	$ ./lib3270/win/install-cross.sh --all (for 32 and 64 bits)
+	./lib3270/win/install-cross.sh --all (for 32 and 64 bits)
 	```
 
 3. Configure build
 
 	```shell
-	$ ./lib3270/win/win-configure.sh --64 (for 64 bits)
+	./lib3270/win/win-configure.sh --64 (for 64 bits)
 	```
 
 4. Build
 
 	```shell
-	$ cd lib3270
-	$ make clean
-	$ make all
+	cd lib3270
+	make clean
+	make all
 	```
 
 Windows native with MSYS2
@@ -106,28 +106,28 @@ Windows native with MSYS2
 3. Install devel packages using pacman on mingw shell
 
 	```shell
-	$ pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkg-config mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl
+	pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkg-config mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl libtool
 	```
 	Afther this close and reopen mingw shell.
 
 4. Get lib3270 sources from git using the mingw shell
 
 	```shell
-	$ git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 	```
 
 5. Build library using the mingw shell
 
 	```shell
-	$ cd lib3270
-	$ ./autogen.sh
-	$ make all
+	cd lib3270
+	./autogen.sh
+	make all
 	```
 
 6. Install
 
 	```shell
-	$ make install
+	make install
 	```
 
 Building for macOS (using homebrew)
@@ -138,20 +138,20 @@ Building for macOS (using homebrew)
 2. Install dependencies
 
 	```shell
-	$ brew install automake binutils coreutils curl gettext libtool openldap openssl pkgconfig
+	brew install automake binutils coreutils curl gettext libtool openldap openssl pkgconfig
 	```
 
 3. Use [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) to make keg-only dependencies available during build process
 
 	```shell
-	$ open-keg curl openldap openssl
+	open-keg curl openldap openssl
 	```
 
 4. Configure, build and install (inside the [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) shell opened above)
 
 	```shell
-	$ ./autogen.sh --prefix="$(brew --cellar)/lib3270/5.3"
-	$ make all && make install
+	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.3"
+	make all && make install
 	$ brew link lib3270
 	```
 
@@ -161,6 +161,6 @@ Uninstalling
 1. To uninstall
 
 	```shell
-	$ brew unlink lib3270
-	$ rm -fr "$(brew --cellar)/lib3270"
+	brew unlink lib3270
+	rm -fr "$(brew --cellar)/lib3270"
 	```

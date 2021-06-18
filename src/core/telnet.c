@@ -1479,7 +1479,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
 		int nw = lib3270_sock_send(hSession,buf,len);
 
 		if (nw > 0) {
-			// Data received
+			// Data sent
 			hSession->ns_bsent += nw;
 			len -= nw;
 			buf += nw;

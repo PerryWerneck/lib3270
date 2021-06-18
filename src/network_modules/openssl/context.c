@@ -66,8 +66,6 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret) {
 	H3270 *hSession = (H3270 *) SSL_get_ex_data(s,ssl_ex_index);
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
-	debug("************************ %s where=%d",__FUNCTION__,where);
-
 	switch(where) {
 	case SSL_CB_CONNECT_LOOP:
 		trace_ssl(hSession,"SSL_connect: %s %s\n",SSL_state_string(s), SSL_state_string_long(s));

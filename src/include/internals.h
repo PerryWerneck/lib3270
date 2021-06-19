@@ -114,8 +114,8 @@
 #undef X3270_MENUS
 #endif /*]*/
 
-#define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
-#define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
+//#define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
+//#define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
 
 /**
  * @brief types of internal actions
@@ -310,6 +310,8 @@ struct _h3270 {
 	struct {
 		LIB3270_CSTATE		  state;							///< @brief Connection state.
 		unsigned int		  timeout;							///< @brief Connection timeout (1000 = 1s)
+		unsigned int		  retry;							///< @brief Time to retry when connection ends with error.
+		LIB3270_POPUP		* error;							///< @brief Last connection error.
 	} connection;
 
 	// flags

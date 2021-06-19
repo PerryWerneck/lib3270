@@ -125,19 +125,26 @@ int host_disconnect(H3270 *hSession, int failed) {
 
 		trace("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
 
-		if(failed && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT))
-			lib3270_activate_auto_reconnect(hSession,failed ? RECONNECT_ERR_MS : RECONNECT_MS);
-
-		/*
-		 * Remember a disconnect from ANSI mode, to keep screen tracing
-		 * in sync.
-		 */
-#if defined(X3270_TRACE) /*[*/
+		//
+		// Remember a disconnect from ANSI mode, to keep screen tracing in sync.
+		//
 		if (IN_ANSI && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE))
 			trace_ansi_disc(hSession);
-#endif /*]*/
 
 		lib3270_set_disconnected(hSession);
+
+		if(hSession->connection.error) {
+
+			// TODO: Add 'reconnect' option in the popup dialog for optional auto reconnect.
+			lib3270_popup(hSession,hSession->connection.error,!hSession->auto_reconnect_inprogress);
+
+			lib3270_free(hSession->connection.error);
+			hSession->connection.error = NULL;
+
+		}
+
+		if(failed && hSession->connection.retry && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT))
+			lib3270_activate_auto_reconnect(hSession,hSession->connection.retry);
 
 		return 0;
 

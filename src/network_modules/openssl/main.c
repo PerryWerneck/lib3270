@@ -94,14 +94,13 @@ ssize_t openssl_network_send(H3270 *hSession, const void *buffer, size_t length)
 
 		trace_ssl(hSession,"%s","The secure connection has been closed cleanly");
 
-		lib3270_popup_dialog(
-		    hSession,
-		    LIB3270_NOTIFY_ERROR,
-		    NULL,
+		lib3270_set_network_error(
+			hSession,
 		    _("Disconnected from host."),
 		    "%s",
 		    _("The secure connection has been closed cleanly.")
 		);
+
 		return 0;
 
 	case SSL_ERROR_WANT_READ:
@@ -118,14 +117,12 @@ ssize_t openssl_network_send(H3270 *hSession, const void *buffer, size_t length)
 	(void) ERR_error_string(ssl_error, err_buf);
 	trace_dsn(hSession,"RCVD SSL_write error %d (%s)\n", ssl_error, err_buf);
 
-	lib3270_autoptr(char) body = lib3270_strdup_printf(_("The SSL error message was %s"), err_buf);
-
-	LIB3270_POPUP popup = {
-		.summary = _("Error writing to host"),
-		.body = body
-	};
-
-	lib3270_popup(hSession,&popup,0);
+	lib3270_set_network_error(
+		hSession,
+		_("Error writing to host."),
+		_("The SSL error message was %s"),
+		err_buf
+	);
 
 	return -1;
 
@@ -145,10 +142,8 @@ static ssize_t openssl_network_recv(H3270 *hSession, void *buf, size_t len) {
 
 		trace_ssl(hSession,"%s","The secure connection has been closed cleanly");
 
-		lib3270_popup_dialog(
-		    hSession,
-		    LIB3270_NOTIFY_ERROR,
-		    NULL,
+		lib3270_set_network_error(
+			hSession,
 		    _("Disconnected from host."),
 		    "%s",
 		    _("The secure connection has been closed cleanly.")
@@ -169,14 +164,12 @@ static ssize_t openssl_network_recv(H3270 *hSession, void *buf, size_t len) {
 	(void) ERR_error_string(ssl_error, err_buf);
 	trace_dsn(hSession,"RCVD SSL_read error %d (%s)\n", ssl_error, err_buf);
 
-	lib3270_autoptr(char) body = lib3270_strdup_printf(_("The SSL error message was %s"), err_buf);
-
-	LIB3270_POPUP popup = {
-		.summary = _("Error reading from host"),
-		.body = body
-	};
-
-	lib3270_popup(hSession,&popup,0);
+	lib3270_set_network_error(
+		hSession,
+		_("Error reading from host"),
+		_("The SSL error message was %s"),
+		err_buf
+	);
 
 	return -1;
 }

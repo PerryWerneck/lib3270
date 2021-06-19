@@ -282,6 +282,20 @@ LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h);
  */
 LIB3270_EXPORT unsigned int lib3270_get_task_count(const H3270 *h);
 
+/**
+ * @brief Set timer for auto-reconnect when connection fails.
+ *
+ * @param hSession	Session handle.
+ */
+LIB3270_EXPORT int lib3270_set_auto_reconnect(H3270 *hSession, unsigned int timer);
+
+/**
+ * @brief Get timer for auto-reconnect when connection fails.
+ *
+ * @param hSession	Session handle.
+ */
+LIB3270_EXPORT unsigned int lib3270_get_auto_reconnect(const H3270 *hSession);
+
 #ifdef __cplusplus
 }
 #endif

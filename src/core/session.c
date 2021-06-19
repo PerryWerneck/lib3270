@@ -287,6 +287,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->model_num				= -1;
 	hSession->connection.state		= LIB3270_NOT_CONNECTED;
 	hSession->connection.timeout	= 10000;
+	hSession->connection.retry		= 5000;
 	hSession->oia.status			= LIB3270_MESSAGE_DISCONNECTED;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;
@@ -485,7 +486,8 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 }
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
-#define REQUIRED_REVISION "20201117"
+
+	#define REQUIRED_REVISION "20210619"
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;

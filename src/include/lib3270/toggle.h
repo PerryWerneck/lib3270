@@ -54,7 +54,6 @@ typedef enum _lib3270_toggle_id {
 	LIB3270_TOGGLE_RECTANGLE_SELECT,
 	LIB3270_TOGGLE_CROSSHAIR,
 	LIB3270_TOGGLE_FULL_SCREEN,
-	LIB3270_TOGGLE_RECONNECT,
 	LIB3270_TOGGLE_INSERT,
 	LIB3270_TOGGLE_SMART_PASTE,
 	LIB3270_TOGGLE_BOLD,
@@ -68,6 +67,8 @@ typedef enum _lib3270_toggle_id {
 	LIB3270_TOGGLE_KEEP_ALIVE,					/**< @brief Enable network keep-alive with SO_KEEPALIVE */
 	LIB3270_TOGGLE_NETWORK_TRACE,				/**< @brief Enable network in/out trace */
 	LIB3270_TOGGLE_SSL_TRACE,					/**< @brief Enable security traces */
+
+	LIB3270_TOGGLE_RECONNECT,					/**< @brief Auto reconnect */
 
 	LIB3270_TOGGLE_COUNT
 

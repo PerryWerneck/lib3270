@@ -1,4 +1,5 @@
 #!/bin/bash
+cd $(dirname $(dirname $(readlink -f ${0})))
 
 aclocal
 if test $? != 0 ; then

@@ -68,6 +68,8 @@ typedef enum _lib3270_toggle_id {
 	LIB3270_TOGGLE_NETWORK_TRACE,				/**< @brief Enable network in/out trace */
 	LIB3270_TOGGLE_SSL_TRACE,					/**< @brief Enable security traces */
 
+	// Deprecated.
+
 	LIB3270_TOGGLE_RECONNECT,					/**< @brief Auto reconnect */
 
 	LIB3270_TOGGLE_COUNT

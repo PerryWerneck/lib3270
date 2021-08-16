@@ -109,7 +109,7 @@ LIB3270_EXPORT int lib3270_write_log(H3270 *session, const char *module, const c
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 
-	if(session->logfile) {
+	if(session && session->logfile) {
 		logfile(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
 	} else {
 		loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
@@ -123,7 +123,7 @@ LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, 
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 
-	if(session->logfile) {
+	if(session && session->logfile) {
 		logfile(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
 	} else {
 		loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
@@ -134,7 +134,7 @@ LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, 
 }
 
 LIB3270_EXPORT void lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg) {
-	if(session->logfile) {
+	if(session && session->logfile) {
 		logfile(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);
 	} else {
 		loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);

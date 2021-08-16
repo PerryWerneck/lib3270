@@ -183,6 +183,14 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 		},
 
 		{
+			.name = "logfile",														//  Property name.
+			.group = LIB3270_ACTION_GROUP_NONE,										// Property group.
+			.description = N_( "The log file name"),								//  Property description.
+			.get = lib3270_get_log_filename,										//  Get value.
+			.set = lib3270_set_log_filename											//  Set value.
+		},
+
+		{
 			.name = NULL,
 			.description = NULL,
 			.get = NULL,

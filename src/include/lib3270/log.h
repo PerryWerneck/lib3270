@@ -57,6 +57,9 @@ LIB3270_EXPORT int	  lib3270_write_log(H3270 *session, const char *module, const
 LIB3270_EXPORT int	  lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) LIB3270_GNUC_FORMAT(4,5);
 LIB3270_EXPORT void	  lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg);
 
+LIB3270_EXPORT int	  lib3270_set_log_filename(H3270 * hSession, const char *name);
+LIB3270_EXPORT const char * lib3270_get_log_filename(H3270 * hSession);
+
 /**
  * @brief Send logs to system log (if available)
  *

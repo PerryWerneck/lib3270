@@ -653,6 +653,9 @@ struct _h3270 {
 
 	unsigned int tasks;
 
+	/// @brief Log file name (if set)
+	char *logfile;
+
 };
 
 #define SELECTION_LEFT			0x01

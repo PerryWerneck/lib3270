@@ -44,6 +44,7 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	gettext-devel
 BuildRequires:	xz
 BuildRequires:	fdupes
@@ -66,7 +67,7 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
@@ -111,7 +112,7 @@ make all %{?_smp_mflags}
 #%{_mingw64_makeinstall}
 make DESTDIR=%{buildroot} install
 
-%_mingw32_find_lang %{_libname} langfiles
+%_mingw32_find_lang %{_libname}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 %fdupes %{buildroot}
 
 %files -n %{name}-%{_libvrs} -f langfiles

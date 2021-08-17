@@ -58,7 +58,10 @@ LIB3270_EXPORT int	  lib3270_write_rc(H3270 *session, const char *module, int rc
 LIB3270_EXPORT void	  lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg);
 
 LIB3270_EXPORT int	  lib3270_set_log_filename(H3270 * hSession, const char *name);
-LIB3270_EXPORT const char * lib3270_get_log_filename(H3270 * hSession);
+LIB3270_EXPORT const char * lib3270_get_log_filename(const H3270 * hSession);
+
+LIB3270_EXPORT int	  lib3270_set_trace_filename(H3270 * hSession, const char *name);
+LIB3270_EXPORT const char * lib3270_get_trace_filename(const H3270 * hSession);
 
 /**
  * @brief Send logs to system log (if available)

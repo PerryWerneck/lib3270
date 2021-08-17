@@ -67,6 +67,7 @@ LIB3270_EXPORT unsigned int lib3270_get_auto_reconnect(const H3270 *hSession) {
 
 LIB3270_EXPORT int lib3270_set_auto_reconnect(H3270 *hSession, unsigned int timer) {
 	hSession->connection.retry = timer;
+	return 0;
 }
 
 const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {

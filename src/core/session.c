@@ -148,7 +148,8 @@ void lib3270_session_free(H3270 *h) {
 	lib3270_linked_list_free(&h->input.list);
 
 	// Release logfile
-	release_pointer(h->logfile);
+	release_pointer(h->file.log);
+	release_pointer(h->file.trace);
 	lib3270_free(h);
 
 }

@@ -348,4 +348,25 @@ void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *d
 
 }
 
+LIB3270_EXPORT const char * lib3270_get_trace_filename(H3270 * hSession) {
+	return hSession->file.trace;
+}
+
+LIB3270_EXPORT int lib3270_set_trace_filename(H3270 * hSession, const char *filename) {
+
+	if(hSession->file.trace) {
+		lib3270_free(hSession->file.trace);
+		hSession->file.trace = NULL;
+	}
+
+	if(filename && *filename) {
+		hSession->file.trace = lib3270_strdup(filename);
+	} else {
+		hSession->file.trace = NULL;
+	}
+
+	return 0;
+
+}
+
 #endif

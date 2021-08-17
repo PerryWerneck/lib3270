@@ -53,7 +53,7 @@ static void (*loghandler)(H3270 *session, const char *module, int rc, const char
 
 static void logfile(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr) {
 
-	FILE *f = fopen(session->logfile, "a");
+	FILE *f = fopen(session->file.log, "a");
 
 	if(f) {
 
@@ -81,20 +81,21 @@ static void logfile(H3270 *session, const char *module, int rc, const char *fmt,
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_log_filename(H3270 * hSession) {
-	return hSession->logfile;
+LIB3270_EXPORT const char * lib3270_get_log_filename(const H3270 * hSession) {
+	return hSession->file.log;
 }
 
 LIB3270_EXPORT int lib3270_set_log_filename(H3270 * hSession, const char *filename) {
 
-	if(hSession->logfile) {
-		lib3270_free(hSession->logfile);
+	if(hSession->file.log) {
+		lib3270_free(hSession->file.log);
+		hSession->file.log = NULL;
 	}
 
 	if(filename && *filename) {
-		hSession->logfile = lib3270_strdup(filename);
+		hSession->file.log = lib3270_strdup(filename);
 	} else {
-		hSession->logfile = NULL;
+		hSession->file.log = NULL;
 	}
 
 	return 0;
@@ -109,7 +110,7 @@ LIB3270_EXPORT int lib3270_write_log(H3270 *session, const char *module, const c
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 
-	if(session && session->logfile) {
+	if(session && session->file.log) {
 		logfile(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
 	} else {
 		loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
@@ -123,7 +124,7 @@ LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, 
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 
-	if(session && session->logfile) {
+	if(session && session->file.log) {
 		logfile(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
 	} else {
 		loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
@@ -134,7 +135,7 @@ LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, 
 }
 
 LIB3270_EXPORT void lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg) {
-	if(session && session->logfile) {
+	if(session && session->file.log) {
 		logfile(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);
 	} else {
 		loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);

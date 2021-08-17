@@ -191,6 +191,14 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 		},
 
 		{
+			.name = "tracefile",													//  Property name.
+			.group = LIB3270_ACTION_GROUP_NONE,										// Property group.
+			.description = N_( "The trace file name"),								//  Property description.
+			.get = lib3270_get_trace_filename,										//  Get value.
+			.set = lib3270_set_trace_filename										//  Set value.
+		},
+
+		{
 			.name = NULL,
 			.description = NULL,
 			.get = NULL,

@@ -653,8 +653,10 @@ struct _h3270 {
 
 	unsigned int tasks;
 
-	/// @brief Log file name (if set)
-	char *logfile;
+	struct {
+		char *log; 		///< @brief Log file name (if set).
+		char *trace;	///< @brief Trace file name (if set).
+	} file;
 
 };
 

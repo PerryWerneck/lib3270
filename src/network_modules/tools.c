@@ -95,13 +95,11 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 
 #ifdef _WIN32
 
-	int rc = WSAGetLastError();
-
 	lib3270_set_network_error(
 		hSession,
 	    _("Erro sending data to host"),
 		_("The windows error code was %u"),
-		(unsigned int) wsaError
+		(unsigned int) WSAGetLastError()
 	);
 
 #else

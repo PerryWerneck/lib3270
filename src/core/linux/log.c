@@ -42,7 +42,7 @@
 
 int use_syslog = 0;
 
-void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int GNUC_UNUSED(rc), const char *fmt, va_list arg_ptr) {
+int default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int GNUC_UNUSED(rc), const char *fmt, va_list arg_ptr) {
 #ifdef HAVE_SYSLOG
 	if(use_syslog) {
 		vsyslog(LOG_INFO, fmt, arg_ptr);
@@ -58,6 +58,7 @@ void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int GNU
 	printf("\n");
 	fflush(stdout);
 #endif
+	return 0;
 }
 
 LIB3270_EXPORT int lib3270_set_syslog(int flag) {

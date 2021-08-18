@@ -41,6 +41,8 @@
 #include <lib3270/popup.h>
 #include <networking.h>
 #include <lib3270/os.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
 #include <openssl/x509.h>
@@ -625,9 +627,15 @@ struct _h3270 {
 
 	// Trace methods.
 	struct {
-		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
+		char *file;	///< @brief Trace file name (if set).
+		LIB3270_TRACE_HANDLER handler;
 		void *userdata;
 	} trace;
+
+	struct {
+		char *file; 		///< @brief Log file name (if set).
+		LIB3270_LOG_HANDLER handler;
+	} log;
 
 	struct {
 		unsigned int					  host			: 1;		///< @brief Non zero if host requires SSL.
@@ -652,11 +660,6 @@ struct _h3270 {
 	} listeners;
 
 	unsigned int tasks;
-
-	struct {
-		char *log; 		///< @brief Log file name (if set).
-		char *trace;	///< @brief Trace file name (if set).
-	} file;
 
 };
 
@@ -736,7 +739,10 @@ LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
 
 /// @brief Default log writer.
-LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
+LIB3270_INTERNAL int default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
+
+/// @brief The active log handler.
+LIB3270_INTERNAL LIB3270_LOG_HANDLER loghandler;
 
 LIB3270_INTERNAL char * lib3270_get_user_name();
 

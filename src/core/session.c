@@ -148,8 +148,8 @@ void lib3270_session_free(H3270 *h) {
 	lib3270_linked_list_free(&h->input.list);
 
 	// Release logfile
-	release_pointer(h->file.log);
-	release_pointer(h->file.trace);
+	release_pointer(h->log.file);
+	release_pointer(h->trace.file);
 	lib3270_free(h);
 
 }
@@ -199,9 +199,10 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 	return errno = ENOTSUP;
 }
 
-static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
+static int def_trace(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
 	vfprintf(stdout,fmt,args);
 	fflush(stdout);
+	return 0;
 }
 
 static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
@@ -278,6 +279,9 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 	// Trace management.
 	hSession->trace.handler			= def_trace;
+
+	// Log management.
+	hSession->log.handler			= loghandler;
 
 	// Set the defaults.
 	hSession->extended  			=  1;
@@ -489,7 +493,7 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
 
-	#define REQUIRED_REVISION "20210619"
+	#define REQUIRED_REVISION "20210818"
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;

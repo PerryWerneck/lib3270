@@ -50,13 +50,14 @@
 
 const char *trace_file = "test.trace";
 
-static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
+static int write_trace(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
 	FILE *out = fopen(trace_file,"a");
 	if(out) {
 
 		vfprintf(out,fmt,args);
 		fclose(out);
 	}
+	return 0;
 }
 
 static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_UNUSED(*dunno)) {
@@ -96,11 +97,11 @@ int main(int argc, char *argv[]) {
 		{ 0, 0, 0, 0}
 
 	};
-//	#pragma GCC diagnostic pop
 
 	H3270		* h		= lib3270_session_new("");
 	int			  rc	= 0;
 
+	lib3270_set_log_filename(h,"testprogram.log");
 	lib3270_write_log(h,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 
 	lib3270_autoptr(char) version_info = lib3270_get_version_info();

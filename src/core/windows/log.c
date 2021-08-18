@@ -41,7 +41,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *fmt, va_list arg_ptr) {
+int default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *fmt, va_list arg_ptr) {
 	lib3270_autoptr(char) msg = lib3270_vsprintf(fmt,arg_ptr);
 
 	debug("%s",msg);
@@ -74,6 +74,7 @@ void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc,
 
 	}
 
+	return 0;
 }
 
 LIB3270_EXPORT int lib3270_set_syslog(int GNUC_UNUSED(flag)) {

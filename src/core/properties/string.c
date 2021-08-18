@@ -36,6 +36,7 @@
 #include <lib3270/keyboard.h>
 #include <lib3270/log.h>
 #include <lib3270/ssl.h>
+#include <lib3270/trace.h>
 
 static const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
 	return lib3270_get_version();

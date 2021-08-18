@@ -41,9 +41,10 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-int default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *msg) {
+int default_log_writer(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int rc, const char *msg) {
 
 	if(hEventLog) {
+
 		lib3270_autoptr(char) username = lib3270_get_user_name();
 
 		const char *outMsg[] = {

@@ -42,7 +42,7 @@
 
 int use_syslog = 0;
 
-int default_log_writer(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int GNUC_UNUSED(rc), const char *message) {
+int default_log_writer(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int GNUC_UNUSED(rc), const char *message) {
 #ifdef HAVE_SYSLOG
 	if(use_syslog) {
 		syslog(LOG_INFO, "%s: %s", module, message);

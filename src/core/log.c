@@ -120,9 +120,10 @@ LIB3270_EXPORT int lib3270_set_log_filename(H3270 * hSession, const char *filena
 
 }
 
-LIB3270_EXPORT void lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER handler) {
+LIB3270_EXPORT void lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER handler, void *userdata) {
 	if(session) {
 		session->log.handler = (handler ? handler : default_log_writer);
+		session->log.userdata = userdata;
 	} else {
 		loghandler = (handler ? handler : default_log_writer);
 	}

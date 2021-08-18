@@ -635,7 +635,8 @@ LIB3270_EXPORT LIB3270_FT_STATE lib3270_get_ft_state(H3270 *session) {
 	return ((H3270FT *) session->ft)->state;
 }
 
-LIB3270_EXPORT int lib3270_send(H3270 *hSession, const char *from, const char *to, const char **args) {
+LIB3270_EXPORT int lib3270_send(H3270 *hSession, const char GNUC_UNUSED(*from), const char GNUC_UNUSED(*to), const char GNUC_UNUSED(**args)) {
+
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(hSession->ft)
@@ -644,7 +645,7 @@ LIB3270_EXPORT int lib3270_send(H3270 *hSession, const char *from, const char *t
 	return ENOTSUP;
 }
 
-LIB3270_EXPORT int lib3270_receive(H3270 *hSession, const char *from, const char *to, const char **args) {
+LIB3270_EXPORT int lib3270_receive(H3270 *hSession, const char GNUC_UNUSED(*from), const char GNUC_UNUSED(*to), const char GNUC_UNUSED(**args)) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(hSession->ft)

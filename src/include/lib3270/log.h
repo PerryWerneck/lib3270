@@ -54,7 +54,7 @@ extern "C" {
 
 typedef int (*LIB3270_LOG_HANDLER)(const H3270 *, void *, const char *, int, const char *);
 
-LIB3270_EXPORT void	  lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER loghandler);
+LIB3270_EXPORT void	  lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER loghandler, void *userdata);
 LIB3270_EXPORT int	  lib3270_set_log_filename(H3270 * hSession, const char *name);
 LIB3270_EXPORT const char * lib3270_get_log_filename(const H3270 * hSession);
 

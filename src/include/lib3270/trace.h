@@ -45,7 +45,7 @@ extern "C" {
 #define LIB3270_AS_PRINTF(a,b) __attribute__((format(printf, a, b)))
 #endif
 
-typedef int (*LIB3270_TRACE_HANDLER)(const H3270 *, void *, const char *, va_list);
+typedef int (*LIB3270_TRACE_HANDLER)(const H3270 *, void *, const char *);
 
 /**
  * @brief Set trace filename.

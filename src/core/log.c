@@ -51,8 +51,12 @@ LIB3270_LOG_HANDLER loghandler = default_log_writer;
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
 
-static void write_log(const H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr) {
+static void write_log(const H3270 *session, const char *module, int rc, const char *fmt, va_list args) {
 
+	// 'mount' message.
+	char *message = lib3270_vsprintf(fmt,args);
+
+	// Write log
 	if(session) {
 
 		if(session->log.file) {
@@ -72,9 +76,7 @@ static void write_log(const H3270 *session, const char *module, int rc, const ch
 				strftime(timestamp, 79, "%x %X", localtime(&ltime));
 		#endif // HAVE_LOCALTIME_R
 
-				fprintf(f,"%s %s\t",timestamp,module);
-				vfprintf(f,fmt,arg_ptr);
-				fprintf(f,"\n");
+				fprintf(f,"%s %s\t%s\n",timestamp,module,message);
 
 				fclose(f);
 
@@ -82,13 +84,15 @@ static void write_log(const H3270 *session, const char *module, int rc, const ch
 
 		}
 
-		session->log.handler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
+		session->log.handler(session,session->log.userdata,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,message);
 
 	} else {
 
-		loghandler(session, (module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),rc,fmt,arg_ptr);
+		loghandler(session, NULL, (module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),rc,message);
 
 	}
+
+	lib3270_free(message);
 
 }
 

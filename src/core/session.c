@@ -199,8 +199,8 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 	return errno = ENOTSUP;
 }
 
-static int def_trace(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
-	vfprintf(stdout,fmt,args);
+static int def_trace(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *message) {
+	printf("%s",message);
 	fflush(stdout);
 	return 0;
 }

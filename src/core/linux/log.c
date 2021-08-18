@@ -42,20 +42,16 @@
 
 int use_syslog = 0;
 
-int default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int GNUC_UNUSED(rc), const char *fmt, va_list arg_ptr) {
+int default_log_writer(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int GNUC_UNUSED(rc), const char *message) {
 #ifdef HAVE_SYSLOG
 	if(use_syslog) {
-		vsyslog(LOG_INFO, fmt, arg_ptr);
+		syslog(LOG_INFO, "%s: %s", module, message);
 	} else {
-		printf("%s:\t",module);
-		vprintf(fmt,arg_ptr);
-		printf("\n");
+		printf("%s %s\n", module, message);
 		fflush(stdout);
 	}
 #else
-	printf("%s:\t",module);
-	vprintf(fmt,arg_ptr);
-	printf("\n");
+	printf("%s %s\n", module, message);
 	fflush(stdout);
 #endif
 	return 0;

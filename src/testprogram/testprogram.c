@@ -50,16 +50,6 @@
 
 const char *trace_file = "test.trace";
 
-static int write_trace(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
-	FILE *out = fopen(trace_file,"a");
-	if(out) {
-
-		vfprintf(out,fmt,args);
-		fclose(out);
-	}
-	return 0;
-}
-
 static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_UNUSED(*dunno)) {
 	printf("\n\n%s\n\n",__FUNCTION__);
 }
@@ -138,8 +128,7 @@ int main(int argc, char *argv[]) {
 			return 0;
 
 		case 't':
-			trace_file = optarg;
-			lib3270_set_trace_handler(h,write_trace,NULL);
+			lib3270_set_trace_filename(h,optarg);
 			lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 			break;
 		}

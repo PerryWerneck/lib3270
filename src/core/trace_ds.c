@@ -84,21 +84,8 @@ static void write_trace(const H3270 *session, const char *fmt, va_list args) {
 		FILE *f = fopen(session->trace.file, "a");
 
 		if(f) {
-
-			time_t ltime = time(0);
-
-		   char timestamp[80];
-#ifdef HAVE_LOCALTIME_R
-			struct tm tm;
-			strftime(timestamp, 79, "%x %X", localtime_r(&ltime,&tm));
-#else
-			strftime(timestamp, 79, "%x %X", localtime(&ltime));
-#endif // HAVE_LOCALTIME_R
-
-			fprintf(f,"%s %s\n",timestamp,message);
-
+			fprintf(f,"%s",message);
 			fclose(f);
-
 		}
 
 	}

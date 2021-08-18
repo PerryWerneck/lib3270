@@ -48,6 +48,7 @@
 /*---[ Constants ]------------------------------------------------------------------------------------------*/
 
 LIB3270_LOG_HANDLER loghandler = default_log_writer;
+static void *loguserdata = NULL;
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
 
@@ -88,7 +89,7 @@ static void write_log(const H3270 *session, const char *module, int rc, const ch
 
 	} else {
 
-		loghandler(session, NULL, (module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),rc,message);
+		loghandler(session, loguserdata, (module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),rc,message);
 
 	}
 
@@ -126,6 +127,7 @@ LIB3270_EXPORT void lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HA
 		session->log.userdata = userdata;
 	} else {
 		loghandler = (handler ? handler : default_log_writer);
+		loguserdata = userdata;
 	}
 }
 

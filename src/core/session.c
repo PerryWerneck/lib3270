@@ -493,7 +493,7 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
 
-	#define REQUIRED_REVISION "20210818"
+	#define REQUIRED_REVISION "20210801"
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;

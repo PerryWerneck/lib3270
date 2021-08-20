@@ -43,9 +43,7 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
-	int rc = hSession->cbk.popup(hSession,popup,wait);
-	debug("%s rc=%d (%s)",__FUNCTION__,rc,strerror(rc));
-	return rc;
+	return hSession->cbk.popup(hSession,popup,wait);
 }
 
 int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {

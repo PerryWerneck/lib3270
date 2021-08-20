@@ -740,10 +740,7 @@ LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
 
 /// @brief Default log writer.
-LIB3270_INTERNAL int default_log_writer(const H3270 *session, void *dunno, const char *module, int rc, const char *message);
-
-/// @brief The active log handler.
-LIB3270_INTERNAL LIB3270_LOG_HANDLER loghandler;
+LIB3270_INTERNAL int default_loghandler(const H3270 *session, void *dunno, const char *module, int rc, const char *message);
 
 LIB3270_INTERNAL char * lib3270_get_user_name();
 

@@ -47,7 +47,7 @@
 
 /*---[ Constants ]------------------------------------------------------------------------------------------*/
 
-LIB3270_LOG_HANDLER loghandler = default_log_writer;
+static LIB3270_LOG_HANDLER loghandler = default_loghandler;
 static void *loguserdata = NULL;
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
@@ -122,11 +122,12 @@ LIB3270_EXPORT int lib3270_set_log_filename(H3270 * hSession, const char *filena
 }
 
 LIB3270_EXPORT void lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER handler, void *userdata) {
+
 	if(session) {
-		session->log.handler = (handler ? handler : default_log_writer);
+		session->log.handler = (handler ? handler : loghandler);
 		session->log.userdata = userdata;
 	} else {
-		loghandler = (handler ? handler : default_log_writer);
+		loghandler = (handler ? handler : default_loghandler);
 		loguserdata = userdata;
 	}
 }

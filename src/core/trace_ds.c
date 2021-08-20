@@ -39,8 +39,6 @@
 #include <internals.h>
 #include <lib3270/trace.h>
 
-#if defined(X3270_TRACE) /*[*/
-
 #if defined(X3270_DISPLAY) /*[*/
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Dialog.h>
@@ -390,4 +388,37 @@ LIB3270_EXPORT int lib3270_set_trace_filename(H3270 * hSession, const char *file
 
 }
 
-#endif
+static int def_trace(const H3270 *session, void GNUC_UNUSED(*userdata), const char *message) {
+
+	if(session->log.file) {
+
+		// Has log file. Use it if possible.
+		FILE *f = fopen(session->log.file, "a");
+
+		if(f) {
+			fprintf(f,"%s",message);
+			fclose(f);
+		}
+
+		return 0;
+
+	}
+
+	return -1;
+}
+
+LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
+	CHECK_SESSION_HANDLE(hSession);
+
+	hSession->trace.handler		= handler ? handler : def_trace;
+	hSession->trace.userdata	= userdata;
+}
+
+LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
+	CHECK_SESSION_HANDLE(hSession);
+
+	*handler	= hSession->trace.handler;
+	*userdata	= hSession->trace.userdata;
+
+}
+

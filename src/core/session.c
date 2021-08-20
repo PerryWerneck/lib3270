@@ -199,12 +199,6 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 	return errno = ENOTSUP;
 }
 
-static int def_trace(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *message) {
-	printf("%s",message);
-	fflush(stdout);
-	return 0;
-}
-
 static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
 }
 
@@ -261,6 +255,8 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 	hSession->cbk.reconnect				= lib3270_reconnect;
 
 	lib3270_set_popup_handler(hSession, NULL);
+	lib3270_set_log_handler(hSession,NULL,NULL);
+	lib3270_set_trace_handler(hSession,NULL,NULL);
 
 }
 
@@ -276,12 +272,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 	lib3270_set_host_charset(hSession,charset);
 	lib3270_reset_callbacks(hSession);
-
-	// Trace management.
-	hSession->trace.handler			= def_trace;
-
-	// Log management.
-	hSession->log.handler			= loghandler;
 
 	// Set the defaults.
 	hSession->extended  			=  1;
@@ -366,21 +356,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	initialize_toggles(hSession);
 
 	lib3270_set_model_name(hSession,model);
-
-}
-
-LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
-	CHECK_SESSION_HANDLE(hSession);
-
-	hSession->trace.handler		= handler ? handler : def_trace;
-	hSession->trace.userdata	= userdata;
-}
-
-LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
-	CHECK_SESSION_HANDLE(hSession);
-
-	*handler	= hSession->trace.handler;
-	*userdata	= hSession->trace.userdata;
 
 }
 

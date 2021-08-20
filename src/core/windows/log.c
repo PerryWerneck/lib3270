@@ -41,7 +41,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-int default_log_writer(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int rc, const char *msg) {
+int default_loghandler(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int rc, const char *msg) {
 
 	if(hEventLog) {
 

@@ -86,6 +86,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_DS_TRACE,
 		.name = "dstrace",
+		.nick = "ds",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -116,6 +117,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_SCREEN_TRACE,
 		.name = "screentrace",
+		.nick = "sc",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -126,6 +128,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_EVENT_TRACE,
 		.name = "eventtrace",
+		.nick = "ev",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -286,6 +289,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_NETWORK_TRACE,
 		.name = "nettrace",
+		.nick = "net",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -296,6 +300,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_SSL_TRACE,
 		.name = "ssltrace",
+		.nick = "ssl",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name

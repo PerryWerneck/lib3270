@@ -98,6 +98,7 @@ typedef struct _lib3270_toggle {
 	LIB3270_TOGGLE_ID	  id;			///< @brief Toggle ID.
 	const char			  def;			///< @brief Default value.
 	const char			* key;			///< @brief Default key (or NULL if no default).
+	const char			* nick;			///< @brief Toggle nick.
 
 } LIB3270_TOGGLE;
 

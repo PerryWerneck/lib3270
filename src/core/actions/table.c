@@ -108,7 +108,7 @@ const LIB3270_ACTION * lib3270_get_actions() {
 			.type = LIB3270_ACTION_TYPE_NETWORK,
 
 			.keys = NULL,
-			.icon = "gtk-connect",
+			.icon = "connect",
 			.label = N_( "_Reconnect" ),
 			.summary = N_( "Reconnect to the same host" ),
 			.activate = connect_host,
@@ -122,7 +122,7 @@ const LIB3270_ACTION * lib3270_get_actions() {
 			.type = LIB3270_ACTION_TYPE_NETWORK,
 
 			.keys = NULL,
-			.icon = "gtk-disconnect",
+			.icon = "disconnect",
 			.label = N_( "_Disconnect" ),
 			.summary = N_( "Disconnect from host" ),
 			.activate = lib3270_disconnect,
@@ -601,7 +601,7 @@ const LIB3270_ACTION * lib3270_get_actions() {
 			.type = LIB3270_ACTION_TYPE_GENERIC,
 
 			.keys = NULL,
-			.icon = "gtk-ok",
+			.icon = "ok",
 			.label = N_("Enter"),
 			.summary = N_( "Send an \"Enter\" action" ),
 			.activate = lib3270_enter,

@@ -1,39 +1,40 @@
 #!/bin/bash
+myDIR=$(dirname $(readlink -f ${0}))
+
+echo $myDIR
 
 install_packages() {
 
-TEMPFILE=$(mktemp)
+	TEMPFILE=$(mktemp)
+	
+	for spec in $(find ${myDIR} -name "${1}*.spec")
+	do
+		echo "Parsing ${spec}"
+		grep -i "^Requires:" "${spec}" | grep -v "%" | cut -d: -f2- | tr -d '[:blank:]' | cut -d'>' -f1 >> ${TEMPFILE}
+		grep -i "^BuildRequires:" "${spec}" | grep -v "%" | cut -d: -f2- | tr -d '[:blank:]'  | cut -d'>' -f1 >> ${TEMPFILE}
+	done
+	
+	cat ${TEMPFILE} \
+		| sort --unique \
+		| xargs sudo zypper --non-interactive --verbose in
 
-cat > ${TEMPFILE} << EOF
-cross-binutils
-cross-gcc
-cross-gcc-c++
-cross-pkg-config
-filesystem
-libopenssl
-libopenssl-devel
-libintl-devel
-win_iconv-devel
-zlib-devel
-winpthreads-devel
-cross-cpp
-gettext-tools
-headers
-EOF
-
-# Instala apicativos e temas necessários
-sudo zypper --non-interactive in \
-	gettext-tools \
-	automake
-
-while read FILE
-do
-	sudo zypper --non-interactive in ${1}-${FILE}
-done < ${TEMPFILE}
-
-rm -f ${TEMPFILE}
 
 }
+
+## Instala apicativos e temas necessários
+#sudo zypper --non-interactive in \
+#	gettext-tools \
+#	automake
+#
+#while read FILE
+#do
+#	sudo zypper --non-interactive in ${1}-${FILE}
+#done < ${TEMPFILE}
+#
+#rm -f ${TEMPFILE}
+#
+#}
+#
 
 if [ -z ${1} ]; then
 	echo "Use ${0} --32 for 32 bits cross-compiler"
@@ -52,8 +53,8 @@ do
 		case $parameter in
 
 		ar)
-			zypper ar --refresh http://download.opensuse.org/repositories/windows:/mingw:/win32/openSUSE_42.3/ mingw32
-			zypper ar --refresh http://download.opensuse.org/repositories/windows:/mingw:/win64/openSUSE_42.3/ mingw64
+			sudo zypper ar obs://windows:mingw:win32 mingw32
+			sudo zypper ar obs://windows:mingw:win64 mingw64
 			;;
 
 		32)

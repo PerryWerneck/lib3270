@@ -67,3 +67,18 @@ LIB3270_EXPORT DWORD lib3270_win32_get_dword(HKEY hKey, const char *name, DWORD 
 
 	return val;
 }
+
+LIB3270_EXPORT LSTATUS lib3270_win32_set_string(LPCSTR module, LPCSTR keyname, LPCSTR value) {
+
+	HKEY hKey = 0;
+	LSTATUS status = lib3270_win32_create_regkey(module, KEY_CREATE_SUB_KEY|KEY_SET_VALUE, &hKey);
+
+	if(status != ERROR_SUCCESS)
+		return status;
+
+	status = RegSetValueEx(hKey,keyname,0,REG_SZ,(const BYTE *) value,strlen(value)+1);
+
+	RegCloseKey(hKey);
+
+	return status;
+}

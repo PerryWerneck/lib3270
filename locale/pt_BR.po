@@ -1,14 +1,14 @@
 #
-# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020.
+# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-19 14:18-0300\n"
-"PO-Revision-Date: 2020-11-04 20:42-0300\n"
+"POT-Creation-Date: 2021-09-01 23:49-0300\n"
+"PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
-"Language-Team: Português <>\n"
+"Language-Team: Português <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
 #: src/core/ctlr.c:178
@@ -72,7 +72,7 @@ msgstr "Modo 3270"
 msgid "3270-style backspace"
 msgstr "Backspace no estilo 3270"
 
-#: src/network_modules/openssl/messages.c:288
+#: src/network_modules/openssl/messages.c:294
 msgid ""
 "A CA certificate is invalid. Either it is not a CA or its extensions are not "
 "consistent with the supplied purpose."
@@ -100,13 +100,13 @@ msgstr "Confirmação recebida, transferindo dados"
 msgid "Action failed"
 msgstr "Ação falhou"
 
-#: src/core/toggles/table.c:253
+#: src/core/toggles/table.c:256
 msgid "Alert sound"
 msgstr "Aviso sonoro"
 
 #: src/network_modules/openssl/start.c:264
 msgid "An EOF was observed that violates the protocol"
-msgstr ""
+msgstr "Um EOF que viola o protocolo foi encontrado"
 
 #: src/core/ft/ftmessages.c:67
 msgid "An error exists in the PC's file name."
@@ -133,27 +133,27 @@ msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 msgid "Attn"
 msgstr "Attn"
 
-#: src/network_modules/openssl/messages.c:357
+#: src/network_modules/openssl/messages.c:363
 msgid "Authority and issuer serial number mismatch"
 msgstr "Divergência nos números de série da autoridade e emissor "
 
-#: src/network_modules/openssl/messages.c:347
+#: src/network_modules/openssl/messages.c:353
 msgid "Authority and subject key identifier mismatch"
 msgstr "Authority and subject key identifier mismatch"
 
-#: src/core/toggles/table.c:272
+#: src/core/toggles/table.c:275
 msgid "Auto Resize"
 msgstr "Redimensionamento automático"
 
-#: src/core/toggles/table.c:313 src/core/toggles/table.c:314
+#: src/core/toggles/table.c:318 src/core/toggles/table.c:319
 msgid "Auto-Reconnect"
 msgstr "Reconectar automaticamente"
 
-#: src/core/toggles/table.c:233
+#: src/core/toggles/table.c:236
 msgid "Automatically connect to host on startup"
 msgstr "Conecta automaticamente na inicialização"
 
-#: src/core/toggles/table.c:114
+#: src/core/toggles/table.c:115
 msgid ""
 "Automatically convert trailing blanks in a field to NULLs in order to insert "
 "a character, and will automatically convert leading NULLs to blanks so that "
@@ -163,7 +163,7 @@ msgstr ""
 "a character, and will automatically convert leading NULLs to blanks so that "
 "input data is not squeezed to the left"
 
-#: src/core/toggles/table.c:315
+#: src/core/toggles/table.c:320
 msgid "Automatically reconnect to the host if it ever disconnects"
 msgstr "Reconecta automaticamente caso o servidor desconecte"
 
@@ -183,11 +183,11 @@ msgstr "Volta o cursor até que atinga o início de uma palavra"
 msgid "Bad winsock version"
 msgstr "Versão winsock inválida"
 
-#: src/core/toggles/table.c:254
+#: src/core/toggles/table.c:257
 msgid "Beep on errors"
 msgstr "Emitir som nos erros"
 
-#: src/core/toggles/table.c:112 src/core/toggles/table.c:113
+#: src/core/toggles/table.c:113 src/core/toggles/table.c:114
 msgid "Blank Fill"
 msgstr "Completar com espaços"
 
@@ -195,7 +195,7 @@ msgstr "Completar com espaços"
 msgid "Blinking Cursor"
 msgstr "Cursor piscante"
 
-#: src/core/toggles/table.c:202 src/core/toggles/table.c:203
+#: src/core/toggles/table.c:205 src/core/toggles/table.c:206
 msgid "Bold"
 msgstr "Negrito"
 
@@ -351,15 +351,15 @@ msgstr "O certificado expirou"
 msgid "Certificate is not yet valid"
 msgstr "O certificado ainda não é válido"
 
-#: src/network_modules/openssl/messages.c:317
+#: src/network_modules/openssl/messages.c:323
 msgid "Certificate not trusted"
 msgstr "O certificado não é confiável"
 
-#: src/network_modules/openssl/messages.c:327
+#: src/network_modules/openssl/messages.c:333
 msgid "Certificate rejected"
 msgstr "Certificado rejeitado"
 
-#: src/network_modules/openssl/messages.c:277
+#: src/network_modules/openssl/messages.c:283
 msgid "Certificate revoked"
 msgstr "Certificado revogado"
 
@@ -367,7 +367,7 @@ msgstr "Certificado revogado"
 msgid "Certificate signature failure"
 msgstr "Falha na assinatura do certificado"
 
-#: src/core/toggles/table.c:274
+#: src/core/toggles/table.c:277
 msgid "Change screen size on alternative screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
@@ -395,7 +395,7 @@ msgstr "Comando incompleto, transferência cancelada"
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/core/toggles/table.c:232
+#: src/core/toggles/table.c:235
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
@@ -425,11 +425,12 @@ msgid "Connection state"
 msgstr "Estado da conexão"
 
 #: src/network_modules/openssl/messages.c:78
-#: src/network_modules/openssl/messages.c:246
+#: src/network_modules/openssl/messages.c:237
+#: src/network_modules/openssl/messages.c:252
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/core/toggles/table.c:162 src/core/toggles/table.c:163
+#: src/core/toggles/table.c:165 src/core/toggles/table.c:166
 msgid "Cross hair cursor"
 msgstr "Cursor mira"
 
@@ -540,19 +541,19 @@ msgstr "EOR recebido fora do modo 3270, ignorado."
 msgid "Empty response from HTTP server."
 msgstr "Recebi resposta vazia do servidor HTTP"
 
-#: src/core/toggles/table.c:294
+#: src/core/toggles/table.c:298
 msgid "Enable network in/out trace"
 msgstr "Habilitar trace de entrada/saída de rede"
 
-#: src/core/toggles/table.c:284
+#: src/core/toggles/table.c:287
 msgid "Enable network keep-alive with SO_KEEPALIVE"
 msgstr "Enable network keep-alive with SO_KEEPALIVE"
 
-#: src/core/toggles/table.c:304
+#: src/core/toggles/table.c:309
 msgid "Enable security negotiation trace"
 msgstr "Habilita trace da negociação de segurança"
 
-#: src/core/toggles/table.c:283
+#: src/core/toggles/table.c:286
 msgid "Enable use of network keep alive"
 msgstr "Habilita opção \"keep-alive\""
 
@@ -631,9 +632,8 @@ msgid "Error writing file to host: file transfer canceled"
 msgstr "Erro ao gravar arquivo no host, transferência cancelada"
 
 #: src/network_modules/openssl/main.c:122
-#, fuzzy
 msgid "Error writing to host."
-msgstr "Erro enviando dados para o servidor"
+msgstr "Erro enviando para o servidor"
 
 #: src/core/telnet.c:1789
 msgid "Exiting"
@@ -687,7 +687,7 @@ msgstr "Erro de formato no campo \"notBefore\" do certificado"
 msgid "Formatted screen"
 msgstr "Tela formatada"
 
-#: src/core/toggles/table.c:172 src/core/toggles/table.c:173
+#: src/core/toggles/table.c:175 src/core/toggles/table.c:176
 msgid "Full Screen"
 msgstr "Tela cheia"
 
@@ -743,7 +743,7 @@ msgstr "IBM S/390"
 msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
-#: src/core/toggles/table.c:194
+#: src/core/toggles/table.c:197
 msgid ""
 "If set the characters pasted over protected areas will be skipped to avoid "
 "locks"
@@ -751,15 +751,15 @@ msgstr ""
 "Se ativo caracters colados sobre áreas protegidas serão ignorados para "
 "evitar o bloqueio do terminal"
 
-#: src/core/toggles/table.c:214
+#: src/core/toggles/table.c:217
 msgid "If set the selection will not be removed on screen changes"
 msgstr "Se ativo a seleção não será removida quando a tela mudar"
 
-#: src/core/toggles/table.c:174
+#: src/core/toggles/table.c:177
 msgid "If set, asks to place the toplevel window in the fullscreen state"
 msgstr "Se ativo pede para colocar a janela principal em modo de tela cheia"
 
-#: src/core/toggles/table.c:144
+#: src/core/toggles/table.c:147
 msgid ""
 "If set, puts restrictions on how pasted text is placed on the screen. The "
 "position of the cursor at the time the paste operation is begun is used as a "
@@ -773,7 +773,7 @@ msgstr ""
 "that position. This option is useful for pasting into certain IBM editors "
 "that use the left side of the screen for control information"
 
-#: src/core/toggles/table.c:104
+#: src/core/toggles/table.c:105
 msgid ""
 "If set, the NVT terminal emulator automatically assumes a NEWLINE character "
 "when it reaches the end of a line."
@@ -789,7 +789,7 @@ msgstr "Se ativo o cursor pisca"
 msgid "If set, the terminal operates in uppercase-only mode"
 msgstr "Se ativo o terminal opera apenas com caracteres maiúsculos"
 
-#: src/core/toggles/table.c:154
+#: src/core/toggles/table.c:157
 msgid ""
 "If set, the terminal will always select rectangular areas of the screen. "
 "Otherwise, it selects continuous regions of the screen"
@@ -797,7 +797,7 @@ msgstr ""
 "Se ativo o terminal sempre selecionará áreas retangulares, se inativo "
 "selecionará áreas contínuas da tela"
 
-#: src/core/toggles/table.c:164
+#: src/core/toggles/table.c:167
 msgid ""
 "If set, the terminal will display a crosshair over the cursor: lines "
 "extending the full width and height of the screen, centered over the cursor "
@@ -827,11 +827,11 @@ msgstr "Opção incorreta, transferência cancelada"
 msgid "Incorrect request code: file transfer canceled"
 msgstr "Código de requisição incorreto, transferência cancelada"
 
-#: src/core/toggles/table.c:182
+#: src/core/toggles/table.c:185
 msgid "Insert"
 msgstr "Inserção"
 
-#: src/network_modules/openssl/messages.c:287
+#: src/network_modules/openssl/messages.c:293
 msgid "Invalid CA certificate"
 msgstr "Certificado CA inválido"
 
@@ -880,11 +880,11 @@ msgstr "O terminal está no estad INITIAL_E?"
 msgid "Is terminal ready"
 msgstr "O terminal está pronto"
 
-#: src/core/toggles/table.c:212 src/core/toggles/table.c:213
+#: src/core/toggles/table.c:215 src/core/toggles/table.c:216
 msgid "Keep selected"
 msgstr "Manter selecionado"
 
-#: src/network_modules/openssl/messages.c:367
+#: src/network_modules/openssl/messages.c:373
 msgid "Key usage does not include certificate signing"
 msgstr "Uso da chave não permite assinatura de certificados"
 
@@ -897,14 +897,12 @@ msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
 #: src/core/windows/ldap.c:179
-#, fuzzy
 msgid "LDAP Search did not produce any attributes."
-msgstr "Pesquisa LDAP não produziu nenhum atributo."
+msgstr "Pesquisa LDAP não produziu atributos."
 
 #: src/core/windows/ldap.c:186
-#, fuzzy
 msgid "LDAPSearch did not produce any values."
-msgstr "Pesquisa LDAP não produziu nenhum valor."
+msgstr "Pesquisa LDAP não produziu valores."
 
 #: src/core/properties/signed.c:70
 msgid "Latest program message"
@@ -922,7 +920,7 @@ msgstr "Line mode"
 msgid "Lock keyboard on operator error"
 msgstr "Bloqueia teclado em caso de erro do operador"
 
-#: src/core/toggles/table.c:142
+#: src/core/toggles/table.c:145
 msgid "Margined paste"
 msgstr "Colar com margem"
 
@@ -996,7 +994,7 @@ msgstr "Move para o campo desprotegido anterior"
 msgid "Network error"
 msgstr "Erro de rede"
 
-#: src/core/toggles/table.c:282
+#: src/core/toggles/table.c:285
 msgid "Network keep alive"
 msgstr "Manter rede ativa"
 
@@ -1024,7 +1022,7 @@ msgstr "Sem suporte TLS/SSL nessa sessão"
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
-#: src/network_modules/openssl/messages.c:268
+#: src/network_modules/openssl/messages.c:274
 msgid ""
 "No signatures could be verified because the chain contains only one "
 "certificate and it is not self signed."
@@ -1091,11 +1089,11 @@ msgstr "Colar de um arquivo texto"
 msgid "Paste next"
 msgstr "Colar próximo"
 
-#: src/core/toggles/table.c:143
+#: src/core/toggles/table.c:146
 msgid "Paste with left margin"
 msgstr "Colar com margem esquerda"
 
-#: src/network_modules/openssl/messages.c:297
+#: src/network_modules/openssl/messages.c:303
 msgid "Path length constraint exceeded"
 msgstr "Path length constraint exceeded"
 
@@ -1243,7 +1241,7 @@ msgstr "Reset"
 msgid "Reset keyboard lock"
 msgstr "Reinicia bloqueio de teclado"
 
-#: src/core/toggles/table.c:273
+#: src/core/toggles/table.c:276
 msgid "Resize on alternate screen"
 msgstr "Mudar tamanho do terminal em tela alternativa"
 
@@ -1299,7 +1297,7 @@ msgstr "Seleciona para cima"
 msgid "Select all"
 msgstr "Selecionar tudo"
 
-#: src/core/toggles/table.c:152 src/core/toggles/table.c:153
+#: src/core/toggles/table.c:155 src/core/toggles/table.c:156
 msgid "Select by rectangles"
 msgstr "Seleção retangular"
 
@@ -1335,11 +1333,11 @@ msgstr "Move seleção para a direita"
 msgid "Selection up"
 msgstr "Sobe a seleção"
 
-#: src/network_modules/openssl/messages.c:231
+#: src/network_modules/openssl/messages.c:235
 msgid "Self signed certificate"
 msgstr "Certificado auto assinado"
 
-#: src/network_modules/openssl/messages.c:247
+#: src/network_modules/openssl/messages.c:253
 msgid "Self signed certificate in certificate chain"
 msgstr "Certificado auto assinado na cadeia de certificados"
 
@@ -1347,19 +1345,19 @@ msgstr "Certificado auto assinado na cadeia de certificados"
 msgid "Send an \"Enter\" action"
 msgstr "Envia um \"Enter\""
 
-#: src/core/toggles/table.c:183
+#: src/core/toggles/table.c:186
 msgid "Set insert mode"
 msgstr "Set insert mode"
 
-#: src/core/toggles/table.c:262
+#: src/core/toggles/table.c:265
 msgid "Show Field"
 msgstr "Mostra campos"
 
-#: src/core/toggles/table.c:263
+#: src/core/toggles/table.c:266
 msgid "Show Field attributes"
 msgstr "Mostra atributos de campo"
 
-#: src/core/toggles/table.c:223
+#: src/core/toggles/table.c:226
 msgid "Show Underline"
 msgstr "Mostrar sublinhado"
 
@@ -1375,7 +1373,7 @@ msgstr "Mostra o padrão de teste"
 msgid "Show timer when processing"
 msgstr "Show timer when processing"
 
-#: src/core/toggles/table.c:192 src/core/toggles/table.c:193
+#: src/core/toggles/table.c:195 src/core/toggles/table.c:196
 msgid "Smart paste"
 msgstr "Colar inteligente"
 
@@ -1383,7 +1381,7 @@ msgstr "Colar inteligente"
 msgid "Socket error"
 msgstr "Erro no socket"
 
-#: src/core/toggles/table.c:252
+#: src/core/toggles/table.c:255
 msgid "Sound"
 msgstr "Som"
 
@@ -1395,7 +1393,7 @@ msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
 
-#: src/network_modules/openssl/messages.c:337
+#: src/network_modules/openssl/messages.c:343
 msgid "Subject issuer mismatch"
 msgstr "Divergência na identidade do emissor"
 
@@ -1512,11 +1510,11 @@ msgstr "A mensagem de erro SSL foi \"%s\""
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
-#: src/network_modules/openssl/messages.c:298
+#: src/network_modules/openssl/messages.c:304
 msgid "The basicConstraints pathlength parameter has been exceeded."
 msgstr "The basicConstraints pathlength parameter has been exceeded."
 
-#: src/network_modules/openssl/messages.c:248
+#: src/network_modules/openssl/messages.c:254
 msgid ""
 "The certificate chain could be built up using the untrusted certificates but "
 "the root could not be found locally."
@@ -1524,7 +1522,7 @@ msgstr ""
 "The certificate chain could be built up using the untrusted certificates but "
 "the root could not be found locally."
 
-#: src/network_modules/openssl/messages.c:278
+#: src/network_modules/openssl/messages.c:284
 msgid "The certificate has been revoked."
 msgstr "O certificado foi revogado."
 
@@ -1574,7 +1572,7 @@ msgstr "A conexão não é segura"
 msgid "The connection is secure and the host identity was confirmed."
 msgstr "A conexão é segura e a identidade do servidor foi confirmada."
 
-#: src/network_modules/openssl/messages.c:358
+#: src/network_modules/openssl/messages.c:364
 msgid ""
 "The current candidate issuer certificate was rejected because its issuer "
 "name and serial number was present and did not match the authority key "
@@ -1586,7 +1584,7 @@ msgstr ""
 "identifier of the current certificate. Only displayed when the -"
 "issuer_checks option is set."
 
-#: src/network_modules/openssl/messages.c:368
+#: src/network_modules/openssl/messages.c:374
 msgid ""
 "The current candidate issuer certificate was rejected because its keyUsage "
 "extension does not permit certificate signing."
@@ -1594,7 +1592,7 @@ msgstr ""
 "The current candidate issuer certificate was rejected because its keyUsage "
 "extension does not permit certificate signing."
 
-#: src/network_modules/openssl/messages.c:348
+#: src/network_modules/openssl/messages.c:354
 msgid ""
 "The current candidate issuer certificate was rejected because its subject "
 "key identifier was present and did not match the authority key identifier "
@@ -1604,7 +1602,7 @@ msgstr ""
 "key identifier was present and did not match the authority key identifier "
 "current certificate. Only displayed when the -issuer_checks option is set."
 
-#: src/network_modules/openssl/messages.c:338
+#: src/network_modules/openssl/messages.c:344
 msgid ""
 "The current candidate issuer certificate was rejected because its subject "
 "name did not match the issuer name of the current certificate. Only "
@@ -1644,7 +1642,7 @@ msgid ""
 "operation."
 msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 
-#: src/network_modules/openssl/messages.c:258
+#: src/network_modules/openssl/messages.c:264
 msgid ""
 "The issuer certificate could not be found: this occurs if the issuer "
 "certificate of an untrusted certificate cannot be found."
@@ -1661,9 +1659,8 @@ msgstr ""
 "normally means the list of trusted certificates is not complete."
 
 #: src/core/properties/string.c:189
-#, fuzzy
 msgid "The log file name"
-msgstr "Define o nome do arquivo de trace"
+msgstr "Define o nome do arquivo de log"
 
 #: src/core/properties/unsigned.c:100
 msgid "The model number"
@@ -1697,7 +1694,7 @@ msgstr "Os valores do 'oversize' são muito grandes."
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
-#: src/network_modules/openssl/messages.c:232
+#: src/network_modules/openssl/messages.c:238
 msgid ""
 "The passed certificate is self signed and the same certificate cannot be "
 "found in the list of trusted certificates."
@@ -1715,12 +1712,12 @@ msgstr ""
 msgid "The remote file name is invalid."
 msgstr "O nome do arquivo remoto não é válido."
 
-#: src/network_modules/openssl/messages.c:328
+#: src/network_modules/openssl/messages.c:334
 msgid "The root CA is marked to reject the specified purpose."
 msgstr ""
 "O certificado raiz está marcado para rejeitar a finalidade especificada."
 
-#: src/network_modules/openssl/messages.c:318
+#: src/network_modules/openssl/messages.c:324
 msgid "The root CA is not marked as trusted for the specified purpose."
 msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
@@ -1744,7 +1741,7 @@ msgstr "A sessão não é segura"
 msgid "The signature of the certificate is invalid."
 msgstr "A assinatura do certificado não é válida."
 
-#: src/network_modules/openssl/messages.c:308
+#: src/network_modules/openssl/messages.c:314
 msgid "The supplied certificate cannot be used for the specified purpose."
 msgstr ""
 "O certificado fornecido não pode ser utilizado para a finalidade "
@@ -1778,14 +1775,13 @@ msgid "The system error was %s"
 msgstr "O erro do sistema operacional foi \"%s\""
 
 #: src/core/util.c:260
-#, fuzzy, c-format
+#, c-format
 msgid "The system error was '%s' (rc=%d)"
-msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
 #: src/core/properties/string.c:197
-#, fuzzy
 msgid "The trace file name"
-msgstr "Define o nome do arquivo de trace"
+msgstr "O nome do arquivo de trace"
 
 #: src/core/ctlr.c:203
 #, c-format
@@ -1793,9 +1789,9 @@ msgid "The width %d is less than model %d columns (%d)"
 msgstr "A largura %d é menor que a do modelo %d (%d)"
 
 #: src/network_modules/tools.c:67 src/network_modules/tools.c:101
-#, fuzzy, c-format
+#, c-format
 msgid "The windows error code was %u"
-msgstr "O erro do sistema operacional foi %d"
+msgstr "O erro do windows foi %d"
 
 #: src/core/ft/ftmessages.c:146
 msgid "There is not enough space available for data on the host."
@@ -1806,47 +1802,46 @@ msgid "This is a host program error."
 msgstr "Este é um erro no programa do host."
 
 #: src/core/properties/unsigned.c:146
-#, fuzzy
 msgid "Time for auto-reconnect"
-msgstr "Minutos para desconexão automática"
+msgstr "Tempo para reconexão automática"
 
 #: src/core/windows/connect.c:299
 msgid "Timeout conneting to host"
 msgstr "Timeout ao conectar com o host"
 
-#: src/core/toggles/table.c:92 src/core/toggles/table.c:93
+#: src/core/toggles/table.c:93 src/core/toggles/table.c:94
 msgid "Trace Data Stream"
 msgstr "Trace Data Stream"
 
-#: src/core/toggles/table.c:132
+#: src/core/toggles/table.c:135
 msgid "Trace Events"
 msgstr "Trace de Eventos"
 
-#: src/core/toggles/table.c:292
+#: src/core/toggles/table.c:296
 msgid "Trace Network"
 msgstr "Trace de rede"
 
-#: src/core/toggles/table.c:303
+#: src/core/toggles/table.c:308
 msgid "Trace SSL negotiation"
 msgstr "Trace da negociação SSL"
 
-#: src/core/toggles/table.c:122
+#: src/core/toggles/table.c:124
 msgid "Trace Screen"
 msgstr "Trace de tela"
 
-#: src/core/toggles/table.c:302
+#: src/core/toggles/table.c:307
 msgid "Trace Security"
 msgstr "Trace de segurança"
 
-#: src/core/toggles/table.c:133
+#: src/core/toggles/table.c:136
 msgid "Trace interface and application events"
 msgstr "Registra eventos da interface gráfica e aplicação"
 
-#: src/core/toggles/table.c:293
+#: src/core/toggles/table.c:297
 msgid "Trace network data flow"
 msgstr "Trace network data flow"
 
-#: src/core/toggles/table.c:123
+#: src/core/toggles/table.c:125
 msgid "Trace screen contents"
 msgstr "Trace do conteúdo da tela"
 
@@ -1916,7 +1911,7 @@ msgstr "Não foi possível obter o estado da conexão."
 msgid "Unable to get issuer certificate"
 msgstr "Não foi possível obter emissor do certificado"
 
-#: src/network_modules/openssl/messages.c:257
+#: src/network_modules/openssl/messages.c:263
 msgid "Unable to get local issuer certificate"
 msgstr "Unable to get local issuer certificate"
 
@@ -1925,9 +1920,8 @@ msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
 
 #: src/network_modules/openssl/start.c:247
-#, fuzzy
 msgid "Unable to negotiate a secure connection with the host"
-msgstr "O cliente foi incapaz de negociar uma conexão segura com o servidor"
+msgstr "Incapaz de negociar uma conexão segura com o host"
 
 #: src/core/paste.c:374
 msgid "Unable to paste text"
@@ -1945,7 +1939,7 @@ msgstr "Incapaz de salvar"
 msgid "Unable to send file-transfer request"
 msgstr "Não foi possível enviar a requisição de transferência de arquivo"
 
-#: src/network_modules/openssl/messages.c:267
+#: src/network_modules/openssl/messages.c:273
 msgid "Unable to verify the first certificate"
 msgstr "Não foi possível verificar o primeiro certificado"
 
@@ -1953,14 +1947,13 @@ msgstr "Não foi possível verificar o primeiro certificado"
 msgid "Unconnected"
 msgstr "Não conectado"
 
-#: src/core/toggles/table.c:222
+#: src/core/toggles/table.c:225
 msgid "Underline"
 msgstr "Sublinhados"
 
 #: src/network_modules/openssl/start.c:268
-#, fuzzy
 msgid "Unexpected I/O error"
-msgstr "Erro inesperado"
+msgstr "Erro de I/O inesperado"
 
 #: src/core/paste.c:375
 msgid "Unexpected error"
@@ -2010,7 +2003,7 @@ msgstr "Atraso no desbloqueio"
 msgid "Unsupported RPQ term"
 msgstr "Unsupported RPQ term"
 
-#: src/network_modules/openssl/messages.c:307
+#: src/network_modules/openssl/messages.c:313
 msgid "Unsupported certificate purpose"
 msgstr "Finalidade do certificado não é suportada"
 
@@ -2022,11 +2015,11 @@ msgstr "Subir"
 msgid "Uppercase only"
 msgstr "Apenas maiúsculas"
 
-#: src/core/toggles/table.c:242 src/core/toggles/table.c:243
+#: src/core/toggles/table.c:245 src/core/toggles/table.c:246
 msgid "Use +/- for field navigation"
 msgstr "Usar teclas +/- para navegar por campos"
 
-#: src/core/toggles/table.c:244
+#: src/core/toggles/table.c:247
 msgid "Use the keys +/- from keypad to select editable fields"
 msgstr "Use the keys +/- from keypad to select editable fields"
 
@@ -2051,7 +2044,7 @@ msgstr "Alerta"
 msgid "Windows error %d"
 msgstr "Erro windows foi %d"
 
-#: src/core/toggles/table.c:102 src/core/toggles/table.c:103
+#: src/core/toggles/table.c:103 src/core/toggles/table.c:104
 msgid "Wrap around"
 msgstr "Wrap around"
 

@@ -1791,7 +1791,7 @@ msgstr "A largura %d é menor que a do modelo %d (%d)"
 #: src/network_modules/tools.c:67 src/network_modules/tools.c:101
 #, c-format
 msgid "The windows error code was %u"
-msgstr "O erro do windows foi %d"
+msgstr "O erro do windows foi %u"
 
 #: src/core/ft/ftmessages.c:146
 msgid "There is not enough space available for data on the host."

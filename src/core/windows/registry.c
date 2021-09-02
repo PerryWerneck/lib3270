@@ -32,6 +32,7 @@
  * @brief Win32 Registry functions.
  */
 
+#include <config.h>
 #include <winsock2.h>
 #include <windows.h>
 #include <lib3270.h>

@@ -36,6 +36,7 @@
 #include <lib3270/keyboard.h>
 #include <lib3270/log.h>
 #include <lib3270/ssl.h>
+#include <lib3270/trace.h>
 
 static const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
 	return lib3270_get_version();
@@ -180,6 +181,22 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 			.description = N_( "Screen oversize if larger than the chosen model"),	//  Property description.
 			.get = lib3270_get_oversize,											//  Get value.
 			.set = lib3270_set_oversize												//  Set value.
+		},
+
+		{
+			.name = "logfile",														//  Property name.
+			.group = LIB3270_ACTION_GROUP_NONE,										// Property group.
+			.description = N_( "The log file name"),								//  Property description.
+			.get = lib3270_get_log_filename,										//  Get value.
+			.set = lib3270_set_log_filename											//  Set value.
+		},
+
+		{
+			.name = "tracefile",													//  Property name.
+			.group = LIB3270_ACTION_GROUP_NONE,										// Property group.
+			.description = N_( "The trace file name"),								//  Property description.
+			.get = lib3270_get_trace_filename,										//  Get value.
+			.set = lib3270_set_trace_filename										//  Set value.
 		},
 
 		{

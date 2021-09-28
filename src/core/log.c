@@ -30,6 +30,8 @@
  *
  */
 
+#include <config.h>
+
 #ifdef WIN32
 #include <winsock2.h>
 #include <windows.h>
@@ -45,31 +47,108 @@
 
 /*---[ Constants ]------------------------------------------------------------------------------------------*/
 
-static void (*loghandler)(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr) = default_log_writer;
+static LIB3270_LOG_HANDLER loghandler = default_loghandler;
+static void *loguserdata = NULL;
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT void lib3270_set_log_handler(void (*handler)(H3270 *, const char *, int, const char *, va_list)) {
-	loghandler = handler ? handler : default_log_writer;
+static void write_log(const H3270 *session, const char *module, int rc, const char *fmt, va_list args) {
+
+	// 'mount' message.
+	char *message = lib3270_vsprintf(fmt,args);
+
+	// Write log
+	if(session) {
+
+		if(session->log.file) {
+
+			// Has log file. Use it if possible.
+			FILE *f = fopen(session->log.file, "a");
+
+			if(f) {
+
+				time_t ltime = time(0);
+
+			   char timestamp[80];
+		#ifdef HAVE_LOCALTIME_R
+				struct tm tm;
+				strftime(timestamp, 79, "%x %X", localtime_r(&ltime,&tm));
+		#else
+				strftime(timestamp, 79, "%x %X", localtime(&ltime));
+		#endif // HAVE_LOCALTIME_R
+
+				fprintf(f,"%s %s\t%s\n",timestamp,module,message);
+
+				fclose(f);
+
+			}
+
+		}
+
+		session->log.handler(session,session->log.userdata,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,message);
+
+	} else {
+
+		loghandler(session, loguserdata, (module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),rc,message);
+
+	}
+
+	lib3270_free(message);
+
 }
 
-LIB3270_EXPORT int lib3270_write_log(H3270 *session, const char *module, const char *fmt, ...) {
+LIB3270_EXPORT const char * lib3270_get_log_filename(const H3270 * hSession) {
+	return hSession->log.file;
+}
+
+LIB3270_EXPORT int lib3270_set_log_filename(H3270 * hSession, const char *filename) {
+
+	if(!hSession) {
+		return EINVAL;
+	}
+
+	if(hSession->log.file) {
+		lib3270_free(hSession->log.file);
+	}
+
+	hSession->log.file = NULL;
+
+	if(filename && *filename) {
+		hSession->log.file = lib3270_strdup(filename);
+	}
+
+	return 0;
+
+}
+
+LIB3270_EXPORT void lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER handler, void *userdata) {
+
+	if(session) {
+		session->log.handler = (handler ? handler : loghandler);
+		session->log.userdata = userdata;
+	} else {
+		loghandler = (handler ? handler : default_loghandler);
+		loguserdata = userdata;
+	}
+}
+
+LIB3270_EXPORT int lib3270_write_log(const H3270 *session, const char *module, const char *fmt, ...) {
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
-	loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
+	write_log(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
 	va_end(arg_ptr);
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_write_rc(H3270 *session, const char *module, int rc, const char *fmt, ...) {
+LIB3270_EXPORT int lib3270_write_rc(const H3270 *session, const char *module, int rc, const char *fmt, ...) {
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
-	loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
+	write_log(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
 	va_end(arg_ptr);
 	return rc;
 }
 
-LIB3270_EXPORT void lib3270_write_va_log(H3270 *session, const char *module, const char *fmt, va_list arg) {
-	loghandler(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);
+LIB3270_EXPORT void lib3270_write_va_log(const H3270 *session, const char *module, const char *fmt, va_list arg) {
+	write_log(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);
 }
 

@@ -45,7 +45,25 @@ extern "C" {
 #define LIB3270_AS_PRINTF(a,b) __attribute__((format(printf, a, b)))
 #endif
 
-typedef void (*LIB3270_TRACE_HANDLER)(H3270 *, void *, const char *, va_list);
+typedef int (*LIB3270_TRACE_HANDLER)(const H3270 *, void *, const char *);
+
+/**
+ * @brief Set trace filename.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @param name		The trace file name (null to disable).
+ *
+ */
+LIB3270_EXPORT int lib3270_set_trace_filename(H3270 * hSession, const char *name);
+
+/**
+ * @brief Get trace file name.
+ *
+ * @param hSession	TN3270 Session handle.
+ * @return The trace file name or NULL if disabled.
+ *
+ */
+LIB3270_EXPORT const char * lib3270_get_trace_filename(const H3270 * hSession);
 
 /**
  * @brief Set trace handle callback.

@@ -188,6 +188,12 @@ typedef struct lib3270_net_module {
 LIB3270_INTERNAL void lib3270_set_default_network_module(H3270 *hSession);
 
 /**
+ * @brief Set network error message.
+ *
+ */
+LIB3270_INTERNAL void lib3270_set_network_error(H3270 *hSession,const char *summary, const char *fmt, ...);
+
+/**
  * @brief Connect to host, returns a connected socket.
  *
  * @param hSession	Disconnected TN3270 session.

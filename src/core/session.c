@@ -147,7 +147,9 @@ void lib3270_session_free(H3270 *h) {
 	// Release inputs;
 	lib3270_linked_list_free(&h->input.list);
 
-	trace("Releasing session %p",h);
+	// Release logfile
+	release_pointer(h->log.file);
+	release_pointer(h->trace.file);
 	lib3270_free(h);
 
 }
@@ -195,11 +197,6 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 	lib3270_write_log(session, "load", "%s", "Loading from file is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't load" ), _( "Unable to load from file" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
-}
-
-static void def_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
-	vfprintf(stdout,fmt,args);
-	fflush(stdout);
 }
 
 static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
@@ -258,6 +255,8 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 	hSession->cbk.reconnect				= lib3270_reconnect;
 
 	lib3270_set_popup_handler(hSession, NULL);
+	lib3270_set_log_handler(hSession,NULL,NULL);
+	lib3270_set_trace_handler(hSession,NULL,NULL);
 
 }
 
@@ -274,9 +273,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	lib3270_set_host_charset(hSession,charset);
 	lib3270_reset_callbacks(hSession);
 
-	// Trace management.
-	hSession->trace.handler			= def_trace;
-
 	// Set the defaults.
 	hSession->extended  			=  1;
 	hSession->typeahead				=  1;
@@ -287,6 +283,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->model_num				= -1;
 	hSession->connection.state		= LIB3270_NOT_CONNECTED;
 	hSession->connection.timeout	= 10000;
+	hSession->connection.retry		= 5000;
 	hSession->oia.status			= LIB3270_MESSAGE_DISCONNECTED;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;
@@ -359,21 +356,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	initialize_toggles(hSession);
 
 	lib3270_set_model_name(hSession,model);
-
-}
-
-LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
-	CHECK_SESSION_HANDLE(hSession);
-
-	hSession->trace.handler		= handler ? handler : def_trace;
-	hSession->trace.userdata	= userdata;
-}
-
-LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
-	CHECK_SESSION_HANDLE(hSession);
-
-	*handler	= hSession->trace.handler;
-	*userdata	= hSession->trace.userdata;
 
 }
 
@@ -485,7 +467,8 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 }
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
-#define REQUIRED_REVISION "20201117"
+
+	#define REQUIRED_REVISION "20210801"
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;

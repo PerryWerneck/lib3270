@@ -61,6 +61,15 @@ static unsigned int lib3270_get_host_type_number(const H3270 *hSession) {
 	return (unsigned int) hSession->host_type;
 }
 
+LIB3270_EXPORT unsigned int lib3270_get_auto_reconnect(const H3270 *hSession) {
+	return hSession->connection.retry;
+}
+
+LIB3270_EXPORT int lib3270_set_auto_reconnect(H3270 *hSession, unsigned int timer) {
+	hSession->connection.retry = timer;
+	return 0;
+}
+
 const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
@@ -129,6 +138,14 @@ const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 			.description = N_( "Screen buffer length in bytes" ),	//  Property description.
 			.get = lib3270_get_length,								//  Get value.
 			.set = NULL												//  Set value.
+		},
+
+		{
+			.name = "auto_reconnect",								// Property name.
+			.default_value = 5000,									// Default value for the property.
+			.description = N_( "Time for auto-reconnect" ),			// Property description.
+			.get = lib3270_get_auto_reconnect,						// Get value.
+			.set = lib3270_set_auto_reconnect						// Set value.
 		},
 
 		{

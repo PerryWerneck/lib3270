@@ -68,13 +68,6 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 		((struct lib3270_toggle_callback *) node)->func(session, ix, t->value, node->userdata);
 	}
 
-	/*
-	for(st = session->listeners.toggle.callbacks[ix]; st != (struct lib3270_toggle_callback *) NULL; st = (struct lib3270_toggle_callback *) st->next)
-	{
-		st->func(session, ix, t->value, st->data);
-	}
-	*/
-
 }
 
 /**

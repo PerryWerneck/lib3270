@@ -86,6 +86,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_DS_TRACE,
 		.name = "dstrace",
+		.nick = "ds",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -116,6 +117,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_SCREEN_TRACE,
 		.name = "screentrace",
+		.nick = "sc",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -126,6 +128,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_EVENT_TRACE,
 		.name = "eventtrace",
+		.nick = "ev",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -172,16 +175,6 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 		.label = N_( "Full Screen" ),
 		.summary = N_( "Full Screen" ),
 		.description = N_( "If set, asks to place the toplevel window in the fullscreen state" )
-	},
-	{
-		.id = LIB3270_TOGGLE_RECONNECT,
-		.name = "autoreconnect",
-		.def = False,
-		.key = NULL,		// Default keycode
-		.icon = NULL,		// Icon name
-		.label = N_( "Auto-Reconnect" ),
-		.summary = N_( "Auto-Reconnect" ),
-		.description = N_( "Automatically reconnect to the host if it ever disconnects" )
 	},
 	{
 		.id = LIB3270_TOGGLE_INSERT,
@@ -296,6 +289,7 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_NETWORK_TRACE,
 		.name = "nettrace",
+		.nick = "net",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
@@ -306,12 +300,24 @@ const LIB3270_TOGGLE toggle_descriptor[LIB3270_TOGGLE_COUNT+1] = {
 	{
 		.id = LIB3270_TOGGLE_SSL_TRACE,
 		.name = "ssltrace",
+		.nick = "ssl",
 		.def = False,
 		.key = NULL,		// Default keycode
 		.icon = NULL,		// Icon name
 		.label = N_( "Trace Security" ),
 		.summary = N_( "Trace SSL negotiation" ),
 		.description = N_( "Enable security negotiation trace" )
+	},
+
+	{
+		.id = LIB3270_TOGGLE_RECONNECT,
+		.name = "autoreconnect",
+		.def = False,
+		.key = NULL,		// Default keycode
+		.icon = NULL,		// Icon name
+		.label = N_( "Auto-Reconnect" ),
+		.summary = N_( "Auto-Reconnect" ),
+		.description = N_( "Automatically reconnect to the host if it ever disconnects" )
 	},
 
 	{

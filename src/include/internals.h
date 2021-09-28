@@ -41,6 +41,8 @@
 #include <lib3270/popup.h>
 #include <networking.h>
 #include <lib3270/os.h>
+#include <lib3270/log.h>
+#include <lib3270/trace.h>
 
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
 #include <openssl/x509.h>
@@ -114,8 +116,8 @@
 #undef X3270_MENUS
 #endif /*]*/
 
-#define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
-#define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
+//#define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
+//#define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
 
 /**
  * @brief types of internal actions
@@ -310,6 +312,8 @@ struct _h3270 {
 	struct {
 		LIB3270_CSTATE		  state;							///< @brief Connection state.
 		unsigned int		  timeout;							///< @brief Connection timeout (1000 = 1s)
+		unsigned int		  retry;							///< @brief Time to retry when connection ends with error.
+		LIB3270_POPUP		* error;							///< @brief Last connection error.
 	} connection;
 
 	// flags
@@ -623,9 +627,16 @@ struct _h3270 {
 
 	// Trace methods.
 	struct {
-		void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
+		char *file;	///< @brief Trace file name (if set).
+		LIB3270_TRACE_HANDLER handler;
 		void *userdata;
 	} trace;
+
+	struct {
+		char *file; 		///< @brief Log file name (if set).
+		LIB3270_LOG_HANDLER handler;
+		void *userdata;
+	} log;
 
 	struct {
 		unsigned int					  host			: 1;		///< @brief Non zero if host requires SSL.
@@ -729,7 +740,7 @@ LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
 
 /// @brief Default log writer.
-LIB3270_INTERNAL void default_log_writer(H3270 *session, const char *module, int rc, const char *fmt, va_list arg_ptr);
+LIB3270_INTERNAL int default_loghandler(const H3270 *session, void *dunno, const char *module, int rc, const char *message);
 
 LIB3270_INTERNAL char * lib3270_get_user_name();
 

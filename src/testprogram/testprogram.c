@@ -50,15 +50,6 @@
 
 const char *trace_file = "test.trace";
 
-static void write_trace(H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *fmt, va_list args) {
-	FILE *out = fopen(trace_file,"a");
-	if(out) {
-
-		vfprintf(out,fmt,args);
-		fclose(out);
-	}
-}
-
 static void online_group_state_changed(H3270 GNUC_UNUSED(*hSession), void GNUC_UNUSED(*dunno)) {
 	printf("\n\n%s\n\n",__FUNCTION__);
 }
@@ -96,11 +87,11 @@ int main(int argc, char *argv[]) {
 		{ 0, 0, 0, 0}
 
 	};
-//	#pragma GCC diagnostic pop
 
 	H3270		* h		= lib3270_session_new("");
 	int			  rc	= 0;
 
+	lib3270_set_log_filename(h,"testprogram.log");
 	lib3270_write_log(h,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 
 	lib3270_autoptr(char) version_info = lib3270_get_version_info();
@@ -110,9 +101,11 @@ int main(int argc, char *argv[]) {
 	lib3270_crl_set_preferred_protocol(h,"ldap");
 #endif // HAVE_LDAP
 
-	//if(lib3270_set_url(h,NULL))
-	//	lib3270_set_url(h,"tn3270://127.0.0.1");
-	lib3270_set_url(h,"tn3270://localhost:3270");
+	lib3270_ssl_set_crl_download(h,0);
+
+	if(lib3270_set_url(h,NULL))
+		lib3270_set_url(h,"tn3270://127.0.0.1");
+	//lib3270_set_url(h,"tn3270://localhost:3270");
 
 	int long_index =0;
 	int opt;
@@ -135,8 +128,7 @@ int main(int argc, char *argv[]) {
 			return 0;
 
 		case 't':
-			trace_file = optarg;
-			lib3270_set_trace_handler(h,write_trace,NULL);
+			lib3270_set_trace_filename(h,optarg);
 			lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 			break;
 		}

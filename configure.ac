@@ -519,11 +519,13 @@ AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion,[The SDK version number])
 AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 
 AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], 
-	[ app_default_host="$withval"],
+	[ app_default_host="\"$withval\""],
 	[ app_default_host=""])
 
-AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST, $app_default_host, ["The default tn3270 host"])
-AC_SUBST(LIB3270_DEFAULT_HOST,$app_default_host)
+if test "$app_default_host" != ""; then
+	AC_DEFINE_UNQUOTED(LIB3270_DEFAULT_HOST, $app_default_host, ["The default tn3270 host"])
+	AC_SUBST(LIB3270_DEFAULT_HOST,$app_default_host)
+fi
 
 AC_ARG_ENABLE([static],
  	[AS_HELP_STRING([--enable-static], [Enable build and install the static library])],

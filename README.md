@@ -97,7 +97,13 @@ Windows native with MSYS2
 
 1. Install and update MSYS2 
 
-	* Download and install msys2 from https://www.msys2.org/ (Don't forget to update the package database and core system packages using pacman -Syu)
+	* Download and install [msys2](https://www.msys2.org/)
+	* Update msys:
+	
+	```shell
+	pacman -Syu
+	```
+	Afther this close and reopen mingw shell.
 
 2. Update system path
 
@@ -106,7 +112,7 @@ Windows native with MSYS2
 3. Install devel packages using pacman on mingw shell
 
 	```shell
-	pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkg-config mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl libtool
+	pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl libtool
 	```
 	Afther this close and reopen mingw shell.
 

@@ -41,12 +41,10 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc, const char *fmt, va_list arg_ptr) {
-	lib3270_autoptr(char) msg = lib3270_vsprintf(fmt,arg_ptr);
-
-	debug("%s",msg);
+int default_loghandler(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int rc, const char *msg) {
 
 	if(hEventLog) {
+
 		lib3270_autoptr(char) username = lib3270_get_user_name();
 
 		const char *outMsg[] = {
@@ -74,6 +72,7 @@ void default_log_writer(H3270 GNUC_UNUSED(*session), const char *module, int rc,
 
 	}
 
+	return 0;
 }
 
 LIB3270_EXPORT int lib3270_set_syslog(int GNUC_UNUSED(flag)) {

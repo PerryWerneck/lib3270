@@ -39,8 +39,6 @@
 #include <internals.h>
 #include <lib3270/trace.h>
 
-#if defined(X3270_TRACE) /*[*/
-
 #if defined(X3270_DISPLAY) /*[*/
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Dialog.h>
@@ -72,6 +70,40 @@
 
 /* Statics */
 static void	wtrace(H3270 *session, const char *fmt, ...);
+
+static void write_trace(const H3270 *session, const char *fmt, va_list args) {
+
+	// 'mount' message.
+	char *message = lib3270_vsprintf(fmt,args);
+
+	if(session->trace.file) {
+
+		// Has log file. Use it if possible.
+		FILE *f = fopen(session->trace.file, "a");
+
+		if(f) {
+			fprintf(f,"%s",message);
+			fclose(f);
+		}
+
+	}
+
+	session->trace.handler(session,session->trace.userdata,message);
+
+	lib3270_free(message);
+
+}
+
+/**
+ * @brief Write to the trace file.
+ */
+static void wtrace(H3270 *session, const char *fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	write_trace(session, fmt, args);
+	va_end(args);
+}
+
 
 /* display a (row,col) */
 const char * rcba(H3270 *hSession, int baddr) {
@@ -161,7 +193,7 @@ void trace_dsn(H3270 *session, const char *fmt, ...) {
 
 	/* print out message */
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session,fmt,args);
 	va_end(args);
 }
 
@@ -176,18 +208,7 @@ void trace_ssl(H3270 *session, const char *fmt, ...) {
 
 	/* print out message */
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
-	va_end(args);
-}
-
-
-/**
- * @brief Write to the trace file.
- */
-static void wtrace(H3270 *session, const char *fmt, ...) {
-	va_list args;
-	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -195,7 +216,7 @@ LIB3270_EXPORT void lib3270_write_trace(H3270 *session, const char *fmt, ...) {
 	va_list args;
 
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -206,7 +227,7 @@ LIB3270_EXPORT void lib3270_write_dstrace(H3270 *session, const char *fmt, ...) 
 		return;
 
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -217,7 +238,7 @@ LIB3270_EXPORT void lib3270_write_nettrace(H3270 *session, const char *fmt, ...)
 		return;
 
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -228,7 +249,7 @@ LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *session, const char *fmt, 
 		return;
 
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -239,7 +260,7 @@ LIB3270_EXPORT void lib3270_write_event_trace(H3270 *session, const char *fmt, .
 		return;
 
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -250,7 +271,7 @@ LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...) {
 		return;
 
 	va_start(args, fmt);
-	session->trace.handler(session,session->trace.userdata,fmt, args);
+	write_trace(session, fmt, args);
 	va_end(args);
 }
 
@@ -348,4 +369,56 @@ void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *d
 
 }
 
-#endif
+LIB3270_EXPORT const char * lib3270_get_trace_filename(const H3270 * hSession) {
+	return hSession->trace.file;
+}
+
+LIB3270_EXPORT int lib3270_set_trace_filename(H3270 * hSession, const char *filename) {
+
+	if(hSession->trace.file) {
+		lib3270_free(hSession->trace.file);
+	}
+	hSession->trace.file = NULL;
+
+	if(filename && *filename) {
+		hSession->trace.file = lib3270_strdup(filename);
+	}
+
+	return 0;
+
+}
+
+static int def_trace(const H3270 *session, void GNUC_UNUSED(*userdata), const char *message) {
+
+	if(session->log.file) {
+
+		// Has log file. Use it if possible.
+		FILE *f = fopen(session->log.file, "a");
+
+		if(f) {
+			fprintf(f,"%s",message);
+			fclose(f);
+		}
+
+		return 0;
+
+	}
+
+	return -1;
+}
+
+LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
+	CHECK_SESSION_HANDLE(hSession);
+
+	hSession->trace.handler		= handler ? handler : def_trace;
+	hSession->trace.userdata	= userdata;
+}
+
+LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
+	CHECK_SESSION_HANDLE(hSession);
+
+	*handler	= hSession->trace.handler;
+	*userdata	= hSession->trace.userdata;
+
+}
+

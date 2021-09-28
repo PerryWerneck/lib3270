@@ -59,15 +59,14 @@ int lib3270_socket_recv_failed(H3270 *hSession) {
 
 	int rc = -wsaError;
 
-	LIB3270_POPUP popup = {
-		.name = "RecvFailed",
-		.type = LIB3270_NOTIFY_ERROR,
-		.summary = _("Error receiving data from host"),
-	};
-
 	// TODO: Translate WSA Error, update message body.
 
-	lib3270_popup(hSession,&popup,0);
+	lib3270_set_network_error(
+		hSession,
+		_("Error receiving data from host"),
+		_("The windows error code was %u"),
+		(unsigned int) wsaError
+	);
 
 #else
 
@@ -78,20 +77,13 @@ int lib3270_socket_recv_failed(H3270 *hSession) {
 	// Network error, notify user
 	int rc = -errno;
 
-	lib3270_autoptr(char) body = lib3270_strdup_printf(
-	                                 _("The system error code was %d (%s)"),
-	                                 errno,
-	                                 strerror(errno)
-	                             );
-
-	LIB3270_POPUP popup = {
-		.name = "RecvFailed",
-		.type = LIB3270_NOTIFY_ERROR,
-		.summary = _("Error receiving data from host"),
-		.body = body
-	};
-
-	lib3270_popup(hSession,&popup,0);
+	lib3270_set_network_error(
+		hSession,
+		_("Error receiving data from host"),
+		_("The system error code was %d (%s)"),
+		errno,
+		strerror(errno)
+	);
 
 #endif // _WIN32
 
@@ -103,16 +95,11 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 
 #ifdef _WIN32
 
-	int rc = WSAGetLastError();
-
-	lib3270_popup_dialog(
-	    hSession,
-	    LIB3270_NOTIFY_ERROR,
-	    NULL,
+	lib3270_set_network_error(
+		hSession,
 	    _("Erro sending data to host"),
-	    _( "The system error was %s (%d)" ),
-	    lib3270_win32_strerror(rc),
-	    rc
+		_("The windows error code was %u"),
+		(unsigned int) WSAGetLastError()
 	);
 
 #else
@@ -121,24 +108,20 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 
 	switch(rc) {
 	case EPIPE:
-		lib3270_popup_dialog(
-		    hSession,
-		    LIB3270_NOTIFY_ERROR,
-		    NULL,
+		lib3270_set_network_error(
+			hSession,
 		    _("Broken pipe"),
-		    _("The system error code was %d"),
-		    rc
+			_("The system error code was %d"),
+			rc
 		);
 		break;
 
 	case ECONNRESET:
-		lib3270_popup_dialog(
-		    hSession,
-		    LIB3270_NOTIFY_ERROR,
-		    NULL,
+		lib3270_set_network_error(
+			hSession,
 		    _("Connection reset by peer"),
-		    _("The system error code was %d"),
-		    rc
+			_("The system error code was %d"),
+			rc
 		);
 		break;
 
@@ -146,17 +129,14 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 		return 0;
 
 	default:
-		lib3270_popup_dialog(
-		    hSession,
-		    LIB3270_NOTIFY_ERROR,
-		    NULL,
+		lib3270_set_network_error(
+			hSession,
 		    _("Unexpected error writing to network socket"),
 		    _("The system error code was %d (%s)"),
 		    rc, strerror(rc)
 		);
 
 	}
-
 
 #endif // _WIN32
 

@@ -226,9 +226,15 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		{
 			.id = X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT,
 			.message = {
+#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+				.type = LIB3270_NOTIFY_SECURE,
+#else
 				.type = LIB3270_NOTIFY_WARNING,
+#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 				.icon = "security-medium",
 				.summary = N_( "Self signed certificate" ),
+				.name = "X509DepthZeroSelfSignedCert",
+				.label = N_( "Continue" ),
 				.body = N_( "The passed certificate is self signed and the same certificate cannot be found in the list of trusted certificates." )
 			}
 		},

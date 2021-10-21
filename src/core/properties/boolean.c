@@ -55,6 +55,10 @@ LIB3270_EXPORT int lib3270_ssl_get_crl_download(const H3270 *hSession) {
 	return hSession->ssl.download_crl;
 }
 
+LIB3270_EXPORT int lib3270_is_editable(const H3270 *hSession) {
+	return (hSession->pointer & 0x03) == LIB3270_POINTER_UNLOCKED;
+}
+
 const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void) {
 
 	static const LIB3270_INT_PROPERTY properties[] = {
@@ -191,6 +195,13 @@ const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void) {
 			.description = N_( "numeric lock" ),							//  Property description.
 			.get = lib3270_get_numeric_lock,								//  Get value.
 			.set = lib3270_set_numeric_lock									//  Set value.
+		},
+
+		{
+			.name = "editable",												//  Property name.
+			.description = N_( "Non zero if the terminal is editable" ),	//  Property description.
+			.get = lib3270_is_editable,										//  Get value.
+			.set = NULL														//  Set value.
 		},
 
 		{

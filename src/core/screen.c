@@ -672,6 +672,7 @@ static void status_3270_mode(H3270 *hSession, int GNUC_UNUSED(ignored), void GNU
 }
 
 void mcursor_set(H3270 *hSession,LIB3270_POINTER m) {
+
 	if(hSession->pointer != ((unsigned short) m)) {
 
 		// Pointer changed

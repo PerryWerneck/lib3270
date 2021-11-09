@@ -58,6 +58,7 @@ BuildRequires:	mingw64-libopenssl-devel
 BuildRequires:	mingw64-zlib-devel
 BuildRequires:	mingw64(lib:iconv)
 BuildRequires:	mingw64(lib:intl)
+BuildRequires:	mingw64-gettext-tools
 
 %description
 TN3270 access library, originally designed as part of the %{_product} application.
@@ -124,7 +125,7 @@ make DESTDIR=%{buildroot} install
 %dir %{_mingw64_datadir}/%{_product}
 
 %{_mingw64_bindir}/*.dll
-%{_mingw64_libdir}/*.dll
+%exclude %{_mingw64_libdir}/*.dll
 
 %files devel
 %defattr(-,root,root)

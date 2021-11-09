@@ -237,6 +237,10 @@ LIB3270_EXPORT const char * lib3270_get_revision(void) {
 	return RPQ_REVISION;
 }
 
+LIB3270_EXPORT const char * lib3270_get_product_name(void) {
+	return LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME);
+}
+
 LIB3270_EXPORT char * lib3270_get_version_info(void) {
 #if defined(HAVE_LIBSSL)
 	return lib3270_strdup_printf(

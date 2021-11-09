@@ -253,6 +253,14 @@ LIB3270_EXPORT const LIB3270_UINT_PROPERTY * lib3270_unsigned_property_get_by_na
 LIB3270_EXPORT char * lib3270_get_version_info(void);
 
 /**
+ * @brief Get lib3270 product name.
+ *
+ * @return Internal string with the product name.
+ *
+ */
+LIB3270_EXPORT const char * lib3270_get_product_name(void);
+
+/**
  * @brief Get hostname for the connect/reconnect operations.
  *
  * @param h		Session handle.

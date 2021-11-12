@@ -64,3 +64,6 @@ conftest.*
 mstest.*
 *.cscope_file_list
 *.orig
+ABOUT-NLS
+intl
+po

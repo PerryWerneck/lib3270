@@ -1,30 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como session.c e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef ANDROID
@@ -154,13 +144,16 @@ void lib3270_session_free(H3270 *h) {
 
 }
 
+static void nop_void() {
+}
+
+static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*name)) {
+	return errno = ENOENT;
+}
+
+
+/*
 static void update_char(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(addr), unsigned char GNUC_UNUSED(chr), unsigned short GNUC_UNUSED(attr), unsigned char GNUC_UNUSED(cursor)) {
-}
-
-static void nop_char(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(chr)) {
-}
-
-static void nop(H3270 GNUC_UNUSED(*session)) {
 }
 
 static void update_model(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name), int GNUC_UNUSED(model), int GNUC_UNUSED(rows), int GNUC_UNUSED(cols)) {
@@ -181,6 +174,20 @@ static void update_selection(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(start)
 static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(id)) {
 }
 
+static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
+}
+
+static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on)) {
+}
+
+static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name)) {
+}
+
+static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*url)) {
+}
+
+*/
+
 static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode)) {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't print" ), _( "Unable to print" ), "%s", strerror(ENOTSUP));
@@ -199,60 +206,46 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 	return errno = ENOTSUP;
 }
 
-static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
-}
-
-static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on)) {
-}
-
 static void screen_disp(H3270 *session) {
 	CHECK_SESSION_HANDLE(session);
 	screen_update(session,0,session->view.rows*session->view.cols);
-}
-
-static void nop_int(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(width)) {
-	return;
-}
-
-static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name)) {
-}
-
-static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*url)) {
-}
-
-static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*name)) {
-	return ENOENT;
 }
 
 void lib3270_reset_callbacks(H3270 *hSession) {
 	// Default calls
 	memset(&hSession->cbk,0,sizeof(hSession->cbk));
 
-	hSession->cbk.update 				= update_char;
-	hSession->cbk.update_model			= update_model;
-	hSession->cbk.update_cursor			= update_cursor;
-	hSession->cbk.set_selection 		= nop_char;
-	hSession->cbk.ctlr_done				= nop;
-	hSession->cbk.changed				= changed;
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+
+	hSession->cbk.update 				= nop_void;
+	hSession->cbk.update_model			= nop_void;
+	hSession->cbk.update_cursor			= nop_void;
+	hSession->cbk.set_selection 		= nop_void;
+	hSession->cbk.ctlr_done				= nop_void;
+	hSession->cbk.changed				= nop_void;
 	hSession->cbk.erase					= screen_disp;
-	hSession->cbk.suspend				= nop;
+	hSession->cbk.suspend				= nop_void;
 	hSession->cbk.resume				= screen_disp;
-	hSession->cbk.update_oia			= update_oia;
-	hSession->cbk.update_selection		= update_selection;
-	hSession->cbk.cursor 				= set_cursor;
-	hSession->cbk.update_ssl			= update_ssl;
+	hSession->cbk.update_oia			= nop_void;
+	hSession->cbk.update_selection		= nop_void;
+	hSession->cbk.cursor 				= nop_void;
+	hSession->cbk.update_ssl			= nop_void;
 	hSession->cbk.display				= screen_disp;
-	hSession->cbk.set_width				= nop_int;
-	hSession->cbk.update_status			= (void (*)(H3270 *, LIB3270_MESSAGE)) nop_int;
-	hSession->cbk.autostart				= nop;
-	hSession->cbk.set_timer				= set_timer;
+	hSession->cbk.set_width				= nop_void;
+	hSession->cbk.update_status			= nop_void;
+	hSession->cbk.autostart				= nop_void;
+	hSession->cbk.set_timer				= nop_void;
 	hSession->cbk.print					= print;
 	hSession->cbk.save					= save;
 	hSession->cbk.load					= load;
-	hSession->cbk.update_luname			= default_update_luname;
-	hSession->cbk.update_url			= default_update_url;
+	hSession->cbk.update_luname			= nop_void;
+	hSession->cbk.update_url			= nop_void;
 	hSession->cbk.action				= default_action;
 	hSession->cbk.reconnect				= lib3270_reconnect;
+	hSession->cbk.word_selected			= nop_void;
+
+	#pragma GCC diagnostic pop
 
 	lib3270_set_popup_handler(hSession, NULL);
 	lib3270_set_log_handler(hSession,NULL,NULL);
@@ -468,7 +461,7 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
 
-	#define REQUIRED_REVISION "20210801"
+	#define REQUIRED_REVISION "20211118"
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;

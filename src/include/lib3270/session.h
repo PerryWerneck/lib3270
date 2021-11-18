@@ -80,6 +80,8 @@ struct lib3270_session_callbacks {
 
 	int  (*reconnect)(H3270 *hSession,int seconds);
 
+	void (*word_selected)(H3270 *hSession, int start, int end);
+
 };
 
 /**

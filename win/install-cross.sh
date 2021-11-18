@@ -19,22 +19,20 @@ install_packages() {
 		| xargs sudo zypper --non-interactive --verbose in
 
 
+	## Instala apicativos e temas necessários
+	sudo zypper --non-interactive in \
+		gettext-tools \
+		automake
+	
+	while read FILE
+	do
+		sudo zypper --non-interactive in ${1}-${FILE}
+	done < ${TEMPFILE}
+	
+	rm -f ${TEMPFILE}
+
 }
 
-## Instala apicativos e temas necessários
-#sudo zypper --non-interactive in \
-#	gettext-tools \
-#	automake
-#
-#while read FILE
-#do
-#	sudo zypper --non-interactive in ${1}-${FILE}
-#done < ${TEMPFILE}
-#
-#rm -f ${TEMPFILE}
-#
-#}
-#
 
 if [ -z ${1} ]; then
 	echo "Use ${0} --32 for 32 bits cross-compiler"

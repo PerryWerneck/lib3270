@@ -44,7 +44,6 @@ AC_CONFIG_MACRO_DIRS([m4])
 dnl Initialize libtool.
 LT_INIT
 
-
 dnl Put macro definitions here (though they aren't used).
 AC_CONFIG_HEADERS([src/include/config.h])
 

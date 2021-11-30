@@ -234,8 +234,12 @@ all-windows: \
 		$(BINRLS)/$(LIBNAME).def \
 		$(BASEDIR)/win
 
-
 all-linux: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).a \
+	locale/$(PACKAGE_NAME).pot
+
+all-macos: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).a \
 	locale/$(PACKAGE_NAME).pot

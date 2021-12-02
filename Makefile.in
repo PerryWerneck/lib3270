@@ -306,6 +306,20 @@ install-linux-lib: \
 	# Install default configs
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
 
+install-macos-lib: \
+	$(BINRLS)/$(SONAME) \
+	install-locale
+
+	# Install library
+	@$(MKDIR) $(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	# Install default configs
+	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
+
 install-windows-lib: \
 	strip \
 	$(BINRLS)/$(LIBNAME).dll.a \
@@ -379,6 +393,15 @@ install-dev: \
 	@$(INSTALL_DATA) locale/$(PACKAGE_NAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 install-linux-dev:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+install-macos-dev:
 
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)

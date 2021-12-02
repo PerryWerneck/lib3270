@@ -502,10 +502,8 @@ case "$host" in
 
 		;;
 
- 	s390x-*)
-
-		AC_SUBST(SONAME,lib$app_cv_libname.so)
-
+	*-apple-darwin*)
+		AC_SUBST(SONAME,lib$app_cv_libname.dylib.$app_vrs_major.$app_vrs_minor)
 		;;
 
  	*)

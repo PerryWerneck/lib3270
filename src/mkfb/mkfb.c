@@ -41,6 +41,7 @@
 #define tmpfile w32_tmpfile
 #elif defined( __APPLE__ )
 #define tmpfile osx_tmpfile
+#include <unistd.h>
 #endif // OS
 
 #include <sys/stat.h>

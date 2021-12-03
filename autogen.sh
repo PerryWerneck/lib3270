@@ -8,7 +8,16 @@ cd "$srcdir"
 mkdir -p scripts
 mkdir -p m4
 
-libtoolize --force
+LIBTOOLIZE=$(which libtoolize)
+if [ -z ${LIBTOOLIZE} ]; then
+	LIBTOOLIZE=$(which glibtoolize)
+fi
+if [ -z ${LIBTOOLIZE} ]; then
+	echo "Can't find libtoolize"
+	exit -1
+fi
+
+${LIBTOOLIZE} --force
 if test $? != 0 ; then
 	echo "libtoolize failed."
 	exit -1
@@ -36,7 +45,7 @@ automake --add-missing 2> /dev/null | true
 
 autopoint
 
-test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
+test -n "$NOCONFIGURE" || "$srcdir/configure" $@
 
 
 

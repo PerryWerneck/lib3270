@@ -1,7 +1,7 @@
 /*
  * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
  * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
@@ -27,53 +27,37 @@
  *
  */
 
-#include <internals.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <config.h>
-#include <lib3270.h>
-#include <lib3270/log.h>
+#include "private.h"
+#include <utilc.h>
 
-#ifdef HAVE_SYSLOG
-#include <syslog.h>
-#endif // HAVE_SYSLOG
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
-/*---[ Implementacao ]--------------------------------------------------------------------------------------*/
+char * lib3270_url_get(H3270 *hSession, const char *u, const char **error) {
 
-int use_syslog = 0;
+	lib3270_autoptr(char) url = lib3270_unescape(u);
 
-int default_loghandler(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int GNUC_UNUSED(rc), const char *message) {
-#ifdef HAVE_SYSLOG
-	if(use_syslog) {
-		syslog(LOG_INFO, "%s: %s", module, message);
-	} else {
-		printf("%s %s\n", module, message);
-		fflush(stdout);
-	}
-#else
-	printf("%s %s\n", module, message);
-	fflush(stdout);
-#endif
-	return 0;
-}
+	if(strncasecmp(url,"file://",7) == 0) {
 
-LIB3270_EXPORT int lib3270_set_syslog(int flag) {
-#ifdef HAVE_SYSLOG
-	if(flag) {
-		if(!use_syslog) {
-			openlog(LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), LOG_CONS, LOG_USER);
-			use_syslog = 1;
-		}
-	} else {
-		if(use_syslog) {
-			closelog();
-			use_syslog = 0;
-		}
+		// Load local file contents.
+		char *rc = lib3270_file_get_contents(hSession,url+7);
+		if(!rc)
+			*error = strerror(errno);
+		return rc;
 	}
 
-	return 0;
+#if defined(HAVE_LIBCURL)
+
+	return lib3270_url_get_using_curl(hSession,url,error);
 
 #else
-	return errno  = ENOENT;
-#endif // HAVE_SYSLOG
+
+	// Can't get contents
+	*error = _("No handler for URL scheme.");
+	errno = EINVAL;
+	return NULL;
+
+
+#endif // HAVE_LIBCURL
+
+
 }

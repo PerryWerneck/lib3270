@@ -123,7 +123,7 @@ case "$host" in
 		LIBS="$LIBS -framework CoreFoundation"
 		app_cv_osname="macos"
 		LOGDIR="/var/log"
-		DLLEXT=".so"
+		DLLEXT=".dylib"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
 		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
@@ -502,10 +502,8 @@ case "$host" in
 
 		;;
 
- 	s390x-*)
-
-		AC_SUBST(SONAME,lib$app_cv_libname.so)
-
+	*-apple-darwin*)
+		AC_SUBST(SONAME,lib$app_cv_libname.dylib.$app_vrs_major.$app_vrs_minor)
 		;;
 
  	*)

@@ -50,6 +50,8 @@
 #include <malloc.h>
 #endif // defined
 
+#include <stdlib.h>
+
 #define my_isspace(c)	isspace((unsigned char)c)
 
 ///  @brief Cheesy internal version of sprintf that allocates its own memory.

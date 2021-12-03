@@ -36,10 +36,7 @@
 #include <config.h>
 #include <stdarg.h>
 #include <internals.h>
-#include <unistd.h>
-#include <CoreFoundation/CFBundle.h>
-#include <CoreFoundation/CFURL.h>
-#include <sys/syslimits.h>
+#include <lib3270/os.h>
 
 static char * concat(char *path, const char *name, size_t *length) {
 	size_t szCurrent = strlen(path);
@@ -77,24 +74,7 @@ char * lib3270_build_data_filename(const char *str, ...) {
 	va_list args;
 	va_start (args, str);
 
-	char *filename;
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	if (mainBundle) {
-		CFURLRef url = CFBundleCopyBundleURL(mainBundle);
-		if (url) {
-			size_t szPath = PATH_MAX;
-			char *path = (char *) lib3270_malloc(szPath);
-			CFURLGetFileSystemRepresentation(url, true, path, szPath);
-			CFRelease(url);
-			path = concat(path, "Contents/Resources", &szPath);
-			filename = build_filename(path, str, args);
-			lib3270_free(path);
-		} else {
-			filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
-		}
-	} else {
-		filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
-	}
+	char *filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
 
 	va_end (args);
 

@@ -9,7 +9,12 @@ cd "$srcdir"
 mkdir -p scripts
 mkdir -p m4
 
-libtoolize --force
+LIBTOOLIZE=$(which libtoollize)
+if [ -z ${LIBTOOLIZE} ]; then
+	LIBTOOLIZE=$(which glibtoolize)
+fi
+
+${LIBTOOLIZE} --force
 if test $? != 0 ; then
 	echo "libtoolize failed."
 	exit -1

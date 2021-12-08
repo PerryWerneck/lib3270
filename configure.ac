@@ -126,7 +126,7 @@ case "$host" in
 		DLLEXT=".dylib"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
-		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
+		INSTALL_PACKAGES="macos-lib ${INSTALL_PACKAGES}"
 
 		app_cv_static='no'
 

@@ -46,7 +46,7 @@ SOURCES= \
 	$(wildcard src/core/properties/*.c) \
 	$(wildcard src/selection/*.c) \
 	$(wildcard src/network_modules/*.c) \
-	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c \
+	$(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c \
 	$(foreach MODULE, $(NETWORK_MODULES), $(wildcard src/network_modules/$(MODULE)/*.c))
 
 TEST_SOURCES= \
@@ -87,32 +87,25 @@ sysconfdir=@sysconfdir@
 datadir=$(datarootdir)/$(PRODUCT_NAME)
 confdir=$(sysconfdir)/$(PRODUCT_NAME)
 
-BASEDIR=@BASEDIR@
+BUILDDIR=@BUILDDIR@
 
-POTDIR=$(BASEDIR)/.pot
+POTDIR=$(BUILDDIR)/.pot
 
-OBJDIR=$(BASEDIR)/.obj
+OBJDIR=$(BUILDDIR)/.obj
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=$(BUILDDIR)/.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
 #---[ Rules ]----------------------------------------------------------------------------
 
-DEPENDS= \
-	Makefile \
-	src/include/*.h \
-	src/include/lib3270/*.h \
-	src/include/@OSNAME@/lib3270/*.h \
-	$(BASEDIR)/src/include/lib3270/actions.h
-
 CFLAGS= \
 	@CFLAGS@ \
 	-g \
-	-I$(BASEDIR)/src/include \
-	-I$(BASEDIR)/src/include/@OSNAME@ \
+	-Isrc/include \
+	-Isrc/include/@OSNAME@ \
 	@LIBSSL_CFLAGS@ \
 	@LDAP_CFLAGS@ \
 	@LIBCURL_CFLAGS@
@@ -131,9 +124,8 @@ LIBS= \
 #---[ Debug Rules ]----------------------------------------------------------------------
 
 $(OBJDBG)/%.o: \
-	%.c \
-	$(DEPENDS)
-
+	%.c
+	
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
 
@@ -158,8 +150,7 @@ $(OBJDBG)/%.o: \
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
-	%.c \
-	$(DEPENDS)
+	%.c
 
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
@@ -232,7 +223,7 @@ all-windows: \
 
 	@$(INSTALL_DATA) \
 		$(BINRLS)/$(LIBNAME).def \
-		$(BASEDIR)/win
+		$(BUILDDIR)/win
 
 all-linux: \
 	$(BINRLS)/$(SONAME) \
@@ -441,7 +432,7 @@ install-windows-dev: \
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
+$(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 	src/core/X3270.xad \
 	$(wildcard src/mkfb/*.c)
 
@@ -452,7 +443,7 @@ $(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 
 	@$(HOST_CC) \
 		-g \
-		-I$(BASEDIR)/src/include \
+		-Isrc/include \
 		-o $(BINDIR)/mkfb@EXEEXT@ \
 		$(wildcard src/mkfb/*.c)
 
@@ -529,7 +520,7 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
-	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
+	@rm -fr $(BUILDDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
 	@rm -f locale/*.pot
 

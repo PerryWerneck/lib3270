@@ -666,7 +666,7 @@ dnl Directory config
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH([build-dir], [AS_HELP_STRING([--with-build-dir], [Setup build path])], [ app_cv_buildir="$withval" ],[ app_cv_buildir="$ac_pwd" ])
-AC_SUBST(BASEDIR,$app_cv_buildir)
+AC_SUBST(BUILDDIR,$app_cv_buildir)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.

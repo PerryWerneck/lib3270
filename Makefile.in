@@ -24,6 +24,23 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
+#---[ Paths ]----------------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+srcdir=@srcdir@
+bindir=@bindir@
+srcdir=@srcdir@
+sbindir=@sbindir@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
+datadir=$(datarootdir)/$(PRODUCT_NAME)
+confdir=$(sysconfdir)/$(PRODUCT_NAME)
+
 #---[ Library configuration ]------------------------------------------------------------
 
 SONAME=@SONAME@
@@ -35,22 +52,22 @@ INSTALL_PACKAGES=@INSTALL_PACKAGES@
 NETWORK_MODULES=default openssl
 
 SOURCES= \
-	$(wildcard src/core/*.c) \
-	$(wildcard src/core/keyboard/*.c) \
-	$(wildcard src/core/actions/*.c) \
-	$(wildcard src/core/toggles/*.c) \
-	$(wildcard src/core/charset/*.c) \
-	$(wildcard src/core/ft/*.c) \
-	$(wildcard src/core/@OSNAME@/*.rc) \
-	$(wildcard src/core/@OSNAME@/*.c) \
-	$(wildcard src/core/properties/*.c) \
-	$(wildcard src/selection/*.c) \
-	$(wildcard src/network_modules/*.c) \
-	$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c \
-	$(foreach MODULE, $(NETWORK_MODULES), $(wildcard src/network_modules/$(MODULE)/*.c))
+	$(wildcard $(srcdir)/src/core/*.c) \
+	$(wildcard $(srcdir)/src/core/keyboard/*.c) \
+	$(wildcard $(srcdir)/src/core/actions/*.c) \
+	$(wildcard $(srcdir)/src/core/toggles/*.c) \
+	$(wildcard $(srcdir)/src/core/charset/*.c) \
+	$(wildcard $(srcdir)/src/core/ft/*.c) \
+	$(wildcard $(srcdir)/src/core/@OSNAME@/*.rc) \
+	$(wildcard $(srcdir)/src/core/@OSNAME@/*.c) \
+	$(wildcard $(srcdir)/src/core/properties/*.c) \
+	$(wildcard $(srcdir)/src/selection/*.c) \
+	$(wildcard $(srcdir)/src/network_modules/*.c) \
+	$(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c \
+	$(foreach MODULE, $(NETWORK_MODULES), $(wildcard $(srcdir)/src/network_modules/$(MODULE)/*.c))
 
 TEST_SOURCES= \
-	$(wildcard src/testprogram/*.c)
+	$(wildcard $(srcdir)/src/testprogram/*.c)
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -72,47 +89,28 @@ DOXYGEN=@DOXYGEN@
 DLLTOOL=@DLLTOOL@
 STRIP=@STRIP@
 
-#---[ Paths ]----------------------------------------------------------------------------
+#---[ Build Paths ]----------------------------------------------------------------------
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
-sbindir=@sbindir@
-libdir=@libdir@
-includedir=@includedir@
-datarootdir=@datarootdir@
-localedir=@localedir@
-docdir=@docdir@
-sysconfdir=@sysconfdir@
-datadir=$(datarootdir)/$(PRODUCT_NAME)
-confdir=$(sysconfdir)/$(PRODUCT_NAME)
+BUILDDIR=@BUILDDIR@
 
-BASEDIR=@BASEDIR@
+POTDIR=$(BUILDDIR)/.pot
 
-POTDIR=$(BASEDIR)/.pot
-
-OBJDIR=$(BASEDIR)/.obj
+OBJDIR=$(BUILDDIR)/.obj
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=$(BUILDDIR)/.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
 #---[ Rules ]----------------------------------------------------------------------------
 
-DEPENDS= \
-	Makefile \
-	src/include/*.h \
-	src/include/lib3270/*.h \
-	src/include/@OSNAME@/lib3270/*.h \
-	$(BASEDIR)/src/include/lib3270/actions.h
-
 CFLAGS= \
 	@CFLAGS@ \
 	-g \
-	-I$(BASEDIR)/src/include \
-	-I$(BASEDIR)/src/include/@OSNAME@ \
+	-Isrc/include \
+	-I$(srcdir)/src/include \
+	-I$(srcdir)/src/include/@OSNAME@ \
 	@LIBSSL_CFLAGS@ \
 	@LDAP_CFLAGS@ \
 	@LIBCURL_CFLAGS@
@@ -131,9 +129,8 @@ LIBS= \
 #---[ Debug Rules ]----------------------------------------------------------------------
 
 $(OBJDBG)/%.o: \
-	%.c \
-	$(DEPENDS)
-
+	%.c
+	
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
 
@@ -158,8 +155,7 @@ $(OBJDBG)/%.o: \
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
-	%.c \
-	$(DEPENDS)
+	%.c
 
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
@@ -232,7 +228,7 @@ all-windows: \
 
 	@$(INSTALL_DATA) \
 		$(BINRLS)/$(LIBNAME).def \
-		$(BASEDIR)/win
+		$(BUILDDIR)/win
 
 all-linux: \
 	$(BINRLS)/$(SONAME) \
@@ -441,9 +437,9 @@ install-windows-dev: \
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-$(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
-	src/core/X3270.xad \
-	$(wildcard src/mkfb/*.c)
+$(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
+	$(srcdir)/src/core/X3270.xad \
+	$(wildcard $(srcdir)/src/mkfb/*.c)
 
 	@$(MKDIR) $(dir $@)
 	@$(MKDIR) $(BINDIR)
@@ -452,12 +448,12 @@ $(BASEDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 
 	@$(HOST_CC) \
 		-g \
-		-I$(BASEDIR)/src/include \
+		-Isrc/include \
 		-o $(BINDIR)/mkfb@EXEEXT@ \
-		$(wildcard src/mkfb/*.c)
+		$(wildcard $(srcdir)/src/mkfb/*.c)
 
 	@$(BINDIR)/mkfb@EXEEXT@ \
-		-c src/core/X3270.xad \
+		-c $(srcdir)/src/core/X3270.xad \
 		$@
 
 locale/$(PACKAGE_NAME).pot: \
@@ -529,7 +525,7 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
-	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
+	@rm -fr $(BUILDDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
 	@rm -f locale/*.pot
 

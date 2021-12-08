@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+
+	<!-- include href="https://gitlab.gnome.org/GNOME/gtk-osx/raw/master/modulesets-stable/gtk-osx.modules"/ -->
+	<include href="https://gitlab.gnome.org/GNOME/jhbuild/raw/master/modulesets/gnome-sysdeps-latest.modules" />
+		
+	<repository type="git" name="github.com" href="git://github.com/"/>
+
+	<autotools id="lib3270">
+		<branch repo="github.com" module="PerryWerneck/lib3270" revision="macos" />
+
+		<dependencies>
+			<dep package="openssl"/>
+		</dependencies>
+	</autotools>
+  	
+</moduleset>
+

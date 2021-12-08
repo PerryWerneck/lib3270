@@ -158,7 +158,7 @@ Building for macOS (using homebrew)
 	```shell
 	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4"
 	make all && make install
-	$ brew link lib3270
+	brew link lib3270
 	```
 
 Uninstalling

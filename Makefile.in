@@ -108,6 +108,7 @@ BINRLS=$(BINDIR)/Release
 CFLAGS= \
 	@CFLAGS@ \
 	-g \
+	-Isrc/include \
 	-I$(srcdir)/src/include \
 	-I$(srcdir)/src/include/@OSNAME@ \
 	@LIBSSL_CFLAGS@ \

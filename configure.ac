@@ -641,25 +641,35 @@ dnl ---------------------------------------------------------------------------
 dnl Check for CURL
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_ENABLE([curl],
-        AS_HELP_STRING([--disable-curl],[Disable use of libcurl]),
-                [case "${enableval}" in
-                        yes) have_curl=yes ;;
-                        no) have_curl=no ;;
-                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-curl);;
-                esac],
-                [case "$host" in
-			*-mingw32|*-pc-msys) have_curl=no ;;
-			*) have_curl=yes;;
-		esac])
+case "$host" in
 
+	*-mingw32|*-pc-msys)
+		AC_SUBST(LIBCURL_LIBS)
+		AC_SUBST(LIBCURL_CFLAGS)
+		;;
 
-if test "x${have_curl}" != xno ; then
-	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?]), AC_MSG_ERROR([libcurl not present.]) )
-fi
-
-AC_SUBST(LIBCURL_LIBS)
-AC_SUBST(LIBCURL_CFLAGS)
+	*-apple-darwin*)
+		AC_PATH_TOOL([CURLCONFIG], [curl-config], [no])
+		
+		if test x$CURLCONFIG = xno; then
+        	AC_MSG_NOTICE([Building without CURL support])
+			AC_SUBST(LIBCURL_CFLAGS)
+			AC_SUBST(LIBCURL_LIBS)
+		else
+			AC_MSG_NOTICE([Using $($CURLCONFIG --version)])
+			AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?])
+			AC_SUBST(LIBCURL_CFLAGS,"$($CURLCONFIG --cflags)")
+			AC_SUBST(LIBCURL_LIBS,"$($CURLCONFIG --libs)")
+		fi
+		;;
+		
+	*)
+		PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?]), AC_MSG_ERROR([libcurl not present.]) )
+		AC_SUBST(LIBCURL_CFLAGS)
+		AC_SUBST(LIBCURL_LIBS)
+		;;
+	
+esac
 
 dnl ---------------------------------------------------------------------------
 dnl Directory config

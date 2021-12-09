@@ -136,8 +136,11 @@ Windows native with MSYS2
 	make install
 	```
 
-Building for macOS (using homebrew)
-===================================
+Building for macOS
+==================
+
+Using homebrew
+--------------
 
 1. Install [homebrew](https://brew.sh/)
 
@@ -158,15 +161,27 @@ Building for macOS (using homebrew)
 	```shell
 	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4"
 	make all && make install
-	$ brew link lib3270
+	brew link lib3270
 	```
 
-Uninstalling
-------------
-
-1. To uninstall
+To uninstall
 
 	```shell
 	brew unlink lib3270
 	rm -fr "$(brew --cellar)/lib3270"
 	```
+	
+Using jhbuild
+--------------
+
+1. Install jhbuild
+
+	https://wiki.gnome.org/Projects/GTK/OSX/Building
+	
+2. build
+
+	```shell
+	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/lib3270/macos/mac/lib3270.modules build lib3270
+	```
+
+

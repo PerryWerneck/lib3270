@@ -367,15 +367,15 @@ install-dev: \
 	@mkdir -p $(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
-		src/include/@OSNAME@/lib3270/*.h \
+		$(srcdir)/src/include/@OSNAME@/lib3270/*.h \
 		$(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
-		src/include/lib3270/*.h \
+		$(srcdir)/src/include/lib3270/*.h \
 		$(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
-		src/include/lib3270.h \
+		$(srcdir)/src/include/lib3270.h \
 		$(DESTDIR)$(includedir)/lib3270.h
 
 	# Install PKG-CONFIG files

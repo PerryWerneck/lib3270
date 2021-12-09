@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-02 21:59-0300\n"
+"POT-Creation-Date: 2021-12-08 23:33-0300\n"
 "PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
@@ -223,17 +223,17 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
-#: src/core/toggles/init.c:83 src/core/macos/connect.c:334
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/core/macos/connect.c:215 src/core/macos/connect.c:269
+#: src/core/linux/connect.c:215 src/core/linux/connect.c:269
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
 
-#: src/core/macos/connect.c:165
+#: src/core/linux/connect.c:165
 msgid "Can't connect to host"
 msgstr "Não foi possível conectar no host"
 
@@ -241,7 +241,7 @@ msgstr "Não foi possível conectar no host"
 msgid "Can't decode CRL data"
 msgstr "Não foi possível decodificar dados do CRL"
 
-#: src/core/macos/ldap.c:167
+#: src/core/linux/ldap.c:167
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
@@ -253,7 +253,7 @@ msgstr "Não foi possível determinar o estado TLS/SSL"
 msgid "Can't get file size"
 msgstr "Não foi possível obter o tamanho do arquivo"
 
-#: src/core/macos/curl.c:171
+#: src/core/linux/curl.c:171
 msgid "Can't initialize curl operation"
 msgstr "Erro ao inicializar operação CURL"
 
@@ -371,8 +371,8 @@ msgstr "Connected initial"
 msgid "Connecting"
 msgstr "Conectando"
 
-#: src/core/macos/connect.c:230 src/core/macos/connect.c:321
-#: src/core/macos/connect.c:338 src/network_modules/tools.c:160
+#: src/core/linux/connect.c:230 src/core/linux/connect.c:321
+#: src/core/linux/connect.c:338 src/network_modules/tools.c:160
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -553,12 +553,12 @@ msgstr "Apagar campos"
 msgid "Erro sending data to host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/core/ft/ft_cut.c:408 src/core/ft/ft_dft.c:413
+#: src/core/ft/ft_dft.c:413 src/core/ft/ft_cut.c:408
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_cut.c:504 src/core/ft/ft_dft.c:306
+#: src/core/ft/ft_dft.c:306 src/core/ft/ft_cut.c:504
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
@@ -852,12 +852,12 @@ msgstr "Teclado está bloqueado"
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
-#: src/core/macos/ldap.c:147
+#: src/core/linux/ldap.c:147
 #, fuzzy
 msgid "LDAP search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu atributos."
 
-#: src/core/macos/ldap.c:157
+#: src/core/linux/ldap.c:157
 #, fuzzy
 msgid "LDAP search did not produce any values."
 msgstr "Pesquisa LDAP não produziu valores."
@@ -947,8 +947,8 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:304 src/core/macos/connect.c:200
-#: src/core/macos/event_dispatcher.c:130
+#: src/core/telnet.c:304 src/core/linux/event_dispatcher.c:130
+#: src/core/linux/connect.c:200
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -976,7 +976,7 @@ msgstr "Sem suporte LDAP"
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
-#: src/core/macos/download.c:55
+#: src/core/linux/download.c:55
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
@@ -1267,7 +1267,7 @@ msgstr "Seleciona a direita"
 msgid "Select word"
 msgstr "Seleciona palavra"
 
-#: src/core/macos/event_dispatcher.c:131
+#: src/core/linux/event_dispatcher.c:131
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1460,12 +1460,12 @@ msgstr ""
 msgid "The SSL error message was %s"
 msgstr "A mensagem de erro SSL foi \"%s\""
 
-#: src/core/macos/connect.c:191
+#: src/core/linux/connect.c:191
 #, fuzzy, c-format
 msgid "The System error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
-#: src/core/macos/ldap.c:82 src/core/macos/ldap.c:91
+#: src/core/linux/ldap.c:82 src/core/linux/ldap.c:91
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
@@ -1716,7 +1716,7 @@ msgstr "O erro do sistema operacional foi %d"
 msgid "The system error code was %d (%s)"
 msgstr "O erro do sistema operacional foi \"%d\" (%s)"
 
-#: src/core/macos/connect.c:222 src/core/macos/connect.c:282
+#: src/core/linux/connect.c:222 src/core/linux/connect.c:282
 #, c-format
 msgid "The system error was \"%s\" (rc=%d)"
 msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
@@ -1800,8 +1800,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_cut.c:387 src/core/ft/ft_cut.c:475 src/core/ft/ft_dft.c:213
-#: src/core/ft/ft_dft.c:344
+#: src/core/ft/ft_dft.c:213 src/core/ft/ft_dft.c:344 src/core/ft/ft_cut.c:387
+#: src/core/ft/ft_cut.c:475
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 
@@ -1817,7 +1817,7 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
-#: src/core/macos/connect.c:166
+#: src/core/linux/connect.c:166
 msgid "Try again"
 msgstr "Tentar novamente"
 
@@ -1846,7 +1846,7 @@ msgstr "Incapaz de decifrar a assinatura do certificado"
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
-#: src/core/macos/connect.c:201
+#: src/core/linux/connect.c:201
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
@@ -2065,15 +2065,15 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/macos/connect.c:233 src/core/macos/connect.c:302
+#: src/core/linux/connect.c:233 src/core/linux/connect.c:302
 msgid "_Retry"
 msgstr "_Repetir"
 
-#: src/core/toggles/init.c:83 src/core/macos/connect.c:334
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:83 src/core/macos/connect.c:334
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
 msgid "enable"
 msgstr "habilitar"
 
@@ -2097,7 +2097,7 @@ msgstr "Versão da lib3270"
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/macos/connect.c:322
+#: src/core/linux/connect.c:322
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) has failed"
 

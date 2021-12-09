@@ -5,7 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2021-12-08 11:55-0300\n"
+=======
+"POT-Creation-Date: 2021-12-08 23:33-0300\n"
+>>>>>>> develop
 "PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
@@ -227,25 +231,37 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
+<<<<<<< HEAD
 #: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+=======
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+>>>>>>> develop
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
+<<<<<<< HEAD
 #: src/core/windows/ldap.c:149
 msgid "Can't bind to LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
 #: src/core/windows/connect.c:232 src/core/windows/connect.c:276
+=======
+#: src/core/linux/connect.c:215 src/core/linux/connect.c:269
+>>>>>>> develop
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
 
+<<<<<<< HEAD
 #: src/core/windows/http.c:110
 msgid "Can't connect to HTTP server."
 msgstr "Não foi possível conectar ao servidor HTTP"
 
 #: src/core/windows/connect.c:197
+=======
+#: src/core/linux/connect.c:165
+>>>>>>> develop
 msgid "Can't connect to host"
 msgstr "Não foi possível conectar no host"
 
@@ -257,7 +273,11 @@ msgstr "Não foi possível criar requisição HTTP"
 msgid "Can't decode CRL data"
 msgstr "Não foi possível decodificar dados do CRL"
 
+<<<<<<< HEAD
 #: src/core/windows/ldap.c:204
+=======
+#: src/core/linux/ldap.c:167
+>>>>>>> develop
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
@@ -269,9 +289,15 @@ msgstr "Não foi possível determinar o estado TLS/SSL"
 msgid "Can't get file size"
 msgstr "Não foi possível obter o tamanho do arquivo"
 
+<<<<<<< HEAD
 #: src/core/windows/ldap.c:133
 msgid "Can't initialize LDAP"
 msgstr "Erro ao inicializar LDAP"
+=======
+#: src/core/linux/curl.c:171
+msgid "Can't initialize curl operation"
+msgstr "Erro ao inicializar operação CURL"
+>>>>>>> develop
 
 #: src/network_modules/openssl/context.c:164
 msgid "Can't initialize the TLS/SSL context."
@@ -407,8 +433,13 @@ msgstr "Connected initial"
 msgid "Connecting"
 msgstr "Conectando"
 
+<<<<<<< HEAD
 #: src/core/windows/connect.c:358 src/core/windows/connect.c:376
 #: src/network_modules/tools.c:160
+=======
+#: src/core/linux/connect.c:230 src/core/linux/connect.c:321
+#: src/core/linux/connect.c:338 src/network_modules/tools.c:160
+>>>>>>> develop
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -896,12 +927,20 @@ msgstr "Teclado está bloqueado"
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
+<<<<<<< HEAD
 #: src/core/windows/ldap.c:179
+=======
+#: src/core/linux/ldap.c:147
+>>>>>>> develop
 #, fuzzy
 msgid "LDAP Search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu atributos."
 
+<<<<<<< HEAD
 #: src/core/windows/ldap.c:186
+=======
+#: src/core/linux/ldap.c:157
+>>>>>>> develop
 #, fuzzy
 msgid "LDAPSearch did not produce any values."
 msgstr "Pesquisa LDAP não produziu valores."
@@ -991,8 +1030,13 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
+<<<<<<< HEAD
 #: src/core/telnet.c:304 src/core/windows/event_dispatcher.c:135
 #: src/core/windows/connect.c:223
+=======
+#: src/core/telnet.c:304 src/core/linux/event_dispatcher.c:130
+#: src/core/linux/connect.c:200
+>>>>>>> develop
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1020,7 +1064,11 @@ msgstr "Sem suporte LDAP"
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
+<<<<<<< HEAD
 #: src/core/windows/download.c:62
+=======
+#: src/core/linux/download.c:55
+>>>>>>> develop
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
@@ -1315,7 +1363,11 @@ msgstr "Seleciona a direita"
 msgid "Select word"
 msgstr "Seleciona palavra"
 
+<<<<<<< HEAD
 #: src/core/windows/event_dispatcher.c:136
+=======
+#: src/core/linux/event_dispatcher.c:131
+>>>>>>> develop
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1508,7 +1560,16 @@ msgstr ""
 msgid "The SSL error message was %s"
 msgstr "A mensagem de erro SSL foi \"%s\""
 
+<<<<<<< HEAD
 #: src/core/windows/ldap.c:101 src/core/windows/ldap.c:110
+=======
+#: src/core/linux/connect.c:191
+#, fuzzy, c-format
+msgid "The System error was '%s' (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
+
+#: src/core/linux/ldap.c:82 src/core/linux/ldap.c:91
+>>>>>>> develop
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
@@ -1759,6 +1820,7 @@ msgstr "O erro do sistema operacional foi %d"
 msgid "The system error code was %d (%s)"
 msgstr "O erro do sistema operacional foi \"%d\" (%s)"
 
+<<<<<<< HEAD
 #: src/core/windows/connect.c:239
 #, c-format
 msgid "The system error was \"%s\""
@@ -1766,6 +1828,9 @@ msgstr "O erro do sistema operacional foi \"%s\""
 
 #: src/core/windows/connect.c:298 src/core/windows/connect.c:306
 #: src/core/windows/connect.c:314 src/core/windows/connect.c:324
+=======
+#: src/core/linux/connect.c:222 src/core/linux/connect.c:282
+>>>>>>> develop
 #, c-format
 msgid "The system error was \"%s\" (rc=%d)"
 msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
@@ -1876,7 +1941,11 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
+<<<<<<< HEAD
 #: src/core/windows/connect.c:198
+=======
+#: src/core/linux/connect.c:166
+>>>>>>> develop
 msgid "Try again"
 msgstr "Tentar novamente"
 
@@ -1905,7 +1974,11 @@ msgstr "Incapaz de decifrar a assinatura do certificado"
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
+<<<<<<< HEAD
 #: src/core/windows/connect.c:224
+=======
+#: src/core/linux/connect.c:201
+>>>>>>> develop
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
@@ -2133,6 +2206,7 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
+<<<<<<< HEAD
 #: src/core/windows/connect.c:340
 msgid "_Retry"
 msgstr "_Repetir"
@@ -2142,6 +2216,17 @@ msgid "disable"
 msgstr "desabilitar"
 
 #: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+=======
+#: src/core/linux/connect.c:233 src/core/linux/connect.c:302
+msgid "_Retry"
+msgstr "_Repetir"
+
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+msgid "disable"
+msgstr "desabilitar"
+
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+>>>>>>> develop
 msgid "enable"
 msgstr "habilitar"
 
@@ -2165,7 +2250,11 @@ msgstr "Versão da lib3270"
 msgid "numeric lock"
 msgstr "numeric lock"
 
+<<<<<<< HEAD
 #: src/core/windows/connect.c:359
+=======
+#: src/core/linux/connect.c:322
+>>>>>>> develop
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) has failed"
 

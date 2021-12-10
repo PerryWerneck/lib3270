@@ -29,6 +29,7 @@
 #include <CoreFoundation/CFBundle.h>
 #include <CoreFoundation/CFURL.h>
 #include <sys/syslimits.h>
+#include <lib3270.h>
 #include <lib3270/os.h>
 
 static char * concat(char *path, const char *name, size_t *length) {
@@ -66,30 +67,60 @@ static char * build_filename(const char *root, const char *str, va_list args) {
 char * lib3270_build_data_filename(const char *str, ...) {
 
 	va_list args;
-	va_start (args, str);
 
-	char *filename;
+	size_t szPath = PATH_MAX;
+	lib3270_autoptr(char) path = (char *) lib3270_malloc(szPath);
+	char *filename = NULL;
+
+	//
+	// Try bundle 
+	//
 	CFBundleRef mainBundle = CFBundleGetMainBundle();
+
 	if (mainBundle) {
+
 		CFURLRef url = CFBundleCopyBundleURL(mainBundle);
+
 		if (url) {
-			size_t szPath = PATH_MAX;
-			char *path = (char *) lib3270_malloc(szPath);
-			CFURLGetFileSystemRepresentation(url, true, path, szPath);
+
+			CFURLGetFileSystemRepresentation(url, true, (UInt8 *) path, szPath);
 			CFRelease(url);
 			path = concat(path, "Contents/Resources", &szPath);
-			filename = build_filename(path, str, args);
-			lib3270_free(path);
-		} else {
-			filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
+
+			if(access(path,R_OK) == 0) {
+				va_start (args, str);
+				filename = build_filename(path, str, args);
+				va_end (args);
+				return filename;
+			}
+#ifdef DEBUG
+			else {
+				debug("No bundle in '%s'",path);
+			}
+#endif // DEBUG 
 		}
-	} else {
-		filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
+
 	}
 
-	va_end (args);
+	/*
+	//
+	// Try EXE Path
+	//
+	{
+		uint32_t size = szPath;
+		_NSGetExecutablePath(path, &size);
+		path[size] = 0;
 
-	return filename;
+
+	}
+	*/
+
+	// 
+	// Not found, use the system datadir
+	//
+	va_start (args, str);
+	filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
+	va_end (args);
 
 	return filename;
 }

@@ -7,7 +7,6 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/lib3270/workflows/CodeQL/badge.svg)
-![Analytics](https://ga-beacon.appspot.com/UA-35100728-2/github//lib3270)
 ![Downloads](https://img.shields.io/github/downloads/PerryWerneck/lib3270/total.svg)
 
 Installation repositories
@@ -142,6 +141,8 @@ Building for macOS
 Using homebrew
 --------------
 
+Install
+
 1. Install [homebrew](https://brew.sh/)
 
 2. Install dependencies
@@ -164,7 +165,7 @@ Using homebrew
 	brew link lib3270
 	```
 
-To uninstall
+Uninstall
 
 	```shell
 	brew unlink lib3270

@@ -44,7 +44,6 @@ AC_CONFIG_MACRO_DIRS([m4])
 dnl Initialize libtool.
 LT_INIT
 
-
 dnl Put macro definitions here (though they aren't used).
 AC_CONFIG_HEADERS([src/include/config.h])
 
@@ -54,7 +53,7 @@ AM_INIT_AUTOMAKE
 dnl Check for iconv
 AM_ICONV
 
-dnf Set gettext version
+dnl Set gettext version
 AM_GNU_GETTEXT_VERSION([0.14])
 
 dnl Checks for programs.
@@ -124,10 +123,10 @@ case "$host" in
 		LIBS="$LIBS -framework CoreFoundation"
 		app_cv_osname="macos"
 		LOGDIR="/var/log"
-		DLLEXT=".so"
+		DLLEXT=".dylib"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
-		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
+		INSTALL_PACKAGES="macos-lib ${INSTALL_PACKAGES}"
 
 		app_cv_static='no'
 
@@ -503,10 +502,8 @@ case "$host" in
 
 		;;
 
- 	s390x-*)
-
-		AC_SUBST(SONAME,lib$app_cv_libname.so)
-
+	*-apple-darwin*)
+		AC_SUBST(SONAME,lib$app_cv_libname.dylib.$app_vrs_major.$app_vrs_minor)
 		;;
 
  	*)
@@ -644,32 +641,42 @@ dnl ---------------------------------------------------------------------------
 dnl Check for CURL
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_ENABLE([curl],
-        AS_HELP_STRING([--disable-curl],[Disable use of libcurl]),
-                [case "${enableval}" in
-                        yes) have_curl=yes ;;
-                        no) have_curl=no ;;
-                        *) AC_MSG_ERROR(bad value ${enableval} for --disable-curl);;
-                esac],
-                [case "$host" in
-			*-mingw32|*-pc-msys) have_curl=no ;;
-			*) have_curl=yes;;
-		esac])
+case "$host" in
 
+	*-mingw32|*-pc-msys)
+		AC_SUBST(LIBCURL_LIBS)
+		AC_SUBST(LIBCURL_CFLAGS)
+		;;
 
-if test "x${have_curl}" != xno ; then
-	PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?]), AC_MSG_ERROR([libcurl not present.]) )
-fi
-
-AC_SUBST(LIBCURL_LIBS)
-AC_SUBST(LIBCURL_CFLAGS)
+	*-apple-darwin*)
+		AC_PATH_TOOL([CURLCONFIG], [curl-config], [no])
+		
+		if test x$CURLCONFIG = xno; then
+        	AC_MSG_NOTICE([Building without CURL support])
+			AC_SUBST(LIBCURL_CFLAGS)
+			AC_SUBST(LIBCURL_LIBS)
+		else
+			AC_MSG_NOTICE([Using $($CURLCONFIG --version)])
+			AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?])
+			AC_SUBST(LIBCURL_CFLAGS,"$($CURLCONFIG --cflags)")
+			AC_SUBST(LIBCURL_LIBS,"$($CURLCONFIG --libs)")
+		fi
+		;;
+		
+	*)
+		PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?]), AC_MSG_ERROR([libcurl not present.]) )
+		AC_SUBST(LIBCURL_CFLAGS)
+		AC_SUBST(LIBCURL_LIBS)
+		;;
+	
+esac
 
 dnl ---------------------------------------------------------------------------
 dnl Directory config
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH([build-dir], [AS_HELP_STRING([--with-build-dir], [Setup build path])], [ app_cv_buildir="$withval" ],[ app_cv_buildir="$ac_pwd" ])
-AC_SUBST(BASEDIR,$app_cv_buildir)
+AC_SUBST(BUILDDIR,$app_cv_buildir)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.

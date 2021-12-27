@@ -33,6 +33,7 @@
  */
 
 #include "private.h"
+#include <openssl/asn1.h>
 
 static void openssl_network_reset(H3270 *hSession) {
 
@@ -291,6 +292,9 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 #endif
 
 		if(X509_cmp_current_time(next_update) == 1) {
+
+			trace_ssl(hSession,"CRL is valid\n");
+			/*
 			int day, sec;
 			if(ASN1_TIME_diff(&day, &sec, NULL, next_update)) {
 				trace_ssl(hSession,"CRL is valid for %d day(s) and %d second(s)\n",day,sec);
@@ -298,6 +302,7 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 				trace_ssl(hSession,"Can't get CRL next update, discarding it\n");
 				lib3270_openssl_crl_free(context);
 			}
+			*/
 
 		} else {
 			trace_ssl(hSession,"CRL is no longer valid\n");

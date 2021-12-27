@@ -7,7 +7,6 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/lib3270/workflows/CodeQL/badge.svg)
-![Analytics](https://ga-beacon.appspot.com/UA-35100728-2/github//lib3270)
 ![Downloads](https://img.shields.io/github/downloads/PerryWerneck/lib3270/total.svg)
 
 Installation repositories
@@ -136,15 +135,20 @@ Windows native with MSYS2
 	make install
 	```
 
-Building for macOS (using homebrew)
-===================================
+Building for macOS
+==================
+
+Using homebrew
+--------------
+
+Install
 
 1. Install [homebrew](https://brew.sh/)
 
 2. Install dependencies
 
 	```shell
-	brew install automake binutils coreutils curl gettext libtool openldap openssl pkgconfig
+	brew install automake binutils coreutils curl gettext libtool openssl pkgconfig
 	```
 
 3. Use [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) to make keg-only dependencies available during build process
@@ -156,17 +160,29 @@ Building for macOS (using homebrew)
 4. Configure, build and install (inside the [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) shell opened above)
 
 	```shell
-	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.3"
+	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4"
 	make all && make install
-	$ brew link lib3270
+	brew link lib3270
 	```
 
-Uninstalling
-------------
-
-1. To uninstall
+Uninstall
 
 	```shell
 	brew unlink lib3270
 	rm -fr "$(brew --cellar)/lib3270"
 	```
+	
+Using jhbuild
+--------------
+
+1. Install jhbuild
+
+	https://wiki.gnome.org/Projects/GTK/OSX/Building
+	
+2. build
+
+	```shell
+	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/lib3270/macos/mac/lib3270.modules build lib3270
+	```
+
+

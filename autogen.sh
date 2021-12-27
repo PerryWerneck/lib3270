@@ -1,5 +1,7 @@
 #!/bin/bash
 
+builddir=${PWD}
+
 test -n "$srcdir" || srcdir=`dirname "$0"`
 test -n "$srcdir" || srcdir=.
 
@@ -45,7 +47,9 @@ automake --add-missing 2> /dev/null | true
 
 autopoint
 
-test -n "$NOCONFIGURE" || "$srcdir/configure" $@
+cd "${builddir}"
+
+test -n "$NOCONFIGURE" || "$srcdir/configure" --srcdir=${srcdir} $@
 
 
 

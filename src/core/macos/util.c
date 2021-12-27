@@ -1,35 +1,24 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob
- * o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
- * @brief Linux Utility functions.
+ * @brief Mac Utility functions.
  */
 
 
@@ -40,6 +29,8 @@
 #include <CoreFoundation/CFBundle.h>
 #include <CoreFoundation/CFURL.h>
 #include <sys/syslimits.h>
+#include <lib3270.h>
+#include <lib3270/os.h>
 
 static char * concat(char *path, const char *name, size_t *length) {
 	size_t szCurrent = strlen(path);
@@ -74,28 +65,61 @@ static char * build_filename(const char *root, const char *str, va_list args) {
 }
 
 char * lib3270_build_data_filename(const char *str, ...) {
-	va_list args;
-	va_start (args, str);
 
-	char *filename;
+	va_list args;
+
+	size_t szPath = PATH_MAX;
+	lib3270_autoptr(char) path = (char *) lib3270_malloc(szPath);
+	char *filename = NULL;
+
+	//
+	// Try bundle 
+	//
 	CFBundleRef mainBundle = CFBundleGetMainBundle();
+
 	if (mainBundle) {
+
 		CFURLRef url = CFBundleCopyBundleURL(mainBundle);
+
 		if (url) {
-			size_t szPath = PATH_MAX;
-			char *path = (char *) lib3270_malloc(szPath);
-			CFURLGetFileSystemRepresentation(url, true, path, szPath);
+
+			CFURLGetFileSystemRepresentation(url, true, (UInt8 *) path, szPath);
 			CFRelease(url);
 			path = concat(path, "Contents/Resources", &szPath);
-			filename = build_filename(path, str, args);
-			lib3270_free(path);
-		} else {
-			filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
+
+			if(access(path,R_OK) == 0) {
+				va_start (args, str);
+				filename = build_filename(path, str, args);
+				va_end (args);
+				return filename;
+			}
+#ifdef DEBUG
+			else {
+				debug("No bundle in '%s'",path);
+			}
+#endif // DEBUG 
 		}
-	} else {
-		filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
+
 	}
 
+	/*
+	//
+	// Try EXE Path
+	//
+	{
+		uint32_t size = szPath;
+		_NSGetExecutablePath(path, &size);
+		path[size] = 0;
+
+
+	}
+	*/
+
+	// 
+	// Not found, use the system datadir
+	//
+	va_start (args, str);
+	filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
 	va_end (args);
 
 	return filename;

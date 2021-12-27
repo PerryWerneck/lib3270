@@ -155,21 +155,20 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 	return 0;
 }
 
-char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, const char **error_message) {
+char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char **error) {
 	lib3270_write_event_trace(hSession,"Getting data from %s",url);
 
 	// Use CURL to download the CRL
-	lib3270_autoptr(CURLDATA)	crl_data		= lib3270_malloc(sizeof(CURLDATA));
+	lib3270_autoptr(CURLDATA)	curl_data		= lib3270_malloc(sizeof(CURLDATA));
 	lib3270_autoptr(CURL)		hCurl			= curl_easy_init();
 
-	memset(crl_data,0,sizeof(CURLDATA));
-	crl_data->hSession		= hSession;
-	crl_data->data.length	= CRL_DATA_LENGTH;
-	crl_data->data.contents = lib3270_malloc(crl_data->data.length);
+	memset(curl_data,0,sizeof(CURLDATA));
+	curl_data->hSession			= hSession;
+	curl_data->data.length		= CRL_DATA_LENGTH;
+	curl_data->data.contents	= lib3270_malloc(curl_data->data.length);
 
 	if(!hCurl) {
-		*error_message= _( "Can't initialize curl operation" );
-		errno = EINVAL;
+		*error = _( "Can't initialize curl operation" );
 		return NULL;
 	}
 
@@ -178,39 +177,36 @@ char * lib3270_get_from_url(H3270 *hSession, const char *url, size_t *length, co
 	curl_easy_setopt(hCurl, CURLOPT_URL, url);
 	curl_easy_setopt(hCurl, CURLOPT_FOLLOWLOCATION, 1L);
 
-	curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, crl_data->errbuf);
+	curl_easy_setopt(hCurl, CURLOPT_ERRORBUFFER, curl_data->errbuf);
 
 	curl_easy_setopt(hCurl, CURLOPT_WRITEFUNCTION, internal_curl_write_callback);
-	curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) crl_data);
+	curl_easy_setopt(hCurl, CURLOPT_WRITEDATA, (void *) curl_data);
 
 	curl_easy_setopt(hCurl, CURLOPT_USERNAME, "");
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 		curl_easy_setopt(hCurl, CURLOPT_VERBOSE, 1L);
 		curl_easy_setopt(hCurl, CURLOPT_DEBUGFUNCTION, internal_curl_trace_callback);
-		curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) crl_data);
+		curl_easy_setopt(hCurl, CURLOPT_DEBUGDATA, (void *) curl_data);
 	}
 
 	res = curl_easy_perform(hCurl);
 
 	if(res != CURLE_OK) {
-		if(crl_data->errbuf[0])
-			lib3270_write_log(hSession,"curl","%s: %s",url, crl_data->errbuf);
+		if(curl_data->errbuf[0])
+			lib3270_write_log(hSession,"curl","%s: %s",url, curl_data->errbuf);
 
-		*error_message = curl_easy_strerror(res);
+		*error = curl_easy_strerror(res);
 
-		lib3270_write_log(hSession,"curl","%s: %s",url, *error_message);
+		lib3270_write_log(hSession,"curl","%s: %s",url, *error);
 		errno = EINVAL;
 		return NULL;
 
 	}
 
-	if(length)
-		*length = (size_t) crl_data->length;
-
-	char * httpText = lib3270_malloc(crl_data->length+1);
-	memset(httpText,0,crl_data->length+1);
-	memcpy(httpText,crl_data->data.contents,crl_data->length);
+	char * httpText = lib3270_malloc(curl_data->length+1);
+	memset(httpText,0,curl_data->length+1);
+	memcpy(httpText,curl_data->data.contents,curl_data->length);
 
 	return httpText;
 

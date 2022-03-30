@@ -96,6 +96,47 @@ static void toggle_connect(H3270 *hSession, const struct lib3270_toggle *toggle,
 
 }
 
+static void toggle_ssl_trace(H3270 *hSession, const struct lib3270_toggle *toggle, LIB3270_TOGGLE_TYPE tt) {
+
+	if(tt != LIB3270_TOGGLE_TYPE_INITIAL && toggle->value) {
+
+		trace_ssl(hSession,
+					"SSL build options:\n" \
+					"  self signed cert check is %s" \
+					"\n  CRL check is %s" \
+					"\n  CRL expiration check is %s" \
+					"\n  Notify when failed is %s\n",
+
+#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+					"on",
+#else
+					"off",
+#endif
+
+#ifdef SSL_ENABLE_CRL_CHECK
+					"on",
+#else
+					"off",
+#endif
+
+#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
+					"on",
+#else
+					"off",
+#endif
+
+#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
+					"on"
+#else
+					"off"
+#endif
+		);
+
+	}
+
+}
+
+
 /**
  * @brief Called from system initialization code to handle initial toggle settings.
  */
@@ -131,6 +172,10 @@ void initialize_toggles(H3270 *session) {
 		{
 			LIB3270_TOGGLE_CONNECT_ON_STARTUP,
 			toggle_connect
+		},
+		{
+			LIB3270_TOGGLE_SSL_TRACE,
+			toggle_ssl_trace
 		}
 
 	};

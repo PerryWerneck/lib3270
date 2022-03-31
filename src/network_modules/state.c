@@ -88,12 +88,8 @@ LIB3270_EXPORT const char * lib3270_get_ssl_state_icon_name(const H3270 *hSessio
 
 LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSession) {
 
-	if(hSession->ssl.message) {
-
-		if(hSession->ssl.message->body)
-			return dgettext(GETTEXT_PACKAGE,hSession->ssl.message->body);
-
-		return "";
+	if(hSession->ssl.message && hSession->ssl.message->body) {
+		return dgettext(GETTEXT_PACKAGE,hSession->ssl.message->body);
 	}
 
 	return "";

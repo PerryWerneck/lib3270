@@ -389,11 +389,11 @@ dnl SSL Security options
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE([self-signed-cert-check],
-	[AS_HELP_STRING([--enable-self-signed-cert-check], [Reject SSL connection when host presents a self signed certificate])],
+	[AS_HELP_STRING([--enable-self-signed-cert-check], [Emit Warning when host presents a self signed certificate])],
 [
 	app_cv_self_signed_certs="$enableval"
 ],[
-	app_cv_self_signed_certs="no"
+	app_cv_self_signed_certs="yes"
 ])
 
 if test "$app_cv_self_signed_certs" == "yes"; then
@@ -518,7 +518,7 @@ AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library 
 AC_DEFINE(LIB3270_SDK_VERSION,$app_cv_sdkversion,[The SDK version number])
 AC_SUBST(LIB3270_SDK_VERSION,$app_cv_sdkversion)
 
-AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])], 
+AC_ARG_WITH([default-host], [AS_HELP_STRING([--with-default-host], [Set lib3270 default host url])],
 	[ app_default_host="\"$withval\""],
 	[ app_default_host=""])
 
@@ -650,7 +650,7 @@ case "$host" in
 
 	*-apple-darwin*)
 		AC_PATH_TOOL([CURLCONFIG], [curl-config], [no])
-		
+
 		if test x$CURLCONFIG = xno; then
         	AC_MSG_NOTICE([Building without CURL support])
 			AC_SUBST(LIBCURL_CFLAGS)
@@ -662,13 +662,13 @@ case "$host" in
 			AC_SUBST(LIBCURL_LIBS,"$($CURLCONFIG --libs)")
 		fi
 		;;
-		
+
 	*)
 		PKG_CHECK_MODULES( [LIBCURL], [libcurl], AC_DEFINE(HAVE_LIBCURL,[],[Do we have libcurl?]), AC_MSG_ERROR([libcurl not present.]) )
 		AC_SUBST(LIBCURL_CFLAGS)
 		AC_SUBST(LIBCURL_LIBS)
 		;;
-	
+
 esac
 
 dnl ---------------------------------------------------------------------------

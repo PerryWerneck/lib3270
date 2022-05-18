@@ -244,9 +244,9 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 			.message = {
 				.name = "X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT",
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-				.type = LIB3270_NOTIFY_SECURE,
-#else
 				.type = LIB3270_NOTIFY_WARNING,
+#else
+				.type = LIB3270_NOTIFY_SECURE,
 #endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 				.icon = "security-medium",
 				.summary = N_( "Self signed certificate" ),
@@ -260,9 +260,9 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 			.message = {
 				.name = "X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN",
 #ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-				.type = LIB3270_NOTIFY_SECURE,
-#else
 				.type = LIB3270_NOTIFY_INFO,
+#else
+				.type = LIB3270_NOTIFY_SECURE,
 #endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 				.icon = "security-low",
 				.label = N_("Continue"),

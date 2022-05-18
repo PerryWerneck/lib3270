@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-01 23:49-0300\n"
+"POT-Creation-Date: 2021-11-29 14:31-0300\n"
 "PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
@@ -277,7 +277,7 @@ msgstr "Erro ao inicializar LDAP"
 msgid "Can't initialize the TLS/SSL context."
 msgstr "Erro ao inicializar contexto TLS/SSL"
 
-#: src/core/session.c:198
+#: src/core/session.c:205
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
@@ -285,7 +285,7 @@ msgstr "Não foi possível carregar"
 msgid "Can't open HTTP session"
 msgstr "Não foi possível abrir sessão HTTP"
 
-#: src/core/session.c:186
+#: src/core/session.c:193
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
@@ -293,7 +293,7 @@ msgstr "Não é possível imprimir"
 msgid "Can't read HTTP response size."
 msgstr "Não posso obter tamanho da resposta HTTP"
 
-#: src/core/session.c:192
+#: src/core/session.c:199
 msgid "Can't save"
 msgstr "Não é possível salvar"
 
@@ -512,8 +512,8 @@ msgstr "Tipo de dispositivo rejeitado"
 msgid "Disconnect from host"
 msgstr "Desconecta do servidor"
 
-#: src/core/ft/ft.c:244 src/network_modules/openssl/main.c:99
-#: src/network_modules/openssl/main.c:147
+#: src/core/ft/ft.c:244 src/network_modules/openssl/main.c:100
+#: src/network_modules/openssl/main.c:148
 msgid "Disconnected from host."
 msgstr "Desconectado do servidor."
 
@@ -593,12 +593,12 @@ msgstr "Apagar campos"
 msgid "Erro sending data to host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/core/ft/ft_dft.c:413 src/core/ft/ft_cut.c:408
+#: src/core/ft/ft_cut.c:408 src/core/ft/ft_dft.c:413
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_dft.c:306 src/core/ft/ft_cut.c:504
+#: src/core/ft/ft_cut.c:504 src/core/ft/ft_dft.c:306
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
@@ -611,7 +611,7 @@ msgstr "Erro na transferência do arquivo, transferência cancelada"
 msgid "Error reading file from host: file transfer canceled"
 msgstr "Erro ao ler arquivo do host: Transferência cancelada"
 
-#: src/network_modules/openssl/main.c:169
+#: src/network_modules/openssl/main.c:170
 msgid "Error reading from host"
 msgstr "Erro lendo do servidor"
 
@@ -631,7 +631,7 @@ msgstr "Erro ao ler ou gravar no host: Transferência cancelada"
 msgid "Error writing file to host: file transfer canceled"
 msgstr "Erro ao gravar arquivo no host, transferência cancelada"
 
-#: src/network_modules/openssl/main.c:122
+#: src/network_modules/openssl/main.c:123
 msgid "Error writing to host."
 msgstr "Erro enviando para o servidor"
 
@@ -989,8 +989,8 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:304 src/core/windows/event_dispatcher.c:135
-#: src/core/windows/connect.c:223
+#: src/core/telnet.c:304 src/core/windows/connect.c:223
+#: src/core/windows/event_dispatcher.c:135
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1500,8 +1500,8 @@ msgstr ""
 "A lista de revogação de certificados (CRL) de um certificado não pôde ser "
 "encontrada."
 
-#: src/network_modules/openssl/main.c:123
-#: src/network_modules/openssl/main.c:170
+#: src/network_modules/openssl/main.c:124
+#: src/network_modules/openssl/main.c:171
 #, c-format
 msgid "The SSL error message was %s"
 msgstr "A mensagem de erro SSL foi \"%s\""
@@ -1723,8 +1723,8 @@ msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
 "especificados."
 
-#: src/network_modules/openssl/main.c:101
-#: src/network_modules/openssl/main.c:149
+#: src/network_modules/openssl/main.c:102
+#: src/network_modules/openssl/main.c:150
 msgid "The secure connection has been closed cleanly."
 msgstr "A conexão segura foi fechada corretamente"
 
@@ -1774,7 +1774,7 @@ msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
 msgid "The system error was %s"
 msgstr "O erro do sistema operacional foi \"%s\""
 
-#: src/core/util.c:260
+#: src/core/util.c:264
 #, c-format
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
@@ -1857,8 +1857,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_dft.c:213 src/core/ft/ft_dft.c:344 src/core/ft/ft_cut.c:387
-#: src/core/ft/ft_cut.c:475
+#: src/core/ft/ft_cut.c:387 src/core/ft/ft_cut.c:475 src/core/ft/ft_dft.c:213
+#: src/core/ft/ft_dft.c:344
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 
@@ -1915,7 +1915,7 @@ msgstr "Não foi possível obter emissor do certificado"
 msgid "Unable to get local issuer certificate"
 msgstr "Unable to get local issuer certificate"
 
-#: src/core/session.c:198
+#: src/core/session.c:205
 msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
 
@@ -1927,11 +1927,11 @@ msgstr "Incapaz de negociar uma conexão segura com o host"
 msgid "Unable to paste text"
 msgstr "Incapaz de colar texto"
 
-#: src/core/session.c:186
+#: src/core/session.c:193
 msgid "Unable to print"
 msgstr "Incapaz de imprimir"
 
-#: src/core/session.c:192
+#: src/core/session.c:199
 msgid "Unable to save"
 msgstr "Incapaz de salvar"
 

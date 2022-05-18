@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 	{
 		lib3270_autoptr(char) testfilename = lib3270_build_data_filename("test",NULL);
 		printf("\n\nFilename: '%s'\n\n", testfilename);
-		return 0;
+//		return 0;
 	}
 
 //	#pragma GCC diagnostic push

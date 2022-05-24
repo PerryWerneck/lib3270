@@ -193,6 +193,94 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 
 #endif // SSL_ENABLE_CRL_CHECK
 
+#ifdef _WIN32
+	{
+		// Load certs
+		// https://stackoverflow.com/questions/9507184/can-openssl-on-windows-use-the-system-certificate-store
+		X509_STORE * store = SSL_CTX_get_cert_store(context);
+
+		lib3270_autoptr(char) certpath = lib3270_build_data_filename("certs","*.der",NULL);
+
+		trace_ssl(hSession,"Loading SSL certs from %s\n",certpath);
+
+		WIN32_FIND_DATA ffd;
+		HANDLE hFind = FindFirstFile(certpath, &ffd);
+
+		if(hFind == INVALID_HANDLE_VALUE)
+		{
+			static const LIB3270_SSL_MESSAGE message = {
+				.type = LIB3270_NOTIFY_SECURE,
+				.icon = "dialog-error",
+				.summary = N_( "Cant open custom certificate directory." ),
+			};
+
+			hSession->ssl.message = &message;
+
+			trace_ssl(hSession, _( "Can't open \"%s\" (The Windows error code was %ld)" ), certpath, (long) GetLastError());
+		}
+		else
+		{
+			do
+			{
+				char * filename = lib3270_build_data_filename("certs", ffd.cFileName, NULL);
+
+				debug("Loading \"%s\"",filename);
+
+				FILE *fp = fopen(filename,"r");
+				if(!fp) {
+
+					trace_ssl(hSession, _( "Can't open \"%s\": %s" ), filename, strerror(errno));
+
+				}
+				else
+				{
+					X509 * cert = d2i_X509_fp(fp, NULL);
+
+					if(!cert)
+					{
+						static const LIB3270_SSL_MESSAGE message = {
+							.type = LIB3270_NOTIFY_SECURE,
+							.icon = "dialog-error",
+							.summary = N_( "Cant read custom certificate file." ),
+						};
+
+						hSession->ssl.message = &message;
+						hSession->network.context->state.error = ERR_get_error();
+
+						trace_ssl(hSession, _( "Can't read \"%s\": %s" ), filename, ERR_lib_error_string(hSession->ssl.error));
+					}
+					else
+					{
+
+						if(X509_STORE_add_cert(store, cert) != 1)
+						{
+							static const LIB3270_SSL_MESSAGE message = {
+								.type = LIB3270_NOTIFY_SECURE,
+								.icon = "dialog-error",
+								.summary = N_( "Cant load custom certificate file." ),
+							};
+
+							hSession->ssl.message = &message;
+							hSession->network.context->state.error = ERR_get_error();
+
+							trace_ssl(hSession, _( "Can't load \"%s\": %s" ), filename, ERR_lib_error_string(hSession->ssl.error));
+						}
+
+						X509_free(cert);
+					}
+
+					fclose(fp);
+				}
+
+				lib3270_free(filename);
+
+			}
+			while (FindNextFile(hFind, &ffd) != 0);
+
+		}
+	}
+#endif // _WIN32
+
 	return context;
 
 }

@@ -1,7 +1,7 @@
 #
 # spec file for package lib3270
 #
-# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2022 SUSE LLC
 # Copyright (c) <2008> <Banco do Brasil S.A.>
 #
 # All modifications and additions to the file contributed by third parties
@@ -29,15 +29,15 @@ BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
 BuildRequires:  coreutils
-BuildRequires:	libtool
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
+BuildRequires:  libtool
 BuildRequires:  m4
 BuildRequires:  pkgconfig
+BuildRequires:  xz
 BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(libssl)
-BuildRequires:  xz
 
 %if 0%{?centos_version}
 # CENTOS Requires gdb for debuginfo
@@ -54,8 +54,8 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:    TN3270 Access library
-Group:      Development/Libraries/C and C++
+Summary:        TN3270 Access library
+Group:          Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
@@ -63,9 +63,9 @@ TN3270 access library, originally designed as part of the pw3270 application.
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
-Summary:    TN3270 Access library development files
-Requires:   %{name}-%{_libvrs} = %{version}
-Group:      Development/Libraries/C and C++
+Summary:        TN3270 Access library development files
+Requires:       %{name}-%{_libvrs} = %{version}
+Group:          Development/Libraries/C and C++
 
 %description devel
 Header files for the TN3270 access library.

@@ -23,14 +23,8 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	aclocal
-	autoconf
-    
-	mkdir -p scripts
-	automake --add-missing 2> /dev/null | true
- 
+	NOCONFIGURE=1 ./autogen.sh 
 	./configure --prefix=/usr --disable-static
-    
 	make all
 	# --- end custom part for compiling
 

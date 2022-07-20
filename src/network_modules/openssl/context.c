@@ -151,10 +151,29 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	if(context)
 		return context;
 
-	trace_ssl(hSession,"Initializing SSL context.\n");
-
 	SSL_load_error_strings();
 	SSL_library_init();
+
+#ifdef OPENSSL_FIPS
+
+	lib3270_write_log(
+		hSession,
+		"openssl",
+		"Initializing %s %s FIPS.\n",
+		SSLeay_version(SSLEAY_VERSION),
+		(FIPS_mode() ? "with" : "without" )
+	);
+
+#else
+
+	lib3270_write_log(
+		hSession,
+		"openssl",
+		"Initializing %s without FIPS.\n",
+		SSLeay_version(SSLEAY_VERSION)
+	);
+
+#endif // OPENSSL_FIPS
 
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL) {

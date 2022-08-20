@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-#include <lib3270/win32.h>
+	#include <lib3270/win32.h>
 #endif // _WIN32
 
 #define MAX_ARGS 10

@@ -154,7 +154,44 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	SSL_load_error_strings();
 	SSL_library_init();
 
-#ifdef OPENSSL_FIPS
+#if !defined(OPENSSL_FIPS)
+
+	lib3270_write_log(
+		hSession,
+		"openssl",
+		"Initializing %s\n",
+		SSLeay_version(SSLEAY_VERSION)
+	);
+
+#elif defined(_WIN32)
+		{
+			lib3270_auto_cleanup(HKEY) hKey;
+			DWORD disp = 0;
+			LSTATUS	rc = RegCreateKeyEx(
+				HKEY_LOCAL_MACHINE,
+				"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\tweaks",
+				0,
+				NULL,
+				REG_OPTION_NON_VOLATILE,
+				KEY_QUERY_VALUE|KEY_READ,
+				NULL,
+				&hKey,
+				&disp);
+
+			if(rc == ERROR_SUCCESS) {
+				FIPS_mode_set(lib3270_win32_get_dword(hKey, "fips_mode", 1));
+			}
+
+			lib3270_write_log(
+				hSession,
+				"openssl",
+				"Initializing %s %s FIPS.\n",
+				SSLeay_version(SSLEAY_VERSION),
+				(FIPS_mode() ? "with" : "without" )
+			);
+
+		}
+#else
 
 	lib3270_write_log(
 		hSession,
@@ -164,16 +201,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 		(FIPS_mode() ? "with" : "without" )
 	);
 
-#else
-
-	lib3270_write_log(
-		hSession,
-		"openssl",
-		"Initializing %s without FIPS.\n",
-		SSLeay_version(SSLEAY_VERSION)
-	);
-
-#endif // OPENSSL_FIPS
+#endif
 
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL) {

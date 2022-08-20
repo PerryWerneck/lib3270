@@ -41,6 +41,7 @@
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
 #include <lib3270/charset.h>
+#include <stdio.h>
 
 #ifdef _WIN32
 #include <lib3270/win32.h>

@@ -36,6 +36,7 @@
 #include <lib3270/log.h>
 #include <linkedlist.h>
 #include <string.h>
+#include <errno.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 

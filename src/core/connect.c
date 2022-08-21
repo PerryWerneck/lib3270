@@ -134,6 +134,9 @@ void lib3270_notify_tls(H3270 *hSession) {
 }
 
 int lib3270_start_tls(H3270 *hSession) {
+
+	debug("%s",__FUNCTION__);
+
 	hSession->ssl.message = NULL;	// Reset message.
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 

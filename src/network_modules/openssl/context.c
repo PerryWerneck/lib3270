@@ -166,7 +166,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 
 #elif defined(_WIN32)
 		{
-			lib3270_auto_cleanup(HKEY) hKey;
+			lib3270_auto_cleanup(HKEY) hKey = 0;
 			DWORD disp = 0;
 			LSTATUS	rc = RegCreateKeyEx(
 				HKEY_LOCAL_MACHINE,
@@ -180,15 +180,28 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 				&disp);
 
 			if(rc == ERROR_SUCCESS) {
-				FIPS_mode_set(lib3270_win32_get_dword(hKey, "fips_mode", 1));
+				DWORD mode = lib3270_win32_get_dword(hKey, "fips_mode", FIPS_mode());
+				if(FIPS_mode_set(mode) != 1) {
+					char err_buff[1024];
+					memset(err_buff,0,sizeof(err_buff));
+					(void) ERR_error_string_n(ERR_get_error(), err_buff, 1023);
+
+					lib3270_write_log(
+						hSession,
+						"openssl",
+						"Cant set FIPS mode to %u: %s\n",
+						(unsigned int) mode,
+						err_buff
+					);
+				}
 			}
 
 			lib3270_write_log(
 				hSession,
 				"openssl",
-				"Initializing %s %s FIPS.\n",
+				"Initializing windows %s using fips mode %u.\n",
 				SSLeay_version(SSLEAY_VERSION),
-				(FIPS_mode() ? "with" : "without" )
+				FIPS_mode()
 			);
 
 		}
@@ -203,6 +216,8 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	);
 
 #endif
+
+	exit(-1);
 
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL) {

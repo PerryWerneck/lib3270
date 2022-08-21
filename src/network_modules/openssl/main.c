@@ -264,6 +264,8 @@ static char * openssl_network_getcrl(const H3270 *hSession) {
 
 static int openssl_network_init(H3270 *hSession) {
 
+	debug("%s",__FUNCTION__);
+
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 
 	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession);
@@ -349,7 +351,12 @@ void lib3270_set_libssl_network_module(H3270 *hSession) {
 		.reset = openssl_network_reset
 	};
 
-	debug("%s",__FUNCTION__);
+	if(hSession->network.module == &module) {
+		debug("%s - Network module is already set",__FUNCTION__);
+		return;
+	}
+
+	debug("%s - Setting network module",__FUNCTION__);
 
 	if(hSession->network.context) {
 		// Has context, finalize it.

@@ -300,7 +300,7 @@ LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession) {
 LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hSession)) {
 #ifdef _WIN32
 	{
-		lib3270_auto_cleanup(HKEY) hKey;
+		lib3270_auto_cleanup(HKEY) hKey = 0;
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
 		    HKEY_LOCAL_MACHINE,

@@ -155,8 +155,6 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	if(context)
 		return context;
 
-	SSL_load_error_strings();
-
 #if !defined(OPENSSL_FIPS)
 
 	lib3270_write_log(
@@ -184,6 +182,9 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 			if(rc == ERROR_SUCCESS) {
 				DWORD mode = lib3270_win32_get_dword(hKey, "fips_mode", FIPS_mode());
 				if(FIPS_mode_set(mode) != 1) {
+
+					SSL_load_error_strings();
+
 					char err_buff[1024];
 					memset(err_buff,0,sizeof(err_buff));
 					(void) ERR_error_string_n(ERR_get_error(), err_buff, 1023);
@@ -219,6 +220,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 
 #endif
 
+	SSL_load_error_strings();
 	SSL_library_init();
 
 	context = SSL_CTX_new(SSLv23_method());

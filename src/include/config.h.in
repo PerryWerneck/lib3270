@@ -70,6 +70,7 @@
 	/* Security options */
 	#undef HAVE_LDAP
 	#undef HAVE_LIBSSL
+	#undef HAVE_FIPS_H
 
 	#undef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
 

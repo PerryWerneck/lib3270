@@ -388,6 +388,8 @@ dnl ---------------------------------------------------------------------------
 dnl SSL Security options
 dnl ---------------------------------------------------------------------------
 
+AC_CHECK_HEADER(openssl/fips.h, AC_DEFINE(HAVE_FIPS_H, 1, [FIPS Header is available]), AC_MSG_NOTICE(fips.h is not available))
+
 AC_ARG_ENABLE([self-signed-cert-check],
 	[AS_HELP_STRING([--enable-self-signed-cert-check], [Emit Warning when host presents a self signed certificate])],
 [

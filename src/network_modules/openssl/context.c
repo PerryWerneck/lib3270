@@ -45,7 +45,10 @@
 
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
-#include <openssl/fips.h>
+
+#ifdef HAVE_FIPS_H
+	#include <openssl/fips.h>
+#endif // HAVE_FIPS_H
 
 #ifndef SSL_ST_OK
 #define SSL_ST_OK 3

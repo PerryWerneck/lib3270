@@ -220,8 +220,6 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 
 #endif
 
-	exit(-1);
-
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL) {
 		static const LIB3270_SSL_MESSAGE message = {

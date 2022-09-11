@@ -156,7 +156,6 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 		return context;
 
 	SSL_load_error_strings();
-	SSL_library_init();
 
 #if !defined(OPENSSL_FIPS)
 
@@ -196,6 +195,14 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 						(unsigned int) mode,
 						err_buff
 					);
+
+				} else {
+					lib3270_write_log(
+						hSession,
+						"openssl",
+						"FIPS mode set to %u\n",
+						(unsigned int) mode
+					);
 				}
 			}
 
@@ -219,6 +226,8 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	);
 
 #endif
+
+	SSL_library_init();
 
 	context = SSL_CTX_new(SSLv23_method());
 	if(context == NULL) {

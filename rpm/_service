@@ -31,11 +31,11 @@
 		<param name="files">*/debian/*.dsc</param>
 	</service>
 
-	<service name="extract_file">
+	<!-- service name="extract_file">
 		<param name="archive">*.tar</param>
 		<param name="files">*/debian/control</param>
 		<param name="outfilename">debian.control</param>
-	</service>
+	</service -->
 
 	<!-- service name="extract_file">
 		<param name="archive">*.tar</param>

@@ -43,6 +43,10 @@
 #include <lib3270/charset.h>
 #include <stdio.h>
 
+#ifdef HAVE_FIPS_H
+	#include <openssl/fips.h>
+#endif // HAVE_FIPS_H
+
 #ifdef _WIN32
 	#include <lib3270/win32.h>
 #endif // _WIN32

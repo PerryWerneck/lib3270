@@ -8,7 +8,7 @@ Package: lib3270
 Architecture: any
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Provides: lib3270 (= ${binary:Version}), @PACKAGE_NAME@_@PACKAGE_MAJOR_VERSION@_@PACKAGE_MINOR_VERSION@ (= ${binary:Version})
+Provides: lib3270 (= ${binary:Version}), @PACKAGE_NAME@ (= @PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@)
 Description: TN3270 Access library.
  TN3270 access library originally designed as part of the pw3270 application.
 

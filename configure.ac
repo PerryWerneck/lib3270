@@ -144,6 +144,7 @@ case "$host" in
 		app_cv_static='no'
 
 		AC_CONFIG_FILES(debian/control)
+		AC_CONFIG_FILES(debian/shlibs)
 
 esac
 

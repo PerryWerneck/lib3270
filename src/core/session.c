@@ -17,6 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+ * Contatos:
+ *
+ * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ *
+ */
+
 #ifndef ANDROID
 #include <stdlib.h>
 #endif // !ANDROID
@@ -99,7 +107,7 @@ void lib3270_session_free(H3270 *h) {
 
 
 	// Release memory
-#define release_pointer(x) lib3270_free(x); x = NULL;
+	#define release_pointer(x) lib3270_free(x); x = NULL;
 
 	// release_pointer(h->charset.display);
 	release_pointer(h->paste_buffer);
@@ -150,43 +158,6 @@ static void nop_void() {
 static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*name)) {
 	return errno = ENOENT;
 }
-
-
-/*
-static void update_char(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(addr), unsigned char GNUC_UNUSED(chr), unsigned short GNUC_UNUSED(attr), unsigned char GNUC_UNUSED(cursor)) {
-}
-
-static void update_model(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name), int GNUC_UNUSED(model), int GNUC_UNUSED(rows), int GNUC_UNUSED(cols)) {
-}
-
-static void changed(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(bstart), int GNUC_UNUSED(bend)) {
-}
-
-static void update_cursor(H3270 GNUC_UNUSED(*session), unsigned short GNUC_UNUSED(row), unsigned short GNUC_UNUSED(col), unsigned char GNUC_UNUSED(c), unsigned short GNUC_UNUSED(attr)) {
-}
-
-static void update_oia(H3270 GNUC_UNUSED(*session), LIB3270_FLAG GNUC_UNUSED(id), unsigned char GNUC_UNUSED(on)) {
-}
-
-static void update_selection(H3270 GNUC_UNUSED(*session), int GNUC_UNUSED(start), int GNUC_UNUSED(end)) {
-}
-
-static void set_cursor(H3270 GNUC_UNUSED(*session), LIB3270_POINTER GNUC_UNUSED(id)) {
-}
-
-static void update_ssl(H3270 GNUC_UNUSED(*session), LIB3270_SSL_STATE GNUC_UNUSED(state)) {
-}
-
-static void set_timer(H3270 GNUC_UNUSED(*session), unsigned char GNUC_UNUSED(on)) {
-}
-
-static void default_update_luname(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*name)) {
-}
-
-static void default_update_url(H3270 GNUC_UNUSED(*session), const char GNUC_UNUSED(*url)) {
-}
-
-*/
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode)) {
 	lib3270_write_log(session, "print", "%s", "Printing is unavailable");

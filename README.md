@@ -182,7 +182,7 @@ Using jhbuild
 2. build
 
 	```shell
-	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/lib3270/macos/mac/lib3270.modules build lib3270
+	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/lib3270/master/mac/lib3270.modules build lib3270
 	```
 
 

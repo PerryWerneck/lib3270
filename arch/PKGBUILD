@@ -9,7 +9,7 @@ url="https://github.com/PerryWerneck/lib3270"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()
-makedepends=(autoconf automake make openssl libtool)
+makedepends=(autoconf automake make openssl libtool gzip)
 checkdepends=()
 
 #groups=(gnome)

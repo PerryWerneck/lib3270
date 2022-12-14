@@ -1,30 +1,27 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
  *
  * References:
  *
@@ -37,14 +34,21 @@
  * @brief OpenSSL initialization for linux.
  */
 
-#include "private.h"
-
+#include <config.h>
 #ifdef _WIN32
-#include <lib3270/win32.h>
+	#include <winsock2.h>
+	#include <windows.h>
+	#include <lib3270/win32.h>
 #endif // _WIN32
+
+#include "private.h"
 
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
+
+#ifdef HAVE_FIPS_H
+	#include <openssl/fips.h>
+#endif // HAVE_FIPS_H
 
 #ifndef SSL_ST_OK
 #define SSL_ST_OK 3
@@ -151,9 +155,81 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 	if(context)
 		return context;
 
-	trace_ssl(hSession,"Initializing SSL context.\n");
-
 	SSL_load_error_strings();
+
+#if !defined(OPENSSL_FIPS)
+
+	lib3270_write_log(
+		hSession,
+		"openssl",
+		"Initializing %s\n",
+		SSLeay_version(SSLEAY_VERSION)
+	);
+
+#elif defined(_WIN32)
+		{
+			lib3270_auto_cleanup(HKEY) hKey = 0;
+			DWORD disp = 0;
+			LSTATUS	rc = RegCreateKeyEx(
+				HKEY_LOCAL_MACHINE,
+				"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\tweaks",
+				0,
+				NULL,
+				REG_OPTION_NON_VOLATILE,
+				KEY_QUERY_VALUE|KEY_READ,
+				NULL,
+				&hKey,
+				&disp);
+
+			if(rc == ERROR_SUCCESS) {
+				DWORD mode = lib3270_win32_get_dword(hKey, "fips_mode", FIPS_mode());
+				if(FIPS_mode_set(mode) != 1) {
+
+					SSL_load_error_strings();
+
+					char err_buff[1024];
+					memset(err_buff,0,sizeof(err_buff));
+					(void) ERR_error_string_n(ERR_get_error(), err_buff, 1023);
+
+					lib3270_write_log(
+						hSession,
+						"openssl",
+						"Cant set FIPS mode to %u: %s\n",
+						(unsigned int) mode,
+						err_buff
+					);
+
+				} else {
+					lib3270_write_log(
+						hSession,
+						"openssl",
+						"FIPS mode set to %u\n",
+						(unsigned int) mode
+					);
+				}
+			}
+
+			lib3270_write_log(
+				hSession,
+				"openssl",
+				"Initializing windows %s using fips mode %u.\n",
+				SSLeay_version(SSLEAY_VERSION),
+				FIPS_mode()
+			);
+
+		}
+#else
+
+	lib3270_write_log(
+		hSession,
+		"openssl",
+		"Initializing %s %s FIPS.\n",
+		SSLeay_version(SSLEAY_VERSION),
+		(FIPS_mode() ? "with" : "without" )
+	);
+
+#endif
+
 	SSL_library_init();
 
 	context = SSL_CTX_new(SSLv23_method());

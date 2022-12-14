@@ -41,9 +41,14 @@
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
 #include <lib3270/charset.h>
+#include <stdio.h>
+
+#ifdef HAVE_FIPS_H
+	#include <openssl/fips.h>
+#endif // HAVE_FIPS_H
 
 #ifdef _WIN32
-#include <lib3270/win32.h>
+	#include <lib3270/win32.h>
 #endif // _WIN32
 
 #define MAX_ARGS 10

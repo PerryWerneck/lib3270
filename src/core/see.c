@@ -294,17 +294,17 @@ static const char * see_validation(unsigned char setting) {
 	(void) strcpy(buf, "");
 	if (setting & XAV_FILL) {
 		(void) strncat(buf, paren, 63);
-		(void) strncat(buf, "fill");
+		(void) strncat(buf, "fill", 63);
 		paren = ",";
 	}
 	if (setting & XAV_ENTRY) {
 		(void) strncat(buf, paren, 63);
-		(void) strncat(buf, "entry");
+		(void) strncat(buf, "entry", 63);
 		paren = ",";
 	}
 	if (setting & XAV_TRIGGER) {
 		(void) strncat(buf, paren, 63);
-		(void) strncat(buf, "trigger");
+		(void) strncat(buf, "trigger", 63);
 		paren = ",";
 	}
 	if (strcmp(paren, "("))

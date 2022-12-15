@@ -95,7 +95,7 @@ BUILDDIR=@BUILDDIR@
 
 POTDIR=$(BUILDDIR)/.pot
 
-OBJDIR=$(BUILDDIR)/.obj
+OBJDIR=$(BUILDDIR)/.obj/@OSNAME@
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
@@ -525,7 +525,9 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
-	@rm -fr $(BUILDDIR)/.tmp/$(LIBNAME)
+	@rm -fr $(BUILDDIR)/.obj
+	@rm -fr $(BUILDDIR)/.bin
+	@rm -fr $(BUILDDIR)/.tmp
 	@rm -fr $(POTDIR)/$(LIBNAME)
 	@rm -f locale/*.pot
 

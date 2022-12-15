@@ -180,47 +180,47 @@ const char * see_attr(unsigned char fa) {
 	buf[0] = '\0';
 
 	if (fa & FA_PROTECT) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "protected");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "protected", 255);
 		paren = ",";
 		if (fa & FA_NUMERIC) {
-			(void) strcat(buf, paren);
-			(void) strcat(buf, "skip");
+			(void) strncat(buf, paren, 255);
+			(void) strncat(buf, "skip", 255);
 			paren = ",";
 		}
 	} else if (fa & FA_NUMERIC) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "numeric");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "numeric", 255);
 		paren = ",";
 	}
 	switch (fa & FA_INTENSITY) {
 	case FA_INT_NORM_NSEL:
 		break;
 	case FA_INT_NORM_SEL:
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "detectable");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "detectable", 255);
 		paren = ",";
 		break;
 	case FA_INT_HIGH_SEL:
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "intensified");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "intensified", 255);
 		paren = ",";
 		break;
 	case FA_INT_ZERO_NSEL:
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "nondisplay");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "nondisplay", 255);
 		paren = ",";
 		break;
 	}
 	if (fa & FA_MODIFY) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "modified");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "modified", 255);
 		paren = ",";
 	}
 	if (strcmp(paren, "("))
-		(void) strcat(buf, ")");
+		(void) strncat(buf, ")", 255);
 	else
-		(void) strcpy(buf, "(default)");
+		(void) strncpy(buf, "(default)", 255);
 
 	return buf;
 }

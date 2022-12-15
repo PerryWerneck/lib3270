@@ -90,7 +90,8 @@ LIB3270_EXPORT int lib3270_move_cursor(H3270 *hSession, LIB3270_DIRECTION dir, u
 			status_reset(hSession);
 		} else {
 			struct ta *ta = new_ta(hSession, TA_TYPE_CURSOR_MOVE);
-
+			if(!ta)
+				return -1;
 			ta->args.move.direction = dir;
 			ta->args.move.fn = lib3270_move_cursor;
 			ta->args.move.sel = sel;

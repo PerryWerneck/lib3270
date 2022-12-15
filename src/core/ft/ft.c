@@ -474,7 +474,7 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 	// Erase the line and enter the command.
 	flen = kybd_prime(ft->host);
 	if (!flen || flen < strlen(buffer) - 1) {
-		lib3270_write_log(ft->host, "Unable to send command \"%s\" (flen=%d szBuffer=%d)",buffer,flen,strlen(buffer));
+		lib3270_write_log(ft->host, "ft", "Unable to send command \"%s\" (flen=%d szBuffer=%ld)",buffer,flen,strlen(buffer));
 		ft_failed(ft,_( "Unable to send file-transfer request" ));
 		return errno = EINVAL;
 	}

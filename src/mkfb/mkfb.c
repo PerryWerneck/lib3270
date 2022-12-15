@@ -509,11 +509,18 @@ main(int argc, char *argv[]) {
 
 	/* Open the output file. */
 	if (argc == 3) {
-		o = fopen(argv[2], "w");
+		int fd = creat(argv[2], S_IWUSR | S_IRUSR);
+		if(fd < 0) {
+			perror(argv[2]);
+			exit(1);
+		}
+
+		o = fdopen(fd,"w");
 		if (o == NULL) {
 			perror(argv[2]);
 			exit(1);
 		}
+
 	} else
 		o = stdout;
 

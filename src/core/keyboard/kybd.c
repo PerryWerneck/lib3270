@@ -128,14 +128,16 @@ static const char dxl[] = "0123456789abcdef";
  * Check for typeahead availability and create a new TA structure.
  *
  * @return new typeahead struct or NULL if it's not available.
+ * @retval NULL Host is not connected or malloc error.
  */
 struct ta * new_ta(H3270 *hSession, enum _ta_type type) {
-	struct ta *ta;
+	struct ta *ta = NULL;
 
 	// If no connection, forget it.
 	if (!lib3270_is_connected(hSession)) {
 		lib3270_ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (not connected)\n");
+		errno = ENOTCONN;
 		return NULL;
 	}
 
@@ -143,6 +145,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type) {
 	if (hSession->kybdlock & KL_OERR_MASK) {
 		lib3270_ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (operator error)\n");
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -150,6 +153,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type) {
 	if (hSession->kybdlock & KL_SCROLLED) {
 		lib3270_ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (scrolled)\n");
+		errno = EINVAL;
 		return NULL;
 	}
 
@@ -157,6 +161,7 @@ struct ta * new_ta(H3270 *hSession, enum _ta_type type) {
 	if (!hSession->typeahead) {
 		lib3270_ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (no typeahead)\n");
+		errno = EINVAL;
 		return NULL;
 	}
 

@@ -180,47 +180,47 @@ const char * see_attr(unsigned char fa) {
 	buf[0] = '\0';
 
 	if (fa & FA_PROTECT) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "protected");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "protected", 255);
 		paren = ",";
 		if (fa & FA_NUMERIC) {
-			(void) strcat(buf, paren);
-			(void) strcat(buf, "skip");
+			(void) strncat(buf, paren, 255);
+			(void) strncat(buf, "skip", 255);
 			paren = ",";
 		}
 	} else if (fa & FA_NUMERIC) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "numeric");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "numeric", 255);
 		paren = ",";
 	}
 	switch (fa & FA_INTENSITY) {
 	case FA_INT_NORM_NSEL:
 		break;
 	case FA_INT_NORM_SEL:
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "detectable");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "detectable", 255);
 		paren = ",";
 		break;
 	case FA_INT_HIGH_SEL:
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "intensified");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "intensified", 255);
 		paren = ",";
 		break;
 	case FA_INT_ZERO_NSEL:
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "nondisplay");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "nondisplay", 255);
 		paren = ",";
 		break;
 	}
 	if (fa & FA_MODIFY) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "modified");
+		(void) strncat(buf, paren, 255);
+		(void) strncat(buf, "modified", 255);
 		paren = ",";
 	}
 	if (strcmp(paren, "("))
-		(void) strcat(buf, ")");
+		(void) strncat(buf, ")", 255);
 	else
-		(void) strcpy(buf, "(default)");
+		(void) strncpy(buf, "(default)", 255);
 
 	return buf;
 }
@@ -293,24 +293,24 @@ static const char * see_validation(unsigned char setting) {
 
 	(void) strcpy(buf, "");
 	if (setting & XAV_FILL) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "fill");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "fill", 63);
 		paren = ",";
 	}
 	if (setting & XAV_ENTRY) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "entry");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "entry", 63);
 		paren = ",";
 	}
 	if (setting & XAV_TRIGGER) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "trigger");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "trigger", 63);
 		paren = ",";
 	}
 	if (strcmp(paren, "("))
-		(void) strcat(buf, ")");
+		(void) strncat(buf, ")", 63);
 	else
-		(void) strcpy(buf, "(none)");
+		(void) strncpy(buf, "(none)", 63);
 	return buf;
 }
 
@@ -320,29 +320,29 @@ static const char * see_outline(unsigned char setting) {
 
 	(void) strcpy(buf, "");
 	if (setting & XAO_UNDERLINE) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "underline");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "underline", 63);
 		paren = ",";
 	}
 	if (setting & XAO_RIGHT) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "right");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "right", 63);
 		paren = ",";
 	}
 	if (setting & XAO_OVERLINE) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "overline");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "overline", 63);
 		paren = ",";
 	}
 	if (setting & XAO_LEFT) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "left");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "left", 63);
 		paren = ",";
 	}
 	if (strcmp(paren, "("))
-		(void) strcat(buf, ")");
+		(void) strncat(buf, ")", 63);
 	else
-		(void) strcpy(buf, "(none)");
+		(void) strncpy(buf, "(none)", 63);
 	return buf;
 }
 

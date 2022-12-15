@@ -320,29 +320,29 @@ static const char * see_outline(unsigned char setting) {
 
 	(void) strcpy(buf, "");
 	if (setting & XAO_UNDERLINE) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "underline");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "underline", 63);
 		paren = ",";
 	}
 	if (setting & XAO_RIGHT) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "right");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "right", 63);
 		paren = ",";
 	}
 	if (setting & XAO_OVERLINE) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "overline");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "overline", 63);
 		paren = ",";
 	}
 	if (setting & XAO_LEFT) {
-		(void) strcat(buf, paren);
-		(void) strcat(buf, "left");
+		(void) strncat(buf, paren, 63);
+		(void) strncat(buf, "left", 63);
 		paren = ",";
 	}
 	if (strcmp(paren, "("))
-		(void) strcat(buf, ")");
+		(void) strncat(buf, ")", 63);
 	else
-		(void) strcpy(buf, "(none)");
+		(void) strncpy(buf, "(none)", 63);
 	return buf;
 }
 

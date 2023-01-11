@@ -11,12 +11,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: msys2/setup-msys2@v2
         with:
-          msystem: UCRT64
+          msystem: mingw64
           update: true
           install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
       - name: CI-Build
         run: |
-          ls -l /mingw64/include
           gcc -v
           ./win/ci-build.sh
 

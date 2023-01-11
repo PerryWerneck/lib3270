@@ -16,5 +16,6 @@ jobs:
           install: git mingw-w64-ucrt-x86_64-gcc xz automake autoconf make pkgconf mingw-w64-x86_64-gettext libtool mingw-w64-x86_64-openssl
       - name: CI-Build
         run: |
+          pacman -Ql mingw-w64-x86_64-gettext
           ./win/ci-build.sh
 

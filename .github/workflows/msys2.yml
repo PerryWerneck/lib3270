@@ -13,7 +13,7 @@ jobs:
         with:
           msystem: UCRT64
           update: true
-          install: git mingw-w64-ucrt-x86_64-gcc xz mingw-w64-x86_64-gcc gettext-devel automake autoconf make git pkgconf mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl libtool
+          install: git mingw-w64-ucrt-x86_64-gcc automake autoconf make pkgconf gettext-devel libtool xz mingw-w64-x86_64-openssl
       - name: CI-Build
         run: |
           ./win/ci-build.sh

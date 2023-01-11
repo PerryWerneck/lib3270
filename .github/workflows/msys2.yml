@@ -13,7 +13,7 @@ jobs:
         with:
           msystem: UCRT64
           update: true
-          install: git mingw-w64-ucrt-x86_64-gcc xz automake autoconf make pkgconf mingw-w64-x86_64-gettext libtool mingw-w64-x86_64-openssl
+          install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl libtool
       - name: CI-Build
         run: |
           pacman -Ql mingw-w64-x86_64-gettext

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-29 14:31-0300\n"
+"POT-Creation-Date: 2023-01-11 08:59-0300\n"
 "PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
@@ -34,32 +34,32 @@ msgstr "Tela %dx%d é maior que o tamanho máximo"
 msgid "%s"
 msgstr "%s"
 
-#: src/core/keyboard/kybd.c:1758
+#: src/core/keyboard/kybd.c:1763
 #, c-format
 msgid "%s: Bell not supported"
 msgstr "%s: Alerta sonoro não suportado"
 
-#: src/core/keyboard/kybd.c:1903
+#: src/core/keyboard/kybd.c:1908
 #, c-format
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
 
-#: src/core/keyboard/kybd.c:1856
+#: src/core/keyboard/kybd.c:1861
 #, c-format
 msgid "%s: Unknown character after \\p"
 msgstr "%s: Caractere desconhecido depois de \\p"
 
-#: src/core/keyboard/kybd.c:1884
+#: src/core/keyboard/kybd.c:1889
 #, c-format
 msgid "%s: Unknown character after \\pa"
 msgstr "%s: Caractere desconhecido depois de \\pa"
 
-#: src/core/keyboard/kybd.c:1867
+#: src/core/keyboard/kybd.c:1872
 #, c-format
 msgid "%s: Unknown character after \\pf"
 msgstr "%s: Caractere desconhecido depois de \\pf"
 
-#: src/core/keyboard/kybd.c:1809
+#: src/core/keyboard/kybd.c:1814
 #, c-format
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
@@ -72,7 +72,7 @@ msgstr "Modo 3270"
 msgid "3270-style backspace"
 msgstr "Backspace no estilo 3270"
 
-#: src/network_modules/openssl/messages.c:294
+#: src/network_modules/openssl/messages.c:314
 msgid ""
 "A CA certificate is invalid. Either it is not a CA or its extensions are not "
 "consistent with the supplied purpose."
@@ -120,7 +120,7 @@ msgstr ""
 "Um erro ocorreu na transferência de arquivos, pode ser um erro nos dados "
 "sendo transferidos ou um erro de sistema não identificado."
 
-#: src/network_modules/openssl/messages.c:222
+#: src/network_modules/openssl/messages.c:238
 msgid "An error occurred trying to allocate memory. This should never happen."
 msgstr ""
 "Ocorreu um erro ao tentar alocar memória. Isso nunca deveria acontecer."
@@ -133,11 +133,11 @@ msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 msgid "Attn"
 msgstr "Attn"
 
-#: src/network_modules/openssl/messages.c:363
+#: src/network_modules/openssl/messages.c:390
 msgid "Authority and issuer serial number mismatch"
 msgstr "Divergência nos números de série da autoridade e emissor "
 
-#: src/network_modules/openssl/messages.c:353
+#: src/network_modules/openssl/messages.c:379
 msgid "Authority and subject key identifier mismatch"
 msgstr "Authority and subject key identifier mismatch"
 
@@ -223,7 +223,7 @@ msgstr "Disco CMS apenas para leitura, transferência cancelada"
 msgid "CMS file not found: file transfer canceled"
 msgstr "Arquivo CMS não encontrado, transferência cancelada"
 
-#: src/network_modules/openssl/messages.c:127
+#: src/network_modules/openssl/messages.c:134
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
@@ -261,7 +261,7 @@ msgstr "Não foi possível decodificar dados do CRL"
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/core/connect.c:166
+#: src/core/connect.c:169
 msgid "Can't determine the TLS/SSL state"
 msgstr "Não foi possível determinar o estado TLS/SSL"
 
@@ -273,27 +273,47 @@ msgstr "Não foi possível obter o tamanho do arquivo"
 msgid "Can't initialize LDAP"
 msgstr "Erro ao inicializar LDAP"
 
-#: src/network_modules/openssl/context.c:164
+#: src/network_modules/openssl/context.c:240
 msgid "Can't initialize the TLS/SSL context."
 msgstr "Erro ao inicializar contexto TLS/SSL"
 
-#: src/core/session.c:205
+#: src/core/session.c:176
 msgid "Can't load"
 msgstr "Não foi possível carregar"
+
+#: src/network_modules/openssl/context.c:342
+#, c-format
+msgid "Can't load \"%s\": %s"
+msgstr "Não foi possível carregar \"%s\": %s"
+
+#: src/network_modules/openssl/context.c:295
+#, fuzzy, c-format
+msgid "Can't open \"%s\" (The Windows error code was %ld)"
+msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)\n"
+
+#: src/network_modules/openssl/context.c:308
+#, c-format
+msgid "Can't open \"%s\": %s"
+msgstr "Não foi possível abrir %s: %s"
 
 #: src/core/windows/http.c:99
 msgid "Can't open HTTP session"
 msgstr "Não foi possível abrir sessão HTTP"
 
-#: src/core/session.c:193
+#: src/core/session.c:164
 msgid "Can't print"
 msgstr "Não é possível imprimir"
+
+#: src/network_modules/openssl/context.c:326
+#, c-format
+msgid "Can't read \"%s\": %s"
+msgstr "Não foi possível ler \"%s\": %s"
 
 #: src/core/windows/http.c:173
 msgid "Can't read HTTP response size."
 msgstr "Não posso obter tamanho da resposta HTTP"
 
-#: src/core/session.c:199
+#: src/core/session.c:170
 msgid "Can't save"
 msgstr "Não é possível salvar"
 
@@ -335,6 +355,18 @@ msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
+#: src/network_modules/openssl/context.c:336
+msgid "Cant load custom certificate file."
+msgstr "Não foi possível ler arquivo de certificado personalizado"
+
+#: src/network_modules/openssl/context.c:290
+msgid "Cant open custom certificate directory."
+msgstr "Não foi possível abrir o diretório de certificados personalizados"
+
+#: src/network_modules/openssl/context.c:320
+msgid "Cant read custom certificate file."
+msgstr "Não foi possível ler certificado personalizado"
+
 #: src/network_modules/openssl/start.c:230
 msgid ""
 "Cant set the file descriptor for the input/output facility for the TLS/SSL "
@@ -343,27 +375,27 @@ msgstr ""
 "Não foi possível definir o descritor de arquivo para a conexão TLS/SSL "
 "(encriptada)."
 
-#: src/network_modules/openssl/messages.c:147
+#: src/network_modules/openssl/messages.c:156
 msgid "Certificate has expired"
 msgstr "O certificado expirou"
 
-#: src/network_modules/openssl/messages.c:137
+#: src/network_modules/openssl/messages.c:145
 msgid "Certificate is not yet valid"
 msgstr "O certificado ainda não é válido"
 
-#: src/network_modules/openssl/messages.c:323
+#: src/network_modules/openssl/messages.c:346
 msgid "Certificate not trusted"
 msgstr "O certificado não é confiável"
 
-#: src/network_modules/openssl/messages.c:333
+#: src/network_modules/openssl/messages.c:357
 msgid "Certificate rejected"
 msgstr "Certificado rejeitado"
 
-#: src/network_modules/openssl/messages.c:283
+#: src/network_modules/openssl/messages.c:302
 msgid "Certificate revoked"
 msgstr "Certificado revogado"
 
-#: src/network_modules/openssl/messages.c:117
+#: src/network_modules/openssl/messages.c:123
 msgid "Certificate signature failure"
 msgstr "Falha na assinatura do certificado"
 
@@ -424,9 +456,9 @@ msgstr "Conexão foi cancelada pelo servidor"
 msgid "Connection state"
 msgstr "Estado da conexão"
 
-#: src/network_modules/openssl/messages.c:78
-#: src/network_modules/openssl/messages.c:237
-#: src/network_modules/openssl/messages.c:252
+#: src/network_modules/openssl/messages.c:80
+#: src/network_modules/openssl/messages.c:253
+#: src/network_modules/openssl/messages.c:268
 msgid "Continue"
 msgstr "Continuar"
 
@@ -593,12 +625,12 @@ msgstr "Apagar campos"
 msgid "Erro sending data to host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/core/ft/ft_cut.c:408 src/core/ft/ft_dft.c:413
+#: src/core/ft/ft_dft.c:413 src/core/ft/ft_cut.c:408
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_cut.c:504 src/core/ft/ft_dft.c:306
+#: src/core/ft/ft_dft.c:306 src/core/ft/ft_cut.c:504
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
@@ -667,19 +699,19 @@ msgstr "Transferência de arquivos já está ativa nesta sessão."
 msgid "First field"
 msgstr "Primeiro campo"
 
-#: src/network_modules/openssl/messages.c:201
+#: src/network_modules/openssl/messages.c:215
 msgid "Format error in CRL's lastUpdate field"
 msgstr "Erro de formato no campo \"lastUpdate\" do CRL"
 
-#: src/network_modules/openssl/messages.c:211
+#: src/network_modules/openssl/messages.c:226
 msgid "Format error in CRL's nextUpdate field"
 msgstr "Erro de formato no campo \"nextUpdate\" do CRL"
 
-#: src/network_modules/openssl/messages.c:191
+#: src/network_modules/openssl/messages.c:204
 msgid "Format error in certificate's notAfter field"
 msgstr "Erro de formato no campo \"notAfter\" do certificado"
 
-#: src/network_modules/openssl/messages.c:181
+#: src/network_modules/openssl/messages.c:193
 msgid "Format error in certificate's notBefore field"
 msgstr "Erro de formato no campo \"notBefore\" do certificado"
 
@@ -831,7 +863,7 @@ msgstr "Código de requisição incorreto, transferência cancelada"
 msgid "Insert"
 msgstr "Inserção"
 
-#: src/network_modules/openssl/messages.c:293
+#: src/network_modules/openssl/messages.c:313
 msgid "Invalid CA certificate"
 msgstr "Certificado CA inválido"
 
@@ -884,7 +916,7 @@ msgstr "O terminal está pronto"
 msgid "Keep selected"
 msgstr "Manter selecionado"
 
-#: src/network_modules/openssl/messages.c:373
+#: src/network_modules/openssl/messages.c:401
 msgid "Key usage does not include certificate signing"
 msgstr "Uso da chave não permite assinatura de certificados"
 
@@ -989,8 +1021,8 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:304 src/core/windows/connect.c:223
-#: src/core/windows/event_dispatcher.c:135
+#: src/core/telnet.c:304 src/core/windows/event_dispatcher.c:135
+#: src/core/windows/connect.c:223
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1022,7 +1054,7 @@ msgstr "Sem suporte TLS/SSL nessa sessão"
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
-#: src/network_modules/openssl/messages.c:274
+#: src/network_modules/openssl/messages.c:292
 msgid ""
 "No signatures could be verified because the chain contains only one "
 "certificate and it is not self signed."
@@ -1068,7 +1100,7 @@ msgstr "Outro (TSO)"
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/network_modules/openssl/messages.c:221
+#: src/network_modules/openssl/messages.c:237
 msgid "Out of memory"
 msgstr "Memória insuficiente"
 
@@ -1093,7 +1125,7 @@ msgstr "Colar próximo"
 msgid "Paste with left margin"
 msgstr "Colar com margem esquerda"
 
-#: src/network_modules/openssl/messages.c:303
+#: src/network_modules/openssl/messages.c:324
 msgid "Path length constraint exceeded"
 msgstr "Path length constraint exceeded"
 
@@ -1273,7 +1305,7 @@ msgstr "Tamanho do buffer de tela em bytes"
 msgid "Screen oversize if larger than the chosen model"
 msgstr "\"oversize\" maior que o modelo escolhido"
 
-#: src/network_modules/openssl/messages.c:51
+#: src/network_modules/openssl/messages.c:52
 msgid "Secure connection was successful."
 msgstr "Conexão segura efetuada com sucesso."
 
@@ -1333,11 +1365,11 @@ msgstr "Move seleção para a direita"
 msgid "Selection up"
 msgstr "Sobe a seleção"
 
-#: src/network_modules/openssl/messages.c:235
+#: src/network_modules/openssl/messages.c:252
 msgid "Self signed certificate"
 msgstr "Certificado auto assinado"
 
-#: src/network_modules/openssl/messages.c:253
+#: src/network_modules/openssl/messages.c:269
 msgid "Self signed certificate in certificate chain"
 msgstr "Certificado auto assinado na cadeia de certificados"
 
@@ -1393,7 +1425,7 @@ msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
 
-#: src/network_modules/openssl/messages.c:343
+#: src/network_modules/openssl/messages.c:368
 msgid "Subject issuer mismatch"
 msgstr "Divergência na identidade do emissor"
 
@@ -1459,23 +1491,23 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/network_modules/openssl/messages.c:171
+#: src/network_modules/openssl/messages.c:182
 msgid "The CRL has expired."
 msgstr "A lista de certificados revogados expirou."
 
-#: src/network_modules/openssl/messages.c:157
+#: src/network_modules/openssl/messages.c:167
 msgid "The CRL is not yet valid."
 msgstr "A lista de certificados revogados ainda não é válida."
 
-#: src/network_modules/openssl/messages.c:202
+#: src/network_modules/openssl/messages.c:216
 msgid "The CRL lastUpdate field contains an invalid time."
 msgstr "Campo \"lastUpdate\" do CRL contem horário inválido."
 
-#: src/network_modules/openssl/messages.c:212
+#: src/network_modules/openssl/messages.c:227
 msgid "The CRL nextUpdate field contains an invalid time."
 msgstr "Campo \"nextUpdate\" contem horário inválido."
 
-#: src/network_modules/openssl/messages.c:98
+#: src/network_modules/openssl/messages.c:102
 msgid ""
 "The CRL signature could not be decrypted: this means that the actual "
 "signature value could not be determined rather than it not matching the "
@@ -1485,15 +1517,15 @@ msgstr ""
 "signature value could not be determined rather than it not matching the "
 "expected value. Unused."
 
-#: src/network_modules/openssl/messages.c:172
+#: src/network_modules/openssl/messages.c:183
 msgid "The Certificate revocation list (CRL) has expired."
 msgstr "A lista de revogação de certificados (CRL) está expirada."
 
-#: src/network_modules/openssl/messages.c:158
+#: src/network_modules/openssl/messages.c:168
 msgid "The Certificate revocation list (CRL) is not yet valid."
 msgstr "A lista de revogação de certificados (CRL) ainda não é válida."
 
-#: src/network_modules/openssl/messages.c:77
+#: src/network_modules/openssl/messages.c:79
 msgid ""
 "The Certificate revocation list (CRL) of a certificate could not be found."
 msgstr ""
@@ -1510,11 +1542,11 @@ msgstr "A mensagem de erro SSL foi \"%s\""
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
-#: src/network_modules/openssl/messages.c:304
+#: src/network_modules/openssl/messages.c:325
 msgid "The basicConstraints pathlength parameter has been exceeded."
 msgstr "The basicConstraints pathlength parameter has been exceeded."
 
-#: src/network_modules/openssl/messages.c:254
+#: src/network_modules/openssl/messages.c:270
 msgid ""
 "The certificate chain could be built up using the untrusted certificates but "
 "the root could not be found locally."
@@ -1522,11 +1554,11 @@ msgstr ""
 "The certificate chain could be built up using the untrusted certificates but "
 "the root could not be found locally."
 
-#: src/network_modules/openssl/messages.c:284
+#: src/network_modules/openssl/messages.c:303
 msgid "The certificate has been revoked."
 msgstr "O certificado foi revogado."
 
-#: src/network_modules/openssl/messages.c:148
+#: src/network_modules/openssl/messages.c:157
 msgid ""
 "The certificate has expired: that is the notAfter date is before the current "
 "time."
@@ -1534,7 +1566,7 @@ msgstr ""
 "The certificate has expired: that is the notAfter date is before the current "
 "time."
 
-#: src/network_modules/openssl/messages.c:138
+#: src/network_modules/openssl/messages.c:146
 msgid ""
 "The certificate is not yet valid: the notBefore date is after the current "
 "time."
@@ -1542,15 +1574,15 @@ msgstr ""
 "The certificate is not yet valid: the notBefore date is after the current "
 "time."
 
-#: src/network_modules/openssl/messages.c:192
+#: src/network_modules/openssl/messages.c:205
 msgid "The certificate notAfter field contains an invalid time."
 msgstr "The certificate notAfter field contains an invalid time."
 
-#: src/network_modules/openssl/messages.c:182
+#: src/network_modules/openssl/messages.c:194
 msgid "The certificate notBefore field contains an invalid time."
 msgstr "The certificate notBefore field contains an invalid time."
 
-#: src/network_modules/openssl/messages.c:88
+#: src/network_modules/openssl/messages.c:91
 msgid ""
 "The certificate signature could not be decrypted. This means that the actual "
 "signature value could not be determined rather than it not matching the "
@@ -1568,11 +1600,11 @@ msgstr "O tipo de cor"
 msgid "The connection is insecure"
 msgstr "A conexão não é segura"
 
-#: src/network_modules/openssl/messages.c:52
+#: src/network_modules/openssl/messages.c:53
 msgid "The connection is secure and the host identity was confirmed."
 msgstr "A conexão é segura e a identidade do servidor foi confirmada."
 
-#: src/network_modules/openssl/messages.c:364
+#: src/network_modules/openssl/messages.c:391
 msgid ""
 "The current candidate issuer certificate was rejected because its issuer "
 "name and serial number was present and did not match the authority key "
@@ -1584,7 +1616,7 @@ msgstr ""
 "identifier of the current certificate. Only displayed when the -"
 "issuer_checks option is set."
 
-#: src/network_modules/openssl/messages.c:374
+#: src/network_modules/openssl/messages.c:402
 msgid ""
 "The current candidate issuer certificate was rejected because its keyUsage "
 "extension does not permit certificate signing."
@@ -1592,7 +1624,7 @@ msgstr ""
 "The current candidate issuer certificate was rejected because its keyUsage "
 "extension does not permit certificate signing."
 
-#: src/network_modules/openssl/messages.c:354
+#: src/network_modules/openssl/messages.c:380
 msgid ""
 "The current candidate issuer certificate was rejected because its subject "
 "key identifier was present and did not match the authority key identifier "
@@ -1602,7 +1634,7 @@ msgstr ""
 "key identifier was present and did not match the authority key identifier "
 "current certificate. Only displayed when the -issuer_checks option is set."
 
-#: src/network_modules/openssl/messages.c:344
+#: src/network_modules/openssl/messages.c:369
 msgid ""
 "The current candidate issuer certificate was rejected because its subject "
 "name did not match the issuer name of the current certificate. Only "
@@ -1642,7 +1674,7 @@ msgid ""
 "operation."
 msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 
-#: src/network_modules/openssl/messages.c:264
+#: src/network_modules/openssl/messages.c:281
 msgid ""
 "The issuer certificate could not be found: this occurs if the issuer "
 "certificate of an untrusted certificate cannot be found."
@@ -1650,7 +1682,7 @@ msgstr ""
 "The issuer certificate could not be found: this occurs if the issuer "
 "certificate of an untrusted certificate cannot be found."
 
-#: src/network_modules/openssl/messages.c:62
+#: src/network_modules/openssl/messages.c:64
 msgid ""
 "The issuer certificate of a looked up certificate could not be found. This "
 "normally means the list of trusted certificates is not complete."
@@ -1670,7 +1702,7 @@ msgstr "Nº do modelo"
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
 
-#: src/core/connect.c:167
+#: src/core/connect.c:170
 msgid ""
 "The network module didn't set the TLS/SSL state message, this is not "
 "supposed to happen and can be a coding error"
@@ -1694,7 +1726,7 @@ msgstr "Os valores do 'oversize' são muito grandes."
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
-#: src/network_modules/openssl/messages.c:238
+#: src/network_modules/openssl/messages.c:254
 msgid ""
 "The passed certificate is self signed and the same certificate cannot be "
 "found in the list of trusted certificates."
@@ -1702,7 +1734,7 @@ msgstr ""
 "The passed certificate is self signed and the same certificate cannot be "
 "found in the list of trusted certificates."
 
-#: src/network_modules/openssl/messages.c:108
+#: src/network_modules/openssl/messages.c:113
 msgid ""
 "The public key in the certificate SubjectPublicKeyInfo could not be read."
 msgstr ""
@@ -1712,12 +1744,12 @@ msgstr ""
 msgid "The remote file name is invalid."
 msgstr "O nome do arquivo remoto não é válido."
 
-#: src/network_modules/openssl/messages.c:334
+#: src/network_modules/openssl/messages.c:358
 msgid "The root CA is marked to reject the specified purpose."
 msgstr ""
 "O certificado raiz está marcado para rejeitar a finalidade especificada."
 
-#: src/network_modules/openssl/messages.c:324
+#: src/network_modules/openssl/messages.c:347
 msgid "The root CA is not marked as trusted for the specified purpose."
 msgstr ""
 "O Certificado raiz não está marcado como confiável para os fins "
@@ -1736,12 +1768,12 @@ msgstr "O estado da segurança"
 msgid "The session is not secure"
 msgstr "A sessão não é segura"
 
-#: src/network_modules/openssl/messages.c:118
-#: src/network_modules/openssl/messages.c:128
+#: src/network_modules/openssl/messages.c:124
+#: src/network_modules/openssl/messages.c:135
 msgid "The signature of the certificate is invalid."
 msgstr "A assinatura do certificado não é válida."
 
-#: src/network_modules/openssl/messages.c:314
+#: src/network_modules/openssl/messages.c:336
 msgid "The supplied certificate cannot be used for the specified purpose."
 msgstr ""
 "O certificado fornecido não pode ser utilizado para a finalidade "
@@ -1774,7 +1806,7 @@ msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
 msgid "The system error was %s"
 msgstr "O erro do sistema operacional foi \"%s\""
 
-#: src/core/util.c:264
+#: src/core/util.c:266
 #, c-format
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
@@ -1857,8 +1889,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_cut.c:387 src/core/ft/ft_cut.c:475 src/core/ft/ft_dft.c:213
-#: src/core/ft/ft_dft.c:344
+#: src/core/ft/ft_dft.c:213 src/core/ft/ft_dft.c:344 src/core/ft/ft_cut.c:387
+#: src/core/ft/ft_cut.c:475
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 
@@ -1886,20 +1918,20 @@ msgstr "URL do host atual"
 msgid "Uknown DFT Open type from host"
 msgstr "Host enviou código de abertura DFT desconhecido"
 
-#: src/network_modules/openssl/messages.c:107
+#: src/network_modules/openssl/messages.c:112
 msgid "Unable to decode issuer public key"
 msgstr "Não é possível decodificar chave pública do emissor"
 
-#: src/network_modules/openssl/messages.c:97
+#: src/network_modules/openssl/messages.c:101
 msgid "Unable to decrypt CRL's signature"
 msgstr ""
 "Não foi possível decriptar assinatura da lista de certificados revogados"
 
-#: src/network_modules/openssl/messages.c:87
+#: src/network_modules/openssl/messages.c:90
 msgid "Unable to decrypt certificate's signature"
 msgstr "Incapaz de decifrar a assinatura do certificado"
 
-#: src/network_modules/openssl/messages.c:76
+#: src/network_modules/openssl/messages.c:78
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
@@ -1907,15 +1939,15 @@ msgstr "Incapaz de obter o CRL de um certificado."
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/network_modules/openssl/messages.c:61
+#: src/network_modules/openssl/messages.c:63
 msgid "Unable to get issuer certificate"
 msgstr "Não foi possível obter emissor do certificado"
 
-#: src/network_modules/openssl/messages.c:263
+#: src/network_modules/openssl/messages.c:280
 msgid "Unable to get local issuer certificate"
 msgstr "Unable to get local issuer certificate"
 
-#: src/core/session.c:205
+#: src/core/session.c:176
 msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
 
@@ -1927,11 +1959,11 @@ msgstr "Incapaz de negociar uma conexão segura com o host"
 msgid "Unable to paste text"
 msgstr "Incapaz de colar texto"
 
-#: src/core/session.c:193
+#: src/core/session.c:164
 msgid "Unable to print"
 msgstr "Incapaz de imprimir"
 
-#: src/core/session.c:199
+#: src/core/session.c:170
 msgid "Unable to save"
 msgstr "Incapaz de salvar"
 
@@ -1939,7 +1971,7 @@ msgstr "Incapaz de salvar"
 msgid "Unable to send file-transfer request"
 msgstr "Não foi possível enviar a requisição de transferência de arquivo"
 
-#: src/network_modules/openssl/messages.c:273
+#: src/network_modules/openssl/messages.c:291
 msgid "Unable to verify the first certificate"
 msgstr "Não foi possível verificar o primeiro certificado"
 
@@ -1963,7 +1995,7 @@ msgstr "Erro inesperado"
 msgid "Unexpected error writing to network socket"
 msgstr "Erro inesperado gravando socket"
 
-#: src/core/keyboard/kybd.c:264
+#: src/core/keyboard/kybd.c:269
 #, c-format
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
@@ -1981,12 +2013,12 @@ msgstr "Unknown 3270 Data Stream command: 0x%X"
 msgid "Unknown FT control code from host"
 msgstr "Servidor enviou código de controle FT desconhecido"
 
-#: src/core/keyboard/kybd.c:1542
+#: src/core/keyboard/kybd.c:1547
 #, c-format
 msgid "Unknown PA key %d"
 msgstr "PA %d desconhecida"
 
-#: src/core/keyboard/kybd.c:1555
+#: src/core/keyboard/kybd.c:1560
 #, c-format
 msgid "Unknown PF key %d"
 msgstr "PF %d desconhecida"
@@ -2003,7 +2035,7 @@ msgstr "Atraso no desbloqueio"
 msgid "Unsupported RPQ term"
 msgstr "Unsupported RPQ term"
 
-#: src/network_modules/openssl/messages.c:313
+#: src/network_modules/openssl/messages.c:335
 msgid "Unsupported certificate purpose"
 msgstr "Finalidade do certificado não é suportada"
 
@@ -2459,9 +2491,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 #~ msgid "Can't initialize curl operation"
 #~ msgstr "Erro ao inicializar operação CURL"
 
-#~ msgid "Can't load \"%s\": %s"
-#~ msgstr "Não foi possível carregar \"%s\": %s"
-
 #~ msgid "Can't load %s"
 #~ msgstr "Não foi possível carregar %s"
 
@@ -2473,12 +2502,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't load plugin %s"
 #~ msgstr "Não foi possível carregar plugin %s"
-
-#~ msgid "Can't open \"%s\" (The Windows error code was %ld)\n"
-#~ msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)\n"
-
-#~ msgid "Can't open \"%s\": %s"
-#~ msgstr "Não foi possível abrir %s: %s"
 
 #~ msgid "Can't open CRL File"
 #~ msgstr "Não foi possível abrir arquivo CRL"
@@ -2509,9 +2532,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Can't paste text"
 #~ msgstr "Não é possível colar texto"
-
-#~ msgid "Can't read \"%s\": %s"
-#~ msgstr "Não foi possível ler \"%s\": %s"
 
 #~ msgid "Can't recognize \"%s\" as a valid host type"
 #~ msgstr "Não reconheço \"%s\" como um tipo de host válido"
@@ -2596,15 +2616,6 @@ msgstr "setsockopt(SO_OOBINLINE) has failed"
 
 #~ msgid "Cannot parse %s \"%s\", entry %d"
 #~ msgstr "Impossível interpretar %s \"%s\", entrada %d"
-
-#~ msgid "Cant load custom certificate file."
-#~ msgstr "Não foi possível ler arquivo de certificado personalizado"
-
-#~ msgid "Cant open custom certificate directory."
-#~ msgstr "Não foi possível abrir o diretório de certificados personalizados"
-
-#~ msgid "Cant read custom certificate file."
-#~ msgstr "Não foi possível ler certificado personalizado"
 
 #~ msgid ""
 #~ "Cant set default locations for trusted CA certificates to\n"

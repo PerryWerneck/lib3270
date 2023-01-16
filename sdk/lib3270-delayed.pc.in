@@ -10,7 +10,7 @@ library_name=@LIB3270_NAME@
 product_name=@PRODUCT_NAME@
 product_id=@PRODUCT_ID@
 
-Name: @PACKAGE_NAME@
+Name: @PACKAGE_NAME@-delayed
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
 Libs: -l@LIB3270_NAME@.delayed

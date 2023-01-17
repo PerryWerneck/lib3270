@@ -345,7 +345,7 @@ install-static: \
 install-delayed: \
 	$(BINRLS)/$(LIBNAME).delayed.a
 
-	# Install static library
+	# Install delayed library
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
 

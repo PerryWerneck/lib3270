@@ -212,7 +212,7 @@ AC_SUBST(PACKAGE_MINOR_VERSION,$app_vrs_minor)
 
 AC_ARG_WITH([release], [AS_HELP_STRING([--with-release], [Set release])], [ app_cv_release="$withval" ],[ app_cv_release="`date +%-y`.`date +%-m`.`date +%-d`" ])
 
-AC_ARG_WITH([product-id], [AS_HELP_STRING([--product-id], [Set the product ID])], [ app_cv_product_id="$withval" ],[ app_cv_product_id="br.app.pw3270" ])
+AC_ARG_WITH([product-id], [AS_HELP_STRING([--with-product-id], [Set the product ID])], [ app_cv_product_id="$withval" ],[ app_cv_product_id="br.app.pw3270" ])
 AC_SUBST(PRODUCT_ID,"$app_cv_product_id")
 
 app_rls_major=$(echo $app_cv_release.0.0 | cut -d. -f1)

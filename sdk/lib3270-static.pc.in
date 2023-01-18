@@ -10,6 +10,7 @@ library_name=@LIB3270_NAME@
 product_name=@PRODUCT_NAME@
 default_host=@LIB3270_DEFAULT_HOST@
 product_id=@PRODUCT_ID@
+plugin_path=${libdir}/@PRODUCT_ID@/@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@/plugins
 
 Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)

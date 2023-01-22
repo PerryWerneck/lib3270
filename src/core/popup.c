@@ -66,7 +66,15 @@ int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsign
 		translated.body = dgettext(GETTEXT_PACKAGE,popup->body);
 	}
 
-	return hSession->cbk.popup(hSession,&translated,wait);
+	int rc = hSession->cbk.popup(hSession,&translated,wait);
+
+	debug("%s - User response was '%s' (rc=%d)",__FUNCTION__,strerror(rc),rc);
+
+	if(rc) {
+		lib3270_write_trace(hSession,"User response was '%s' (rc=%d)",strerror(rc),rc);
+	}
+
+	return rc;
 }
 
 /// @brief Pop up an error dialog.

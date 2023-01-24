@@ -219,20 +219,21 @@ const LIB3270_INT_PROPERTY * lib3270_get_boolean_properties_list(void) {
 }
 
 int lib3270_set_boolean_property(H3270 *hSession, const char *name, int value, int seconds) {
-	size_t ix;
-	const LIB3270_INT_PROPERTY * properties;
 
 	if(seconds) {
 		lib3270_wait_for_ready(hSession, seconds);
 	}
 
-	properties = lib3270_get_boolean_properties_list();
+	size_t ix;
+	const LIB3270_INT_PROPERTY * properties = lib3270_get_boolean_properties_list();
 	for(ix = 0; properties[ix].name; ix++) {
 		if(!strcasecmp(name,properties[ix].name)) {
-			if(properties[ix].set)
+			if(properties[ix].set) {
+				lib3270_write_event_trace(hSession,"%s %s\n",(value ? "Enabling" : "Disabling"),properties[ix].name);
 				return properties[ix].set(hSession, value);
-			else
+			} else {
 				return errno = EPERM;
+			}
 		}
 
 	}

@@ -1,26 +1,21 @@
-TN3270 Protocol Library for Linux/Windows
-=========================================
+## TN3270 Protocol Library for Linux/Windows
 
 Created originally as part of PW3270 application.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/lib3270/workflows/CodeQL/badge.svg)
 [![build result](https://build.opensuse.org/projects/home:PerryWerneck:pw3270/packages/lib3270/badge.svg?type=percent)](https://build.opensuse.org/package/show/home:PerryWerneck:pw3270/lib3270)
 ![Downloads](https://img.shields.io/github/downloads/PerryWerneck/lib3270/total.svg)
 
-Installation repositories
-=========================
+## Installation
 
- You can find instalation repositories in SuSE Build Service:
+### Linux
 
- * Linux: https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270
- * Windows cross (32 bits): https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=mingw32-lib3270
- * Windows cross (64 bits): https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=mingw64-lib3270
+You can download installation package for supported distributions in Open Build Service.
 
-Building for Linux
-==================
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270)
+
+## Building for Linux
 
 1. Get lib3270 sources from git
 
@@ -52,11 +47,9 @@ Building for Linux
 	make all
 	```
 
-Building for Windows
-====================
+## Building for Windows
 
-Cross-compiling on SuSE Linux (Native or WSL)
----------------------------------------------
+### Cross-compiling on SuSE Linux (Native or WSL)
 
 1. First add the MinGW Repositories for your SuSE version from:
 
@@ -92,8 +85,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	make all
 	```
 
-Windows native with MSYS2
--------------------------
+### Windows native with MSYS2
 
 1. Install and update MSYS2 
 
@@ -136,11 +128,9 @@ Windows native with MSYS2
 	make install
 	```
 
-Building for macOS
-==================
+## Building for macOS
 
-Using homebrew
---------------
+### Using homebrew
 
 Install
 
@@ -173,8 +163,7 @@ Uninstall
 	rm -fr "$(brew --cellar)/lib3270"
 	```
 	
-Using jhbuild
---------------
+### Using jhbuild
 
 1. Install jhbuild
 

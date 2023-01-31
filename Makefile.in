@@ -429,6 +429,10 @@ install-windows-dev: \
 		win/lib3270.mak \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
+	@$(INSTALL_DATA) \
+		CHANGELOG \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/$(PACKAGE_NAME).changes
+
 	@rm -f $(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 	@$(LN_S) \
 		$(bindir)/$(LIBNAME)@DLLEXT@ \

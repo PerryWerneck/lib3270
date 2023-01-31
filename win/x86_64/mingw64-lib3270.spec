@@ -54,12 +54,13 @@ BuildRequires:	mingw64-cross-gcc
 BuildRequires:	mingw64-cross-gcc-c++
 BuildRequires:	mingw64-cross-pkg-config
 BuildRequires:	mingw64-filesystem
-BuildRequires:	mingw64-libopenssl-devel
 BuildRequires:	mingw64-zlib-devel
-#BuildRequires:	mingw64(lib:iconv)
-BuildRequires:	mingw64-win_iconv-devel
+BuildRequires:	mingw64(lib:iconv)
 BuildRequires:	mingw64(lib:intl)
 BuildRequires:	mingw64-gettext-tools
+
+BuildRequires:	mingw64(pkg:libcrypto) >= 1.1
+BuildRequires:	mingw64(pkg:libssl) >= 1.1
 
 %description
 TN3270 access library, originally designed as part of the %{_product} application.

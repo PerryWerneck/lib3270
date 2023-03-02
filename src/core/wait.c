@@ -46,6 +46,7 @@ LIB3270_EXPORT int lib3270_wait_for_update(H3270 GNUC_UNUSED(*hSession), int GNU
 }
 
 LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds) {
+
 	debug("%s",__FUNCTION__);
 	debug("Session lock state is %d",lib3270_get_lock_status(hSession));
 
@@ -87,6 +88,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds) {
 }
 
 int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds) {
+
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	int rc = 0;
@@ -179,6 +181,37 @@ LIB3270_EXPORT int lib3270_wait_for_string_at(H3270 *hSession, unsigned int row,
 
 	return lib3270_wait_for_string_at_address(hSession,baddr,key,seconds);
 }
+
+LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds) {
+
+	int rc = -1;
+	int timeout = 0;
+	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+
+	while(rc == -1) {
+		if(timeout) {
+			// Timeout! The timer was destroyed.
+			return errno = ETIMEDOUT;
+		}
+
+		if(hSession->connection.state == LIB3270_NOT_CONNECTED) {
+			rc = ENOTCONN;
+			break;
+		}
+
+		if(!hSession->starting && hSession->connection.state >= (int)LIB3270_CONNECTED_INITIAL) {
+			rc = 0;
+			break;
+		}
+
+		lib3270_main_iterate(hSession,1);
+
+	}
+	RemoveTimer(hSession,timer);
+
+	return errno = rc;
+}
+
 
 LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstate, int seconds) {
 

@@ -8,8 +8,9 @@ version_minor=@PACKAGE_MINOR_VERSION@
 sdk_version=@LIB3270_SDK_VERSION@
 library_name=@LIB3270_NAME@
 product_name=@PRODUCT_NAME@
+default_host=@LIB3270_DEFAULT_HOST@
 product_id=@PRODUCT_ID@
-plugin_path=${libdir}/@PRODUCT_ID@/@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@/plugins
+plugin_path=${libdir}/@PRODUCT_NAME@/@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@/plugins
 
 Name: @PACKAGE_NAME@-delayed
 Description: @PACKAGE_DESCRIPTION@

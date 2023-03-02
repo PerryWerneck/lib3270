@@ -8,7 +8,7 @@ pkgdesc="TN3270 Access library"
 url="https://github.com/PerryWerneck/lib3270"
 arch=(i686 x86_64)
 license=(GPL)
-depends=()
+depends=(openssl)
 makedepends=(autoconf automake make openssl libtool gzip)
 checkdepends=()
 

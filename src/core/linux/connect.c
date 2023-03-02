@@ -373,46 +373,6 @@ int net_reconnect(H3270 *hSession, int seconds) {
 			lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 			return errno = rc;
 		}
-
-		/*
-		time_t end = time(0)+seconds;
-
-		while(time(0) < end)
-		{
-			lib3270_main_iterate(hSession,1);
-
-			switch(hSession->connection.state)
-			{
-			case LIB3270_PENDING:
-			case LIB3270_CONNECTED_INITIAL:
-			case LIB3270_CONNECTED_ANSI:
-			case LIB3270_CONNECTED_3270:
-			case LIB3270_CONNECTED_INITIAL_E:
-			case LIB3270_CONNECTED_NVT:
-			case LIB3270_CONNECTED_SSCP:
-			case LIB3270_CONNECTING:
-				break;
-
-			case LIB3270_NOT_CONNECTED:
-				return errno = ENOTCONN;
-
-			case LIB3270_CONNECTED_TN3270E:
-				if(!hSession->starting)
-					return 0;
-				break;
-
-			default:
-				lib3270_write_log(hSession,"connect", "%s: State changed to unexpected state %d",__FUNCTION__,hSession->connection.state);
-				return errno = EINVAL;
-			}
-
-		}
-
-		lib3270_disconnect(hSession);
-		lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
-
-		return errno = ETIMEDOUT;
-		*/
 	}
 
 	return 0;

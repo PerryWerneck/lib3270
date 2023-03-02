@@ -1061,6 +1061,20 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds);
 LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstate, int seconds);
 
 /**
+ * @brief Wait "N" seconds for connected state.
+ *
+ * @param seconds	Number of seconds to wait.
+ *
+ * @return 0 if ok, errno code if not.
+ *
+ * @retval	ETIMEDOUT	Timeout waiting.
+ * @retval	ENOTCONN	Not connected to host.
+ * @retval	0			Session is online and in required state.
+ *
+ */
+LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds);
+
+/**
  * "beep" to notify user.
  *
  * If available play a sound signal do alert user.

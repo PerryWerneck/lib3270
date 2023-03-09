@@ -27,12 +27,13 @@ conflicts=($pkgname)
 
 prepare() {
   cd ${srcdir}/${_realname}
-  NOCONFIGURE=1 ./autogen.sh
 }
 
 build() {
-  cd ${srcdir}/${_realname}
-  ./configure \
+  rm -fr "${srcdir}/build-${CARCH}"
+  mkdir -p "${srcdir}/build-${CARCH}"
+  cd "${srcdir}/build-${CARCH}"
+  ${srcdir}/${_realname}/autogen.sh \
     --prefix=${MINGW_PREFIX} \
     --build=${MINGW_CHOST} \
     --host=${MINGW_CHOST} \
@@ -42,7 +43,7 @@ build() {
 }
 
 package() {
-  cd ${srcdir}/${_realname}
+  cd "${srcdir}/build-${CARCH}"
   make DESTDIR="${pkgdir}" install
   install -Dm644 "${srcdir}/${_realname}/LICENSE" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
 }

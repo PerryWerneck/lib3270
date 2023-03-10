@@ -1,5 +1,8 @@
 name: MSYS2
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     branches:
       - master
@@ -21,6 +24,16 @@ jobs:
           install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
       - name: CI-Build
         run: |
-          gcc -v
           ./win/ci-build.sh
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.tar.xz"
+          allowUpdates: true
+          draft: true
+          makeLatest: true
+          name: mingw-binary
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
+          
 

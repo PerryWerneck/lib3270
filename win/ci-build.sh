@@ -31,8 +31,8 @@ make all  > $LOGFILE 2>&1 || die "Make failure"
 # Make TGZ
 #
 rm -fr .bin/package
-mkdir .bin/package
-
 make DESTDIR=.bin/package install
-tar --create --xz --file=mingw-lib3270.tar.xz --directory=.bin/package --verbose .
+tar --create --xz --file=mingw-lib3270.tar.xz --directory=.bin/package/usr/x86_64-w64-mingw32/sys-root --verbose .
+	
+
 

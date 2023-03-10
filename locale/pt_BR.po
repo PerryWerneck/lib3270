@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-03 02:21-0300\n"
+"POT-Creation-Date: 2023-03-10 10:23-0300\n"
 "PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
@@ -625,12 +625,12 @@ msgstr "Apagar campos"
 msgid "Erro sending data to host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/core/ft/ft_cut.c:408 src/core/ft/ft_dft.c:413
+#: src/core/ft/ft_dft.c:413 src/core/ft/ft_cut.c:408
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/core/ft/ft_cut.c:504 src/core/ft/ft_dft.c:306
+#: src/core/ft/ft_dft.c:306 src/core/ft/ft_cut.c:504
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
@@ -1021,8 +1021,8 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:304 src/core/windows/connect.c:223
-#: src/core/windows/event_dispatcher.c:135
+#: src/core/telnet.c:304 src/core/windows/event_dispatcher.c:135
+#: src/core/windows/connect.c:223
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1889,8 +1889,8 @@ msgstr "Mostrar posição do cursor"
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/core/ft/ft_cut.c:387 src/core/ft/ft_cut.c:475 src/core/ft/ft_dft.c:213
-#: src/core/ft/ft_dft.c:344
+#: src/core/ft/ft_dft.c:213 src/core/ft/ft_dft.c:344 src/core/ft/ft_cut.c:387
+#: src/core/ft/ft_cut.c:475
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 

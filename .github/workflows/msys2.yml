@@ -25,12 +25,16 @@ jobs:
       - name: CI-Build
         run: |
           ./win/ci-build.sh
-      - name: Analyze Tags
-        id: tag-data
-        uses: Dotunj/github-action-analyze-tags@v0.2.0
+      - name: Find Tag
+        id: tagger
+        uses: jimschubert/query-tag-action@v1
+        with:
+          include: '*'
+          exclude: '*-rc*'
+          commit-ish: 'HEAD~'          
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.tag-data.outputs.highest_tag }}
+          tag: ${{ steps.tagger.outputs.tag }}
           name: mingw-binary
           artifacts: "*.tar.xz"
           allowUpdates: true

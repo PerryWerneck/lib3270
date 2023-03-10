@@ -1,5 +1,8 @@
 name: MSYS2
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     branches:
       - master
@@ -22,4 +25,15 @@ jobs:
       - name: CI-Build
         run: |
           ./win/ci-build.sh
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.tar.xz"
+          allowUpdates: true
+          draft: true
+          makeLatest: true
+          name: mingw-binary
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
+          
 

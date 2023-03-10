@@ -25,15 +25,12 @@ jobs:
       - name: CI-Build
         run: |
           ./win/ci-build.sh
-      - uses: rickstaa/action-create-tag@v1
-        id: "tag_create"
-        with:
-          tag: 5.4
-          force_push_tag: true
-          message: "Latest release"
+      - name: Analyze Tags
+        id: tag-data
+        uses: Dotunj/github-action-analyze-tags@v0.2.0
       - uses: ncipollo/release-action@v1
         with:
-          tag: 5.4
+          tag: ${{ steps.tag-data.outputs.highest_tag }}
           name: mingw-binary
           artifacts: "*.tar.xz"
           allowUpdates: true

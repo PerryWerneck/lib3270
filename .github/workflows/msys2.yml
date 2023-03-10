@@ -27,7 +27,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           tag: 5.4
-          name: mingw-binary
           artifacts: "*.tar.xz"
           allowUpdates: true
           draft: true

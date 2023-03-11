@@ -1,40 +1,51 @@
 # Maintainer: Perry Werneck <perry.werneck@gmail.com>
+# References: https://www.msys2.org/wiki/Creating-Packages/
 
-pkgname=${MINGW_PACKAGE_PREFIX}-lib3270
+_realname=lib3270
+pkgname=${MINGW_PACKAGE_PREFIX}-${_realname}
+source=(git+https://github.com/PerryWerneck/lib3270#branch=develop)
 
-pkgver=5.2
+#pkgver() {
+#  cd ${srcdir}/${_realname}
+#  git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+#}
+
+pkgver=5.4
 pkgrel=1
 pkgdesc="TN3270 Access library"
-url="https://portal.softwarepublico.gov.br/social/pw3270/"
+url="https://github.com/PerryWerneck/lib3270"
 arch=(i686 x86_64)
 license=(GPL)
-depends=()
-makedepends=(autoconf automake make openssl-devel)
+depends=(openssl)
+makedepends=(autoconf automake make libtool gzip ${MINGW_PACKAGE_PREFIX}-openssl)
 checkdepends=()
 
-#groups=(gnome)
-
-source=(lib3270-$pkgver.tar.xz)
 sha256sums=('SKIP')
 
-provides=($pkgname)
+provides=($pkgname) 
 conflicts=($pkgname)
 
 prepare() {
-  cd lib3270-$pkgver
-  NOCONFIGURE=1 ./autogen.sh
-  ./configure --prefix=$MINGW_PREFIX
+  cd ${srcdir}/${_realname}
 }
 
 build() {
-  cd lib3270-$pkgver
+  rm -fr "${srcdir}/build-${CARCH}"
+  mkdir -p "${srcdir}/build-${CARCH}"
+  cd "${srcdir}/build-${CARCH}"
+  ${srcdir}/${_realname}/autogen.sh \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --target=${MINGW_CHOST}
+ 
   make all
 }
 
 package() {
-  cd lib3270-$pkgver
-  DESTDIR="$pkgdir" make install-dev
-  install .bin/Release/lib3270.dll $MINGW_PREFIX/bin
-  dlltool --dllname lib3270.dll --input-def .bin/Release/lib3270.def --output-lib $MINGW_PREFIX/lib/lib3270.a
+  cd "${srcdir}/build-${CARCH}"
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 "${srcdir}/${_realname}/LICENSE" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
 }
+
 

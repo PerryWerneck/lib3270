@@ -67,3 +67,4 @@ mstest.*
 ABOUT-NLS
 intl
 po
+*.tar.xz

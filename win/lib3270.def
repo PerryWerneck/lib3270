@@ -329,24 +329,25 @@ EXPORTS
     lib3270_update_poll_fd @328
     lib3270_vsprintf @329
     lib3270_wait @330
-    lib3270_wait_for_cstate @331
-    lib3270_wait_for_keyboard_unlock @332
-    lib3270_wait_for_ready @333
-    lib3270_wait_for_string @334
-    lib3270_wait_for_string_at @335
-    lib3270_wait_for_string_at_address @336
-    lib3270_wait_for_update @337
-    lib3270_win32_create_regkey @338
-    lib3270_win32_get_dword @339
-    lib3270_win32_local_charset @340
-    lib3270_win32_set_string @341
-    lib3270_win32_strerror @342
-    lib3270_win32_translate_error_code @343
-    lib3270_write_dstrace @344
-    lib3270_write_event_trace @345
-    lib3270_write_log @346
-    lib3270_write_nettrace @347
-    lib3270_write_rc @348
-    lib3270_write_screen_trace @349
-    lib3270_write_trace @350
-    lib3270_write_va_log @351
+    lib3270_wait_for_connected @331
+    lib3270_wait_for_cstate @332
+    lib3270_wait_for_keyboard_unlock @333
+    lib3270_wait_for_ready @334
+    lib3270_wait_for_string @335
+    lib3270_wait_for_string_at @336
+    lib3270_wait_for_string_at_address @337
+    lib3270_wait_for_update @338
+    lib3270_win32_create_regkey @339
+    lib3270_win32_get_dword @340
+    lib3270_win32_local_charset @341
+    lib3270_win32_set_string @342
+    lib3270_win32_strerror @343
+    lib3270_win32_translate_error_code @344
+    lib3270_write_dstrace @345
+    lib3270_write_event_trace @346
+    lib3270_write_log @347
+    lib3270_write_nettrace @348
+    lib3270_write_rc @349
+    lib3270_write_screen_trace @350
+    lib3270_write_trace @351
+    lib3270_write_va_log @352

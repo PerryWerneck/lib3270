@@ -430,7 +430,7 @@ install-windows-dev: \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 	@$(INSTALL_DATA) \
-		CHANGELOG \
+		$(srcdir)/CHANGELOG \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/$(PACKAGE_NAME).changes
 
 	@rm -f $(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@

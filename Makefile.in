@@ -433,12 +433,6 @@ install-windows-dev: \
 		$(srcdir)/CHANGELOG \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/$(PACKAGE_NAME).changes
 
-	@rm -f $(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
-	@$(LN_S) \
-		$(bindir)/$(LIBNAME)@DLLEXT@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
-	
-
 #---[ Misc Targets ]---------------------------------------------------------------------
 
 $(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c: \

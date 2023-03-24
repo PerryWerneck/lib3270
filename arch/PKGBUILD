@@ -2,7 +2,7 @@
 
 pkgname=lib3270
 
-pkgver=5.4
+pkgver=5.4+git20230322
 pkgrel=0
 pkgdesc="TN3270 Access library"
 url="https://github.com/PerryWerneck/lib3270"

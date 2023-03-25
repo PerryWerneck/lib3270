@@ -21,7 +21,5 @@ jobs:
           brew install automake binutils coreutils curl gettext libtool openssl pkgconfig
           brew upgrade
       - name: build
-        run: |
-          ./autogen.sh
-          make all
-          
+        run: ./mac/ci-build.sh
+

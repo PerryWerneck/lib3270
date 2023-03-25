@@ -1,15 +1,15 @@
 #!/bin/bash
 
-export LIBCURL_LIBS="-L/usr/local/opt/curl/lib"
-export LIBCURL_CFLAGS="-I/usr/local/opt/curl/include"
-
 echo "------------------ CURL"
 brew --prefix curl
 
 echo "------------------ OpenSSL "
 brew --prefix openssl
 
-./autogen.sh
+PROJECT_NAME=$(grep AC_INIT configure.ac | cut -d[ -f2 | cut -d] -f1)
+VERSION=$(grep AC_INIT configure.ac | cut -d[ -f3 | cut -d] -f1)
+
+./autogen.sh --prefix="/${PROJECT_NAME}/${VERSION}"
 if [ "$?" != "0" ]; then
 	exit -1
 fi

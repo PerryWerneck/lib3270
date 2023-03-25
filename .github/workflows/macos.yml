@@ -1,0 +1,27 @@
+---
+name: CodeQL
+on:
+  push:
+    branches:
+      [ develop ]
+jobs:
+  macos-build:
+    name: Build for mac
+    runs-on: macos-latest
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/lib3270
+          releases-only: true
+      - name: Install Pre reqs
+        run: |
+          brew update
+          brew install automake binutils coreutils curl gettext libtool openssl pkgconfig
+          brew upgrade
+      - name: build
+        run: |
+          ./autogen.sh
+          make all
+          

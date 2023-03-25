@@ -1,5 +1,4 @@
----
-name: CodeQL
+name: MacOS
 on:
   push:
     branches:
@@ -8,6 +7,7 @@ jobs:
   macos-build:
     name: Build for mac
     runs-on: macos-latest
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: oprypin/find-latest-tag@v1

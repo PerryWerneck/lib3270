@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+      - develop      
   schedule:
     - cron:  '30 13 1 2,4,6,8,10,12 *'
 jobs:

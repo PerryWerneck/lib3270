@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-13 03:12-0300\n"
+"POT-Creation-Date: 2023-03-28 21:15-0300\n"
 "PO-Revision-Date: 2021-09-01 23:53-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
@@ -2071,7 +2071,7 @@ msgstr "Aguardando resposta do pedido de upload"
 msgid "Warning"
 msgstr "Alerta"
 
-#: src/core/windows/util.c:126 src/core/windows/util.c:169
+#: src/core/windows/util.c:123 src/core/windows/util.c:166
 #, c-format
 msgid "Windows error %d"
 msgstr "Erro windows foi %d"

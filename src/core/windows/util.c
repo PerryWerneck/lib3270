@@ -33,6 +33,7 @@
 #include <windows.h>
 #include <lmcons.h>
 #include <internals.h>
+#include <io.h>
 
 #include "winversc.h"
 #include <ws2tcpip.h>
@@ -219,10 +220,10 @@ LIB3270_EXPORT const char * lib3270_win32_local_charset(void) {
 #define SECS_TO_100NS		10000000ULL /* 10^7 */
 
 LIB3270_EXPORT char	* lib3270_get_installation_path() {
-	char lpFilename[MAX_PATH];
+	char lpFilename[MAX_PATH+1];
 
 	memset(lpFilename,0,sizeof(lpFilename));
-	DWORD szPath = GetModuleFileName(hModule,lpFilename,sizeof(lpFilename));
+	DWORD szPath = GetModuleFileName(hModule,lpFilename,MAX_PATH);
 	lpFilename[szPath] = 0;
 
 	char *ptr = strrchr(lpFilename,'\\');

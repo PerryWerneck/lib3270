@@ -114,6 +114,7 @@ case "$host" in
 		INSTALL_PACKAGES="$INSTALL_PACKAGES delayed"
 
 		AC_CONFIG_FILES(win/lib3270.mak)
+		AC_CONFIG_FILES(win/build.conf)
 
 		;;
 

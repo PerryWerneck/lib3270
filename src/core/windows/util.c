@@ -33,6 +33,7 @@
 #include <windows.h>
 #include <lmcons.h>
 #include <internals.h>
+#include <io.h>
 
 #include "winversc.h"
 #include <ws2tcpip.h>
@@ -219,15 +220,23 @@ LIB3270_EXPORT const char * lib3270_win32_local_charset(void) {
 #define SECS_TO_100NS		10000000ULL /* 10^7 */
 
 LIB3270_EXPORT char	* lib3270_get_installation_path() {
-	char lpFilename[4096];
+	char lpFilename[MAX_PATH+1];
 
 	memset(lpFilename,0,sizeof(lpFilename));
-	DWORD szPath = GetModuleFileName(hModule,lpFilename,sizeof(lpFilename));
+	DWORD szPath = GetModuleFileName(hModule,lpFilename,MAX_PATH);
 	lpFilename[szPath] = 0;
 
-	char * ptr = strrchr(lpFilename,'\\');
-	if(ptr)
-		ptr[1] = 0;
+	char *ptr = strrchr(lpFilename,'\\');
+	if(ptr) {
+		ptr[0] = 0;
+
+		ptr = strrchr(lpFilename,'\\');
+		if(ptr && !(strcasecmp(ptr,"\\bin") && strcasecmp(ptr,"\\lib"))) {
+			*ptr = 0;
+		}
+
+		strncat(lpFilename,"\\",MAX_PATH);
+	}
 
 	return strdup(lpFilename);
 }
@@ -274,13 +283,8 @@ static char * build_filename(const char *str, va_list args) {
 
 	memset(filename,0,szFilename);
 
-#ifdef DEBUG
-	filename[0] = '.';
-	filename[1] = '\\';
-#else
 	DWORD szPath = GetModuleFileName(hModule,filename,szFilename);
 	filename[szPath] = 0;
-#endif // DEBUG
 
 	ptr = strrchr(filename,'\\');
 	if(ptr) {
@@ -303,14 +307,74 @@ static char * build_filename(const char *str, va_list args) {
 }
 
 char * lib3270_build_data_filename(const char *str, ...) {
-	va_list args;
-	va_start (args, str);
 
-	char *filename = build_filename(str, args);
+	char *ptr;
+	lib3270_autoptr(char) instpath = lib3270_get_installation_path();
 
-	va_end (args);
+	for(ptr = instpath; *ptr; ptr++) {
+		if(*ptr == '/') {
+			*ptr = '\\';
+		}
+	}
 
-	return filename;
+	if( *(instpath+strlen(instpath)-1) = '\\') {
+		instpath[strlen(instpath)-1] = 0;
+	}
+
+	char relative[MAX_PATH+1];
+	memset(relative,0,MAX_PATH);
+
+	{
+		va_list args;
+		va_start (args, str);
+
+		while(str) {
+
+			if(str[0] == '\\' || str[0] == '/') {
+				strncat(relative,str,MAX_PATH);
+			} else {
+				strncat(relative,"\\",MAX_PATH);
+				strncat(relative,str,MAX_PATH);
+			}
+
+			str = va_arg(args, const char *);
+		}
+
+		va_end (args);
+	}
+
+	for(ptr = relative; *ptr; ptr++) {
+		if(*ptr == '/') {
+			*ptr = '\\';
+		}
+	}
+
+	char filename[MAX_PATH+1];
+	memset(filename,0,MAX_PATH+1);
+
+	// Check instdir
+	strncpy(filename,instpath,MAX_PATH);
+	strncat(filename,"\\share",MAX_PATH);
+	strncat(filename,relative,MAX_PATH);
+
+	if(access(filename,0) == 0) {
+		return strdup(filename);
+	}
+
+	strncpy(filename,instpath,MAX_PATH);
+	strncat(filename,"\\share\\",MAX_PATH);
+	strncat(filename,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),MAX_PATH);
+	strncat(filename,relative,MAX_PATH);
+
+	if(access(filename,0) == 0) {
+		return strdup(filename);
+	}
+
+	// Default behavior.
+	strncpy(filename,instpath,MAX_PATH);
+	strncat(filename,relative,MAX_PATH);
+
+	return strdup(filename);
 }
 
 char * lib3270_build_config_filename(const char *str, ...) {

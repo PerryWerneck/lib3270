@@ -3,8 +3,6 @@ on:
   pull_request:
     branches:
       - master   
-  schedule:
-    - cron:  '30 13 1 2,4,6,8,10,12 *'
 jobs:
   msys2-mingw:
     name: Publish for Windows 64
@@ -29,7 +27,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*.tar.xz"
+          artifacts: "*-lib3270.tar.xz"
           allowUpdates: true
           draft: false
           makeLatest: true

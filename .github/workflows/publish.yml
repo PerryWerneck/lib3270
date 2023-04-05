@@ -3,6 +3,9 @@ on:
   pull_request:
     branches:
       - master   
+  push:
+    branches:
+      - develop   
 jobs:
   msys2-mingw:
     name: Publish for Windows 64
@@ -21,13 +24,13 @@ jobs:
         with:
           msystem: mingw64
           update: true
-          install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
+          install: dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
       - name: CI-Build
         run: ./win/ci-build.sh
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*-lib3270.tar.xz"
+          artifacts: "*-lib3270-*.pkg.tar.zst"
           allowUpdates: true
           draft: false
           makeLatest: true

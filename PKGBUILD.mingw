@@ -18,18 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-_realname=lib3270
+_realname=$(grep AC_INIT "${startdir}/configure.ac" | cut -d[ -f2 | cut -d] -f1)
 
 pkgname=${MINGW_PACKAGE_PREFIX}-${_realname}
-source=(git+https://github.com/PerryWerneck/lib3270#branch=develop)
+source=()
 
-#pkgver() {
-#  cd ${srcdir}/${_realname}
-#  git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
-#}
-
-pkgver=5.4
-pkgrel=1
+pkgver=$(grep AC_INIT "${startdir}/configure.ac" | cut -d[ -f3 | cut -d] -f1)
+pkgrel=0
 pkgdesc="TN3270 Access library"
 url="https://github.com/PerryWerneck/${_realname}"
 arch=(i686 x86_64)

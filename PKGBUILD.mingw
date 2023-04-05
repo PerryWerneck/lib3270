@@ -1,0 +1,67 @@
+# Maintainer: Perry Werneck <perry.werneck@gmail.com>
+# References: https://www.msys2.org/wiki/Creating-Packages/
+
+# SPDX-License-Identifier: LGPL-3.0-or-later 
+#
+# Copyright (C) 2008 Banco do Brasil S.A.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+_realname=lib3270
+
+pkgname=${MINGW_PACKAGE_PREFIX}-${_realname}
+source=(git+https://github.com/PerryWerneck/lib3270#branch=develop)
+
+#pkgver() {
+#  cd ${srcdir}/${_realname}
+#  git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+#}
+
+pkgver=5.4
+pkgrel=1
+pkgdesc="TN3270 Access library"
+url="https://github.com/PerryWerneck/${_realname}"
+arch=(i686 x86_64)
+license=(LGPL-3.0-or-later)
+depends=(${MINGW_PACKAGE_PREFIX}-openssl)
+makedepends=(autoconf automake make libtool gzip dos2unix ${MINGW_PACKAGE_PREFIX}-openssl)
+checkdepends=()
+
+provides=($pkgname) 
+conflicts=($pkgname)
+
+prepare() {
+  rm -fr "$srcdir/$pkgname"
+  ln -snf "$startdir" "$srcdir/$pkgname"
+}
+
+build() {
+  cd $pkgname
+  ./autogen.sh \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --target=${MINGW_CHOST}
+ 
+  make all
+}
+
+package() {
+  cd $pkgname
+  make DESTDIR="${pkgdir}" install
+  install \
+    -Dm644 \
+    "LICENSE" \
+    "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
+}

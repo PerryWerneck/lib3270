@@ -29,7 +29,12 @@ make all  > $LOGFILE 2>&1 || die "Make failure"
 make DESTDIR=.bin/package install > $LOGFILE 2>&1 || die "Install failure"
 
 cd .bin/package${MINGW_PREFIX}
-zip -9 -r ../../../${MINGW_PACKAGE_PREFIX}-lib3270.zip * > $LOGFILE 2>&1 || die "Zip failure"
+zip \
+	-9 -r \
+	 -x'*.a' \
+	 -x'*.pc' \
+	 ../../../${MINGW_PACKAGE_PREFIX}-lib3270-${MSYSTEM_CARCH}.zip * \
+	 	> $LOGFILE 2>&1 || die "Zip failure"
 	
 
 

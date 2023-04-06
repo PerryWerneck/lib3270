@@ -26,9 +26,15 @@ echo "Building lib3270"
 ./configure > $LOGFILE 2>&1 || die "Configure failure"
 make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
-make DESTDIR=.bin/package install
+make DESTDIR=.bin/package install > $LOGFILE 2>&1 || die "Install failure"
 
-tar --create --xz --file=${MINGW_PACKAGE_PREFIX}-lib3270.tar.xz --directory=.bin/package --verbose .
+cd .bin/package${MINGW_PREFIX}
+zip \
+	-9 -r \
+	 -x'*.a' \
+	 -x'*.pc' \
+	 ../../../${MINGW_PACKAGE_PREFIX}-lib3270-${MSYSTEM_CARCH}.zip * \
+	 	> $LOGFILE 2>&1 || die "Zip failure"
 	
 
 

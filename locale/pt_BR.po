@@ -2071,7 +2071,7 @@ msgstr "Aguardando resposta do pedido de upload"
 msgid "Warning"
 msgstr "Alerta"
 
-#: src/core/windows/util.c:123 src/core/windows/util.c:166
+#: src/core/windows/util.c:124 src/core/windows/util.c:167
 #, c-format
 msgid "Windows error %d"
 msgstr "Erro windows foi %d"

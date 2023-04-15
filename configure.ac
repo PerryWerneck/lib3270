@@ -394,19 +394,6 @@ dnl ---------------------------------------------------------------------------
 dnl SSL Security options
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_ENABLE([fips],
-	[AS_HELP_STRING([--disable-fips], [Disable OpenSSL FIPS])],
-[
-	app_cv_fips="$enableval"
-],[
-	AC_CHECK_HEADER(openssl/fips.h, app_cv_fips="yes", AC_MSG_NOTICE(fips.h is not available))
-
-])
-
-if test "$app_cv_fips" == "yes"; then
-	AC_DEFINE(HAVE_FIPS_H, 1, [FIPS Header is available])
-fi
-
 AC_ARG_ENABLE([self-signed-cert-check],
 	[AS_HELP_STRING([--enable-self-signed-cert-check], [Emit Warning when host presents a self signed certificate])],
 [

@@ -76,11 +76,13 @@ int main(int argc, char *argv[]) {
 
 	textdomain("lib3270");
 
+	/*
 	{
 		lib3270_autoptr(char) testfilename = lib3270_build_data_filename("test",NULL);
 		printf("\n\nFilename: '%s'\n\n", testfilename);
 		return 0;
 	}
+	*/
 
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

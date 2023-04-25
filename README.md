@@ -37,7 +37,7 @@ You can download installation package for supported distributions in Open Build 
 	* dbus-1-devel
 	* xz
 
-(This command can make it easy on SuSE: grep -i buildrequires rpm/lib3270.spec | cut -d: -f2 | sudo xargs zypper in )
+	(This command can make it easy on SuSE: grep -i buildrequires rpm/lib3270.spec | cut -d: -f2 | sudo xargs zypper in )
 
 3. Configure and build
 
@@ -104,8 +104,9 @@ You can download installation package for supported distributions in Open Build 
 3. Install devel packages using pacman on mingw shell
 
 	```shell
-	pacman -S --needed mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext mingw-w64-x86_64-openssl libtool
+	pacman -S --needed zip dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
 	```
+
 	Afther this close and reopen mingw shell.
 
 4. Get lib3270 sources from git using the mingw shell
@@ -139,18 +140,15 @@ Install
 2. Install dependencies
 
 	```shell
-	brew install automake binutils coreutils curl gettext libtool openssl pkgconfig
+	brew update
+	brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
+	brew upgrade
 	```
 
-3. Use [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) to make keg-only dependencies available during build process
+4. Configure, build and install
 
 	```shell
-	open-keg curl openldap openssl
-	```
-
-4. Configure, build and install (inside the [open-keg](https://gist.github.com/andrebreves/5f36e78575e20162ed0a62bd27c4bcea) shell opened above)
-
-	```shell
+	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
 	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4"
 	make all && make install
 	brew link lib3270

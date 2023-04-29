@@ -399,12 +399,6 @@ install-linux-dev:
 
 install-macos-dev:
 
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-windows-dev: \
 	$(BINRLS)/$(SONAME) \

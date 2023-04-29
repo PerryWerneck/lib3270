@@ -314,10 +314,7 @@ install-macos-lib: \
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(SONAME) \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	# Install default configs
-	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-windows-lib: \
 	strip \

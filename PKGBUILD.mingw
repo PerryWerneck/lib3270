@@ -30,7 +30,7 @@ url="https://github.com/PerryWerneck/${_realname}"
 arch=(i686 x86_64)
 license=(LGPL-3.0-or-later)
 depends=(${MINGW_PACKAGE_PREFIX}-openssl)
-makedepends=(autoconf automake make libtool gzip dos2unix ${MINGW_PACKAGE_PREFIX}-openssl)
+makedepends=(autoconf automake make libtool pkgconf gzip dos2unix ${MINGW_PACKAGE_PREFIX}-gcc ${MINGW_PACKAGE_PREFIX}-gettext ${MINGW_PACKAGE_PREFIX}-openssl)
 checkdepends=()
 
 provides=($pkgname) 

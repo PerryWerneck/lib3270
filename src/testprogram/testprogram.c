@@ -43,10 +43,6 @@
 #include <lib3270/charset.h>
 #include <stdio.h>
 
-#ifdef HAVE_FIPS_H
-	#include <openssl/fips.h>
-#endif // HAVE_FIPS_H
-
 #ifdef _WIN32
 	#include <lib3270/win32.h>
 #endif // _WIN32
@@ -80,11 +76,13 @@ int main(int argc, char *argv[]) {
 
 	textdomain("lib3270");
 
+	/*
 	{
 		lib3270_autoptr(char) testfilename = lib3270_build_data_filename("test",NULL);
 		printf("\n\nFilename: '%s'\n\n", testfilename);
 		return 0;
 	}
+	*/
 
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

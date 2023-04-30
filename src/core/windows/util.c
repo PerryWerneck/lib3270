@@ -317,7 +317,7 @@ char * lib3270_build_data_filename(const char *str, ...) {
 		}
 	}
 
-	if( *(instpath+strlen(instpath)-1) = '\\') {
+	if( *(instpath+strlen(instpath)-1) == '\\') {
 		instpath[strlen(instpath)-1] = 0;
 	}
 

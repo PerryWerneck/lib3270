@@ -51,20 +51,23 @@ INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
 NETWORK_MODULES=default openssl
 
-SOURCES= \
+COMMON_SOURCES= \
 	$(wildcard $(srcdir)/src/core/*.c) \
 	$(wildcard $(srcdir)/src/core/keyboard/*.c) \
 	$(wildcard $(srcdir)/src/core/actions/*.c) \
 	$(wildcard $(srcdir)/src/core/toggles/*.c) \
 	$(wildcard $(srcdir)/src/core/charset/*.c) \
 	$(wildcard $(srcdir)/src/core/ft/*.c) \
-	$(wildcard $(srcdir)/src/core/@OSNAME@/*.rc) \
-	$(wildcard $(srcdir)/src/core/@OSNAME@/*.c) \
 	$(wildcard $(srcdir)/src/core/properties/*.c) \
 	$(wildcard $(srcdir)/src/selection/*.c) \
 	$(wildcard $(srcdir)/src/network_modules/*.c) \
 	$(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c \
 	$(foreach MODULE, $(NETWORK_MODULES), $(wildcard $(srcdir)/src/network_modules/$(MODULE)/*.c))
+
+SOURCES= \
+	$(COMMON_SOURCES) \
+	$(wildcard $(srcdir)/src/core/@OSNAME@/*.rc) \
+	$(wildcard $(srcdir)/src/core/@OSNAME@/*.c)
 
 TEST_SOURCES= \
 	$(wildcard $(srcdir)/src/testprogram/*.c)
@@ -311,10 +314,7 @@ install-macos-lib: \
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(SONAME) \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	# Install default configs
-	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-windows-lib: \
 	strip \
@@ -399,12 +399,6 @@ install-linux-dev:
 
 install-macos-dev:
 
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-windows-dev: \
 	$(BINRLS)/$(SONAME) \
@@ -455,8 +449,11 @@ $(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c: \
 		$@
 
 locale/$(PACKAGE_NAME).pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
-
+	$(foreach SRC, $(basename $(COMMON_SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/core/linux/*.c)), $(POTDIR)/$(LIBNAME)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/core/windows/*.c)), $(POTDIR)/$(LIBNAME)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/core/macos/*.c)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
+	
 	@rm -f $@
 	@$(MKDIR) $(dir $@)
 	@$(MSGCAT) --sort-output $^ > $@

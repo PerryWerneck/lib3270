@@ -509,7 +509,7 @@ case "$host" in
 		;;
 
 	*-apple-darwin*)
-		AC_SUBST(SONAME,lib$app_cv_libname.dylib.$app_vrs_major.$app_vrs_minor)
+		AC_SUBST(SONAME,lib$app_cv_libname-$app_vrs_major.$app_vrs_minor.dylib)
 		;;
 
  	*)

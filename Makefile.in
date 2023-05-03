@@ -314,7 +314,7 @@ install-macos-lib: \
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(SONAME) \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+		$(DESTDIR)$(libdir)/$(SONAME)
 
 install-windows-lib: \
 	strip \
@@ -398,6 +398,13 @@ install-linux-dev:
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-macos-dev:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(LN_S) \
+		$(SONAME) \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 
 install-windows-dev: \

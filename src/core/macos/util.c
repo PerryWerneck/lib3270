@@ -64,6 +64,30 @@ static char * build_filename(const char *root, const char *str, va_list args) {
 	return (char *) lib3270_realloc(filename,strlen(filename)+1);
 }
 
+LIB3270_EXPORT char	* lib3270_get_installation_path() {
+
+	char lpFilename[PATH_MAX+1];
+
+	memset(lpFilename,0,sizeof(lpFilename));
+	uint32_t szPath = PATH_MAX;
+	_NSGetExecutablePath(lpFilename, &szPath);
+	lpFilename[szPath] = 0;
+
+	char *ptr = strrchr(lpFilename,'/');
+	if(ptr) {
+		ptr[0] = 0;
+
+		ptr = strrchr(lpFilename,'/');
+		if(ptr && !(strcasecmp(ptr,"/bin") && strcasecmp(ptr,"/lib"))) {
+			*ptr = 0;
+		}
+
+		strncat(lpFilename,"/",PATH_MAX);
+	}
+
+	return strdup(lpFilename);
+}
+
 char * lib3270_build_data_filename(const char *str, ...) {
 
 	va_list args;
@@ -102,27 +126,67 @@ char * lib3270_build_data_filename(const char *str, ...) {
 
 	}
 
-	/*
 	//
-	// Try EXE Path
+	// Try from installation path
 	//
 	{
-		uint32_t size = szPath;
-		_NSGetExecutablePath(path, &size);
-		path[size] = 0;
+		char *ptr;
+		lib3270_autoptr(char) instpath = lib3270_get_installation_path();
 
+		if( *(instpath+strlen(instpath)-1) == '/') {
+			instpath[strlen(instpath)-1] = 0;
+		}
 
+		char relative[PATH_MAX+1];
+		memset(relative,0,PATH_MAX);
+
+		{
+			va_list args;
+			va_start (args, str);
+
+			while(str) {
+
+				if(str[0] == '/') {
+					strncat(relative,str,PATH_MAX);
+				} else {
+					strncat(relative,"/",PATH_MAX);
+					strncat(relative,str,PATH_MAX);
+				}
+
+				str = va_arg(args, const char *);
+			}
+
+			va_end (args);
+		}
+
+		char filename[PATH_MAX+1];
+		memset(filename,0,PATH_MAX+1);
+
+		// Check instdir
+		strncpy(filename,instpath,PATH_MAX);
+		strncat(filename,"/share",PATH_MAX);
+		strncat(filename,relative,PATH_MAX);
+
+		if(access(filename,0) == 0) {
+			return strdup(filename);
+		}
+
+		strncpy(filename,instpath,PATH_MAX);
+		strncat(filename,"/share/",PATH_MAX);
+		strncat(filename,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),PATH_MAX);
+		strncat(filename,relative,PATH_MAX);
+
+		if(access(filename,0) == 0) {
+			return strdup(filename);
+		}
+
+		// Default behavior.
+		strncpy(filename,instpath,PATH_MAX);
+		strncat(filename,relative,PATH_MAX);
+
+		return strdup(filename);
 	}
-	*/
 
-	// 
-	// Not found, use the system datadir
-	//
-	va_start (args, str);
-	filename = build_filename(LIB3270_STRINGIZE_VALUE_OF(DATADIR), str, args);
-	va_end (args);
-
-	return filename;
 }
 
 char * lib3270_build_config_filename(const char *str, ...) {

@@ -127,7 +127,7 @@ char * lib3270_build_data_filename(const char *str, ...) {
 	}
 
 	//
-	// Try from installation path
+	// Try installation path
 	//
 	{
 		char *ptr;

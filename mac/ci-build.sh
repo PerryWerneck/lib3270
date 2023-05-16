@@ -8,7 +8,10 @@ VERSION=$(grep AC_INIT configure.ac | cut -d[ -f3 | cut -d] -f1)
 echo "${PKG_CONFIG_PATH}"
 pkg-config --list-all
 
-./autogen.sh --prefix="/${PROJECT_NAME}/${VERSION}"
+./autogen.sh \
+	--prefix="/${PROJECT_NAME}/${VERSION}" \
+	--with-libiconv-prefix=$(brew --prefix gettext)
+
 if [ "$?" != "0" ]; then
 	exit -1
 fi

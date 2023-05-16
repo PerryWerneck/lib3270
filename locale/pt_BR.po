@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-28 21:15-0300\n"
+"POT-Creation-Date: 2023-05-16 15:09-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "X-Generator: Gtranslator 40.0\n"
 
-#: src/core/ctlr.c:178
+#: src/core/ctlr.c:173
 #, c-format
 msgid "%dx%d is negative or zero"
 msgstr "%dx%d é negativa ou zero"
 
-#: src/core/ctlr.c:190
+#: src/core/ctlr.c:183
 #, c-format
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
@@ -227,7 +227,8 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
-#: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+#: src/core/windows/connect.c:372 src/core/macos/connect.c:334
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
@@ -236,7 +237,9 @@ msgstr "Não foi possível %s opção \"keep-alive\""
 msgid "Can't bind to LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
+#: src/core/linux/connect.c:215 src/core/linux/connect.c:269
 #: src/core/windows/connect.c:232 src/core/windows/connect.c:276
+#: src/core/macos/connect.c:215 src/core/macos/connect.c:269
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
@@ -245,7 +248,8 @@ msgstr "Não foi possível conectar a %s:%s"
 msgid "Can't connect to HTTP server."
 msgstr "Não foi possível conectar ao servidor HTTP"
 
-#: src/core/windows/connect.c:197
+#: src/core/linux/connect.c:165 src/core/windows/connect.c:197
+#: src/core/macos/connect.c:165
 msgid "Can't connect to host"
 msgstr "Não foi possível conectar no host"
 
@@ -257,7 +261,8 @@ msgstr "Não foi possível criar requisição HTTP"
 msgid "Can't decode CRL data"
 msgstr "Não foi possível decodificar dados do CRL"
 
-#: src/core/windows/ldap.c:204
+#: src/core/linux/ldap.c:167 src/core/windows/ldap.c:204
+#: src/core/macos/ldap.c:167
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
@@ -273,7 +278,11 @@ msgstr "Não foi possível obter o tamanho do arquivo"
 msgid "Can't initialize LDAP"
 msgstr "Erro ao inicializar LDAP"
 
-#: src/network_modules/openssl/context.c:240
+#: src/core/linux/curl.c:171 src/core/macos/curl.c:171
+msgid "Can't initialize curl operation"
+msgstr "Erro ao inicializar operação CURL"
+
+#: src/network_modules/openssl/context.c:236
 msgid "Can't initialize the TLS/SSL context."
 msgstr "Erro ao inicializar contexto TLS/SSL"
 
@@ -281,17 +290,17 @@ msgstr "Erro ao inicializar contexto TLS/SSL"
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/network_modules/openssl/context.c:342
+#: src/network_modules/openssl/context.c:338
 #, c-format
 msgid "Can't load \"%s\": %s"
 msgstr "Não foi possível carregar \"%s\": %s"
 
-#: src/network_modules/openssl/context.c:295
+#: src/network_modules/openssl/context.c:291
 #, c-format
 msgid "Can't open \"%s\" (The Windows error code was %ld)"
 msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)"
 
-#: src/network_modules/openssl/context.c:308
+#: src/network_modules/openssl/context.c:304
 #, c-format
 msgid "Can't open \"%s\": %s"
 msgstr "Não foi possível abrir %s: %s"
@@ -304,7 +313,7 @@ msgstr "Não foi possível abrir sessão HTTP"
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/network_modules/openssl/context.c:326
+#: src/network_modules/openssl/context.c:322
 #, c-format
 msgid "Can't read \"%s\": %s"
 msgstr "Não foi possível ler \"%s\": %s"
@@ -355,15 +364,15 @@ msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
-#: src/network_modules/openssl/context.c:336
+#: src/network_modules/openssl/context.c:332
 msgid "Cant load custom certificate file."
 msgstr "Não foi possível ler arquivo de certificado personalizado"
 
-#: src/network_modules/openssl/context.c:290
+#: src/network_modules/openssl/context.c:286
 msgid "Cant open custom certificate directory."
 msgstr "Não foi possível abrir o diretório de certificados personalizados"
 
-#: src/network_modules/openssl/context.c:320
+#: src/network_modules/openssl/context.c:316
 msgid "Cant read custom certificate file."
 msgstr "Não foi possível ler certificado personalizado"
 
@@ -439,8 +448,11 @@ msgstr "Connected initial"
 msgid "Connecting"
 msgstr "Conectando"
 
+#: src/network_modules/tools.c:160 src/core/linux/connect.c:230
+#: src/core/linux/connect.c:321 src/core/linux/connect.c:338
 #: src/core/windows/connect.c:358 src/core/windows/connect.c:376
-#: src/network_modules/tools.c:160
+#: src/core/macos/connect.c:230 src/core/macos/connect.c:321
+#: src/core/macos/connect.c:338
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -887,8 +899,8 @@ msgstr "Opção xxxxxxxx inválida sem SPACE: Transferência cancelada"
 msgid "Invalid option xxxxxxxx: file transfer canceled"
 msgstr "Opção xxxxxxxx inválida: Transferência cancelada"
 
-#: src/core/ctlr.c:176 src/core/ctlr.c:188 src/core/ctlr.c:201
-#: src/core/ctlr.c:213
+#: src/core/ctlr.c:171 src/core/ctlr.c:181 src/core/ctlr.c:192
+#: src/core/ctlr.c:203
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
@@ -931,6 +943,16 @@ msgstr "Estado de bloqueio do teclado"
 #: src/core/windows/ldap.c:179
 msgid "LDAP Search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/core/linux/ldap.c:147 src/core/macos/ldap.c:147
+#, fuzzy
+msgid "LDAP search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/core/linux/ldap.c:157 src/core/macos/ldap.c:157
+#, fuzzy
+msgid "LDAP search did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
 
 #: src/core/windows/ldap.c:186
 msgid "LDAPSearch did not produce any values."
@@ -1021,8 +1043,10 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:304 src/core/windows/connect.c:223
-#: src/core/windows/event_dispatcher.c:135
+#: src/core/telnet.c:304 src/core/linux/connect.c:200
+#: src/core/linux/event_dispatcher.c:130 src/core/windows/connect.c:223
+#: src/core/windows/event_dispatcher.c:135 src/core/macos/connect.c:200
+#: src/core/macos/event_dispatcher.c:130
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1050,7 +1074,8 @@ msgstr "Sem suporte LDAP"
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
-#: src/core/windows/download.c:62
+#: src/core/linux/download.c:55 src/core/windows/download.c:62
+#: src/core/macos/download.c:55
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
@@ -1345,7 +1370,9 @@ msgstr "Seleciona a direita"
 msgid "Select word"
 msgstr "Seleciona palavra"
 
+#: src/core/linux/event_dispatcher.c:131
 #: src/core/windows/event_dispatcher.c:136
+#: src/core/macos/event_dispatcher.c:131
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1538,7 +1565,14 @@ msgstr ""
 msgid "The SSL error message was %s"
 msgstr "A mensagem de erro SSL foi \"%s\""
 
+#: src/core/linux/connect.c:191 src/core/macos/connect.c:191
+#, fuzzy, c-format
+msgid "The System error was '%s' (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
+
+#: src/core/linux/ldap.c:82 src/core/linux/ldap.c:91
 #: src/core/windows/ldap.c:101 src/core/windows/ldap.c:110
+#: src/core/macos/ldap.c:82 src/core/macos/ldap.c:91
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
@@ -1663,7 +1697,7 @@ msgstr ""
 msgid "The file transfer operation has been successfully completed."
 msgstr "A transferência de arquivos terminou com sucesso."
 
-#: src/core/ctlr.c:215
+#: src/core/ctlr.c:205
 #, c-format
 msgid "The height %d is less than model %d rows (%d)"
 msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
@@ -1710,19 +1744,19 @@ msgstr ""
 "O módulo de rede não definiu uma mensagem para o estado TLS/SSL, isso não "
 "deveria acontecer e pode ser um erro de codificação"
 
-#: src/core/ctlr.c:214
+#: src/core/ctlr.c:204
 msgid "The oversize height is too small."
 msgstr "A altura definida para 'oversize' é muito pequena."
 
-#: src/core/ctlr.c:177
+#: src/core/ctlr.c:172
 msgid "The oversize values are invalid."
 msgstr "Os valores para 'oversize' não são válidos."
 
-#: src/core/ctlr.c:189
+#: src/core/ctlr.c:182
 msgid "The oversize values are too big."
 msgstr "Os valores do 'oversize' são muito grandes."
 
-#: src/core/ctlr.c:202
+#: src/core/ctlr.c:193
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
@@ -1794,8 +1828,10 @@ msgstr "O erro do sistema operacional foi \"%d\" (%s)"
 msgid "The system error was \"%s\""
 msgstr "O erro do sistema operacional foi \"%s\""
 
+#: src/core/linux/connect.c:222 src/core/linux/connect.c:282
 #: src/core/windows/connect.c:298 src/core/windows/connect.c:306
 #: src/core/windows/connect.c:314 src/core/windows/connect.c:324
+#: src/core/macos/connect.c:222 src/core/macos/connect.c:282
 #, c-format
 msgid "The system error was \"%s\" (rc=%d)"
 msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
@@ -1815,7 +1851,7 @@ msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 msgid "The trace file name"
 msgstr "O nome do arquivo de trace"
 
-#: src/core/ctlr.c:203
+#: src/core/ctlr.c:194
 #, c-format
 msgid "The width %d is less than model %d columns (%d)"
 msgstr "A largura %d é menor que a do modelo %d (%d)"
@@ -1906,7 +1942,8 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
-#: src/core/windows/connect.c:198
+#: src/core/linux/connect.c:166 src/core/windows/connect.c:198
+#: src/core/macos/connect.c:166
 msgid "Try again"
 msgstr "Tentar novamente"
 
@@ -1935,7 +1972,8 @@ msgstr "Incapaz de decifrar a assinatura do certificado"
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
-#: src/core/windows/connect.c:224
+#: src/core/linux/connect.c:201 src/core/windows/connect.c:224
+#: src/core/macos/connect.c:201
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
@@ -2004,7 +2042,7 @@ msgstr "Tipo inesperado %d na fila de teclado"
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: src/core/ctlr.c:626
+#: src/core/ctlr.c:402
 #, c-format
 msgid "Unknown 3270 Data Stream command: 0x%X"
 msgstr "Unknown 3270 Data Stream command: 0x%X"
@@ -2163,15 +2201,19 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/windows/connect.c:340
+#: src/core/linux/connect.c:233 src/core/linux/connect.c:302
+#: src/core/windows/connect.c:340 src/core/macos/connect.c:233
+#: src/core/macos/connect.c:302
 msgid "_Retry"
 msgstr "_Repetir"
 
-#: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+#: src/core/windows/connect.c:372 src/core/macos/connect.c:334
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+#: src/core/windows/connect.c:372 src/core/macos/connect.c:334
 msgid "enable"
 msgstr "habilitar"
 
@@ -2195,7 +2237,8 @@ msgstr "Versão da lib3270"
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/windows/connect.c:359
+#: src/core/linux/connect.c:322 src/core/windows/connect.c:359
+#: src/core/macos/connect.c:322
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) falhou"
 
@@ -2487,9 +2530,6 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 
 #~ msgid "Can't get screen contents"
 #~ msgstr "Não foi possível obter o conteúdo da tela"
-
-#~ msgid "Can't initialize curl operation"
-#~ msgstr "Erro ao inicializar operação CURL"
 
 #~ msgid "Can't load %s"
 #~ msgstr "Não foi possível carregar %s"

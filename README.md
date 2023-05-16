@@ -150,7 +150,7 @@ Install
 
 	```shell
 	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
-	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4"
+	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4" --with-libiconv-prefix=$(brew --prefix gettext)
 	make all && make install
 	brew link lib3270
 	```

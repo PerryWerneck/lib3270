@@ -239,6 +239,10 @@ LIB3270_EXPORT const char * lib3270_get_revision(void) {
 	return RPQ_REVISION;
 }
 
+LIB3270_EXPORT int lib3270_check_revision(const char GNUC_UNUSED(*revision)) {
+	return 0;
+}
+
 LIB3270_EXPORT const char * lib3270_get_product_name(void) {
 	return LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME);
 }

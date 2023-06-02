@@ -305,6 +305,8 @@ LIB3270_EXPORT unsigned int lib3270_get_auto_reconnect(const H3270 *hSession);
 LIB3270_EXPORT const char * lib3270_get_connection_state_as_string(const H3270 *hSession);
 LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *hSession);
 LIB3270_EXPORT const char * lib3270_get_ssl_state_as_string(const H3270 * hSession);
+LIB3270_EXPORT const char * lib3270_get_termtype(const H3270 *hSession);
+LIB3270_EXPORT const char * lib3270_get_termname(const H3270 *hSession);
 
 #ifdef __cplusplus
 }

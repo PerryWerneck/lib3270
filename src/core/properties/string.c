@@ -1,25 +1,23 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
@@ -38,23 +36,19 @@
 #include <lib3270/ssl.h>
 #include <lib3270/trace.h>
 
-static const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
-	return lib3270_get_version();
-}
-
-static const char * get_revision(const H3270 GNUC_UNUSED(*hSession)) {
-	return lib3270_get_revision();
-}
-
-static const char * lib3270_get_termtype(const H3270 *hSession) {
+LIB3270_EXPORT const char * lib3270_get_termtype(const H3270 *hSession) {
 	return hSession->termtype;
 }
 
-static const char * lib3270_get_termname(const H3270 *hSession) {
+LIB3270_EXPORT const char * lib3270_get_termname(const H3270 *hSession) {
 	return hSession->termname;
 }
 
 LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void) {
+
+	auto const char * get_version(const H3270 GNUC_UNUSED(*hSession));
+	auto const char * get_revision(const H3270 GNUC_UNUSED(*hSession));
+
 	static const LIB3270_STRING_PROPERTY properties[] = {
 
 		{
@@ -124,27 +118,17 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 
 		{
 			.name = "version",										//  Property name.
-			.description = N_( "lib3270 version" ),					//  Property description.
+			.description = N_( "Protocol library version" ),		//  Property description.
 			.get = get_version,										//  Get value.
 			.set = NULL												//  Set value.
 		},
 
 		{
-			.name = "revision",													// Property name.
-			.description = N_( "lib3270 revision" ),							// Property description.
-			.get = get_revision,												// Get value.
-			.set = NULL															// Set value.
+			.name = "revision",										// Property name.
+			.description = N_( "Protocol library revision" ),		// Property description.
+			.get = get_revision,									// Get value.
+			.set = NULL												// Set value.
 		},
-
-		/*
-		{
-			.name = "crl_url",													// Property name.
-			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
-			.description = N_( "URL for the certificate revocation list" ),		// Property description.
-			.get = lib3270_crl_get_url,											// Get value.
-			.set = lib3270_crl_set_url,											// Set value.
-		},
-		*/
 
 		{
 			.name = "crl_preferred_protocol",									// Property name.
@@ -207,6 +191,14 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 		}
 
 	};
+
+	const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
+		return lib3270_get_version();
+	}
+
+	const char * get_revision(const H3270 GNUC_UNUSED(*hSession)) {
+		return lib3270_get_revision();
+	}
 
 	return properties;
 

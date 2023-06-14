@@ -86,11 +86,11 @@ static int pa1(H3270 *hSession) {
 }
 
 static int pa2(H3270 *hSession) {
-	return lib3270_pakey(hSession,1);
+	return lib3270_pakey(hSession,2);
 }
 
 static int pa3(H3270 *hSession) {
-	return lib3270_pakey(hSession,1);
+	return lib3270_pakey(hSession,3);
 }
 
 /**

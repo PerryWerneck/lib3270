@@ -315,7 +315,7 @@ make_zip() {
 		exit -1
 	fi
 	
-	if [ -z $(which gh) ]; then
+	if [ -z $(which gh 2> /dev/null) ]; then
 		return 0
 	fi
 	

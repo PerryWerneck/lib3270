@@ -85,8 +85,32 @@ You can download installation package for supported distributions in Open Build 
 	make clean
 	make all
 	```
+### Windows native with MSYS2 (Using bundle script)
 
-### Windows native with MSYS2
+1. Install and update MSYS2 
+
+	* Download and install [msys2](https://www.msys2.org/)
+	* Update msys:
+	
+	```shell
+	pacman -Syu
+	```
+	Afther this close and reopen mingw shell.
+
+2. Get lib3270 sources from git using the mingw shell
+
+	```shell
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	```
+
+3. Run bundle script
+
+	```shell
+	cd lib3270
+	./win/bundle.msys --pre-reqs --build
+	```
+
+### Windows native with MSYS2 (Manual)
 
 1. Install and update MSYS2 
 

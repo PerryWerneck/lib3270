@@ -28,7 +28,7 @@ jobs:
       - name: CI-Build
         run: ./win/mingw-build.sh
       - name: Bundle
-        run: ./win/bundle.msys
+        run: ./win/bundle.msys --build
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}

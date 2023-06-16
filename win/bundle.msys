@@ -60,10 +60,9 @@ if [ "$?" == "0" ]; then
 		exit -1
 	fi
 
-	build_package
-	
 fi
 
+build_package
 install_bin
 install_license
 make_zip

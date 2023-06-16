@@ -16,7 +16,28 @@ die ( ) {
 	exit -1
 }
 
-cd $(dirname $(dirname $(readlink -f ${0})))
+srcdir="$(dirname $(dirname $(readlink -f "${0}")))"
+cd ${srcdir}
+if [ "$?" != "0" ]; then
+	echo "Cant cd to ${srcdir}"
+	exit -1
+fi
+
+if [ -z ${PKG_CONFIG} ]; then
+	PKG_CONFIG=${MINGW_PREFX}/bin/pkg-config
+fi
+
+PACKAGE_NAME=$(grep AC_INIT configure.ac | cut -d[ -f2 | cut -d] -f1)
+if [ -z ${PACKAGE_NAME} ]; then
+	echo "Cant determine package name"
+	exit -1
+fi
+
+PACKAGE_VERSION=$(grep AC_INIT configure.ac | cut -d[ -f3 | cut -d] -f1)
+if [ -z ${PACKAGE_VERSION} ]; then
+	echo "Cant determine package name"
+	exit -1
+fi
 
 #
 # Build LIB3270
@@ -26,15 +47,14 @@ echo "Building lib3270"
 ./configure > $LOGFILE 2>&1 || die "Configure failure"
 make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
-make DESTDIR=.bin/package install > $LOGFILE 2>&1 || die "Install failure"
+make DESTDIR=.bin/package.msvc install > $LOGFILE 2>&1 || die "Install failure"
 
-cd .bin/package${MINGW_PREFIX}
+cd .bin/package.msvc
 zip \
 	-9 -r \
 	 -x'*.a' \
 	 -x'*.pc' \
-	 ../../../${MINGW_PACKAGE_PREFIX}-lib3270-${MSYSTEM_CARCH}.zip * \
+	 ${srcdir}/${MINGW_PACKAGE_PREFIX}-${PACKAGE_NAME}-${PACKAGE_VERSION}.devel.zip * \
 	 	> $LOGFILE 2>&1 || die "Zip failure"
+
 	
-
-

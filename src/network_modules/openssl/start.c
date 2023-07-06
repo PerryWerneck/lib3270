@@ -1,30 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software PW3270, desenvolvido com base nos códigos fontes do WC3270  e  X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  ',  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como openssl.c e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -199,8 +189,17 @@ int x509_store_ctx_error_callback(int ok, X509_STORE_CTX GNUC_UNUSED(*ctx)) {
 int openssl_network_start_tls(H3270 *hSession) {
 
 	SSL_CTX * ctx_context = (SSL_CTX *) lib3270_openssl_get_context(hSession);
-	if(!ctx_context)
+	if(!ctx_context) {
+
+		if(!hSession->ssl.message) {
+			static const LIB3270_SSL_MESSAGE message = {
+				.type = LIB3270_NOTIFY_SECURE,
+				.summary = N_( "Cant get SSL context for current connection." )
+			};
+			hSession->ssl.message = &message;
+		}
 		return -1;
+	}
 
 	LIB3270_NET_CONTEXT * context = hSession->network.context;
 
@@ -212,7 +211,6 @@ int openssl_network_start_tls(H3270 *hSession) {
 			.type = LIB3270_NOTIFY_SECURE,
 			.summary = N_( "Cant create a new SSL structure for current connection." )
 		};
-
 		hSession->ssl.message = &message;
 		return -1;
 	}
@@ -241,6 +239,7 @@ int openssl_network_start_tls(H3270 *hSession) {
 	trace_ssl(hSession, "SSL_connect exits with rc=%d\n",rv);
 
 	if (rv != 1) {
+
 		LIB3270_SSL_MESSAGE message = {
 			.type = LIB3270_NOTIFY_ERROR,
 			.title = N_( "Connection failed" ),
@@ -312,7 +311,6 @@ int openssl_network_start_tls(H3270 *hSession) {
 	if(lib3270_ssl_get_crl_download(hSession) && SSL_get_verify_result(context->con) == X509_V_ERR_UNABLE_TO_GET_CRL) {
 
 		// CRL download is enabled and verification has failed; look for CRL file.
-
 
 		trace_ssl(hSession,"CRL Validation has failed, requesting CRL download\n");
 		set_ssl_state(hSession,LIB3270_SSL_VERIFYING);

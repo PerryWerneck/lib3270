@@ -84,6 +84,7 @@ jobs:
         run: |
           brew update
           brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
+          brew upgrade
       - name: build
         run: ./mac/ci-build.sh
       - uses: ncipollo/release-action@v1

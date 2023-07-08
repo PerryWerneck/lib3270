@@ -44,10 +44,16 @@ LIB3270_EXPORT const char * lib3270_get_termname(const H3270 *hSession) {
 	return hSession->termname;
 }
 
-LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void) {
+static const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
+	return lib3270_get_version();
+}
 
-	auto const char * get_version(const H3270 GNUC_UNUSED(*hSession));
-	auto const char * get_revision(const H3270 GNUC_UNUSED(*hSession));
+static const char * get_revision(const H3270 GNUC_UNUSED(*hSession)) {
+	return lib3270_get_revision();
+}
+
+
+LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void) {
 
 	static const LIB3270_STRING_PROPERTY properties[] = {
 
@@ -191,14 +197,6 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 		}
 
 	};
-
-	const char * get_version(const H3270 GNUC_UNUSED(*hSession)) {
-		return lib3270_get_version();
-	}
-
-	const char * get_revision(const H3270 GNUC_UNUSED(*hSession)) {
-		return lib3270_get_revision();
-	}
 
 	return properties;
 

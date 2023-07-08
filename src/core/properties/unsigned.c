@@ -64,9 +64,11 @@ LIB3270_EXPORT int lib3270_set_auto_reconnect(H3270 *hSession, unsigned int time
 	return 0;
 }
 
-const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
+static unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession) {
+	return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
+}
 
-	auto unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession);
+const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
 
@@ -174,10 +176,6 @@ const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 			.set = NULL
 		}
 	};
-
-	unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession) {
-		return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
-	}
 
 	return properties;
 }

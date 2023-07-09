@@ -10,11 +10,12 @@ Created originally as part of PW3270 application.
 
 ## Installation
 
-### Linux
+### Pre build packages
 
-You can download installation package for supported distributions in Open Build Service.
+You can download installation package for supported linux distributions in [Open Build Service](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270)
 
-[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270)
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/develop/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270)
+[<img src="https://raw.githubusercontent.com/PerryWerneck/PerryWerneck/3aa96b8275d4310896c3a0b5b3965ed650fb7c2b/badges/github-msys-macos.svg" alt="Download from githut" height="80px">](https://github.com/PerryWerneck/lib3270/releases)
 
 ## Building for Linux
 

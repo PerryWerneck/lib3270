@@ -1,30 +1,32 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
  *
+ */
+
+/**
+ * @brief Signed int properties.
  */
 
 #include <config.h>
@@ -34,16 +36,88 @@
 #include <lib3270/properties.h>
 #include <lib3270/keyboard.h>
 
+LIB3270_EXPORT const char * lib3270_get_connection_state_as_string(const H3270 *hSession) {
+
+	static const char * values[] = {
+		N_("Disconnected"),
+		N_("Connecting to host"),
+		N_("Connection pending"),
+		N_("Connected, no mode yet"),
+		N_("Connected in NVT ANSI mode"),
+		N_("Connected in old-style 3270 mode"),
+		N_("Connected in TN3270E mode, no negotiated"),
+		N_("Connected in TN3270E mode, NVT mode"),
+		N_("Connected in TN3270E mode, SSCP-LU mode"),
+		N_("Connected in TN3270E mode, 3270 mode")
+	};
+
+	size_t value = (size_t) lib3270_get_connection_state(hSession);
+	if(value < (sizeof(value)/sizeof(values[0]))) {
+		return dgettext(GETTEXT_PACKAGE,values[value]);
+	}
+
+	return _( "Unknown" );
+
+}
+
+LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *hSession) {
+
+	static const char * values[] = {
+		"",
+		N_( "X System" ),
+		N_( "X Wait" ),
+		N_( "X Connected" ),
+		N_( "X Not Connected" ),
+		N_( "X" ),
+		N_( "X -f" ),
+		N_( "X Protected" ),
+		N_( "X Numeric" ),
+		N_( "X Overflow" ),
+		N_( "X Inhibit" ),
+		N_( "X" ),
+		N_( "X" ),
+		N_( "X Resolving" ),
+		N_( "X Connecting" )
+	};
+
+	size_t value = (size_t) lib3270_get_program_message(hSession);
+	if(value < (sizeof(value)/sizeof(values[0]))) {
+		return dgettext(GETTEXT_PACKAGE,values[value]);
+	}
+
+	return _( "Unknown" );
+
+}
+
+LIB3270_EXPORT const char * lib3270_get_ssl_state_as_string(const H3270 * hSession) {
+
+	static const char * values[] = {
+		N_("No secure connection"),
+		N_("Connection secure with CA check"),
+		N_("Connection secure, no CA, self-signed or expired CRL"),
+		N_("Negotiating SSL"),
+		N_("Verifying SSL (Getting CRL)"),
+		N_("Undefined")
+	};
+
+	size_t value = (size_t) lib3270_get_ssl_state(hSession);
+	if(value < (sizeof(value)/sizeof(values[0]))) {
+		return dgettext(GETTEXT_PACKAGE,values[value]);
+	}
+
+	return _( "Unknown" );
+}
+
 static int lib3270_get_connection_state_as_int(const H3270 *hSession) {
 	return (int) lib3270_get_connection_state(hSession);
 }
 
-static int lib3270_get_program_message_as_int(const H3270 *hSession) {
-	return (int) lib3270_get_program_message(hSession);
-}
-
 static int lib3270_get_ssl_state_as_int(const H3270 * hSession) {
 	return (int) lib3270_get_ssl_state(hSession);
+}
+
+static int lib3270_get_program_message_as_int(const H3270 *hSession) {
+	return (int) lib3270_get_program_message(hSession);
 }
 
 const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void) {
@@ -54,7 +128,8 @@ const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void) {
 			.name = "cstate",									//  Property name.
 			.description = N_( "Connection state" ),			//  Property description.
 			.get = lib3270_get_connection_state_as_int,			//  Get value.
-			.set = NULL											//  Set value.
+			.set = NULL,										//  Set value.
+			.describe = lib3270_get_connection_state_as_string
 		},
 
 		{
@@ -62,28 +137,32 @@ const LIB3270_INT_PROPERTY * lib3270_get_int_properties_list(void) {
 			.group = LIB3270_ACTION_GROUP_ONLINE,					// Property group.
 			.description = N_( "Cursor address" ),					// Property description.
 			.get = lib3270_get_cursor_address,						// Get value.
-			.set = lib3270_set_cursor_address						// Set value.
+			.set = lib3270_set_cursor_address,						// Set value.
+			.describe = NULL
 		},
 
 		{
-			.name = "program_message",							//  Property name.
-			.description = N_( "Latest program message" ),		//  Property description.
-			.get = lib3270_get_program_message_as_int,			//  Get value.
-			.set = NULL											//  Set value.
+			.name = "program_message",									//  Property name.
+			.description = N_( "Latest program message" ),				//  Property description.
+			.get = lib3270_get_program_message_as_int,					//  Get value.
+			.set = NULL,												//  Set value.
+			.describe = lib3270_get_program_message_as_string
 		},
 
 		{
 			.name = "ssl_state",										//  Property name.
 			.description = N_( "ID of the session security state" ),	//  Property description.
 			.get = lib3270_get_ssl_state_as_int,						//  Get value.
-			.set = NULL													//  Set value.
+			.set = NULL,												//  Set value.
+			.describe = lib3270_get_ssl_state_as_string
 		},
 
 		{
 			.name = NULL,
 			.description = NULL,
 			.get = NULL,
-			.set = NULL
+			.set = NULL,										//  Set value.
+			.describe = NULL
 		}
 	};
 

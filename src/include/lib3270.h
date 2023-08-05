@@ -94,6 +94,9 @@
 #define LIB3270_STRINGIZE(x) #x
 #define LIB3270_STRINGIZE_VALUE_OF(x) LIB3270_STRINGIZE(x)
 
+typedef struct _h3270	H3270;
+typedef struct _h3270ft	H3270FT;
+
 /**
  * @brief BIND definitions.
  */
@@ -368,7 +371,8 @@ typedef enum _lib3270_action_group {
 		const char * label; \
 		const char * icon; \
 		const char * summary; \
-		const char * description;
+		const char * description; \
+		const char * (*describe)(const H3270 *);
 
 typedef struct _lib3270_property {
 	LIB3270_PROPERTY_HEAD
@@ -392,9 +396,6 @@ typedef enum _lib3270_state {
 
 	LIB3270_STATE_USER				// Always the last one
 } LIB3270_STATE;
-
-typedef struct _h3270	H3270;
-typedef struct _h3270ft	H3270FT;
 
 /**
  * Get current screen size.
@@ -1489,6 +1490,17 @@ LIB3270_EXPORT const char * lib3270_get_version(void);
  *
  */
 LIB3270_EXPORT const char * lib3270_get_revision(void);
+
+/**
+ * @brief Test if the revision is valid.
+ *
+ * @param revision Revision number to check.
+ *
+ * @return 0 if the supplied revision is valid to the current library.
+ *
+ */
+LIB3270_EXPORT int lib3270_check_revision(const char *revision);
+
 
 LIB3270_EXPORT char * lib3270_vsprintf(const char *fmt, va_list args);
 LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...);

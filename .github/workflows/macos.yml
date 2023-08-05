@@ -1,0 +1,22 @@
+name: MacOS Test
+on:
+  push:
+    branches:
+      - macos
+jobs:
+  build:
+    name: Build for macos
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Pre reqs
+        run: |
+          brew update
+          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          brew upgrade
+      - name: build
+        run: ./mac/ci-build.sh
+          
+

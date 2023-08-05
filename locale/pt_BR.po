@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-28 21:15-0300\n"
+"POT-Creation-Date: 2023-06-16 13:05-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "X-Generator: Gtranslator 40.0\n"
 
-#: src/core/ctlr.c:178
+#: src/core/ctlr.c:173
 #, c-format
 msgid "%dx%d is negative or zero"
 msgstr "%dx%d é negativa ou zero"
 
-#: src/core/ctlr.c:190
+#: src/core/ctlr.c:183
 #, c-format
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
@@ -227,7 +227,8 @@ msgstr "Arquivo CMS não encontrado, transferência cancelada"
 msgid "CRL signature failure"
 msgstr "Erro na assinatura CRL"
 
-#: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+#: src/core/windows/connect.c:372 src/core/macos/connect.c:334
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
@@ -236,7 +237,9 @@ msgstr "Não foi possível %s opção \"keep-alive\""
 msgid "Can't bind to LDAP server"
 msgstr "Não foi possível conectar ao servidor LDAP"
 
+#: src/core/linux/connect.c:215 src/core/linux/connect.c:269
 #: src/core/windows/connect.c:232 src/core/windows/connect.c:276
+#: src/core/macos/connect.c:215 src/core/macos/connect.c:269
 #, c-format
 msgid "Can't connect to %s:%s"
 msgstr "Não foi possível conectar a %s:%s"
@@ -245,7 +248,8 @@ msgstr "Não foi possível conectar a %s:%s"
 msgid "Can't connect to HTTP server."
 msgstr "Não foi possível conectar ao servidor HTTP"
 
-#: src/core/windows/connect.c:197
+#: src/core/linux/connect.c:165 src/core/windows/connect.c:197
+#: src/core/macos/connect.c:165
 msgid "Can't connect to host"
 msgstr "Não foi possível conectar no host"
 
@@ -257,7 +261,8 @@ msgstr "Não foi possível criar requisição HTTP"
 msgid "Can't decode CRL data"
 msgstr "Não foi possível decodificar dados do CRL"
 
-#: src/core/windows/ldap.c:204
+#: src/core/linux/ldap.c:167 src/core/windows/ldap.c:204
+#: src/core/macos/ldap.c:167
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
@@ -273,7 +278,11 @@ msgstr "Não foi possível obter o tamanho do arquivo"
 msgid "Can't initialize LDAP"
 msgstr "Erro ao inicializar LDAP"
 
-#: src/network_modules/openssl/context.c:240
+#: src/core/linux/curl.c:171 src/core/macos/curl.c:171
+msgid "Can't initialize curl operation"
+msgstr "Erro ao inicializar operação CURL"
+
+#: src/network_modules/openssl/context.c:236
 msgid "Can't initialize the TLS/SSL context."
 msgstr "Erro ao inicializar contexto TLS/SSL"
 
@@ -281,17 +290,17 @@ msgstr "Erro ao inicializar contexto TLS/SSL"
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/network_modules/openssl/context.c:342
+#: src/network_modules/openssl/context.c:338
 #, c-format
 msgid "Can't load \"%s\": %s"
 msgstr "Não foi possível carregar \"%s\": %s"
 
-#: src/network_modules/openssl/context.c:295
+#: src/network_modules/openssl/context.c:291
 #, c-format
 msgid "Can't open \"%s\" (The Windows error code was %ld)"
 msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)"
 
-#: src/network_modules/openssl/context.c:308
+#: src/network_modules/openssl/context.c:304
 #, c-format
 msgid "Can't open \"%s\": %s"
 msgstr "Não foi possível abrir %s: %s"
@@ -304,7 +313,7 @@ msgstr "Não foi possível abrir sessão HTTP"
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/network_modules/openssl/context.c:326
+#: src/network_modules/openssl/context.c:322
 #, c-format
 msgid "Can't read \"%s\": %s"
 msgstr "Não foi possível ler \"%s\": %s"
@@ -355,15 +364,15 @@ msgstr ""
 "Não foi possível criar uma nova estrutura de controle SSL para a conexão "
 "atual."
 
-#: src/network_modules/openssl/context.c:336
+#: src/network_modules/openssl/context.c:332
 msgid "Cant load custom certificate file."
 msgstr "Não foi possível ler arquivo de certificado personalizado"
 
-#: src/network_modules/openssl/context.c:290
+#: src/network_modules/openssl/context.c:286
 msgid "Cant open custom certificate directory."
 msgstr "Não foi possível abrir o diretório de certificados personalizados"
 
-#: src/network_modules/openssl/context.c:320
+#: src/network_modules/openssl/context.c:316
 msgid "Cant read custom certificate file."
 msgstr "Não foi possível ler certificado personalizado"
 
@@ -431,16 +440,54 @@ msgstr "Conectar"
 msgid "Connect on startup"
 msgstr "Conectar ao iniciar"
 
+#: src/core/properties/signed.c:46
+msgid "Connected in NVT ANSI mode"
+msgstr ""
+
+#: src/core/properties/signed.c:51
+msgid "Connected in TN3270E mode, 3270 mode"
+msgstr ""
+
+#: src/core/properties/signed.c:49
+msgid "Connected in TN3270E mode, NVT mode"
+msgstr ""
+
+#: src/core/properties/signed.c:50
+msgid "Connected in TN3270E mode, SSCP-LU mode"
+msgstr ""
+
+#: src/core/properties/signed.c:48
+#, fuzzy
+msgid "Connected in TN3270E mode, no negotiated"
+msgstr "Não está no modo 3270, transferência cancelada"
+
+#: src/core/properties/signed.c:47
+msgid "Connected in old-style 3270 mode"
+msgstr ""
+
 #: src/core/telnet.c:1764
 msgid "Connected initial"
+msgstr "Connected initial"
+
+#: src/core/properties/signed.c:45
+#, fuzzy
+msgid "Connected, no mode yet"
 msgstr "Connected initial"
 
 #: src/core/telnet.c:1782
 msgid "Connecting"
 msgstr "Conectando"
 
+#: src/core/properties/signed.c:43
+#, fuzzy
+msgid "Connecting to host"
+msgstr "Não foi possível conectar no host"
+
+#: src/network_modules/tools.c:160 src/core/linux/connect.c:230
+#: src/core/linux/connect.c:321 src/core/linux/connect.c:338
 #: src/core/windows/connect.c:358 src/core/windows/connect.c:376
-#: src/network_modules/tools.c:160
+#: src/core/macos/connect.c:230 src/core/macos/connect.c:321
+#: src/core/macos/connect.c:338
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -448,11 +495,25 @@ msgstr "Erro de conexão"
 msgid "Connection failed"
 msgstr "Conexão falhou"
 
+#: src/core/properties/signed.c:44
+#, fuzzy
+msgid "Connection pending"
+msgstr "Conexão falhou"
+
 #: src/network_modules/tools.c:122
 msgid "Connection reset by peer"
 msgstr "Conexão foi cancelada pelo servidor"
 
-#: src/core/properties/signed.c:55
+#: src/core/properties/signed.c:96
+#, fuzzy
+msgid "Connection secure with CA check"
+msgstr "A conexão é segura ?"
+
+#: src/core/properties/signed.c:97
+msgid "Connection secure, no CA, self-signed or expired CRL"
+msgstr ""
+
+#: src/core/properties/signed.c:121
 msgid "Connection state"
 msgstr "Estado da conexão"
 
@@ -466,15 +527,15 @@ msgstr "Continuar"
 msgid "Cross hair cursor"
 msgstr "Cursor mira"
 
-#: src/core/properties/unsigned.c:117
+#: src/core/properties/unsigned.c:113
 msgid "Current screen height in rows"
 msgstr "Altura atual da tela em linhas"
 
-#: src/core/properties/unsigned.c:110
+#: src/core/properties/unsigned.c:106
 msgid "Current screen width in columns"
 msgstr "Largura atua da tela em colunas"
 
-#: src/core/properties/signed.c:63
+#: src/core/properties/signed.c:130
 msgid "Cursor address"
 msgstr "Endereço do cursor"
 
@@ -516,7 +577,7 @@ msgstr "Tecla \"DUP\""
 msgid "Data conversion error"
 msgstr "Erro na conversão de dados"
 
-#: src/core/properties/string.c:159
+#: src/core/properties/string.c:143
 msgid "Default host URL"
 msgstr "URL parão para acesso ao host"
 
@@ -532,7 +593,7 @@ msgstr "Apagar campo"
 msgid "Delete word"
 msgstr "Apaga palavra"
 
-#: src/core/properties/string.c:173
+#: src/core/properties/string.c:157
 msgid "Description of the current security state"
 msgstr "Descrição do estado de segurança atual"
 
@@ -544,12 +605,17 @@ msgstr "Tipo de dispositivo rejeitado"
 msgid "Disconnect from host"
 msgstr "Desconecta do servidor"
 
+#: src/core/properties/signed.c:42
+#, fuzzy
+msgid "Disconnected"
+msgstr "Desconectado"
+
 #: src/core/ft/ft.c:244 src/network_modules/openssl/main.c:100
 #: src/network_modules/openssl/main.c:148
 msgid "Disconnected from host."
 msgstr "Desconectado do servidor."
 
-#: src/core/properties/string.c:120
+#: src/core/properties/string.c:114
 msgid "Display charset"
 msgstr "Tabela de caracteres para a tela"
 
@@ -715,7 +781,7 @@ msgstr "Erro de formato no campo \"notAfter\" do certificado"
 msgid "Format error in certificate's notBefore field"
 msgstr "Erro de formato no campo \"notBefore\" do certificado"
 
-#: src/core/properties/boolean.c:177
+#: src/core/properties/boolean.c:175
 msgid "Formatted screen"
 msgstr "Tela formatada"
 
@@ -727,11 +793,11 @@ msgstr "Tela cheia"
 msgid "Half connect"
 msgstr "Half connect"
 
-#: src/core/properties/boolean.c:156
+#: src/core/properties/boolean.c:154
 msgid "Has selected area"
 msgstr "Tem área selecionada"
 
-#: src/core/properties/string.c:113
+#: src/core/properties/string.c:107
 msgid "Host charset"
 msgstr "Página de código do host"
 
@@ -755,11 +821,11 @@ msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
-#: src/core/properties/string.c:90
+#: src/core/properties/string.c:84
 msgid "Host type name"
 msgstr "Nome do tipo de host"
 
-#: src/core/properties/unsigned.c:90
+#: src/core/properties/unsigned.c:86
 msgid "Host type number"
 msgstr "Numero do tipo de host"
 
@@ -771,7 +837,7 @@ msgstr "IBM AS/400"
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/core/properties/signed.c:77
+#: src/core/properties/signed.c:146
 msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
@@ -887,28 +953,28 @@ msgstr "Opção xxxxxxxx inválida sem SPACE: Transferência cancelada"
 msgid "Invalid option xxxxxxxx: file transfer canceled"
 msgstr "Opção xxxxxxxx inválida: Transferência cancelada"
 
-#: src/core/ctlr.c:176 src/core/ctlr.c:188 src/core/ctlr.c:201
-#: src/core/ctlr.c:213
+#: src/core/ctlr.c:171 src/core/ctlr.c:181 src/core/ctlr.c:192
+#: src/core/ctlr.c:203
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
-#: src/core/properties/boolean.c:77
+#: src/core/properties/boolean.c:75
 msgid "Is connection secure"
 msgstr "A conexão é segura ?"
 
-#: src/core/properties/boolean.c:170
+#: src/core/properties/boolean.c:168
 msgid "Is starting (no first screen)?"
 msgstr "Está iniciando (não recebeu a primeira tela)?"
 
-#: src/core/properties/boolean.c:70
+#: src/core/properties/boolean.c:68
 msgid "Is terminal connected"
 msgstr "O terminal está conectado"
 
-#: src/core/properties/boolean.c:149
+#: src/core/properties/boolean.c:147
 msgid "Is terminal in the INITIAL_E state?"
 msgstr "O terminal está no estad INITIAL_E?"
 
-#: src/core/properties/boolean.c:63
+#: src/core/properties/boolean.c:61
 msgid "Is terminal ready"
 msgstr "O terminal está pronto"
 
@@ -924,7 +990,7 @@ msgstr "Uso da chave não permite assinatura de certificados"
 msgid "Keyboard is locked"
 msgstr "Teclado está bloqueado"
 
-#: src/core/properties/unsigned.c:169
+#: src/core/properties/unsigned.c:165
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
@@ -932,11 +998,21 @@ msgstr "Estado de bloqueio do teclado"
 msgid "LDAP Search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu atributos."
 
+#: src/core/linux/ldap.c:147 src/core/macos/ldap.c:147
+#, fuzzy
+msgid "LDAP search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/core/linux/ldap.c:157 src/core/macos/ldap.c:157
+#, fuzzy
+msgid "LDAP search did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
+
 #: src/core/windows/ldap.c:186
 msgid "LDAPSearch did not produce any values."
 msgstr "Pesquisa LDAP não produziu valores."
 
-#: src/core/properties/signed.c:70
+#: src/core/properties/signed.c:138
 msgid "Latest program message"
 msgstr "Última mensagem de programa"
 
@@ -948,7 +1024,7 @@ msgstr "Esquerda"
 msgid "Line mode"
 msgstr "Line mode"
 
-#: src/core/properties/boolean.c:184
+#: src/core/properties/boolean.c:182
 msgid "Lock keyboard on operator error"
 msgstr "Bloqueia teclado em caso de erro do operador"
 
@@ -956,15 +1032,15 @@ msgstr "Bloqueia teclado em caso de erro do operador"
 msgid "Margined paste"
 msgstr "Colar com margem"
 
-#: src/core/properties/unsigned.c:131
+#: src/core/properties/unsigned.c:127
 msgid "Maximum screen height in rows"
 msgstr "Altura máxima da tela em linhas"
 
-#: src/core/properties/unsigned.c:124
+#: src/core/properties/unsigned.c:120
 msgid "Maximum screen width in columns"
 msgstr "Largura maxima da tela em colunas"
 
-#: src/core/properties/string.c:82
+#: src/core/properties/string.c:76
 msgid "Model name"
 msgstr "Nome do modelo"
 
@@ -1021,8 +1097,15 @@ msgstr "Move para o próximo campo desprotegido"
 msgid "Move to the previous unprotected field on screen"
 msgstr "Move para o campo desprotegido anterior"
 
-#: src/core/telnet.c:304 src/core/windows/connect.c:223
-#: src/core/windows/event_dispatcher.c:135
+#: src/core/properties/signed.c:98
+#, fuzzy
+msgid "Negotiating SSL"
+msgstr "Negociação SSL"
+
+#: src/core/telnet.c:304 src/core/linux/connect.c:200
+#: src/core/linux/event_dispatcher.c:130 src/core/windows/connect.c:223
+#: src/core/windows/event_dispatcher.c:135 src/core/macos/connect.c:200
+#: src/core/macos/event_dispatcher.c:130
 msgid "Network error"
 msgstr "Erro de rede"
 
@@ -1050,9 +1133,15 @@ msgstr "Sem suporte LDAP"
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
-#: src/core/windows/download.c:62
+#: src/core/linux/download.c:55 src/core/windows/download.c:62
+#: src/core/macos/download.c:55
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
+
+#: src/core/properties/signed.c:95
+#, fuzzy
+msgid "No secure connection"
+msgstr "Conexão _Segura."
 
 #: src/network_modules/openssl/messages.c:292
 msgid ""
@@ -1066,15 +1155,15 @@ msgstr ""
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/core/properties/boolean.c:198
+#: src/core/properties/boolean.c:196
 msgid "Non zero if the download of CRL is enabled"
 msgstr "Diferente de zero se o host se o download do CRL está habilitado"
 
-#: src/core/properties/boolean.c:93
+#: src/core/properties/boolean.c:91
 msgid "Non zero if the host is AS400."
 msgstr "Diferente de zero se o host é AS400"
 
-#: src/core/properties/boolean.c:85
+#: src/core/properties/boolean.c:83
 msgid "Non zero if the host is TSO."
 msgstr "Diferente de zero se o host é TSO"
 
@@ -1137,7 +1226,7 @@ msgstr "Pendente"
 msgid "Personal computer filespec incorrect: file transfer canceled"
 msgstr "Especificação de arquivo PC incorreta: Transferência cancelada"
 
-#: src/core/properties/string.c:152
+#: src/core/properties/string.c:136
 msgid "Preferred protocol for CRL download"
 msgstr "Protocolo preferido para download da CRL"
 
@@ -1164,6 +1253,14 @@ msgstr "Program Action 2"
 #: src/core/actions/table.c:811
 msgid "Program Action 3"
 msgstr "Program Action 3"
+
+#: src/core/properties/string.c:128
+msgid "Protocol library revision"
+msgstr ""
+
+#: src/core/properties/string.c:121
+msgid "Protocol library version"
+msgstr ""
 
 #: src/core/rpq.c:229
 #, c-format
@@ -1297,11 +1394,11 @@ msgstr ""
 msgid "SSL negotiation failed"
 msgstr "Negociação SSL falhou"
 
-#: src/core/properties/unsigned.c:138
+#: src/core/properties/unsigned.c:134
 msgid "Screen buffer length in bytes"
 msgstr "Tamanho do buffer de tela em bytes"
 
-#: src/core/properties/string.c:181
+#: src/core/properties/string.c:165
 msgid "Screen oversize if larger than the chosen model"
 msgstr "\"oversize\" maior que o modelo escolhido"
 
@@ -1345,7 +1442,9 @@ msgstr "Seleciona a direita"
 msgid "Select word"
 msgstr "Seleciona palavra"
 
+#: src/core/linux/event_dispatcher.c:131
 #: src/core/windows/event_dispatcher.c:136
+#: src/core/macos/event_dispatcher.c:131
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1417,11 +1516,11 @@ msgstr "Erro no socket"
 msgid "Sound"
 msgstr "Som"
 
-#: src/core/properties/boolean.c:128
+#: src/core/properties/boolean.c:126
 msgid "State is 3270, TN3270e or SSCP"
 msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 
-#: src/core/properties/boolean.c:163
+#: src/core/properties/boolean.c:161
 msgid "Still have text to paste"
 msgstr "Ainda existe texto para colar"
 
@@ -1465,15 +1564,15 @@ msgstr "TN3270E NVT"
 msgid "TN3270E SSCP-LU"
 msgstr "TN3270E SSCP-LU"
 
-#: src/core/properties/unsigned.c:99
+#: src/core/properties/unsigned.c:95
 msgid "Terminal model"
 msgstr "Modelo do terminal"
 
-#: src/core/properties/string.c:104
+#: src/core/properties/string.c:98
 msgid "Terminal name"
 msgstr "Nome do terminal"
 
-#: src/core/properties/string.c:97
+#: src/core/properties/string.c:91
 msgid "Terminal type"
 msgstr "Tipo do terminal"
 
@@ -1538,7 +1637,14 @@ msgstr ""
 msgid "The SSL error message was %s"
 msgstr "A mensagem de erro SSL foi \"%s\""
 
+#: src/core/linux/connect.c:191 src/core/macos/connect.c:191
+#, fuzzy, c-format
+msgid "The System error was '%s' (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
+
+#: src/core/linux/ldap.c:82 src/core/linux/ldap.c:91
 #: src/core/windows/ldap.c:101 src/core/windows/ldap.c:110
+#: src/core/macos/ldap.c:82 src/core/macos/ldap.c:91
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
@@ -1592,7 +1698,7 @@ msgstr ""
 "signature value could not be determined rather than it not matching the "
 "expected value, this is only meaningful for RSA keys."
 
-#: src/core/properties/unsigned.c:81
+#: src/core/properties/unsigned.c:77
 msgid "The color type"
 msgstr "O tipo de cor"
 
@@ -1644,7 +1750,7 @@ msgstr ""
 "name did not match the issuer name of the current certificate. Only "
 "displayed when the -issuer_checks option is set."
 
-#: src/core/properties/unsigned.c:162
+#: src/core/properties/unsigned.c:158
 msgid "The delay between the host unlocking the keyboard and the actual unlock"
 msgstr ""
 "Intervalo de tempo entre o desbloqueio de teclado pelo host e o desbloqueio "
@@ -1663,7 +1769,7 @@ msgstr ""
 msgid "The file transfer operation has been successfully completed."
 msgstr "A transferência de arquivos terminou com sucesso."
 
-#: src/core/ctlr.c:215
+#: src/core/ctlr.c:205
 #, c-format
 msgid "The height %d is less than model %d rows (%d)"
 msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
@@ -1690,15 +1796,15 @@ msgstr ""
 "The issuer certificate of a looked up certificate could not be found. This "
 "normally means the list of trusted certificates is not complete."
 
-#: src/core/properties/string.c:189
+#: src/core/properties/string.c:173
 msgid "The log file name"
 msgstr "Define o nome do arquivo de log"
 
-#: src/core/properties/unsigned.c:100
+#: src/core/properties/unsigned.c:96
 msgid "The model number"
 msgstr "Nº do modelo"
 
-#: src/core/properties/string.c:62
+#: src/core/properties/string.c:56
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
 
@@ -1710,19 +1816,19 @@ msgstr ""
 "O módulo de rede não definiu uma mensagem para o estado TLS/SSL, isso não "
 "deveria acontecer e pode ser um erro de codificação"
 
-#: src/core/ctlr.c:214
+#: src/core/ctlr.c:204
 msgid "The oversize height is too small."
 msgstr "A altura definida para 'oversize' é muito pequena."
 
-#: src/core/ctlr.c:177
+#: src/core/ctlr.c:172
 msgid "The oversize values are invalid."
 msgstr "Os valores para 'oversize' não são válidos."
 
-#: src/core/ctlr.c:189
+#: src/core/ctlr.c:182
 msgid "The oversize values are too big."
 msgstr "Os valores do 'oversize' são muito grandes."
 
-#: src/core/ctlr.c:202
+#: src/core/ctlr.c:193
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
@@ -1760,7 +1866,7 @@ msgstr ""
 msgid "The secure connection has been closed cleanly."
 msgstr "A conexão segura foi fechada corretamente"
 
-#: src/core/properties/string.c:166
+#: src/core/properties/string.c:150
 msgid "The security state"
 msgstr "O estado da segurança"
 
@@ -1794,8 +1900,10 @@ msgstr "O erro do sistema operacional foi \"%d\" (%s)"
 msgid "The system error was \"%s\""
 msgstr "O erro do sistema operacional foi \"%s\""
 
+#: src/core/linux/connect.c:222 src/core/linux/connect.c:282
 #: src/core/windows/connect.c:298 src/core/windows/connect.c:306
 #: src/core/windows/connect.c:314 src/core/windows/connect.c:324
+#: src/core/macos/connect.c:222 src/core/macos/connect.c:282
 #, c-format
 msgid "The system error was \"%s\" (rc=%d)"
 msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
@@ -1806,16 +1914,16 @@ msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
 msgid "The system error was %s"
 msgstr "O erro do sistema operacional foi \"%s\""
 
-#: src/core/util.c:266
+#: src/core/util.c:270
 #, c-format
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
-#: src/core/properties/string.c:197
+#: src/core/properties/string.c:181
 msgid "The trace file name"
 msgstr "O nome do arquivo de trace"
 
-#: src/core/ctlr.c:203
+#: src/core/ctlr.c:194
 #, c-format
 msgid "The width %d is less than model %d columns (%d)"
 msgstr "A largura %d é menor que a do modelo %d (%d)"
@@ -1833,7 +1941,7 @@ msgstr "Não existe espaço suficiente no host para os dados."
 msgid "This is a host program error."
 msgstr "Este é um erro no programa do host."
 
-#: src/core/properties/unsigned.c:146
+#: src/core/properties/unsigned.c:142
 msgid "Time for auto-reconnect"
 msgstr "Tempo para reconexão automática"
 
@@ -1906,11 +2014,12 @@ msgstr "Transferência falhou"
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
-#: src/core/windows/connect.c:198
+#: src/core/linux/connect.c:166 src/core/windows/connect.c:198
+#: src/core/macos/connect.c:166
 msgid "Try again"
 msgstr "Tentar novamente"
 
-#: src/core/properties/string.c:74
+#: src/core/properties/string.c:68
 msgid "URL of the current host"
 msgstr "URL do host atual"
 
@@ -1935,7 +2044,8 @@ msgstr "Incapaz de decifrar a assinatura do certificado"
 msgid "Unable to get certificate CRL."
 msgstr "Incapaz de obter o CRL de um certificado."
 
-#: src/core/windows/connect.c:224
+#: src/core/linux/connect.c:201 src/core/windows/connect.c:224
+#: src/core/macos/connect.c:201
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
@@ -1979,6 +2089,10 @@ msgstr "Não foi possível verificar o primeiro certificado"
 msgid "Unconnected"
 msgstr "Não conectado"
 
+#: src/core/properties/signed.c:100
+msgid "Undefined"
+msgstr "Indefinido"
+
 #: src/core/toggles/table.c:225
 msgid "Underline"
 msgstr "Sublinhados"
@@ -2001,10 +2115,12 @@ msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
 
 #: src/core/telnet.c:1774 src/core/telnet.c:1794
+#: src/core/properties/signed.c:59 src/core/properties/signed.c:88
+#: src/core/properties/signed.c:108
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: src/core/ctlr.c:626
+#: src/core/ctlr.c:402
 #, c-format
 msgid "Unknown 3270 Data Stream command: 0x%X"
 msgstr "Unknown 3270 Data Stream command: 0x%X"
@@ -2027,7 +2143,7 @@ msgstr "PF %d desconhecida"
 msgid "Unknown frame type from host"
 msgstr "Servidor enviou tipo de frame desconhecido"
 
-#: src/core/properties/unsigned.c:161
+#: src/core/properties/unsigned.c:157
 msgid "Unlock delay"
 msgstr "Atraso no desbloqueio"
 
@@ -2055,6 +2171,10 @@ msgstr "Usar teclas +/- para navegar por campos"
 msgid "Use the keys +/- from keypad to select editable fields"
 msgstr "Use the keys +/- from keypad to select editable fields"
 
+#: src/core/properties/signed.c:99
+msgid "Verifying SSL (Getting CRL)"
+msgstr ""
+
 #: src/core/windows/connect.c:111
 msgid "WSAStartup failed"
 msgstr "WSAStartup falhou"
@@ -2079,6 +2199,58 @@ msgstr "Erro windows foi %d"
 #: src/core/toggles/table.c:103 src/core/toggles/table.c:104
 msgid "Wrap around"
 msgstr "Wrap around"
+
+#: src/core/properties/signed.c:71 src/core/properties/signed.c:77
+#: src/core/properties/signed.c:78
+msgid "X"
+msgstr "X"
+
+#: src/core/properties/signed.c:72
+msgid "X -f"
+msgstr "X -f"
+
+#: src/core/properties/signed.c:69
+#, fuzzy
+msgid "X Connected"
+msgstr "X Desconectado"
+
+#: src/core/properties/signed.c:80
+#, fuzzy
+msgid "X Connecting"
+msgstr "Conectando"
+
+#: src/core/properties/signed.c:76
+msgid "X Inhibit"
+msgstr "X Inibido"
+
+#: src/core/properties/signed.c:70
+msgid "X Not Connected"
+msgstr "X Desconectado"
+
+#: src/core/properties/signed.c:74
+msgid "X Numeric"
+msgstr "X Numérico"
+
+#: src/core/properties/signed.c:75
+msgid "X Overflow"
+msgstr "X Estouro"
+
+#: src/core/properties/signed.c:73
+msgid "X Protected"
+msgstr "X Protegido"
+
+#: src/core/properties/signed.c:79
+#, fuzzy
+msgid "X Resolving"
+msgstr "Resolvendo"
+
+#: src/core/properties/signed.c:67
+msgid "X System"
+msgstr "X Sistema"
+
+#: src/core/properties/signed.c:68
+msgid "X Wait"
+msgstr "X Aguarde"
 
 #: src/core/ft/ftmessages.c:74
 msgid ""
@@ -2163,15 +2335,19 @@ msgstr "_Desconectar"
 msgid "_Reconnect"
 msgstr "_Reconectar"
 
-#: src/core/windows/connect.c:340
+#: src/core/linux/connect.c:233 src/core/linux/connect.c:302
+#: src/core/windows/connect.c:340 src/core/macos/connect.c:233
+#: src/core/macos/connect.c:302
 msgid "_Retry"
 msgstr "_Repetir"
 
-#: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+#: src/core/windows/connect.c:372 src/core/macos/connect.c:334
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/core/toggles/init.c:83 src/core/windows/connect.c:372
+#: src/core/toggles/init.c:83 src/core/linux/connect.c:334
+#: src/core/windows/connect.c:372 src/core/macos/connect.c:334
 msgid "enable"
 msgstr "habilitar"
 
@@ -2183,19 +2359,12 @@ msgstr "erro fcntl() ao obter estado do socket."
 msgid "ioctlsocket(FIONBIO) failed."
 msgstr "ioctlsocket(FIONBIO) falhou."
 
-#: src/core/properties/string.c:134
-msgid "lib3270 revision"
-msgstr "Revisão da lib3270"
-
-#: src/core/properties/string.c:127
-msgid "lib3270 version"
-msgstr "Versão da lib3270"
-
-#: src/core/properties/boolean.c:191
+#: src/core/properties/boolean.c:189
 msgid "numeric lock"
 msgstr "numeric lock"
 
-#: src/core/windows/connect.c:359
+#: src/core/linux/connect.c:322 src/core/windows/connect.c:359
+#: src/core/macos/connect.c:322
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) falhou"
 
@@ -2487,9 +2656,6 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 
 #~ msgid "Can't get screen contents"
 #~ msgstr "Não foi possível obter o conteúdo da tela"
-
-#~ msgid "Can't initialize curl operation"
-#~ msgstr "Erro ao inicializar operação CURL"
 
 #~ msgid "Can't load %s"
 #~ msgstr "Não foi possível carregar %s"
@@ -3518,9 +3684,6 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 #~ msgid "SSL init failed!"
 #~ msgstr "Inicialização SSL falhou"
 
-#~ msgid "SSL negotiation"
-#~ msgstr "Negociação SSL"
-
 #~ msgid "SSL negotiation has failed"
 #~ msgstr "Negociação de segurança falhou"
 
@@ -4014,9 +4177,6 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 #~ msgid "Unable to paste formatted data"
 #~ msgstr "Incapaz de colar texto formatado"
 
-#~ msgid "Undefined"
-#~ msgstr "Indefinido"
-
 #~ msgid "Unexpected SSL error"
 #~ msgstr "Erro SSL inesperado"
 
@@ -4120,33 +4280,6 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 #~ msgid "Windows error was \"%s\" (%u)"
 #~ msgstr "Erro windows foi \"%s\" (%u)"
 
-#~ msgid "X"
-#~ msgstr "X"
-
-#~ msgid "X -f"
-#~ msgstr "X -f"
-
-#~ msgid "X Inhibit"
-#~ msgstr "X Inibido"
-
-#~ msgid "X Not Connected"
-#~ msgstr "X Desconectado"
-
-#~ msgid "X Numeric"
-#~ msgstr "X Numérico"
-
-#~ msgid "X Overflow"
-#~ msgstr "X Estouro"
-
-#~ msgid "X Protected"
-#~ msgstr "X Protegido"
-
-#~ msgid "X System"
-#~ msgstr "X Sistema"
-
-#~ msgid "X Wait"
-#~ msgstr "X Aguarde"
-
 #~ msgid "XML file"
 #~ msgstr "Arquivo XML"
 
@@ -4234,9 +4367,6 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 #~ msgid "_Save"
 #~ msgstr "_Salvar"
 
-#~ msgid "_Secure connection."
-#~ msgstr "Conexão _Segura."
-
 #~ msgid "_Send"
 #~ msgstr "_Enviar"
 
@@ -4267,14 +4397,17 @@ msgstr "setsockopt(SO_OOBINLINE) falhou"
 #~ msgid "bracket"
 #~ msgstr "bracket"
 
-#~ msgid "disconnected"
-#~ msgstr "Desconectado"
-
 #~ msgid "fcntl(%s)"
 #~ msgstr "fcntl(%s)"
 
 #~ msgid "ioctl(%s)"
 #~ msgstr "ioctl(%s)"
+
+#~ msgid "lib3270 revision"
+#~ msgstr "Revisão da lib3270"
+
+#~ msgid "lib3270 version"
+#~ msgstr "Versão da lib3270"
 
 #~ msgid "setsockopt(%s)"
 #~ msgstr "setsockopt(%s)"

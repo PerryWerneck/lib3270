@@ -46,7 +46,6 @@
 #include <stdlib.h>
 #include "3270ds.h"
 #include "screen.h"
-//#include "resources.h"
 
 #include "ctlrc.h"
 #include "ftc.h"
@@ -65,15 +64,13 @@
 #include "widec.h"
 #include "screenc.h"
 
-// Boolean			dbcs = False;
 
-/* Statics */
+// Statics
 static void update_formatted(H3270 *session);
 static void set_formatted(H3270 *hSession, int state);
 static void ctlr_blanks(H3270 *session);
 static void	ctlr_half_connect(H3270 *session, int ignored, void *dunno);
 static void	ctlr_connect(H3270 *session, int ignored, void *dunno);
-//static void ticking_stop(H3270 *session);
 static void ctlr_add_ic(H3270 *session, int baddr, unsigned char ic);
 
 /**
@@ -92,8 +89,6 @@ static const unsigned char code_table[64] = {
 };
 
 #define IsBlank(c)	((c == EBC_null) || (c == EBC_space))
-
-
 #define ALL_CHANGED(h)	if(lib3270_in_ansi(h)) (h)->cbk.changed(h,0,(h)->view.rows*(h)->view.cols);
 #define REGION_CHANGED(h, f, l) if(lib3270_in_ansi(h)) (h)->cbk.changed(h,f,l)
 #define ONE_CHANGED(h,n)	if(lib3270_in_ansi(h)) (h)->cbk.changed(h,n,n+1);
@@ -179,8 +174,6 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr) {
 			    ovc, ovr
 			);
 
-			// popup_an_error(session,"Invalid %s %dx%d:\nNegative or zero",ResOversize, ovc, ovr);
-
 		} else if (ovc * ovr >= 0x4000) {
 			lib3270_popup_dialog(
 			    session,
@@ -190,8 +183,6 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr) {
 			    _( "%dx%d screen size is bigger than the maximum size" ),
 			    ovc, ovr
 			);
-
-//			popup_an_error(session,"Invalid %s %dx%d:\nToo big",ResOversize, ovc, ovr);
 
 		} else if (ovc < session->max.cols) {
 
@@ -204,7 +195,6 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr) {
 			    ovc, session->model_num, session->max.cols
 			);
 
-//			popup_an_error(session,"Invalid %s cols (%d):\nLess than model %d cols (%d)",ResOversize, ovc, session->model_num, session->maxCOLS);
 		} else if (ovr < session->max.rows) {
 
 			lib3270_popup_dialog(
@@ -216,10 +206,10 @@ void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr) {
 			    ovr, session->model_num, session->max.rows
 			);
 
-//			popup_an_error(session,"Invalid %s rows (%d):\nLess than model %d rows (%d)",ResOversize, ovr, session->model_num, session->maxROWS);
-
 		} else {
+
 			update_model_info(session,mn,session->oversize.cols = ovc,session->oversize.rows = ovr);
+
 		}
 	}
 
@@ -271,8 +261,6 @@ static void ctlr_half_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GN
 ///
 static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno)) {
 	hSession->cbk.set_timer(hSession,0);
-//	ticking_stop(hSession);
-//	status_untiming(hSession);
 
 	if (hSession->ever_3270)
 		hSession->ea_buf[-1].fa = FA_PRINTABLE | FA_MODIFY;
@@ -292,218 +280,6 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
 	hSession->reply_mode = SF_SRM_FIELD;
 	hSession->crm_nattr = 0;
 }
-
-LIB3270_EXPORT int lib3270_is_formatted(const H3270 *hSession) {
-	if(check_online_session(hSession))
-		return 0;
-
-	return hSession->formatted ? 1 : 0;
-}
-
-/**
- * @brief Get field address.
- *
- * @return Negative on error(sets errno) or field address.
- *
- */
-LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr) {
-	int sbaddr;
-
-	if(check_online_session(hSession))
-		return - errno;
-
-	if (!hSession->formatted)
-		return - (errno = ENOTSUP);
-
-	if(baddr < 0)
-		baddr = hSession->cursor_addr;
-
-	sbaddr = baddr;
-	do {
-		if(hSession->ea_buf[baddr].fa)
-			return baddr;
-		DEC_BA(baddr);
-	} while (baddr != sbaddr);
-
-	return -1;
-
-}
-
-LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr) {
-	int saddr;
-	int addr;
-	int width = 0;
-
-	if(check_online_session(hSession))
-		return - errno;
-
-	if (!hSession->formatted)
-		return - (errno = ENOTSUP);
-
-	if(baddr < 0)
-		baddr = hSession->cursor_addr;
-
-	addr = lib3270_field_addr(hSession,baddr);
-	if(addr < 0)
-		return addr;
-
-	saddr = addr;
-	INC_BA(addr);
-	do {
-		if(hSession->ea_buf[addr].fa)
-			return width;
-		INC_BA(addr);
-		width++;
-	} while (addr != saddr);
-
-	return -(errno = ENODATA);
-}
-
-LIB3270_EXPORT int lib3270_field_addr(const H3270 *hSession, int baddr) {
-	int sbaddr;
-
-	if(!lib3270_is_connected(hSession))
-		return -(errno = ENOTCONN);
-
-	if(!hSession->formatted)
-		return -(errno = ENOTSUP);
-
-	if(baddr < 0)
-		baddr = lib3270_get_cursor_address(hSession);
-
-	if(baddr > lib3270_get_length(hSession))
-		return -(errno = EOVERFLOW);
-
-	sbaddr = baddr;
-	do {
-		if(hSession->ea_buf[baddr].fa)
-			return baddr;
-		DEC_BA(baddr);
-	} while (baddr != sbaddr);
-
-	return -(errno = ENODATA);
-}
-
-LIB3270_EXPORT LIB3270_FIELD_ATTRIBUTE lib3270_get_field_attribute(H3270 *hSession, int baddr) {
-	int sbaddr;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if(!hSession->formatted) {
-		errno = ENOTCONN;
-		return LIB3270_FIELD_ATTRIBUTE_INVALID;
-	}
-
-	if(baddr < 0)
-		baddr = lib3270_get_cursor_address(hSession);
-
-	sbaddr = baddr;
-	do {
-		if(hSession->ea_buf[baddr].fa)
-			return (LIB3270_FIELD_ATTRIBUTE) hSession->ea_buf[baddr].fa;
-
-		DEC_BA(baddr);
-	} while (baddr != sbaddr);
-
-	errno = EINVAL;
-	return LIB3270_FIELD_ATTRIBUTE_INVALID;
-
-}
-
-/**
- * @brief Get the length of the field at given buffer address.
- *
- * @param hSession	Session handle.
- * @param addr		Buffer address of the field.
- *
- * @return field length or negative if invalid or not connected (sets errno).
- *
- */
-int lib3270_field_length(H3270 *hSession, int baddr) {
-	int saddr;
-	int addr;
-	int width = 0;
-
-	addr = lib3270_field_addr(hSession,baddr);
-	if(addr < 0)
-		return addr;
-
-	saddr = addr;
-	INC_BA(addr);
-	do {
-		if(hSession->ea_buf[addr].fa)
-			return width;
-		INC_BA(addr);
-		width++;
-	} while (addr != saddr);
-
-	return -(errno = EINVAL);
-
-}
-
-/**
- * @brief Find the field attribute for the given buffer address.
- *
- * @return Field attribute.
- *
- */
-unsigned char get_field_attribute(H3270 *hSession, int baddr) {
-	baddr = lib3270_field_addr(hSession,baddr);
-	if(baddr < 0)
-		return 0;
-	return hSession->ea_buf[baddr].fa;
-}
-
-/**
- * @brief Find the next unprotected field.
- *
- * @param hSession	Session handle.
- * @param baddr0	Search start addr (-1 to use current cursor position).
- *
- * @return address following the unprotected attribute byte, or 0 if no nonzero-width unprotected field can be found, negative if failed.
- *
- */
-LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0) {
-	register int baddr, nbaddr;
-
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if(!hSession->formatted)
-		return -(errno = ENOTSUP);
-
-	if(baddr0 < 0)
-		baddr0 = hSession->cursor_addr;
-
-	nbaddr = baddr0;
-	do {
-		baddr = nbaddr;
-		INC_BA(nbaddr);
-		if(hSession->ea_buf[baddr].fa &&!FA_IS_PROTECTED(hSession->ea_buf[baddr].fa) &&!hSession->ea_buf[nbaddr].fa)
-			return nbaddr;
-	} while (nbaddr != baddr0);
-
-	return 0;
-}
-
-LIB3270_EXPORT int lib3270_get_is_protected_at(const H3270 *h, unsigned int row, unsigned int col) {
-	return lib3270_get_is_protected(h, lib3270_translate_to_address(h,row,col));
-}
-
-LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr) {
-	FAIL_IF_NOT_ONLINE(hSession);
-
-	if(baddr < 0)
-		baddr = hSession->cursor_addr;
-
-	int faddr = lib3270_field_addr(hSession,baddr);
-
-	return FA_IS_PROTECTED(hSession->ea_buf[faddr].fa) ? 1 : 0;
-}
-
-LIB3270_EXPORT int lib3270_is_protected(H3270 *h, unsigned int baddr) {
-	return lib3270_get_is_protected(h, baddr);
-}
-
 
 /**
  * @brief Perform an erase command, which may include changing the (virtual) screen size.
@@ -1777,9 +1553,6 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 
 	ps_process(hSession);
 
-	/* Let a script go. */
-//	sms_host_output();
-
 	/* Tell 'em what happened. */
 	return rv;
 }
@@ -1800,7 +1573,6 @@ void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen) {
 	unsigned char *cp = buf;
 	int s_row;
 	unsigned char c;
-//	int baddr;
 
 	/*
 	 * The 3174 Functionl Description says that anything but NL, NULL, FM,
@@ -1846,7 +1618,6 @@ void ctlr_write_sscp_lu(H3270 *hSession, unsigned char buf[], int buflen) {
 			break;
 
 		case ORDER_SBA:
-//			baddr = DECODE_BADDR(*(cp+1), *(cp+2));
 			trace_ds(hSession," SetBufferAddress%s [ignored]\n", rcba(hSession,DECODE_BADDR(*(cp+1), *(cp+2))));
 			cp += 2;
 			i += 2;

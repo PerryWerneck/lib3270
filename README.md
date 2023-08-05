@@ -10,11 +10,12 @@ Created originally as part of PW3270 application.
 
 ## Installation
 
-### Linux
+### Pre build packages
 
-You can download installation package for supported distributions in Open Build Service.
+You can download installation package for supported linux distributions in [Open Build Service](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270)
 
-[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=lib3270)
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/develop/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270)
+[<img src="https://raw.githubusercontent.com/PerryWerneck/PerryWerneck/3aa96b8275d4310896c3a0b5b3965ed650fb7c2b/badges/github-msys-macos.svg" alt="Download from githut" height="80px">](https://github.com/PerryWerneck/lib3270/releases)
 
 ## Building for Linux
 
@@ -85,8 +86,32 @@ You can download installation package for supported distributions in Open Build 
 	make clean
 	make all
 	```
+### Windows native with MSYS2 (Using bundle script)
 
-### Windows native with MSYS2
+1. Install and update MSYS2 
+
+	* Download and install [msys2](https://www.msys2.org/)
+	* Update msys:
+	
+	```shell
+	pacman -Syu
+	```
+	Afther this close and reopen mingw shell.
+
+2. Get lib3270 sources from git using the mingw shell
+
+	```shell
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	```
+
+3. Run bundle script
+
+	```shell
+	cd lib3270
+	./win/bundle.msys --pre-reqs --build
+	```
+
+### Windows native with MSYS2 (Manual)
 
 1. Install and update MSYS2 
 
@@ -150,7 +175,7 @@ Install
 
 	```shell
 	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
-	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4"
+	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4" --with-libiconv-prefix=$(brew --prefix gettext)
 	make all && make install
 	brew link lib3270
 	```

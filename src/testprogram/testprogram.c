@@ -158,6 +158,7 @@ int main(int argc, char *argv[]) {
 		printf("Datafile: \"%s\"\n",datafile);
 	}
 
+	/*
 	{
 		lib3270_autoptr(char) datafile = lib3270_build_config_filename("test","file.conf",NULL);
 		printf("Configfile: \"%s\"\n",datafile);
@@ -167,7 +168,9 @@ int main(int argc, char *argv[]) {
 		lib3270_autoptr(char) datafile = lib3270_build_filename("Makefile",NULL);
 		printf("Custom file: \"%s\"\n",datafile);
 	}
+	*/
 
+	exit(0);
 
 	//lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(h,LIB3270_TOGGLE_SSL_TRACE,1);

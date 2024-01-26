@@ -15,6 +15,8 @@ jobs:
           brew update
           brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          rm -f /usr/local/bin/go || true
+          rm -f /usr/local/bin/gofmt || true
           brew upgrade
       - name: build
         run: ./mac/ci-build.sh

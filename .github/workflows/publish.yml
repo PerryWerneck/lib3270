@@ -1,14 +1,11 @@
 name: Publish
 on:
   push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - master   
+    branches: [ "win" ]
+    tags: [ "*" ]
+  
 jobs:
-  msys2-mingw:
-    name: Publish for MinGW 64
+  publish-mingw:
     runs-on: windows-latest
     defaults:
       run:
@@ -24,23 +21,23 @@ jobs:
         with:
           msystem: mingw64
           update: true
-          install: zip dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
+          install: dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
       - name: CI-Build
-        run: ./win/mingw-build.sh
-      - name: Bundle
-        run: ./win/bundle.msys --build
+        run: |
+          pacman -U --noconfirm *.pkg.tar.zst
+          dos2unix PKGBUILD.mingw
+          makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*-lib3270-*.pkg.tar.zst,*-lib3270-*.zip"
+          artifacts: "*3270*.pkg.tar.zst"
           allowUpdates: true
           draft: false
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
-  msys2-msvc:
-    name: Publish devel for MSVC 64
+  publish-msvc:
     runs-on: windows-latest
     defaults:
       run:
@@ -69,8 +66,7 @@ jobs:
           omitBody: true
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
-  macos:
-    name: Publish for macos
+  publish-macos:
     runs-on: macos-latest
     steps:
       - name: Checkout

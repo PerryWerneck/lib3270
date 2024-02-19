@@ -1,7 +1,7 @@
 name: Publish
 on:
   push:
-    branches: [ "win" ]
+    branches: [ "macos" ]
     tags: [ "*" ]
   
 jobs:
@@ -24,7 +24,6 @@ jobs:
           install: dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
       - name: CI-Build
         run: |
-          pacman -U --noconfirm *.pkg.tar.zst
           dos2unix PKGBUILD.mingw
           makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
       - uses: ncipollo/release-action@v1
@@ -81,6 +80,8 @@ jobs:
           brew update
           brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          find /usr/local/lib/node_modules/npm -delete
           rm -f /usr/local/bin/go || true
           rm -f /usr/local/bin/gofmt || true
           brew upgrade

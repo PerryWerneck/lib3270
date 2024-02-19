@@ -1,11 +1,12 @@
-name: MacOS Test
+name: check-macos
 on:
   push:
-    branches:
-      - macos
+    branches: [ "macos" ]
+  pull_request:
+    branches: [ "master" ]
+
 jobs:
-  build:
-    name: Build for macos
+  macos-build:
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -14,6 +15,7 @@ jobs:
         run: |
           brew update
           brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
           rm -f /usr/local/bin/go || true
           rm -f /usr/local/bin/gofmt || true

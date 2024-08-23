@@ -4,77 +4,30 @@ Sat Aug 17 16:00:46 UTC 2024 - perry.werneck@gmail.com
 - Update to version 5.4+git20240817:
   * Update codeql.yml
   * Debugging publisher.
-  * Debuggin macos publisher.
-  * Updating workflows.
-  * Debugging macos workflow.
-  * Debugging macos workflow.
-  * Debugging macos auto build.
-  * Update codeql.yml
-  * Debugging publisher.
-  * Debuggin macos publisher.
-  * Debugging macos workflow.
-  * Debugging macos workflow.
-  * Updating workflows.
-  * Debugging macos auto build.
-  * Another fix for macos build
   * Update README.md
   * Fixing brew upgrade
   * Reverting use of inner functions; doesnt work on macos compiler.
-  * Trying to fix mac os builds.
-  * Reactivating brew upgrade.
   * Setting state on unexpected exit during the build of ssl_context.
-  * Disabling 'brew upgrade' in macos workflow.
-  * Update publish.yml
-  * Fixing bundler.
-  * Adding win32 bundle.
   * Fixing win32 bundler.
-  * Debugging msys bundler.
-  * Adding bundle scripts.
   * Fix PA key mapping
   * Updating property methods.
   * Using nested functions.
   * Since windows does not have version control in the system a new method was implemented to check if the lib3270 current revision can work with applications to avoid loading of an incomplete or incompatible version of lib3270.
   * Forcing gettext path on MAC os.
   * Setting iconv path from brew in macos.
-  * Just fixing a comment
   * Adding field methods splitted from ctlr.c
   * Splitting field methods out of ctlr.c, cleaning code.
   * Implementing search for data files based on bundle *or* program path.
   * Better libname in macos.
-  * Fixing macos build.
-  * Fixing macos library name.
   * Update README.md
-  * Updating build instructions on README.md
   * Updating translation.
   * Disabling FIPS tests Fixing win32 builds
-  * Update publish.yml
-  * Update codeql.yml
-  * Update codeql.yml
-  * Fixing msvc build.
   * Publishing zip file for msvc builds.
   * Publish only on 'master' PRs
   * Publishing mingw package instead of tar.xz
   * Implementing mingw package.
-  * Update publish.yml
-  * Update ci-build.sh
-  * Updating win32 ci build.
-  * Fixing warning.
   * Searching for datafiles on all win32 possible paths.
-  * Update publish.yml
-  * Update publish.yml
-  * Update publish.yml
-  * Update publish.yml
-  * Update publish.yml
-  * Update publish.yml
   * Publishing win32 & macos artifacts in the same action.
-  * Publishing macos artifact.
-  * Debugging macos build.
-  * Debugging macos workflow.
-  * Debugging macos action.
-  * Update macos.yml
-  * Testing macos build.
-  * Updating msys2 workflow.
-  * Updating msys2 workflow.
   * Updating package control files.
 
 -------------------------------------------------------------------

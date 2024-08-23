@@ -19,14 +19,11 @@
 %define _libname lib3270
 %define _product pw3270
 
-%define __strip %{_mingw64_strip}
-%define __objdump %{_mingw64_objdump}
-%define _use_internal_dependency_generator 0
-%define __find_requires %{_mingw64_findrequires}
-%define __find_provides %{_mingw64_findprovides}
-%define __os_install_post %{_mingw64_debug_install_post} \
-                          %{_mingw64_install_post}
-                          
+# Only build in tumbleweed
+%if 0%{?suse_version} < 1699
+ExclusiveArch:  do_not_build
+%endif
+
 #---[ Package header ]------------------------------------------------------------------------------------------------
 
 Summary:		TN3270 access library for 64 bits Windows
@@ -55,12 +52,10 @@ BuildRequires:	mingw64-cross-gcc-c++
 BuildRequires:	mingw64-cross-pkg-config
 BuildRequires:	mingw64-filesystem
 BuildRequires:	mingw64-zlib-devel
-BuildRequires:	mingw64(lib:iconv)
-BuildRequires:	mingw64(lib:intl)
+BuildRequires:	mingw64-win_iconv-devel-static
+BuildRequires:	mingw64-libintl-devel
 BuildRequires:	mingw64-gettext-tools
-
-BuildRequires:	mingw64(pkg:libcrypto) >= 1.1
-BuildRequires:	mingw64(pkg:libssl) >= 1.1
+BuildRequires:  mingw64-libressl-devel
 
 %description
 TN3270 access library, originally designed as part of the %{_product} application.

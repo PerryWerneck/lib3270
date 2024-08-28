@@ -464,7 +464,7 @@ static void connection_complete(H3270 *session) {
 ///	@brief Disconnect from host.
 void net_disconnect(H3270 *hSession) {
 	if(hSession->xio.write) {
-		lib3270_remove_poll(hSession, hSession->xio.write);
+		lib3270_remove_poll(hSession->xio.write);
 		hSession->xio.write = 0;
 	}
 
@@ -516,7 +516,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
  * @param hSession	Session handle
  *
  */
-void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
+void net_input(int GNUC_UNUSED(fd), LIB3270_IO_EVENT GNUC_UNUSED(flag), H3270 *hSession) {
 //	register unsigned char	* cp;
 	int						  nr;
 	unsigned char			  buffer[BUFSZ];
@@ -1419,7 +1419,7 @@ static int process_eor(H3270 *hSession) {
 }
 
 /// @brief Called when there is an exceptional condition on the socket.
-void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
+void net_exception(int GNUC_UNUSED(fd), LIB3270_IO_EVENT GNUC_UNUSED(flag), H3270 *session) {
 	debug("%s",__FUNCTION__);
 
 	trace_dsn(session,"RCVD urgent data indication\n");
@@ -1427,7 +1427,7 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
 		session->syncing = 1;
 
 		if(session->xio.except) {
-			lib3270_remove_poll(session, session->xio.except);
+			lib3270_remove_poll(session->xio.except);
 			session->xio.except = NULL;
 		}
 	}

@@ -148,7 +148,7 @@ int lib3270_start_tls(H3270 *hSession) {
 #endif // _WIN32
 	int rc = lib3270_run_task(
 	             hSession,
-	             (int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
+	             LIB3270_TASK hSession->network.module->start_tls,
 	             NULL
 	         );
 #pragma GCC diagnostic pop

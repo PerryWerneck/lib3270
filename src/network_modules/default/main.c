@@ -96,8 +96,8 @@ static int unsecure_network_getpeername(const H3270 *hSession, struct sockaddr *
 	return getpeername(hSession->network.context->sock, addr, addrlen);
 }
 
-static void * unsecure_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata) {
-	return lib3270_add_poll_fd(hSession,hSession->network.context->sock,flag,call,userdata);
+static void * unsecure_network_add_poll(H3270 *hSession, LIB3270_IO_EVENT flag, void(*call)(int, LIB3270_IO_EVENT, void *), void *userdata) {
+	return lib3270_add_poll_fd(hSession->network.context->sock,flag,call,userdata);
 }
 
 static int unsecure_network_non_blocking(H3270 *hSession, const unsigned char on) {

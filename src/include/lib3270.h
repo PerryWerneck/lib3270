@@ -881,12 +881,12 @@ typedef enum _lib3270_io_event {
 	LIB3270_IO_FLAG_MASK		= 0x07
 } LIB3270_IO_FLAG;
 
-LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
+// LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+// LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
 LIB3270_EXPORT void		  lib3270_set_poll_state(H3270 *session, void *id, int enabled);
 
-LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
-LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
+// LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
+// LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
 
 /**
  * @brief I/O Controller.
@@ -1531,19 +1531,6 @@ LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_parse_host_type(const char *name);
 LIB3270_EXPORT const LIB3270_HOST_TYPE_ENTRY * lib3270_get_option_list(void);
 
 LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr);
-
-/**
- * @brief Run background task.
- *
- * Call task in a separate thread, keep gui main loop running until
- * the function returns.
- *
- * @param hSession	TN3270 session.
- * @param callback	Function to call.
- * @param parm		Parameter to callback function.
- *
- */
-LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm);
 
 /**
  * @brief The host is TSO?

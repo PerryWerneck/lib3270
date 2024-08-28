@@ -53,6 +53,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/os.h>
+#include <lib3270/tools/mainloop.h>
 #include <networking.h>
 //#include <fcntl.h>
 #include <poll.h>
@@ -176,13 +177,14 @@ int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 	return sock;
 }
 
-static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
+/*
+static void net_connected(int GNUC_UNUSED(fd), LIB3270_IO_EVENT GNUC_UNUSED(flag), H3270 *hSession) {
 	int 		err	= 0;
 	socklen_t	len	= sizeof(err);
 
 	if(hSession->xio.write) {
 		trace("%s write=%p",__FUNCTION__,hSession->xio.write);
-		lib3270_remove_poll(hSession, hSession->xio.write);
+		lib3270_remove_poll(hSession->xio.write);
 		hSession->xio.write = NULL;
 	}
 
@@ -244,8 +246,8 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		return;
 	}
 
-	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
-	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
+	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_EVENT_EXCEPTION,LIB3270_IO_PROC net_exception,hSession);
+	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_EVENT_READ,LIB3270_IO_PROC net_input,hSession);
 
 	lib3270_setup_session(hSession);
 	lib3270_set_connected_initial(hSession);
@@ -253,8 +255,22 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	lib3270_notify_tls(hSession);
 
 }
+*/
 
 int net_reconnect(H3270 *hSession, int seconds) {
+
+	lib3270_autoptr(LIB3270_POPUP) popup =
+		lib3270_popup_clone_printf(
+			NULL,
+			_( "Can't connect to %s:%s - NOT IMPLEMENTED"),
+			hSession->host.current,
+			hSession->host.srvc
+		);
+
+
+	return -1;
+
+	/*
 	LIB3270_NETWORK_STATE state;
 	memset(&state,0,sizeof(state));
 
@@ -262,7 +278,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
 
-	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state)) {
+	if(lib3270_run_task(hSession, LIB3270_TASK hSession->network.module->connect, &state)) {
 		lib3270_autoptr(LIB3270_POPUP) popup =
 		    lib3270_popup_clone_printf(
 		        NULL,
@@ -347,22 +363,20 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	}
 
 
-	/*
-	#if defined(OMTU)
-	else if (setsockopt(hSession->sock, SOL_SOCKET, SO_SNDBUF, (char *)&mtu,sizeof(mtu)) < 0)
-	{
-		popup_a_sockerr(hSession, _( "setsockopt(%s)" ), "SO_SNDBUF");
-		SOCK_CLOSE(hSession);
-	}
-	#endif
-
-	*/
+	//
+	//#if defined(OMTU)
+	//else if (setsockopt(hSession->sock, SOL_SOCKET, SO_SNDBUF, (char *)&mtu,sizeof(mtu)) < 0)
+	//{
+	//	popup_a_sockerr(hSession, _( "setsockopt(%s)" ), "SO_SNDBUF");
+	//	SOCK_CLOSE(hSession);
+	//}
+	//#endif
 
 	// Connecting, set callbacks, wait for connection
 	lib3270_set_cstate(hSession, LIB3270_PENDING);
 	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
-	hSession->xio.write = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_WRITE,net_connected,0);
+	hSession->xio.write = hSession->network.module->add_poll(hSession,LIB3270_IO_EVENT_WRITE,LIB3270_IO_PROC net_connected,hSession);
 
 	trace("%s: Connection in progress",__FUNCTION__);
 
@@ -376,6 +390,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	}
 
 	return 0;
+	*/
 
 }
 

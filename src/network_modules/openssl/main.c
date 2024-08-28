@@ -32,7 +32,9 @@
  *
  */
 
+
 #include "private.h"
+#include <lib3270/tools/mainloop.h>
 #include <openssl/asn1.h>
 
 static void openssl_network_reset(H3270 *hSession) {
@@ -183,8 +185,8 @@ static int openssl_network_getpeername(const H3270 *hSession, struct sockaddr *a
 	return getpeername(hSession->network.context->sock, addr, addrlen);
 }
 
-static void * openssl_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata) {
-	return lib3270_add_poll_fd(hSession,hSession->network.context->sock,flag,call,userdata);
+static void * openssl_network_add_poll(H3270 *hSession, LIB3270_IO_EVENT flag, void(*call)(int, LIB3270_IO_EVENT, void *), void *userdata) {
+	return lib3270_add_poll_fd(hSession->network.context->sock,flag,call,userdata);
 }
 
 static int openssl_network_non_blocking(H3270 *hSession, const unsigned char on) {
@@ -297,8 +299,8 @@ static int openssl_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state
 
 			trace_ssl(hSession,"CRL is valid\n");
 			/*
-			int day, sec;
-			if(ASN1_TIME_diff(&day, &sec, NULL, next_update)) {
+			// int day, sec;
+			// if(ASN1_TIME_diff(&day, &sec, NULL, next_update)) {
 				trace_ssl(hSession,"CRL is valid for %d day(s) and %d second(s)\n",day,sec);
 			} else {
 				trace_ssl(hSession,"Can't get CRL next update, discarding it\n");

@@ -45,8 +45,8 @@ LIB3270_INTERNAL void net_break(H3270 *hSession);
 LIB3270_INTERNAL int net_reconnect(H3270 *hSession, int seconds);
 
 LIB3270_INTERNAL void net_disconnect(H3270 *session);
-LIB3270_INTERNAL void net_exception(H3270 *session, int fd, LIB3270_IO_FLAG flag, void *dunno);
-LIB3270_INTERNAL void net_input(H3270 *session, int fd, LIB3270_IO_FLAG flag, void *dunno);
+LIB3270_INTERNAL void net_exception(int fd, LIB3270_IO_EVENT flag, H3270 *session);
+LIB3270_INTERNAL void net_input(int fd, LIB3270_IO_EVENT flag, H3270 *session);
 LIB3270_INTERNAL void net_interrupt(H3270 *hSession);
 LIB3270_INTERNAL void net_output(H3270 *hSession);
 LIB3270_INTERNAL void net_sendc(H3270 *hSession, char c);

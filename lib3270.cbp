@@ -153,6 +153,28 @@
 		<Unit filename="src/core/log.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/macos/connect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/macos/curl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/macos/download.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/macos/event_dispatcher.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/macos/ldap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/macos/log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/macos/private.h" />
+		<Unit filename="src/core/macos/util.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/model.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -290,6 +312,7 @@
 		<Unit filename="src/include/lib3270/session.h" />
 		<Unit filename="src/include/lib3270/ssl.h" />
 		<Unit filename="src/include/lib3270/toggle.h" />
+		<Unit filename="src/include/lib3270/tools/mainloop.h" />
 		<Unit filename="src/include/lib3270/trace.h" />
 		<Unit filename="src/include/linkedlist.h" />
 		<Unit filename="src/include/linux/lib3270/os.h" />
@@ -374,6 +397,9 @@
 		<Unit filename="src/ssl/linux/private.h" />
 		<Unit filename="src/ssl/windows/private.h" />
 		<Unit filename="src/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tools/mainloop.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions />

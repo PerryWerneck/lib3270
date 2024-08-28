@@ -42,6 +42,7 @@ typedef int socklen_t;
 #endif // _WIN32
 
 #include <lib3270/popup.h>
+#include <lib3270/tools/mainloop.h>
 
 typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
 typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
@@ -129,7 +130,7 @@ typedef struct lib3270_net_module {
 	ssize_t (*recv)(H3270 *hSession, void *buf, size_t len);
 
 	/// @brief Add socket in poll list.
-	void * (*add_poll)(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
+	void * (*add_poll)(H3270 *hSession, LIB3270_IO_EVENT flag, void(*call)(int, LIB3270_IO_EVENT, void *), void *userdata);
 
 	/// @brief Set non blocking mode.
 	///

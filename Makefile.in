@@ -60,6 +60,7 @@ COMMON_SOURCES= \
 	$(wildcard $(srcdir)/src/core/ft/*.c) \
 	$(wildcard $(srcdir)/src/core/properties/*.c) \
 	$(wildcard $(srcdir)/src/selection/*.c) \
+	$(wildcard $(srcdir)/src/tools/*.c) \
 	$(wildcard $(srcdir)/src/network_modules/*.c) \
 	$(BUILDDIR)/.tmp/$(LIBNAME)/fallbacks.c \
 	$(foreach MODULE, $(NETWORK_MODULES), $(wildcard $(srcdir)/src/network_modules/$(MODULE)/*.c))

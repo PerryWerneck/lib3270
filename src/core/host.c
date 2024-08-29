@@ -61,7 +61,7 @@
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
-static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)) {
+static int check_for_auto_reconnect(H3270 *hSession) {
 
 	if(hSession->auto_reconnect_inprogress) {
 		lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
@@ -88,7 +88,7 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 		return EBUSY;
 
 	hSession->auto_reconnect_inprogress = 1;
-	(void) AddTimer(msec, hSession, check_for_auto_reconnect, NULL);
+	lib3270_add_timer(msec, LIB3270_TIMER_PROC check_for_auto_reconnect, hSession);
 
 	return 0;
 }

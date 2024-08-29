@@ -363,7 +363,7 @@ void kybd_inhibit(H3270 *session, Boolean inhibit) {
  */
 void kybd_connect(H3270 *session, int connected, void GNUC_UNUSED(*dunno)) {
 	if (session->kybdlock & KL_DEFERRED_UNLOCK)
-		RemoveTimer(session, session->unlock_id);
+		lib3270_remove_timer(session->unlock_id);
 
 	lib3270_kybdlock_clear(session, -1);
 
@@ -381,7 +381,7 @@ void kybd_connect(H3270 *session, int connected, void GNUC_UNUSED(*dunno)) {
  */
 void kybd_in3270(H3270 *hSession, int GNUC_UNUSED(in3270), void GNUC_UNUSED(*dunno)) {
 	if (hSession->kybdlock & KL_DEFERRED_UNLOCK)
-		RemoveTimer(hSession, hSession->unlock_id);
+		lib3270_remove_timer(hSession->unlock_id);
 
 	lib3270_kybdlock_clear(hSession,~KL_AWAITING_FIRST);
 
@@ -932,7 +932,7 @@ LIB3270_EXPORT int lib3270_clear_operator_error(H3270 *hSession) {
 /**
  * @brief Deferred keyboard unlock.
  */
-static int defer_unlock(H3270 *hSession, void GNUC_UNUSED(*userdata)) {
+static int defer_unlock(H3270 *hSession) {
 	lib3270_kybdlock_clear(hSession,KL_DEFERRED_UNLOCK);
 	status_reset(hSession);
 	if(CONNECTED)
@@ -970,7 +970,7 @@ void do_reset(H3270 *hSession, Boolean explicit) {
 	 * keyboard now, or want to defer further into the future.
 	 */
 	if (hSession->kybdlock & KL_DEFERRED_UNLOCK)
-		RemoveTimer(hSession, hSession->unlock_id);
+		lib3270_remove_timer(hSession->unlock_id);
 
 	/*
 	 * If explicit (from the keyboard), unlock the keyboard now.
@@ -983,10 +983,10 @@ void do_reset(H3270 *hSession, Boolean explicit) {
 		kybdlock_set(hSession,KL_DEFERRED_UNLOCK);
 
 		if(hSession->unlock_delay_ms) {
-			hSession->unlock_id = AddTimer(hSession->unlock_delay_ms, hSession, defer_unlock, NULL);
+			hSession->unlock_id = lib3270_add_timer(hSession->unlock_delay_ms, LIB3270_TIMER_PROC defer_unlock, hSession);
 		} else {
 			hSession->unlock_id = 0;
-			defer_unlock(hSession, NULL);
+			defer_unlock(hSession);
 		}
 
 	}

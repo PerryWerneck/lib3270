@@ -34,7 +34,7 @@
 
  #define LIB3270_TIMER_PROC (int(*)(void *))
  #define LIB3270_IO_PROC	(void(*)(int, LIB3270_IO_EVENT, void *))
- #define LIB3270_TASK		(int (*)(int(*)(void *), void *))
+ #define LIB3270_TASK		(int(*)(void *))
 
  typedef struct _lib3270_main_loop {
 
@@ -47,6 +47,7 @@
 
 	void	* (*add_poll)(int fd, LIB3270_IO_EVENT flag, void(*proc)(int, LIB3270_IO_EVENT, void *), void *userdata);
 	void      (*remove_poll)(void *id);
+	int       (*remove_poll_fd)(int fd);
 	void      (*set_poll_state)(void *id, int enabled);
 
 	int		  (*wait)(int seconds);
@@ -78,6 +79,9 @@
  /// @brief Set main loop instance.
  LIB3270_EXPORT void lib3270_main_loop_set_instance(const lib3270_main_loop *instance);
 
+ /// @brief Run iteration waiting for time
+ LIB3270_EXPORT int lib3270_main_loop_iterate(unsigned long wait_ms);
+
  /// @brief Add timer
  LIB3270_EXPORT void * lib3270_add_timer(unsigned long interval_ms, int (*proc)(void *userdata), void *userdata);
 
@@ -87,3 +91,4 @@
  LIB3270_EXPORT void   lib3270_remove_poll(void *poll);
  LIB3270_EXPORT void   lib3270_remove_poll_fd(int fd);
  LIB3270_EXPORT void   lib3270_update_poll_fd(int fd, LIB3270_IO_EVENT flag);
+ LIB3270_EXPORT void   lib3270_set_poll_state(void *id, int enabled);

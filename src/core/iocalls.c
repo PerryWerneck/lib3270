@@ -52,6 +52,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
+#include <lib3270/tools/mainloop.h>
 
 #define MILLION			1000000L
 //
@@ -62,36 +63,35 @@
 /*---[ Standard calls ]-------------------------------------------------------------------------------------*/
 
 // Timeout calls
-static void      internal_remove_timer(H3270 *session, void *timer);
-static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
+//static void      internal_remove_timer(H3270 *session, void *timer);
+//static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
 
-static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-static void	  internal_remove_poll(H3270 *session, void *id);
-
-static void	  internal_set_poll_state(H3270 *session, void *id, int enabled);
+//static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+//static void	  internal_remove_poll(H3270 *session, void *id);
+//static void	  internal_set_poll_state(H3270 *session, void *id, int enabled);
 
 static int		  internal_wait(H3270 *session, int seconds);
 
 static void	  internal_ring_bell(H3270 *session);
 
-static int		  internal_run_task(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
+//static int		  internal_run_task(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
 
 /*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
 
-static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata)
-    = internal_add_timer;
+//static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata)
+//    = internal_add_timer;
 
-static void	  (*remove_timer)(H3270 *session, void *timer)
-    = internal_remove_timer;
+//static void	  (*remove_timer)(H3270 *session, void *timer)
+//    = internal_remove_timer;
 
-static void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
-    = internal_add_poll;
+//static void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
+//    = internal_add_poll;
 
-static void	  (*remove_poll)(H3270 *session, void *id)
-    = internal_remove_poll;
+//static void	  (*remove_poll)(H3270 *session, void *id)
+//    = internal_remove_poll;
 
-static void	  (*set_poll_state)(H3270 *session, void *id, int enabled)
-    = internal_set_poll_state;
+//static void	  (*set_poll_state)(H3270 *session, void *id, int enabled)
+//    = internal_set_poll_state;
 
 static int	  	  (*wait_callback)(H3270 *session, int seconds)
     = internal_wait;
@@ -102,8 +102,8 @@ static int 	  (*event_dispatcher)(H3270 *session,int wait)
 static void	  (*ring_bell)(H3270 *)
     = internal_ring_bell;
 
-static int		  (*run_task)(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm)
-    = internal_run_task;
+//static int		  (*run_task)(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm)
+//   = internal_run_task;
 
 /*---[ Typedefs ]-------------------------------------------------------------------------------------------*/
 
@@ -203,6 +203,7 @@ static void internal_remove_timer(H3270 *session, void * timer) {
 
 /* I/O events. */
 
+/*
 static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
 	input_t *ip = (input_t *) lib3270_linked_list_append_node(&session->input.list,sizeof(input_t), userdata);
 
@@ -215,12 +216,16 @@ static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, vo
 
 	return ip;
 }
+*/
 
+/*
 static void internal_remove_poll(H3270 *session, void *id) {
 	lib3270_linked_list_delete_node(&session->input.list,id);
 	session->input.changed = 1;
 }
+*/
 
+/*
 static void internal_set_poll_state(H3270 *session, void *id, int enabled) {
 	input_t *ip;
 
@@ -234,6 +239,7 @@ static void internal_set_poll_state(H3270 *session, void *id, int enabled) {
 	}
 
 }
+*/
 
 /*
 LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id) {
@@ -241,10 +247,10 @@ LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id) {
 }
 */
 
-LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled) {
+LIB3270_EXPORT void	lib3270_set_poll_state(void *id, int enabled) {
 	if(id) {
-		debug("%s: Polling on %p is %s",__FUNCTION__,id,(enabled ? "enabled" : "disabled"))
-		set_poll_state(session, id, enabled);
+		debug("%s: Polling on %p is %s",__FUNCTION__,id,(enabled ? "enabled" : "disabled"));
+		lib3270_main_loop_get_instance()->set_poll_state(id, enabled);
 	}
 }
 
@@ -302,7 +308,16 @@ static void internal_ring_bell(H3270 GNUC_UNUSED(*session)) {
 }
 
 /* External entry points */
+LIB3270_EXPORT void * lib3270_add_timer(unsigned long interval_ms, int (*proc)(void *userdata), void *userdata) {
 
+	return lib3270_main_loop_get_instance()->add_timer(
+			  interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
+			  proc,
+			  userdata
+			);
+}
+
+/*
 void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 	void *timer = add_timer(
 	                  session,
@@ -313,12 +328,11 @@ void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *se
 	trace("Timeout %p created with %ld ms",timer,interval_ms);
 	return timer;
 }
+*/
 
-void RemoveTimer(H3270 *session, void * timer) {
-	if(!timer)
-		return;
-	trace("Removing timeout %p",timer);
-	return remove_timer(session, timer);
+LIB3270_EXPORT void lib3270_remove_timer(void *timer) {
+	if(timer)
+		lib3270_main_loop_get_instance()->remove_timer(timer);
 }
 
 void x_except_on(H3270 *h) {
@@ -353,6 +367,7 @@ void remove_input_calls(H3270 *session) {
 	}
 }
 
+/*
 LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session,void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer)) {
 	if(add)
 		add_timer = add;
@@ -361,7 +376,9 @@ LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session
 		remove_timer = rm;
 
 }
+*/
 
+/*
 LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id)) {
 	if(add)
 		add_poll = add;
@@ -369,7 +386,9 @@ LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, i
 	if(rm)
 		remove_poll = rm;
 }
+*/
 
+/*
 LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk) {
 	if(!cbk || cbk->sz != sizeof(LIB3270_IO_CONTROLLER))
 		return errno = EINVAL;
@@ -395,6 +414,7 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 	return 0;
 
 }
+*/
 
 LIB3270_EXPORT void lib3270_main_iterate(H3270 *hSession, int block) {
 	CHECK_SESSION_HANDLE(hSession);
@@ -438,14 +458,31 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(void *), voi
 }
 
 int non_blocking(H3270 *hSession, Boolean on) {
+
 	if(hSession->network.module->non_blocking(hSession,on))
 		return 0;
 
-	lib3270_set_poll_state(hSession,hSession->xio.read, on);
-	lib3270_set_poll_state(hSession,hSession->xio.write, on);
-	lib3270_set_poll_state(hSession,hSession->xio.except, on);
+	lib3270_set_poll_state(hSession->xio.read, on);
+	lib3270_set_poll_state(hSession->xio.write, on);
+	lib3270_set_poll_state(hSession->xio.except, on);
 
 	return 0;
+}
+
+LIB3270_EXPORT void * lib3270_add_poll_fd(int fd, LIB3270_IO_EVENT flag, void(*call)(int, LIB3270_IO_EVENT, void *), void *userdata ) {
+	return lib3270_main_loop_get_instance()->add_poll(fd,flag,call,userdata);
+}
+
+LIB3270_EXPORT void lib3270_remove_poll(void *poll) {
+	lib3270_main_loop_get_instance()->remove_poll(poll);
+}
+
+LIB3270_EXPORT void lib3270_remove_poll_fd(int fd) {
+	lib3270_main_loop_get_instance()->remove_poll_fd(fd);
+}
+
+LIB3270_EXPORT int lib3270_main_loop_iterate(unsigned long wait_ms) {
+	return lib3270_main_loop_get_instance()->event_dispatcher(wait_ms);
 }
 
 

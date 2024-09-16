@@ -1,33 +1,25 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2024 Perry Werneck <perry.werneck@gmail.com>
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como iocalls.c e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+ /**
+  * @brief Implements 'glue' for mainloop and I/O.
+  */
 
 #include <internals.h>
 #include <sys/time.h>
@@ -54,281 +46,12 @@
 #include <lib3270/toggle.h>
 #include <lib3270/tools/mainloop.h>
 
-#define MILLION			1000000L
-//
-//#if defined(_WIN32)
-//	#define MAX_HA	256
-//#endif
-
-/*---[ Standard calls ]-------------------------------------------------------------------------------------*/
-
-// Timeout calls
-//static void      internal_remove_timer(H3270 *session, void *timer);
-//static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
-
-//static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-//static void	  internal_remove_poll(H3270 *session, void *id);
-//static void	  internal_set_poll_state(H3270 *session, void *id, int enabled);
-
-static int		  internal_wait(H3270 *session, int seconds);
-
-static void	  internal_ring_bell(H3270 *session);
-
-//static int		  internal_run_task(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
-
-/*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
-
-//static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata)
-//    = internal_add_timer;
-
-//static void	  (*remove_timer)(H3270 *session, void *timer)
-//    = internal_remove_timer;
-
-//static void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
-//    = internal_add_poll;
-
-//static void	  (*remove_poll)(H3270 *session, void *id)
-//    = internal_remove_poll;
-
-//static void	  (*set_poll_state)(H3270 *session, void *id, int enabled)
-//    = internal_set_poll_state;
-
-static int	  	  (*wait_callback)(H3270 *session, int seconds)
-    = internal_wait;
-
-static int 	  (*event_dispatcher)(H3270 *session,int wait)
-    = lib3270_default_event_dispatcher;
-
-static void	  (*ring_bell)(H3270 *)
-    = internal_ring_bell;
-
-//static int		  (*run_task)(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm)
-//   = internal_run_task;
-
-/*---[ Typedefs ]-------------------------------------------------------------------------------------------*/
-
-#define TN	(timeout_t *)NULL
-
-/*---[ Implement ]------------------------------------------------------------------------------------------*/
-
-
-/* Timeouts */
-
-#if defined(_WIN32)
-static void ms_ts(unsigned long long *u) {
-	FILETIME t;
-
-	/* Get the system time, in 100ns units. */
-	GetSystemTimeAsFileTime(&t);
-	memcpy(u, &t, sizeof(unsigned long long));
-
-	/* Divide by 10,000 to get ms. */
-	*u /= 10000ULL;
-}
-#endif
-
-static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
-	timeout_t *t_new;
-	timeout_t *t;
-	timeout_t *prev = TN;
-
-	trace("%s session=%p proc=%p interval=%ld",__FUNCTION__,session,proc,interval_ms);
-
-	t_new = (timeout_t *) lib3270_malloc(sizeof(timeout_t));
-
-	t_new->proc = proc;
-	t_new->userdata = userdata;
-	t_new->in_play = False;
-
-#if defined(_WIN32)
-
-	ms_ts(&t_new->ts);
-	t_new->ts += interval_ms;
-
-#else
-
-	gettimeofday(&t_new->tv, NULL);
-	t_new->tv.tv_sec += interval_ms / 1000L;
-	t_new->tv.tv_usec += (interval_ms % 1000L) * 1000L;
-
-	if (t_new->tv.tv_usec > MILLION) {
-		t_new->tv.tv_sec += t_new->tv.tv_usec / MILLION;
-		t_new->tv.tv_usec %= MILLION;
-	}
-
-#endif /*]*/
-
-	/* Find where to insert this item. */
-	for (t = (timeout_t *) session->timeouts.first; t != TN; t = (timeout_t *) t->next) {
-#if defined(_WIN32)
-		if (t->ts > t_new->ts)
-#else
-		if (t->tv.tv_sec > t_new->tv.tv_sec || (t->tv.tv_sec == t_new->tv.tv_sec && t->tv.tv_usec > t_new->tv.tv_usec))
-#endif
-			break;
-
-		prev = t;
-	}
-
-	// Insert it.
-	if (prev == TN) {
-		// t_new is Front.
-		t_new->next = session->timeouts.first;
-		session->timeouts.first = (struct lib3270_linked_list_node *) t_new;
-	} else if (t == TN) {
-		// t_new is Rear.
-		t_new->next = NULL;
-		prev->next = (struct lib3270_linked_list_node *) t_new;
-		session->timeouts.last = (struct lib3270_linked_list_node *) t_new;
-	} else {
-		// t_new is Middle.
-		t_new->next = (struct lib3270_linked_list_node *) t;
-		prev->next = (struct lib3270_linked_list_node *) t_new;
-	}
-
-	trace("Timer %p added with value %ld",t_new,interval_ms);
-
-	return t_new;
-}
-
-static void internal_remove_timer(H3270 *session, void * timer) {
-	timeout_t *st = (timeout_t *)timer;
-
-	trace("Removing timeout: %p",st);
-
-	if(!st->in_play)
-		lib3270_linked_list_delete_node(&session->timeouts,timer);
-
-}
-
-/* I/O events. */
-
-/*
-static void * internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
-	input_t *ip = (input_t *) lib3270_linked_list_append_node(&session->input.list,sizeof(input_t), userdata);
-
-	ip->enabled					= 1;
-	ip->fd						= fd;
-	ip->flag					= flag;
-	ip->call					= call;
-
-	session->input.changed = 1;
-
-	return ip;
-}
-*/
-
-/*
-static void internal_remove_poll(H3270 *session, void *id) {
-	lib3270_linked_list_delete_node(&session->input.list,id);
-	session->input.changed = 1;
-}
-*/
-
-/*
-static void internal_set_poll_state(H3270 *session, void *id, int enabled) {
-	input_t *ip;
-
-	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next) {
-		if (ip == (input_t *)id) {
-			ip->enabled = enabled ? 1 : 0;
-			session->input.changed = 1;
-			break;
-		}
-
-	}
-
-}
-*/
-
-/*
-LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id) {
-	remove_poll(session, id);
-}
-*/
-
 LIB3270_EXPORT void	lib3270_set_poll_state(void *id, int enabled) {
 	if(id) {
 		debug("%s: Polling on %p is %s",__FUNCTION__,id,(enabled ? "enabled" : "disabled"));
 		lib3270_main_loop_get_instance()->set_poll_state(id, enabled);
 	}
 }
-
-/*
-LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd) {
-	input_t *ip;
-
-	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next) {
-		if(ip->fd == fd) {
-			remove_poll(session, ip);
-			return;
-		}
-	}
-
-	lib3270_write_log(NULL,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
-
-}
-*/
-
-/*
-LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag) {
-	input_t *ip;
-
-	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next) {
-		if(ip->fd == fd) {
-			ip->flag = flag;
-			return;
-		}
-	}
-
-	lib3270_write_log(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
-
-}
-*/
-
-/*
-LIB3270_EXPORT void	 * lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
-	debug("%s(%d)",__FUNCTION__,fd);
-	return add_poll(session,fd,flag,call,userdata);
-}
-*/
-
-static int internal_wait(H3270 *hSession, int seconds) {
-	time_t end = time(0) + seconds;
-
-	while(time(0) < end) {
-		lib3270_main_iterate(hSession,1);
-	}
-
-	return 0;
-}
-
-static void internal_ring_bell(H3270 GNUC_UNUSED(*session)) {
-	return;
-}
-
-/* External entry points */
-LIB3270_EXPORT void * lib3270_add_timer(unsigned long interval_ms, int (*proc)(void *userdata), void *userdata) {
-
-	return lib3270_main_loop_get_instance()->add_timer(
-			  interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
-			  proc,
-			  userdata
-			);
-}
-
-/*
-void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session, void *userdata), void *userdata) {
-	void *timer = add_timer(
-	                  session,
-	                  interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
-	                  proc,
-	                  userdata
-	              );
-	trace("Timeout %p created with %ld ms",timer,interval_ms);
-	return timer;
-}
-*/
 
 LIB3270_EXPORT void lib3270_remove_timer(void *timer) {
 	if(timer)
@@ -367,69 +90,25 @@ void remove_input_calls(H3270 *session) {
 	}
 }
 
-/*
-LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session,void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer)) {
-	if(add)
-		add_timer = add;
-
-	if(rm)
-		remove_timer = rm;
-
-}
-*/
-
-/*
-LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id)) {
-	if(add)
-		add_poll = add;
-
-	if(rm)
-		remove_poll = rm;
-}
-*/
-
-/*
-LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk) {
-	if(!cbk || cbk->sz != sizeof(LIB3270_IO_CONTROLLER))
-		return errno = EINVAL;
-
-	lib3270_register_timer_handlers(cbk->AddTimer,cbk->RemoveTimer);
-	lib3270_register_fd_handlers(cbk->add_poll,cbk->remove_poll);
-
-	if(cbk->Wait)
-		wait_callback = cbk->Wait;
-
-	if(cbk->event_dispatcher)
-		event_dispatcher = cbk->event_dispatcher;
-
-	if(cbk->ring_bell)
-		ring_bell = cbk->ring_bell;
-
-	if(cbk->run_task)
-		run_task = cbk->run_task;
-
-	if(cbk->set_poll_state)
-		set_poll_state = cbk->set_poll_state;
-
-	return 0;
-
-}
-*/
-
 LIB3270_EXPORT void lib3270_main_iterate(H3270 *hSession, int block) {
-	CHECK_SESSION_HANDLE(hSession);
-	event_dispatcher(hSession,block);
+	lib3270_main_loop_get_instance()->event_dispatcher(block ? 1000 : 0);
 }
 
 LIB3270_EXPORT int lib3270_wait(H3270 *hSession, int seconds) {
-	wait_callback(hSession,seconds);
+
+	time_t end = time(0) + seconds;
+
+	while(time(0) < end) {
+		lib3270_main_loop_iterate(1000);
+	}
+
 	return 0;
 }
 
 LIB3270_EXPORT void lib3270_ring_bell(H3270 *session) {
 	CHECK_SESSION_HANDLE(session);
 	if(lib3270_get_toggle(session,LIB3270_TOGGLE_BEEP))
-		ring_bell(session);
+		lib3270_main_loop_get_instance()->ring_bell();
 }
 
 /**
@@ -443,14 +122,14 @@ LIB3270_EXPORT void lib3270_ring_bell(H3270 *session) {
  * @param parm		Parameter to callback function.
  *
  */
-LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(void *), void *parm) {
+LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(void *), void *userdata) {
 	int rc;
 
 	CHECK_SESSION_HANDLE(hSession);
 
 	hSession->cbk.set_timer(hSession,1);
 	hSession->tasks++;
-	rc = lib3270_main_loop_get_instance()->run_task(callback,parm);
+	rc = lib3270_main_loop_get_instance()->run_task(callback,userdata);
 	hSession->cbk.set_timer(hSession,0);
 	hSession->tasks--;
 	return rc;
@@ -467,6 +146,10 @@ int non_blocking(H3270 *hSession, Boolean on) {
 	lib3270_set_poll_state(hSession->xio.except, on);
 
 	return 0;
+}
+
+LIB3270_EXPORT void * lib3270_add_timer(unsigned long interval_ms, int (*proc)(void *userdata), void *userdata) {
+	return lib3270_main_loop_get_instance()->add_timer(interval_ms,proc,userdata);
 }
 
 LIB3270_EXPORT void * lib3270_add_poll_fd(int fd, LIB3270_IO_EVENT flag, void(*call)(int, LIB3270_IO_EVENT, void *), void *userdata ) {

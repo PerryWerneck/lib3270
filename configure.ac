@@ -1,6 +1,6 @@
 dnl
 dnl Software pw3270, desenvolvido com base nos códigos fontes do  C3270  e  X3270
-dnl (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+dnl (Paul Mattes paul.mattes@case.edu), de emulação de terminal 3270 para acesso a
 dnl aplicativos mainframe. Registro no INPI sob o nome G3270.
 dnl
 dnl Copyright (C) <2008> <Banco do Brasil S.A.>

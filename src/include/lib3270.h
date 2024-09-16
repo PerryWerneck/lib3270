@@ -1,6 +1,6 @@
 /*
  * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+ * (Paul Mattes paul.mattes@case.edu), de emulação de terminal 3270 para acesso a
  * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -883,7 +883,6 @@ typedef enum _lib3270_io_event {
 
 // LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 // LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
-LIB3270_EXPORT void		  lib3270_set_poll_state(void *id, int enabled);
 
 // LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
 // LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);

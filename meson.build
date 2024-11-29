@@ -57,9 +57,8 @@ lib_deps = [
 ]
 
 #
-# Compiler flags
+# Setup time based properties
 #
-cc = meson.get_compiler('c')
 enable_debug = get_option('debug') or get_option('buildtype').contains('debug')
 
 time_epoch = run_command('sh', '-c', 'echo "$SOURCE_DATE_EPOCH"', check : true).stdout().strip()
@@ -69,6 +68,11 @@ if time_epoch == ''
 else
   datecmd = 'date -u -d@' + time_epoch
 endif
+
+#
+# Compiler flags
+#
+cc = meson.get_compiler('c')
 
 compiler_flags = [
   '-ggdb3',

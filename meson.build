@@ -52,6 +52,7 @@ subdir('po')
 #
 lib_deps = [
   dependency('libssl'),  
+  dependency('libcrypto'),
   dependency('libcurl'),  
 ]
 
@@ -99,9 +100,7 @@ app_conf.set('PACKAGE_VERSION_MAJOR', pkg_major_version)
 app_conf.set('PACKAGE_VERSION_MINOR', pkg_minor_version)
 app_conf.set('PACKAGE_VERSION_MICRO', pkg_micro_version)
 
-
 app_conf.set('UNLOCK_MS', 350)
-
 
 if host_machine.system() != 'windows'
 
@@ -153,7 +152,6 @@ app_conf.set('X3270_FT', 1)
 app_conf.set('SSL_ENABLE_SELF_SIGNED_CERT_CHECK', 1)
 app_conf.set('SSL_ENABLE_CRL_CHECK', 1)
 app_conf.set('SSL_ENABLE_CRL_EXPIRATION_CHECK', 1)
-
 
 time_epoch = run_command('sh', '-c', 'echo "$SOURCE_DATE_EPOCH"', check : true).stdout().strip()
 if time_epoch == ''
@@ -242,6 +240,9 @@ lib_src += [
   'src/library/trace_ds.c',
   'src/library/util.c',
   'src/library/wait.c',
+  'src/library/selection/actions.c',
+  'src/library/selection/get.c',
+  'src/library/selection/selection.c',
   'src/library/network/default/main.c',
   'src/library/network/openssl/context.c',
   'src/library/network/openssl/start.c',
@@ -317,37 +318,36 @@ pkg_variables = [
 if host_machine.system() == 'windows'
 
   pkg.generate(
-    name: 'lib' + meson.project_name(),
+    name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
     requires: [ 'pugixml' ],
-    libraries: [ '-l' + meson.project_name() + '.dll' ]
+    libraries: [ '-l3270.dll' ]
   )
 
   pkg.generate(
-    name: 'lib' + meson.project_name() + '-static',
+    name: meson.project_name() + '-static',
     description: project_description,
     variables: pkg_variables,
-    requires: [ sdk_requires ],
     libraries: [ 
-      '-l' + meson.project_name(),
-    ] + winlibs
+      '-l3270',
+    ]
   )
 
 else
 
   pkg.generate(
-    name: 'lib' + meson.project_name(),
+    name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    libraries: [ '-l' + meson.project_name() ]
+    libraries: [ '-l3270' ]
   )
 
   pkg.generate(
-    name: 'lib' + meson.project_name() + '-static',
+    name: meson.project_name() + '-static',
     description: project_description,
     variables: pkg_variables,
-    libraries: [ '-l:lib' + meson.project_name() + '.a' ]
+    libraries: [ '-l:' + meson.project_name() + '.a' ]
   )
 
 endif
@@ -394,12 +394,6 @@ config_src = [
 
 if host_machine.system() == 'windows'
 
-  configure_file(
-    input : 'src/library/os/windows/app-manifest.xml.in',
-    output : 'app-manifest.xml',
-    configuration : app_conf
-  )
-
   # https://mesonbuild.com/Windows-module.html
   windows = import('windows')
   resources = windows.compile_resources(
@@ -411,19 +405,18 @@ if host_machine.system() == 'windows'
   )
 
   dynamic = shared_library(
-    meson.project_name(), 
+    '3270', 
     config_src + lib_src + resources,
     install: true,
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,
     include_directories: includes_dir,
-    link_args: winlibs,
   )
 
 else
 
   dynamic = shared_library(
-    meson.project_name(), 
+    '3270', 
     config_src + lib_src,
     install: true,
     version : libversion,
@@ -436,7 +429,7 @@ else
 endif
 
 static_library(
-  meson.project_name(), 
+  '3270', 
   config_src + lib_src,
   install: true,
   dependencies: lib_deps,

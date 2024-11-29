@@ -40,6 +40,7 @@
 #include <lib3270/charset.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <string.h>
 
 /*
  * EBCDIC-to-Unicode translation tables.

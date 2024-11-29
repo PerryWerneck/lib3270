@@ -115,9 +115,10 @@ if host_machine.system() != 'windows'
   )
 
   app_conf.set('DATADIR', 
-    '@0@/@1@'.format(
+    '@0@/@1@/@2@'.format(
       get_option('prefix'),
-      get_option('datadir')
+      get_option('datadir'),
+      product_name
     )
   )
 
@@ -299,7 +300,12 @@ pkg_variables = [
   'build_id=@0@'.format(time_epoch),
 
   'package_name=lib@0@@1@_@2@'.format(product_name,pkg_major_version,pkg_minor_version),
-  'module_path=${libdir}/@0@/@1@.@2@/modules/'.format(
+  
+  'sdk_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
+  'library_name=3270',
+  'product_id=br.app.@0@'.format(product_name),
+
+  'plugin_path=${libdir}/@0@/@1@.@2@/plugins/'.format(
     product_name,pkg_major_version,pkg_minor_version,
   ),
   'module_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),

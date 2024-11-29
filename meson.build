@@ -255,37 +255,34 @@ lib_src += [
 ]
 
 linux_src =[
-  'src/library/linux/connect.c',
-  'src/library/linux/curl.c',
-  'src/library/linux/download.c',
-  'src/library/linux/event_dispatcher.c',
-  'src/library/linux/ldap.c',
-  'src/library/linux/log.c',
-  'src/library/linux/util.c',
+  'src/library/os/linux/connect.c',
+  'src/library/os/linux/curl.c',
+  'src/library/os/linux/download.c',
+  'src/library/os/linux/event_dispatcher.c',
+  'src/library/os/linux/ldap.c',
+  'src/library/os/linux/log.c',
+  'src/library/os/linux/util.c',
 ] 
 
 darwin_src = [
-  'src/library/darwin/connect.c',
-  'src/library/darwin/curl.c',
-  'src/library/darwin/download.c',
-  'src/library/darwin/event_dispatcher.c',
-  'src/library/darwin/ldap.c',
-  'src/library/darwin/log.c',
-  'src/library/darwin/util.c',
+  'src/library/os/darwin/connect.c',
+  'src/library/os/darwin/curl.c',
+  'src/library/os/darwin/download.c',
+  'src/library/os/darwin/event_dispatcher.c',
+  'src/library/os/darwin/ldap.c',
+  'src/library/os/darwin/log.c',
+  'src/library/os/darwin/util.c',
 ]
 
 win_src = [
-  'src/library/windows/connect.c',
-  'src/library/windows/download.c',
-  'src/library/windows/event_dispatcher.c',
-  'src/library/windows/http.c',
-  'src/library/windows/ldap.c',
-  'src/library/windows/log.c',
-  'src/library/windows/registry.c',
-  'src/library/windows/util.c',
-]
-
-test_src = [
+  'src/library/os/windows/connect.c',
+  'src/library/os/windows/download.c',
+  'src/library/os/windows/event_dispatcher.c',
+  'src/library/os/windows/http.c',
+  'src/library/os/windows/ldap.c',
+  'src/library/os/windows/log.c',
+  'src/library/os/windows/registry.c',
+  'src/library/os/windows/util.c',
 ]
 
 #
@@ -329,6 +326,9 @@ if host_machine.system() == 'windows'
     name: meson.project_name() + '-static',
     description: project_description,
     variables: pkg_variables,
+    requires: [
+      lib_deps
+    ],
     libraries: [ 
       '-l3270',
     ]
@@ -347,6 +347,9 @@ else
     name: meson.project_name() + '-static',
     description: project_description,
     variables: pkg_variables,
+    requires: [
+      lib_deps
+    ],
     libraries: [ '-l:' + meson.project_name() + '.a' ]
   )
 
@@ -443,5 +446,28 @@ executable(
   link_with : [ dynamic ],
   dependencies: lib_deps,
   include_directories: includes_dir
+)
+
+install_headers(
+  'src/include/lib3270.h',
+)
+
+install_headers(
+  'src/include/lib3270/actions.h',
+  'src/include/lib3270/charset.h',
+  'src/include/lib3270/filetransfer.h',
+  'src/include/lib3270.h',
+  'src/include/lib3270/html.h',
+  'src/include/lib3270/internals.h',
+  'src/include/lib3270/keyboard.h',
+  'src/include/lib3270/log.h',
+  'src/include/lib3270/popup.h',
+  'src/include/lib3270/properties.h',
+  'src/include/lib3270/selection.h',
+  'src/include/lib3270/session.h',
+  'src/include/lib3270/ssl.h',
+  'src/include/lib3270/toggle.h',
+  'src/include/lib3270/trace.h',
+  subdir: 'lib3270'  
 )
 

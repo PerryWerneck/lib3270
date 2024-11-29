@@ -21,7 +21,6 @@ project(
 	'lib3270', 
 	['c'],
 	version: '5.5.0',
-	default_options : ['c_std=c11' ],
 	license: 'GPL-3.0-or-later',
 )
 
@@ -100,6 +99,7 @@ app_conf.set('PACKAGE_VERSION_MAJOR', pkg_major_version)
 app_conf.set('PACKAGE_VERSION_MINOR', pkg_minor_version)
 app_conf.set('PACKAGE_VERSION_MICRO', pkg_micro_version)
 
+
 app_conf.set('UNLOCK_MS', 350)
 
 
@@ -162,20 +162,23 @@ else
   datecmd = 'date -u -d' + time_epoch
 endif
 
+package_release = run_command('sh', '-c', datecmd + ' +%-y.%-m.%-d', check : true).stdout().strip()
+app_conf.set_quoted('PACKAGE_RELEASE',package_release)
+
 rpq_build_date = run_command('sh', '-c', 'LANG=C ' + datecmd, check : true).stdout().strip()
-app_conf.set('RPQ_BUILD_DATE', rpq_build_date)
+app_conf.set_quoted('RPQ_BUILD_DATE', rpq_build_date)
 
 rpq_timestamp_value = run_command('sh', '-c', datecmd + ' +%Y%m%d%H%M%S', check : true).stdout().strip()
-app_conf.set('RPQ_TIMESTAMP_VALUE', rpq_timestamp_value)
+app_conf.set_quoted('RPQ_TIMESTAMP_VALUE', rpq_timestamp_value)
 
 rpq_revision= run_command('sh', '-c', datecmd + ' +%Y%m%d', check : true).stdout().strip()
-app_conf.set('RPQ_REVISION', rpq_revision)
+app_conf.set_quoted('RPQ_REVISION', rpq_revision)
 
 sccs_user= run_command('sh', '-c', 'echo "$USER"', check : true).stdout().strip()
-app_conf.set('SCCS_USER', sccs_user)
+app_conf.set_quoted('SCCS_USER', sccs_user)
 
 sccs_date = run_command('sh', '-c', datecmd + ' +%Y/%m/%d', check : true).stdout().strip()
-app_conf.set('SCCS_DATE', sccs_date)
+app_conf.set_quoted('SCCS_DATE', sccs_date)
 
 includes_dir = include_directories('src/include')
 
@@ -239,6 +242,15 @@ lib_src += [
   'src/library/trace_ds.c',
   'src/library/util.c',
   'src/library/wait.c',
+  'src/library/network/default/main.c',
+  'src/library/network/openssl/context.c',
+  'src/library/network/openssl/start.c',
+  'src/library/network/openssl/crl.c',
+  'src/library/network/openssl/main.c',
+  'src/library/network/openssl/messages.c',
+  'src/library/network/select.c',
+  'src/library/network/state.c',
+  'src/library/network/tools.c',
 ]
 
 linux_src =[

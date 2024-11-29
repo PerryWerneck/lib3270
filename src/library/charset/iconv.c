@@ -40,6 +40,10 @@
 #include <iconv.h>
 #include <string.h>
 
+#ifndef ICONV_CONST
+	#define ICONV_CONST
+#endif // ICONV_CONST
+
 struct _lib3270_iconv {
 	/// @brief Convert strings from host codepage to local codepage.
 	iconv_t local;

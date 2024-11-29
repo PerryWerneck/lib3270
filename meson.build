@@ -174,8 +174,6 @@ app_conf.set_quoted('SCCS_USER', sccs_user)
 sccs_date = run_command('sh', '-c', datecmd + ' +%Y/%m/%d', check : true).stdout().strip()
 app_conf.set_quoted('SCCS_DATE', sccs_date)
 
-includes_dir = include_directories('src/include')
-
 #
 # Sources
 #
@@ -356,6 +354,16 @@ endif
 
 if host_machine.system() == 'windows'
 
+  includes_dir = include_directories(
+    'src/include',
+    'src/include/windows',
+  )
+
+  install_headers(
+    'src/include/windows/lib3270/os.h',
+    subdir: 'lib3270'  
+  )
+
   # Supplied by win_iconv-devel-static
   app_conf.set('HAVE_ICONV',1)
   app_conf.set_quoted('LIBEXT', '.dll')
@@ -364,6 +372,16 @@ if host_machine.system() == 'windows'
 endif
 
 if host_machine.system() == 'linux'
+
+  includes_dir = include_directories(
+    'src/include',
+    'src/include/linux',
+  )
+
+  install_headers(
+    'src/include/linux/lib3270/os.h',
+    subdir: 'lib3270'  
+  )
 
   if cc.compiles('#include <unistd.h>', name : 'unistd.h')
     app_conf.set('HAVE_UNISTD_H', 1)
@@ -376,6 +394,16 @@ if host_machine.system() == 'linux'
 endif
 
 if host_machine.system() == 'darwin'
+
+  includes_dir = include_directories(
+    'src/include',
+    'src/include/darwin',
+  )
+
+  install_headers(
+    'src/include/darwin/lib3270/os.h',
+    subdir: 'lib3270'  
+  )
 
   lib_src += darwin_src
 

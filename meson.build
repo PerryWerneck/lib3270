@@ -65,6 +65,9 @@ enable_debug = get_option('debug') or get_option('buildtype').contains('debug')
 time_epoch = run_command('sh', '-c', 'echo "$SOURCE_DATE_EPOCH"', check : true).stdout().strip()
 if time_epoch == ''
   time_epoch = run_command('date','+%Y%m%d', check: true).stdout().strip()
+  datecmd = 'date'
+else
+  datecmd = 'date -u -d@' + time_epoch
 endif
 
 compiler_flags = [
@@ -152,13 +155,6 @@ app_conf.set('X3270_FT', 1)
 app_conf.set('SSL_ENABLE_SELF_SIGNED_CERT_CHECK', 1)
 app_conf.set('SSL_ENABLE_CRL_CHECK', 1)
 app_conf.set('SSL_ENABLE_CRL_EXPIRATION_CHECK', 1)
-
-time_epoch = run_command('sh', '-c', 'echo "$SOURCE_DATE_EPOCH"', check : true).stdout().strip()
-if time_epoch == ''
-  datecmd = 'date'
-else
-  datecmd = 'date -u -d' + time_epoch
-endif
 
 package_release = run_command('sh', '-c', datecmd + ' +%-y.%-m.%-d', check : true).stdout().strip()
 app_conf.set_quoted('PACKAGE_RELEASE',package_release)

@@ -436,4 +436,12 @@ static_library(
   include_directories: includes_dir
 )
 
+executable(
+  meson.project_name(),
+  config_src + [ 'src/testprogram/testprogram.c' ],
+  install: false,
+  link_with : [ dynamic ],
+  dependencies: lib_deps,
+  include_directories: includes_dir
+)
 

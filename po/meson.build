@@ -25,7 +25,7 @@
 # https://docs.elementary.io/develop/writing-apps/our-first-app/translations
 #
 
-# find . -type f -iname '*.c' | grep -v 'build' | sed 's@^./@@g' | grep -v testprogram > po/POTFILES.in
+# find 'src/library' -type f -iname '*.c' | grep -v 'build' | sed 's@^./@@g' | grep -v testprogram > po/POTFILES.in
 
 i18n = import('i18n')
 

@@ -168,8 +168,6 @@ int main(int argc, char *argv[]) {
 	}
 	*/
 
-	exit(0);
-
 	//lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(h,LIB3270_TOGGLE_SSL_TRACE,1);
 

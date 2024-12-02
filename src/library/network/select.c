@@ -74,5 +74,6 @@ char * lib3270_set_network_module_from_url(H3270 *hSession, char *url) {
 
 	}
 
+	trace("Unable to parse '%s'",url);
 	return NULL;
 }

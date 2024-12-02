@@ -50,8 +50,9 @@ subdir('po')
 #
 # Dependencies
 #
+libssl = dependency('libssl', required: false)
 lib_deps = [
-  dependency('libssl'),  
+  libssl,  
   dependency('libcrypto'),
   dependency('libcurl'),  
 ]
@@ -126,6 +127,10 @@ if host_machine.system() != 'windows'
     )
   )
 
+endif
+
+if libssl.found()
+  app_conf.set('HAVE_LIBSSL', 1)
 endif
 
 app_conf.set('HAVE_STRPTIME', cc.has_function('strptime'))
@@ -322,7 +327,6 @@ if host_machine.system() == 'windows'
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'pugixml' ],
     libraries: [ '-l3270.dll' ]
   )
 

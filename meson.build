@@ -24,7 +24,7 @@ project(
 	license: 'GPL-3.0-or-later',
 )
 
-project_description = 'UDJat core library'
+project_description = 'TN3270 client library'
 product_name = 'pw3270'
 product_domain = 'br.com.bb.pw3270'
 product_title = 'TN3270 Access library'
@@ -301,12 +301,12 @@ pkg_variables = [
   'product_title=@0@'.format(product_title),
   'product_version=@0@@1@'.format(pkg_major_version,pkg_minor_version),
 
-  'build_id=@0@'.format(time_epoch),
+  'build_id=@0@'.format(rpq_timestamp_value),
 
-  'package_name=lib@0@@1@_@2@'.format(product_name,pkg_major_version,pkg_minor_version),
+  'package_name=lib3270-@0@_@1@'.format(pkg_major_version,pkg_minor_version),
   
   'sdk_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
-  'library_name=3270',
+  'library_name=lib3270',
   'product_id=br.app.@0@'.format(product_name),
 
   'plugin_path=${libdir}/@0@/@1@.@2@/plugins/'.format(

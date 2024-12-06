@@ -20,6 +20,8 @@
  *		and timers.
  */
 
+#include <string.h>
+
 /* Identify ourselves. */
 #define C3270	1
 

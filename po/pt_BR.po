@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-29 10:25-0300\n"
+"POT-Creation-Date: 2024-12-06 13:05-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -1524,11 +1524,11 @@ msgstr "Reconectar automaticamente"
 msgid "Automatically reconnect to the host if it ever disconnects"
 msgstr "Reconecta automaticamente caso o servidor desconecte"
 
-#: src/library/connect.c:169
+#: src/library/connect.c:167
 msgid "Can't determine the TLS/SSL state"
 msgstr "Não foi possível determinar o estado TLS/SSL"
 
-#: src/library/connect.c:170
+#: src/library/connect.c:168
 msgid ""
 "The network module didn't set the TLS/SSL state message, this is not "
 "supposed to happen and can be a coding error"

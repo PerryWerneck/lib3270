@@ -1,7 +1,7 @@
 #
 # spec file for package lib3270
 #
-# Copyright (c) 2022 SUSE LLC
+# Copyright (c) 2019 SUSE LLC
 # Copyright (c) <2008> <Banco do Brasil S.A.>
 #
 # All modifications and additions to the file contributed by third parties
@@ -13,34 +13,35 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via https://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://github.com/PerryWerneck/lib3270/issues
 #
 
 Name:           lib3270
-Version: 5.5.0
+Version:        5.5.0
 Release:        0
 Summary:        TN3270 Access library
-Group:          Development/Libraries/C and C++
 License:        LGPL-3.0-only
+Group:          System/Libraries
 URL:            https://github.com/PerryWerneck/lib3270
 Source:         %{name}-%{version}.tar.xz
-BuildRequires:  autoconf >= 2.61
-BuildRequires:  automake
-BuildRequires:  binutils
-BuildRequires:  coreutils
+
+%if "%{_vendor}" == "debbuild"
+BuildRequires:  meson-deb-macros
+BuildRequires:  pkg-config
+BuildRequires:  libcurl-dev
+BuildRequires:  libssl-dev
+%else
 BuildRequires:  fdupes
-BuildRequires:  gcc-c++
-BuildRequires:  gettext-devel
-BuildRequires:  libtool
-BuildRequires:  m4
 BuildRequires:  pkgconfig
-BuildRequires:  xz
+BuildRequires:  gettext-devel
 BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(libssl)
+%endif
 
-%if 0%{?centos_version}
-# CENTOS Requires gdb for debuginfo
-BuildRequires:  gdb
+%if 0%{?suse_version} == 01500
+BuildRequires:  meson >= 0.61.4
+%else
+BuildRequires:  meson
 %endif
 
 %description
@@ -48,13 +49,21 @@ TN3270 access library, originally designed as part of the pw3270 application.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
+#---[ Library ]-------------------------------------------------------------------------------------------------------
+
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:        TN3270 Access library
-Group:          Development/Libraries/C and C++
+Summary:	TN3270 Access library
+
+%if "%{_vendor}" == "debbuild"
+Group:		devel
+Depends:	${misc:Depends}, ${shlibs:Depends}  
+%else
+Group:		Development/Libraries/C and C++
+%endif
 
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
@@ -62,47 +71,61 @@ TN3270 access library, originally designed as part of the pw3270 application.
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
-Summary:        TN3270 Access library development files
-Requires:       %{name}-%{_libvrs} = %{version}
-Group:          Development/Libraries/C and C++
+Summary:	TN3270 Access library development files
+Group:		Development/Libraries/C and C++
+Requires:	%{name}-%{_libvrs} = %{version}
+
+%if "%{_vendor}" == "debbuild"
+Provides:	lib3270-dev
+%endif
 
 %description devel
 Header files for the TN3270 access library.
 
+%if "%{_vendor}" != "debbuild"
+%lang_package -n %{name}-%{_libvrs}
+%endif
+
+#---[ Build & Install ]-----------------------------------------------------------------------------------------------
+
 %prep
-%setup -q
-NOCONFIGURE=1 ./autogen.sh
-%configure --with-release=%{release} --disable-static
+%autosetup
+%meson
 
 %build
-make all %{?_smp_mflags}
+%meson_build
 
 %install
-%make_install
-mkdir -p %{buildroot}%{_libdir}/pw3270/%{MAJOR_VERSION}.%{MINOR_VERSION}/plugins
+%meson_install
 
-%find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
+%find_lang lib3270-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
+%if "%{_vendor}" != "debbuild"
 %fdupes %{buildroot}/%{_prefix}
+%endif
 
-%files -n %{name}-%{_libvrs}  -f langfiles
+%files -n %{name}-%{_libvrs}
+
+# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
+%if 0%{?sle_version} > 120200
 %doc AUTHORS README.md
 %license LICENSE
-
-%{_libdir}/%{name}.so.*
+%else
+%doc LICENSE AUTHORS README.md
+%endif
+%{_libdir}/*.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %files devel
-%{_libdir}/%{name}.so
-%dir %{_datadir}/pw3270
-%dir %{_datadir}/pw3270/pot
-%{_datadir}/pw3270/pot/*.pot
+%{_libdir}/*.so
+%{_libdir}/*.a
 %{_includedir}/*.h
-%{_includedir}/%{name}
+%{_includedir}/lib3270
+
 %{_libdir}/pkgconfig/*.pc
 
-%{_libdir}/pw3270
-%{_libdir}/pw3270/%{MAJOR_VERSION}.%{MINOR_VERSION}
-%{_libdir}/pw3270/%{MAJOR_VERSION}.%{MINOR_VERSION}/plugins
+%if "%{_vendor}" != "debbuild"
+%files -n %{name}-%{_libvrs}-lang -f langfiles
+%endif
 
 %post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 %postun -n %{name}-%{_libvrs} -p /sbin/ldconfig

@@ -1,7 +1,7 @@
 name: check-macos
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "macos" ]
   pull_request:
     branches: [ "master" ]
 

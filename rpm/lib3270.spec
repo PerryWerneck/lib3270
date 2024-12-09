@@ -17,7 +17,7 @@
 #
 
 Name:           lib3270
-Version:        5.5.0
+Version: 5.5.0
 Release:        0
 Summary:        TN3270 Access library
 License:        LGPL-3.0-only

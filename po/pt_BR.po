@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-06 13:07-0300\n"
+"POT-Creation-Date: 2024-12-09 15:41-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -2422,7 +2422,7 @@ msgstr "Pesquisa LDAP não produziu valores."
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/library/os/windows/util.c:124 src/library/os/windows/util.c:167
+#: src/library/os/windows/util.c:128 src/library/os/windows/util.c:174
 #, c-format
 msgid "Windows error %d"
 msgstr "Erro windows foi %d"

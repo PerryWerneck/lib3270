@@ -138,8 +138,11 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror) {
 			size_t				  out 		= (in << 1);
 			char				* ptr;
 			char				* outBuffer = (char *) malloc(out);
+#ifdef WINICONV_CONST
 			WINICONV_CONST char	* inBuffer	= (WINICONV_CONST char	*) buffer;
-
+#else
+			ICONV_CONST char	* inBuffer	= (ICONV_CONST char	*) buffer;
+#endif
 			memset(ptr=outBuffer,0,out);
 
 			iconv(hConv,NULL,NULL,NULL,NULL);	// Reset state
@@ -182,7 +185,11 @@ LIB3270_EXPORT const char * lib3270_win32_strerror(int e) {
 			size_t				  out 		= (in << 1);
 			char				* ptr;
 			char				* outBuffer = (char *) malloc(out);
+#ifdef WINICONV_CONST
 			WINICONV_CONST char	* inBuffer	= (WINICONV_CONST char	*) buffer;
+#else
+			ICONV_CONST char	* inBuffer	= (ICONV_CONST char	*) buffer;
+#endif
 
 			memset(ptr=outBuffer,0,out);
 

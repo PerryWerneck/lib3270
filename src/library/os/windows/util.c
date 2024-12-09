@@ -46,6 +46,10 @@
 #include <iconv.h>
 #endif // HAVE_ICONV
 
+#ifndef ICONV_CONST
+	#define ICONV_CONST
+#endif // ICONV_CONST
+
 #include <lib3270/log.h>
 #include <lib3270/win32.h>
 

@@ -96,7 +96,12 @@ static char *convert(iconv_t *converter, const char * str, int length) {
 		size_t				  out		= (length << 1);
 		char				* ptr;
 		char				* outBuffer	= (char *) lib3270_malloc(out);
+
+#ifdef _WIN32
+		WINICONV_CONST char	* inBuffer	= (WINICONV_CONST char *) str;
+#else
 		ICONV_CONST char	* inBuffer	= (ICONV_CONST char *) str;
+#endif
 
 		memset(ptr=outBuffer,0,out);
 

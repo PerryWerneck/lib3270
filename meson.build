@@ -50,11 +50,18 @@ subdir('po')
 #
 # Dependencies
 #
+
+c = meson.get_compiler('c')
 libssl = dependency('libssl', required: false)
+libintl = c.find_library('intl', required : false)
+
+lib_extra = [
+  libintl,  
+]
+
 lib_deps = [
-  libssl,  
+  libssl,
   dependency('libcrypto'),
-  dependency('libcurl'),  
 ]
 
 #
@@ -127,6 +134,11 @@ if host_machine.system() != 'windows'
     )
   )
 
+  app_conf.set('HAVE_LIBCURL', 1)
+  lib_deps += [
+    dependency('libcurl'),  
+  ]
+
 endif
 
 if libssl.found()
@@ -137,10 +149,8 @@ app_conf.set('HAVE_STRPTIME', cc.has_function('strptime'))
 app_conf.set('HAVE_STRCASESTR', cc.has_function('strcasestr'))
 app_conf.set('HAVE_LOCALTIME_R', cc.has_function('localtime_r'))
 
-app_conf.set('HAVE_MALLOC_H', cc.has_function('strtok_r'))
-
-app_conf.set('HAVE_MALLOC_H', 1)
-app_conf.set('HAVE_LIBINTL', 1)
+app_conf.set('HAVE_STRTOK_R', cc.has_function('strtok_r'))
+app_conf.set('HAVE_VASPRINTF', cc.has_function('vasprintf'))
 
 app_conf.set_quoted('PRODUCT_TITLE', product_title)
 app_conf.set('PRODUCT_NAME',product_name)
@@ -150,11 +160,7 @@ app_conf.set_quoted('PRODUCT_TITLE',product_title)
 # Fix-me
 app_conf.set('HAVE_GNUC_VISIBILITY', 1)
 app_conf.set('HAVE_GETADDRINFO', 1)
-app_conf.set('HAVE_VASPRINTF', 1)
 app_conf.set('HAVE_INET_NTOP', 1)
-app_conf.set('HAVE_LIBCURL', 1)
-app_conf.set('HAVE_SYSLOG', 1)
-app_conf.set('HAVE_LIBINTL', 1)
 
 # Legacy
 app_conf.set('X3270_TN3270E', 1)
@@ -183,6 +189,23 @@ app_conf.set_quoted('SCCS_USER', sccs_user)
 
 sccs_date = run_command('sh', '-c', datecmd + ' +%Y/%m/%d', check : true).stdout().strip()
 app_conf.set_quoted('SCCS_DATE', sccs_date)
+
+if c.compiles('#include <unistd.h>', name : 'unistd.h')
+  app_conf.set('HAVE_UNISTD_H', 1)
+endif
+
+if c.compiles('#include <syslog.h>', name : 'syslog.h')
+  app_conf.set('HAVE_SYSLOG', 1)
+endif
+
+if c.has_function('dgettext', dependencies: libintl)
+  app_conf.set('HAVE_LIBINTL', 1)
+endif
+
+if c.compiles('#include <malloc.h>', name : 'malloc.h')
+  app_conf.set('HAVE_MALLOC_H', 1)
+endif
+
 
 #
 # Sources
@@ -339,6 +362,10 @@ if host_machine.system() == 'windows'
     ],
     libraries: [ 
       '-l3270',
+      '-lwinhttp',
+      '-lws2_32',
+      '-lwtsapi32',
+      '-lcomdlg32' 
     ]
   )
 
@@ -380,6 +407,10 @@ if host_machine.system() == 'windows'
 
   # Supplied by win_iconv-devel-static
   app_conf.set('HAVE_ICONV',1)
+  lib_extra += [
+    c.find_library('iconv', required : false)
+  ]
+
   app_conf.set_quoted('LIBEXT', '.dll')
   lib_src += win_src
 
@@ -396,10 +427,6 @@ if host_machine.system() == 'linux'
     'src/include/linux/lib3270/os.h',
     subdir: 'lib3270'  
   )
-
-  if cc.compiles('#include <unistd.h>', name : 'unistd.h')
-    app_conf.set('HAVE_UNISTD_H', 1)
-  endif
 
   app_conf.set_quoted('LIBEXT', '.so')
 
@@ -439,7 +466,7 @@ if host_machine.system() == 'windows'
   windows = import('windows')
   resources = windows.compile_resources(
     configure_file(
-      input : 'src/library/windows/resources.rc.in',
+      input : 'src/library/os/windows/resources.rc.in',
       output : 'resources.rc',
       configuration : app_conf
     )
@@ -450,9 +477,19 @@ if host_machine.system() == 'windows'
     config_src + lib_src + resources,
     install: true,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: lib_deps + lib_extra,
     include_directories: includes_dir,
+    link_args: [
+      '-lwinhttp',
+      '-lws2_32',
+      '-lwtsapi32',
+      '-lcomdlg32' 
+    ],
   )
+
+  # https://baltig.polito.it/s346827/qemu/-/blob/36025b9c539f2c25f77bd985adc47825b9e9c4f4/plugins/meson.build
+  # dlltool = find_program('dlltool', required: true)
+
 
 else
 
@@ -463,7 +500,7 @@ else
     version : libversion,
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: lib_deps + lib_extra,
     include_directories: includes_dir
   )
 
@@ -482,7 +519,7 @@ executable(
   config_src + [ 'src/testprogram/testprogram.c' ],
   install: false,
   link_with : [ dynamic ],
-  dependencies: lib_deps,
+  dependencies: lib_deps + libintl,
   include_directories: includes_dir
 )
 

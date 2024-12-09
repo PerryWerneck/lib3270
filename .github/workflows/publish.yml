@@ -1,12 +1,11 @@
-name: check-msys2
+name: Publish
 on:
   push:
     branches: [ "develop" ]
-  pull_request:
-    branches: [ "master" ]
-
+    tags: [ "*" ]
+  
 jobs:
-  msys2-build:
+  publish-mingw:
     runs-on: windows-latest
     defaults:
       run:
@@ -27,4 +26,14 @@ jobs:
         run: |
           dos2unix PKGBUILD.mingw
           makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.gettag.outputs.tag }}
+          artifacts: "*3270*.pkg.tar.zst"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
 

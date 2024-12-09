@@ -14,7 +14,7 @@ jobs:
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz meson ninja coreutils curl gettext openssl pkgconfig
+          brew install xz meson ninja curl gettext openssl pkgconfig
           brew upgrade
       - name: build
         run: |

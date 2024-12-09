@@ -446,6 +446,12 @@ if host_machine.system() == 'darwin'
     subdir: 'lib3270'  
   )
 
+  # Supplied by win_iconv-devel-static
+  app_conf.set('HAVE_ICONV',1)
+  lib_extra += [
+    c.find_library('iconv', required : false)
+  ]
+
   lib_src += darwin_src
 
 endif

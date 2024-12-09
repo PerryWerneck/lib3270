@@ -22,7 +22,7 @@ jobs:
         with:
           msystem: mingw64
           update: true
-          install: dos2unix mingw-w64-x86_64-gcc meson pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
+          install: dos2unix mingw-w64-x86_64-gcc mingw-w64-x86_64-meson pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
       - name: CI-Build
         run: |
           dos2unix PKGBUILD.mingw

@@ -1,0 +1,26 @@
+name: check-macos
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  macos-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Pre reqs
+        run: |
+          brew update
+          brew install xz meson ninja coreutils curl gettext openssl pkgconfig
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          find /usr/local/lib/node_modules/npm -delete
+          brew upgrade
+      - name: build
+        run: |
+          meson setup --reconfigure --wipe .build          
+          meson compile -C .build
+          

@@ -369,6 +369,15 @@ if host_machine.system() == 'windows'
     ]
   )
 
+  pkg.generate(
+    name: meson.project_name() + '-delayed',
+    description: project_description,
+    variables: pkg_variables,
+    libraries: [ 
+      '-l3270.delayed',
+    ]
+  )
+
 else
 
   pkg.generate(
@@ -488,13 +497,42 @@ if host_machine.system() == 'windows'
       '-lwinhttp',
       '-lws2_32',
       '-lwtsapi32',
-      '-lcomdlg32' 
+      '-lcomdlg32',
+      '-Wl,--output-def,lib3270.def',
     ],
   )
 
+  #
   # https://baltig.polito.it/s346827/qemu/-/blob/36025b9c539f2c25f77bd985adc47825b9e9c4f4/plugins/meson.build
-  # dlltool = find_program('dlltool', required: true)
+  # https://github.com/mesonbuild/meson/issues/5093
+  #
+  if meson.is_cross_build()
+    dlltool = find_program(
+      '@0@/bin/dlltool'.format(
+        meson.get_external_property('root')
+      )
+    )
+  else
+    dlltool = find_program('dlltool', required: true)
+  endif
 
+  # https://mesonbuild.com/Reference-manual_functions.html#custom_target
+  custom_target(
+    'delaylib',
+    depends: dynamic,
+    build_by_default: true,
+    command: [ 
+      dlltool,
+        '--input-def','lib3270.def',
+        '--dllname','lib3270.dll',
+        '--kill-at',
+        '--output-lib','lib3270.delayed.a' 
+      ],
+    output: 'lib3270.delayed.a',
+    install: true,
+    install_tag: 'devel',
+    install_dir: get_option('libdir')
+  )
 
 else
 

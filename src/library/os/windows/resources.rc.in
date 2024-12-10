@@ -47,11 +47,11 @@ BEGIN
 		// English
 		BLOCK "080904B0"
 		BEGIN
-			VALUE "FileDescription",	"@PRODUCT_NAME@ Core library\0"
+			VALUE "FileDescription",	"TN3270 client library\0"
 			VALUE "FileVersion",		"@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@.@PACKAGE_VERSION_MICRO@\0"
 			VALUE "LegalCopyright",		"GNU GPLv3\0"
-			VALUE "InternalName",		"lib@PRODUCT_NAME@\0"
-			VALUE "OriginalFilename",	"lib@PRODUCT_NAME@.dll\0"
+			VALUE "InternalName",		"lib3270\0"
+			VALUE "OriginalFilename",	"lib3270.dll\0"
 			VALUE "ProductName",		"@PRODUCT_NAME@\0"
 			VALUE "ProductVersion",		"@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@\0"
 		END
@@ -59,11 +59,11 @@ BEGIN
 		// Brazilian Portuguese (UTF-8)
 		BLOCK "041604B0"
 		BEGIN
-			VALUE "FileDescription",	"Biblioteca principal @PRODUCT_NAME@\0"
+			VALUE "FileDescription",	"Biblioteca cliente TN3270\0"
 			VALUE "FileVersion",		"@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@.@PACKAGE_VERSION_MICRO@\0"
 			VALUE "LegalCopyright",		"GNU GPLv3\0"
-			VALUE "InternalName",		"lib@PRODUCT_NAME@\0"
-			VALUE "OriginalFilename",	"lib@PRODUCT_NAME@.dll\0"
+			VALUE "InternalName",		"lib3270\0"
+			VALUE "OriginalFilename",	"lib3270.dll\0"
 			VALUE "ProductName",		"@PRODUCT_NAME@\0"
 			VALUE "ProductVersion",		"@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@\0"
 		END
@@ -71,11 +71,11 @@ BEGIN
 		// Brazilian Portuguese (Multilingual)
 		BLOCK "041604E4"
 		BEGIN
-			VALUE "FileDescription",	"Biblioteca principal @PRODUCT_NAME@\0"
+			VALUE "FileDescription",	"Biblioteca cliente TN3270\0"
 			VALUE "FileVersion",		"@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@.@PACKAGE_VERSION_MICRO@\0"
 			VALUE "LegalCopyright",		"GNU GPLv3\0"
-			VALUE "InternalName",		"lib@PRODUCT_NAME@\0"
-			VALUE "OriginalFilename",	"lib@PRODUCT_NAME@.dll\0"
+			VALUE "InternalName",		"lib3270\0"
+			VALUE "OriginalFilename",	"lib3270.dll\0"
 			VALUE "ProductName",		"@PRODUCT_NAME@\0"
 			VALUE "ProductVersion",		"@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@\0"
 		END

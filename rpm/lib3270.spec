@@ -25,18 +25,11 @@ Group:          System/Libraries
 URL:            https://github.com/PerryWerneck/lib3270
 Source:         %{name}-%{version}.tar.xz
 
-%if "%{_vendor}" == "debbuild"
-BuildRequires:  meson-deb-macros
-BuildRequires:  pkg-config
-BuildRequires:  libcurl-dev
-BuildRequires:  libssl-dev
-%else
 BuildRequires:  fdupes
 BuildRequires:  pkgconfig
 BuildRequires:  gettext-devel
 BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(libssl)
-%endif
 
 %if 0%{?suse_version} == 01500
 BuildRequires:  meson >= 0.61.4
@@ -57,13 +50,7 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package -n %{name}-%{_libvrs}
 Summary:	TN3270 Access library
-
-%if "%{_vendor}" == "debbuild"
-Group:		devel
-Depends:	${misc:Depends}, ${shlibs:Depends}  
-%else
 Group:		Development/Libraries/C and C++
-%endif
 
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
@@ -75,16 +62,10 @@ Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
 Requires:	%{name}-%{_libvrs} = %{version}
 
-%if "%{_vendor}" == "debbuild"
-Provides:	lib3270-dev
-%endif
-
 %description devel
 Header files for the TN3270 access library.
 
-%if "%{_vendor}" != "debbuild"
 %lang_package -n %{name}-%{_libvrs}
-%endif
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -100,9 +81,7 @@ Header files for the TN3270 access library.
 
 %find_lang lib3270-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
-%if "%{_vendor}" != "debbuild"
 %fdupes %{buildroot}/%{_prefix}
-%endif
 
 %files -n %{name}-%{_libvrs}
 
@@ -123,9 +102,7 @@ Header files for the TN3270 access library.
 
 %{_libdir}/pkgconfig/*.pc
 
-%if "%{_vendor}" != "debbuild"
 %files -n %{name}-%{_libvrs}-lang -f langfiles
-%endif
 
 %post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 %postun -n %{name}-%{_libvrs} -p /sbin/ldconfig

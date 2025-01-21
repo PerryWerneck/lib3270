@@ -55,6 +55,7 @@ c = meson.get_compiler('c')
 libssl = dependency('libssl', required: false)
 libintl = dependency('intl', required : false)
 libiconv = dependency('iconv', required : false)
+gobject = dependency('gobject-2.0', required: false)
 
 lib_extra = [
   libintl,
@@ -553,7 +554,7 @@ endif
 
 if gobject.found()
 
-  shared_library(
+  glib_shared = shared_library(
     '3270-glib', 
     gobject_src,
     install: true,
@@ -569,6 +570,15 @@ if gobject.found()
     '3270-glib', 
     gobject_src + config_src + lib_src,
     install: true,
+    dependencies: lib_deps + [ gobject ],
+    include_directories: includes_dir
+  )
+
+  executable(
+    meson.project_name() + '-gobject',
+    [ 'src/gobject/testprogram.c' ],
+    install: false,
+    link_with : [ glib_shared ],
     dependencies: lib_deps + [ gobject ],
     include_directories: includes_dir
   )

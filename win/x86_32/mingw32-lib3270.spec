@@ -31,7 +31,7 @@
 
 Summary:		TN3270 access library for 32 bits Windows
 Name:			mingw32-%{_libname}
-Version: 5.5.0
+Version: 5.5.1
 Release:		0
 License:		LGPL-3.0
 

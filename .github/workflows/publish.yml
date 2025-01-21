@@ -1,7 +1,7 @@
 name: Publish
 on:
   push:
-    branches: [ "macos" ]
+    branches: [ "publish" ]
     tags: [ "*" ]
   
 jobs:
@@ -21,7 +21,7 @@ jobs:
         with:
           msystem: mingw64
           update: true
-          install: dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
+          install: dos2unix mingw-w64-x86_64-gcc mingw-w64-x86_64-meson mingw-w64-x86_64-iconv pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl
       - name: CI-Build
         run: |
           dos2unix PKGBUILD.mingw
@@ -36,66 +36,4 @@ jobs:
           omitBody: true
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
-  publish-msvc:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: oprypin/find-latest-tag@v1
-        id: gettag
-        with:
-          repository: PerryWerneck/lib3270
-          releases-only: true
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: mingw64
-          update: true
-          install: zip dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
-      - name: CI-Build
-        run: ./win/msvc-build.sh
-      - uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*-lib3270-*.devel.zip"
-          allowUpdates: true
-          draft: false
-          makeLatest: true
-          omitBody: true
-          omitPrereleaseDuringUpdate: true
-          replacesArtifacts: true
-  publish-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: oprypin/find-latest-tag@v1
-        id: gettag
-        with:
-          repository: PerryWerneck/lib3270
-          releases-only: true
-      - name: Install Pre reqs
-        run: |
-          brew update
-          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
-          find /usr/local/lib/node_modules/npm -delete
-          rm -f /usr/local/bin/go || true
-          rm -f /usr/local/bin/gofmt || true
-          brew upgrade
-      - name: build
-        run: ./mac/ci-build.sh
-      - uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*.tar.xz"
-          allowUpdates: true
-          draft: false
-          makeLatest: true
-          omitBody: true
-          omitPrereleaseDuringUpdate: true
-          replacesArtifacts: true
-          
 

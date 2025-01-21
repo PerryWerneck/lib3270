@@ -23,14 +23,14 @@ _realname=$(grep AC_INIT "${startdir}/configure.ac" | cut -d[ -f2 | cut -d] -f1)
 pkgname=${MINGW_PACKAGE_PREFIX}-${_realname}
 source=()
 
-pkgver=$(grep AC_INIT "${startdir}/configure.ac" | cut -d[ -f3 | cut -d] -f1)
+pkgver=5.5.0
 pkgrel=0
 pkgdesc="TN3270 Access library"
 url="https://github.com/PerryWerneck/${_realname}"
 arch=(i686 x86_64)
 license=(LGPL-3.0-or-later)
 depends=(${MINGW_PACKAGE_PREFIX}-openssl)
-makedepends=(autoconf automake make libtool pkgconf gzip dos2unix ${MINGW_PACKAGE_PREFIX}-gcc ${MINGW_PACKAGE_PREFIX}-gettext ${MINGW_PACKAGE_PREFIX}-openssl)
+makedepends=(${MINGW_PACKAGE_PREFIX}-meson pkgconf gzip dos2unix ${MINGW_PACKAGE_PREFIX}-gcc ${MINGW_PACKAGE_PREFIX}-gettext ${MINGW_PACKAGE_PREFIX}-iconv ${MINGW_PACKAGE_PREFIX}-openssl)
 checkdepends=()
 
 provides=($pkgname) 
@@ -38,25 +38,22 @@ conflicts=($pkgname)
 
 prepare() {
   rm -fr "$srcdir/$pkgname"
-  ln -snf "$startdir" "$srcdir/$pkgname"
+  mkdir -p "$srcdir/$pkgname"
+  cd ${startdir}
+  meson \
+    setup \
+      --prefix=/c/${MINGW_PREFIX} \
+      --reconfigure \
+      --wipe \
+      "$srcdir/$pkgname"
 }
 
 build() {
-  cd $pkgname
-  ./autogen.sh \
-    --prefix=${MINGW_PREFIX} \
-    --build=${MINGW_CHOST} \
-    --host=${MINGW_CHOST} \
-    --target=${MINGW_CHOST}
- 
-  make all
+  cd ${startdir}  
+  meson compile -C "$srcdir/$pkgname"
 }
 
 package() {
-  cd $pkgname
-  make DESTDIR="${pkgdir}" install
-  install \
-    -Dm644 \
-    "LICENSE" \
-    "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
+  cd ${startdir} 
+  DESTDIR="${pkgdir}" meson install -C "$srcdir/$pkgname"
 }

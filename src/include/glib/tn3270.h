@@ -21,6 +21,7 @@
 
 
  #include <lib3270.h>
+ #include <lib3270/toggle.h>
  #include <glib-object.h>
 
  G_BEGIN_DECLS
@@ -31,6 +32,19 @@
  
  struct _TN3270SessionClass {
 	GObjectClass parent_class;
+
+	struct {
+		size_t count;
+		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];
+
+		struct {
+			size_t boolean;
+			size_t integer;
+			size_t uint;
+			size_t str;
+		} type;
+
+	} properties;
 
 	gpointer padding[8];
 	

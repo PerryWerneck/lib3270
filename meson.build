@@ -568,6 +568,14 @@ if gobject.found()
     include_directories: includes_dir
   )
 
+  static_library(
+    '3270-glib', 
+    gobject_src + config_src + lib_src,
+    install: true,
+    dependencies: lib_deps + [ gobject ],
+    include_directories: includes_dir
+  )
+
 endif
 
 static_library(

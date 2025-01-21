@@ -53,6 +53,7 @@ subdir('po')
 
 c = meson.get_compiler('c')
 libssl = dependency('libssl', required: false)
+gobject = dependency('gobject-2.0', required: false)
 libintl = c.find_library('intl', required : false)
 
 lib_extra = [
@@ -279,6 +280,10 @@ lib_src += [
   'src/library/network/select.c',
   'src/library/network/state.c',
   'src/library/network/tools.c',
+]
+
+gobject_src = [
+  'src/gobject/object.c'
 ]
 
 linux_src =[
@@ -544,6 +549,22 @@ else
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps + lib_extra,
+    include_directories: includes_dir
+  )
+
+endif
+
+if gobject.found()
+
+  shared_library(
+    '3270-glib', 
+    gobject_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    link_with : [ dynamic ],
+    dependencies: lib_deps + lib_extra + [ gobject ],
     include_directories: includes_dir
   )
 

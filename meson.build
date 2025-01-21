@@ -53,11 +53,12 @@ subdir('po')
 
 c = meson.get_compiler('c')
 libssl = dependency('libssl', required: false)
-gobject = dependency('gobject-2.0', required: false)
-libintl = c.find_library('intl', required : false)
+libintl = dependency('intl', required : false)
+libiconv = dependency('iconv', required : false)
 
 lib_extra = [
-  libintl,  
+  libintl,
+  libiconv
 ]
 
 lib_deps = [
@@ -68,8 +69,6 @@ lib_deps = [
 #
 # Setup time based properties
 #
-enable_debug = get_option('debug') or get_option('buildtype').contains('debug')
-
 time_epoch = run_command('sh', '-c', 'echo "$SOURCE_DATE_EPOCH"', check : true).stdout().strip()
 if time_epoch == ''
   time_epoch = run_command('date','+%Y%m%d', check: true).stdout().strip()
@@ -86,13 +85,18 @@ cc = meson.get_compiler('c')
 compiler_flags = [
   '-ggdb3',
   '-ffat-lto-objects',
-  '-fvisibility=hidden',
   '-pthread',
-  '-fPIC',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
 ]
 
+# TODO:
+# https://github.com/PerryWerneck/lib3270/pull/59#discussion_r1923066195
+# 
+# You may be interested in meson's builtin option b_ndebug=if-release:
+# https://mesonbuild.com/Builtin-options.html#base-options
+#
+enable_debug = get_option('debug') or get_option('buildtype').contains('debug')
 if enable_debug
   compiler_flags += [
 	  '-DDEBUG=1'
@@ -144,6 +148,10 @@ endif
 
 if libssl.found()
   app_conf.set('HAVE_LIBSSL', 1)
+endif
+
+if libiconv.found()
+  app_conf.set('HAVE_ICONV', 1)
 endif
 
 app_conf.set('HAVE_STRPTIME', cc.has_function('strptime'))
@@ -419,12 +427,6 @@ if host_machine.system() == 'windows'
     subdir: 'lib3270'  
   )
 
-  # Supplied by win_iconv-devel-static
-  app_conf.set('HAVE_ICONV',1)
-  lib_extra += [
-    c.find_library('iconv', required : false)
-  ]
-
   app_conf.set_quoted('LIBEXT', '.dll')
   lib_src += win_src
 
@@ -459,11 +461,6 @@ if host_machine.system() == 'darwin'
     'src/include/darwin/lib3270/os.h',
     subdir: 'lib3270'  
   )
-
-  app_conf.set('HAVE_ICONV',1)
-  lib_extra += [
-    c.find_library('iconv', required : false)
-  ]
 
   lib_src += darwin_src
 
@@ -581,6 +578,7 @@ endif
 static_library(
   '3270', 
   config_src + lib_src,
+  pic: true,
   install: true,
   dependencies: lib_deps,
   include_directories: includes_dir

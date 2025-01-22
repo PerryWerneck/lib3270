@@ -43,6 +43,7 @@
 #include <lib3270/os.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/mainloop.h>
 
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
 #include <openssl/x509.h>
@@ -288,6 +289,27 @@ struct _h3270 {
 
 	/// @brief Session Identifier.
 	char					  id;
+
+	/// @brief I/O Calls for this session.
+	struct {
+
+		struct {
+			void *	(*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
+			void	(*remove)(H3270 *session, void *timer);
+		} timer;
+
+		struct {
+			void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+			void	(*remove)(H3270 *session, void *id);
+			void	(*set_state)(H3270 *session, void *id, int enabled);
+		} poll;
+
+	} io;
+
+	int		(*event_dispatcher)(H3270 *session,int wait);
+	int 	(*wait)(H3270 *session, int seconds);
+	void	(*ring_bell)(H3270 *session);
+	int		(*run)(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
 
 	// Network
 	struct {

@@ -52,12 +52,10 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
+#include <private/mainloop.h>
+#include <lib3270/mainloop.h>
 
 #define MILLION			1000000L
-//
-//#if defined(_WIN32)
-//	#define MAX_HA	256
-//#endif
 
 /*---[ Standard calls ]-------------------------------------------------------------------------------------*/
 
@@ -110,6 +108,55 @@ static int		  (*run_task)(H3270 *hSession, int(*callback)(H3270 *h, void *), voi
 #define TN	(timeout_t *)NULL
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
+
+void lib3270_setup_mainloop(H3270 *hSession) {
+	hSession->io.timer.add = add_timer;
+	hSession->io.timer.remove = remove_timer;
+	hSession->io.poll.add = add_poll;
+	hSession->io.poll.remove = remove_poll;
+	hSession->io.poll.set_state = set_poll_state;
+	hSession->wait = wait_callback;
+	hSession->ring_bell = ring_bell;
+	hSession->run = run_task;
+	hSession->event_dispatcher = event_dispatcher;
+}
+
+LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, LIB3270_IO_CONTROLLER *cntrl) {
+
+	if(!cntrl || cntrl->sz != sizeof(LIB3270_IO_CONTROLLER))
+		return errno = EINVAL;
+
+	if(cntrl->AddTimer)
+		hSession->io.timer.add = cntrl->AddTimer;
+
+	if(cntrl->RemoveTimer)
+		hSession->io.timer.remove = cntrl->RemoveTimer;
+
+	if(cntrl->add_poll)
+		hSession->io.poll.add = cntrl->add_poll;
+
+	if(cntrl->remove_poll)
+		hSession->io.poll.remove = cntrl->remove_poll;
+
+	if(cntrl->Wait)
+		hSession->wait = cntrl->Wait;
+
+	if(cntrl->event_dispatcher)
+		hSession->event_dispatcher = cntrl->event_dispatcher;
+
+	if(cntrl->ring_bell)
+		hSession->ring_bell = cntrl->ring_bell;
+
+	if(cntrl->run_task)
+		hSession->run = cntrl->run_task;
+
+	if(cntrl->set_poll_state)
+		hSession->io.poll.set_state = cntrl->set_poll_state;
+
+	return 0;
+
+
+}
 
 
 /* Timeouts */
@@ -235,15 +282,14 @@ static void internal_set_poll_state(H3270 *session, void *id, int enabled) {
 
 }
 
-
 LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id) {
-	remove_poll(session, id);
+	session->io.poll.remove(session, id);
 }
 
 LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled) {
 	if(id) {
 		debug("%s: Polling on %p is %s",__FUNCTION__,id,(enabled ? "enabled" : "disabled"))
-		set_poll_state(session, id, enabled);
+		session->io.poll.set_state(session, id, enabled);
 	}
 }
 
@@ -252,12 +298,12 @@ LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd) {
 
 	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next) {
 		if(ip->fd == fd) {
-			remove_poll(session, ip);
+			session->io.poll.remove(session, ip);
 			return;
 		}
 	}
 
-	lib3270_write_log(NULL,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
+	lib3270_write_log(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
 
 }
 
@@ -277,7 +323,7 @@ LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FL
 
 LIB3270_EXPORT void	 * lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
 	debug("%s(%d)",__FUNCTION__,fd);
-	return add_poll(session,fd,flag,call,userdata);
+	return session->io.poll.add(session,fd,flag,call,userdata);
 }
 
 static int internal_wait(H3270 *hSession, int seconds) {
@@ -390,19 +436,17 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 }
 
 LIB3270_EXPORT void lib3270_main_iterate(H3270 *hSession, int block) {
-	CHECK_SESSION_HANDLE(hSession);
-	event_dispatcher(hSession,block);
+	hSession->event_dispatcher(hSession,block);
 }
 
 LIB3270_EXPORT int lib3270_wait(H3270 *hSession, int seconds) {
-	wait_callback(hSession,seconds);
+	hSession->wait(hSession,seconds);
 	return 0;
 }
 
-LIB3270_EXPORT void lib3270_ring_bell(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
-	if(lib3270_get_toggle(session,LIB3270_TOGGLE_BEEP))
-		ring_bell(session);
+LIB3270_EXPORT void lib3270_ring_bell(H3270 *hSession) {
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_BEEP))
+		hSession->ring_bell(hSession);
 }
 
 int internal_run_task(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm) {
@@ -423,11 +467,9 @@ int internal_run_task(H3270 *hSession, int(*callback)(H3270 *, void *), void *pa
 LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm) {
 	int rc;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	hSession->cbk.set_timer(hSession,1);
 	hSession->tasks++;
-	rc = run_task(hSession,callback,parm);
+	rc = hSession->run(hSession,callback,parm);
 	hSession->cbk.set_timer(hSession,0);
 	hSession->tasks--;
 	return rc;

@@ -43,6 +43,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
+#include <private/mainloop.h>
 
 /*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
 
@@ -330,6 +331,7 @@ H3270 * lib3270_session_new(const char *model) {
 
 	hSession = lib3270_malloc(sizeof(H3270));
 	lib3270_session_init(hSession, model, "bracket" );
+	lib3270_setup_mainloop(hSession);
 
 	if(!default_session)
 		default_session = hSession;

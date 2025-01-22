@@ -18,17 +18,15 @@
  */
 
  #include <config.h>
+ #include <private/gobject.h>
  #include <lib3270.h>
  #include <lib3270/properties.h>
+ #include <lib3270/log.h>
+ #include <lib3270/session.h>
+ #include <lib3270/ssl.h>
  #include <glib-object.h>
  #include <glib/tn3270.h>
-
- typedef struct _TN3270SessionPrivate {
-
-	void *handler;
-
- } TN3270SessionPrivate;
-
+ #include <private/intl.h>
 
  //
  // References:
@@ -42,11 +40,14 @@
  static void tn3270_session_finalize(GObject *gobject);
  static void tn3270_session_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
  static void tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
+ static void tn3270_session_install_property(const char *name, TN3270SessionClass *klass, guint property_id, GParamSpec *pspec);
 
  static void
  tn3270_session_class_init (TN3270SessionClass *klass)
  {
 	size_t ix;
+
+	tn3270_session_class_setup_callbacks(klass);
 
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
@@ -70,6 +71,7 @@
 				continue;
 			}
 
+			debug("Registering toggle property: %s(%d)", toggles[ix].name,toggles[ix].def);
 			klass->properties.toggle[ix] =
 				g_param_spec_boolean(
 					toggles[ix].name,
@@ -79,12 +81,16 @@
 					G_PARAM_WRITABLE|G_PARAM_READABLE
 				);
 
-			g_object_class_install_property(object_class, klass->properties.count++, klass->properties.toggle[ix]);
+			tn3270_session_install_property(
+				toggles[ix].name,
+				klass,
+				klass->properties.count++,
+				klass->properties.toggle[ix]
+			);
 
 		}
 
 		// TODO: Watch toggle changes, emit property-changed signal.
-
 
 	}
 
@@ -96,6 +102,7 @@
 
 		for(ix = 0; props[ix].name; ix++)
 		{
+			debug("Registering boolean property: %s(%d)", props[ix].name,props[ix].default_value != 0);
 			GParamSpec *spec = g_param_spec_boolean(
 						props[ix].name,
 						props[ix].name,
@@ -104,9 +111,12 @@
 						(props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 			);
 
-			g_object_class_install_property(object_class, klass->properties.count++, spec);
-
-			// TODO: Watch property changes, emit property-changed signal.
+			tn3270_session_install_property(
+				props[ix].name,
+				klass,
+				klass->properties.count++,
+				spec
+			);
 
 		}
 
@@ -120,6 +130,7 @@
 
 		for(ix = 0; props[ix].name; ix++)
 		{
+			debug("Registering int property: %s(%d)", props[ix].name,0);
 			GParamSpec *spec = g_param_spec_int(
 				props[ix].name,
 				props[ix].name,
@@ -130,9 +141,12 @@
 				(props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 			);
 
-			g_object_class_install_property(object_class, klass->properties.count++, spec);
-
-			// TODO: Watch property changes, emit property-changed signal.
+			tn3270_session_install_property(
+				props[ix].name,
+				klass,
+				klass->properties.count++,
+				spec
+			);
 
 		}
 
@@ -146,6 +160,7 @@
 
 		for(ix = 0; props[ix].name; ix++)
 		{
+			debug("Registering uint property: %s(%u)", props[ix].name,(props[ix].default_value ? props[ix].default_value : props[ix].min));
 			GParamSpec *spec = g_param_spec_uint(
 				props[ix].name,
 				props[ix].name,
@@ -156,9 +171,13 @@
 				(props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 			);
 
-			g_object_class_install_property(object_class, klass->properties.count++, spec);
+			tn3270_session_install_property(
+				props[ix].name,
+				klass,
+				klass->properties.count++,
+				spec
+			);
 
-			// TODO: Watch property changes, emit property-changed signal.
 		}
 
 	}
@@ -171,6 +190,7 @@
 
 		for(ix = 0; props[ix].name; ix++)
 		{
+			debug("Registering string property: %s(%s)", props[ix].name,(props[ix].default_value ? props[ix].default_value : ""));
 			GParamSpec *spec = g_param_spec_string(
 				props[ix].name,
 				props[ix].name,
@@ -179,9 +199,13 @@
 				(props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 			);
 
-			g_object_class_install_property(object_class, klass->properties.count++, spec);
+			tn3270_session_install_property(
+				props[ix].name,
+				klass,
+				klass->properties.count++,
+				spec
+			);
 
-			// TODO: Watch property changes, emit property-changed signal.
 		}
 
 	}
@@ -193,9 +217,17 @@
  static void
  tn3270_session_init (TN3270Session *gobject)
  {
+	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(gobject);
 	TN3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
 	self->handler = lib3270_session_new("");
 	lib3270_set_user_data(self->handler,self);
+
+	if(tn3270_session_setup_callbacks(klass,self))
+	{
+		lib3270_session_free(self->handler);
+		self->handler = NULL;
+		return;
+	}
 
  }
 
@@ -233,10 +265,6 @@
 		self->handler = NULL;
 	}
 
-	lib3270_free(self->handler);
-	self->handler = NULL;
-
-
 	G_OBJECT_CLASS (tn3270_session_parent_class)->dispose (object);
  }
 
@@ -268,5 +296,35 @@
 
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+ }
+
+ static void
+ tn3270_session_install_property(const char *name, TN3270SessionClass *klass, guint property_id, GParamSpec *pspec)
+ {
+	static const char *names[] = {
+		"connected",
+		"associated_lu",
+		"url",
+		"model_number",
+		"ssl_state",
+	};
+
+	g_object_class_install_property(G_OBJECT_CLASS (klass), property_id, pspec);
+
+	size_t ix;
+	for(ix = 0; ix < G_N_ELEMENTS(names); ix++)
+	{
+		if(strcmp(name,names[ix]) == 0)
+		{
+			klass->properties.specs[ix] = pspec;
+			break;
+		}
+	}
+
+ }
+
+
+ LIB3270_EXPORT TN3270Session * tn3270_session_new() {
+	return g_object_new(TN3270_TYPE_SESSION,NULL);
  }
 

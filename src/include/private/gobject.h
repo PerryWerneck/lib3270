@@ -17,27 +17,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #pragma once
  #include <config.h>
- #include <glib.h>
- #include <glib-object.h>
+ #include <lib3270.h>
  #include <glib/tn3270.h>
 
- static GMainLoop *loop = NULL;
- static GMainContext *context = NULL;
+ typedef struct _TN3270SessionPrivate {
 
- int main(int argc, char *argv[]) {
+	void *handler;
 
-	context = g_main_context_new();
-	loop = g_main_loop_new(context, FALSE);
+ } TN3270SessionPrivate;
 
-	g_autoptr(TN3270Session) session = tn3270_session_new();
-
-	g_main_loop_run(loop);
-
-	g_main_loop_unref(loop);
-	g_main_context_unref(context);
-
-	return 0;
-	
- }
-
+ void tn3270_session_class_setup_callbacks(TN3270SessionClass *klass);
+ int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self);

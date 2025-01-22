@@ -22,6 +22,7 @@
 
  #include <lib3270.h>
  #include <lib3270/toggle.h>
+ #include <lib3270/ssl.h>
  #include <glib-object.h>
 
  G_BEGIN_DECLS
@@ -29,6 +30,15 @@
  // Type declaration
  #define TN3270_TYPE_SESSION tn3270_session_get_type()
  G_DECLARE_DERIVABLE_TYPE (TN3270Session, tn3270_session, TN3270, SESSION, GObject)
+
+ enum TN3270SessionProperties {
+	TN3270_SESSION_PROPERTY_CONNECTED,
+	TN3270_SESSION_PROPERTY_ASSOCIATED_LU,
+	TN3270_SESSION_PROPERTY_URL,
+	TN3270_SESSION_PROPERTY_MODEL_NUMBER,
+	TN3270_SESSION_PROPERTY_SSL_STATE,
+	TN3270_SESSION_PROPERTY_COUNT
+ };
  
  struct _TN3270SessionClass {
 	GObjectClass parent_class;
@@ -36,6 +46,7 @@
 	struct {
 		size_t count;
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];
+		GParamSpec * specs[TN3270_SESSION_PROPERTY_COUNT];
 
 		struct {
 			size_t boolean;
@@ -45,6 +56,14 @@
 		} type;
 
 	} properties;
+
+	// Properties
+ 	void (*toggle_changed)(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name);
+	void (*connect_changed)(TN3270Session *session, unsigned char connected);
+	void (*luname_changed)(TN3270Session *session, const char *name);
+ 	void (*url_changed)(TN3270Session *session, const char *name);
+	void (*model_changed)(TN3270Session *session, const char *name, int model, int rows, int cols);
+	void (*ssl_changed)(TN3270Session *session, LIB3270_SSL_STATE state);
 
 	gpointer padding[8];
 	

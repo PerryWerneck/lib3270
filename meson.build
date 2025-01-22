@@ -292,7 +292,8 @@ lib_src += [
 ]
 
 gobject_src = [
-  'src/gobject/object.c'
+  'src/gobject/object.c',
+  'src/gobject/callbacks.c'
 ]
 
 linux_src =[

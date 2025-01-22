@@ -43,6 +43,14 @@
  static void tn3270_session_install_property(const char *name, TN3270SessionClass *klass, guint property_id, GParamSpec *pspec);
  static void tn3270_ring_bell(TN3270Session *session);
 
+ /// @brief Internal properties
+ enum Properties {
+	SESSION_PROPERTY_TIMER,
+	SESSION_PROPERTY_HAS_SELECTION,
+
+	SESSION_PROPERTY_CUSTOM
+ };
+
  static void
  tn3270_session_class_init (TN3270SessionClass *klass)
  {
@@ -52,13 +60,46 @@
 
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	klass->properties.count = 1;
+	klass->properties.count = SESSION_PROPERTY_CUSTOM;
 
 	klass->ring_bell = tn3270_ring_bell;
   	object_class->dispose = tn3270_session_dispose;
   	object_class->finalize = tn3270_session_finalize;
 	object_class->set_property = tn3270_session_set_property;
   	object_class->get_property = tn3270_session_get_property;
+
+	// Setup internal properties
+	{
+		klass->properties.timer =
+			g_param_spec_boolean(
+				"timer",
+				"timer",
+				_("Timer is enabled, usually activates when session is busy"),
+				FALSE,
+				G_PARAM_READABLE
+			);
+
+		g_object_class_install_property(
+			G_OBJECT_CLASS (klass), 
+			SESSION_PROPERTY_TIMER,
+			klass->properties.timer
+		);
+
+		klass->properties.has_selection =
+			g_param_spec_boolean(
+				"has-selection",
+				"has-selection",
+				_("True when selection is available"),
+				FALSE,
+				G_PARAM_READABLE
+			);
+
+		g_object_class_install_property(
+			G_OBJECT_CLASS (klass), 
+			SESSION_PROPERTY_HAS_SELECTION,
+			klass->properties.has_selection
+		);
+	}
 
 	// Setup toggle properties
 	{
@@ -119,15 +160,6 @@
 			);
 
 		}
-
-		klass->properties.timer =
-			g_param_spec_boolean(
-				"timer",
-				"timer",
-				_("Timer is enabled, usually activates when session is busy"),
-				FALSE,
-				G_PARAM_READABLE
-			);
 
 	}
 

@@ -48,6 +48,7 @@
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];
 		GParamSpec * specs[TN3270_SESSION_PROPERTY_COUNT];
 		GParamSpec * timer;
+		GParamSpec * has_selection;
 
 		struct {
 			size_t boolean;
@@ -67,7 +68,7 @@
 	void (*ssl_changed)(TN3270Session *session, LIB3270_SSL_STATE state);
 
 	void (*selection_changed)(TN3270Session *session, int start, int end);
-	
+
 	// Terminal contents
 	void (*changed)(TN3270Session *session, int offset, int len);
 

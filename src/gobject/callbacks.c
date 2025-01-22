@@ -155,6 +155,14 @@
 	);
  }
 
+ static void selection_changed(TN3270Session *session, int start, int end)
+ {
+	g_object_notify_by_pspec(
+		G_OBJECT(session), 
+		TN3270_SESSION_GET_CLASS(session)->properties.has_selection
+	);
+ }
+
  static void nop_void() {
  }
 
@@ -168,7 +176,7 @@
  	klass->ssl_changed = ssl_changed;
 	klass->set_timer = set_timer;
 	klass->changed = nop_void;
-	klass->selection_changed = nop_void;
+	klass->selection_changed = selection_changed;
  }
 
  int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self)

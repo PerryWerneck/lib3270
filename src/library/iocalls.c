@@ -121,7 +121,7 @@ void lib3270_setup_mainloop(H3270 *hSession) {
 	hSession->event_dispatcher = event_dispatcher;
 }
 
-LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, LIB3270_IO_CONTROLLER *cntrl) {
+LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, const LIB3270_IO_CONTROLLER *cntrl) {
 
 	if(!cntrl || cntrl->sz != sizeof(LIB3270_IO_CONTROLLER))
 		return errno = EINVAL;

@@ -293,7 +293,9 @@ lib_src += [
 
 gobject_src = [
   'src/gobject/object.c',
-  'src/gobject/callbacks.c'
+  'src/gobject/callbacks.c',
+  'src/gobject/mainloop.c',
+  'src/gobject/os/' + host_machine.system() + '/iosource.c',
 ]
 
 linux_src =[
@@ -449,7 +451,8 @@ if host_machine.system() == 'linux'
   app_conf.set_quoted('LIBEXT', '.so')
 
   lib_src += linux_src
-  
+
+
 endif
 
 if host_machine.system() == 'darwin'

@@ -27,6 +27,7 @@
  #include <glib/tn3270.h>
  #include <private/intl.h>
  #include <private/gobject.h>
+ #include <lib3270/mainloop.h>
  #include <errno.h>
 
  /// @brief Callback called when a toggle property changes.
@@ -140,35 +141,29 @@
 	struct lib3270_session_callbacks *cbk = lib3270_get_session_callbacks(self->handler,G_STRINGIFY(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
 	if(!cbk)
 	{
-		if(g_ascii_strcasecmp(G_STRINGIFY(LIB3270_REVISION),lib3270_get_revision()))
+		if(g_ascii_strcasecmp(RPQ_REVISION,lib3270_get_revision()))
 		{
-				g_error(
-					_("Invalid callback table, the release %s of lib%s can't be used (expecting revision %s)"),
-					lib3270_get_revision(),
-					G_STRINGIFY(LIB3270_NAME),
-					G_STRINGIFY(LIB3270_REVISION)
-				);
-
 				lib3270_popup_dialog(
 					self->handler, 
 					LIB3270_NOTIFY_CRITICAL, 
 					_("Initialization error"), 
 					_("Version mismatch"), 
-					_("Invalid callback table, the release %s of lib%s can't be used (expecting revision %s)"),
+					_("Invalid callback table, the release %s of %s can't be used (expecting revision %s)"),
 						lib3270_get_revision(),
-						G_STRINGIFY(LIB3270_NAME),
-						G_STRINGIFY(LIB3270_REVISION)
+						PACKAGE_NAME,
+						RPQ_REVISION
+				);
+
+				g_error(
+					_("Invalid callback table, the release %s of %s can't be used (expecting revision %s)"),
+					lib3270_get_revision(),
+					PACKAGE_NAME,
+					RPQ_REVISION
 				);
 
 		}
 		else
 		{
-				g_error(
-					_("Unexpected callback table, the release %s of lib%s is invalid"),
-					lib3270_get_revision(),
-					G_STRINGIFY(LIB3270_NAME)
-				);
-
 				lib3270_popup_dialog(
 					self->handler, 
 					LIB3270_NOTIFY_CRITICAL, 
@@ -176,7 +171,13 @@
 					_("Version mismatch"), 
 					_("Unexpected callback table, the release %s of lib%s is invalid"),
 						lib3270_get_revision(),
-						G_STRINGIFY(LIB3270_NAME)
+						PACKAGE_NAME
+				);
+
+				g_error(
+					_("Unexpected callback table, the release %s of lib%s is invalid"),
+					lib3270_get_revision(),
+					PACKAGE_NAME
 				);
 
 		}

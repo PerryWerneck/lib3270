@@ -64,6 +64,7 @@
  	void (*url_changed)(TN3270Session *session, const char *name);
 	void (*model_changed)(TN3270Session *session, const char *name, int model, int rows, int cols);
 	void (*ssl_changed)(TN3270Session *session, LIB3270_SSL_STATE state);
+	void (*ring_bell)(TN3270Session *session);
 
 	gpointer padding[8];
 	

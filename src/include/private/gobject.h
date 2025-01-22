@@ -21,6 +21,7 @@
  #include <config.h>
  #include <lib3270.h>
  #include <glib/tn3270.h>
+ #include <lib3270/mainloop.h>
 
  typedef struct _TN3270SessionPrivate {
 
@@ -30,3 +31,10 @@
 
  void tn3270_session_class_setup_callbacks(TN3270SessionClass *klass);
  int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self);
+ int tn3270_session_setup_mainloop(TN3270SessionPrivate *self);
+
+ GSource * IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
+ void IO_source_set_state(GSource *source, gboolean enable);
+
+
+

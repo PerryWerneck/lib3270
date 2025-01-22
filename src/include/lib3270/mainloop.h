@@ -76,7 +76,7 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 /**
  * @brief Register session io handlers.
  */
-LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, LIB3270_IO_CONTROLLER *cntrl);
+LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, const LIB3270_IO_CONTROLLER *cntrl);
 
 /**
  * Register time handlers.

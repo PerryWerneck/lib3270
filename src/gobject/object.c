@@ -41,6 +41,7 @@
  static void tn3270_session_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
  static void tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
  static void tn3270_session_install_property(const char *name, TN3270SessionClass *klass, guint property_id, GParamSpec *pspec);
+ static void tn3270_ring_bell(TN3270Session *session);
 
  static void
  tn3270_session_class_init (TN3270SessionClass *klass)
@@ -53,6 +54,7 @@
 
 	klass->properties.count = 1;
 
+	klass->ring_bell = tn3270_ring_bell;
   	object_class->dispose = tn3270_session_dispose;
   	object_class->finalize = tn3270_session_finalize;
 	object_class->set_property = tn3270_session_set_property;
@@ -89,8 +91,6 @@
 			);
 
 		}
-
-		// TODO: Watch toggle changes, emit property-changed signal.
 
 	}
 
@@ -210,8 +210,6 @@
 
 	}
 
-	// TODO: Setup I/O Handlers
-
  }
 
  static void
@@ -219,10 +217,11 @@
  {
 	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(gobject);
 	TN3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
+	
 	self->handler = lib3270_session_new("");
 	lib3270_set_user_data(self->handler,self);
 
-	if(tn3270_session_setup_callbacks(klass,self))
+	if(tn3270_session_setup_callbacks(klass,self) || tn3270_session_setup_mainloop(self))
 	{
 		lib3270_session_free(self->handler);
 		self->handler = NULL;
@@ -323,6 +322,11 @@
 
  }
 
+ static void
+ tn3270_ring_bell(TN3270Session *session)
+ {
+	// TODO: Emit sound
+ }
 
  LIB3270_EXPORT TN3270Session * tn3270_session_new() {
 	return g_object_new(TN3270_TYPE_SESSION,NULL);

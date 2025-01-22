@@ -132,13 +132,17 @@
 	return 0;
  }
 
- static	int run_task(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm)
+ static	int run_task(H3270 *hSession, const char *name, int(*callback)(H3270 *, void *), void *parm)
  {
 	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
 
 	p.running = TRUE;
 
-	GThread	*thread = g_thread_new(PACKAGE_NAME, (GThreadFunc) BgCall, &p);
+	GThread	*thread = g_thread_new( 
+		((name && *name) ? name : PACKAGE_NAME), 
+		(GThreadFunc) BgCall, 
+		&p
+	);
 
 	if(!thread)
 	{

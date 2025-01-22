@@ -1464,11 +1464,12 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr);
  * the function returns.
  *
  * @param hSession	TN3270 session.
+ * @param name		Task name.
  * @param callback	Function to call.
  * @param parm		Parameter to callback function.
  *
  */
-LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm);
+LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, const char *name, int(*callback)(H3270 *h, void *), void *parm);
 
 /**
  * @brief The host is TSO?

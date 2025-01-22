@@ -269,7 +269,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
 
-	if(lib3270_run_task(hSession, (int(*)(H3270 *, void *)) hSession->network.module->connect, &state)) {
+	if(lib3270_run_task(hSession, "reconnect", (int(*)(H3270 *, void *)) hSession->network.module->connect, &state)) {
 		lib3270_autoptr(LIB3270_POPUP) popup =
 		    lib3270_popup_clone_printf(
 		        NULL,

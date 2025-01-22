@@ -465,7 +465,12 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, const char *name, int(*call
 
 	hSession->cbk.set_timer(hSession,1);
 	hSession->tasks++;
-	rc = hSession->run(hSession,name,callback,parm);
+	rc = hSession->run(
+			hSession,
+			((name && *name) ? name : PACKAGE_NAME),
+			callback,
+			parm
+		);
 	hSession->cbk.set_timer(hSession,0);
 	hSession->tasks--;
 	return rc;

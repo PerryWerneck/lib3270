@@ -120,6 +120,15 @@
 
 		}
 
+		klass->properties.timer =
+			g_param_spec_boolean(
+				"timer",
+				"timer",
+				_("Timer is enabled, usually activates when session is busy"),
+				FALSE,
+				G_PARAM_READABLE
+			);
+
 	}
 
 	// Setup signed integer properties

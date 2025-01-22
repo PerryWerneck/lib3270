@@ -353,9 +353,6 @@ void screen_update(H3270 *session, int bstart, int bend) {
 
 	if(session->starting && session->formatted && !session->kybdlock && lib3270_in_3270(session)) {
 		session->starting = 0;
-
-//		cursor_move(session,next_unprotected(session,0));
-//		lib3270_emulate_input(session,"\\n",-1,0);
 		session->cbk.autostart(session);
 
 #ifdef DEBUG

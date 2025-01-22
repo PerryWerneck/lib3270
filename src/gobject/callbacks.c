@@ -78,6 +78,27 @@
 	klass->ssl_changed(self,state);
  }
  
+ static void handle_set_timer(H3270 *session, unsigned char on)
+ {
+	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
+	klass->set_timer(self,(gboolean) on);
+ }
+ 
+ static void handle_changed(H3270 *session, int offset, int len)
+ {
+	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
+	klass->changed(self,offset,len);
+ }
+
+ static void handle_selection_changed(H3270 *session, int start, int end)
+ {
+	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
+	klass->selection_changed(self,start,end);
+ }
+
  static void toggle_changed(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
  {
  	g_object_notify_by_pspec(
@@ -125,7 +146,18 @@
 		TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_SSL_STATE]
 	);
  }
- 
+
+ static void set_timer(TN3270Session *session, gboolean busy)
+ {
+	g_object_notify_by_pspec(
+		G_OBJECT(session), 
+		TN3270_SESSION_GET_CLASS(session)->properties.timer
+	);
+ }
+
+ static void nop_void() {
+ }
+
  void tn3270_session_class_setup_callbacks(TN3270SessionClass *klass)
  {
  	klass->toggle_changed = toggle_changed;
@@ -133,7 +165,10 @@
  	klass->luname_changed = luname_changed;
  	klass->url_changed = url_changed;
  	klass->model_changed = model_changed;
- 	klass->ssl_changed = ssl_changed;	
+ 	klass->ssl_changed = ssl_changed;
+	klass->set_timer = set_timer;
+	klass->changed = nop_void;
+	klass->selection_changed = nop_void;
  }
 
  int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self)
@@ -194,6 +229,9 @@
 	cbk->update_ssl = handle_ssl_changed;
 	cbk->update_model = handle_model_changed;
 	cbk->update_url = handle_url_changed;
+	cbk->set_timer = handle_set_timer;
+	cbk->changed = handle_changed;
+	cbk->update_selection = handle_selection_changed;
 
 	return 0;
  }

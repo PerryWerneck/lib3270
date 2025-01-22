@@ -56,6 +56,8 @@
  {
 	size_t ix;
 
+	debug("%s","Initializing TN3270SessionClass");
+
 	tn3270_session_class_setup_callbacks(klass);
 
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -256,6 +258,8 @@
  static void
  tn3270_session_init (TN3270Session *gobject)
  {
+	debug("%s","Initializing TN3270Session");
+	
 	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(gobject);
 	TN3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
 	

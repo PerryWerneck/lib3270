@@ -26,7 +26,8 @@ project(
 
 project_description = 'TN3270 client library'
 product_name = 'pw3270'
-product_domain = 'br.com.bb.pw3270'
+product_domain = 'br.app.@0@'.format(product_name)
+product_path = '/br/app/@0@'.format(product_name)
 product_title = 'TN3270 Access library'
 
 lib_src = []
@@ -163,9 +164,11 @@ app_conf.set('HAVE_STRTOK_R', cc.has_function('strtok_r'))
 app_conf.set('HAVE_VASPRINTF', cc.has_function('vasprintf'))
 
 app_conf.set_quoted('PRODUCT_TITLE', product_title)
+app_conf.set_quoted('PRODUCT_TITLE',product_title)
+
 app_conf.set('PRODUCT_NAME',product_name)
 app_conf.set('PRODUCT_DOMAIN',product_domain)
-app_conf.set_quoted('PRODUCT_TITLE',product_title)
+app_conf.set('PRODUCT_PATH',product_path)
 
 # Fix-me
 app_conf.set('HAVE_GNUC_VISIBILITY', 1)
@@ -352,7 +355,8 @@ pkg_variables = [
   
   'sdk_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
   'library_name=lib3270',
-  'product_id=br.app.@0@'.format(product_name),
+  'product_domain=@0@'.format(product_domain),
+  'schema_path=@0@'.format(product_path),
 
   'plugin_path=${libdir}/@0@/@1@.@2@/plugins/'.format(
     product_name,pkg_major_version,pkg_minor_version,
@@ -558,6 +562,12 @@ endif
 
 if gobject.found()
 
+  configure_file(
+    input : 'gschema.xml.in',
+    output : meson.project_name() + '.gschema.xml',
+    configuration : app_conf
+  )
+
   glib_shared = shared_library(
     '3270-glib', 
     gobject_src,
@@ -569,6 +579,31 @@ if gobject.found()
     dependencies: lib_deps + lib_extra + [ gobject ],
     include_directories: includes_dir
   )
+
+  #gnome = import('gnome')
+
+  #gnome.gtkdoc(
+  #  meson.project_name(),
+  #  src_dir: 'src/gobject',
+  #  main_sgml: '3270-glib-docs.xml',
+  #  install: true,
+  #  dependencies: [ gobject ],
+  #  include_directories: includes_dir
+  #)
+
+  #gnome.generate_gir(
+  #  glib_shared,
+  #  namespace: 'tn3270',
+  #  link_with: [ glib_shared ],
+  #  nsversion: '2.0',
+  #  header: [
+  #    'src/include/glib/tn3270.h',
+  #  ],
+  #  includes: [
+  #    'GLib-2.0',
+  #    'GObject-2.0',
+  #  ],    
+  #)
 
   static_library(
     '3270-glib', 

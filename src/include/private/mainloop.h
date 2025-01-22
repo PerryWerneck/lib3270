@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2008 Banco do Brasil S.A.
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,23 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LIB3270_INTERNALS_H_INCLUDED
+ #pragma once
 
-#define LIB3270_INTERNALS_H_INCLUDED 1
+ #include <config.h>
+ #include <lib3270.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf);
-LIB3270_EXPORT void lib3270_set_disconnected(H3270 *hSession);
-LIB3270_EXPORT void lib3270_set_connected_initial(H3270 *hSession);
-LIB3270_EXPORT void lib3270_setup_session(H3270 *session);
-
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // LIB3270_INTERNALS_H_INCLUDED
-
+ /// @brief Set the mainloop methods for the session.
+ /// @param hSession The session to be set.
+ void lib3270_setup_mainloop(H3270 *hSession);
+ void lib3270_set_internal_mainloop(H3270 *hSession);
+ 

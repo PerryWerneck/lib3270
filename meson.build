@@ -637,7 +637,7 @@ static_library(
 
 executable(
   meson.project_name(),
-  config_src + [ 'src/testprogram/testprogram.c' ],
+  config_src + [ 'src/library/testprogram.c' ],
   install: false,
   link_with : [ dynamic ],
   dependencies: lib_deps + libintl,

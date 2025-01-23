@@ -61,7 +61,7 @@ LIB3270_EXPORT int lib3270_set_syslog(int flag) {
 #ifdef HAVE_SYSLOG
 	if(flag) {
 		if(!use_syslog) {
-			openlog(LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), LOG_CONS, LOG_USER);
+			openlog(PACKAGE_NAME, LOG_CONS, LOG_USER);
 			use_syslog = 1;
 		}
 	} else {

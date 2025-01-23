@@ -309,7 +309,7 @@ struct _h3270 {
 	int		(*event_dispatcher)(H3270 *session,int wait);
 	int 	(*wait)(H3270 *session, int seconds);
 	void	(*ring_bell)(H3270 *session);
-	int		(*run)(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
+	int		(*run)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
 	// Network
 	struct {

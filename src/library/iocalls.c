@@ -60,19 +60,14 @@
 /*---[ Standard calls ]-------------------------------------------------------------------------------------*/
 
 // Timeout calls
-static void      internal_remove_timer(H3270 *session, void *timer);
+static void   internal_remove_timer(H3270 *session, void *timer);
 static void	* internal_add_timer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
-
 static void	* internal_add_poll(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 static void	  internal_remove_poll(H3270 *session, void *id);
-
 static void	  internal_set_poll_state(H3270 *session, void *id, int enabled);
-
-static int		  internal_wait(H3270 *session, int seconds);
-
+static int    internal_wait(H3270 *session, int seconds);
 static void	  internal_ring_bell(H3270 *session);
-
-static int		  internal_run_task(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
+static int    internal_run_task(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
 /*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
 
@@ -100,7 +95,7 @@ static int 	  (*event_dispatcher)(H3270 *session,int wait)
 static void	  (*ring_bell)(H3270 *)
     = internal_ring_bell;
 
-static int		  (*run_task)(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm)
+static int		  (*run_task)(H3270 *hSession, const char *name, int(*callback)(H3270 *h, void *), void *parm)
     = internal_run_task;
 
 /*---[ Typedefs ]-------------------------------------------------------------------------------------------*/
@@ -121,7 +116,7 @@ void lib3270_setup_mainloop(H3270 *hSession) {
 	hSession->event_dispatcher = event_dispatcher;
 }
 
-LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, LIB3270_IO_CONTROLLER *cntrl) {
+LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, const LIB3270_IO_CONTROLLER *cntrl) {
 
 	if(!cntrl || cntrl->sz != sizeof(LIB3270_IO_CONTROLLER))
 		return errno = EINVAL;
@@ -449,7 +444,7 @@ LIB3270_EXPORT void lib3270_ring_bell(H3270 *hSession) {
 		hSession->ring_bell(hSession);
 }
 
-int internal_run_task(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm) {
+int internal_run_task(H3270 *hSession, const char *name, int(*callback)(H3270 *, void *), void *parm) {
 	return callback(hSession,parm);
 }
 
@@ -460,16 +455,22 @@ int internal_run_task(H3270 *hSession, int(*callback)(H3270 *, void *), void *pa
  * the function returns.
  *
  * @param hSession	TN3270 session.
+ * @param name		Task name.
  * @param callback	Function to call.
  * @param parm		Parameter to callback function.
  *
  */
-LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm) {
+LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, const char *name, int(*callback)(H3270 *h, void *), void *parm) {
 	int rc;
 
 	hSession->cbk.set_timer(hSession,1);
 	hSession->tasks++;
-	rc = hSession->run(hSession,callback,parm);
+	rc = hSession->run(
+			hSession,
+			((name && *name) ? name : PACKAGE_NAME),
+			callback,
+			parm
+		);
 	hSession->cbk.set_timer(hSession,0);
 	hSession->tasks--;
 	return rc;

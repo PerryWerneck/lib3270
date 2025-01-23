@@ -179,7 +179,6 @@ static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
 }
 
 static void screen_disp(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
 	screen_update(session,0,session->view.rows*session->view.cols);
 }
 
@@ -192,6 +191,7 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 
 	hSession->cbk.update 				= nop_void;
 	hSession->cbk.update_model			= nop_void;
+	hSession->cbk.update_toggle			= nop_void;
 	hSession->cbk.update_cursor			= nop_void;
 	hSession->cbk.set_selection 		= nop_void;
 	hSession->cbk.ctlr_done				= nop_void;
@@ -229,14 +229,11 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	int f;
 
 	memset(hSession,0,sizeof(H3270));
-	lib3270_set_default_network_module(hSession);
-
-#if defined(SSL_ENABLE_CRL_CHECK)
-	hSession->ssl.download_crl = 1;
-#endif // SSL_ENABLE_CRL_CHECK
-
-	lib3270_set_host_charset(hSession,charset);
 	lib3270_reset_callbacks(hSession);
+	hSession->ssl.download_crl = 1;
+
+	lib3270_set_default_network_module(hSession);
+	lib3270_set_host_charset(hSession,charset);
 
 	// Set the defaults.
 	hSession->extended  			=  1;

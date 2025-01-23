@@ -59,7 +59,7 @@ typedef struct lib3270_io_controller {
 	int		  (*Wait)(H3270 *hSession, int seconds);
 	int		  (*event_dispatcher)(H3270 *session, int wait);
 	void	  (*ring_bell)(H3270 *session);
-	int		  (*run_task)(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
+	int		  (*run_task)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
 } LIB3270_IO_CONTROLLER;
 
@@ -76,7 +76,7 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 /**
  * @brief Register session io handlers.
  */
-LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, LIB3270_IO_CONTROLLER *cntrl);
+LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, const LIB3270_IO_CONTROLLER *cntrl);
 
 /**
  * Register time handlers.

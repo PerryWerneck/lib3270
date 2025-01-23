@@ -17,13 +17,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #pragma once
-
  #include <config.h>
- #include <lib3270.h>
+ #include <glib.h>
+ #include <glib-object.h>
+ #include <glib-tn3270.h>
 
- /// @brief Set the mainloop methods for the session.
- /// @param hSession The session to be set.
- void lib3270_setup_mainloop(H3270 *hSession);
- void lib3270_set_internal_mainloop(H3270 *hSession);
- 
+ static GMainLoop *loop = NULL;
+ static GMainContext *context = NULL;
+
+ int main(int argc, char *argv[]) {
+
+	context = g_main_context_new();
+	loop = g_main_loop_new(context, FALSE);
+
+	g_autoptr(TN3270Session) session = tn3270_session_new();
+
+	g_object_set(session, "autoconnect", TRUE, NULL);
+
+	g_main_loop_run(loop);
+
+	g_main_loop_unref(loop);
+	g_main_context_unref(context);
+
+	return 0;
+	
+ }
+

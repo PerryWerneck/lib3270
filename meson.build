@@ -26,7 +26,8 @@ project(
 
 project_description = 'TN3270 client library'
 product_name = 'pw3270'
-product_domain = 'br.com.bb.pw3270'
+product_domain = 'br.app.@0@'.format(product_name)
+product_path = '/br/app/@0@'.format(product_name)
 product_title = 'TN3270 Access library'
 
 lib_src = []
@@ -55,6 +56,7 @@ c = meson.get_compiler('c')
 libssl = dependency('libssl', required: false)
 libintl = dependency('intl', required : false)
 libiconv = dependency('iconv', required : false)
+gobject = dependency('gobject-2.0', required: false)
 
 lib_extra = [
   libintl,
@@ -88,6 +90,7 @@ compiler_flags = [
   '-pthread',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
+  '-DG_LOG_DOMAIN="tn3270"',
 ]
 
 # TODO:
@@ -162,9 +165,11 @@ app_conf.set('HAVE_STRTOK_R', cc.has_function('strtok_r'))
 app_conf.set('HAVE_VASPRINTF', cc.has_function('vasprintf'))
 
 app_conf.set_quoted('PRODUCT_TITLE', product_title)
+app_conf.set_quoted('PRODUCT_TITLE',product_title)
+
 app_conf.set('PRODUCT_NAME',product_name)
 app_conf.set('PRODUCT_DOMAIN',product_domain)
-app_conf.set_quoted('PRODUCT_TITLE',product_title)
+app_conf.set('PRODUCT_PATH',product_path)
 
 # Fix-me
 app_conf.set('HAVE_GNUC_VISIBILITY', 1)
@@ -290,6 +295,13 @@ lib_src += [
   'src/library/network/tools.c',
 ]
 
+gobject_src = [
+  'src/gobject/object.c',
+  'src/gobject/callbacks.c',
+  'src/gobject/mainloop.c',
+  'src/gobject/os/' + host_machine.system() + '/iosource.c',
+]
+
 linux_src =[
   'src/library/os/linux/connect.c',
   'src/library/os/linux/curl.c',
@@ -344,7 +356,8 @@ pkg_variables = [
   
   'sdk_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
   'library_name=lib3270',
-  'product_id=br.app.@0@'.format(product_name),
+  'product_domain=@0@'.format(product_domain),
+  'schema_path=@0@'.format(product_path),
 
   'plugin_path=${libdir}/@0@/@1@.@2@/plugins/'.format(
     product_name,pkg_major_version,pkg_minor_version,
@@ -443,7 +456,8 @@ if host_machine.system() == 'linux'
   app_conf.set_quoted('LIBEXT', '.so')
 
   lib_src += linux_src
-  
+
+
 endif
 
 if host_machine.system() == 'darwin'
@@ -542,6 +556,71 @@ else
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps + lib_extra,
+    include_directories: includes_dir
+  )
+
+endif
+
+if gobject.found()
+
+  #gir_dep = dependency('gobject-introspection-1.0', version: '>= 0.9.0')
+
+  configure_file(
+    input : 'gschema.xml.in',
+    output : meson.project_name() + '.gschema.xml',
+    configuration : app_conf
+  )
+
+  glib_shared = shared_library(
+    '3270-glib', 
+    gobject_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    link_with : [ dynamic ],
+    dependencies: lib_deps + lib_extra + [ gobject ],
+    include_directories: includes_dir
+  )
+
+  # gnome = import('gnome')
+
+  #gnome.gtkdoc(
+  #  meson.project_name(),
+  #  src_dir: 'src/gobject',
+  #  install: true,
+  #  dependencies: [ gobject ],
+  #  include_directories: includes_dir
+  #)
+
+  #gnome.generate_gir(
+  #  glib_shared,
+  #  namespace: 'tn3270',
+  #  link_with: [ glib_shared ],
+  #  nsversion: '2.0',
+  #  header: 'tn3270'[
+  #    'src/include/glib/tn3270.h',
+  #  ],
+  #  includes: [
+  #    'GLib-2.0',
+  #    'GObject-2.0',
+  #  ],    
+  #)
+
+  static_library(
+    '3270-glib', 
+    gobject_src + config_src + lib_src,
+    install: true,
+    dependencies: lib_deps + [ gobject ],
+    include_directories: includes_dir
+  )
+
+  executable(
+    meson.project_name() + '-gobject',
+    [ 'src/gobject/testprogram.c' ],
+    install: false,
+    link_with : [ glib_shared ],
+    dependencies: lib_deps + [ gobject ],
     include_directories: includes_dir
   )
 

@@ -56,16 +56,19 @@ LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_T
  */
 static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_ID ix) {
 
-	trace("%s: ix=%d upcall=%p",__FUNCTION__,ix,t->upcall);
-	session->cbk.update_toggle(session,ix,t->value,LIB3270_TOGGLE_TYPE_INTERACTIVE,toggle_descriptor[ix].name);
+	trace("%s: ix=%d upcall=%p cbk=%p",__FUNCTION__,ix,t->upcall,session->cbk.update_toggle);
 
-	t->upcall(session, t, LIB3270_TOGGLE_TYPE_INTERACTIVE);
+	session->cbk.update_toggle(session,ix,t->value,LIB3270_TOGGLE_TYPE_INTERACTIVE,toggle_descriptor[ix].name);
 
 	// Notify customers.
 	struct lib3270_linked_list_node * node;
 	for(node = session->listeners.toggle[ix].first; node; node = node->next) {
 		((struct lib3270_toggle_callback *) node)->func(session, ix, t->value, node->userdata);
 	}
+
+	trace("%s: ix=%d upcall=%p [Calling upcall]",__FUNCTION__,ix,t->upcall);
+	t->upcall(session, t, LIB3270_TOGGLE_TYPE_INTERACTIVE);
+	trace("%s: ix=%d upcall=%p [Upcall ends]",__FUNCTION__,ix,t->upcall);
 
 }
 
@@ -79,10 +82,10 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
  * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
  */
 LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int value) {
-	char v = value ? True : False;
-	struct lib3270_toggle * t;
 
-	CHECK_SESSION_HANDLE(session);
+	char v = value ? True : False;
+
+	struct lib3270_toggle * t;
 
 	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT)
 		return -(errno = EINVAL);

@@ -35,48 +35,42 @@
  static void handle_toggle_changed(H3270 *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
  {
 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->toggle_changed(self,id,value,reason,name);
+	TN3270_SESSION_GET_CLASS(self)->toggle_changed(self,id,value,reason,name);
  }
 
  /// @brief Callback called when connect state changes.
  static void handle_connect_changed(H3270 *session, unsigned char connected)
  {
 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->connect_changed(self,connected);
+	TN3270_SESSION_GET_CLASS(self)->connect_changed(self,connected);
  }
 
  /// @brief Callback called when associated lu changes
  static void handle_luname_changed(H3270 *session, const char *name)
  {
 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->luname_changed(self,name);
+	TN3270_SESSION_GET_CLASS(self)->luname_changed(self,name);
  }
 
  /// @brief Callback called when the connection URL changes.
  static void handle_url_changed(H3270 *session, const char *name)
  {
 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->url_changed(self,name);
+	TN3270_SESSION_GET_CLASS(self)->url_changed(self,name);
  }
 
  /// @brief Callback called when the model changes.
  static void handle_model_changed(H3270 *session, const char *name, int model, int rows, int cols)
  {
 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->model_changed(self,name,model,rows,cols);
+	TN3270_SESSION_GET_CLASS(self)->model_changed(self,name,model,rows,cols);
  }
 
  /// @brief Callback called when the SSL state changes.
  static void handle_ssl_changed(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state) 
  {
 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->ssl_changed(self,state);
+	TN3270_SESSION_GET_CLASS(self)->ssl_changed(self,state);
  }
 
  typedef struct timer {
@@ -142,8 +136,7 @@
 
  static void handle_status_changed(H3270 *session, LIB3270_MESSAGE id) {
  	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->status_changed(self,id);
+	TN3270_SESSION_GET_CLASS(self)->status_changed(self,id);
  }
 
  typedef struct notification 
@@ -239,42 +232,41 @@
 	{
 		if(g_ascii_strcasecmp(RPQ_REVISION,lib3270_get_revision()))
 		{
-				lib3270_popup_dialog(
-					self->handler, 
-					LIB3270_NOTIFY_CRITICAL, 
-					_("Initialization error"), 
-					_("Version mismatch"), 
-					_("Invalid callback table, the release %s of %s can't be used (expecting revision %s)"),
-						lib3270_get_revision(),
-						PACKAGE_NAME,
-						RPQ_REVISION
-				);
-
-				g_error(
-					_("Invalid callback table, the release %s of %s can't be used (expecting revision %s)"),
+			lib3270_popup_dialog(
+				self->handler, 
+				LIB3270_NOTIFY_CRITICAL, 
+				_("Initialization error"), 
+				_("Version mismatch"), 
+				_("Invalid callback table, the release %s of %s can't be used (expecting revision %s)"),
 					lib3270_get_revision(),
 					PACKAGE_NAME,
 					RPQ_REVISION
-				);
+			);
 
+			g_error(
+				_("Invalid callback table, the release %s of %s can't be used (expecting revision %s)"),
+				lib3270_get_revision(),
+				PACKAGE_NAME,
+				RPQ_REVISION
+			);
 		}
 		else
 		{
-				lib3270_popup_dialog(
-					self->handler, 
-					LIB3270_NOTIFY_CRITICAL, 
-					_("Initialization error"), 
-					_("Version mismatch"), 
-					_("Unexpected callback table, the release %s of lib%s is invalid"),
-						lib3270_get_revision(),
-						PACKAGE_NAME
-				);
-
-				g_error(
-					_("Unexpected callback table, the release %s of lib%s is invalid"),
+			lib3270_popup_dialog(
+				self->handler, 
+				LIB3270_NOTIFY_CRITICAL, 
+				_("Initialization error"), 
+				_("Version mismatch"), 
+				_("Unexpected callback table, the release %s of %s is invalid"),
 					lib3270_get_revision(),
 					PACKAGE_NAME
-				);
+			);
+
+			g_error(
+				_("Unexpected callback table, the release %s of %s is invalid"),
+				lib3270_get_revision(),
+				PACKAGE_NAME
+			);
 
 		}
 

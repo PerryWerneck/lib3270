@@ -327,28 +327,32 @@
 	if(prop_id > klass->properties.type.str)
 	{
 		debug("String property %s set to %s",pspec->name,g_value_get_string(value));
-
+		prop_id -= klass->properties.type.str;
+		(lib3270_get_string_properties_list()+prop_id)->set(self->handler,g_value_get_string(value));
 		return;
 	}
 
 	if(prop_id > klass->properties.type.uint)
 	{
 		debug("Unsigned int property %s set to %u",pspec->name,g_value_get_uint(value));
-
+		prop_id -= klass->properties.type.uint;
+		(lib3270_get_unsigned_properties_list()+prop_id)->set(self->handler,g_value_get_uint(value));
 		return;
 	}
 
 	if(prop_id > klass->properties.type.integer)
 	{
 		debug("Int property %s set to %d",pspec->name,g_value_get_int(value));
-
+		prop_id -= klass->properties.type.integer;
+		(lib3270_get_int_properties_list()+prop_id)->set(self->handler,g_value_get_int(value));
 		return;
 	}
 
 	if(prop_id > klass->properties.type.boolean)
 	{
 		debug("Boolean property %s set to %s",pspec->name,g_value_get_boolean(value) ? "true" : "false");
-
+		prop_id -= klass->properties.type.boolean;
+		(lib3270_get_boolean_properties_list()+prop_id)->set(self->handler,g_value_get_boolean(value));
 		return;
 	}
 
@@ -360,21 +364,62 @@
 		return;
 	}
 
-	debug("Internal property %s",pspec->name);
-
+	debug("Setting internal property %s",pspec->name);
 
  	return;
-
  }
 
  static void 
  tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
  {
-//	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
-//	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
+	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
 
+	debug("Getting property %s with id %u (max %lu)",pspec->name,prop_id,klass->properties.count);
 
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+	if(prop_id > klass->properties.count) 
+	{
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		return;
+	}
+
+	if(prop_id > klass->properties.type.str)
+	{
+		prop_id -= klass->properties.type.str;
+	
+		return;
+	}
+
+	if(prop_id > klass->properties.type.uint)
+	{
+		prop_id -= klass->properties.type.uint;
+
+		return;
+	}
+
+	if(prop_id > klass->properties.type.integer)
+	{
+		prop_id -= klass->properties.type.integer;
+
+		return;
+	}
+
+	if(prop_id > klass->properties.type.boolean)
+	{
+		prop_id -= klass->properties.type.boolean;
+
+		return;
+	}
+
+	if(prop_id > SESSION_PROPERTY_CUSTOM)
+	{
+		prop_id -= SESSION_PROPERTY_CUSTOM;
+		g_value_set_boolean(value,lib3270_get_toggle(self->handler,(lib3270_get_toggles()+prop_id)->id));
+	}
+
+	debug("Getting internal property %s",pspec->name);
+
+ 	return;
  }
 
  static void

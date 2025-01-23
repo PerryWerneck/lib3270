@@ -433,6 +433,7 @@
 		"ssl-state",
 		"has-selection",
 		"program-message",
+		"can-paste-next"
 	};
 
 	debug("---> Installing property %s with id %u",pspec->name,property_id);

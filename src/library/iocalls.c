@@ -69,34 +69,30 @@ static int    internal_wait(H3270 *session, int seconds);
 static void	  internal_ring_bell(H3270 *session);
 static int    internal_run_task(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
-/*---[ Active callbacks ]-----------------------------------------------------------------------------------*/
+/*---[ Default callbacks ]----------------------------------------------------------------------------------*/
 
-static void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata)
-    = internal_add_timer;
+static struct {
+	void	* (*add_timer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
+	void	  (*remove_timer)(H3270 *session, void *timer);
+	void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
+	void	  (*remove_poll)(H3270 *session, void *id);
+	void	  (*set_poll_state)(H3270 *session, void *id, int enabled);
+	int	  	  (*wait_callback)(H3270 *session, int seconds);
+	int 	  (*event_dispatcher)(H3270 *session,int wait);
+	void	  (*ring_bell)(H3270 *);
+	int		  (*run_task)(H3270 *hSession, const char *name, int(*callback)(H3270 *h, void *), void *parm);
+} defs = {
+	internal_add_timer,
+	internal_remove_timer,
+	internal_add_poll,
+	internal_remove_poll,
+	internal_set_poll_state,
+	internal_wait,
+	lib3270_default_event_dispatcher,
+	internal_ring_bell,
+	internal_run_task
+} ;
 
-static void	  (*remove_timer)(H3270 *session, void *timer)
-    = internal_remove_timer;
-
-static void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
-    = internal_add_poll;
-
-static void	  (*remove_poll)(H3270 *session, void *id)
-    = internal_remove_poll;
-
-static void	  (*set_poll_state)(H3270 *session, void *id, int enabled)
-    = internal_set_poll_state;
-
-static int	  	  (*wait_callback)(H3270 *session, int seconds)
-    = internal_wait;
-
-static int 	  (*event_dispatcher)(H3270 *session,int wait)
-    = lib3270_default_event_dispatcher;
-
-static void	  (*ring_bell)(H3270 *)
-    = internal_ring_bell;
-
-static int		  (*run_task)(H3270 *hSession, const char *name, int(*callback)(H3270 *h, void *), void *parm)
-    = internal_run_task;
 
 /*---[ Typedefs ]-------------------------------------------------------------------------------------------*/
 
@@ -105,15 +101,15 @@ static int		  (*run_task)(H3270 *hSession, const char *name, int(*callback)(H327
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
 void lib3270_setup_mainloop(H3270 *hSession) {
-	hSession->io.timer.add = add_timer;
-	hSession->io.timer.remove = remove_timer;
-	hSession->io.poll.add = add_poll;
-	hSession->io.poll.remove = remove_poll;
-	hSession->io.poll.set_state = set_poll_state;
-	hSession->wait = wait_callback;
-	hSession->ring_bell = ring_bell;
-	hSession->run = run_task;
-	hSession->event_dispatcher = event_dispatcher;
+	hSession->io.timer.add = defs.add_timer;
+	hSession->io.timer.remove = defs.remove_timer;
+	hSession->io.poll.add = defs.add_poll;
+	hSession->io.poll.remove = defs.remove_poll;
+	hSession->io.poll.set_state = defs.set_poll_state;
+	hSession->wait = defs.wait_callback;
+	hSession->ring_bell = defs.ring_bell;
+	hSession->run = defs.run_task;
+	hSession->event_dispatcher = defs.event_dispatcher;
 }
 
 LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, const LIB3270_IO_CONTROLLER *cntrl) {
@@ -337,22 +333,25 @@ static void internal_ring_bell(H3270 GNUC_UNUSED(*session)) {
 
 /* External entry points */
 
-void * AddTimer(unsigned long interval_ms, H3270 *session, int (*proc)(H3270 *session, void *userdata), void *userdata) {
-	void *timer = add_timer(
-	                  session,
-	                  interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
-	                  proc,
-	                  userdata
-	              );
+void * AddTimer(unsigned long interval_ms, H3270 *hSession, int (*proc)(H3270 *session, void *userdata), void *userdata) {
+
+	void *timer = hSession->io.timer.add(
+		hSession,
+		interval_ms ? interval_ms : 100,	// Prevents a zero-value timer.
+		proc,
+		userdata
+	);
+
 	trace("Timeout %p created with %ld ms",timer,interval_ms);
+
 	return timer;
 }
 
-void RemoveTimer(H3270 *session, void * timer) {
+void RemoveTimer(H3270 *hSession, void * timer) {
 	if(!timer)
 		return;
 	trace("Removing timeout %p",timer);
-	return remove_timer(session, timer);
+	return hSession->io.timer.remove(hSession, timer);
 }
 
 void x_except_on(H3270 *h) {
@@ -389,19 +388,19 @@ void remove_input_calls(H3270 *session) {
 
 LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session,void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer)) {
 	if(add)
-		add_timer = add;
+		defs.add_timer = add;
 
 	if(rm)
-		remove_timer = rm;
+		defs.remove_timer = rm;
 
 }
 
 LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id)) {
 	if(add)
-		add_poll = add;
+		defs.add_poll = add;
 
 	if(rm)
-		remove_poll = rm;
+		defs.remove_poll = rm;
 }
 
 LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk) {
@@ -412,19 +411,19 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 	lib3270_register_fd_handlers(cbk->add_poll,cbk->remove_poll);
 
 	if(cbk->Wait)
-		wait_callback = cbk->Wait;
+		defs.wait_callback = cbk->Wait;
 
 	if(cbk->event_dispatcher)
-		event_dispatcher = cbk->event_dispatcher;
+		defs.event_dispatcher = cbk->event_dispatcher;
 
 	if(cbk->ring_bell)
-		ring_bell = cbk->ring_bell;
+		defs.ring_bell = cbk->ring_bell;
 
 	if(cbk->run_task)
-		run_task = cbk->run_task;
+		defs.run_task = cbk->run_task;
 
 	if(cbk->set_poll_state)
-		set_poll_state = cbk->set_poll_state;
+		defs.set_poll_state = cbk->set_poll_state;
 
 	return 0;
 

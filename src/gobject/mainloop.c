@@ -19,6 +19,7 @@
 
  #include <config.h>
  #include <lib3270.h>
+ #include <lib3270/log.h>
  #include <glib-object.h>
  #include <glib/gmain.h>
  #include <glib-tn3270.h>
@@ -58,7 +59,6 @@
  {
 	if(!t->remove)
 		return t->call(t->session,t->userdata);
-
 	return FALSE;
  }
 
@@ -70,7 +70,8 @@
 	t->session	= session;
 	t->userdata	= userdata;
 
-	g_timeout_add_full(G_PRIORITY_DEFAULT, (guint) interval_ms, (GSourceFunc) do_timer, t, g_free);
+	guint id = g_timeout_add_full(G_PRIORITY_DEFAULT, (guint) interval_ms, (GSourceFunc) do_timer, t, g_free);
+	debug("timer-id=%u",id);
 
 	return t;
  }

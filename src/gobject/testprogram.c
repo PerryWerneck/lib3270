@@ -22,22 +22,15 @@
  #include <glib-object.h>
  #include <glib-tn3270.h>
 
- static GMainLoop *loop = NULL;
- static GMainContext *context = NULL;
-
  int main(int argc, char *argv[]) {
 
-	context = g_main_context_new();
-	loop = g_main_loop_new(context, FALSE);
+	GMainLoop *loop = g_main_loop_new(g_main_context_default(), FALSE);
 
 	g_autoptr(TN3270Session) session = tn3270_session_new();
-
 	g_object_set(session, "autoconnect", TRUE, NULL);
 
 	g_main_loop_run(loop);
-
 	g_main_loop_unref(loop);
-	g_main_context_unref(context);
 
 	return 0;
 	

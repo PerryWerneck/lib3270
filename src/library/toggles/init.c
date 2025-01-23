@@ -89,11 +89,11 @@ static void toggle_keepalive(H3270 *hSession, const struct lib3270_toggle GNUC_U
 }
 
 static void toggle_connect(H3270 *hSession, const struct lib3270_toggle *toggle, LIB3270_TOGGLE_TYPE tt) {
-	if(tt != LIB3270_TOGGLE_TYPE_INITIAL && lib3270_is_disconnected(hSession) && toggle->value) {
-		if(hSession->cbk.reconnect(hSession,0))
+	if(toggle->value && tt != LIB3270_TOGGLE_TYPE_INITIAL && lib3270_is_disconnected(hSession)) {
+		if(lib3270_activate_auto_reconnect(hSession, 100)) {
 			lib3270_write_log(hSession,"3270","Auto-connect fails: %s",strerror(errno));
+		}
 	}
-
 }
 
 static void toggle_ssl_trace(H3270 *hSession, const struct lib3270_toggle *toggle, LIB3270_TOGGLE_TYPE tt) {

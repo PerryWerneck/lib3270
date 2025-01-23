@@ -39,6 +39,7 @@
 	TN3270_SESSION_PROPERTY_SSL_STATE,
 	TN3270_SESSION_PROPERTY_HAS_SELECTION,
 	TN3270_SESSION_PROPERTY_PROGRAM_MESSAGE,
+	TN3270_SESSION_PROPERTY_CAN_PASTE_NEXT,
 
 	TN3270_SESSION_PROPERTY_COUNT
  };
@@ -61,7 +62,7 @@
 
 	} properties;
 
-	// Properties (not thread safe)
+	// Properties
  	void (*toggle_changed)(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name);
 	void (*connect_changed)(TN3270Session *session, unsigned char connected);
 	void (*luname_changed)(TN3270Session *session, const char *name);
@@ -69,12 +70,14 @@
 	void (*model_changed)(TN3270Session *session, const char *name, int model, int rows, int cols);
 	void (*ssl_changed)(TN3270Session *session, LIB3270_SSL_STATE state);
  	void (*status_changed)(TN3270Session *hSession, LIB3270_MESSAGE id);
-
-	// Terminal contents (thread safe)
-	void (*changed)(TN3270Session *session, int offset, int len);
 	void (*selection_changed)(TN3270Session *session, int start, int end);
 
-	// States (thread safe)
+	// Terminal contents
+	void (*display)(TN3270Session *session);
+	void (*erase)(TN3270Session *session);
+	void (*changed)(TN3270Session *session, int offset, int len);
+
+	// States
 	void (*set_timer)(TN3270Session *session, gboolean busy);
 	void (*ring_bell)(TN3270Session *session);
 

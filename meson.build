@@ -20,7 +20,7 @@
 project(
 	'lib3270', 
 	['c'],
-	version: '5.5.1',
+	version: '5.6.0',
 	license: 'GPL-3.0-or-later',
 )
 

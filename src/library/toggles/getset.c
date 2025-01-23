@@ -55,12 +55,11 @@ LIB3270_EXPORT unsigned char lib3270_get_toggle(const H3270 *hSession, LIB3270_T
  * @brief Call the internal update routine and listeners.
  */
 static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGGLE_ID ix) {
+
 	trace("%s: ix=%d upcall=%p",__FUNCTION__,ix,t->upcall);
+	session->cbk.update_toggle(session,ix,t->value,LIB3270_TOGGLE_TYPE_INTERACTIVE,toggle_descriptor[ix].name);
 
 	t->upcall(session, t, LIB3270_TOGGLE_TYPE_INTERACTIVE);
-
-	if(session->cbk.update_toggle)
-		session->cbk.update_toggle(session,ix,t->value,LIB3270_TOGGLE_TYPE_INTERACTIVE,toggle_descriptor[ix].name);
 
 	// Notify customers.
 	struct lib3270_linked_list_node * node;

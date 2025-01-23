@@ -90,6 +90,7 @@ compiler_flags = [
   '-pthread',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
+  '-DG_LOG_DOMAIN="tn3270"',
 ]
 
 # TODO:
@@ -562,6 +563,8 @@ endif
 
 if gobject.found()
 
+  #gir_dep = dependency('gobject-introspection-1.0', version: '>= 0.9.0')
+
   configure_file(
     input : 'gschema.xml.in',
     output : meson.project_name() + '.gschema.xml',
@@ -580,12 +583,11 @@ if gobject.found()
     include_directories: includes_dir
   )
 
-  #gnome = import('gnome')
+  # gnome = import('gnome')
 
   #gnome.gtkdoc(
   #  meson.project_name(),
   #  src_dir: 'src/gobject',
-  #  main_sgml: '3270-glib-docs.xml',
   #  install: true,
   #  dependencies: [ gobject ],
   #  include_directories: includes_dir
@@ -596,7 +598,7 @@ if gobject.found()
   #  namespace: 'tn3270',
   #  link_with: [ glib_shared ],
   #  nsversion: '2.0',
-  #  header: [
+  #  header: 'tn3270'[
   #    'src/include/glib/tn3270.h',
   #  ],
   #  includes: [

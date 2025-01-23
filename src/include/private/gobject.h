@@ -20,7 +20,7 @@
  #pragma once
  #include <config.h>
  #include <lib3270.h>
- #include <glib/tn3270.h>
+ #include <glib-tn3270.h>
  #include <lib3270/mainloop.h>
 
  typedef struct _TN3270SessionPrivate {

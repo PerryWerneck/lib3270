@@ -21,7 +21,7 @@
  #include <lib3270.h>
  #include <glib-object.h>
  #include <glib/gmain.h>
- #include <glib/tn3270.h>
+ #include <glib-tn3270.h>
  #include <private/intl.h>
  #include <private/gobject.h>
  #include <private/mainloop.h>
@@ -109,11 +109,16 @@
 	return rc;
  }
 
+
+ static gboolean tn3270_session_ring_bell(TN3270Session *session)
+ {	
+	TN3270_SESSION_GET_CLASS(session)->ring_bell(session);
+	return FALSE;
+ }
+
  static void ring_bell(H3270 *session)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->ring_bell(self);
+	g_idle_add((GSourceFunc) tn3270_session_ring_bell,lib3270_get_user_data(session));
  }
 
  struct bgParameter

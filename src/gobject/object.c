@@ -17,6 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION: tn3270-session
+ * @short_description: A tn3270 session object
+ *
+ * A tn3270 session object representing a connection to a tn3270 server.
+ * 
+ */
+
  #include <config.h>
  #include <private/gobject.h>
  #include <lib3270.h>
@@ -25,7 +33,7 @@
  #include <lib3270/session.h>
  #include <lib3270/ssl.h>
  #include <glib-object.h>
- #include <glib/tn3270.h>
+ #include <glib-tn3270.h>
  #include <private/intl.h>
 
  //
@@ -40,13 +48,11 @@
  static void tn3270_session_finalize(GObject *gobject);
  static void tn3270_session_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
  static void tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
- static void tn3270_session_install_property(const char *name, TN3270SessionClass *klass, guint property_id, GParamSpec *pspec);
- static void tn3270_ring_bell(TN3270Session *session);
-
+ static void tn3270_session_install_property(TN3270SessionClass *klass, guint property_id, GParamSpec *pspec);
+ 
  /// @brief Internal properties
  enum Properties {
 	SESSION_PROPERTY_TIMER,
-	SESSION_PROPERTY_HAS_SELECTION,
 
 	SESSION_PROPERTY_CUSTOM
  };
@@ -58,19 +64,18 @@
 
 	debug("%s","Initializing TN3270SessionClass");
 
+	{
+		GObjectClass *object_class = G_OBJECT_CLASS (klass);
+		object_class->dispose = tn3270_session_dispose;
+		object_class->finalize = tn3270_session_finalize;
+		object_class->set_property = tn3270_session_set_property;
+		object_class->get_property = tn3270_session_get_property;
+	}
+
 	tn3270_session_class_setup_callbacks(klass);
 
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	klass->properties.count = SESSION_PROPERTY_CUSTOM;
-
-	klass->ring_bell = tn3270_ring_bell;
-  	object_class->dispose = tn3270_session_dispose;
-  	object_class->finalize = tn3270_session_finalize;
-	object_class->set_property = tn3270_session_set_property;
-  	object_class->get_property = tn3270_session_get_property;
-
 	// Setup internal properties
+	klass->properties.count = SESSION_PROPERTY_CUSTOM;
 	{
 		klass->properties.timer =
 			g_param_spec_boolean(
@@ -87,20 +92,6 @@
 			klass->properties.timer
 		);
 
-		klass->properties.has_selection =
-			g_param_spec_boolean(
-				"has-selection",
-				"has-selection",
-				_("True when selection is available"),
-				FALSE,
-				G_PARAM_READABLE
-			);
-
-		g_object_class_install_property(
-			G_OBJECT_CLASS (klass), 
-			SESSION_PROPERTY_HAS_SELECTION,
-			klass->properties.has_selection
-		);
 	}
 
 	// Setup toggle properties
@@ -116,7 +107,7 @@
 				continue;
 			}
 
-			debug("Registering toggle property: %s(%d)", toggles[ix].name,toggles[ix].def);
+			debug("Registering toggle property '%s' with id %lu and value %d", toggles[ix].name,klass->properties.count,toggles[ix].def);
 			klass->properties.toggle[ix] =
 				g_param_spec_boolean(
 					toggles[ix].name,
@@ -127,7 +118,6 @@
 				);
 
 			tn3270_session_install_property(
-				toggles[ix].name,
 				klass,
 				klass->properties.count++,
 				klass->properties.toggle[ix]
@@ -155,7 +145,6 @@
 			);
 
 			tn3270_session_install_property(
-				props[ix].name,
 				klass,
 				klass->properties.count++,
 				spec
@@ -185,7 +174,6 @@
 			);
 
 			tn3270_session_install_property(
-				props[ix].name,
 				klass,
 				klass->properties.count++,
 				spec
@@ -215,7 +203,6 @@
 			);
 
 			tn3270_session_install_property(
-				props[ix].name,
 				klass,
 				klass->properties.count++,
 				spec
@@ -243,7 +230,6 @@
 			);
 
 			tn3270_session_install_property(
-				props[ix].name,
 				klass,
 				klass->properties.count++,
 				spec
@@ -264,7 +250,7 @@
 	TN3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
 	
 	self->handler = lib3270_session_new("");
-	lib3270_set_user_data(self->handler,self);
+	lib3270_set_user_data(self->handler,gobject);
 
 	if(tn3270_session_setup_callbacks(klass,self) || tn3270_session_setup_mainloop(self))
 	{
@@ -327,38 +313,91 @@
  static void 
  tn3270_session_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
  {
-//	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
+
+	debug("Setting property %s with id %u (max %lu)",pspec->name,prop_id,klass->properties.count);
+
+	if(prop_id > klass->properties.count) 
+	{
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		return;
+	}
+
+	if(prop_id > klass->properties.type.str)
+	{
+		debug("String property %s set to %s",pspec->name,g_value_get_string(value));
+
+		return;
+	}
+
+	if(prop_id > klass->properties.type.uint)
+	{
+		debug("Unsigned int property %s set to %u",pspec->name,g_value_get_uint(value));
+
+		return;
+	}
+
+	if(prop_id > klass->properties.type.integer)
+	{
+		debug("Int property %s set to %d",pspec->name,g_value_get_int(value));
+
+		return;
+	}
+
+	if(prop_id > klass->properties.type.boolean)
+	{
+		debug("Boolean property %s set to %s",pspec->name,g_value_get_boolean(value) ? "true" : "false");
+
+		return;
+	}
+
+	if(prop_id > SESSION_PROPERTY_CUSTOM)
+	{
+		prop_id -= SESSION_PROPERTY_CUSTOM;
+		debug("Toggle property %s (%u) set to %s",pspec->name,prop_id,g_value_get_boolean(value) ? "true" : "false");
+		lib3270_set_toggle(self->handler,(lib3270_get_toggles()+prop_id)->id,g_value_get_boolean(value));
+		return;
+	}
+
+	debug("Internal property %s",pspec->name);
 
 
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+ 	return;
+
  }
 
  static void 
  tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
  {
 //	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+//	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
 
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
  }
 
  static void
- tn3270_session_install_property(const char *name, TN3270SessionClass *klass, guint property_id, GParamSpec *pspec)
+ tn3270_session_install_property(TN3270SessionClass *klass, guint property_id, GParamSpec *pspec)
  {
 	static const char *names[] = {
 		"connected",
-		"associated_lu",
+		"associated-lu",
 		"url",
-		"model_number",
-		"ssl_state",
+		"model-number",
+		"ssl-state",
+		"has-selection",
+		"program-message",
 	};
+
+	debug("---> Installing property %s with id %u",pspec->name,property_id);
 
 	g_object_class_install_property(G_OBJECT_CLASS (klass), property_id, pspec);
 
 	size_t ix;
 	for(ix = 0; ix < G_N_ELEMENTS(names); ix++)
 	{
-		if(strcmp(name,names[ix]) == 0)
+		if(strcmp(pspec->name,names[ix]) == 0)
 		{
 			klass->properties.specs[ix] = pspec;
 			break;
@@ -367,12 +406,13 @@
 
  }
 
- static void
- tn3270_ring_bell(TN3270Session *session)
- {
-	// TODO: Emit sound
- }
-
+/**
+ * tn3270_session_new:
+ *
+ * Creates a new tn3270 session object.
+ *
+ * Returns: (transfer none) (type tn3270.session): a new #TN3270Session object
+ */
  LIB3270_EXPORT TN3270Session * tn3270_session_new() {
 	return g_object_new(TN3270_TYPE_SESSION,NULL);
  }

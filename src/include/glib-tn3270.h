@@ -37,6 +37,9 @@
 	TN3270_SESSION_PROPERTY_URL,
 	TN3270_SESSION_PROPERTY_MODEL_NUMBER,
 	TN3270_SESSION_PROPERTY_SSL_STATE,
+	TN3270_SESSION_PROPERTY_HAS_SELECTION,
+	TN3270_SESSION_PROPERTY_PROGRAM_MESSAGE,
+
 	TN3270_SESSION_PROPERTY_COUNT
  };
  
@@ -48,7 +51,6 @@
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];
 		GParamSpec * specs[TN3270_SESSION_PROPERTY_COUNT];
 		GParamSpec * timer;
-		GParamSpec * has_selection;
 
 		struct {
 			size_t boolean;
@@ -59,20 +61,20 @@
 
 	} properties;
 
-	// Properties
+	// Properties (not thread safe)
  	void (*toggle_changed)(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name);
 	void (*connect_changed)(TN3270Session *session, unsigned char connected);
 	void (*luname_changed)(TN3270Session *session, const char *name);
  	void (*url_changed)(TN3270Session *session, const char *name);
 	void (*model_changed)(TN3270Session *session, const char *name, int model, int rows, int cols);
 	void (*ssl_changed)(TN3270Session *session, LIB3270_SSL_STATE state);
+ 	void (*status_changed)(TN3270Session *hSession, LIB3270_MESSAGE id);
 
+	// Terminal contents (thread safe)
+	void (*changed)(TN3270Session *session, int offset, int len);
 	void (*selection_changed)(TN3270Session *session, int start, int end);
 
-	// Terminal contents
-	void (*changed)(TN3270Session *session, int offset, int len);
-
-	// States
+	// States (thread safe)
 	void (*set_timer)(TN3270Session *session, gboolean busy);
 	void (*ring_bell)(TN3270Session *session);
 

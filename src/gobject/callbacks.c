@@ -23,8 +23,9 @@
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
  #include <lib3270/session.h>
+ #include <glib.h>
  #include <glib-object.h>
- #include <glib/tn3270.h>
+ #include <glib-tn3270.h>
  #include <private/intl.h>
  #include <private/gobject.h>
  #include <lib3270/mainloop.h>
@@ -77,90 +78,141 @@
 	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
 	klass->ssl_changed(self,state);
  }
+
+ typedef struct timer {
+	TN3270Session *session;
+	unsigned char on;
+ } Timer;
  
+ static gboolean tn3270_session_set_timer(Timer *timer)
+ {
+	TN3270_SESSION_GET_CLASS(timer->session)->set_timer(timer->session,timer->on);
+	return G_SOURCE_REMOVE;
+ }
+
  static void handle_set_timer(H3270 *session, unsigned char on)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->set_timer(self,(gboolean) on);
+	Timer *timer = g_new0(Timer,1);
+	timer->session = (TN3270Session *) lib3270_get_user_data(session);
+	timer->on = on;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) tn3270_session_set_timer,timer,(GDestroyNotify) g_free);
  }
- 
+
+ typedef struct changed {
+	TN3270Session *session;
+	int offset;
+	int len;
+ } Changed;
+
+ static gboolean tn3270_session_changed(Changed *changed)
+ {
+	TN3270_SESSION_GET_CLASS(changed->session)->changed(changed->session,changed->offset,changed->len);
+	return G_SOURCE_REMOVE;
+ }	
+
  static void handle_changed(H3270 *session, int offset, int len)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->changed(self,offset,len);
+	Changed *changed = g_new0(Changed,1);
+	changed->session = (TN3270Session *) lib3270_get_user_data(session);
+	changed->offset = offset;
+	changed->len = len;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) tn3270_session_changed,changed,(GDestroyNotify) g_free);
+ }
+
+ typedef struct selection {	
+	TN3270Session *session;
+	int start;
+	int end;
+ } Selection;
+
+ static gboolean tn3270_session_selection_changed(Selection *selection)
+ {
+	TN3270_SESSION_GET_CLASS(selection->session)->selection_changed(selection->session,selection->start,selection->end);
+	return G_SOURCE_REMOVE;
  }
 
  static void handle_selection_changed(H3270 *session, int start, int end)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Selection *selection = g_new0(Selection,1);
+	selection->session = (TN3270Session *) lib3270_get_user_data(session);
+	selection->start = start;
+	selection->end = end;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) tn3270_session_selection_changed,selection,(GDestroyNotify) g_free);
+ }
+
+ static void handle_status_changed(H3270 *session, LIB3270_MESSAGE id) {
+ 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
 	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-	klass->selection_changed(self,start,end);
+	klass->status_changed(self,id);
+ }
+
+ typedef struct notification 
+ {
+ 	TN3270Session *session;
+ 	GParamSpec *id;
+ } Notification;
+
+ static gboolean tn3270_session_notify(Notification *n)
+ {
+	debug("--> Property '%s' has changed",n->id->name);
+ 	g_object_notify_by_pspec(
+		G_OBJECT(n->session), 
+		n->id
+	);
+	return G_SOURCE_REMOVE;
+ }
+ 
+ static void notify(TN3270Session *session, GParamSpec *id)
+ {
+	Notification *n = g_new0(Notification,1);
+	n->session = session;
+	n->id = id;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) tn3270_session_notify,n,(GDestroyNotify) g_free);
  }
 
  static void toggle_changed(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
  {
- 	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.toggle[id]
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.toggle[id]);
  }
 
  static void connect_changed(TN3270Session *session, unsigned char connected)
  {
- 	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_CONNECTED]
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_CONNECTED]);
  }
 
  static void luname_changed(TN3270Session *session, const char *name)
- {
- 	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_ASSOCIATED_LU]
-	);
+ {	
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_ASSOCIATED_LU]);
  }
  
  static void url_changed(TN3270Session *session, const char *name)
  {
- 	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_URL]
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_URL]);
  }
  
  static void model_changed(TN3270Session *session, const char *name, int model, int rows, int cols)
  {
- 	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_MODEL_NUMBER]
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_MODEL_NUMBER]);
  }
  
  static void ssl_changed(TN3270Session *session, LIB3270_SSL_STATE state)
  {
- 	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_SSL_STATE]
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_SSL_STATE]);
  }
 
  static void set_timer(TN3270Session *session, gboolean busy)
  {
-	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.timer
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.timer);
  }
 
  static void selection_changed(TN3270Session *session, int start, int end)
  {
-	g_object_notify_by_pspec(
-		G_OBJECT(session), 
-		TN3270_SESSION_GET_CLASS(session)->properties.has_selection
-	);
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_HAS_SELECTION]);
+ }
+
+ static void status_changed(TN3270Session *session, LIB3270_MESSAGE id)
+ {
+	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_PROGRAM_MESSAGE]);
  }
 
  static void nop_void() {
@@ -177,6 +229,7 @@
 	klass->set_timer = set_timer;
 	klass->changed = nop_void;
 	klass->selection_changed = selection_changed;
+	klass->status_changed = status_changed;
  }
 
  int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self)
@@ -240,6 +293,7 @@
 	cbk->set_timer = handle_set_timer;
 	cbk->changed = handle_changed;
 	cbk->update_selection = handle_selection_changed;
+	cbk->update_status = handle_status_changed;
 
 	return 0;
  }

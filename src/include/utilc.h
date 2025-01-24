@@ -23,13 +23,7 @@ LIB3270_INTERNAL char 	* xs_buffer(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 
 LIB3270_INTERNAL void	  xs_error(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
 LIB3270_INTERNAL void	  xs_warning(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 2);
 
-LIB3270_INTERNAL void 	* AddInput(int, H3270 *session, void (*fn)(H3270 *session));
-LIB3270_INTERNAL void 	* AddOutput(int, H3270 *session, void (*fn)(H3270 *session));
-LIB3270_INTERNAL void 	* AddExcept(int, H3270 *session, void (*fn)(H3270 *session));
-
-LIB3270_INTERNAL void     RemoveSource(H3270 *session, void *cookie);
-LIB3270_INTERNAL void	* AddTimer(unsigned long msec, H3270 *session, int (*fn)(H3270 *session, void *userdata), void *userdata);
-LIB3270_INTERNAL void	  RemoveTimer(H3270 *session, void *cookie);
+#include <private/mainloop.h>
 
 /**
  * @brief "unescape" text (Replaces %value for corresponding character).

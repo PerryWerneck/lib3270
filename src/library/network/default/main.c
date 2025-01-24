@@ -154,6 +154,7 @@ static int unsecure_network_start_tls(H3270 *hSession) {
 	return ENOTSUP;
 }
 
+/*
 void lib3270_set_default_network_module(H3270 *hSession) {
 
 	static const LIB3270_NET_MODULE module = {
@@ -191,4 +192,4 @@ void lib3270_set_default_network_module(H3270 *hSession) {
 	hSession->network.module = &module;
 
 }
-
+*/

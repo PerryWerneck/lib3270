@@ -88,7 +88,7 @@ LIB3270_EXPORT const char *		lib3270_get_ssl_state_icon_name(const H3270 *hSessi
  * @param origin	Original popup definition.
  * @param fmt		Printf formatting string.
  *
- * @return New popup object with the body replaced (release it with g_free).
+ * @return New popup object with the body replaced (release it with free).
  *
  */
 LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...);

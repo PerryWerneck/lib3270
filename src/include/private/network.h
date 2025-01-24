@@ -18,20 +18,12 @@
  */
 
  #pragma once
-
  #include <config.h>
+ #include <time.h>
  #include <lib3270/defs.h>
- #include <lib3270.h>
 
- /// @brief Set the mainloop methods for the session.
- /// @param hSession The session to be set.
- LIB3270_INTERNAL void lib3270_setup_mainloop(H3270 *hSession);
- LIB3270_INTERNAL void lib3270_set_internal_mainloop(H3270 *hSession);
- 
-// LIB3270_INTERNAL void 	* AddInput(int, H3270 *session, void (*fn)(H3270 *session));
-// LIB3270_INTERNAL void 	* AddOutput(int, H3270 *session, void (*fn)(H3270 *session));
-// LIB3270_INTERNAL void 	* AddExcept(int, H3270 *session, void (*fn)(H3270 *session));
-// LIB3270_INTERNAL void     RemoveSource(H3270 *session, void *cookie);
+ typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
 
- LIB3270_INTERNAL void	* lib3270_add_timer(unsigned long msec, H3270 *session, int (*fn)(H3270 *session, void *userdata), void *userdata);
- LIB3270_INTERNAL void	  lib3270_remove_timer(H3270 *session, void *cookie);
+ LIB3270_EXPORT int lib3270_connect(H3270 *hSession, int seconds);
+ LIB3270_EXPORT LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout);
+

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <private/network.h>
+
 #ifndef LIB3270_NETWORKING_H_INCLUDED
 
 #define LIB3270_NETWORKING_H_INCLUDED
@@ -35,7 +37,6 @@ typedef int socklen_t;
 #include <lib3270/mainloop.h>
 
 typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
-typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
 
 typedef struct lib3270_ssl_message {
 	LIB3270_POPUP_HEAD			///< @brief Standard popup fields.
@@ -176,7 +177,7 @@ typedef struct lib3270_net_module {
  * @brief Activate the default (and insecure) network module.
  *
  */
-LIB3270_INTERNAL void lib3270_set_default_network_module(H3270 *hSession);
+// LIB3270_INTERNAL void lib3270_set_default_network_module(H3270 *hSession);
 
 /**
  * @brief Set network error message.

@@ -333,7 +333,7 @@ static void internal_ring_bell(H3270 GNUC_UNUSED(*session)) {
 
 /* External entry points */
 
-void * AddTimer(unsigned long interval_ms, H3270 *hSession, int (*proc)(H3270 *session, void *userdata), void *userdata) {
+void * lib3270_add_timer(unsigned long interval_ms, H3270 *hSession, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
 	void *timer = hSession->io.timer.add(
 		hSession,
@@ -347,7 +347,7 @@ void * AddTimer(unsigned long interval_ms, H3270 *hSession, int (*proc)(H3270 *s
 	return timer;
 }
 
-void RemoveTimer(H3270 *hSession, void * timer) {
+void lib3270_remove_timer(H3270 *hSession, void * timer) {
 	if(!timer)
 		return;
 	trace("Removing timeout %p",timer);
@@ -355,6 +355,9 @@ void RemoveTimer(H3270 *hSession, void * timer) {
 }
 
 void x_except_on(H3270 *h) {
+
+	debug("%s: Need refactor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",__FUNCTION__);
+/*
 	int reading = (h->xio.read != NULL);
 
 	debug("%s",__FUNCTION__);
@@ -364,11 +367,11 @@ void x_except_on(H3270 *h) {
 	if(reading)
 		lib3270_remove_poll(h,h->xio.read);
 
-	h->xio.except = h->network.module->add_poll(h,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	h->xio.except = h->io.poll.add(h,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 
 	if(reading)
-		h->xio.read = h->network.module->add_poll(h,LIB3270_IO_FLAG_READ,net_input,0);
-
+		h->xio.read = h->io.poll.add(h,LIB3270_IO_FLAG_READ,net_input,0);
+*/
 }
 
 void remove_input_calls(H3270 *session) {
@@ -476,6 +479,7 @@ LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, const char *name, int(*call
 
 }
 
+/*
 int non_blocking(H3270 *hSession, Boolean on) {
 	if(hSession->network.module->non_blocking(hSession,on))
 		return 0;
@@ -486,6 +490,7 @@ int non_blocking(H3270 *hSession, Boolean on) {
 
 	return 0;
 }
+*/
 
 
 

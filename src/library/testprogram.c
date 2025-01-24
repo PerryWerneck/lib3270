@@ -24,7 +24,29 @@
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
  *
  */
+ 
+ #include <config.h>
+ #include <lib3270/defs.h>
+ #include <lib3270/session.h>
+ #include <private/network.h>
 
+ int main(int argv, const char **argc) {
+
+	lib3270_autoptr(H3270) hSession = lib3270_session_new("");
+
+	lib3270_set_url(hSession,"tn3270://10.10.10.1:6969");
+	lib3270_connect(hSession,5);
+
+	while(1) {
+		lib3270_main_iterate(hSession,1);
+	}
+
+	return 0;
+
+ }
+
+
+/*
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -74,13 +96,6 @@ int main(int argc, char *argv[]) {
 
 	textdomain("lib3270");
 
-	/*
-	{
-		lib3270_autoptr(char) testfilename = lib3270_build_data_filename("test",NULL);
-		printf("\n\nFilename: '%s'\n\n", testfilename);
-		return 0;
-	}
-	*/
 
 //	#pragma GCC diagnostic push
 //	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
@@ -156,18 +171,6 @@ int main(int argc, char *argv[]) {
 		printf("Datafile: \"%s\"\n",datafile);
 	}
 
-	/*
-	{
-		lib3270_autoptr(char) datafile = lib3270_build_config_filename("test","file.conf",NULL);
-		printf("Configfile: \"%s\"\n",datafile);
-	}
-
-	{
-		lib3270_autoptr(char) datafile = lib3270_build_filename("Makefile",NULL);
-		printf("Custom file: \"%s\"\n",datafile);
-	}
-	*/
-
 	//lib3270_set_toggle(h,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(h,LIB3270_TOGGLE_SSL_TRACE,1);
 
@@ -192,27 +195,6 @@ int main(int argc, char *argv[]) {
 
 		lib3270_wait_for_ready(h,10);
 
-		/*
-		{
-			// Performance checks
-			printf("\n\nWaiting starts %u\n",(unsigned int) time(NULL));
-
-			size_t f;
-			time_t start = time(0);
-			for(f=0;f < 1000; f++) {
-				lib3270_wait_for_ready(h,10);
-			}
-
-			time_t tm = (time(0) - start);
-			printf("\n\nTime for 1000 iterations of wait_for_ready was %d\n",(int) tm);
-
-			if(tm > 1) {
-				exit(-1);
-			}
-			printf("\n\nWaiting ends %u\n\n",(unsigned int) time(NULL));
-
-		}
-		*/
 
 		lib3270_enter(h);
 		lib3270_wait(h,5);
@@ -244,21 +226,6 @@ int main(int argc, char *argv[]) {
 
 	lib3270_disconnect(h);
 
-	/*
-	{
-		lib3270_set_lunames(h,"a,b,c,d,e");
-
-		const char ** names = lib3270_get_lunames(h);
-
-		size_t i;
-		for(i=0;names[i];i++)
-		{
-			debug("[%s]",names[i]);
-		}
-
-	}
-	*/
-
 	{
 		const LIB3270_PROPERTY * property = lib3270_property_get_by_name("model-number");
 
@@ -270,3 +237,4 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
+*/

@@ -136,6 +136,7 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 			.set = NULL												// Set value.
 		},
 
+		/*
 		{
 			.name = "crl_preferred_protocol",									// Property name.
 			.group = LIB3270_ACTION_GROUP_OFFLINE,								// Property group.
@@ -143,6 +144,7 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 			.get = lib3270_crl_get_preferred_protocol,							// Get value.
 			.set = lib3270_crl_set_preferred_protocol,							// Set value.
 		},
+		*/
 
 		{
 			.name = "default_host",												// Property name.

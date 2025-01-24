@@ -501,6 +501,8 @@ void status_oerr(H3270 *session, int error_type) {
  * @brief Resolving DNS name.
  *
  */
+
+/*
 void status_resolving(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
 
@@ -508,7 +510,9 @@ void status_resolving(H3270 *hSession) {
 	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 }
+*/
 
+/*
 void status_connecting(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
 
@@ -517,6 +521,7 @@ void status_connecting(H3270 *hSession) {
 	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
 	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
 }
+*/
 
 void status_reset(H3270 *session) {
 

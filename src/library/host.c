@@ -91,16 +91,24 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 		return EBUSY;
 
 	hSession->auto_reconnect_inprogress = 1;
-	(void) AddTimer(msec, hSession, check_for_auto_reconnect, NULL);
+	lib3270_add_timer(msec, hSession, check_for_auto_reconnect, NULL);
 
 	return 0;
 }
 
 LIB3270_EXPORT int lib3270_disconnect(H3270 *h) {
+
+#ifndef DEBUG 
+	#error incomplete
+#endif 
+
 	debug("%s",__FUNCTION__);
-	return host_disconnect(h,0);
+//	return host_disconnect(h,0);
+
+	return -1;
 }
 
+/*
 /// @brief Do disconnect.
 /// @param hSession Session handle.
 /// @param failed	Non zero if it was a failure.
@@ -154,6 +162,7 @@ int host_disconnect(H3270 *hSession, int failed) {
 	return errno = ENOTCONN;
 
 }
+*/
 
 int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate) {
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(cstate),(int) cstate);
@@ -256,6 +265,7 @@ void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode) {
 
 }
 
+/*
 static void update_url(H3270 *hSession) {
 	char * url =
 	    lib3270_strdup_printf(
@@ -281,6 +291,7 @@ static void update_url(H3270 *hSession) {
 	hSession->network.module->reset(hSession);
 
 }
+*/
 
 LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession) {
 	if(check_online_session(hSession))
@@ -337,16 +348,37 @@ LIB3270_EXPORT const char * lib3270_get_default_host(const H3270 GNUC_UNUSED(*hS
 	}
 #endif // _WIN32
 
-#ifdef LIB3270_DEFAULT_HOST
-	return LIB3270_DEFAULT_HOST;
-#else
 	return getenv("LIB3270_DEFAULT_HOST");
-#endif // LIB3270_DEFAULT_HOST
+
 }
 
-LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n) {
-	FAIL_IF_ONLINE(h);
+LIB3270_EXPORT int lib3270_set_url(H3270 *hSession, const char *url) {
 
+	FAIL_IF_ONLINE(hSession);
+
+	if(!url) {
+		url = lib3270_get_default_host(hSession);
+	}
+
+	if(!(url && *url)) {
+		return EINVAL;
+	}
+
+	if(hSession->host.url) {
+		if(!strcmp(url,hSession->host.url)) {
+			return 0;
+		}
+		free(hSession->host.url);
+	}
+
+	hSession->host.url = strdup(url);
+	hSession->cbk.update_url(hSession, hSession->host.url);
+
+	// The "reconnect" action is now available.
+	lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_OFFLINE);
+
+
+	/*
 	if(!n)
 		n = lib3270_get_default_host(h);
 
@@ -428,6 +460,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n) {
 	// The "reconnect" action is now available.
 	lib3270_action_group_notify(h, LIB3270_ACTION_GROUP_OFFLINE);
 
+	*/
 	return 0;
 }
 

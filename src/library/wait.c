@@ -52,7 +52,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds) {
 
 	int rc = 0;
 	int timeout = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+	void * timer = lib3270_add_timer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc) {
 		if(timeout) {
@@ -80,7 +80,7 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds) {
 		debug("%s: Waiting",__FUNCTION__);
 		lib3270_main_iterate(hSession,1);
 	}
-	RemoveTimer(hSession,timer);
+	lib3270_remove_timer(hSession,timer);
 
 	debug("%s exits with rc=%d",__FUNCTION__,rc);
 	return rc;
@@ -93,7 +93,7 @@ int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds) {
 
 	int rc = 0;
 	int timeout = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+	void * timer = lib3270_add_timer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc) {
 		if(timeout) {
@@ -128,7 +128,7 @@ int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds) {
 		lib3270_main_iterate(hSession,1);
 
 	}
-	RemoveTimer(hSession,timer);
+	lib3270_remove_timer(hSession,timer);
 
 	return rc;
 
@@ -142,7 +142,7 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 
 	int rc = 0;
 	int timeout = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+	void * timer = lib3270_add_timer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc) {
 		if(timeout) {
@@ -168,7 +168,7 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 		lib3270_main_iterate(hSession,1);
 
 	}
-	RemoveTimer(hSession,timer);
+	lib3270_remove_timer(hSession,timer);
 
 	return rc;
 
@@ -186,7 +186,7 @@ LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds) {
 
 	int rc = -1;
 	int timeout = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+	void * timer = lib3270_add_timer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(rc == -1) {
 		if(timeout) {
@@ -207,7 +207,7 @@ LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds) {
 		lib3270_main_iterate(hSession,1);
 
 	}
-	RemoveTimer(hSession,timer);
+	lib3270_remove_timer(hSession,timer);
 
 	return errno = rc;
 }
@@ -217,7 +217,7 @@ LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstat
 
 	int rc = -1;
 	int timeout = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+	void * timer = lib3270_add_timer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(rc == -1) {
 		if(timeout) {
@@ -238,7 +238,7 @@ LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstat
 		lib3270_main_iterate(hSession,1);
 
 	}
-	RemoveTimer(hSession,timer);
+	lib3270_remove_timer(hSession,timer);
 
 	return errno = rc;
 }
@@ -248,7 +248,7 @@ LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H327
 
 	int rc = 0;
 	int timeout = 0;
-	void * timer = AddTimer(seconds * 1000, hSession, timer_expired, &timeout);
+	void * timer = lib3270_add_timer(seconds * 1000, hSession, timer_expired, &timeout);
 
 	while(!rc) {
 		if(timeout) {
@@ -276,7 +276,7 @@ LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H327
 
 	}
 
-	RemoveTimer(hSession,timer);
+	lib3270_remove_timer(hSession,timer);
 
 	debug("%s exits with rc=%d",__FUNCTION__,rc);
 	return (LIB3270_KEYBOARD_LOCK_STATE) hSession->kybdlock;

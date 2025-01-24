@@ -358,24 +358,6 @@ LIB3270_EXPORT unsigned int lib3270_get_max_height(const H3270 *h);
 LIB3270_EXPORT unsigned int lib3270_get_length(const H3270 *h);
 
 /**
- * @brief Creates an empty TN3270 session.
- *
- * @param model	Terminal model.
- *
- * @return Handle of the new session (release it with lib3270_session_free to avoid memory leaks).
- *
- */
-LIB3270_EXPORT H3270 * lib3270_session_new(const char *model);
-
-/**
- * @brief Closes a TN3270 session releasing resources.
- *
- * @param h handle of the session to close.
- *
- */
-LIB3270_EXPORT void lib3270_session_free(H3270 *h);
-
-/**
  * @brief Register a function interested in a state change.
  *
  * @param hSession	Session handle.

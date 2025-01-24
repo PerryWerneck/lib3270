@@ -65,6 +65,7 @@ lib_extra = [
 
 lib_deps = [
   libssl,
+  dependency('liburiparser', method : 'pkg-config'),
   dependency('libcrypto'),
 ]
 
@@ -284,15 +285,7 @@ lib_src += [
   'src/library/selection/actions.c',
   'src/library/selection/get.c',
   'src/library/selection/selection.c',
-  'src/library/network/default/main.c',
-  'src/library/network/openssl/context.c',
-  'src/library/network/openssl/start.c',
-  'src/library/network/openssl/crl.c',
-  'src/library/network/openssl/main.c',
-  'src/library/network/openssl/messages.c',
-  'src/library/network/select.c',
   'src/library/network/state.c',
-  'src/library/network/tools.c',
 ]
 
 gobject_src = [
@@ -303,7 +296,6 @@ gobject_src = [
 ]
 
 linux_src =[
-  'src/library/os/linux/connect.c',
   'src/library/os/linux/curl.c',
   'src/library/os/linux/download.c',
   'src/library/os/linux/event_dispatcher.c',

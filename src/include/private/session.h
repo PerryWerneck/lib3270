@@ -71,23 +71,17 @@
 	// Networking
 	struct {
 
-		/// @brief Connect to host with timeout (Asyncronous).
-		void (*connect)(H3270 *session, const char *hostname, const char *service, time_t timeout);
+		/// @brief The network socket.
+		int socket;
 
-		/// @brief Network module.
-		const LIB3270_NET_MODULE	* module;
+		/// @brief Connection context.
+		LIB3270_NET_CONTEXT * context;
 
-		/// @brief Network context.
-		LIB3270_NET_CONTEXT			* context;
-
-	} network;
-
-	// Connection info
-	struct {
 		LIB3270_CSTATE		  state;							///< @brief Connection state.
 		unsigned int		  timeout;							///< @brief Connection timeout (1000 = 1s)
 		unsigned int		  retry;							///< @brief Time to retry when connection ends with error.
 		LIB3270_POPUP		* error;							///< @brief Last connection error.
+
 	} connection;
 
 	// flags

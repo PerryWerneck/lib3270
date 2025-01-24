@@ -31,6 +31,7 @@
 #include <private/defs.h>
 #include <private/session.h>
 #include <private/intl.h>
+#include <private/network.h>
 
 #include "kybdc.h"
 #include "ansic.h"
@@ -55,6 +56,11 @@ static H3270 *default_session = NULL;
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
+LIB3270_EXPORT void lib3270_autoptr_cleanup_H3270(H3270 **ptr) {
+	lib3270_session_free(*ptr);
+	*ptr = NULL;
+}
+
 /**
  * @brief Closes a TN3270 session releasing resources.
  *
@@ -67,14 +73,8 @@ void lib3270_session_free(H3270 *h) {
 	if(!h)
 		return;
 
-	if(lib3270_is_connected(h)) {
-		// Connected, disconnect
+	if(h->connection.context) {
 		lib3270_disconnect(h);
-	} else if(lib3270_get_connection_state(h) == LIB3270_CONNECTING) {
-		// Connecting, disconnect
-		debug("%s: Stopping while connecting",__FUNCTION__);
-		lib3270_disconnect(h);
-
 	}
 
 	// Do we have pending tasks?
@@ -83,12 +83,6 @@ void lib3270_session_free(H3270 *h) {
 	}
 
 	shutdown_toggles(h);
-
-	// Release network module
-	if(h->network.module) {
-		h->network.module->finalize(h);
-		h->network.module = NULL;
-	}
 
 	// Release state change callbacks
 	for(f=0; f<LIB3270_STATE_USER; f++)
@@ -234,7 +228,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	lib3270_reset_callbacks(hSession);
 	hSession->ssl.download_crl = 1;
 
-	lib3270_set_default_network_module(hSession);
 	lib3270_set_host_charset(hSession,charset);
 
 	// Set the defaults.

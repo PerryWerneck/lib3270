@@ -98,8 +98,8 @@ LIB3270_EXPORT const char * lib3270_get_ssl_state_description(const H3270 *hSess
 
 LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession) {
 
-	if(hSession->network.module && hSession->network.module->getcrl)
-		return hSession->network.module->getcrl(hSession);
+//	if(hSession->network.module && hSession->network.module->getcrl)
+//		return hSession->network.module->getcrl(hSession);
 
 	errno = ENOTSUP;
 	return NULL;
@@ -107,8 +107,8 @@ LIB3270_EXPORT char * lib3270_get_ssl_crl_text(const H3270 *hSession) {
 
 LIB3270_EXPORT char * lib3270_get_ssl_peer_certificate_text(const H3270 *hSession) {
 
-	if(hSession->network.module && hSession->network.module->getcert)
-		return hSession->network.module->getcert(hSession);
+//	if(hSession->network.module && hSession->network.module->getcert)
+//		return hSession->network.module->getcert(hSession);
 
 	errno = ENOTSUP;
 	return NULL;

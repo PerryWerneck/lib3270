@@ -1,31 +1,27 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como telnet.c e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
+ * perry.werneck@gmail.com      (Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com     (Erico Mascarenhas Mendonça)
  *
  */
 
@@ -131,7 +127,7 @@ static void net_rawout(H3270 *session, unsigned const char *buf, size_t len);
 static void check_in3270(H3270 *session);
 static void store3270in(H3270 *hSession, unsigned char c);
 static void check_linemode(H3270 *hSession, Boolean init);
-static int net_connected(H3270 *session);
+// static int net_connected(H3270 *session);
 
 static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len);
 
@@ -377,6 +373,7 @@ static void setup_lus(H3270 *hSession) {
 
 }
 
+/*
 static int net_connected(H3270 *hSession) {
 
 	// Set up SSL.
@@ -392,6 +389,8 @@ static int net_connected(H3270 *hSession) {
 
 	return 0;
 }
+*/
+
 
 /**
  * Set up telnet options.
@@ -441,7 +440,7 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession) {
 	}
 	*/
 
-	non_blocking(hSession,True);
+	// non_blocking(hSession,True);
 
 }
 
@@ -452,6 +451,7 @@ LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession) {
 /// appeared ready but recv() returned EWOULDBLOCK).  Complete the
 /// connection-completion processing.
 ///
+/*
 static void connection_complete(H3270 *session) {
 	if (non_blocking(session,False) < 0) {
 		host_disconnect(session,True);
@@ -460,7 +460,9 @@ static void connection_complete(H3270 *session) {
 	lib3270_set_connected_initial(session);
 	net_connected(session);
 }
+*/
 
+/*
 ///	@brief Disconnect from host.
 void net_disconnect(H3270 *hSession) {
 	if(hSession->xio.write) {
@@ -477,6 +479,7 @@ void net_disconnect(H3270 *hSession) {
 	status_lu(hSession,CN);
 
 }
+*/
 
 LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf) {
 	register const unsigned char * cp;
@@ -489,7 +492,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 	for (cp = netrbuf; cp < (netrbuf + nr); cp++) {
 		if(telnet_fsm(hSession,*cp)) {
 			(void) ctlr_dbcs_postprocess(hSession);
-			host_disconnect(hSession,True);
+			lib3270_disconnect(hSession);
 			return;
 		}
 	}
@@ -515,7 +518,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
  *
  * @param hSession	Session handle
  *
- */
+ */ /*
 void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
 //	register unsigned char	* cp;
 	int						  nr;
@@ -533,13 +536,6 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 #if defined(X3270_ANSI)
 		hSession->ansi_data = 0;
 #endif
-
-		/*
-				if (hSession->ssl.con != NULL)
-					nr = SSL_read(hSession->ssl.con, (char *) buffer, BUFSZ);
-				else
-					nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
-		*/
 
 		nr = hSession->network.module->recv(hSession, buffer, BUFSZ);
 
@@ -584,6 +580,7 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 	}
 
 }
+*/
 
 /**
  *	@brief Put a 16-bit value in a buffer.
@@ -991,7 +988,8 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 		/* Trace the junk. */
 		trace_dsn(hSession,"%s ? %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 		popup_an_error(hSession,_( "TLS negotiation failure"));
-		net_disconnect(hSession);
+		trace_dsn(hSession,"SENT disconnect\n");
+		lib3270_disconnect(hSession);
 		return;
 	}
 
@@ -1448,6 +1446,10 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
  */
 
 LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len) {
+
+	debug("%s: NEED REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",__FUNCTION__);
+
+/*
 	int rc = hSession->network.module->send(hSession, buf, len);
 
 	if(rc > 0)
@@ -1455,6 +1457,7 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 
 	// Send error, notify
 	trace_dsn(hSession,"SND socket error %d\n", -rc);
+*/
 
 	return -1;
 }
@@ -1482,7 +1485,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
 			len -= nw;
 			buf += nw;
 		} else if(nw < 0) {
-			host_disconnect(hSession,True);
+			lib3270_disconnect(hSession);
 			return;
 		}
 	}

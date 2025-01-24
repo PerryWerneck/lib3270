@@ -125,9 +125,8 @@
 
 	if(bytes >= 0)
 		return bytes;
-
+		
 	int error = errno;
-
 	trace_dsn(hSession,"SND socket error: %s\n", strerror(error));
 
 	LIB3270_POPUP popup = {

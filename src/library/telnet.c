@@ -1521,20 +1521,28 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
  *
  */
 static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
+
 	trace_netdata(hSession, '>', buf, len);
 
-	while (len) {
-		int nw = lib3270_sock_send(hSession,buf,len);
+	// TODO: Enqueue output buffer, send when socket has space.
 
+	while (len) {
+
+		if(!(hSession->connection.write && hSession->connection.context)) {
+			return;
+		}
+
+		// Send the data, show popup and disconnect when failed.
+		int nw = hSession->connection.write(hSession, buf, len);
 		if (nw > 0) {
 			// Data sent
 			hSession->ns_bsent += nw;
 			len -= nw;
 			buf += nw;
-		} else if(nw < 0) {
-			lib3270_connection_close(hSession,-1);
-			return;
-		}
+		} else if (nw < 0) {
+			break;
+		} 
+
 	}
 }
 

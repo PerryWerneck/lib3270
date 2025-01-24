@@ -34,7 +34,7 @@
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("");
 
-	lib3270_set_url(hSession,"tn3270://10.10.10.1:6969");
+	lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
 	lib3270_connect(hSession,5);
 
 	while(1) {

@@ -59,19 +59,31 @@
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <lib3270/keyboard.h>
-#include <networking.h>
+#include <private/network.h>
 
 /**
  * @brief Called from timer to attempt an automatic reconnection.
  */
 static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)) {
 
-	if(hSession->auto_reconnect_inprogress) {
-		lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",lib3270_get_url(hSession));
-		hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
-		if(hSession->cbk.reconnect(hSession,0))
-			lib3270_write_log(hSession,"3270","Auto-reconnect fails: %s",strerror(errno));
+	if(hSession->auto_reconnect_inprogress && !hSession->connection.context) {
+
+		if(hSession->cbk.reconnect_allowed(hSession) == 0) {
+			lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",hSession->host.url);
+			hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
+			lib3270_connect(hSession,hSession->connection.timeout);
+
+		} else if(hSession->connection.retry) {
+			lib3270_add_timer(
+				hSession->connection.retry,
+				hSession,
+				check_for_auto_reconnect, 
+				NULL
+			);
+			
+		}
 	}
+
 
 	return 0;
 }
@@ -87,6 +99,7 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
  * @retval EBUSY	Auto reconnect is already active.
  */
 int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
+
 	if(hSession->auto_reconnect_inprogress)
 		return EBUSY;
 
@@ -96,35 +109,50 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 	return 0;
 }
 
-LIB3270_EXPORT int lib3270_disconnect(H3270 *h) {
-
-#ifndef DEBUG 
-	#error incomplete
-#endif 
-
+LIB3270_EXPORT int lib3270_disconnect(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
-//	return host_disconnect(h,0);
-
-	return -1;
+	return lib3270_connection_close(hSession,0);
 }
 
-/*
-/// @brief Do disconnect.
-/// @param hSession Session handle.
-/// @param failed	Non zero if it was a failure.
-int host_disconnect(H3270 *hSession, int failed) {
+int connection_write_offline(H3270 *hSession, const void *buffer, size_t length) {
+	lib3270_write_log(hSession,"3270","Attempt to write when disconnected");
+	return -ENOTCONN;
+}
 
-	debug("%s: connected=%s half connected=%s network=%s",
+/// @brief Disconnect from host.
+/// @param hSession The tn3270 session
+/// @param failed Non zero if it was a failure.
+/// @return 0 if ok or error code if not.
+int lib3270_connection_close(H3270 *hSession, int failed) {
+
+	debug("%s: connected=%s half connected=%s context=%p",
 	      __FUNCTION__,
 	      (CONNECTED ? "Yes" : "No"),
 	      (HALF_CONNECTED ? "Yes" : "No"),
-	      (hSession->network.module->is_connected(hSession) ? "Active" : "Inactive")
+	      hSession->connection.context
 	     );
 
+	hSession->connection.write = connection_write_offline;
+
+	if(hSession->connection.context) {
+		int rc = hSession->connection.context->disconnect(hSession,hSession->connection.context);
+		if(rc) {
+			lib3270_write_log(hSession, "3270", "Network context disconnection returned %d", rc);
+		}
+		free(hSession->connection.context);
+		hSession->connection.context = NULL;
+	}
+
 	if (CONNECTED || HALF_CONNECTED) {
+
 		// Disconecting, disable input
 		remove_input_calls(hSession);
-		net_disconnect(hSession);
+
+		trace_dsn(hSession,"SENT disconnect\n");
+
+		// We're not connected to an LU any more.
+		hSession->lu.associated = CN;
+		status_lu(hSession,CN);
 
 		trace("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
 
@@ -153,19 +181,11 @@ int host_disconnect(H3270 *hSession, int failed) {
 
 	}
 
-	if(hSession->network.module->is_connected(hSession)) {
-
-		debug("%s: Disconnecting socket", __FUNCTION__);
-
-	}
-
 	return errno = ENOTCONN;
 
 }
-*/
 
 int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate) {
-	
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(cstate),(int) cstate);
 
 	if(hSession->connection.state != cstate) {

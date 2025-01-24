@@ -82,6 +82,9 @@ struct lib3270_session_callbacks {
 	void (*ctlr_done)(H3270 *session);
 	void (*autostart)(H3270 *session);
 
+	// Returns 0 to indicate that reconnection is allowed and no error code is present.
+	int (*reconnect_allowed)(H3270 *session);
+
 	int  (*print)(H3270 *session, LIB3270_CONTENT_OPTION mode);
 	int  (*save)(H3270 *session, LIB3270_CONTENT_OPTION mode, const char *filename);
 	int  (*load)(H3270 *hSession, const char *filename);
@@ -89,8 +92,6 @@ struct lib3270_session_callbacks {
 	int  (*popup)(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
 	int	 (*action)(H3270 *hSession, const char *name);
-
-	int  (*reconnect)(H3270 *hSession,int seconds);
 
 	void (*word_selected)(H3270 *hSession, int start, int end);
 

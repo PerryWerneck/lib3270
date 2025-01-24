@@ -95,9 +95,6 @@
 #undef X3270_MENUS
 #endif /*]*/
 
-//#define RECONNECT_MS		2000	/**< @brief 2 sec before reconnecting to host. */
-//#define RECONNECT_ERR_MS	5000	/**< @brief 5 sec before reconnecting to host when failed */
-
 /**
  * @brief types of internal actions
  */
@@ -366,7 +363,7 @@ LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
 ///
 LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
 
-LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
+// LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
 
 
 /**

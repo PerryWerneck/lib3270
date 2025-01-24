@@ -22,17 +22,19 @@
 #include <lib3270/keyboard.h>
 #include <localdefs.h>
 
+typedef enum _ta_type {
+	TA_TYPE_DEFAULT,
+	TA_TYPE_KEY_AID,
+	TA_TYPE_ACTION,
+	TA_TYPE_CURSOR_MOVE,
+	TA_TYPE_USER
+} TA_TYPE;
+
 /// @brief Element in typeahead queue.
 struct ta {
 	struct ta *next;
 
-	enum _ta_type {
-		TA_TYPE_DEFAULT,
-		TA_TYPE_KEY_AID,
-		TA_TYPE_ACTION,
-		TA_TYPE_CURSOR_MOVE,
-		TA_TYPE_USER
-	} type;
+	TA_TYPE type;
 
 	union {
 		unsigned char aid_code;

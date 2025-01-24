@@ -1,25 +1,23 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como ctlrc.h e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
@@ -31,6 +29,10 @@
  *	ctlrc.h
  *		Global declarations for ctlr.c.
  */
+
+#pragma once
+
+#include <config.h>
 
 enum pds {
 	PDS_OKAY_NO_OUTPUT = 0,	/* command accepted, produced no output */
@@ -90,12 +92,41 @@ enum dbcs_state {
 
 enum dbcs_why { DBCS_FIELD, DBCS_SUBFIELD, DBCS_ATTRIBUTE };
 
-#if defined(X3270_DBCS) /*[*/
-LIB3270_INTERNAL enum dbcs_state ctlr_dbcs_state(int baddr);
-LIB3270_INTERNAL enum dbcs_state ctlr_lookleft_state(int baddr, enum dbcs_why *why);
-LIB3270_INTERNAL int ctlr_dbcs_postprocess(H3270 *hSession);
-#else /*][*/
-#define ctlr_dbcs_state(b)		DBCS_NONE
-#define ctlr_lookleft_state(b, w)	DBCS_NONE
-#define ctlr_dbcs_postprocess(hSession)		0
+#if defined(X3270_DBCS)
+
+	LIB3270_INTERNAL enum dbcs_state ctlr_lookleft_state(int baddr, enum dbcs_why *why);
+	LIB3270_INTERNAL int ctlr_dbcs_postprocess(H3270 *hSession);
+
+#else
+
+	inline enum dbcs_state ctlr_lookleft_state(int baddr, enum dbcs_why *why) {
+		return DBCS_NONE;
+	}
+
+	inline int ctlr_dbcs_postprocess(H3270 *hSession) {
+		return 0;
+	}
+
 #endif /*]*/
+
+/**
+ * @brief DBCS state query.
+ *
+ * Takes line-wrapping into account, which probably isn't done all that well.
+ *
+ * @return DBCS state
+ *
+ * @retval DBCS_NONE	Buffer position is SBCS.
+ * @retval DBCS_LEFT	Buffer position is left half of a DBCS character.
+ * @retval DBCS_RIGHT:	Buffer position is right half of a DBCS character.
+ * @retval DBCS_SI    	Buffer position is the SI terminating a DBCS subfield (treated as DBCS_LEFT for wide cursor tests)
+ * @retval DBCS_SB		Buffer position is an SBCS character after an SI (treated as DBCS_RIGHT for wide cursor tests)
+ *
+ */
+inline enum dbcs_state ctlr_dbcs_state(int baddr) {
+#if defined(X3270_DBCS) /*[*/
+	return dbcs? ea_buf[baddr].db: DBCS_NONE;
+#else
+	return DBCS_NONE;
+#endif // X3270_DBCS
+}

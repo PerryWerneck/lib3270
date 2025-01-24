@@ -43,7 +43,6 @@
 #include <uriparser/Uri.h>
 
  ///
- /// @brief Initiates an asynchronous connection to remote host.
  /// @param hSession The TN3270 session.
  /// @param seconds Timeout in seconds.
  /// @return 0 if suceeded, non zero if failed
@@ -62,7 +61,7 @@
 		return ENODATA;
 	}
 
-	if(!lib3270_allow_reconnect(hSession)) {
+	if(!lib3270_allow_connect(hSession)) {
 		debug("%s:%s",__FUNCTION__,strerror(errno));
 		return errno == 0 ? -1 : errno;
 	}
@@ -114,9 +113,9 @@
 				hostname,
 				port,
 				seconds,
-				strerror(EBUSY)
+				strerror(EISCONN)
 		);
-		return errno = EBUSY;
+		return errno = EISCONN;
 	}
 
 	//
@@ -150,12 +149,10 @@
 	);
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	debug("%s",__FUNCTION__);
 	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
-	debug("%s",__FUNCTION__);
 	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
-	debug("%s",__FUNCTION__);
 
+	hSession->connection.timeout = seconds;
 	if(!strcasecmp(scheme,"tn3270s")) {
 
 		// Use SSL
@@ -164,7 +161,7 @@
 
 		// FIXME: Setup SSL connection
 
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,ENOTSUP);
 		return ENOTSUP;
 
 	} else if(!strcasecmp(scheme,"tn3270")) {
@@ -180,7 +177,7 @@
 			.name		= "connect-error",
 			.type		= LIB3270_NOTIFY_ERROR,
 			.title		= N_("Connection error"),
-			.summary	= N_("Invalid or unespected connection scheme"),
+			.summary	= N_("Invalid or connection scheme"),
 			.body		= "",
 			.label		= N_("OK")
 		};
@@ -188,21 +185,20 @@
 		lib3270_autoptr(LIB3270_POPUP) popup =
 		    lib3270_popup_clone_printf(
 		        &failed,
-		        _("Cant handle schema '%s' from %s"),
+				_("Unsupported scheme '%s' in URL %s"),
 		        scheme,
 		        hSession->host.url
 		    );
 
 		lib3270_popup(hSession, popup, 0);
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,ENOTSUP);
 		return ENOTSUP;
 
 	}
 
-	
 	if(!hSession->connection.context) {
 		// No context, the connection has failed, call disconnect to clear flags.
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,ENODATA);
 		return -1;
 	}
 
@@ -212,57 +208,51 @@
 
  }
 
+ void lib3270_set_connected_socket(H3270 *hSession, int sock) {
 
- int lib3270_reconnect(H3270 *hSession, int seconds) {
 	debug("%s",__FUNCTION__);
 
-	#ifndef DEBUG
-		#error deprecated
-	#endif
+	// Clear socket watchers, just in case.
+	lib3270_remove_poll_fd(hSession,sock);
 
-	return -1;
-
-	/*
-
-
-	if(!lib3270_allow_reconnect(hSession)) {
-		return errno == 0 ? -1 : errno;
+	if(hSession->connection.context) {
+		free(hSession->connection.context);
+		hSession->connection.context = NULL;
 	}
 
-	debug("%s: TLS/SSL is %s",__FUNCTION__,hSession->ssl.host ? "ENABLED" : "DISABLED")
-	trace_dsn(hSession,"TLS/SSL is %s\n", hSession->ssl.host ? "enabled" : "disabled" );
-
-	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-
-	snprintf(
-	    hSession->full_model_name,
-	    LIB3270_FULL_MODEL_NAME_LENGTH,
-	    "IBM-327%c-%d%s",
-	    hSession->m3279 ? '9' : '8',
-	    hSession->model_num,
-	    hSession->extended ? "-E" : ""
+	trace_dsn(
+		hSession,
+		"Connected to %s%s.\n", 
+		hSession->host.url,hSession->ssl.host ? " using SSL": ""
 	);
+	
+	if(hSession->ssl.host) {
 
-	lib3270_write_event_trace(hSession,"Reconnecting to %s\n",lib3270_get_url(hSession));
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
-	hSession->ever_3270	= False;
+		// FIX-ME: Add ssl support.
+		close(sock);
+		lib3270_connection_close(hSession,ENOTSUP);
+		return;
 
-	return net_reconnect(hSession,seconds);
-	*/
+	} else {
+
+		hSession->connection.context = connected_insecure(hSession,sock);
+	
+	}
+
+	if(!hSession->connection.context) {
+		// No context, the connection has failed, call disconnect to clear flags.
+		lib3270_connection_close(hSession,ENODATA);
+	}
+
+	// setup session
+	// lib3270_setup_session(hSession);
+	// lib3270_notify_tls(hSession);
 
  }
 
-
-/*
-LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int seconds) {
-	if(url && *url) {
-		lib3270_set_url(hSession,url);
-	}
-	return lib3270_connect();
-}
-*/
-
-int lib3270_allow_reconnect(const H3270 *hSession) {
+ int lib3270_allow_connect(const H3270 *hSession) {
 	//
 	// Can't reconnect if already reconnecting *OR* there's an open popup
 	// (to avoid open more than one connect error popup).
@@ -300,18 +290,10 @@ void lib3270_notify_tls(H3270 *hSession) {
 
 	// Negotiation complete is the connection secure?
 	if(hSession->ssl.message->type != LIB3270_NOTIFY_INFO) {
-
-#ifdef SSL_ENABLE_NOTIFICATION_WHEN_FAILED
 		// Ask user what I can do!
 		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
 			lib3270_disconnect(hSession);
 		}
-#else
-
-		trace_ssl(hSession,"SSL popup message is disabled on this build");
-
-#endif
-
 	}
 
 }

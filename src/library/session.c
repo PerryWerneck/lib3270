@@ -74,7 +74,7 @@ void lib3270_session_free(H3270 *h) {
 		return;
 
 	if(h->connection.context) {
-		lib3270_disconnect(h);
+		lib3270_connection_close(h,-1);
 	}
 
 	// Do we have pending tasks?
@@ -178,6 +178,16 @@ static void screen_disp(H3270 *session) {
 	screen_update(session,0,session->view.rows*session->view.cols);
 }
 
+static int reconnect_allowed(H3270 *session) {
+	//
+	// Returns 0 to indicate that reconnection is allowed and no error code is present.
+	// This function is likely part of a larger process that manages session connections.
+	// Returning 0 typically signifies a successful operation or a state where no errors
+	// have occurred, allowing the session to attempt reconnection.
+	//
+	return 0;
+}
+
 void lib3270_reset_callbacks(H3270 *hSession) {
 	// Default calls
 	memset(&hSession->cbk,0,sizeof(hSession->cbk));
@@ -210,8 +220,8 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 	hSession->cbk.update_luname			= nop_void;
 	hSession->cbk.update_url			= nop_void;
 	hSession->cbk.action				= default_action;
-	hSession->cbk.reconnect				= lib3270_reconnect;
 	hSession->cbk.word_selected			= nop_void;
+	hSession->cbk.reconnect_allowed		= reconnect_allowed;
 
 	#pragma GCC diagnostic pop
 
@@ -230,6 +240,8 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 	lib3270_set_host_charset(hSession,charset);
 
+	hSession->connection.write = connection_write_offline;
+
 	// Set the defaults.
 	hSession->extended  			=  1;
 	hSession->typeahead				=  1;
@@ -239,8 +251,8 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->onlcr					=  1;
 	hSession->model_num				= -1;
 	hSession->connection.state		= LIB3270_NOT_CONNECTED;
-	hSession->connection.timeout	= 10000;
-	hSession->connection.retry		= 5000;
+	hSession->connection.timeout	= 10;
+	hSession->connection.retry		= 0;
 	hSession->oia.status			= LIB3270_MESSAGE_DISCONNECTED;
 	hSession->kybdlock 				= KL_NOT_CONNECTED;
 	hSession->aid 					= AID_NO;
@@ -257,11 +269,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->colors				= 16;
 	hSession->m3279					= 1;
 
-#ifdef UNLOCK_MS
 	lib3270_set_unlock_delay(hSession,UNLOCK_MS);
-#else
-	lib3270_set_unlock_delay(hSession,350);
-#endif // UNLOCK_MS
 
 	// CSD
 	for(f=0; f<4; f++)
@@ -274,7 +282,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 		DWORD disp = 0;
 		LSTATUS	rc = RegCreateKeyEx(
 		                 HKEY_LOCAL_MACHINE,
-		                 "Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\protocol",
+		                 "Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) "\\" PACKAGE_NAME,
 		                 0,
 		                 NULL,
 		                 REG_OPTION_NON_VOLATILE,
@@ -285,6 +293,8 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 		if(rc == ERROR_SUCCESS) {
 			size_t property;
+
+			// Load unsigned int properties.
 			const LIB3270_UINT_PROPERTY * uiProps = lib3270_get_unsigned_properties_list();
 
 			for(property = 0; uiProps[property].name; property++) {
@@ -303,6 +313,8 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 				}
 
 			}
+
+			// TODO: load other properties, except toggles (load then in initialize_toggles).
 
 		}
 	}

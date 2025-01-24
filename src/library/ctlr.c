@@ -1,25 +1,23 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como ctlr.c e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
@@ -818,12 +816,12 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 	int		fa_addr;
 	Boolean		add_dbcs;
 	unsigned char	add_c1, add_c2 = 0;
+	Boolean		aborted = False;
+#if defined(X3270_DBCS)
 	enum dbcs_state	d;
 	enum dbcs_why	why = DBCS_FIELD;
-	Boolean		aborted = False;
-#if defined(X3270_DBCS) /*[*/
 	char		mb[16];
-#endif /*]*/
+#endif // X3270_DBCS
 
 #define END_TEXT0		{ if (previous == TEXT) trace_ds(hSession,"'"); }
 #define END_TEXT(cmd)	{ END_TEXT0; trace_ds(hSession," %s", cmd); }
@@ -1002,7 +1000,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			add_dbcs = False;
 			ra_ge = False;
 			previous = ORDER;
-#if defined(X3270_DBCS) /*[*/
+#if defined(X3270_DBCS)
 			if (dbcs) {
 				d = ctlr_lookleft_state(buffer_addr, &why);
 				if (d == DBCS_RIGHT) {
@@ -1105,6 +1103,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			if (baddr >= hSession->view.cols * hSession->view.rows) {
 				ABORT_WRITE("invalid EUA address");
 			}
+
+#ifdef X3270_DBCS
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("EUA overwriting right half of DBCS character");
@@ -1113,6 +1113,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			if (d == DBCS_LEFT) {
 				ABORT_WRITE("EUA overwriting left half of DBCS character");
 			}
+#endif // X3270_DBCS
+
 			do {
 				if (hSession->ea_buf[hSession->buffer_addr].fa)
 					current_fa = hSession->ea_buf[hSession->buffer_addr].fa;
@@ -1332,10 +1334,14 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		case FCORDER_EO:
 			END_TEXT(see_ebc(hSession, *cp));
 			previous = ORDER;
+
+#ifdef X3270_DBCS
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (hSession->default_cs == CS_DBCS || d != DBCS_NONE) {
 				ABORT_WRITE("invalid format control order in DBCS field");
 			}
+#endif // X3270_DBCS
+
 			ctlr_add(hSession,hSession->buffer_addr, *cp, hSession->default_cs);
 			ctlr_add_fg(hSession,hSession->buffer_addr, hSession->default_fg);
 			ctlr_add_bg(hSession,hSession->buffer_addr, hSession->default_bg);
@@ -1348,6 +1354,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		case FCORDER_SO:
 			/* Look left for errors. */
 			END_TEXT(see_ebc(hSession, *cp));
+#ifdef X3270_DBCS
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("SO overwriting right half of DBCS character");
@@ -1358,6 +1365,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			if (d != DBCS_NONE && why == DBCS_SUBFIELD) {
 				ABORT_WRITE("double SO");
 			}
+#endif // X3270_DBCS
 			/* All is well. */
 			previous = ORDER;
 			ctlr_add(hSession,hSession->buffer_addr, *cp, hSession->default_cs);
@@ -1372,6 +1380,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		case FCORDER_SI:
 			/* Look left for errors. */
 			END_TEXT(see_ebc(hSession, *cp));
+
+#ifdef X3270_DBCS
 			d = ctlr_lookleft_state(buffer_addr, &why);
 			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("SI overwriting right half of DBCS character");
@@ -1379,6 +1389,8 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 			if (d != DBCS_NONE && why == DBCS_FIELD) {
 				ABORT_WRITE("SI in DBCS field");
 			}
+#endif // X3270_DBCS
+
 			fa_addr = lib3270_field_addr(hSession,hSession->buffer_addr);
 			baddr = hSession->buffer_addr;
 			DEC_BA(baddr);
@@ -1411,6 +1423,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		case FCORDER_NULL:	/* NULL or DBCS control char */
 			previous = NULLCH;
 			add_dbcs = False;
+#if defined(X3270_DBCS)
 			d = ctlr_lookleft_state(hSession->buffer_addr, &why);
 			if (d == DBCS_RIGHT) {
 				ABORT_WRITE("NULL overwriting right half of DBCS character");
@@ -1451,6 +1464,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 				END_TEXT("NULL");
 				add_c1 = *cp;
 			}
+#endif // X3270_DBCS
 			ctlr_add(hSession,hSession->buffer_addr, add_c1, hSession->default_cs);
 			ctlr_add_fg(hSession,hSession->buffer_addr, hSession->default_fg);
 			ctlr_add_bg(hSession,hSession->buffer_addr, hSession->default_bg);
@@ -1543,8 +1557,10 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		lib3270_ring_bell(hSession);
 
 	/* Set up the DBCS state. */
+#ifdef X3270_DBCS
 	if (ctlr_dbcs_postprocess(hSession) < 0 && rv == PDS_OKAY_NO_OUTPUT)
 		rv = PDS_BAD_ADDR;
+#endif // X3270_DBCS
 
 	hSession->trace_primed = 0;
 
@@ -2270,22 +2286,4 @@ void mdt_clear(H3270 *hSession, int baddr) {
 	}
 }
 
-#if defined(X3270_DBCS) /*[*/
-/**
- * @brief DBCS state query.
- *
- * Takes line-wrapping into account, which probably isn't done all that well.
- *
- * @return DBCS state
- *
- * @retval DBCS_NONE	Buffer position is SBCS.
- * @retval DBCS_LEFT	Buffer position is left half of a DBCS character.
- * @retval DBCS_RIGHT:	Buffer position is right half of a DBCS character.
- * @retval DBCS_SI    	Buffer position is the SI terminating a DBCS subfield (treated as DBCS_LEFT for wide cursor tests)
- * @retval DBCS_SB		Buffer position is an SBCS character after an SI (treated as DBCS_RIGHT for wide cursor tests)
- *
- */
-enum dbcs_state ctlr_dbcs_state(int baddr) {
-	return dbcs? ea_buf[baddr].db: DBCS_NONE;
-}
-#endif /*]*/
+

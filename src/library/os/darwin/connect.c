@@ -193,7 +193,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		                                 errno
 		                             );
 
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,errno);
 
 		LIB3270_POPUP popup = {
 			.type = LIB3270_NOTIFY_ERROR,
@@ -208,7 +208,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	} else if(err) {
 
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,-1);
 
 		lib3270_autoptr(char) summary =
 		    lib3270_strdup_printf(
@@ -240,7 +240,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 
 	if(lib3270_start_tls(hSession)) {
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,-1);
 		return;
 	}
 
@@ -297,7 +297,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 				popup->body = syserror;
 		}
 
-		lib3270_disconnect(hSession);	// To cleanup states.
+		lib3270_connection_close(hSession,-1);	// To cleanup states.
 
 		popup->label = _("_Retry");
 		if(lib3270_popup(hSession,popup,!hSession->auto_reconnect_inprogress) == 0)
@@ -369,7 +369,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	if(seconds) {
 		int rc = lib3270_wait_for_cstate(hSession,LIB3270_CONNECTED_TN3270E,seconds);
 		if(rc) {
-			lib3270_disconnect(hSession);
+			lib3270_connection_close(hSession,ETIMEDOUT);
 			lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 			return errno = rc;
 		}
@@ -408,7 +408,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 
 		}
 
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,ETIMEDOUT);
 		lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 
 		return errno = ETIMEDOUT;

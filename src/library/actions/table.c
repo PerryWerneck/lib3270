@@ -46,7 +46,7 @@ static int paste_file(H3270 *hSession) {
 }
 
 static int connect_host(H3270 *hSession) {
-	return hSession->cbk.reconnect(hSession,0);
+	return lib3270_connect(hSession,hSession->connection.timeout);
 }
 
 static int select_up(H3270 *hSession) {
@@ -114,7 +114,7 @@ const LIB3270_ACTION * lib3270_get_actions() {
 			.activate = connect_host,
 
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
-			.activatable = lib3270_allow_reconnect
+			.activatable = lib3270_allow_connect
 		},
 
 		{

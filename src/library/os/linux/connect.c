@@ -32,27 +32,21 @@
 
  #include <private/network.h>
  #include <private/intl.h>
- #include <private/session.h>
  #include <private/mainloop.h>
 
  #include <lib3270.h>
-
+ #include <lib3270/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
 
- struct _lib3270_net_context {
-	int sock;
+ typedef struct {
+	LIB3270_NET_CONTEXT parent;
 	void *timer;
-	void *poll;
- };
+	void *connected;
+	void *except;
+ } Context;
 
- static void net_connected(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, LIB3270_NET_CONTEXT *context) {
-
-	if(flag & LIB3270_IO_FLAG_WRITE) {
-		debug("%s: CONNECTED",__FUNCTION__);
-//		lib3270_set_socket(hSession,sock);
-		return;
-	}
+ static void net_except(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
 
 	// Connection error.
     int error = ETIMEDOUT;
@@ -61,7 +55,8 @@
         error = errno;
     }
 
-//	lib3270_disconnect(hSession);
+	debug("%s: failed: %s",__FUNCTION__,strerror(error));
+	lib3270_connection_close(hSession,error);
 
 	LIB3270_POPUP popup = {
 		.name		= "connect-error",
@@ -73,20 +68,19 @@
 	};
 
 	lib3270_popup(hSession, &popup, 0);
+	lib3270_connection_close(hSession,-1);
 
  }
 
-/*
- static void net_disconnect(H3270 *hSession, LIB3270_NET_CONTEXT *context) {
-	lib3270_remove_timer(hSession,context->timer);
-	lib3270_remove_poll_fd(hSession,context->sock);
-	close(context->sock);
+ static void net_connected(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
+	debug("%s: CONNECTED",__FUNCTION__);
+	lib3270_set_connected_socket(hSession,sock);
  }
-*/
 
- static int timer_expired(H3270 *hSession, LIB3270_NET_CONTEXT *data) {
+ static int net_timeout(H3270 *hSession, Context *context) {
 
-//	lib3270_disconnect(hSession);
+	context->timer = NULL;
+	lib3270_connection_close(hSession,ETIMEDOUT);
 
 	LIB3270_POPUP popup = {
 		.name		= "connect-error",
@@ -99,6 +93,15 @@
 
 	lib3270_popup(hSession, &popup, 0);
 
+	return 0;
+ }
+
+static int net_disconnect(H3270 *hSession, Context *context) {
+	if(context->timer) {
+		lib3270_remove_timer(hSession,context->timer);
+	}
+	lib3270_remove_poll_fd(hSession,context->parent.sock);
+	close(context->parent.sock);
 	return 0;
  }
 
@@ -118,7 +121,7 @@
 	int rc = getaddrinfo(hostname, service, &hints, &result);
 	if(rc) {
 
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,rc);
 
 		LIB3270_POPUP popup = {
 			.name		= "connect-error",
@@ -136,7 +139,7 @@
 
 	int sock = -1;
 	int error = -1;
-	LIB3270_NET_CONTEXT *context = NULL;
+	Context *context = NULL;
 
 	struct addrinfo * rp;
 	for(rp = result; sock < 0 && rp != NULL && !context; rp = rp->ai_next) {
@@ -152,14 +155,15 @@
 		int f;
 		if ((f = fcntl(sock, F_GETFL, 0)) == -1) {
 
-			lib3270_disconnect(hSession);
+			int error = errno;
+			lib3270_connection_close(hSession,error);
 
 			LIB3270_POPUP popup = {
 				.name		= "connect-error",
 				.type		= LIB3270_NOTIFY_ERROR,
 				.title		= _("Connection error"),
 				.summary	= _( "fcntl() error when getting socket state." ),
-				.body		= strerror(errno),
+				.body		= strerror(error),
 				.label		= _("OK")
 			};
 
@@ -172,14 +176,15 @@
 
 		if (fcntl(sock, F_SETFL, f) < 0) {
 
-			lib3270_disconnect(hSession);
+			int error = errno;
+			lib3270_connection_close(hSession,error);
 
 			LIB3270_POPUP popup = {
 				.name		= "connect-error",
 				.type		= LIB3270_NOTIFY_ERROR,
 				.title		= _("Connection error"),
 				.summary	= _( "fcntl() error when setting non blocking state." ),
-				.body		= strerror(errno),
+				.body		= strerror(error),
 				.label		= _("OK")
 			};
 
@@ -195,12 +200,15 @@
 		}
 
 		// Wait for connection.
-		context = lib3270_malloc(sizeof(LIB3270_NET_CONTEXT));
-		memset(context,0,sizeof(LIB3270_NET_CONTEXT));
+		context = lib3270_malloc(sizeof(Context));
+		memset(context,0,sizeof(Context));
 
-		context->sock = sock;
-		context->timer = lib3270_add_timer(timeout*1000,hSession,(void *) timer_expired,context);
-		context->poll = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_WRITE|LIB3270_IO_FLAG_EXCEPTION,(void *) net_connected,context);
+		context->parent.sock = sock;
+		context->parent.disconnect = (void *) net_disconnect;
+
+		context->timer = lib3270_add_timer(timeout*1000,hSession,(void *) net_timeout,context);
+		context->except = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);
+		context->connected = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
 
 		break;
 
@@ -222,6 +230,6 @@
 		lib3270_popup(hSession, &popup, 0);
 	}
 
-	return context;
+	return (LIB3270_NET_CONTEXT *) context;
 
  }

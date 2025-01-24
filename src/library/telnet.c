@@ -127,7 +127,7 @@ static void net_rawout(H3270 *session, unsigned const char *buf, size_t len);
 static void check_in3270(H3270 *session);
 static void store3270in(H3270 *hSession, unsigned char c);
 static void check_linemode(H3270 *hSession, Boolean init);
-// static int net_connected(H3270 *session);
+static int net_connected(H3270 *session);
 
 static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len);
 
@@ -373,23 +373,23 @@ static void setup_lus(H3270 *hSession) {
 
 }
 
-/*
 static int net_connected(H3270 *hSession) {
 
 	// Set up SSL.
 	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host ? " using SSL": "");
 
+/*
 	if(hSession->ssl.host && hSession->ssl.state == LIB3270_SSL_UNDEFINED) {
 		if(lib3270_start_tls(hSession))
 			return -1;
 	}
+*/
 
 	lib3270_setup_session(hSession);
-	lib3270_notify_tls(hSession);
+//	lib3270_notify_tls(hSession);
 
 	return 0;
 }
-*/
 
 
 /**
@@ -400,7 +400,7 @@ static int net_connected(H3270 *hSession) {
  * @param hSession	3270 session to setup.
  *
  */
-LIB3270_EXPORT void lib3270_setup_session(H3270 *hSession) {
+ void lib3270_setup_session(H3270 *hSession) {
 	(void) memset((char *) hSession->myopts, 0, sizeof(hSession->myopts));
 	(void) memset((char *) hSession->hisopts, 0, sizeof(hSession->hisopts));
 
@@ -481,6 +481,7 @@ void net_disconnect(H3270 *hSession) {
 }
 */
 
+/*
 LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf) {
 	register const unsigned char * cp;
 
@@ -492,7 +493,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 	for (cp = netrbuf; cp < (netrbuf + nr); cp++) {
 		if(telnet_fsm(hSession,*cp)) {
 			(void) ctlr_dbcs_postprocess(hSession);
-			lib3270_disconnect(hSession);
+			lib3270_connection_close(hSession,-1);
 			return;
 		}
 	}
@@ -508,6 +509,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 	}
 #endif // X3270_ANSI
 }
+*/
 
 /**
  * @brief Called by the toolkit whenever there is input available on the socket.
@@ -518,7 +520,50 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
  *
  * @param hSession	Session handle
  *
- */ /*
+ */ 
+ void net_input(H3270 *hSession, const unsigned char *buffer, size_t len) {
+
+	hSession->ansi_data = 0;
+	
+	if (HALF_CONNECTED) {
+		trace_dsn(hSession, "Received %lu bytes with half-connect\n", len);
+		lib3270_set_connected_initial(hSession);
+		if(net_connected(hSession)) {
+			return;
+		}
+	}
+
+	trace_netdata(hSession, '<', buffer, len);
+
+	hSession->ns_brcvd += len;
+
+	register const unsigned char * cp;
+	for (cp = buffer; cp < (buffer + len); cp++) {
+		if(telnet_fsm(hSession,*cp)) {
+#ifdef X3270_DBCS
+			ctlr_dbcs_postprocess(hSession);
+#endif // X3270_DBCS
+			lib3270_connection_close(hSession,-1);
+			return;
+		}
+	}
+
+#ifdef X3270_ANSI
+#ifdef X3270_DBCS
+	if (IN_ANSI) {
+		(void) ctlr_dbcs_postprocess(hSession);
+	}
+#endif // X3270_DBCS
+
+	if (hSession->ansi_data) {
+		trace_dsn(hSession,"\n");
+		hSession->ansi_data = 0;
+	}
+#endif // X3270_ANSI
+
+ }
+
+/*
 void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
 //	register unsigned char	* cp;
 	int						  nr;
@@ -989,7 +1034,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 		trace_dsn(hSession,"%s ? %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 		popup_an_error(hSession,_( "TLS negotiation failure"));
 		trace_dsn(hSession,"SENT disconnect\n");
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,-1);
 		return;
 	}
 
@@ -998,11 +1043,11 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 
 	hSession->ssl.host = 1;	// Set host type as SSL.
 	if(lib3270_start_tls(hSession)) {
-		lib3270_disconnect(hSession);
+		lib3270_connection_close(hSession,-1);
 		return;
 	}
 
-	lib3270_notify_tls(hSession);
+	// lib3270_notify_tls(hSession);
 
 }
 
@@ -1414,6 +1459,7 @@ static int process_eor(H3270 *hSession) {
 	return 0;
 }
 
+/*
 /// @brief Called when there is an exceptional condition on the socket.
 void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
 	debug("%s",__FUNCTION__);
@@ -1428,6 +1474,7 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
 		}
 	}
 }
+*/
 
 /**
  *	@brief send a 3270 record
@@ -1445,11 +1492,11 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
  *
  */
 
+/*
 LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len) {
 
 	debug("%s: NEED REFACTOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",__FUNCTION__);
 
-/*
 	int rc = hSession->network.module->send(hSession, buf, len);
 
 	if(rc > 0)
@@ -1457,10 +1504,10 @@ LIB3270_INTERNAL int lib3270_sock_send(H3270 *hSession, unsigned const char *buf
 
 	// Send error, notify
 	trace_dsn(hSession,"SND socket error %d\n", -rc);
-*/
 
 	return -1;
 }
+*/
 
 /**
  * @brief Send out raw telnet data.
@@ -1485,7 +1532,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
 			len -= nw;
 			buf += nw;
 		} else if(nw < 0) {
-			lib3270_disconnect(hSession);
+			lib3270_connection_close(hSession,-1);
 			return;
 		}
 	}

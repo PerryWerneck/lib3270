@@ -432,7 +432,7 @@ LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession);
 LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h));
 
 /**
- * @brief Check if the session can reconnect.
+ * @brief Check if the session can connect.
  *
  * @param hSession			Session handle.
  *
@@ -443,23 +443,26 @@ LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h))
  * @retval EISCONN	Session is connected.
  *
  */
-LIB3270_EXPORT int lib3270_allow_reconnect(const H3270 *hSession);
+LIB3270_EXPORT int lib3270_allow_connect(const H3270 *hSession);
 
-/**
- * @brief Reconnect to host.
- *
- * @param hSession	Session handle.
- * @param seconds	Seconds to wait for connection.
- *
- * @return 0 for success, non zero if fails (sets errno).
- *
- * @retval ENODATA	Invalid or empty hostname.
- * @retval EBUSY	Auto reconnect in progress.
- * @retval EISCONN	Session is connected.
- * @retval -1		Unexpected error.
- *
- */
-LIB3270_EXPORT int lib3270_reconnect(H3270 *hSession,int seconds);
+ /// @brief Connect to defined host.
+ ///
+ /// This function starts the process of establishing a connection to remote
+ /// host without blocking the calling thread. It sets up necessary parameters
+ /// and begins the connection attempt, allowing other operations to proceed
+ /// concurrently.
+ ///
+ /// @param hSession	Session handle.
+ /// @param seconds		Seconds to wait for connection.
+ ///
+ /// @return 0 for success, non zero if fails (sets errno).
+ ///
+ /// @retval ENODATA	The host URL is empty.
+ /// @retval EINVAL		The host URL is invalid.
+ /// @retval EBUSY		Connection already in progress.
+ /// @retval EISCONN	Session is connected.
+ /// @retval -1			Unexpected error.
+ LIB3270_EXPORT int lib3270_connect(H3270 *hSession, int seconds);
 
 /**
  * @brief Connect by URL
@@ -468,7 +471,7 @@ LIB3270_EXPORT int lib3270_reconnect(H3270 *hSession,int seconds);
  * @param url		Host URL
  * @param seconds	Seconds to wait for connection.
  *
- * @see lib3270_reconnect
+ * @see lib3270_connect
  *
  * @return 0 for success, non zero if fails (sets errno).
  */

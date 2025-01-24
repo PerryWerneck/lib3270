@@ -1,34 +1,28 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- *	@brief This module handles the keyboard for the 3270 emulator.
+/*
+ * Contatos:
+ *
+ * perry.werneck@gmail.com      (Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com     (Erico Mascarenhas Mendonça)
+ *
  */
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
@@ -38,6 +32,7 @@ struct ta;
 
 #define LIB3270_TA struct ta
 
+#include <config.h>
 #include <internals.h>
 #include <lib3270/trace.h>
 #include <lib3270/selection.h>
@@ -197,13 +192,14 @@ LIB3270_EXPORT int lib3270_firstfield(H3270 *hSession) {
  */
 static void do_left(H3270 *hSession) {
 	register int	baddr;
-	enum dbcs_state d;
 
 	baddr = hSession->cursor_addr;
 	DEC_BA(baddr);
-	d = ctlr_dbcs_state(baddr);
+#ifdef X3270_DBCS
+	enum dbcs_state d = ctlr_dbcs_state(baddr);
 	if (IS_LEFT(d))
 		DEC_BA(baddr);
+#endif // X3270_DBCS
 	cursor_move(hSession,baddr);
 }
 
@@ -282,8 +278,11 @@ static Boolean do_delete(H3270 *hSession) {
 	/* Set the MDT for this field. */
 	mdt_set(hSession,hSession->cursor_addr);
 
+#ifdef X3270_DBCS
 	/* Patch up the DBCS state for display. */
 	(void) ctlr_dbcs_postprocess(hSession);
+#endif // X3270_DBCS
+
 	return True;
 }
 
@@ -349,7 +348,6 @@ LIB3270_EXPORT int lib3270_backspace(H3270 *hSession) {
  */
 static void do_erase(H3270 *hSession) {
 	int	baddr, faddr;
-	enum dbcs_state d;
 
 	baddr = hSession->cursor_addr;
 	faddr = lib3270_field_addr(hSession,baddr);
@@ -378,12 +376,14 @@ static void do_erase(H3270 *hSession) {
 	 * This ensures that if this is the end of a DBCS subfield, we will
 	 * land on the SI, instead of on the character following.
 	 */
-	d = ctlr_dbcs_state(hSession->cursor_addr);
+#ifdef X3270_DBCS
+	enum dbcs_state d = ctlr_dbcs_state(hSession->cursor_addr);
 	if (IS_RIGHT(d)) {
 		baddr = hSession->cursor_addr;
 		DEC_BA(baddr);
 		cursor_move(hSession,baddr);
 	}
+#endif // X3270_DBCS
 
 	/*
 	 * Try to delete this character.

@@ -1,29 +1,27 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como kybd.c e possui - linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ * perry.werneck@gmail.com      (Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com     (Erico Mascarenhas Mendonça)
  *
  */
 
@@ -38,15 +36,14 @@ struct ta;
 
 #define LIB3270_TA struct ta
 
+#include <config.h>
 #include <internals.h>
 #include <lib3270/trace.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
 #include <lib3270/toggle.h>
-
-#ifndef ANDROID
+#include <ctlrc.h>
 #include <stdlib.h>
-#endif // !ANDROID
 
 #if defined(X3270_DISPLAY) /*[*/
 #include <X11/Xatom.h>
@@ -130,7 +127,7 @@ static const char dxl[] = "0123456789abcdef";
  * @return new typeahead struct or NULL if it's not available.
  * @retval NULL Host is not connected or malloc error.
  */
-struct ta * new_ta(H3270 *hSession, enum _ta_type type) {
+struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 	struct ta *ta = NULL;
 
 	// If no connection, forget it.
@@ -640,7 +637,6 @@ static void key_Character_wrapper(H3270 *hSession, const char *param1, const cha
 static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean pasting, Boolean *skipped) {
 	register int	baddr, faddr, xaddr;
 	register unsigned char	fa;
-	enum dbcs_why why;
 
 	if (skipped != NULL)
 		*skipped = False;
@@ -719,7 +715,19 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 			}
 		}
 
-	} else switch (ctlr_lookleft_state(baddr, &why)) {
+#ifdef X3270_DBCS
+		/* If it's a DBCS character, add the second byte. */
+		if (IS_DBCS(code)) {
+			ctlr_add(hSession,baddr, (unsigned char)(code >> 8), CS_BASE);
+			ctlr_add_fg(hSession,baddr, 0);
+			ctlr_add_gr(hSession,baddr, 0);
+			INC_BA(baddr);
+		}
+	
+	} else {
+		enum dbcs_why why;
+
+		switch (ctlr_lookleft_state(baddr, &why)) {
 		case DBCS_RIGHT:
 			DEC_BA(baddr);
 		/* fall through... */
@@ -800,6 +808,9 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 				return False;
 			break;
 		}
+#endif // X3270_DBCS
+	}
+
 	ctlr_add(hSession,baddr, (unsigned char)code,(unsigned char)(with_ge ? CS_GE : 0));
 	ctlr_add_fg(hSession,baddr, 0);
 	ctlr_add_gr(hSession,baddr, 0);
@@ -859,7 +870,10 @@ static Boolean key_Character(H3270 *hSession, int code, Boolean with_ge, Boolean
 		cursor_move(hSession,baddr);
 	}
 
+#ifdef X3270_DBCS
 	(void) ctlr_dbcs_postprocess(hSession);
+#endif // X3270_DBCS
+
 	return True;
 }
 
@@ -1268,14 +1282,12 @@ LIB3270_EXPORT int lib3270_clear(H3270 *hSession) {
 LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession) {
 	register int	baddr;
 	register unsigned char	fa;
-	enum dbcs_state d;
-	enum dbcs_why why = DBCS_FIELD;
 
-//	reset_idle_timer();
 	if (hSession->kybdlock) {
 		enq_action(hSession, lib3270_eraseeol);
 		return 0;
 	}
+
 #if defined(X3270_ANSI) /*[*/
 	if (IN_ANSI)
 		return 0;
@@ -1305,7 +1317,10 @@ LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession) {
 	}
 
 	/* If the cursor was in a DBCS subfield, re-create the SI. */
-	d = ctlr_lookleft_state(cursor_addr, &why);
+#ifdef X3270_DBCS
+	enum dbcs_state d;
+	enum dbcs_why why = DBCS_FIELD;
+	d = ctlr_lookleft_state(hSession->cursor_addr, &why);
 	if (IS_DBCS(d) && why == DBCS_SUBFIELD) {
 		if (d == DBCS_RIGHT) {
 			baddr = hSession->cursor_addr;
@@ -1315,6 +1330,8 @@ LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession) {
 			hSession->ea_buf[hSession->cursor_addr].cc = EBC_si;
 	}
 	(void) ctlr_dbcs_postprocess(hSession);
+#endif // X3270_DBCS
+
 	hSession->cbk.display(hSession);
 	return 0;
 }
@@ -1326,8 +1343,6 @@ LIB3270_EXPORT int lib3270_eraseeol(H3270 *hSession) {
 LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession) {
 	register int	baddr;
 	register unsigned char	fa;
-	enum dbcs_state d;
-	enum dbcs_why why = DBCS_FIELD;
 
 //	reset_idle_timer();
 	if (hSession->kybdlock) {
@@ -1359,7 +1374,9 @@ LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession) {
 	}
 
 	/* If the cursor was in a DBCS subfield, re-create the SI. */
-	d = ctlr_lookleft_state(cursor_addr, &why);
+#ifdef X3270_DBCS
+	enum dbcs_why why = DBCS_FIELD;
+	enum dbcs_state d = ctlr_lookleft_state(hSession->cursor_addr, &why);
 	if (IS_DBCS(d) && why == DBCS_SUBFIELD) {
 		if (d == DBCS_RIGHT) {
 			baddr = hSession->cursor_addr;
@@ -1368,7 +1385,10 @@ LIB3270_EXPORT int lib3270_eraseeof(H3270 *hSession) {
 		} else
 			hSession->ea_buf[hSession->cursor_addr].cc = EBC_si;
 	}
+
 	(void) ctlr_dbcs_postprocess(hSession);
+#endif // X3270_DBCS
+
 	hSession->cbk.display(hSession);
 	return 0;
 }

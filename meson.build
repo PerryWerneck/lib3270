@@ -287,6 +287,7 @@ lib_src += [
   'src/library/selection/selection.c',
   'src/library/network/state.c',
   'src/library/os/' + host_machine.system() + '/connect.c',
+  'src/library/os/' + host_machine.system() + '/connected.c',
 ]
 
 gobject_src = [

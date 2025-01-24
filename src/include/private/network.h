@@ -22,8 +22,23 @@
  #include <time.h>
  #include <lib3270/defs.h>
 
- typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
+ typedef struct _lib3270_net_context {
+	int sock;
+	int (*disconnect)(H3270 *hSession, struct _lib3270_net_context *context);
+ } LIB3270_NET_CONTEXT;
 
- LIB3270_EXPORT int lib3270_connect(H3270 *hSession, int seconds);
- LIB3270_EXPORT LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout);
+ /// @brief Close connection to host.
+ /// @param hSession The TN3270 session
+ /// @param code The error code (0 = ok) 
+ /// @return 0 if ok or error code if not.
+ LIB3270_INTERNAL int lib3270_connection_close(H3270 *hSession,int code);
+ LIB3270_INTERNAL void lib3270_set_connected_socket(H3270 *hSession, int sock);
+ LIB3270_INTERNAL void lib3270_set_connected_initial(H3270 *hSession);
+
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout);
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * connected_insecure(H3270 *hSession, int sock);
+ 
+ LIB3270_INTERNAL void lib3270_setup_session(H3270 *hSession);
+
+ LIB3270_INTERNAL int connection_write_offline(H3270 *hSession, const void *buffer, size_t length);
 

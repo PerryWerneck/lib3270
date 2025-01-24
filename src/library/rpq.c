@@ -688,7 +688,12 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 		void *src = NULL;
 		int len = 0;
 
-		if(getsockname(hSession->connection.socket, (struct sockaddr *) &u, &addrlen) < 0)
+		if(!hSession->connection.context) {
+			rpq_warning(hSession, _("RPQ ADDRESS term incomplete: connection context not found"));
+			return 0;
+		}
+		
+		if(getsockname(hSession->connection.context->sock, (struct sockaddr *) &u, &addrlen) < 0)
 			return 0;
 			
 		SET16(buf, u.sa.sa_family);

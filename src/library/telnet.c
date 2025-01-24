@@ -1756,11 +1756,10 @@ static void do_lnext(H3270 *hSession, char c) {
 }
 #endif /*]*/
 
-
 const char * lib3270_connection_state_get_name(const LIB3270_CSTATE cstate) {
 	static const char *state_names[] = {
 		N_("Unconnected"),
-		N_("Resolving"),
+		N_("Connecting"),
 		N_("Pending"),
 		N_("Connected initial"),
 		N_("TN3270 NVT"),

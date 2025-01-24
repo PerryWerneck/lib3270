@@ -165,6 +165,7 @@ int host_disconnect(H3270 *hSession, int failed) {
 */
 
 int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate) {
+	
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(cstate),(int) cstate);
 
 	if(hSession->connection.state != cstate) {

@@ -398,7 +398,7 @@ void kybd_in3270(H3270 *hSession, int GNUC_UNUSED(in3270), void GNUC_UNUSED(*dun
 void operator_error(H3270 *hSession, int error_type) {
 	if(hSession->oerr_lock) {
 		status_oerr(hSession,error_type);
-		mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+		hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED);
 		kybdlock_set(hSession,(unsigned int)error_type);
 		flush_ta(hSession);
 	} else {
@@ -461,7 +461,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code) {
 
 	if (!IN_SSCP || aid_code != AID_CLEAR) {
 		status_twait(hSession);
-		mcursor_set(hSession,LIB3270_POINTER_WAITING);
+		hSession->cbk.cursor(hSession,LIB3270_POINTER_WAITING);
 		lib3270_set_toggle(hSession,LIB3270_TOGGLE_INSERT,0);
 		kybdlock_set(hSession,KL_OIA_TWAIT | KL_OIA_LOCKED);
 	}
@@ -993,7 +993,7 @@ void do_reset(H3270 *hSession, Boolean explicit) {
 
 	/* Clean up other modes. */
 	status_reset(hSession);
-	mcursor_set(hSession,LIB3270_POINTER_UNLOCKED);
+	hSession->cbk.cursor(hSession,LIB3270_POINTER_UNLOCKED);
 
 }
 

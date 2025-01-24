@@ -221,8 +221,7 @@ void lib3270_set_disconnected(H3270 *hSession) {
 	CHECK_SESSION_HANDLE(hSession);
 
 	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
-	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
-
+	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 	hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
 	hSession->starting	= 0;
 	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;

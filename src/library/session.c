@@ -261,7 +261,6 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	hSession->host_type				= LIB3270_HOSTTYPE_DEFAULT;
 	hSession->colors				= 16;
 	hSession->m3279					= 1;
-	hSession->pointer				= (unsigned short) LIB3270_POINTER_LOCKED;
 
 #ifdef UNLOCK_MS
 	lib3270_set_unlock_delay(hSession,UNLOCK_MS);

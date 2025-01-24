@@ -359,7 +359,7 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr) {
 	size_t f;
 	unsigned short id = lib3270_get_selection_flags(hSession,baddr) & 0x8f;
 
-	if(!lib3270_is_connected(hSession) || baddr < 0)
+	if(!lib3270_is_unlocked(hSession) || baddr < 0)
 		return LIB3270_POINTER_LOCKED;
 
 	for(f = 0; f < (sizeof(ptr)/sizeof(ptr[0])); f++) {
@@ -368,7 +368,7 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr) {
 		}
 	}
 
-	return hSession->pointer;
+	return LIB3270_POINTER_UNLOCKED;
 
 }
 

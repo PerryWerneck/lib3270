@@ -510,8 +510,7 @@ void status_oerr(H3270 *session, int error_type) {
 void status_resolving(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
 
-	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
-
+	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
 	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 }
@@ -519,7 +518,7 @@ void status_resolving(H3270 *hSession) {
 void status_connecting(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
 
-	mcursor_set(hSession,LIB3270_POINTER_LOCKED);
+	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 
 	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
 	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
@@ -536,7 +535,7 @@ void status_reset(H3270 *session) {
 		status_changed(session,LIB3270_MESSAGE_X);
 	} else {
 		trace("%s",__FUNCTION__);
-		mcursor_set(session,LIB3270_POINTER_UNLOCKED);
+		session->cbk.cursor(session,LIB3270_POINTER_UNLOCKED);
 		status_changed(session,LIB3270_MESSAGE_NONE);
 	}
 
@@ -668,6 +667,7 @@ static void status_3270_mode(H3270 *hSession, int GNUC_UNUSED(ignored), void GNU
 
 }
 
+/*
 void mcursor_set(H3270 *hSession,LIB3270_POINTER m) {
 
 	if(hSession->pointer != ((unsigned short) m)) {
@@ -681,6 +681,7 @@ void mcursor_set(H3270 *hSession,LIB3270_POINTER m) {
 
 	}
 }
+*/
 
 LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession) {
 	static const unsigned char text_pat[] = {

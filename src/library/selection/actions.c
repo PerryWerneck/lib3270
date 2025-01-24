@@ -32,8 +32,6 @@
 LIB3270_EXPORT int lib3270_unselect(H3270 *hSession) {
 	int a;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	trace("%s",__FUNCTION__);
 
 	if(hSession->selected) {
@@ -60,8 +58,6 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession) {
 LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr) {
 	int start, end;
 
-	CHECK_SESSION_HANDLE(session);
-
 	if(!lib3270_is_connected(session))
 		return;
 
@@ -75,8 +71,6 @@ LIB3270_EXPORT void lib3270_select_to(H3270 *session, int baddr) {
 
 LIB3270_EXPORT int lib3270_select_region(H3270 *h, int start, int end) {
 	int maxlen;
-
-	CHECK_SESSION_HANDLE(h);
 
 	if(!lib3270_is_connected(h))
 		return ENOTCONN;
@@ -127,7 +121,6 @@ LIB3270_EXPORT int lib3270_select_field_at(H3270 *session, int baddr) {
 }
 
 LIB3270_EXPORT int lib3270_select_field(H3270 *hSession) {
-	CHECK_SESSION_HANDLE(hSession);
 	lib3270_select_field_at(hSession,hSession->cursor_addr);
 	return 0;
 }
@@ -153,8 +146,6 @@ LIB3270_EXPORT int lib3270_reselect(H3270 *hSession) {
 
 LIB3270_EXPORT int lib3270_get_selection_bounds(H3270 *hSession, int *start, int *end) {
 	int first, last;
-
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->selected || hSession->select.start == hSession->select.end)
 		return 0;

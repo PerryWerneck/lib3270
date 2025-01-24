@@ -555,7 +555,6 @@ void set_dft_buffersize(H3270 *hSession)
 #endif /*]*/
 
 LIB3270_EXPORT int	lib3270_set_dft_buffersize(H3270 *hSession, int dft_buffersize) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	hSession->dft_buffersize = dft_buffersize;
 

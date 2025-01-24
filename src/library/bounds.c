@@ -71,8 +71,6 @@ LIB3270_EXPORT int lib3270_get_field_bounds(H3270 *hSession, int baddr, int *sta
 LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *session, int baddr, int *start, int *end) {
 	int pos;
 
-	CHECK_SESSION_HANDLE(session);
-
 	if(baddr < 0)
 		baddr = lib3270_get_cursor_address(session);
 

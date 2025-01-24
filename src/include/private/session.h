@@ -24,7 +24,12 @@
  #include <lib3270/toggle.h>
  #include <lib3270/session.h>
  #include <lib3270/charset.h>
+ #include <lib3270/trace.h>
+ #include <lib3270/log.h>
  #include <sys/time.h>
+
+ #include <networking.h>
+ #include <linkedlist.h>
  
  #define LIB3270_FULL_MODEL_NAME_LENGTH	13
  #define LIB3270_LU_MAX					32
@@ -63,8 +68,11 @@
 	void	(*ring_bell)(H3270 *session);
 	int		(*run)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
-	// Network
+	// Networking
 	struct {
+
+		/// @brief Connect to host with timeout (Asyncronous).
+		void (*connect)(H3270 *session, const char *hostname, const char *service, time_t timeout);
 
 		/// @brief Network module.
 		const LIB3270_NET_MODULE	* module;

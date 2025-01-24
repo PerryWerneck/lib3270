@@ -137,7 +137,6 @@ LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, unsigned int baddr, unsi
  *
  */
 int screen_init(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
 
 	/* Set up callbacks for state changes. */
 	lib3270_register_schange(session,LIB3270_STATE_CONNECT, status_connect,0);
@@ -278,8 +277,6 @@ void update_model_info(H3270 *hSession, unsigned int model, unsigned int cols, u
 LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr) {
 	int baddr;
 	int len;
-
-	CHECK_SESSION_HANDLE(h);
 
 	len = h->view.rows * h->view.cols;
 
@@ -474,15 +471,12 @@ void set_status(H3270 *session, LIB3270_FLAG id, Boolean on) {
 }
 
 void status_ctlr_done(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
 	set_status(session,LIB3270_FLAG_UNDERA,True);
 	session->cbk.ctlr_done(session);
 }
 
 void status_oerr(H3270 *session, int error_type) {
 	LIB3270_MESSAGE sts = LIB3270_MESSAGE_USER;
-
-	CHECK_SESSION_HANDLE(session);
 
 	switch (error_type) {
 	case KL_OERR_PROTECTED:
@@ -525,7 +519,6 @@ void status_connecting(H3270 *hSession) {
 }
 
 void status_reset(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
 
 	if (session->kybdlock & KL_ENTER_INHIBIT) {
 		trace("%s",__FUNCTION__);
@@ -605,13 +598,11 @@ void status_changed(H3270 *hSession, LIB3270_MESSAGE id) {
 }
 
 void status_twait(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
 	set_status(session,LIB3270_FLAG_UNDERA,False);
 	status_changed(session,LIB3270_MESSAGE_TWAIT);
 }
 
 void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols) {
-	CHECK_SESSION_HANDLE(session);
 
 	if(rows == session->view.rows && session->view.cols == cols)
 		return;
@@ -627,7 +618,6 @@ void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols) {
 }
 
 void status_lu(H3270 *session, const char *lu) {
-	CHECK_SESSION_HANDLE(session);
 
 	if(session->cbk.update_luname)
 		session->cbk.update_luname(session,lu);
@@ -658,8 +648,6 @@ static void status_connect(H3270 *hSession, int connected, void GNUC_UNUSED(*dun
 
 static void status_3270_mode(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSED(*dunno)) {
 	Boolean oia_boxsolid = (IN_3270 && !IN_SSCP);
-
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(oia_boxsolid)
 		set_status(hSession,LIB3270_FLAG_UNDERA,True);

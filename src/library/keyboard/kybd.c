@@ -1616,8 +1616,6 @@ LIB3270_EXPORT int lib3270_emulate_input(H3270 *hSession, const char *s, int len
 	const char *ws;
 #endif /*]*/
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	orig_addr = hSession->cursor_addr;
 	orig_col  = BA_TO_COL(hSession->cursor_addr);
 

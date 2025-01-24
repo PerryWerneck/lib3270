@@ -128,7 +128,6 @@ LIB3270_EXPORT void lib3270_popup_dialog(H3270 *session, LIB3270_NOTIFY id, cons
 }
 
 LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id, const char *title, const char *message, const char *fmt, va_list args) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	lib3270_autoptr(char) body = NULL;
 

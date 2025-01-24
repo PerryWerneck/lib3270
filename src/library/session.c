@@ -25,11 +25,13 @@
  *
  */
 
-#ifndef ANDROID
-#include <stdlib.h>
-#endif // !ANDROID
+#include <config.h>
+#include <lib3270/popup.h>
 
-#include <internals.h>
+#include <private/defs.h>
+#include <private/session.h>
+#include <private/intl.h>
+
 #include "kybdc.h"
 #include "ansic.h"
 #include "togglesc.h"
@@ -357,24 +359,6 @@ H3270 * lib3270_session_new(const char *model) {
 	return hSession;
 }
 
-#if defined(DEBUG)
-void check_session_handle(H3270 **hSession, const char *fname)
-#else
-void check_session_handle(H3270 **hSession)
-#endif // DEBUG
-{
-	if(*hSession)
-		return;
-
-//	*hSession = lib3270_get_default_session_handle();
-
-#if defined(DEBUG)
-	lib3270_write_log(NULL, "lib3270", "%s called with empty session from %s",__FUNCTION__,fname);
-#else
-	lib3270_write_log(NULL, "lib3270", "%s called with empty session",__FUNCTION__);
-#endif // ANDROID
-}
-
 LIB3270_INTERNAL int check_online_session(const H3270 *hSession) {
 
 	// Is the session valid?
@@ -409,22 +393,18 @@ LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void) {
 }
 
 LIB3270_EXPORT void lib3270_set_user_data(H3270 *h, void *ptr) {
-	CHECK_SESSION_HANDLE(h);
 	h->user_data = ptr;
 }
 
 LIB3270_EXPORT void * lib3270_get_user_data(H3270 *h) {
-	CHECK_SESSION_HANDLE(h);
 	return h->user_data;
 }
 
 LIB3270_EXPORT void lib3270_set_session_id(H3270 *hSession, char id) {
-	CHECK_SESSION_HANDLE(hSession);
 	hSession->id = id;
 }
 
 LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
-	CHECK_SESSION_HANDLE(hSession);
 	return hSession->id;
 }
 

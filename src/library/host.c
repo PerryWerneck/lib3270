@@ -106,8 +106,6 @@ LIB3270_EXPORT int lib3270_disconnect(H3270 *h) {
 /// @param failed	Non zero if it was a failure.
 int host_disconnect(H3270 *hSession, int failed) {
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	debug("%s: connected=%s half connected=%s network=%s",
 	      __FUNCTION__,
 	      (CONNECTED ? "Yes" : "No"),
@@ -218,7 +216,6 @@ void lib3270_set_connected_initial(H3270 *hSession) {
 }
 
 void lib3270_set_disconnected(H3270 *hSession) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);

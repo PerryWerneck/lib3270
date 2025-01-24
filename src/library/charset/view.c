@@ -53,8 +53,6 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 	int s,r;
 	const char *ptr;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	trace("%s","Showing charset table");
 
 	(void) memset(

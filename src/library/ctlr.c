@@ -234,8 +234,6 @@ static void set_formatted(H3270 *hSession, int state) {
 static void update_formatted(H3270 *hSession) {
 	register int baddr;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	baddr = 0;
 	do {
 		if(hSession->ea_buf[baddr].fa) {
@@ -286,7 +284,6 @@ static void ctlr_connect(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UN
  *
  */
 void ctlr_erase(H3270 *session, int alt) {
-	CHECK_SESSION_HANDLE(session);
 
 	kybd_inhibit(session,False);
 	ctlr_clear(session,True);
@@ -2228,7 +2225,6 @@ void ctlr_scroll(H3270 *hSession) {
  * @brief Swap the regular and alternate screen buffers
  */
 void ctlr_altbuffer(H3270 *session, int alt) {
-	CHECK_SESSION_HANDLE(session);
 
 	if (alt != session->is_altbuffer) {
 		struct lib3270_ea *etmp;

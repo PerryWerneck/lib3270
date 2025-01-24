@@ -39,7 +39,6 @@
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 
 LIB3270_EXPORT int lib3270_connect_url(H3270 *hSession, const char *url, int seconds) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(url && *url) {
 		lib3270_set_url(hSession,url);

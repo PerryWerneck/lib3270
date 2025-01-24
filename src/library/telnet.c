@@ -521,8 +521,6 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 	int						  nr;
 	unsigned char			  buffer[BUFSZ];
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	memset(buffer,0,BUFSZ);
 
 #if defined(_WIN32)

@@ -46,6 +46,7 @@
 #include <lib3270/mainloop.h>
 
 #include <private/session.h>
+#include <private/defs.h>
 
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
 #include <openssl/x509.h>
@@ -64,32 +65,15 @@
 
 #define action_name(x)  #x
 
-//
-// Compiler-specific #defines.
-//
-// Reference: GLIBC gmacros.h
-//
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
-
-#define GNUC_UNUSED \
-		__attribute__((__unused__))
-
-#else
-
-#define unused
-#define GNUC_UNUSED
-#define printflike(s, f)
-
-#endif
 
 #if defined(_WIN32) || defined(_MSC_VER)
 
-#include <winsock2.h>
-#include <windows.h>
+	#include <winsock2.h>
+	#include <windows.h>
 
 #else
 
-#include <sys/time.h>			/* System time-related data types */
+	#include <sys/time.h>			/* System time-related data types */
 
 #endif // _WIN32
 
@@ -310,14 +294,6 @@ LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block
 LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect);
 
 LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
-
-#if defined(DEBUG)
-#define CHECK_SESSION_HANDLE(x) check_session_handle(&x,__FUNCTION__);
-LIB3270_INTERNAL void check_session_handle(H3270 **hSession, const char *fname);
-#else
-#define CHECK_SESSION_HANDLE(x) check_session_handle(&x);
-LIB3270_INTERNAL void check_session_handle(H3270 **hSession);
-#endif // DEBUG
 
 /**
  * @brief Activate auto-reconnect timer.

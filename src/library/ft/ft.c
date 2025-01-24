@@ -131,8 +131,6 @@ void ft_init(H3270 *hSession) {
 LIB3270_EXPORT int lib3270_ft_cancel(H3270 *hSession, int force, const char *reason) {
 	H3270FT *ft;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	ft = get_ft_handle(hSession);
 	if(!ft)
 		return errno = EINVAL;
@@ -309,7 +307,6 @@ LIB3270_EXPORT H3270FT * lib3270_ft_new(H3270 *session, LIB3270_FT_OPTION flags,
 }
 
 LIB3270_EXPORT int lib3270_reset_ft_callbacks(H3270 *hSession) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->ft) {
 		return errno = EINVAL;
@@ -329,8 +326,6 @@ LIB3270_EXPORT int lib3270_reset_ft_callbacks(H3270 *hSession) {
 LIB3270_EXPORT void lib3270_ft_set_user_data(H3270 *hSession, void *ptr) {
 	H3270FT * ft;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	ft = get_ft_handle(hSession);
 	if(!ft)
 		return;
@@ -341,8 +336,6 @@ LIB3270_EXPORT void lib3270_ft_set_user_data(H3270 *hSession, void *ptr) {
 
 LIB3270_EXPORT void * lib3270_ft_get_user_data(H3270 *hSession) {
 	H3270FT * ft;
-
-	CHECK_SESSION_HANDLE(hSession);
 
 	ft = get_ft_handle(hSession);
 	if(!ft)
@@ -361,8 +354,6 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 	unsigned short		  recfm;
 	unsigned short		  units;
 	H3270FT 			* ft;
-
-	CHECK_SESSION_HANDLE(hSession);
 
 	ft = get_ft_handle(hSession);
 	if(!ft)
@@ -533,8 +524,6 @@ void ft_failed(H3270FT *ft, const char *errmsg) {
 LIB3270_EXPORT int lib3270_ft_destroy(H3270 *hSession, const char *reason) {
 	H3270FT *session;
 
-	CHECK_SESSION_HANDLE(hSession);
-
 	session = (H3270FT *) hSession->ft;
 	if(!session)
 		return EINVAL;
@@ -593,8 +582,6 @@ void ft_running(H3270FT *ft, Boolean is_cut) {
 
 LIB3270_EXPORT struct lib3270_ft_callbacks * lib3270_get_ft_callbacks(H3270 *session, unsigned short sz) {
 
-	CHECK_SESSION_HANDLE(session);
-
 	if(sz != sizeof(struct lib3270_ft_callbacks))
 		return NULL;
 
@@ -627,7 +614,6 @@ static void ft_in3270(H3270 *hSession, int GNUC_UNUSED(ignored), void GNUC_UNUSE
 }
 
 LIB3270_EXPORT LIB3270_FT_STATE lib3270_get_ft_state(H3270 *session) {
-	CHECK_SESSION_HANDLE(session);
 
 	if(!session->ft)
 		return LIB3270_FT_STATE_NONE;

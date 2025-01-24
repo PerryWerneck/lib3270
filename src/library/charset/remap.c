@@ -45,7 +45,6 @@
 ///
 LIB3270_EXPORT void lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way) {
 	//	unsigned char cg;
-	CHECK_SESSION_HANDLE(hSession);
 
 	// Ignore mappings of EBCDIC control codes and the space character.
 	if (ebc <= 0x40)

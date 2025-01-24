@@ -408,14 +408,12 @@ static int def_trace(const H3270 *session, void GNUC_UNUSED(*userdata), const ch
 }
 
 LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	hSession->trace.handler		= handler ? handler : def_trace;
 	hSession->trace.userdata	= userdata;
 }
 
 LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	*handler	= hSession->trace.handler;
 	*userdata	= hSession->trace.userdata;

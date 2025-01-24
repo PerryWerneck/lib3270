@@ -20,6 +20,7 @@
 
 #define KYBDC_H_INCLUDED
 #include <lib3270/keyboard.h>
+#include <localdefs.h>
 
 /// @brief Element in typeahead queue.
 struct ta {

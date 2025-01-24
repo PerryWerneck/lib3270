@@ -36,7 +36,6 @@
 /*---[ Implement ]-------------------------------------------------------------------------------------------------------*/
 
 LIB3270_EXPORT int	lib3270_ft_set_lrecl(H3270 *hSession, int lrecl) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->ft)
 		return errno = EINVAL;
@@ -47,7 +46,6 @@ LIB3270_EXPORT int	lib3270_ft_set_lrecl(H3270 *hSession, int lrecl) {
 }
 
 LIB3270_EXPORT int	lib3270_ft_set_blksize(H3270 *hSession, int blksize) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->ft)
 		return errno = EINVAL;
@@ -58,7 +56,6 @@ LIB3270_EXPORT int	lib3270_ft_set_blksize(H3270 *hSession, int blksize) {
 }
 
 LIB3270_EXPORT int	lib3270_ft_set_primspace(H3270 *hSession, int primspace) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->ft)
 		return errno = EINVAL;
@@ -69,7 +66,6 @@ LIB3270_EXPORT int	lib3270_ft_set_primspace(H3270 *hSession, int primspace) {
 }
 
 LIB3270_EXPORT int	lib3270_ft_set_secspace(H3270 *hSession, int secspace) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->ft)
 		return errno = EINVAL;
@@ -80,7 +76,6 @@ LIB3270_EXPORT int	lib3270_ft_set_secspace(H3270 *hSession, int secspace) {
 }
 
 LIB3270_EXPORT int lib3270_ft_set_options(H3270 *hSession, LIB3270_FT_OPTION options) {
-	CHECK_SESSION_HANDLE(hSession);
 
 	if(!hSession->ft)
 		return errno = EINVAL;

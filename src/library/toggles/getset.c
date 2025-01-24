@@ -102,8 +102,6 @@ LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int 
 LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE_ID ix) {
 	struct lib3270_toggle	*t;
 
-	CHECK_SESSION_HANDLE(session);
-
 	if(ix < 0 || ix >= LIB3270_TOGGLE_COUNT) {
 		return -(errno = EINVAL);
 	}

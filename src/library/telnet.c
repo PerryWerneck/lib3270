@@ -1532,7 +1532,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
 			return;
 		}
 
-		// Send the data, show popup and disconnect when failed.
+		// Send the data, show popup and disconnect if failed.
 		int nw = hSession->connection.write(hSession, buf, len);
 		if (nw > 0) {
 			// Data sent

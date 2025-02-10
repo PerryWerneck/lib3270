@@ -196,6 +196,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
 		if(connect(sock,rp->ai_addr, rp->ai_addrlen) && errno != EINPROGRESS) {
 			error = errno;
+			close(sock);
 			continue;
 		}
 

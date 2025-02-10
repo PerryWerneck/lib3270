@@ -46,7 +46,6 @@
 	LIB3270_NET_CONTEXT parent;
 	int syscode;
 	sigset_t sigs;
-	struct sigevent sev;
 	struct gaicb gaicb;
 	struct addrinfo hints;
 	struct gaicb *list[1];
@@ -73,7 +72,7 @@
 	}
 
 	debug("%s: DISCONNECT",__FUNCTION__);
-	
+
 	return 0;
  }
 
@@ -184,7 +183,9 @@
 
 
 				// Release resources
-				freeaddrinfo(req->ar_result);		
+				debug("%s: Releasing ar_result",__FUNCTION__);
+				freeaddrinfo(req->ar_result);	
+
 			}
 
 		}
@@ -260,12 +261,13 @@
 	sigprocmask(SIG_BLOCK, &context->sigs, NULL);
 	context->parent.sock = signalfd(-1, &context->sigs, SFD_NONBLOCK | SFD_CLOEXEC);
 
-	context->sev.sigev_notify = SIGEV_SIGNAL;
-	context->sev.sigev_signo = SIGRTMIN;
-	context->sev.sigev_value.sival_ptr = &context->gaicb;
+	struct sigevent sev;
+	sev.sigev_notify = SIGEV_SIGNAL;
+	sev.sigev_signo = SIGRTMIN;
+	sev.sigev_value.sival_ptr = &context->gaicb;
 
 	// Send request.
-	int ret = getaddrinfo_a(GAI_NOWAIT, context->list, 1, &context->sev);
+	int ret = getaddrinfo_a(GAI_NOWAIT, context->list, 1, &sev);
 	if(ret) {
 
 		close(context->parent.sock);

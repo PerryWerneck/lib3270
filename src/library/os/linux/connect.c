@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #define _GNU_SOURCE
  #include <config.h>
 
  #include <netdb.h>
@@ -118,6 +119,9 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
 	hints.ai_protocol	= 0;			// Any protocol
 
+	// TODO: Use async DNS resolution.
+	// https://github.com/kazuho/examples/blob/master/getaddrinfo_a%2Bsignalfd.c
+
 	int rc = getaddrinfo(hostname, service, &hints, &result);
 	if(rc) {
 
@@ -204,7 +208,6 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 		context = lib3270_malloc(sizeof(Context));
 		memset(context,0,sizeof(Context));
 
-		context->parent.sock = sock;
 		context->parent.disconnect = (void *) net_disconnect;
 
 		context->timer = lib3270_add_timer(timeout*1000,hSession,(void *) net_timeout,context);

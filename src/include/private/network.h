@@ -35,6 +35,7 @@
  LIB3270_INTERNAL void lib3270_set_connected_socket(H3270 *hSession, int sock);
  LIB3270_INTERNAL void lib3270_set_connected_initial(H3270 *hSession);
 
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * resolv_hostname(H3270 *hSession, const char *hostname, const char *service, time_t timeout);	
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout);
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * connected_insecure(H3270 *hSession, int sock);
  

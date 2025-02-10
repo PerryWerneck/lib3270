@@ -105,6 +105,7 @@
 
 	debug("%s(%s,%s,%u)",__FUNCTION__,hostname,port,seconds);
 
+
 	if(hSession->connection.context) {
 		debug("%s:%s (context: %p)",__FUNCTION__,strerror(EBUSY),hSession->connection.context);
 		lib3270_write_event_trace(
@@ -122,9 +123,6 @@
 	// Prepare to connect.
 	//
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-	debug("%s",__FUNCTION__);
-	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
-	debug("%s",__FUNCTION__);
 
 	snprintf(
 	    hSession->full_model_name,
@@ -149,10 +147,13 @@
 	);
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
-	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
+	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
+	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 
 	hSession->connection.timeout = seconds;
+	hSession->connection.context = resolv_hostname(hSession,hostname,port,seconds);
+
+	/*
 	if(!strcasecmp(scheme,"tn3270s")) {
 
 		// Use SSL
@@ -204,6 +205,7 @@
 
 	// Got context, the connect is running.
 	return 0;
+	*/
 
 
  }

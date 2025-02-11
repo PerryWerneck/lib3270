@@ -21,6 +21,7 @@
  #include <config.h>
  #include <time.h>
  #include <lib3270/defs.h>
+ #include <sys/socket.h>
 
  typedef struct _lib3270_net_context {
 	int sock;
@@ -36,8 +37,9 @@
  LIB3270_INTERNAL void lib3270_set_connected_initial(H3270 *hSession);
 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * resolv_hostname(H3270 *hSession, const char *hostname, const char *service, time_t timeout);	
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout);
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * connected_insecure(H3270 *hSession, int sock);
+ LIB3270_INTERNAL int lib3270_connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen);
+ // LIB3270_INTERNAL LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout);
+ // LIB3270_INTERNAL LIB3270_NET_CONTEXT * connected_insecure(H3270 *hSession, int sock);
  
  LIB3270_INTERNAL void lib3270_setup_session(H3270 *hSession);
 

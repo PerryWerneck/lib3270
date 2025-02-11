@@ -281,7 +281,7 @@ LIB3270_INTERNAL int use_syslog;
 LIB3270_INTERNAL int	key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped);
 LIB3270_INTERNAL int	cursor_move(H3270 *session, int baddr);
 
-LIB3270_INTERNAL void	toggle_rectselect(H3270 *session, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt);
+// LIB3270_INTERNAL void	toggle_rectselect(H3270 *session, const struct lib3270_toggle *t, LIB3270_TOGGLE_TYPE tt);
 LIB3270_INTERNAL void	remove_input_calls(H3270 *session);
 
 // LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len);

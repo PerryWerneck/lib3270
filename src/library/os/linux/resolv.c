@@ -38,27 +38,32 @@
  #include <lib3270/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
+ #include <trace_dsc.h>
  #include <malloc.h>
 
  #include <internals.h>
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
-	int syscode;
 	sigset_t sigs;
-	struct gaicb gaicb;
 	struct addrinfo hints;
 	struct gaicb *list[1];
+
 	void *timer;
 	void *resolved;
 
 	char buffer[0];
  } Context;
 
- static int disconnect(H3270 *hSession, Context *context) {	
+ static int finalize(H3270 *hSession, Context *context) {	
+
+	debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
+
+	int rc = 0;
 
 	if(context->parent.sock != -1) {
-		return gai_cancel(&context->gaicb);
+		rc = gai_cancel(context->list[0]);
+		context->parent.sock = -1;
 	}
 
 	if(context->timer) {
@@ -71,15 +76,27 @@
 		context->resolved = NULL;
 	}
 
-	debug("%s: DISCONNECT",__FUNCTION__);
+	if(context->list[0]) {
+		free(context->list[0]);
+		context->list[0] = NULL;
+	}
 
-	return 0;
+	debug("%s: DISCONNECT rc=%d",__FUNCTION__,rc);
+
+	return rc;
  }
 
+ static void failed(H3270 *hSession, Context *context) {
+	if(context->parent.sock != -1) {
+		close(context->parent.sock);
+		context->parent.sock = -1;
+	}
+	lib3270_connection_close(hSession,-1);
+ }
 
  static void net_response(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
 
-	debug("%s: GOT response",__FUNCTION__);
+	debug("%s: GOT response on context %p",__FUNCTION__,context);
 
     struct signalfd_siginfo ssi;
     ssize_t rret;
@@ -104,30 +121,32 @@
 				.label		= _("OK")
 			};
 
-			close(context->parent.sock);
-			context->parent.sock = -1;
-			lib3270_connection_close(hSession,1);
-
+			failed(hSession,context);
 			lib3270_popup(hSession, &popup, 0);
 
 			return;
 
 		}  else if (ssi.ssi_code != SI_ASYNCNL) {
 
-			LIB3270_POPUP popup = {
+			LIB3270_POPUP template = {
 				.name		= "dns-error",
 				.type		= LIB3270_NOTIFY_ERROR,
 				.title		= _("DNS error"),
 				.summary	= _("Error resolving host name"),
-				.body		= _("Received signal with unexpected si_code"),
+				.body		= "",
 				.label		= _("OK")
 			};
 
-			close(context->parent.sock);
-			context->parent.sock = -1;
-			lib3270_connection_close(hSession,1);
+			lib3270_autoptr(LIB3270_POPUP) popup =
+				lib3270_popup_clone_printf(
+					&template,
+					_("Received signal with unexpected si_code '%d'"),
+					ssi.ssi_code,
+					hSession->host.url
+				);
 
-			lib3270_popup(hSession, &popup, 0);
+			failed(hSession,context);
+			lib3270_popup(hSession, popup, 0);
 
 			return;
 
@@ -140,8 +159,7 @@
 			if(rc != 0) {
 
 				if(rc == EAI_INPROGRESS) {
-					debug("%s","DNS request still in progress");
-					free(req);
+					trace_dsn(hSession,"DNS request still in progress\n");
 					continue;
 				}
 
@@ -154,33 +172,55 @@
 					.label		= _("OK")
 				};
 
-				close(context->parent.sock);
-				context->parent.sock = -1;
-				lib3270_connection_close(hSession,1);
-
+				failed(hSession,context);
 				lib3270_popup(hSession, &popup, 0);
 
 			} else {
 
-#ifdef DEBUG
-				debug("%s","DNS request completed");
+				trace_dsn(hSession,"DNS request completed\n");
+
+				int error = -1;
+
 				for(struct addrinfo *ai = req->ar_result; ai; ai = ai->ai_next) {
+
 					char host[NI_MAXHOST];
 					if (getnameinfo(ai->ai_addr, ai->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
-						debug("The address for '%s:%s' is: %s",
-							context->gaicb.ar_name,
-							context->gaicb.ar_service,
-							host
+						trace_dsn(
+							hSession,
+							"Connecting address %s for '%s:%s'\n",
+							host,
+							context->list[0]->ar_name,
+							context->list[0]->ar_service
 						);
 					} else {
-						debug("Unable to get conver address '%s:%s'",
-							context->gaicb.ar_name,
-							context->gaicb.ar_service
+						trace_dsn(
+							hSession,
+							"Unable to get address for '%s:%s'\n",
+							context->list[0]->ar_name,
+							context->list[0]->ar_service
 						);
 					}
-				}
-#endif
 
+					int sock = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+					if(sock < 0) {
+						// Can't get socket.
+						error = errno;
+						trace_dsn(
+							hSession,
+							"Cant get socket for connection to %s: %s\n",
+							host,
+							strerror(error)
+						);
+						continue;
+					} else if(lib3270_connect_socket(hSession, sock, ai->ai_addr, ai->ai_addrlen) == 0) {
+						// Connect socket suceeded, the context was replaced, release it.
+						freeaddrinfo(req->ar_result);	
+						finalize(hSession,context);
+						lib3270_free(context);
+						return;
+					}
+
+				}
 
 				// Release resources
 				debug("%s: Releasing ar_result",__FUNCTION__);
@@ -198,10 +238,10 @@
 
 	debug("%s: TIMEOUT",__FUNCTION__);
 
-	context->syscode = ETIMEDOUT;
 	context->timer = NULL;
 
-	int rc = gai_cancel(&context->gaicb);
+	int rc = gai_cancel(context->list[0]);
+	failed(hSession,context);
 
 	debug("gai_cancel() = %d",rc);
 
@@ -216,11 +256,18 @@
 			.label		= _("OK")
 		};
 
-		if(context->parent.sock != -1) {
-			close(context->parent.sock);
-			context->parent.sock = -1;
-		}
-		lib3270_connection_close(hSession,1);
+		lib3270_popup(hSession, &popup, 0);
+
+	} else {
+
+		LIB3270_POPUP popup = {
+			.name		= "dns-timeout",
+			.type		= LIB3270_NOTIFY_ERROR,
+			.title		= _("DNS error"),
+			.summary	= _("Unable to resolve host name"),
+			.body		= strerror(ETIMEDOUT),
+			.label		= _("OK")
+		};
 
 		lib3270_popup(hSession, &popup, 0);
 
@@ -228,6 +275,19 @@
 	return 0;
  }
 
+ ///
+ /// @brief Asynchronously resolves the hostname to an IP address.
+ ///
+ /// This function takes a hostname as input and performs an asynchronous DNS
+ /// resolution to obtain the corresponding IP address. It uses non-blocking
+ /// operations to ensure that the main thread is not blocked while waiting for
+ /// the DNS resolution to complete.
+ ///
+ /// @param hostname The hostname to be resolved.
+ /// @param service The service/port name.
+ /// @param timeout The connection timeout in seconds.
+ /// @return The resolver network context, NULL if failed.
+ ///
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * resolv_hostname(H3270 *hSession, const char *hostname, const char *service, time_t timeout) {
 
 	// Reference: https://github.com/kazuho/examples/blob/master/getaddrinfo_a%2Bsignalfd.c
@@ -239,21 +299,21 @@
 	memset(context,0,sizeof(Context));
 	
 	// Set disconnect handler
-	context->parent.disconnect = (void *) disconnect;
+	context->parent.disconnect = (void *) finalize;
 
 	// Setup DNS search
-	context->list[0] = &context->gaicb;
-	context->gaicb.ar_name = context->buffer;
-	strcpy((char *) context->gaicb.ar_name,hostname);
+	context->list[0] = malloc(sizeof(struct gaicb));
+	context->list[0]->ar_name = context->buffer;
+	strcpy((char *) context->list[0]->ar_name,hostname);
 
-	context->gaicb.ar_service = context->gaicb.ar_name + strlen(hostname) + 1;
-	strcpy((char *) context->gaicb.ar_service,service);
+	context->list[0]->ar_service = context->list[0]->ar_name + strlen(hostname) + 1;
+	strcpy((char *) context->list[0]->ar_service,service);
 
-	context->hints.ai_family 	= AF_UNSPEC;	// Allow IPv4 or IPv6
-	context->hints.ai_socktype	= SOCK_STREAM;	// Stream socket
-	context->hints.ai_flags		= AI_PASSIVE;	// For wildcard IP address
-	context->hints.ai_protocol	= 0;			// Any protocol
-	context->gaicb.ar_request 	= &context->hints;
+	context->hints.ai_family 		= AF_UNSPEC;	// Allow IPv4 or IPv6
+	context->hints.ai_socktype		= SOCK_STREAM;	// Stream socket
+	context->hints.ai_flags			= AI_PASSIVE;	// For wildcard IP address
+	context->hints.ai_protocol		= 0;			// Any protocol
+	context->list[0]->ar_request 	= &context->hints;
 
 	// Setup signal handler.
 	sigemptyset(&context->sigs);
@@ -264,15 +324,13 @@
 	struct sigevent sev;
 	sev.sigev_notify = SIGEV_SIGNAL;
 	sev.sigev_signo = SIGRTMIN;
-	sev.sigev_value.sival_ptr = &context->gaicb;
+	sev.sigev_value.sival_ptr = context->list[0];
 
 	// Send request.
 	int ret = getaddrinfo_a(GAI_NOWAIT, context->list, 1, &sev);
 	if(ret) {
 
-		close(context->parent.sock);
-		context->parent.sock = -1;
-		lib3270_connection_close(hSession,1);
+		failed(hSession,context);
 
 		LIB3270_POPUP popup = {
 			.name		= "dns-error",
@@ -284,6 +342,8 @@
 		};
 
 		lib3270_popup(hSession, &popup, 0);
+
+		return NULL;
 
 	}
 

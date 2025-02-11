@@ -34,11 +34,17 @@
  #include <private/network.h>
  #include <private/intl.h>
  #include <private/mainloop.h>
+ #include <private/session.h>
 
  #include <lib3270.h>
  #include <lib3270/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
+
+ #include <internals.h>
+ #include <hostc.h>
+ #include <statusc.h>
+ #include <trace_dsc.h>
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
@@ -69,7 +75,7 @@
 	};
 
 	lib3270_popup(hSession, &popup, 0);
-	lib3270_connection_close(hSession,-1);
+	lib3270_connection_close(hSession,error);
 
  }
 
@@ -98,14 +104,112 @@
  }
 
 static int net_disconnect(H3270 *hSession, Context *context) {
+
+	if(context->except) {
+		lib3270_remove_poll(hSession,context->except);
+		context->except = NULL;
+	}
+
+	if(context->connected) {
+		lib3270_remove_poll(hSession,context->connected);
+		context->connected = NULL;
+	}
+
 	if(context->timer) {
 		lib3270_remove_timer(hSession,context->timer);
+		context->timer = NULL;
 	}
-	lib3270_remove_poll_fd(hSession,context->parent.sock);
-	close(context->parent.sock);
+
+	if(context->parent.sock != -1) {
+		close(context->parent.sock);
+		context->parent.sock = -1;
+	}
+
 	return 0;
  }
 
+ LIB3270_INTERNAL int lib3270_connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen) {
+
+	{
+		int f;
+		if ((f = fcntl(sock, F_GETFL, 0)) == -1) {
+
+			int error = errno;
+			lib3270_connection_close(hSession,error);
+
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_ERROR,
+				.title		= _("Connection error"),
+				.summary	= _( "fcntl() error when getting socket state." ),
+				.body		= strerror(error),
+				.label		= _("OK")
+			};
+
+			lib3270_popup(hSession, &popup, 0);
+
+			return error;
+		}
+
+		f |= O_NDELAY;
+
+		if (fcntl(sock, F_SETFL, f) < 0) {
+
+			int error = errno;
+			lib3270_connection_close(hSession,error);
+
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_ERROR,
+				.title		= _("Connection error"),
+				.summary	= _( "fcntl() error when setting non blocking state." ),
+				.body		= strerror(error),
+				.label		= _("OK")
+			};
+
+			lib3270_popup(hSession, &popup, 0);
+
+			return error;
+
+		}
+
+	}
+
+	if(connect(sock,addr,addrlen) && errno != EINPROGRESS) {
+
+		int error = errno;
+		close(sock);
+
+		trace_dsn(
+			hSession,
+			"Connection failed: %s\n",
+			strerror(error)
+		);
+
+		return error;
+	}
+
+	// Wait for connection.
+	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, 1);
+	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
+
+	Context *context = lib3270_malloc(sizeof(Context));
+	memset(context,0,sizeof(Context));
+
+	context->parent.disconnect = (void *) net_disconnect;
+
+	context->timer = lib3270_add_timer(hSession->connection.timeout*1000,hSession,(void *) net_timeout,context);
+	context->except = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);
+	context->connected = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
+
+	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
+
+	return 0;
+
+ }
+
+
+/*
  LIB3270_NET_CONTEXT * connect_insecure(H3270 *hSession, const char *hostname, const char *service, time_t timeout) {
 
 	debug("%s(%s,%s,%lu)",__FUNCTION__,hostname,service,timeout);
@@ -237,3 +341,4 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	return (LIB3270_NET_CONTEXT *) context;
 
  }
+*/

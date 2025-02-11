@@ -195,6 +195,7 @@ void trace_dsn(H3270 *session, const char *fmt, ...) {
 	va_start(args, fmt);
 	write_trace(session,fmt,args);
 	va_end(args);
+	
 }
 
 /**

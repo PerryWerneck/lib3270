@@ -28,11 +28,20 @@
  #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270/session.h>
+ #include <lib3270/trace.h>
  #include <private/network.h>
+ #include <stdio.h>
+
+ static int trace_handler(const H3270 *, void *, const char *message) {
+	printf("Trace->\t%s",message);
+ }
 
  int main(int argv, const char **argc) {
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("");
+
+	lib3270_set_trace_handler(hSession,trace_handler,NULL);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
 
 	lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
 	lib3270_connect(hSession,5);

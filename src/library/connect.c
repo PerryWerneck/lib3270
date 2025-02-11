@@ -39,6 +39,7 @@
 #include <private/intl.h>
 #include <trace_dsc.h>
 #include "utilc.h"
+#include <trace_dsc.h>
 
 #include <uriparser/Uri.h>
 
@@ -105,7 +106,6 @@
 
 	debug("%s(%s,%s,%u)",__FUNCTION__,hostname,port,seconds);
 
-
 	if(hSession->connection.context) {
 		debug("%s:%s (context: %p)",__FUNCTION__,strerror(EBUSY),hSession->connection.context);
 		lib3270_write_event_trace(
@@ -146,39 +146,25 @@
 			seconds
 	);
 
-	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
-	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
-
-	hSession->connection.timeout = seconds;
-	hSession->connection.context = resolv_hostname(hSession,hostname,port,seconds);
-
-	/*
 	if(!strcasecmp(scheme,"tn3270s")) {
 
 		// Use SSL
 		hSession->ssl.host = 1;
 		trace_dsn(hSession,"TLS/SSL is enabled\n");
 
-		// FIXME: Setup SSL connection
-
-		lib3270_connection_close(hSession,ENOTSUP);
-		return ENOTSUP;
-
 	} else if(!strcasecmp(scheme,"tn3270")) {
 
 		// Dont use SSL
 		hSession->ssl.host = 0;
 		trace_dsn(hSession,"TLS/SSL is disabled\n");
-		hSession->connection.context = connect_insecure(hSession,hostname,port,seconds);
 
 	} else {
 
 		static const LIB3270_POPUP failed = {
-			.name		= "connect-error",
+			.name		= "invalid-scheme",
 			.type		= LIB3270_NOTIFY_ERROR,
 			.title		= N_("Connection error"),
-			.summary	= N_("Invalid or connection scheme"),
+			.summary	= N_("Invalid connection scheme"),
 			.body		= "",
 			.label		= N_("OK")
 		};
@@ -197,22 +183,29 @@
 
 	}
 
+	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
+	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
+	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
+
+	hSession->connection.timeout = seconds;
+	hSession->connection.context = resolv_hostname(hSession,hostname,port,seconds);
+
 	if(!hSession->connection.context) {
-		// No context, the connection has failed, call disconnect to clear flags.
-		lib3270_connection_close(hSession,ENODATA);
-		return -1;
+		// No context, the DNS query has failed, call disconnect to clear flags.
+		lib3270_connection_close(hSession,ENOTCONN);
+		return errno = ENOTCONN;
 	}
 
 	// Got context, the connect is running.
 	return 0;
-	*/
-
 
  }
 
  void lib3270_set_connected_socket(H3270 *hSession, int sock) {
 
 	debug("%s",__FUNCTION__);
+
+	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, 1);
 
 	// Clear socket watchers, just in case.
 	lib3270_remove_poll_fd(hSession,sock);
@@ -222,6 +215,7 @@
 		hSession->connection.context = NULL;
 	}
 
+/*
 	trace_dsn(
 		hSession,
 		"Connected to %s%s.\n", 
@@ -251,6 +245,7 @@
 	// setup session
 	// lib3270_setup_session(hSession);
 	// lib3270_notify_tls(hSession);
+*/
 
  }
 

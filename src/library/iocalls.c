@@ -374,6 +374,7 @@ void x_except_on(H3270 *h) {
 */
 }
 
+/*
 void remove_input_calls(H3270 *session) {
 	if(session->xio.read) {
 		lib3270_remove_poll(session,session->xio.read);
@@ -388,6 +389,7 @@ void remove_input_calls(H3270 *session) {
 		session->xio.write = NULL;
 	}
 }
+*/
 
 LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session,void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer)) {
 	if(add)

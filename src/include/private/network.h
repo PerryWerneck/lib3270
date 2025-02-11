@@ -28,6 +28,7 @@
 	int (*disconnect)(H3270 *hSession, struct _lib3270_net_context *context);
  } LIB3270_NET_CONTEXT;
 
+
  /// @brief Close connection to host.
  /// @param hSession The TN3270 session
  /// @param code The error code (0 = ok) 
@@ -45,3 +46,4 @@
 
  LIB3270_INTERNAL int connection_write_offline(H3270 *hSession, const void *buffer, size_t length);
 
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession, int sock);

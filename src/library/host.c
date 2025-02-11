@@ -145,9 +145,6 @@ int lib3270_connection_close(H3270 *hSession, int failed) {
 
 	if (CONNECTED || HALF_CONNECTED) {
 
-		// Disconecting, disable input
-		remove_input_calls(hSession);
-
 		trace_dsn(hSession,"SENT disconnect\n");
 
 		// We're not connected to an LU any more.

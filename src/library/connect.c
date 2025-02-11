@@ -41,11 +41,9 @@
 #include "utilc.h"
 #include <trace_dsc.h>
 
-#include <uriparser/Uri.h>
+#include <private/network.h>
 
- typedef struct {
-	LIB3270_NET_CONTEXT parent;
- } Context_Insecure;
+#include <uriparser/Uri.h>
 
  ///
  /// @param hSession The TN3270 session.
@@ -234,19 +232,13 @@
 
 	} else {
 
-		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-
 		if(hSession->connection.context) {
 			free(hSession->connection.context);
 			hSession->connection.context = NULL;
 		}
 
-		// Setup unsecure context.
-		Context_Insecure *context = lib3270_malloc(sizeof(Context_Insecure));
-		memset(context,0,sizeof(Context_Insecure));
-		context->parent.sock = sock;
+		hSession->connection.context = setup_non_ssl_context(hSession,sock);
 
-		hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 	}
 
 	// hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);

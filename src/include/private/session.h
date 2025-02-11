@@ -79,7 +79,8 @@
 		unsigned int		  retry;							///< @brief Time to retry when connection ends with error (0 = none).
 		LIB3270_POPUP		* error;							///< @brief Last connection error.
 
-		int (*write)(H3270 *hSession, const void *buffer, size_t length);
+		int (*write)(H3270 *hSession, const void *buffer, size_t length, LIB3270_NET_CONTEXT *context);
+		int (*except)(H3270 *hSession, LIB3270_NET_CONTEXT *context);
 		
 	} connection;
 

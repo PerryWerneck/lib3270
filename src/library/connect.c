@@ -241,12 +241,8 @@
 
 	}
 
-	// hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
-	// hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
-
 	// lib3270_setup_session(hSession);
 	// lib3270_set_connected_initial(hSession);
-
 	// lib3270_notify_tls(hSession);
 
  }

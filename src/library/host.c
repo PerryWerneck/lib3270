@@ -114,8 +114,13 @@ LIB3270_EXPORT int lib3270_disconnect(H3270 *hSession) {
 	return lib3270_connection_close(hSession,0);
 }
 
-int connection_write_offline(H3270 *hSession, const void *buffer, size_t length) {
+int connection_write_offline(H3270 *hSession, const void *a , size_t v, LIB3270_NET_CONTEXT *c) {
 	lib3270_write_log(hSession,"3270","Attempt to write when disconnected");
+	return -ENOTCONN;
+}
+
+int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *) {
+	lib3270_write_log(hSession,"3270","Attempt to activate exception handler on a disconnected session");
 	return -ENOTCONN;
 }
 
@@ -125,14 +130,16 @@ int connection_write_offline(H3270 *hSession, const void *buffer, size_t length)
 /// @return 0 if ok or error code if not.
 int lib3270_connection_close(H3270 *hSession, int failed) {
 
-	debug("%s: connected=%s half connected=%s context=%p",
+	debug("%s: connected=%s half connected=%s context=%p failed=%d",
 	      __FUNCTION__,
 	      (CONNECTED ? "Yes" : "No"),
 	      (HALF_CONNECTED ? "Yes" : "No"),
-	      hSession->connection.context
+	      hSession->connection.context,
+		  failed
 	     );
 
 	hSession->connection.write = connection_write_offline;
+	hSession->connection.except = connection_except_offline;
 
 	if(hSession->connection.context) {
 		int rc = hSession->connection.context->disconnect(hSession,hSession->connection.context);

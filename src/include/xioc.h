@@ -37,6 +37,6 @@
 
 // LIB3270_INTERNAL void x_add_input(H3270 *h);
 // LIB3270_INTERNAL void x_except_off(H3270 *h);
-LIB3270_INTERNAL void x_except_on(H3270 *h);
+// LIB3270_INTERNAL void x_except_on(H3270 *h);
 // LIB3270_INTERNAL void x_remove_input(H3270 *h);
 

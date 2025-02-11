@@ -103,6 +103,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/toggle.h>
+#include <private/network.h>
 
 #if !defined(TELOPT_NAWS) /*[*/
 #define TELOPT_NAWS	31
@@ -511,17 +512,25 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 }
 */
 
-/**
- * @brief Called by the toolkit whenever there is input available on the socket.
- *
- * Called by the toolkit whenever there is input available on the
- * socket.  Reads the data, processes the special telnet commands
- * and calls process_ds to process the 3270 data stream.
- *
- * @param hSession	Session handle
- *
- */ 
- void net_input(H3270 *hSession, const unsigned char *buffer, size_t len) {
+ ///
+ /// @brief Called by the toolkit whenever there is input available on the socket.
+ ///
+ /// Called by the toolkit whenever there is input available on the
+ /// socket.  Reads the data, processes the special telnet commands
+ /// and calls process_ds to process the 3270 data stream.
+ ///
+ /// @param hSession	Session handle.
+ /// @param buffer		Buffer with the data received.
+ /// @param len			Length of the buffer.
+ /// 
+ void lib3270_net_input(H3270 *hSession, const unsigned char *buffer, size_t len) {
+
+	if(len == 0) {
+		// Disconnected
+		trace_dsn(hSession,"RCVD disconnect\n");
+		lib3270_connection_close(hSession,ENOTCONN);
+		return;
+	}
 
 	hSession->ansi_data = 0;
 	
@@ -801,7 +810,7 @@ static int telnet_fsm(H3270 *hSession, unsigned char c) {
 			trace_dsn(hSession,"\n");
 			if (hSession->syncing) {
 				hSession->syncing = 0;
-				x_except_on(hSession);
+				hSession->connection.except(hSession,hSession->connection.context);
 			}
 			hSession->telnet_state = TNS_DATA;
 			break;
@@ -1524,7 +1533,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
 
 	trace_netdata(hSession, '>', buf, len);
 
-	// TODO: Enqueue output buffer, send when socket has space.
+	// TODO: Enqueue output buffer, send when socket is available.
 
 	while (len) {
 
@@ -1533,7 +1542,7 @@ static void net_rawout(H3270 *hSession, unsigned const char *buf, size_t len) {
 		}
 
 		// Send the data, show popup and disconnect if failed.
-		int nw = hSession->connection.write(hSession, buf, len);
+		int nw = hSession->connection.write(hSession, buf, len, hSession->connection.context);
 		if (nw > 0) {
 			// Data sent
 			hSession->ns_bsent += nw;

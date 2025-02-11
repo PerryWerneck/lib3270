@@ -354,10 +354,10 @@ void lib3270_remove_timer(H3270 *hSession, void * timer) {
 	return hSession->io.timer.remove(hSession, timer);
 }
 
+/*
 void x_except_on(H3270 *h) {
 
 	debug("%s: Need refactor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",__FUNCTION__);
-/*
 	int reading = (h->xio.read != NULL);
 
 	debug("%s",__FUNCTION__);
@@ -371,8 +371,8 @@ void x_except_on(H3270 *h) {
 
 	if(reading)
 		h->xio.read = h->io.poll.add(h,LIB3270_IO_FLAG_READ,net_input,0);
-*/
 }
+*/
 
 /*
 void remove_input_calls(H3270 *session) {

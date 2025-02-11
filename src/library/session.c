@@ -241,6 +241,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 	lib3270_set_host_charset(hSession,charset);
 
 	hSession->connection.write = connection_write_offline;
+	hSession->connection.except = connection_except_offline;
 
 	// Set the defaults.
 	hSession->extended  			=  1;

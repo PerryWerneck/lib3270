@@ -33,7 +33,6 @@
 #include <config.h>
 #include <lib3270.h>
 #include <lib3270/log.h>
-#include <internals.h>
 #include <networking.h>
 #include <fcntl.h>
 #ifdef _WIN32

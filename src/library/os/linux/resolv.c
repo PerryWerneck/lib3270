@@ -45,6 +45,7 @@
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
+	int sock;
 	sigset_t sigs;
 	struct addrinfo hints;
 	struct gaicb *list[1];
@@ -61,9 +62,9 @@
 
 	int rc = 0;
 
-	if(context->parent.sock != -1) {
+	if(context->sock != -1) {
 		rc = gai_cancel(context->list[0]);
-		context->parent.sock = -1;
+		context->sock = -1;
 	}
 
 	if(context->timer) {
@@ -87,16 +88,16 @@
  }
 
  static void failed(H3270 *hSession, Context *context) {
-	if(context->parent.sock != -1) {
-		close(context->parent.sock);
-		context->parent.sock = -1;
+	if(context->sock != -1) {
+		close(context->sock);
+		context->sock = -1;
 	}
 	lib3270_connection_close(hSession,-1);
  }
 
  static void net_response(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
 
-	debug("%s: GOT response on context %p",__FUNCTION__,context);
+	debug("%s: GOT response on context %p socket %d",__FUNCTION__,context,context->sock);
 
     struct signalfd_siginfo ssi;
     ssize_t rret;
@@ -319,7 +320,7 @@
 	sigemptyset(&context->sigs);
 	sigaddset(&context->sigs, SIGRTMIN);
 	sigprocmask(SIG_BLOCK, &context->sigs, NULL);
-	context->parent.sock = signalfd(-1, &context->sigs, SFD_NONBLOCK | SFD_CLOEXEC);
+	context->sock = signalfd(-1, &context->sigs, SFD_NONBLOCK | SFD_CLOEXEC);
 
 	struct sigevent sev;
 	sev.sigev_notify = SIGEV_SIGNAL;
@@ -348,7 +349,7 @@
 	}
 
 	context->timer = lib3270_add_timer(timeout*1000,hSession,(void *) net_timeout,context);
-	context->resolved = lib3270_add_poll_fd(hSession,context->parent.sock,LIB3270_IO_FLAG_READ,(void *) net_response,context);
+	context->resolved = lib3270_add_poll_fd(hSession,context->sock,LIB3270_IO_FLAG_READ,(void *) net_response,context);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

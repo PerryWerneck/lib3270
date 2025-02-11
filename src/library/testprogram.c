@@ -43,7 +43,9 @@
 	lib3270_set_trace_handler(hSession,trace_handler,NULL);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
 
+	// lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
 	lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
+	
 	lib3270_connect(hSession,5);
 
 	while(1) {

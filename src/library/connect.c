@@ -43,6 +43,10 @@
 
 #include <uriparser/Uri.h>
 
+ typedef struct {
+	LIB3270_NET_CONTEXT parent;
+ } Context_Insecure;
+
  ///
  /// @param hSession The TN3270 session.
  /// @param seconds Timeout in seconds.
@@ -203,49 +207,55 @@
 
  void lib3270_set_connected_socket(H3270 *hSession, int sock) {
 
-	debug("%s",__FUNCTION__);
+	debug("%s(%d)",__FUNCTION__,sock);
 
 	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, 1);
-
-	// Clear socket watchers, just in case.
-	lib3270_remove_poll_fd(hSession,sock);
 
 	if(hSession->connection.context) {
 		free(hSession->connection.context);
 		hSession->connection.context = NULL;
 	}
 
-/*
 	trace_dsn(
 		hSession,
 		"Connected to %s%s.\n", 
 		hSession->host.url,hSession->ssl.host ? " using SSL": ""
 	);
-	
+
 	if(hSession->ssl.host) {
 
 		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 		// FIX-ME: Add ssl support.
+
 		close(sock);
 		lib3270_connection_close(hSession,ENOTSUP);
 		return;
 
 	} else {
 
-		hSession->connection.context = connected_insecure(hSession,sock);
-	
+		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+
+		if(hSession->connection.context) {
+			free(hSession->connection.context);
+			hSession->connection.context = NULL;
+		}
+
+		// Setup unsecure context.
+		Context_Insecure *context = lib3270_malloc(sizeof(Context_Insecure));
+		memset(context,0,sizeof(Context_Insecure));
+		context->parent.sock = sock;
+
+		hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 	}
 
-	if(!hSession->connection.context) {
-		// No context, the connection has failed, call disconnect to clear flags.
-		lib3270_connection_close(hSession,ENODATA);
-	}
+	// hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
+	// hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
 
-	// setup session
 	// lib3270_setup_session(hSession);
+	// lib3270_set_connected_initial(hSession);
+
 	// lib3270_notify_tls(hSession);
-*/
 
  }
 
@@ -283,6 +293,7 @@
 	return 1;
 }
 
+/*
 void lib3270_notify_tls(H3270 *hSession) {
 
 	// Negotiation complete is the connection secure?
@@ -294,6 +305,7 @@ void lib3270_notify_tls(H3270 *hSession) {
 	}
 
 }
+*/
 
 int lib3270_start_tls(H3270 *hSession) {
 

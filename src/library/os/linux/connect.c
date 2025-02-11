@@ -80,8 +80,124 @@
  }
 
  static void net_connected(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
+
 	debug("%s: CONNECTED",__FUNCTION__);
+
+	if(context->except) {
+		lib3270_remove_poll(hSession,context->except);
+		context->except = NULL;
+	}
+
+	if(context->connected) {
+		lib3270_remove_poll(hSession,context->connected);
+		context->connected = NULL;
+	}
+
+	if(context->timer) {
+		lib3270_remove_timer(hSession,context->timer);
+		context->timer = NULL;
+	}
+
+	// Check for connection errors.
+	{
+		int 		error	= 0;
+		socklen_t	errlen	= sizeof(error);
+
+		if(getsockopt(sock, SOL_SOCKET, SO_ERROR, (void *)&error, &errlen) < 0) {
+
+			error = errno;
+			lib3270_connection_close(hSession, error);
+
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_ERROR,
+				.title		= _("Connection error"),
+				.summary	= _("Unable to get connection state."),
+				.body		= strerror(error),
+				.label		= _("OK")
+			};
+
+			lib3270_popup(hSession, &popup, 0);
+			return;
+
+		} else if(error) {
+
+			lib3270_connection_close(hSession, error);
+
+			lib3270_autoptr(char) summary =
+				lib3270_strdup_printf(
+					_( "Can't connect to %s"),
+					lib3270_get_url(hSession)
+				);
+
+			lib3270_autoptr(char) body =
+				lib3270_strdup_printf(
+					_("The system error was \"%s\" (rc=%d)"),
+					strerror(error),
+					error
+				);
+
+			LIB3270_POPUP popup = {
+				.name		= "cant-connect",
+				.type		= LIB3270_NOTIFY_ERROR,
+				.title		= _("Connection error"),
+				.summary	= summary,
+				.body		= body,
+				.label		= _("OK")
+			};
+
+			lib3270_popup(hSession, &popup, 0);
+			return;
+
+		}
+
+	}
+
+	// Check connection status with getpeername
+	struct sockaddr_storage addr;
+	socklen_t len = sizeof(addr);
+	if (getpeername(sock, (struct sockaddr *)&addr, &len) == -1) {
+
+		int error = errno;
+		lib3270_connection_close(hSession, error);
+
+		lib3270_autoptr(char) summary =
+			lib3270_strdup_printf(
+				_("Failed to establish connection to %s"),
+				lib3270_get_url(hSession)
+			);
+
+		lib3270_autoptr(char) body =
+			lib3270_strdup_printf(
+				_("The system error was \"%s\" (rc=%d)"),
+				strerror(error),
+				error
+			);
+
+		LIB3270_POPUP popup = {
+			.name		= "connect-error",
+			.type		= LIB3270_NOTIFY_ERROR,
+			.title		= _("Connection error"),
+			.summary	= summary,
+			.body		= body,
+			.label		= _("OK")
+		};
+
+		lib3270_popup(hSession, &popup, 0);
+		return;
+	}
+
+	char host[NI_MAXHOST];
+	if (getnameinfo((struct sockaddr *) &addr, sizeof(addr), host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
+		trace_dsn(
+			hSession,
+			"Established connection to %s\n",
+			host
+		);
+	}
+
 	lib3270_set_connected_socket(hSession,sock);
+
  }
 
  static int net_timeout(H3270 *hSession, Context *context) {

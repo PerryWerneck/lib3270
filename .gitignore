@@ -69,3 +69,4 @@ intl
 po
 *.tar.xz
 .vscode
+.environment

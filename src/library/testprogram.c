@@ -33,7 +33,7 @@
  #include <stdio.h>
 
  static int trace_handler(const H3270 *, void *, const char *message) {
-	printf("Trace->\t%s",message);
+//	printf("Trace->\t%s",message);
 	return 0;
  }
 

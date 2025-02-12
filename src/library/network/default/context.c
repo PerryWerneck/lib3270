@@ -116,6 +116,7 @@ static int disconnect(H3270 *hSession, Context *context) {
  
 	char buffer[NETWORK_BUFFER_LENGTH];
 
+	debug("%s",__FUNCTION__);
 	ssize_t length = recv(sock,buffer,NETWORK_BUFFER_LENGTH,MSG_DONTWAIT);
 
 	if(length < 0) {
@@ -142,6 +143,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 		// TODO: Translate WSA Error, update message body.
 		#error TODO: Translate WSA Error, update message body.
 
+		lib3270_connection_close(hSession,wsaError);
 #else 
 
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -149,12 +151,16 @@ static int disconnect(H3270 *hSession, Context *context) {
 		}
 
 		common_failures(errno,&popup);
+		lib3270_connection_close(hSession,errno);
 
 #endif 
 
 		lib3270_popup(hSession, &popup, 0);
 		return;
 	}
+
+	debug("Recv %d bytes",length);
+ 	lib3270_net_input(hSession,buffer, length);
 
  }
 

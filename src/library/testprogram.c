@@ -45,7 +45,7 @@
 
 	unlink("test.trace");
 
-	lib3270_autoptr(H3270) hSession = lib3270_session_new("");
+	lib3270_autoptr(H3270) hSession = lib3270_session_new("2");
 
 	lib3270_set_trace_handler(hSession,trace_handler,NULL);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);

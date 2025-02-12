@@ -112,6 +112,7 @@ void lib3270_setup_mainloop(H3270 *hSession) {
 	hSession->event_dispatcher = defs.event_dispatcher;
 }
 
+/*
 LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, const LIB3270_IO_CONTROLLER *cntrl) {
 
 	if(!cntrl || cntrl->sz != sizeof(LIB3270_IO_CONTROLLER))
@@ -148,6 +149,7 @@ LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *hSession, const LIB3270_I
 
 
 }
+*/
 
 
 /* Timeouts */
@@ -273,9 +275,11 @@ static void internal_set_poll_state(H3270 *session, void *id, int enabled) {
 
 }
 
+/*
 LIB3270_EXPORT void	 lib3270_remove_poll(H3270 *session, void *id) {
 	session->io.poll.remove(session, id);
 }
+*/
 
 LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled) {
 	if(id) {
@@ -284,6 +288,7 @@ LIB3270_EXPORT void	lib3270_set_poll_state(H3270 *session, void *id, int enabled
 	}
 }
 
+/*
 LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd) {
 	input_t *ip;
 
@@ -297,6 +302,7 @@ LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd) {
 	lib3270_write_log(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
 
 }
+*/
 
 LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag) {
 	input_t *ip;
@@ -312,16 +318,18 @@ LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FL
 
 }
 
+/*
 LIB3270_EXPORT void	 * lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
 	debug("%s(%d)",__FUNCTION__,fd);
 	return session->io.poll.add(session,fd,flag,call,userdata);
 }
+*/
 
 static int internal_wait(H3270 *hSession, int seconds) {
 	time_t end = time(0) + seconds;
 
 	while(time(0) < end) {
-		lib3270_main_iterate(hSession,1);
+		hSession->event_dispatcher(hSession,1);
 	}
 
 	return 0;
@@ -333,6 +341,7 @@ static void internal_ring_bell(H3270 GNUC_UNUSED(*session)) {
 
 /* External entry points */
 
+/*
 void * lib3270_add_timer(unsigned long interval_ms, H3270 *hSession, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
 	void *timer = hSession->io.timer.add(
@@ -346,13 +355,16 @@ void * lib3270_add_timer(unsigned long interval_ms, H3270 *hSession, int (*proc)
 
 	return timer;
 }
+*/
 
+/*
 void lib3270_remove_timer(H3270 *hSession, void * timer) {
 	if(!timer)
 		return;
 	trace("Removing timeout %p",timer);
 	return hSession->io.timer.remove(hSession, timer);
 }
+*/
 
 /*
 void x_except_on(H3270 *h) {
@@ -365,7 +377,7 @@ void x_except_on(H3270 *h) {
 		return;
 
 	if(reading)
-		lib3270_remove_poll(h,h->xio.read);
+		h->io.poll.remove(h,h->xio.read);
 
 	h->xio.except = h->io.poll.add(h,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 
@@ -377,15 +389,15 @@ void x_except_on(H3270 *h) {
 /*
 void remove_input_calls(H3270 *session) {
 	if(session->xio.read) {
-		lib3270_remove_poll(session,session->xio.read);
+		session->io.poll.remove(session,session->xio.read);
 		session->xio.read = NULL;
 	}
 	if(session->xio.except) {
-		lib3270_remove_poll(session,session->xio.except);
+		session->io.poll.remove(session,session->xio.except);
 		session->xio.except = NULL;
 	}
 	if(session->xio.write) {
-		lib3270_remove_poll(session,session->xio.write);
+		session->io.poll.remove(session,session->xio.write);
 		session->xio.write = NULL;
 	}
 }
@@ -434,18 +446,9 @@ LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *c
 
 }
 
-LIB3270_EXPORT void lib3270_main_iterate(H3270 *hSession, int block) {
-	hSession->event_dispatcher(hSession,block);
-}
-
 LIB3270_EXPORT int lib3270_wait(H3270 *hSession, int seconds) {
 	hSession->wait(hSession,seconds);
 	return 0;
-}
-
-LIB3270_EXPORT void lib3270_ring_bell(H3270 *hSession) {
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_BEEP))
-		hSession->ring_bell(hSession);
 }
 
 int internal_run_task(H3270 *hSession, const char *name, int(*callback)(H3270 *, void *), void *parm) {

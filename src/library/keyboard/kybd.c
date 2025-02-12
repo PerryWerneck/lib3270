@@ -132,7 +132,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If no connection, forget it.
 	if (!lib3270_is_connected(hSession)) {
-		lib3270_ring_bell(hSession);
+		hSession->ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (not connected)\n");
 		errno = ENOTCONN;
 		return NULL;
@@ -140,7 +140,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If operator error, complain and drop it.
 	if (hSession->kybdlock & KL_OERR_MASK) {
-		lib3270_ring_bell(hSession);
+		hSession->ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (operator error)\n");
 		errno = EINVAL;
 		return NULL;
@@ -148,7 +148,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If scroll lock, complain and drop it.
 	if (hSession->kybdlock & KL_SCROLLED) {
-		lib3270_ring_bell(hSession);
+		hSession->ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (scrolled)\n");
 		errno = EINVAL;
 		return NULL;
@@ -156,7 +156,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If typeahead disabled, complain and drop it.
 	if (!hSession->typeahead) {
-		lib3270_ring_bell(hSession);
+		hSession->ring_bell(hSession);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (no typeahead)\n");
 		errno = EINVAL;
 		return NULL;
@@ -360,7 +360,7 @@ void kybd_inhibit(H3270 *session, Boolean inhibit) {
  */
 void kybd_connect(H3270 *session, int connected, void GNUC_UNUSED(*dunno)) {
 	if (session->kybdlock & KL_DEFERRED_UNLOCK)
-		lib3270_remove_timer(session, session->unlock_id);
+		session->io.timer.remove(session, session->unlock_id);
 
 	lib3270_kybdlock_clear(session, -1);
 
@@ -378,7 +378,7 @@ void kybd_connect(H3270 *session, int connected, void GNUC_UNUSED(*dunno)) {
  */
 void kybd_in3270(H3270 *hSession, int GNUC_UNUSED(in3270), void GNUC_UNUSED(*dunno)) {
 	if (hSession->kybdlock & KL_DEFERRED_UNLOCK)
-		lib3270_remove_timer(hSession, hSession->unlock_id);
+		hSession->io.timer.remove(hSession, hSession->unlock_id);
 
 	lib3270_kybdlock_clear(hSession,~KL_AWAITING_FIRST);
 
@@ -399,7 +399,7 @@ void operator_error(H3270 *hSession, int error_type) {
 		kybdlock_set(hSession,(unsigned int)error_type);
 		flush_ta(hSession);
 	} else {
-		lib3270_ring_bell(hSession);
+		hSession->ring_bell(hSession);
 	}
 }
 
@@ -984,7 +984,7 @@ void do_reset(H3270 *hSession, Boolean explicit) {
 	 * keyboard now, or want to defer further into the future.
 	 */
 	if (hSession->kybdlock & KL_DEFERRED_UNLOCK)
-		lib3270_remove_timer(hSession, hSession->unlock_id);
+		hSession->io.timer.remove(hSession, hSession->unlock_id);
 
 	/*
 	 * If explicit (from the keyboard), unlock the keyboard now.
@@ -997,7 +997,7 @@ void do_reset(H3270 *hSession, Boolean explicit) {
 		kybdlock_set(hSession,KL_DEFERRED_UNLOCK);
 
 		if(hSession->unlock_delay_ms) {
-			hSession->unlock_id = lib3270_add_timer(hSession->unlock_delay_ms, hSession, defer_unlock, NULL);
+			hSession->unlock_id = hSession->io.timer.add(hSession, hSession->unlock_delay_ms, defer_unlock, NULL);
 		} else {
 			hSession->unlock_id = 0;
 			defer_unlock(hSession, NULL);

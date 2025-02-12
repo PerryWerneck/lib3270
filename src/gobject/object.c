@@ -252,7 +252,7 @@
 	self->handler = lib3270_session_new("");
 	lib3270_set_user_data(self->handler,gobject);
 
-	if(tn3270_session_setup_callbacks(klass,self) || tn3270_session_setup_mainloop(self))
+	if(tn3270_session_setup_callbacks(klass,self))
 	{
 		lib3270_session_free(self->handler);
 		self->handler = NULL;

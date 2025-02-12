@@ -27,6 +27,7 @@
  
  #include <config.h>
  #include <lib3270/defs.h>
+ #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/trace.h>
  #include <private/network.h>
@@ -60,7 +61,7 @@
 	lib3270_connect(hSession,5);
 
 	while(1) {
-		lib3270_main_iterate(hSession,1);
+		lib3270_mainloop_run(hSession,1);
 	}
 
 	return 0;

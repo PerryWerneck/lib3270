@@ -34,7 +34,7 @@
 
 #include <config.h>				/* autoconf settings */
 #include <lib3270.h>			/* lib3270 API calls and defs */
-#include <linkedlist.h>
+#include <private/linkedlist.h>
 #include <lib3270/charset.h>
 #include <lib3270/session.h>
 #include <lib3270/actions.h>

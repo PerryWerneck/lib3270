@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2025 Banco do Brasil S.A.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,16 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #pragma once
-
+ #define _GNU_SOURCE
  #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270.h>
+ #include <private/mainloop.h>
+ #include <private/session.h>
+ 
+ LIB3270_EXPORT void lib3270_mainloop_run(H3270 *hSession, int block) {
+	hSession->event_dispatcher(hSession,block);
+ }
 
- /// @brief Set the mainloop methods for the session.
- /// @param hSession The session to be set.
- /// @param gui Non-zero if the session is running in GUI mode.
- LIB3270_INTERNAL void	  lib3270_setup_mainloop(H3270 *hSession, int gui);
-
- // LIB3270_INTERNAL void	* lib3270_add_timer(unsigned long msec, H3270 *session, int (*fn)(H3270 *session, void *userdata), void *userdata);
- // LIB3270_INTERNAL void	  lib3270_remove_timer(H3270 *session, void *cookie);

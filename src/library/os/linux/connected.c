@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
  #include <config.h>
  #include <private/network.h>
  #include <private/intl.h>
@@ -151,10 +152,11 @@
 
 	context->parent.sock = sock;
 	context->parent.disconnect = (void *) net_close;
-	context->except = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except, context);
-	context->recv = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_READ,(void *) net_recv, context);
+	context->except = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except, context);
+	context->recv = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) net_recv, context);
 
 	hSession->connection.write = (void *) net_send;
 
 	return (LIB3270_NET_CONTEXT *) context;
  }
+*/

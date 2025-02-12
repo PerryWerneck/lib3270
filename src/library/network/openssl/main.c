@@ -184,7 +184,7 @@ static int openssl_network_getpeername(const H3270 *hSession, struct sockaddr *a
 }
 
 static void * openssl_network_add_poll(H3270 *hSession, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata) {
-	return lib3270_add_poll_fd(hSession,hSession->network.context->sock,flag,call,userdata);
+	return hSession->io.poll.add(hSession,hSession->network.context->sock,flag,call,userdata);
 }
 
 static int openssl_network_non_blocking(H3270 *hSession, const unsigned char on) {

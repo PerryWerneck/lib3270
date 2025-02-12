@@ -33,11 +33,11 @@ typedef enum _lib3270_io_event {
 	LIB3270_IO_FLAG_MASK		= 0x07
 } LIB3270_IO_FLAG;
 
-LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
+// LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+// LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
 LIB3270_EXPORT void		  lib3270_set_poll_state(H3270 *session, void *id, int enabled);
 
-LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
+// LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
 LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
 
 /**
@@ -71,12 +71,12 @@ typedef struct lib3270_io_controller {
  * @return 0 if ok, error code if not.
  *
  */
-LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk);
+// LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk);
 
 /**
  * @brief Register session io handlers.
  */
-LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, const LIB3270_IO_CONTROLLER *cntrl);
+// LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, const LIB3270_IO_CONTROLLER *cntrl);
 
 /**
  * Register time handlers.
@@ -85,7 +85,7 @@ LIB3270_EXPORT int lib3270_session_set_handlers(H3270 *session, const LIB3270_IO
  * @param rm	Callback for removing a timeout
  *
  */
-LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer));
+// LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer));
 
-LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
+// LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
 

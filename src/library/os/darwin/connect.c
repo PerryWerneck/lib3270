@@ -182,7 +182,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	if(hSession->xio.write) {
 		trace("%s write=%p",__FUNCTION__,hSession->xio.write);
-		lib3270_remove_poll(hSession, hSession->xio.write);
+		hSession->io.poll.remove(hSession, hSession->xio.write);
 		hSession->xio.write = NULL;
 	}
 
@@ -380,7 +380,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 
 		while(time(0) < end)
 		{
-			lib3270_main_iterate(hSession,1);
+			hSession->event_dispatcher(hSession,1);
 
 			switch(hSession->connection.state)
 			{

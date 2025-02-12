@@ -74,9 +74,9 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
 			lib3270_connect(hSession,hSession->connection.timeout);
 
 		} else if(hSession->connection.retry) {
-			lib3270_add_timer(
-				hSession->connection.retry,
+			hSession->io.timer.add(
 				hSession,
+				hSession->connection.retry,
 				check_for_auto_reconnect, 
 				NULL
 			);
@@ -104,7 +104,7 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 		return EBUSY;
 
 	hSession->auto_reconnect_inprogress = 1;
-	lib3270_add_timer(msec, hSession, check_for_auto_reconnect, NULL);
+	hSession->io.timer.add(hSession, msec, check_for_auto_reconnect, NULL);
 
 	return 0;
 }

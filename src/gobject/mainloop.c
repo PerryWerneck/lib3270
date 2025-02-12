@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
  #include <config.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
@@ -170,6 +171,7 @@
 
  int tn3270_session_setup_mainloop(TN3270SessionPrivate *self)
  {
+	/*
 	static const LIB3270_IO_CONTROLLER hdl =
 	{
 		.sz = sizeof(LIB3270_IO_CONTROLLER),
@@ -211,3 +213,4 @@
 
 	return rc;
  }
+*/

@@ -250,7 +250,6 @@ lib_src += [
   'src/library/host.c',
   'src/library/html.c',
   'src/library/init.c',
-  'src/library/iocalls.c',
   'src/library/keyboard/actions.c',
   'src/library/keyboard/kybd.c',
   'src/library/keyboard/properties.c',
@@ -288,9 +287,11 @@ lib_src += [
   'src/library/network/state.c',
   'src/library/network/default/context.c',
   'src/library/network/tools.c',
+  'src/library/mainloop.c',
   'src/library/os/' + host_machine.system() + '/resolv.c',
   'src/library/os/' + host_machine.system() + '/connect.c',
   'src/library/os/' + host_machine.system() + '/connected.c',
+  'src/library/os/' + host_machine.system() + '/mainloop.c',
 ]
 
 gobject_src = [
@@ -303,7 +304,6 @@ gobject_src = [
 linux_src =[
   'src/library/os/linux/curl.c',
   'src/library/os/linux/download.c',
-  'src/library/os/linux/event_dispatcher.c',
   'src/library/os/linux/ldap.c',
   'src/library/os/linux/log.c',
   'src/library/os/linux/util.c',
@@ -313,7 +313,6 @@ darwin_src = [
   'src/library/os/darwin/connect.c',
   'src/library/os/darwin/curl.c',
   'src/library/os/darwin/download.c',
-  'src/library/os/darwin/event_dispatcher.c',
   'src/library/os/darwin/ldap.c',
   'src/library/os/darwin/log.c',
   'src/library/os/darwin/util.c',
@@ -322,7 +321,6 @@ darwin_src = [
 win_src = [
   'src/library/os/windows/connect.c',
   'src/library/os/windows/download.c',
-  'src/library/os/windows/event_dispatcher.c',
   'src/library/os/windows/http.c',
   'src/library/os/windows/ldap.c',
   'src/library/os/windows/log.c',

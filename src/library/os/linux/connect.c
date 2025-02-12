@@ -84,17 +84,17 @@
 	debug("%s: CONNECTED",__FUNCTION__);
 
 	if(context->except) {
-		lib3270_remove_poll(hSession,context->except);
+		hSession->io.poll.remove(hSession,context->except);
 		context->except = NULL;
 	}
 
 	if(context->connected) {
-		lib3270_remove_poll(hSession,context->connected);
+		hSession->io.poll.remove(hSession,context->connected);
 		context->connected = NULL;
 	}
 
 	if(context->timer) {
-		lib3270_remove_timer(hSession,context->timer);
+		hSession->io.timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 
@@ -130,21 +130,16 @@
 					lib3270_get_url(hSession)
 				);
 
-			lib3270_autoptr(char) body =
-				lib3270_strdup_printf(
-					_("The system error was \"%s\" (rc=%d)"),
-					strerror(error),
-					error
-				);
-
 			LIB3270_POPUP popup = {
 				.name		= "cant-connect",
 				.type		= LIB3270_NOTIFY_ERROR,
 				.title		= _("Connection error"),
 				.summary	= summary,
-				.body		= body,
+				.body		= "",
 				.label		= _("OK")
 			};
+
+			set_popup_body(&popup,error);
 
 			lib3270_popup(hSession, &popup, 0);
 			return;
@@ -167,21 +162,16 @@
 				lib3270_get_url(hSession)
 			);
 
-		lib3270_autoptr(char) body =
-			lib3270_strdup_printf(
-				_("The system error was \"%s\" (rc=%d)"),
-				strerror(error),
-				error
-			);
-
 		LIB3270_POPUP popup = {
 			.name		= "connect-error",
 			.type		= LIB3270_NOTIFY_ERROR,
 			.title		= _("Connection error"),
 			.summary	= summary,
-			.body		= body,
+			.body		= "",
 			.label		= _("OK")
 		};
+
+		set_popup_body(&popup,error);
 
 		lib3270_popup(hSession, &popup, 0);
 		return;
@@ -222,17 +212,17 @@
 static int net_disconnect(H3270 *hSession, Context *context) {
 
 	if(context->except) {
-		lib3270_remove_poll(hSession,context->except);
+		hSession->io.poll.remove(hSession,context->except);
 		context->except = NULL;
 	}
 
 	if(context->connected) {
-		lib3270_remove_poll(hSession,context->connected);
+		hSession->io.poll.remove(hSession,context->connected);
 		context->connected = NULL;
 	}
 
 	if(context->timer) {
-		lib3270_remove_timer(hSession,context->timer);
+		hSession->io.timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 
@@ -322,9 +312,9 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
 	context->parent.disconnect = (void *) net_disconnect;
 
-	context->timer = lib3270_add_timer(hSession->connection.timeout*1000,hSession,(void *) net_timeout,context);
-	context->except = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);
-	context->connected = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
+	context->timer = hSession->io.timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
+	context->except = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);
+	context->connected = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
 
 	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 

@@ -29,7 +29,7 @@
  #include <sys/time.h>
 
  #include <networking.h>
- #include <linkedlist.h>
+ #include <private/linkedlist.h>
  
  #define LIB3270_FULL_MODEL_NAME_LENGTH	13
  #define LIB3270_LU_MAX					32

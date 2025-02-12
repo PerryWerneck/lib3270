@@ -335,7 +335,7 @@ H3270 * lib3270_session_new(const char *model) {
 
 	hSession = lib3270_malloc(sizeof(H3270));
 	lib3270_session_init(hSession, model, "bracket" );
-	lib3270_setup_mainloop(hSession);
+	lib3270_setup_mainloop(hSession,0);
 
 	if(!default_session)
 		default_session = hSession;

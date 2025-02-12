@@ -179,26 +179,6 @@ retry:
 
 		}
 
-		/*
-
-		while ((t = ((timeout_t *) hSession->timeouts.first)) != TN)
-		{
-			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec))
-			{
-				t->in_play = True;
-				(*t->proc)(t->session);
-				processed_any = True;
-
-				lib3270_linked_list_delete_node(&hSession->timeouts,t);
-
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		*/
 	}
 
 	if (hSession->input.changed)

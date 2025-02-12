@@ -38,6 +38,7 @@
  #include <lib3270/mainloop.h>
  #include <trace_dsc.h>
  #include <private/session.h>
+ #include <private/network.h>
  #include <private/intl.h>
  #include <string.h>
  #include <errno.h>
@@ -63,17 +64,17 @@ static int disconnect(H3270 *hSession, Context *context) {
 	debug("%s",__FUNCTION__);
 
 	if(context->xio.read) {
-		lib3270_remove_poll(hSession,context->xio.read);
+		hSession->io.poll.remove(hSession,context->xio.read);
 		context->xio.read = NULL;
 	}
 
 	if(context->xio.except) {
-		lib3270_remove_poll(hSession,context->xio.except);
+		hSession->io.poll.remove(hSession,context->xio.except);
 		context->xio.except = NULL;
 	}
 
 	if(context->xio.write) {
-		lib3270_remove_poll(hSession,context->xio.write);
+		hSession->io.poll.remove(hSession,context->xio.write);
 		context->xio.write = NULL;
 	}
 
@@ -85,32 +86,6 @@ static int disconnect(H3270 *hSession, Context *context) {
 	return 0;
  
  }
-
-#ifdef _WIN32
- static void common_failures(int wsaerror, LIB3270_POPUP *popup) {
- }
-#else
- static void common_failures(int error, LIB3270_POPUP *popup) {
- 
- 	switch(error) {
-	case EPIPE:
-		popup->summary = N_("Connection closed by peer");
-		popup->body = N_("The connection was closed by the host. This usually indicates that the remote server has terminated the connection unexpectedly. Please check the server status or network configuration and try reconnecting.");
-		break;
-
-	case ECONNRESET:
-		popup->summary = N_("Connection reset by peer");
-		popup->summary = N_("The connection was reset by the remote server. This typically happens when the server forcefully closes the connection, possibly due to a timeout, server restart, or network issues. Please verify the server status and network connectivity, then try reconnecting.");
-		break;
-
-	default:
-		popup->body = strerror(error);
-		break;
-
-	}
-
- }
-#endif
 
  static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
  
@@ -138,7 +113,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 		if(wsaError == WSAEWOULDBLOCK || wsaError == WSAEINPROGRESS)
 			return;
 
-		common_failures(wsaError,&popup);
+		set_popup_body(&popup,wsaError);
 
 		// TODO: Translate WSA Error, update message body.
 		#error TODO: Translate WSA Error, update message body.
@@ -150,7 +125,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 			return;
 		}
 
-		common_failures(errno,&popup);
+		set_popup_body(&popup,errno);
 		lib3270_connection_close(hSession,errno);
 
 #endif 
@@ -172,7 +147,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	if (!hSession->syncing) {
 		hSession->syncing = 1;
 		if(context->xio.except) {
-			lib3270_remove_poll(hSession, context->xio.except);
+			hSession->io.poll.remove(hSession, context->xio.except);
 			context->xio.except = NULL;
 		}
 	}
@@ -183,7 +158,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	if(context->xio.except) {
 		return EBUSY;
 	}
-	context->xio.except = lib3270_add_poll_fd(hSession,context->parent.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+	context->xio.except = hSession->io.poll.add(hSession,context->parent.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
 	return 0;
  }
 
@@ -211,7 +186,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS)
 		return 0;
 
-	common_failures(error,&popup);
+	set_popup_body(&popup,error);
 
 #else 
 
@@ -221,7 +196,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 		return 0;
 	}
 	
-	common_failures(error,&popup);
+	set_popup_body(&popup,error);
 
 #endif
 
@@ -248,8 +223,8 @@ static int disconnect(H3270 *hSession, Context *context) {
 	context->parent.sock = sock;
 	context->parent.disconnect = (void *) disconnect;
 
-	context->xio.read = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
-	context->xio.except = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+	context->xio.read = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
+	context->xio.except = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
 
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;

@@ -842,17 +842,6 @@ LIB3270_EXPORT int lib3270_is_secure(const H3270 *h);
 LIB3270_EXPORT LIB3270_MESSAGE		lib3270_get_lock_status(const H3270 *h);
 
 /**
- * Run main iteration.
- *
- * Run lib3270 internal iterations, check for network inputs, process signals.
- *
- * @param h		Related session.
- * @param wait	Wait for signal if not available.
- *
- */
-LIB3270_EXPORT void lib3270_main_iterate(H3270 *h, int wait);
-
-/**
  * @brief Associate user data with 3270 session.
  *
  */
@@ -917,16 +906,6 @@ LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstat
  *
  */
 LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds);
-
-/**
- * "beep" to notify user.
- *
- * If available play a sound signal do alert user.
- *
- * @param h		Session handle.
- *
- */
-LIB3270_EXPORT void lib3270_ring_bell(H3270 *session);
 
 /**
  * Get lib3270's charset.
@@ -1506,6 +1485,8 @@ LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_
  *
  */
 LIB3270_EXPORT const char * lib3270_get_translation_domain();
+
+LIB3270_EXPORT void lib3270_mainloop_run(H3270 *hSession, int block);
 
 #ifdef __cplusplus
 }

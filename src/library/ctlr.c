@@ -1554,7 +1554,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 		status_changed(hSession,LIB3270_MESSAGE_SYSWAIT);
 	}
 	if (wcc_sound_alarm)
-		lib3270_ring_bell(hSession);
+		hSession->ring_bell(hSession);
 
 	/* Set up the DBCS state. */
 #ifdef X3270_DBCS

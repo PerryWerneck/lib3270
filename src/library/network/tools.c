@@ -39,6 +39,30 @@
 	#include <lib3270/win32.h>
  #endif // _WIN32
 
+ LIB3270_INTERNAL void set_popup_body(LIB3270_POPUP *popup, int error) {
+
+ 	switch(error) {
+	case EPIPE:
+		popup->body = N_("The connection was closed by the host. This usually indicates that the remote server has terminated the connection unexpectedly. Please check the server status or network configuration and try reconnecting.");
+		break;
+
+	case ECONNRESET:
+		popup->summary = N_("The connection was reset by the remote server. This typically happens when the server forcefully closes the connection, possibly due to a timeout, server restart, or network issues. Please verify the server status and network connectivity, then try reconnecting.");
+		break;
+
+	case ECONNREFUSED:
+		popup->body = N_("The remote server refused the connection. This usually indicates that the server is not accepting connections on the specified port. Please verify the server status and network configuration, then try reconnecting.");
+		break;
+
+	default:
+		popup->body = strerror(error);
+		break;
+
+	}
+
+ }
+ 
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /*

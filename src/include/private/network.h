@@ -21,6 +21,7 @@
  #include <config.h>
  #include <time.h>
  #include <lib3270/defs.h>
+ #include <lib3270/popup.h>
  #include <sys/socket.h>
 
  #define NETWORK_BUFFER_LENGTH	16384
@@ -52,3 +53,9 @@
  LIB3270_INTERNAL int connection_except_offline(H3270 *, LIB3270_NET_CONTEXT *);
 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession, int sock);
+ 
+ /// @brief Set the popup body based on network error code.
+ /// @param popup The popup to update.
+ /// @param error The error code
+ LIB3270_INTERNAL void set_popup_body(LIB3270_POPUP *popup, int error);
+ 

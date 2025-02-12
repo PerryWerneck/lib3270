@@ -31,7 +31,7 @@
 
 #include <lib3270.h>
 #include <lib3270/log.h>
-#include <linkedlist.h>
+#include <private/linkedlist.h>
 #include <string.h>
 #include <errno.h>
 

@@ -119,9 +119,9 @@
 
  }
 
- static int net_send(H3270 *hSession, const void *buffer, size_t length) {
+ static int net_send(H3270 *hSession, const void *buffer, size_t length, Context *context) {
 
-	ssize_t bytes = send(hSession->connection.context->sock,buffer,length,0);
+	ssize_t bytes = send(context->parent.sock,buffer,length,0);
 
 	if(bytes >= 0)
 		return bytes;
@@ -154,7 +154,7 @@
 	context->except = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except, context);
 	context->recv = lib3270_add_poll_fd(hSession,sock,LIB3270_IO_FLAG_READ,(void *) net_recv, context);
 
-	hSession->connection.write = net_send;
+	hSession->connection.write = (void *) net_send;
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

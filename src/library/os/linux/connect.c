@@ -291,6 +291,9 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
 	}
 
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
+
 	if(connect(sock,addr,addrlen) && errno != EINPROGRESS) {
 
 		int error = errno;
@@ -305,9 +308,54 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 		return error;
 	}
 
-	// Wait for connection.
-	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, 1);
-	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
+	hSession->ever_3270 = False;
+
+	// Setup socket 
+	// set options for inline out-of-band data and keepalives
+	{
+		// set options for inline out-of-band data and keepalives
+		int optval = 1;
+		if(setsockopt(sock, SOL_SOCKET, SO_OOBINLINE, &optval, sizeof(optval)) < 0) {
+			int rc = errno;
+			lib3270_popup_dialog(	hSession,
+									LIB3270_NOTIFY_ERROR,
+									_( "Connection error" ),
+									_( "setsockopt(SO_OOBINLINE) has failed" ),
+									"%s",
+									strerror(rc));
+			return rc;
+		}
+
+		optval = lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE) ? 1 : 0;
+		if (setsockopt(sock, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0) {
+			int rc = errno;
+
+			char buffer[4096];
+			snprintf(buffer,4095,_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
+
+			lib3270_popup_dialog(	hSession,
+									LIB3270_NOTIFY_ERROR,
+									_( "Connection error" ),
+									buffer,
+									"%s",
+									strerror(rc));
+			return rc;
+		} else {
+			trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
+		}
+
+#if defined(OMTU)
+		if (setsockopt(hSession->sock, SOL_SOCKET, SO_SNDBUF, (char *)&mtu,sizeof(mtu)) < 0)
+		{
+			popup_a_sockerr(hSession, _( "setsockopt(%s)" ), "SO_SNDBUF");
+			SOCK_CLOSE(hSession);
+		}
+#endif
+
+	}
+
+	lib3270_set_cstate(hSession, LIB3270_PENDING);
+	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
 	Context *context = lib3270_malloc(sizeof(Context));
 	memset(context,0,sizeof(Context));

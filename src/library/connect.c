@@ -205,10 +205,6 @@
 
  void lib3270_set_connected_socket(H3270 *hSession, int sock) {
 
-	debug("%s(%d)",__FUNCTION__,sock);
-
-	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, 1);
-
 	if(hSession->connection.context) {
 		free(hSession->connection.context);
 		hSession->connection.context = NULL;
@@ -219,6 +215,14 @@
 		"Connected to %s%s.\n", 
 		hSession->host.url,hSession->ssl.host ? " using SSL": ""
 	);
+
+	//if(lib3270_start_tls(hSession)) {
+	//	lib3270_connection_close(hSession,-1);
+	//	return;
+	//}
+
+	lib3270_setup_session(hSession);
+	lib3270_set_connected_initial(hSession);
 
 	if(hSession->ssl.host) {
 
@@ -240,10 +244,6 @@
 		hSession->connection.context = setup_non_ssl_context(hSession,sock);
 
 	}
-
-	// lib3270_setup_session(hSession);
-	// lib3270_set_connected_initial(hSession);
-	// lib3270_notify_tls(hSession);
 
  }
 

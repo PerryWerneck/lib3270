@@ -292,7 +292,7 @@ void ctlr_erase(H3270 *session, int alt) {
 
 	if (alt) {
 		// Going from 24x80 to maximum.
-		lib3270_write_screen_trace(session,"Going from 24x80 to %dx%d\n",session->max.rows,session->max.cols);
+		lib3270_write_screen_trace(session,"Going from 24x80 to %dx%d (alt)\n",session->max.rows,session->max.cols);
 		set_viewsize(session,session->max.rows,session->max.cols);
 	} else {
 		// Going from maximum to 24x80.

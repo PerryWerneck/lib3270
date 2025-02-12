@@ -255,6 +255,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 }
 
 int net_reconnect(H3270 *hSession, int seconds) {
+	
 	LIB3270_NETWORK_STATE state;
 	memset(&state,0,sizeof(state));
 

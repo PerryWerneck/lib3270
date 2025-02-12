@@ -246,49 +246,9 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
  LIB3270_INTERNAL int lib3270_connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen) {
 
-	{
-		int f;
-		if ((f = fcntl(sock, F_GETFL, 0)) == -1) {
-
-			int error = errno;
-			lib3270_connection_close(hSession,error);
-
-			LIB3270_POPUP popup = {
-				.name		= "connect-error",
-				.type		= LIB3270_NOTIFY_ERROR,
-				.title		= _("Connection error"),
-				.summary	= _( "fcntl() error when getting socket state." ),
-				.body		= strerror(error),
-				.label		= _("OK")
-			};
-
-			lib3270_popup(hSession, &popup, 0);
-
-			return error;
-		}
-
-		f |= O_NDELAY;
-
-		if (fcntl(sock, F_SETFL, f) < 0) {
-
-			int error = errno;
-			lib3270_connection_close(hSession,error);
-
-			LIB3270_POPUP popup = {
-				.name		= "connect-error",
-				.type		= LIB3270_NOTIFY_ERROR,
-				.title		= _("Connection error"),
-				.summary	= _( "fcntl() error when setting non blocking state." ),
-				.body		= strerror(error),
-				.label		= _("OK")
-			};
-
-			lib3270_popup(hSession, &popup, 0);
-
-			return error;
-
-		}
-
+	// Set non blocking mode
+	if(lib3270_set_block_mode(hSession,sock,0)) {
+		return -1;
 	}
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);

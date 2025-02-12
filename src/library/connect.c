@@ -224,6 +224,8 @@
 	lib3270_setup_session(hSession);
 	lib3270_set_connected_initial(hSession);
 
+	lib3270_set_block_mode(hSession,sock,1);	// Set blocking mode.
+
 	if(hSession->ssl.host) {
 
 		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);

@@ -219,6 +219,9 @@
 						finalize(hSession,context);
 						lib3270_free(context);
 						return;
+					} else {
+						// Socket was rejected, close it.
+						close(sock);
 					}
 
 				}

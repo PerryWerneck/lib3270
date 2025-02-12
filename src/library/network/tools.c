@@ -25,19 +25,19 @@
  *
  */
 
-/**
- * @brief Common methods for send/recv errors.
- *
- */
 
-#include <config.h>
-#include <lib3270.h>
-#include <lib3270/log.h>
-#include <networking.h>
-#include <fcntl.h>
-#ifdef _WIN32
-#include <lib3270/win32.h>
-#endif // _WIN32
+ #include <config.h>
+ #include <lib3270.h>
+ #include <lib3270/log.h>
+ #include <networking.h>
+ #include <private/network.h>
+ #include <fcntl.h>
+ #include <private/intl.h>
+ #include <string.h>
+
+ #ifdef _WIN32
+	#include <lib3270/win32.h>
+ #endif // _WIN32
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -145,11 +145,11 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 }
 */
 
-/*
-int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on) {
+int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
 
-	if(sock < 0)
-		return 0;
+	if(sock < 0) {
+		return EINVAL;
+	}
 
 #ifdef WIN32
 
@@ -168,31 +168,49 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 #else
 
 	int f;
+	if((f = fcntl(sock, F_GETFL, 0))== -1) {
 
-	if ((f = fcntl(sock, F_GETFL, 0)) == -1) {
-		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_ERROR,
-		                        _( "Socket error" ),
-		                        _( "fcntl() error when getting socket state." ),
-		                        _( "%s" ), strerror(errno)
-		                    );
+		int error = errno;
+		lib3270_connection_close(hSession,error);
 
-		return -1;
+		LIB3270_POPUP popup = {
+			.name		= "socket-api-error",
+			.type		= LIB3270_NOTIFY_ERROR,
+			.title		= _("System error"),
+			.summary	= _( "fcntl() error when getting socket state." ),
+			.body		= strerror(error),
+			.label		= _("OK")
+		};
+
+		lib3270_popup(hSession, &popup, 0);
+
+		return error;
 	}
 
-	if (on)
-		f |= O_NDELAY;
-	else
-		f &= ~O_NDELAY;
+	if(on) {
+		f &= ~O_NONBLOCK;
+	} else {
+		f |= O_NONBLOCK;
+	}
 
-	if (fcntl(sock, F_SETFL, f) < 0) {
-		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_ERROR,
-		                        _( "Socket error" ),
-		                        on ? _( "Can't set socket to blocking mode." ) : _( "Can't set socket to non blocking mode" ),
-		                        _( "%s" ), strerror(errno)
-		                    );
-		return -1;
+	if(fcntl(sock, F_SETFL, f) < 0) {
+
+		int error = errno;
+		lib3270_connection_close(hSession,error);
+
+		LIB3270_POPUP popup = {
+			.name		= "socket-api-error",
+			.type		= LIB3270_NOTIFY_ERROR,
+			.title		= _("System error"),
+			.summary	= _( "fcntl() error when setting socket state." ),
+			.body		= strerror(error),
+			.label		= _("OK")
+		};
+
+		lib3270_popup(hSession, &popup, 0);
+
+		return error;
+
 	}
 
 #endif
@@ -202,8 +220,8 @@ int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned ch
 	return 0;
 
 }
-*/
 
+/*
 static const char * crl_download_protocols[] = {
 	NULL,
 	"http",
@@ -252,3 +270,4 @@ LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, s
 	return hSession->network.module->getsockname(hSession, addr, addrlen);
 }
 
+*/

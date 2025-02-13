@@ -336,6 +336,7 @@
 	G_THREAD_NEW,
 	G_THREAD_JOIN,
 	G_IDLE_ADD_ONCE,
+	G_MAIN_CONTEXT_ITERATION,
 
 	GLIB_METHOD_COUNT
  };
@@ -358,7 +359,8 @@
 	"g_main_loop_quit",
 	"g_thread_new",
 	"g_thread_join",
-	"g_idle_add_once"
+	"g_idle_add_once",
+	"g_main_context_iteration"
 
  };
 
@@ -634,6 +636,18 @@
 
  }
 
+ static int gui_event_dispatcher(H3270 *hSession, int block) {
+
+	void * (*g_main_context_get_thread_default)() =
+		glibmethods[G_MAIN_CONTEXT_GET_THREAD_DEFAULT];
+
+	int (*g_main_context_iteration)(void* context, int may_block) =
+		glibmethods[G_MAIN_CONTEXT_ITERATION];
+ 
+	return g_main_context_iteration(g_main_context_get_thread_default(),block);
+
+ }
+
  int lib3270_setup_mainloop(H3270 *hSession, int glib) {
 
 	// Set default mainloop implementation.
@@ -671,7 +685,7 @@
 	hSession->poll.add = gui_poll_add;
 	hSession->poll.remove = gui_source_remove;
 
-	// hSession->event_dispatcher =
+	hSession->event_dispatcher = gui_event_dispatcher;
 	hSession->run = gui_run;
 	hSession->post = gui_post;
 

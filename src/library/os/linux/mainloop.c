@@ -27,6 +27,7 @@
  #include <private/intl.h>
  #include <pthread.h>
  #include <string.h>
+ #include <dlfcn.h>
 
  #define MILLION 1000000L
 
@@ -52,7 +53,7 @@
 
  static void * default_timer_add(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
-	debug("%s: session=%p interval=%u", __FUNCTION__, session, interval_ms);
+	debug("%s: session=%p interval=%lu", __FUNCTION__, session, interval_ms);
 
 	pthread_mutex_lock(&guard);
 
@@ -98,7 +99,7 @@
 
 	pthread_mutex_unlock(&guard);
 
-	debug("%s: session=%p timer=%u", __FUNCTION__, session, t_new);
+	debug("%s: session=%p timer=%p", __FUNCTION__, session, t_new);
 
 	return t_new;
 
@@ -322,8 +323,72 @@
 	return callback(hSession,parm);
  }
 
+ //
  //	Setup mainloop implementation for the session.
- void lib3270_setup_mainloop(H3270 *hSession, int gui) {
+ //
+
+ static enum AvailableModules {
+	GUI_MODULES_NOT_INITIALIZED		= 0,
+	GUI_MODULES_NONE				= 1 << 0,
+	GUI_MODULES_GDK					= 1 << 1,
+	GUI_MODULES_GSOURCE				= 1 << 2,
+
+ } gui_modules = GUI_MODULES_NOT_INITIALIZED;
+
+ static int get_module(const char *name, void **ptr) {
+	dlerror();
+	*ptr = dlsym(RTLD_DEFAULT, name);
+	return dlerror() == NULL;
+ }
+
+ static void *(*gtk_display_get_default)(void) = NULL;
+ static void (*gdk_display_beep)(void *) = NULL;
+ static unsigned int (*g_timeout_add_full)(int priority, unsigned int interval, void *function, void *data, void *notify) = NULL;
+ static int (*g_source_remove)(unsigned int id) = NULL;
+
+ static void gui_ring_bell(H3270 *hSession) {
+	gdk_display_beep(gtk_display_get_default());
+ }
+
+ typedef struct {
+	H3270 *hSession;
+	void *userdata;
+	int (*proc)(H3270 *session, void *userdata);
+ } TimerSource;
+
+ static int do_timer(TimerSource *timer) {
+	timer->proc(timer->hSession,timer->userdata);
+	return 0;
+ }
+
+ void free_timer(TimerSource *timer) {	
+	lib3270_free(timer);
+ }
+
+ static void * gui_timer_add(H3270 *hSession, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
+
+	TimerSource *timer = (TimerSource *) lib3270_malloc(sizeof(TimerSource));
+	timer->hSession = hSession;
+	timer->userdata = userdata;
+	timer->proc = proc;
+
+	intptr_t rc = 
+			g_timeout_add_full(
+					0, 					// G_PRIORITY_DEFAULT, 
+					interval_ms,		// Interval 
+					(void *) do_timer, 	// Func
+					(void *) timer, 	// data
+					(void *) free_timer // cleanup
+			);
+
+	return (void *) rc;
+ }
+
+ static void gui_timer_remove(H3270 *session, void *timer) {
+	g_source_remove((intptr_t) timer);
+ }
+
+ int lib3270_setup_mainloop(H3270 *hSession, int gui) {
 
 	// Set default mainloop implementation.
  	hSession->io.timer.add = default_timer_add;
@@ -336,7 +401,41 @@
  	hSession->ring_bell = default_ring_bell;
  	hSession->run = default_run;
 
-	// TODO: Implement GUI mainloop.
+	if(!gui || gui_modules == GUI_MODULES_NONE) {
+		return 0;
+	}
 
+	// Use glib mainloop if available.
+
+	debug("%s: Setting up GLIB mainloop", __FUNCTION__);
+
+	if(gui_modules == GUI_MODULES_NOT_INITIALIZED) {
+
+		// Check for GDK & cia, load entry points.
+
+		if(get_module("gtk_display_get_default",(void **) &gtk_display_get_default) && get_module("gdk_display_beep",(void **) &gdk_display_beep)) {
+			gui_modules |= GUI_MODULES_GDK;
+		}
+
+		if(get_module("g_timeout_add_full",(void **) &g_timeout_add_full) && get_module("g_source_remove",(void **) &g_source_remove)) {
+			gui_modules |= GUI_MODULES_GSOURCE;
+		}
+
+		if(!gui_modules) {
+			gui_modules = GUI_MODULES_NONE;
+			return 0;
+		}
+	}
+
+	if(gui_modules & GUI_MODULES_GDK) {
+		hSession->ring_bell = gui_ring_bell;
+	}
+
+	if(gui_modules & GUI_MODULES_GSOURCE) {
+		hSession->io.timer.add = gui_timer_add;
+		hSession->io.timer.remove = gui_timer_remove;
+	}
+
+	return 1;
  }
 

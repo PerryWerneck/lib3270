@@ -42,6 +42,10 @@
  LIB3270_INTERNAL void set_popup_body(LIB3270_POPUP *popup, int error) {
 
  	switch(error) {
+	case ETIMEDOUT:
+		popup->body = N_("The connection timed out. This usually indicates that the remote server is not responding. Please check the server status or network configuration and try reconnecting.");
+		break;
+		
 	case EPIPE:
 		popup->body = N_("The connection was closed by the host. This usually indicates that the remote server has terminated the connection unexpectedly. Please check the server status or network configuration and try reconnecting.");
 		break;

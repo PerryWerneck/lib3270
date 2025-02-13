@@ -26,7 +26,7 @@
  /// @brief Set the mainloop methods for the session.
  /// @param hSession The session to be set.
  /// @param gui Non-zero if the session is running in GUI mode.
- LIB3270_INTERNAL void	  lib3270_setup_mainloop(H3270 *hSession, int gui);
+ LIB3270_INTERNAL int lib3270_setup_mainloop(H3270 *hSession, int gui);
 
  // LIB3270_INTERNAL void	* lib3270_add_timer(unsigned long msec, H3270 *session, int (*fn)(H3270 *session, void *userdata), void *userdata);
  // LIB3270_INTERNAL void	  lib3270_remove_timer(H3270 *session, void *cookie);

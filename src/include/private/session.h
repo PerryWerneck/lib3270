@@ -56,7 +56,6 @@
 	struct {
 		void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 		void	(*remove)(H3270 *session, void *id);
-		void	(*set_state)(H3270 *session, void *id, int enabled);
 	} poll;
 
 	int		(*event_dispatcher)(H3270 *session,int wait);
@@ -64,16 +63,19 @@
 	void	(*ring_bell)(H3270 *session);
 	int		(*run)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
+	// Run callback on main thread, copy parms to malloced buffer if needed.
+	void	(*post)(void(*callback)(void *), void *parm, size_t parmlen);
+
 	// Networking
 	struct {
 
 		/// @brief Connection context.
-		LIB3270_NET_CONTEXT * context;
+		LIB3270_NET_CONTEXT * context;			///< @brief Connection context.
 
-		LIB3270_CSTATE		  state;							///< @brief Connection state.
-		unsigned int		  timeout;							///< @brief Connection timeout in seconds.
-		unsigned int		  retry;							///< @brief Time to retry when connection ends with error (0 = none).
-		LIB3270_POPUP		* error;							///< @brief Last connection error.
+		LIB3270_CSTATE		  state;			///< @brief Connection state.
+		unsigned int		  timeout;			///< @brief Connection timeout in seconds.
+		unsigned int		  retry;			///< @brief Time to retry when connection ends with error (0 = none).
+		LIB3270_POPUP		* error;			///< @brief Last connection error.
 
 		int (*write)(H3270 *hSession, const void *buffer, size_t length, LIB3270_NET_CONTEXT *context);
 		int (*except)(H3270 *hSession, LIB3270_NET_CONTEXT *context);

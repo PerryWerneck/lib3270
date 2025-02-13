@@ -89,7 +89,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 
  static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
  
-	char buffer[NETWORK_BUFFER_LENGTH];
+	unsigned char buffer[NETWORK_BUFFER_LENGTH];
 
 	debug("%s",__FUNCTION__);
 	ssize_t length = recv(sock,buffer,NETWORK_BUFFER_LENGTH,MSG_DONTWAIT);
@@ -134,8 +134,8 @@ static int disconnect(H3270 *hSession, Context *context) {
 		return;
 	}
 
-	debug("Recv %d bytes",length);
- 	lib3270_net_input(hSession,buffer, length);
+	debug("Recv %ld bytes",length);
+ 	lib3270_net_input(hSession, buffer, length);
 
  }
 

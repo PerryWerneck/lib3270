@@ -27,6 +27,7 @@
  *
  */
 
+/*
 #ifndef LIB3270_DEFAULT_MODULE_PRIVATE_H_INCLUDED
 
 #define LIB3270_DEFAULT_MODULE_PRIVATE_H_INCLUDED
@@ -42,3 +43,5 @@ struct _lib3270_net_context {
 
 
 #endif // !LIB3270_OPENSSL_MODULE_PRIVATE_H_INCLUDED
+*/
+

@@ -148,22 +148,6 @@
 
  }
 
- static void default_poll_set_state(H3270 *session, void *id, int enabled) {
-
-	input_t *ip;
-
-	pthread_mutex_lock(&guard);
-	for (ip = (input_t *) session->input.list.first; ip; ip = (input_t *) ip->next) {
-		if (ip == (input_t *)id) {
-			ip->enabled = enabled ? 1 : 0;
-			session->input.changed = 1;
-			break;
-		}
-	}
-	pthread_mutex_unlock(&guard);
-
- }
-
  static int default_event_dispatcher(H3270 *hSession, int block) {
 	int ns;
 	struct timeval now, twait, *tp;
@@ -320,6 +304,10 @@
 	return callback(hSession,parm);
  }
 
+ static	void default_post(void(*callback)(void *), void *parm, size_t len) {
+	callback(parm);
+ }
+
  //
  //	Setup mainloop implementation for the session.
  //
@@ -345,6 +333,9 @@
 	G_MAIN_LOOP_RUN,
 	G_MAIN_LOOP_UNREF,
 	G_MAIN_LOOP_QUIT,
+	G_THREAD_NEW,
+	G_THREAD_JOIN,
+	G_IDLE_ADD_ONCE,
 
 	GLIB_METHOD_COUNT
  };
@@ -365,6 +356,9 @@
 	"g_main_loop_run",
 	"g_main_loop_unref",
 	"g_main_loop_quit",
+	"g_thread_new",
+	"g_thread_join",
+	"g_idle_add_once"
 
  };
 
@@ -555,18 +549,106 @@
 	return 0;
  }
 
+ typedef struct {
+	H3270 *hSession;
+	void *mainloop;
+	void *parm;
+	int(*callback)(H3270 *, void *);
+ } ThreadData;
+
+ void * gui_thread_complete(ThreadData *data) {
+	void (*g_main_loop_quit)(void *loop) =
+		glibmethods[G_MAIN_LOOP_QUIT];
+	g_main_loop_quit(data->mainloop);
+	return 0;
+ }
+
+ void * gui_thread(ThreadData *data) {
+
+	unsigned int (*g_idle_add_once)(void *function, void * data) =
+		glibmethods[G_IDLE_ADD_ONCE];
+		
+
+	intptr_t rc = data->callback(data->hSession,data->parm);
+
+	g_idle_add_once((void *) gui_thread_complete, data);
+
+	return (void *) rc;
+ }
+
+ static int gui_run(H3270 *hSession, const char *name, int(*callback)(H3270 *, void *), void *parm) {
+
+	void * (*g_thread_new)(const char *name, void *(*func)(void *), void *data) =
+		glibmethods[G_THREAD_NEW];
+
+	void * (*g_thread_join)(void *thread) =
+		glibmethods[G_THREAD_JOIN];
+
+	void * (*g_main_context_get_thread_default)() =
+		glibmethods[G_MAIN_CONTEXT_GET_THREAD_DEFAULT];
+
+	void * (*g_main_loop_new)(void * context, int is_running) =
+		glibmethods[G_MAIN_LOOP_NEW];
+
+	void (*g_main_loop_run)(void  * loop) =
+		glibmethods[G_MAIN_LOOP_RUN];
+
+	void (*g_main_loop_unref)(void *loop) =
+		glibmethods[G_MAIN_LOOP_UNREF];
+
+	ThreadData td;
+	td.hSession = hSession;
+	td.parm = parm;
+	td.callback = callback;
+	td.mainloop = g_main_loop_new(g_main_context_get_thread_default(), 0);
+
+	void *thread = g_thread_new(name,(void *(*)(void *)) gui_thread,&td);
+
+	g_main_loop_run(td.mainloop);
+	g_main_loop_unref(td.mainloop);
+
+	return (intptr_t) g_thread_join(thread);
+
+ }
+ 
+ typedef struct {
+	void (*callback)(void *);
+	u_int8_t parm[0];
+ } PostData;
+
+ static void post_complete(PostData *pd) {
+	pd->callback(pd->parm);
+	lib3270_free(pd);
+ }
+
+ static	void gui_post(void(*callback)(void *), void *parm, size_t parmlen) {
+
+	unsigned int (*g_idle_add_once)(void *function, void * data) =
+		glibmethods[G_IDLE_ADD_ONCE];
+
+	PostData *pd = (PostData *) lib3270_malloc(sizeof(PostData)+parmlen+1);
+	pd->callback = callback;
+	memcpy(pd->parm,parm,parmlen);
+
+	g_idle_add_once((void *) post_complete, pd);
+
+ }
+
  int lib3270_setup_mainloop(H3270 *hSession, int glib) {
 
 	// Set default mainloop implementation.
  	hSession->timer.add = default_timer_add;
  	hSession->timer.remove = default_timer_remove;
+
  	hSession->poll.add = default_poll_add;
  	hSession->poll.remove = default_poll_remove;
- 	hSession->poll.set_state = default_poll_set_state;
+
  	hSession->event_dispatcher = default_event_dispatcher;
+ 	hSession->run = default_run;
+	hSession->post = default_post;
+
  	hSession->wait = default_wait;
  	hSession->ring_bell = ring_bell;
- 	hSession->run = default_run;
 
 	if(!glib || glibstate == GLIB_NOT_INITIALIZED) {
 		return 0;
@@ -582,11 +664,20 @@
 		}
 	}
 
+	// Set glib mainloop implementation.
 	hSession->timer.add = gui_timer_add;
 	hSession->timer.remove = gui_source_remove;
+
 	hSession->poll.add = gui_poll_add;
 	hSession->poll.remove = gui_source_remove;
- 	hSession->wait = gui_wait;
+
+	// hSession->event_dispatcher =
+	hSession->run = gui_run;
+	hSession->post = gui_post;
+
+	hSession->wait = gui_wait;
+
+
 
 	return 1;
  }

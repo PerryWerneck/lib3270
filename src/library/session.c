@@ -325,8 +325,8 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 	trace("%s - gui=%s",__FUNCTION__,gui ? "Yes" : "No");
 
 	hSession = lib3270_malloc(sizeof(H3270));
-	lib3270_setup_mainloop(hSession,gui);
 	lib3270_session_init(hSession, model, "bracket" );
+	lib3270_setup_mainloop(hSession,gui);
 
 	if(screen_init(hSession)) {
 		lib3270_free(hSession);

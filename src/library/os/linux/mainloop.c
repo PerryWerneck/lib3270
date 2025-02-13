@@ -660,6 +660,7 @@
  	hSession->wait = default_wait;
 
 	if(!glib || glibstate == GLIB_NOT_AVAILABLE) {
+		debug("%s: Default mainloop implementation enabled",__FUNCTION__);
 		return 0;
 	}
 

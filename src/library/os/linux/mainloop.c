@@ -332,6 +332,7 @@
 	GUI_MODULES_NONE				= 1 << 0,
 	GUI_MODULES_GDK					= 1 << 1,
 	GUI_MODULES_GSOURCE				= 1 << 2,
+	GUI_MODULES_IO_CHANNEL			= 1 << 3,
 
  } gui_modules = GUI_MODULES_NOT_INITIALIZED;
 
@@ -346,6 +347,13 @@
  static unsigned int (*g_timeout_add_full)(int priority, unsigned int interval, void *function, void *data, void *notify) = NULL;
  static int (*g_source_remove)(unsigned int id) = NULL;
 
+ static void * (*g_io_channel_unix_new)(int fd) = NULL;
+ static void (*g_io_channel_unref)(void *channel) = NULL;
+ static int (*g_io_channel_set_encoding)(void *channel, const char *encoding, void *error) = NULL;
+ static unsigned int (*g_io_add_watch_full)(void* channel, int priority, int condition, void *func, void *user_data, void *notify);
+ static void (*g_io_channel_set_buffered)(void *channel,int buffered) = NULL;
+ static int (*g_io_channel_unix_get_fd)(void* channel) = NULL;
+ 
  static void gui_ring_bell(H3270 *hSession) {
 	gdk_display_beep(gtk_display_get_default());
  }
@@ -353,15 +361,23 @@
  typedef struct {
 	H3270 *hSession;
 	void *userdata;
-	int (*proc)(H3270 *session, void *userdata);
+	int (*proc)(H3270 *, void *);
  } TimerSource;
+
+ typedef struct {
+	H3270 *hSession;
+	void *userdata;
+	void *channel;
+	LIB3270_IO_FLAG	  flag;
+	void (*call)(H3270 *, int, LIB3270_IO_FLAG, void *);
+ } PollSource;
 
  static int do_timer(TimerSource *timer) {
 	timer->proc(timer->hSession,timer->userdata);
 	return 0;
  }
 
- void free_timer(TimerSource *timer) {	
+ static void free_timer(TimerSource *timer) {	
 	lib3270_free(timer);
  }
 
@@ -386,6 +402,73 @@
 
  static void gui_timer_remove(H3270 *session, void *timer) {
 	g_source_remove((intptr_t) timer);
+ }
+
+ static void free_channel(PollSource *ps) {	
+	g_io_channel_unref(ps->channel);
+	lib3270_free(ps);
+ }
+
+ static const struct {
+	LIB3270_IO_FLAG flag;
+	int condition;
+ } conditions[] = {
+	{ LIB3270_IO_FLAG_READ,			1|2 },	// IN|PRI
+	{ LIB3270_IO_FLAG_EXCEPTION,	8|16 }, // ERR|HUP
+	{ LIB3270_IO_FLAG_WRITE,		4 }		// OUT
+ };
+
+ static int do_channel(void* source, int condition, PollSource *ps) {
+
+	int sock = g_io_channel_unix_get_fd(ps->channel);
+	LIB3270_IO_FLAG flag = 0;
+
+	size_t ix;
+	for(ix = 0; ix < (sizeof(conditions)/sizeof(conditions[0])); ix++) {
+		if(condition & conditions[ix].condition) {
+			flag |= conditions[ix].flag;
+		}
+	}
+
+	#error Parei aqui.
+
+ }
+
+ static void * gui_poll_add(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
+	PollSource *ps = (PollSource *) lib3270_malloc(sizeof(PollSource));
+
+	ps->hSession = session;
+	ps->userdata = userdata;
+	ps->channel = g_io_channel_unix_new(fd);
+	ps->flag = flag;
+	ps->call = proc;
+
+	g_io_channel_set_encoding(ps->channel,NULL,NULL);
+	g_io_channel_set_buffered(ps->channel,0);
+
+	int condition = 0; 
+
+	size_t ix;
+	for(ix = 0; ix < (sizeof(conditions)/sizeof(conditions[0])); ix++) {
+		if(flag & conditions[ix].flag) {
+			condition |= conditions[ix].condition;
+		}
+	}
+
+	intptr_t id = g_io_add_watch_full(
+		ps->channel,
+		0,
+		condition,
+		(void *) do_channel,
+		ps,
+		(void *) free_channel
+	);
+
+	return (void *) id;
+ }
+
+static void gui_poll_remove(H3270 *session, void *id) {
+	g_source_remove((intptr_t) id);
  }
 
  int lib3270_setup_mainloop(H3270 *hSession, int gui) {
@@ -414,11 +497,30 @@
 		// Check for GDK & cia, load entry points.
 
 		if(get_module("gtk_display_get_default",(void **) &gtk_display_get_default) && get_module("gdk_display_beep",(void **) &gdk_display_beep)) {
+			lib3270_write_log(hSession,"mainloop","%s is available","GDK");
 			gui_modules |= GUI_MODULES_GDK;
+		} else {
+			lib3270_write_log(hSession,"mainloop","%s is not available","GDK");
 		}
 
 		if(get_module("g_timeout_add_full",(void **) &g_timeout_add_full) && get_module("g_source_remove",(void **) &g_source_remove)) {
+			lib3270_write_log(hSession,"mainloop","%s is available","GSource");
 			gui_modules |= GUI_MODULES_GSOURCE;
+		} else {
+			lib3270_write_log(hSession,"mainloop","%s is not available","GSource");
+		}
+
+		if(	get_module("g_io_channel_unix_new", (void **) &g_io_channel_unix_new)
+			&& get_module("g_io_channel_unref", (void **) &g_io_channel_unref)
+			&& get_module("g_io_channel_set_encoding", (void **) &g_io_channel_set_encoding)
+			&& get_module("g_io_add_watch_full", (void **) &g_io_add_watch_full) 
+			&& get_module("g_io_channel_set_buffered", (void **) &g_io_channel_set_buffered)
+			&& get_module("g_io_channel_unix_get_fd", (void **) &g_io_channel_unix_get_fd)
+			) {
+			lib3270_write_log(hSession,"mainloop","%s is available","GIOChannel");
+			gui_modules |= GUI_MODULES_IO_CHANNEL;
+		} else {
+			lib3270_write_log(hSession,"mainloop","%s is not available","GIOChannel");
 		}
 
 		if(!gui_modules) {

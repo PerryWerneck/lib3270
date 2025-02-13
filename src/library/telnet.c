@@ -467,7 +467,7 @@ static void connection_complete(H3270 *session) {
 ///	@brief Disconnect from host.
 void net_disconnect(H3270 *hSession) {
 	if(hSession->xio.write) {
-		hSession->io.poll.remove(hSession, hSession->xio.write);
+		hSession->poll.remove(hSession, hSession->xio.write);
 		hSession->xio.write = 0;
 	}
 
@@ -1478,7 +1478,7 @@ void net_exception(H3270 *session, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNU
 		session->syncing = 1;
 
 		if(session->xio.except) {
-			session->io.poll.remove(session, session->xio.except);
+			session->poll.remove(session, session->xio.except);
 			session->xio.except = NULL;
 		}
 	}

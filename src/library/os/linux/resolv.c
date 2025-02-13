@@ -68,12 +68,12 @@
 	}
 
 	if(context->timer) {
-		hSession->io.timer.remove(hSession,context->timer);
+		hSession->timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 	
 	if(context->resolved) {
-		hSession->io.poll.remove(hSession,context->resolved);
+		hSession->poll.remove(hSession,context->resolved);
 		context->resolved = NULL;
 	}
 
@@ -351,8 +351,8 @@
 
 	}
 
-	context->timer = hSession->io.timer.add(hSession,timeout*1000,(void *) net_timeout,context);
-	context->resolved = hSession->io.poll.add(hSession,context->sock,LIB3270_IO_FLAG_READ,(void *) net_response,context);
+	context->timer = hSession->timer.add(hSession,timeout*1000,(void *) net_timeout,context);
+	context->resolved = hSession->poll.add(hSession,context->sock,LIB3270_IO_FLAG_READ,(void *) net_response,context);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

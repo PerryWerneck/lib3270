@@ -211,7 +211,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 
 	if(hSession->xio.write) {
 		trace("%s write=%p",__FUNCTION__,hSession->xio.write);
-		hSession->io.poll.remove(hSession, hSession->xio.write);
+		hSession->poll.remove(hSession, hSession->xio.write);
 		hSession->xio.write = NULL;
 	}
 

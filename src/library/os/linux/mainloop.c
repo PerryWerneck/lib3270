@@ -558,11 +558,11 @@
  int lib3270_setup_mainloop(H3270 *hSession, int glib) {
 
 	// Set default mainloop implementation.
- 	hSession->io.timer.add = default_timer_add;
- 	hSession->io.timer.remove = default_timer_remove;
- 	hSession->io.poll.add = default_poll_add;
- 	hSession->io.poll.remove = default_poll_remove;
- 	hSession->io.poll.set_state = default_poll_set_state;
+ 	hSession->timer.add = default_timer_add;
+ 	hSession->timer.remove = default_timer_remove;
+ 	hSession->poll.add = default_poll_add;
+ 	hSession->poll.remove = default_poll_remove;
+ 	hSession->poll.set_state = default_poll_set_state;
  	hSession->event_dispatcher = default_event_dispatcher;
  	hSession->wait = default_wait;
  	hSession->ring_bell = ring_bell;
@@ -576,16 +576,16 @@
 	for(ix = 0; ix < GLIB_METHOD_COUNT; ix++) {
 		dlerror();
 		glibmethods[ix] = dlsym(RTLD_DEFAULT, glibnames[ix]);
-		if(dlerror() == NULL) {
+		if(dlerror() != NULL) {
 			debug("%s: Error loading %s", __FUNCTION__, glibnames[ix]);
 			return -1;
 		}
 	}
 
-	hSession->io.timer.add = gui_timer_add;
-	hSession->io.timer.remove = gui_source_remove;
-	hSession->io.poll.add = gui_poll_add;
-	hSession->io.poll.remove = gui_source_remove;
+	hSession->timer.add = gui_timer_add;
+	hSession->timer.remove = gui_source_remove;
+	hSession->poll.add = gui_poll_add;
+	hSession->poll.remove = gui_source_remove;
  	hSession->wait = gui_wait;
 
 	return 1;

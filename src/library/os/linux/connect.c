@@ -84,17 +84,17 @@
 	debug("%s: CONNECTED",__FUNCTION__);
 
 	if(context->except) {
-		hSession->io.poll.remove(hSession,context->except);
+		hSession->poll.remove(hSession,context->except);
 		context->except = NULL;
 	}
 
 	if(context->connected) {
-		hSession->io.poll.remove(hSession,context->connected);
+		hSession->poll.remove(hSession,context->connected);
 		context->connected = NULL;
 	}
 
 	if(context->timer) {
-		hSession->io.timer.remove(hSession,context->timer);
+		hSession->timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 
@@ -212,17 +212,17 @@
 static int net_disconnect(H3270 *hSession, Context *context) {
 
 	if(context->except) {
-		hSession->io.poll.remove(hSession,context->except);
+		hSession->poll.remove(hSession,context->except);
 		context->except = NULL;
 	}
 
 	if(context->connected) {
-		hSession->io.poll.remove(hSession,context->connected);
+		hSession->poll.remove(hSession,context->connected);
 		context->connected = NULL;
 	}
 
 	if(context->timer) {
-		hSession->io.timer.remove(hSession,context->timer);
+		hSession->timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 
@@ -312,9 +312,9 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
 	context->parent.disconnect = (void *) net_disconnect;
 
-	context->timer = hSession->io.timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
-	context->except = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);
-	context->connected = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
+	context->timer = hSession->timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
+	context->except = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);
+	context->connected = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
 
 	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 

@@ -64,17 +64,17 @@ static int disconnect(H3270 *hSession, Context *context) {
 	debug("%s",__FUNCTION__);
 
 	if(context->xio.read) {
-		hSession->io.poll.remove(hSession,context->xio.read);
+		hSession->poll.remove(hSession,context->xio.read);
 		context->xio.read = NULL;
 	}
 
 	if(context->xio.except) {
-		hSession->io.poll.remove(hSession,context->xio.except);
+		hSession->poll.remove(hSession,context->xio.except);
 		context->xio.except = NULL;
 	}
 
 	if(context->xio.write) {
-		hSession->io.poll.remove(hSession,context->xio.write);
+		hSession->poll.remove(hSession,context->xio.write);
 		context->xio.write = NULL;
 	}
 
@@ -147,7 +147,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	if (!hSession->syncing) {
 		hSession->syncing = 1;
 		if(context->xio.except) {
-			hSession->io.poll.remove(hSession, context->xio.except);
+			hSession->poll.remove(hSession, context->xio.except);
 			context->xio.except = NULL;
 		}
 	}
@@ -158,7 +158,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	if(context->xio.except) {
 		return EBUSY;
 	}
-	context->xio.except = hSession->io.poll.add(hSession,context->parent.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+	context->xio.except = hSession->poll.add(hSession,context->parent.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
 	return 0;
  }
 
@@ -223,8 +223,8 @@ static int disconnect(H3270 *hSession, Context *context) {
 	context->parent.sock = sock;
 	context->parent.disconnect = (void *) disconnect;
 
-	context->xio.read = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
-	context->xio.except = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+	context->xio.read = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
+	context->xio.except = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
 
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;

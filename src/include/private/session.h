@@ -49,19 +49,15 @@
 
 	/// @brief I/O handlers for this session.
 	struct {
+		void *	(*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
+		void	(*remove)(H3270 *session, void *timer);
+	} timer;
 
-		struct {
-			void *	(*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
-			void	(*remove)(H3270 *session, void *timer);
-		} timer;
-
-		struct {
-			void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-			void	(*remove)(H3270 *session, void *id);
-			void	(*set_state)(H3270 *session, void *id, int enabled);
-		} poll;
-
-	} io;
+	struct {
+		void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+		void	(*remove)(H3270 *session, void *id);
+		void	(*set_state)(H3270 *session, void *id, int enabled);
+	} poll;
 
 	int		(*event_dispatcher)(H3270 *session,int wait);
 	int 	(*wait)(H3270 *session, int seconds);

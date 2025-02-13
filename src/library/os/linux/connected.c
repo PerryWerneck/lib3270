@@ -152,8 +152,8 @@
 
 	context->parent.sock = sock;
 	context->parent.disconnect = (void *) net_close;
-	context->except = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except, context);
-	context->recv = hSession->io.poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) net_recv, context);
+	context->except = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except, context);
+	context->recv = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) net_recv, context);
 
 	hSession->connection.write = (void *) net_send;
 

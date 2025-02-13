@@ -109,6 +109,11 @@
 	TN3270_SESSION_GET_CLASS(self)->display(self);
  }
 
+ static void handle_ring_bell(H3270 *session, int id) {
+ 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	TN3270_SESSION_GET_CLASS(self)->ring_bell(self,id);
+ }
+
  static inline void notify(TN3270Session *session, GParamSpec *id)
  {
 	debug("--> Property '%s' has changed",id->name);
@@ -160,6 +165,11 @@
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_PROGRAM_MESSAGE]);
  }
 
+ static void ring_bell(TN3270Session *session, int id)
+ {
+	g_message("Ring bell %d",id);
+ }
+
  static void nop_void() {
  }
 
@@ -177,6 +187,7 @@
 	klass->status_changed = status_changed;
 	klass->display = nop_void;
 	klass->erase = nop_void;
+	klass->ring_bell = ring_bell;
  }
 
  int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self)
@@ -242,6 +253,7 @@
 	cbk->update_status = handle_status_changed;
 	cbk->erase = handle_erase;
 	cbk->display = handle_display;
+	cbk->ring_bell = handle_ring_bell;
 
 	return 0;
  }

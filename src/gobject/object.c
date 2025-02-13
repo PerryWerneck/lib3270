@@ -249,7 +249,7 @@
 	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(gobject);
 	TN3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
 	
-	self->handler = lib3270_session_new("");
+	self->handler = lib3270_session_new("2",1);
 	lib3270_set_user_data(self->handler,gobject);
 
 	if(tn3270_session_setup_callbacks(klass,self))

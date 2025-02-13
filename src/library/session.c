@@ -48,12 +48,6 @@
 #include <lib3270/properties.h>
 #include <private/mainloop.h>
 
-/*---[ Globals ]--------------------------------------------------------------------------------------------------------------*/
-
-static H3270 *default_session = NULL;
-
-/*---[ Statics ]--------------------------------------------------------------------------------------------------------------*/
-
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
 LIB3270_EXPORT void lib3270_autoptr_cleanup_H3270(H3270 **ptr) {
@@ -115,9 +109,6 @@ void lib3270_session_free(H3270 *h) {
 	for(f=0; f<(sizeof(h->buffer)/sizeof(h->buffer[0])); f++) {
 		release_pointer(h->buffer[f]);
 	}
-
-	if(h == default_session)
-		default_session = NULL;
 
 	// Release hostname info
 	release_pointer(h->host.current);
@@ -328,20 +319,19 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 
 }
 
-H3270 * lib3270_session_new(const char *model) {
+H3270 * lib3270_session_new(const char *model, int gui) {
 	H3270 * hSession;
 
-	trace("%s - configured=%s",__FUNCTION__,default_session ? "Yes" : "No");
+	trace("%s - gui=%s",__FUNCTION__,gui ? "Yes" : "No");
 
 	hSession = lib3270_malloc(sizeof(H3270));
+	lib3270_setup_mainloop(hSession,gui);
 	lib3270_session_init(hSession, model, "bracket" );
-	lib3270_setup_mainloop(hSession,0);
 
-	if(!default_session)
-		default_session = hSession;
-
-	if(screen_init(hSession))
+	if(screen_init(hSession)) {
+		lib3270_free(hSession);
 		return NULL;
+	}
 
 	trace("%s: Initializing KYBD",__FUNCTION__);
 	lib3270_register_schange(hSession,LIB3270_STATE_CONNECT,kybd_connect,NULL);
@@ -389,13 +379,6 @@ LIB3270_INTERNAL int check_offline_session(const H3270 *hSession) {
 		return errno = EISCONN;
 
 	return 0;
-}
-
-LIB3270_EXPORT H3270 * lib3270_get_default_session_handle(void) {
-	if(default_session)
-		return default_session;
-
-	return lib3270_session_new("");
 }
 
 LIB3270_EXPORT void lib3270_set_user_data(H3270 *h, void *ptr) {

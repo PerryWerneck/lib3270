@@ -42,7 +42,7 @@
  * @return Handle of the new session (release it with lib3270_session_free to avoid memory leaks).
  *
  */
-LIB3270_EXPORT H3270 * lib3270_session_new(const char *model);
+LIB3270_EXPORT H3270 * lib3270_session_new(const char *model, int gui);
 
 LIB3270_EXPORT void lib3270_autoptr_cleanup_H3270(H3270 **ptr);
 
@@ -94,6 +94,8 @@ struct lib3270_session_callbacks {
 	int	 (*action)(H3270 *hSession, const char *name);
 
 	void (*word_selected)(H3270 *hSession, int start, int end);
+
+	void (*ring_bell)(H3270 *hSession, int id);
 
 };
 

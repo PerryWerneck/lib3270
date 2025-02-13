@@ -1290,14 +1290,6 @@ LIB3270_EXPORT void  * lib3270_free(void *p);
 LIB3270_EXPORT void   lib3270_autoptr_cleanup_char(char **ptr);
 
 /**
- * Get default session handle.
- *
- * @return Internal's lib3270 session handle.
- *
- */
-LIB3270_EXPORT H3270 * LIB3270_DEPRECATED(lib3270_get_default_session_handle(void));
-
-/**
  * Get library version.
  *
  * @return Version of active library as string.

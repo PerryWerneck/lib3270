@@ -355,7 +355,7 @@ LIB3270_EXPORT int lib3270_paste_text(H3270 *hSession, const unsigned char *str)
 		return -errno;
 
 	if(!str) {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 		return -(errno = EINVAL);
 	}
 
@@ -401,7 +401,7 @@ LIB3270_EXPORT int lib3270_paste_next(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
 	if(!(lib3270_is_connected(hSession) && hSession->paste_buffer)) {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 		return 0;
 	}
 

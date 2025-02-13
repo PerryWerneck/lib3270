@@ -27,7 +27,7 @@
 	GMainLoop *loop = g_main_loop_new(g_main_context_default(), FALSE);
 
 	g_autoptr(TN3270Session) session = tn3270_session_new();
-	g_object_set(session, "autoconnect", TRUE, NULL);
+	// g_object_set(session, "autoconnect", TRUE, NULL);
 
 	g_main_loop_run(loop);
 	g_main_loop_unref(loop);

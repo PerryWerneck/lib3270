@@ -903,7 +903,7 @@ ansi_sgr(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 
 static enum lib3270_ansi_state
 ansi_bell(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
-	hSession->ring_bell(hSession);
+	hSession->cbk.ring_bell(hSession,0);
 	return DATA;
 }
 

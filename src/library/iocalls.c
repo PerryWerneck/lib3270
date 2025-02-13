@@ -100,6 +100,7 @@ static struct {
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
+/*
 void lib3270_setup_mainloop(H3270 *hSession) {
 	hSession->timer.add = defs.add_timer;
 	hSession->timer.remove = defs.remove_timer;
@@ -107,10 +108,10 @@ void lib3270_setup_mainloop(H3270 *hSession) {
 	hSession->poll.remove = defs.remove_poll;
 	hSession->poll.set_state = defs.set_poll_state;
 	hSession->wait = defs.wait_callback;
-	hSession->ring_bell = defs.ring_bell;
 	hSession->run = defs.run_task;
 	hSession->event_dispatcher = defs.event_dispatcher;
 }
+*/
 
 /* Timeouts */
 

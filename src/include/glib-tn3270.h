@@ -32,6 +32,7 @@
  G_DECLARE_DERIVABLE_TYPE (TN3270Session, tn3270_session, TN3270, SESSION, GObject)
 
  enum TN3270SessionProperties {
+	TN3270_SESSION_PROPERTY_NONE,
 	TN3270_SESSION_PROPERTY_CONNECTED,
 	TN3270_SESSION_PROPERTY_ASSOCIATED_LU,
 	TN3270_SESSION_PROPERTY_URL,
@@ -79,7 +80,7 @@
 
 	// States
 	void (*set_timer)(TN3270Session *session, gboolean busy);
-	void (*ring_bell)(TN3270Session *session);
+	void (*ring_bell)(TN3270Session *session, int id);
 
 	gpointer padding[8];
 	

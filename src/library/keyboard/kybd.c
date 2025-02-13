@@ -132,7 +132,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If no connection, forget it.
 	if (!lib3270_is_connected(hSession)) {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (not connected)\n");
 		errno = ENOTCONN;
 		return NULL;
@@ -140,7 +140,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If operator error, complain and drop it.
 	if (hSession->kybdlock & KL_OERR_MASK) {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (operator error)\n");
 		errno = EINVAL;
 		return NULL;
@@ -148,7 +148,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If scroll lock, complain and drop it.
 	if (hSession->kybdlock & KL_SCROLLED) {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (scrolled)\n");
 		errno = EINVAL;
 		return NULL;
@@ -156,7 +156,7 @@ struct ta * new_ta(H3270 *hSession, TA_TYPE type) {
 
 	// If typeahead disabled, complain and drop it.
 	if (!hSession->typeahead) {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 		lib3270_write_event_trace(hSession,"typeahead action dropped (no typeahead)\n");
 		errno = EINVAL;
 		return NULL;
@@ -399,7 +399,7 @@ void operator_error(H3270 *hSession, int error_type) {
 		kybdlock_set(hSession,(unsigned int)error_type);
 		flush_ta(hSession);
 	} else {
-		hSession->ring_bell(hSession);
+		hSession->cbk.ring_bell(hSession,0);
 	}
 }
 

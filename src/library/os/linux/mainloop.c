@@ -17,6 +17,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file mainloop.c
+ * @brief Implements the main loop handler for the application.
+ *
+ * This file contains the implementation of the main loop handler, which is responsible
+ * for managing the primary event loop of the application. It can utilize GLib or other
+ * OS-specific internal mechanisms to handle events and dispatch them appropriately.
+ *
+ * @note This implementation is specific to the Linux operating system.
+ */
+
  #define _GNU_SOURCE
  #include <config.h>
  #include <lib3270/defs.h>
@@ -318,8 +329,6 @@
  } glibstate = GLIB_NOT_INITIALIZED;
 
  enum GlibMethod {
-	GTK_DISPLAY_GET_DEFAULT,
-	GDK_DISPLAY_BEEP,
 	G_TIMEOUT_ADD_FULL,
 	G_SOURCE_REMOVE,
 	G_IO_CHANNEL_UNIX_NEW,
@@ -342,8 +351,6 @@
  };
 
  static const char * glibnames[GLIB_METHOD_COUNT] = {
-	"gtk_display_get_default",
-	"gdk_display_beep",
 	"g_timeout_add_full",
 	"g_source_remove",
 	"g_io_channel_unix_new",
@@ -365,19 +372,6 @@
  };
 
  static void * glibmethods[GLIB_METHOD_COUNT];
-
- static void ring_bell(H3270 *hSession) {
-
-	if(!lib3270_get_toggle(hSession,LIB3270_TOGGLE_BEEP) || glibstate != GLIB_AVAILABLE) {
-		return;
-	}
-
-	void *(*gtk_display_get_default)(void) = glibmethods[GTK_DISPLAY_GET_DEFAULT];
- 	void (*gdk_display_beep)(void *) = glibmethods[GDK_DISPLAY_BEEP];
-
-	gdk_display_beep(gtk_display_get_default());
-
- }
 
  typedef struct {
 	H3270 *hSession;
@@ -650,6 +644,8 @@
 
  int lib3270_setup_mainloop(H3270 *hSession, int glib) {
 
+	debug("%s",__FUNCTION__);
+
 	// Set default mainloop implementation.
  	hSession->timer.add = default_timer_add;
  	hSession->timer.remove = default_timer_remove;
@@ -662,9 +658,8 @@
 	hSession->post = default_post;
 
  	hSession->wait = default_wait;
- 	hSession->ring_bell = ring_bell;
 
-	if(!glib || glibstate == GLIB_NOT_INITIALIZED) {
+	if(!glib || glibstate == GLIB_NOT_AVAILABLE) {
 		return 0;
 	}
 
@@ -673,6 +668,7 @@
 		dlerror();
 		glibmethods[ix] = dlsym(RTLD_DEFAULT, glibnames[ix]);
 		if(dlerror() != NULL) {
+			glibstate = GLIB_NOT_AVAILABLE;
 			debug("%s: Error loading %s", __FUNCTION__, glibnames[ix]);
 			return -1;
 		}
@@ -691,7 +687,7 @@
 
 	hSession->wait = gui_wait;
 
-
+	debug("%s: GLib mainloop implementation enabled",__FUNCTION__);
 
 	return 1;
  }

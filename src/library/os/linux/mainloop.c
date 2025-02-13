@@ -21,6 +21,7 @@
  #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270.h>
+ #include <lib3270/toggle.h>
  #include <private/mainloop.h>
  #include <private/session.h>
  #include <private/linkedlist.h>
@@ -315,10 +316,6 @@
 	return 0;
  }
 
- static void default_ring_bell(H3270 *hSession) {
-
- }
-
  static int default_run(H3270 *hSession, const char *name, int(*callback)(H3270 *, void *), void *parm) {
 	return callback(hSession,parm);
  }
@@ -326,36 +323,64 @@
  //
  //	Setup mainloop implementation for the session.
  //
+ static enum GlibState {
+	GLIB_NOT_INITIALIZED,
+	GLIB_NOT_AVAILABLE,
+	GLIB_AVAILABLE
+ } glibstate = GLIB_NOT_INITIALIZED;
 
- static enum AvailableModules {
-	GUI_MODULES_NOT_INITIALIZED		= 0,
-	GUI_MODULES_NONE				= 1 << 0,
-	GUI_MODULES_GDK					= 1 << 1,
-	GUI_MODULES_GSOURCE				= 1 << 2,
-	GUI_MODULES_IO_CHANNEL			= 1 << 3,
+ enum GlibMethod {
+	GTK_DISPLAY_GET_DEFAULT,
+	GDK_DISPLAY_BEEP,
+	G_TIMEOUT_ADD_FULL,
+	G_SOURCE_REMOVE,
+	G_IO_CHANNEL_UNIX_NEW,
+	G_IO_CHANNEL_UNREF,
+	G_IO_CHANNEL_SET_ENCODING,
+	G_IO_ADD_WATCH_FULL,
+ 	G_IO_CHANNEL_SET_BUFFERED,
+ 	G_IO_CHANNEL_UNIX_GET_FD,
+	G_MAIN_CONTEXT_GET_THREAD_DEFAULT,
+	G_MAIN_LOOP_NEW,
+	G_MAIN_LOOP_RUN,
+	G_MAIN_LOOP_UNREF,
+	G_MAIN_LOOP_QUIT,
 
- } gui_modules = GUI_MODULES_NOT_INITIALIZED;
+	GLIB_METHOD_COUNT
+ };
 
- static int get_module(const char *name, void **ptr) {
-	dlerror();
-	*ptr = dlsym(RTLD_DEFAULT, name);
-	return dlerror() == NULL;
- }
+ static const char * glibnames[GLIB_METHOD_COUNT] = {
+	"gtk_display_get_default",
+	"gdk_display_beep",
+	"g_timeout_add_full",
+	"g_source_remove",
+	"g_io_channel_unix_new",
+	"g_io_channel_unref",
+	"g_io_channel_set_encoding",
+	"g_io_add_watch_full",
+	"g_io_channel_set_buffered",
+	"g_io_channel_unix_get_fd",
+	"g_main_context_get_thread_default",
+	"g_main_loop_new",
+	"g_main_loop_run",
+	"g_main_loop_unref",
+	"g_main_loop_quit",
 
- static void *(*gtk_display_get_default)(void) = NULL;
- static void (*gdk_display_beep)(void *) = NULL;
- static unsigned int (*g_timeout_add_full)(int priority, unsigned int interval, void *function, void *data, void *notify) = NULL;
- static int (*g_source_remove)(unsigned int id) = NULL;
+ };
 
- static void * (*g_io_channel_unix_new)(int fd) = NULL;
- static void (*g_io_channel_unref)(void *channel) = NULL;
- static int (*g_io_channel_set_encoding)(void *channel, const char *encoding, void *error) = NULL;
- static unsigned int (*g_io_add_watch_full)(void* channel, int priority, int condition, void *func, void *user_data, void *notify);
- static void (*g_io_channel_set_buffered)(void *channel,int buffered) = NULL;
- static int (*g_io_channel_unix_get_fd)(void* channel) = NULL;
- 
- static void gui_ring_bell(H3270 *hSession) {
+ static void * glibmethods[GLIB_METHOD_COUNT];
+
+ static void ring_bell(H3270 *hSession) {
+
+	if(!lib3270_get_toggle(hSession,LIB3270_TOGGLE_BEEP) || glibstate != GLIB_AVAILABLE) {
+		return;
+	}
+
+	void *(*gtk_display_get_default)(void) = glibmethods[GTK_DISPLAY_GET_DEFAULT];
+ 	void (*gdk_display_beep)(void *) = glibmethods[GDK_DISPLAY_BEEP];
+
 	gdk_display_beep(gtk_display_get_default());
+
  }
 
  typedef struct {
@@ -383,6 +408,9 @@
 
  static void * gui_timer_add(H3270 *hSession, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
+	unsigned int (*g_timeout_add_full)(int priority, unsigned int interval, void *function, void *data, void *notify) 
+		= glibmethods[G_TIMEOUT_ADD_FULL];
+
 	TimerSource *timer = (TimerSource *) lib3270_malloc(sizeof(TimerSource));
 	timer->hSession = hSession;
 	timer->userdata = userdata;
@@ -400,11 +428,14 @@
 	return (void *) rc;
  }
 
- static void gui_timer_remove(H3270 *session, void *timer) {
-	g_source_remove((intptr_t) timer);
+ static void gui_source_remove(H3270 *session, void *id) {
+	int (*g_source_remove)(unsigned int id) = glibmethods[G_SOURCE_REMOVE];
+	g_source_remove((intptr_t) id);
  }
 
  static void free_channel(PollSource *ps) {	
+	void (*g_io_channel_unref)(void *channel) 
+		= glibmethods[G_IO_CHANNEL_UNREF];
 	g_io_channel_unref(ps->channel);
 	lib3270_free(ps);
  }
@@ -420,6 +451,8 @@
 
  static int do_channel(void* source, int condition, PollSource *ps) {
 
+	int (*g_io_channel_unix_get_fd)(void* channel) = glibmethods[G_IO_CHANNEL_UNIX_GET_FD];
+
 	int sock = g_io_channel_unix_get_fd(ps->channel);
 	LIB3270_IO_FLAG flag = 0;
 
@@ -430,11 +463,26 @@
 		}
 	}
 
-	#error Parei aqui.
+	ps->call(ps->hSession,sock,flag,ps->userdata);
 
+	return 0;
  }
 
  static void * gui_poll_add(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
+	
+	void (*g_io_channel_set_buffered)(void *channel,int buffered) 
+		= glibmethods[G_IO_CHANNEL_SET_BUFFERED];
+
+	void * (*g_io_channel_unix_new)(int fd) 
+		= glibmethods[G_IO_CHANNEL_UNIX_NEW];
+
+ 	int (*g_io_channel_set_encoding)(void *channel, const char *encoding, void *error) 
+		= glibmethods[G_IO_CHANNEL_SET_ENCODING];
+
+	unsigned int (*g_io_add_watch_full)(void* channel, int priority, int condition, void *func, void *user_data, void *notify)
+		= glibmethods[G_IO_ADD_WATCH_FULL];
+
+	
 	PollSource *ps = (PollSource *) lib3270_malloc(sizeof(PollSource));
 
 	ps->hSession = session;
@@ -467,11 +515,47 @@
 	return (void *) id;
  }
 
-static void gui_poll_remove(H3270 *session, void *id) {
-	g_source_remove((intptr_t) id);
+ static int gui_wait_complete(void *loop) {
+	void (*g_main_loop_quit)(void *loop) =
+		glibmethods[G_MAIN_LOOP_QUIT];
+
+	g_main_loop_quit(loop);
+	return 0;
  }
 
- int lib3270_setup_mainloop(H3270 *hSession, int gui) {
+ static int gui_wait(H3270 *hSession, int seconds) {
+	void * (*g_main_context_get_thread_default)() =
+		glibmethods[G_MAIN_CONTEXT_GET_THREAD_DEFAULT];
+
+	void * (*g_main_loop_new)(void * context, int is_running) =
+		glibmethods[G_MAIN_LOOP_NEW];
+
+	void (*g_main_loop_run)(void  * loop) =
+		glibmethods[G_MAIN_LOOP_RUN];
+
+	void (*g_main_loop_unref)(void *loop) =
+		glibmethods[G_MAIN_LOOP_UNREF];
+
+	unsigned int (*g_timeout_add_full)(int priority, unsigned int interval, void *function, void *data, void *notify) 
+		= glibmethods[G_TIMEOUT_ADD_FULL];
+
+	void *loop = g_main_loop_new(g_main_context_get_thread_default(), 0);
+
+	g_timeout_add_full(
+			0, 								// G_PRIORITY_DEFAULT, 
+			seconds * 1000L,				// Interval 
+			(void *) gui_wait_complete, 	// Func
+			(void *) loop, 					// data
+			(void *) NULL 					// cleanup
+	);
+
+	g_main_loop_run(loop);
+	g_main_loop_unref(loop);
+
+	return 0;
+ }
+
+ int lib3270_setup_mainloop(H3270 *hSession, int glib) {
 
 	// Set default mainloop implementation.
  	hSession->io.timer.add = default_timer_add;
@@ -481,62 +565,28 @@ static void gui_poll_remove(H3270 *session, void *id) {
  	hSession->io.poll.set_state = default_poll_set_state;
  	hSession->event_dispatcher = default_event_dispatcher;
  	hSession->wait = default_wait;
- 	hSession->ring_bell = default_ring_bell;
+ 	hSession->ring_bell = ring_bell;
  	hSession->run = default_run;
 
-	if(!gui || gui_modules == GUI_MODULES_NONE) {
+	if(!glib || glibstate == GLIB_NOT_INITIALIZED) {
 		return 0;
 	}
 
-	// Use glib mainloop if available.
-
-	debug("%s: Setting up GLIB mainloop", __FUNCTION__);
-
-	if(gui_modules == GUI_MODULES_NOT_INITIALIZED) {
-
-		// Check for GDK & cia, load entry points.
-
-		if(get_module("gtk_display_get_default",(void **) &gtk_display_get_default) && get_module("gdk_display_beep",(void **) &gdk_display_beep)) {
-			lib3270_write_log(hSession,"mainloop","%s is available","GDK");
-			gui_modules |= GUI_MODULES_GDK;
-		} else {
-			lib3270_write_log(hSession,"mainloop","%s is not available","GDK");
-		}
-
-		if(get_module("g_timeout_add_full",(void **) &g_timeout_add_full) && get_module("g_source_remove",(void **) &g_source_remove)) {
-			lib3270_write_log(hSession,"mainloop","%s is available","GSource");
-			gui_modules |= GUI_MODULES_GSOURCE;
-		} else {
-			lib3270_write_log(hSession,"mainloop","%s is not available","GSource");
-		}
-
-		if(	get_module("g_io_channel_unix_new", (void **) &g_io_channel_unix_new)
-			&& get_module("g_io_channel_unref", (void **) &g_io_channel_unref)
-			&& get_module("g_io_channel_set_encoding", (void **) &g_io_channel_set_encoding)
-			&& get_module("g_io_add_watch_full", (void **) &g_io_add_watch_full) 
-			&& get_module("g_io_channel_set_buffered", (void **) &g_io_channel_set_buffered)
-			&& get_module("g_io_channel_unix_get_fd", (void **) &g_io_channel_unix_get_fd)
-			) {
-			lib3270_write_log(hSession,"mainloop","%s is available","GIOChannel");
-			gui_modules |= GUI_MODULES_IO_CHANNEL;
-		} else {
-			lib3270_write_log(hSession,"mainloop","%s is not available","GIOChannel");
-		}
-
-		if(!gui_modules) {
-			gui_modules = GUI_MODULES_NONE;
-			return 0;
+	size_t ix;
+	for(ix = 0; ix < GLIB_METHOD_COUNT; ix++) {
+		dlerror();
+		glibmethods[ix] = dlsym(RTLD_DEFAULT, glibnames[ix]);
+		if(dlerror() == NULL) {
+			debug("%s: Error loading %s", __FUNCTION__, glibnames[ix]);
+			return -1;
 		}
 	}
 
-	if(gui_modules & GUI_MODULES_GDK) {
-		hSession->ring_bell = gui_ring_bell;
-	}
-
-	if(gui_modules & GUI_MODULES_GSOURCE) {
-		hSession->io.timer.add = gui_timer_add;
-		hSession->io.timer.remove = gui_timer_remove;
-	}
+	hSession->io.timer.add = gui_timer_add;
+	hSession->io.timer.remove = gui_source_remove;
+	hSession->io.poll.add = gui_poll_add;
+	hSession->io.poll.remove = gui_source_remove;
+ 	hSession->wait = gui_wait;
 
 	return 1;
  }

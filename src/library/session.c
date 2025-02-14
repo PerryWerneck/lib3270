@@ -137,8 +137,8 @@ void lib3270_session_free(H3270 *h) {
 	release_pointer(h->tabs);
 
 	// Release logfile
+	lib3270_trace_close(h);
 	release_pointer(h->log.file);
-	release_pointer(h->trace.file);
 	lib3270_free(h);
 
 }
@@ -221,7 +221,7 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 
 	lib3270_set_popup_handler(hSession, NULL);
 	lib3270_set_log_handler(hSession,NULL,NULL);
-	lib3270_set_trace_handler(hSession,NULL,NULL);
+	lib3270_trace_close(hSession);
 
 }
 
@@ -329,7 +329,12 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 
 	hSession = lib3270_malloc(sizeof(H3270));
 	lib3270_session_init(hSession, model, "bracket" );
+	
+	lib3270_trace_close(hSession); // Initialize trace callbacks.
+
 	lib3270_setup_mainloop(hSession,gui);
+
+
 
 	if(screen_init(hSession)) {
 		lib3270_free(hSession);

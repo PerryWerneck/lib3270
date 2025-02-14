@@ -50,7 +50,7 @@
 #include "ctlrc.h"
 #include "popupsc.h"
 #include "screenc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "togglesc.h"
 #include "utilc.h"
 #include <lib3270/log.h>

@@ -40,7 +40,7 @@
 
 #include "telnetc.h"
 #include "hostc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "screen.h"
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/

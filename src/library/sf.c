@@ -59,7 +59,7 @@
 #include "seec.h"
 #include "sf.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 
 /* Screen globals. */

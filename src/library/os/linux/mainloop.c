@@ -40,6 +40,7 @@
  #include <pthread.h>
  #include <string.h>
  #include <dlfcn.h>
+ #include <stdint.h>
 
  #define MILLION 1000000L
 

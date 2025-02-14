@@ -44,7 +44,7 @@
  #include <internals.h>
  #include <hostc.h>
  #include <statusc.h>
- #include <trace_dsc.h>
+ #include <private/trace.h>
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;

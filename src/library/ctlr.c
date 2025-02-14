@@ -57,7 +57,7 @@
 #include "sf.h"
 #include "statusc.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 #include "widec.h"
 #include "screenc.h"

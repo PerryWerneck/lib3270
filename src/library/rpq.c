@@ -57,7 +57,7 @@
 #include "popupsc.h"
 //#include "tablesc.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 #include "sf.h"
 

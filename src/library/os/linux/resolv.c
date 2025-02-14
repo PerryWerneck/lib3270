@@ -38,7 +38,7 @@
  #include <lib3270/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
- #include <trace_dsc.h>
+ #include <private/trace.h>
  #include <malloc.h>
 
  #include <internals.h>

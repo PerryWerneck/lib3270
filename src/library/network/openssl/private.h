@@ -47,7 +47,7 @@
 #include <array.h>
 #include <internals.h>
 #include <networking.h>
-#include <trace_dsc.h>
+#include <private/trace.h>
 
 #include <openssl/ssl.h>
 #include <openssl/x509.h>

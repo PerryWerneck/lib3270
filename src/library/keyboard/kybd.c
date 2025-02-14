@@ -68,7 +68,7 @@ struct ta;
 #include "statusc.h"
 #include "telnetc.h"
 #include "togglesc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 //#include "utf8c.h"
 #include "utilc.h"
 #if defined(X3270_DBCS) /*[*/

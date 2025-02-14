@@ -52,7 +52,7 @@
 #include "kybdc.h"
 #include "popupsc.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 
 // static Boolean cut_xfer_in_progress = 0;

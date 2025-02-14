@@ -24,7 +24,7 @@
  #include <private/session.h>
  #include <private/intl.h>
  #include <lib3270/popup.h>
- #include <trace_dsc.h>
+ #include <private/trace.h>
 
  #include <string.h>
 

@@ -1,33 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como trace_ds.c e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- * macmiranda@bb.com.br		(Marco Aurélio Caldas Miranda)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 
@@ -51,59 +38,29 @@
 #include <stdarg.h>
 #include <fcntl.h>
 #include "3270ds.h"
-//#include "resources.h"
-
-// #include "charsetc.h"
 #include "ctlrc.h"
 #include "popupsc.h"
-// #include "tablesc.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 #include <lib3270/toggle.h>
+#include <private/session.h>
+#include <lib3270/trace.h>
 
 /* Maximum size of a tracefile header. */
-#define MAX_HEADER_SIZE		(10*1024)
-
+// #define MAX_HEADER_SIZE		(10*1024)
 
 #undef trace
-
-/* Statics */
-static void	wtrace(H3270 *session, const char *fmt, ...);
-
-static void write_trace(const H3270 *session, const char *fmt, va_list args) {
-
-	// 'mount' message.
-	char *message = lib3270_vsprintf(fmt,args);
-
-	if(session->trace.file) {
-
-		// Has log file. Use it if possible.
-		FILE *f = fopen(session->trace.file, "a");
-
-		if(f) {
-			fprintf(f,"%s",message);
-			fclose(f);
-		}
-
-	}
-
-	session->trace.handler(session,session->trace.userdata,message);
-
-	lib3270_free(message);
-
-}
 
 /**
  * @brief Write to the trace file.
  */
-static void wtrace(H3270 *session, const char *fmt, ...) {
+static void wtrace(H3270 *hSession, const char *fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	write_trace(session, fmt, args);
+	hSession->trace.write(hSession,hSession->trace.context,fmt,args);
 	va_end(args);
 }
-
 
 /* display a (row,col) */
 const char * rcba(H3270 *hSession, int baddr) {
@@ -114,12 +71,10 @@ const char * rcba(H3270 *hSession, int baddr) {
 
 /* Data Stream trace print, handles line wraps */
 static void trace_ds_s(H3270 *hSession, char *s, Boolean can_break) {
+
 	static int      dscnt = 0;
 	int len = strlen(s);
 	Boolean nl = False;
-
-	if (!lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) || !len)
-		return;
 
 	if (s && s[len-1] == '\n') {
 		len--;
@@ -152,130 +107,131 @@ static void trace_ds_s(H3270 *hSession, char *s, Boolean can_break) {
 }
 
 void trace_ds(H3270 *hSession, const char *fmt, ...) {
-	char	* text;
-	va_list   args;
 
-	if (!lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+		char	* text;
+		va_list   args;
 
-	va_start(args, fmt);
+		va_start(args, fmt);
 
-	/* print out remainder of message */
-	text = lib3270_vsprintf(fmt,args);
-	trace_ds_s(hSession,text, True);
-	va_end(args);
-	lib3270_free(text);
+		/* print out remainder of message */
+		text = lib3270_vsprintf(fmt,args);
+		trace_ds_s(hSession,text, True);
+		va_end(args);
+		lib3270_free(text);
+	}
+
 }
 
 void trace_ds_nb(H3270 *hSession, const char *fmt, ...) {
-	char *text;
-	va_list args;
 
-	if (!lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+		char *text;
+		va_list args;
 
-	va_start(args, fmt);
+		va_start(args, fmt);
 
-	/* print out remainder of message */
-	text = lib3270_vsprintf(fmt,args);
-	trace_ds_s(hSession, text, False);
-	lib3270_free(text);
+		/* print out remainder of message */
+		text = lib3270_vsprintf(fmt,args);
+		trace_ds_s(hSession, text, False);
+		lib3270_free(text);
+	}
 }
 
 /**
  * @brief Conditional data stream trace, without line splitting.
  */
-void trace_dsn(H3270 *session, const char *fmt, ...) {
-	va_list args;
+void trace_dsn(H3270 *hSession, const char *fmt, ...) {
 
-	if (!lib3270_get_toggle(session,LIB3270_TOGGLE_DS_TRACE))
-		return;
-
-	/* print out message */
-	va_start(args, fmt);
-	write_trace(session,fmt,args);
-	va_end(args);
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
 	
 }
 
 /**
  * @brief Conditional ssl stream trace, without line splitting.
  */
-void trace_ssl(H3270 *session, const char *fmt, ...) {
-	va_list args;
+void trace_ssl(H3270 *hSession, const char *fmt, ...) {
 
-	if (!lib3270_get_toggle(session,LIB3270_TOGGLE_SSL_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
 
-	/* print out message */
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
 }
 
-LIB3270_EXPORT void lib3270_write_trace(H3270 *session, const char *fmt, ...) {
-	va_list args;
+LIB3270_EXPORT void lib3270_write_trace(H3270 *hSession, const char *fmt, ...) {
 
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
+	if(hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
+
 }
 
-LIB3270_EXPORT void lib3270_write_dstrace(H3270 *session, const char *fmt, ...) {
-	va_list args;
 
-	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_DS_TRACE))
-		return;
+LIB3270_EXPORT void lib3270_write_dstrace(H3270 *hSession, const char *fmt, ...) {
 
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
+
 }
 
-LIB3270_EXPORT void lib3270_write_nettrace(H3270 *session, const char *fmt, ...) {
-	va_list args;
+LIB3270_EXPORT void lib3270_write_nettrace(H3270 *hSession, const char *fmt, ...) {
 
-	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_NETWORK_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
 
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
 }
 
-LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *session, const char *fmt, ...) {
-	va_list args;
+LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *hSession, const char *fmt, ...) {
 
-	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
 
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
 }
 
-LIB3270_EXPORT void lib3270_write_event_trace(H3270 *session, const char *fmt, ...) {
-	va_list args;
+LIB3270_EXPORT void lib3270_write_event_trace(H3270 *hSession, const char *fmt, ...) {
 
-	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_EVENT_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
 
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
 }
 
-LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...) {
-	va_list args;
+LIB3270_EXPORT void lib3270_trace_event(H3270 *hSession, const char *fmt, ...) {
 
-	if(!lib3270_get_toggle(session,LIB3270_TOGGLE_EVENT_TRACE))
-		return;
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
+		va_list args;
+		va_start(args, fmt);
+		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		va_end(args);
+	}
 
-	va_start(args, fmt);
-	write_trace(session, fmt, args);
-	va_end(args);
 }
-
 
 /**
  * Screen trace function, called when the host clears the screen.
@@ -285,7 +241,7 @@ LIB3270_EXPORT void lib3270_trace_event(H3270 *session, const char *fmt, ...) {
 void trace_screen(H3270 *session) {
 	session->trace_skipping = 0;
 
-	if (lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE)) {
+	if (lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE) && session->trace.context) {
 		unsigned int row, baddr;
 
 		for(row=baddr=0; row < session->view.rows; row++) {
@@ -306,12 +262,14 @@ void trace_screen(H3270 *session) {
 	}
 }
 
+
 /* Called from ANSI emulation code to log a single character. */
 void trace_char(H3270 *hSession, char c) {
-	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE))
+	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE) && hSession->trace.context)
 		wtrace(hSession,"%c",c);
 	return;
 }
+
 
 /**
  * Called when disconnecting in ANSI modeto finish off the trace file.
@@ -370,54 +328,54 @@ void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *d
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_trace_filename(const H3270 * hSession) {
-	return hSession->trace.file;
+
+static void dummy_writer(H3270 *session, void *context, const char *fmt, va_list args) {
 }
 
-LIB3270_EXPORT int lib3270_set_trace_filename(H3270 * hSession, const char *filename) {
+static void dummy_finalizer(H3270 *session, void *context) {
+}
 
-	if(hSession->trace.file) {
-		lib3270_free(hSession->trace.file);
-	}
-	hSession->trace.file = NULL;
+LIB3270_EXPORT void lib3270_trace_close(H3270 *hSession) {
 
-	if(filename && *filename) {
-		hSession->trace.file = lib3270_strdup(filename);
+	if(hSession->trace.context) {
+		hSession->trace.finalize(hSession,hSession->trace.context);
+		hSession->trace.context = NULL;
 	}
+
+	hSession->trace.write = dummy_writer;
+	hSession->trace.finalize = dummy_finalizer;
+
+}
+
+struct trace_file_context {
+	FILE *fp;
+};
+
+ static void write_file(H3270 *, struct trace_file_context *context, const char *fmt, va_list args) {
+	vfprintf(context->fp,fmt,args);
+	fflush(context->fp);
+ }
+
+ static void finalize_file(H3270 *session, struct trace_file_context *context) {
+	fclose(context->fp);
+	lib3270_free(context);
+ }
+
+ LIB3270_EXPORT int lib3270_trace_open_file(H3270 *hSession, const char *filename) {
+
+	struct trace_file_context *context = lib3270_malloc(sizeof(struct trace_file_context));
+
+	context->fp = fopen(filename,"wa");
+
+	if(!context->fp) {
+		int error = errno;
+		lib3270_free(context);
+		return error;
+	}
+
+	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
+	hSession->trace.write = (void (*)(H3270 *, void *, const char *, va_list)) write_file;
+	hSession->trace.finalize = (void (*)(H3270 *, void *)) finalize_file;
 
 	return 0;
-
 }
-
-static int def_trace(const H3270 *session, void GNUC_UNUSED(*userdata), const char *message) {
-
-	if(session->log.file) {
-
-		// Has log file. Use it if possible.
-		FILE *f = fopen(session->log.file, "a");
-
-		if(f) {
-			fprintf(f,"%s",message);
-			fclose(f);
-		}
-
-		return 0;
-
-	}
-
-	return -1;
-}
-
-LIB3270_EXPORT void lib3270_set_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER handler, void *userdata) {
-
-	hSession->trace.handler		= handler ? handler : def_trace;
-	hSession->trace.userdata	= userdata;
-}
-
-LIB3270_EXPORT void lib3270_get_trace_handler(H3270 *hSession, LIB3270_TRACE_HANDLER *handler, void **userdata) {
-
-	*handler	= hSession->trace.handler;
-	*userdata	= hSession->trace.userdata;
-
-}
-

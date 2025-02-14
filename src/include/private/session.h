@@ -42,6 +42,7 @@
 
  typedef struct _lib3270_timer_context LIB3270_TIMER_CONTEXT;
  typedef struct _lib3270_poll_context LIB3270_POLL_CONTEXT;
+ typedef struct _lib3270_trace_context LIB3270_TRACE_CONTEXT;
 
  struct _h3270 {
 
@@ -142,7 +143,7 @@
 		unsigned char		  flag[LIB3270_FLAG_COUNT];
 	} oia;
 
-	unsigned short			  current_port;
+	// unsigned short			  current_port;
 
 	// Misc
 	H3270FT					* ft;					///< @brief Active file transfer session.
@@ -392,9 +393,9 @@
 
 	// Trace methods.
 	struct {
-		char *file;	///< @brief Trace file name (if set).
-		LIB3270_TRACE_HANDLER handler;
-		void *userdata;
+		LIB3270_TRACE_CONTEXT *context;
+		void (*write)(H3270 *session, void *context, const char *fmt, va_list args);
+		void (*finalize)(H3270 *session, void *context);
 	} trace;
 
 	struct {

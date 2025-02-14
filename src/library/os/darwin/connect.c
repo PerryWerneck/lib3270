@@ -44,7 +44,7 @@
 #include <stdlib.h>
 
 #include "hostc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "telnetc.h"
 #include "screen.h"
 #include "utilc.h"

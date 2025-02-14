@@ -37,9 +37,8 @@
 #include <lib3270/ssl.h>
 #include <private/session.h>
 #include <private/intl.h>
-#include <trace_dsc.h>
+#include <private/trace.h>
 #include "utilc.h"
-#include <trace_dsc.h>
 
 #include <private/network.h>
 

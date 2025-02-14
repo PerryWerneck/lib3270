@@ -53,7 +53,7 @@
 #include "ft_dftc.h"
 #include "ftc.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 #include <lib3270/log.h>
 

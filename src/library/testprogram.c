@@ -33,22 +33,11 @@
  #include <private/network.h>
  #include <stdio.h>
 
- static int trace_handler(const H3270 *, void *, const char *message) {
-
-	FILE *file = fopen("test.trace","a");
-	fprintf(file,"%s",message);
-	fclose(file);
-
-	return 0;
- }
-
  int main(int argv, const char **argc) {
-
-	unlink("test.trace");
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
 
-	lib3270_set_trace_handler(hSession,trace_handler,NULL);
+	lib3270_trace_open_file(hSession,"test.trace");
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,1);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,1);

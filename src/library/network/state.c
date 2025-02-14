@@ -33,7 +33,7 @@
 #include <lib3270.h>
 #include <lib3270/popup.h>
 #include <lib3270/trace.h>
-#include <trace_dsc.h>
+#include <private/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <networking.h>

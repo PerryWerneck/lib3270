@@ -58,7 +58,7 @@
 #include "hostc.h"
 #include "screenc.h"
 #include "telnetc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 //#include "utf8c.h"
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"

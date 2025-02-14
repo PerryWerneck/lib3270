@@ -42,7 +42,7 @@
 #include "hostc.h"
 #include "kybdc.h"
 #include "screenc.h"
-#include "trace_dsc.h"
+#include <private/trace.h>
 #include "utilc.h"
 #include "widec.h"
 #include "screen.h"

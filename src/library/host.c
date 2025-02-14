@@ -167,16 +167,6 @@ int lib3270_connection_close(H3270 *hSession, int failed) {
 
 		lib3270_set_disconnected(hSession);
 
-		if(hSession->connection.error) {
-
-			// TODO: Add 'reconnect' option in the popup dialog for optional auto reconnect.
-			lib3270_popup(hSession,hSession->connection.error,!hSession->auto_reconnect_inprogress);
-
-			lib3270_free(hSession->connection.error);
-			hSession->connection.error = NULL;
-
-		}
-
 		if(failed && hSession->connection.retry && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT))
 			lib3270_activate_auto_reconnect(hSession,hSession->connection.retry);
 

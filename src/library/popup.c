@@ -200,32 +200,4 @@ LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *hSession, int (*handler)(H3
 
 }
 
-void lib3270_set_network_error(H3270 *hSession, const char *summary, const char *fmt, ...) {
-
-	// Release last error.
-	if(hSession->connection.error) {
-		lib3270_free(hSession->connection.error);
-		hSession->connection.error = NULL;
-	}
-
-	// Format body.
-	va_list	  args;
-	va_start(args, fmt);
-	lib3270_autoptr(char) body = lib3270_vsprintf(fmt, args);
-	va_end(args);
-
-	hSession->connection.error = lib3270_malloc(sizeof(LIB3270_POPUP) + strlen(summary) + strlen(body) + 3);
-
-	// Set type.
-	hSession->connection.error->type = LIB3270_NOTIFY_ERROR;
-
-	// Copy summary
-	hSession->connection.error->summary = (char *) (hSession->connection.error + 1);
-	strcpy((char *) hSession->connection.error->summary,summary);
-
-	// Copy body.
-	hSession->connection.error->body = hSession->connection.error->summary + strlen(hSession->connection.error->summary) + 1;
-	strcpy((char *) hSession->connection.error->body,body);
-
-}
 

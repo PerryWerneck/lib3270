@@ -164,30 +164,7 @@ void trace_ssl(const H3270 *hSession, const char *fmt, ...) {
 
 }
 
-LIB3270_EXPORT void lib3270_write_trace(const H3270 *hSession, const char *fmt, ...) {
-
-	if(hSession->trace.context) {
-		va_list args;
-		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
-		va_end(args);
-	}
-
-}
-
-
-LIB3270_EXPORT void lib3270_write_dstrace(const H3270 *hSession, const char *fmt, ...) {
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
-		va_list args;
-		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
-		va_end(args);
-	}
-
-}
-
-LIB3270_EXPORT void lib3270_write_nettrace(const H3270 *hSession, const char *fmt, ...) {
+void trace_network(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -198,29 +175,7 @@ LIB3270_EXPORT void lib3270_write_nettrace(const H3270 *hSession, const char *fm
 
 }
 
-LIB3270_EXPORT void lib3270_write_screen_trace(const H3270 *hSession, const char *fmt, ...) {
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE) && hSession->trace.context) {
-		va_list args;
-		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
-		va_end(args);
-	}
-
-}
-
-LIB3270_EXPORT void lib3270_write_event_trace(const H3270 *hSession, const char *fmt, ...) {
-
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
-		va_list args;
-		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
-		va_end(args);
-	}
-
-}
-
-LIB3270_EXPORT void lib3270_trace_event(const H3270 *hSession, const char *fmt, ...) {
+void trace_event(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -289,7 +244,7 @@ void trace_ansi_disc(H3270 *hSession) {
 	hSession->trace_skipping = 1;
 }
 
-void lib3270_trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen) {
+void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen) {
 	// 00000000001111111111222222222233333333334444444444555555555566666666667777777777
 	// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
 	// xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx . . . . . . . . . . . . . . . .

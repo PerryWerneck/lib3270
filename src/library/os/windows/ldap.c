@@ -189,7 +189,7 @@ X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *consturl, con
 	}
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
-		lib3270_trace_data(
+		trace_data(
 		    hSession,
 		    "CRL Data received from LDAP server",
 		    (const unsigned char *) value[0]->bv_val,

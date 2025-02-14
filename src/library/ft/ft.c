@@ -367,7 +367,7 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 
 	if(ft->flags & LIB3270_FT_OPTION_RECEIVE) {
 		// Receiving file
-		lib3270_write_dstrace(
+		trace_event(
 		    ft->host,
 		    "\nReceiving file %s (%s %s %s %s)\n",
 		    ft->local,
@@ -385,7 +385,7 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 
 		ft->length = ftell(ft->local_file);
 
-		lib3270_write_dstrace(
+		trace_event(
 		    ft->host,
 		    "\nSending file %s (%ld bytes %s %s %s %s)\n",
 		    ft->local,
@@ -470,7 +470,7 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 		return errno = EINVAL;
 	}
 
-	lib3270_write_event_trace(hSession,"Sending FT request:\n%s\n",buffer);
+	trace_event(hSession,"Sending FT request:\n%s\n",buffer);
 
 	lib3270_emulate_input(ft->host, buffer, strlen(buffer), False);
 
@@ -486,7 +486,7 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 
 /* External entry points called by ft_dft and ft_cut. */
 void ft_message(H3270FT *ft, const char *msg) {
-	lib3270_write_event_trace(ft->host,"%s\n",msg);
+	trace_event(ft->host,"%s\n",msg);
 	ft->cbk.message(ft->host,msg,ft->user_data);
 }
 

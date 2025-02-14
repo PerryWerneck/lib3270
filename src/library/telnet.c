@@ -2088,7 +2088,7 @@ void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, in
 #endif // HAVE_LOCALTIME_R
 		}
 
-		lib3270_write_nettrace(hSession,"%c %s %s data len=%d\n\n",direction,l1,direction == '>' ? "SEND" : "RECV", len);
+		trace_network(hSession,"%c %s %s data len=%d\n\n",direction,l1,direction == '>' ? "SEND" : "RECV", len);
 
 		for (offset = 0; offset < len; offset++) {
 			unsigned char text[4];
@@ -2102,14 +2102,14 @@ void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, in
 
 			if(++col >= NETDUMP_MAX) {
 				l1[col] = l2[col] = l3[col] = 0;
-				lib3270_write_nettrace(hSession,"\t%s\n\t%s\n\t%s\n\n",l1,l2,l3);
+				trace_network(hSession,"\t%s\n\t%s\n\t%s\n\n",l1,l2,l3);
 				col = 0;
 			}
 		}
 
 		if(col) {
 			l1[col] = l2[col] = l3[col] = 0;
-			lib3270_write_nettrace(hSession,"\t%s\n\t%s\n\t%s\n\n",l1,l2,l3);
+			trace_network(hSession,"\t%s\n\t%s\n\t%s\n\n",l1,l2,l3);
 		}
 
 	} else if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {

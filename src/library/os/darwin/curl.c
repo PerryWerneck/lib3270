@@ -90,7 +90,7 @@ static size_t internal_curl_write_callback(void *contents, size_t size, size_t n
 	debug("%s",__FUNCTION__);
 
 	if(lib3270_get_toggle(data->hSession,LIB3270_TOGGLE_SSL_TRACE)) {
-		lib3270_trace_data(
+		trace_data(
 		    data->hSession,
 		    "Received",
 		    (const unsigned char *) contents,
@@ -145,7 +145,7 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 
 	}
 
-	lib3270_trace_data(
+	trace_data(
 	    ((CURLDATA *) userp)->hSession,
 	    text,
 	    (const unsigned char *) data,
@@ -156,7 +156,7 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 }
 
 char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char **error) {
-	lib3270_write_event_trace(hSession,"Getting data from %s",url);
+	trace_event(hSession,"Getting data from %s",url);
 
 	// Use CURL to download the CRL
 	lib3270_autoptr(CURLDATA)	curl_data		= lib3270_malloc(sizeof(CURLDATA));

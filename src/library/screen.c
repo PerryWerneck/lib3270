@@ -351,6 +351,9 @@ void screen_update(H3270 *session, int bstart, int bend) {
 		session->starting = 0;
 		session->cbk.autostart(session);
 
+		trace_event(session,"First screen\n");
+		trace_screen(session);
+
 #ifdef DEBUG
 		{
 			char *text = lib3270_get_string_at_address(session,0,-1,'\n');
@@ -359,8 +362,6 @@ void screen_update(H3270 *session, int bstart, int bend) {
 		}
 #endif
 	}
-
-//	debug("%s ends",__FUNCTION__);
 
 }
 

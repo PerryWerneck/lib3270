@@ -228,7 +228,7 @@ int lib3270_set_boolean_property(H3270 *hSession, const char *name, int value, i
 	for(ix = 0; properties[ix].name; ix++) {
 		if(!strcasecmp(name,properties[ix].name)) {
 			if(properties[ix].set) {
-				lib3270_write_event_trace(hSession,"%s %s\n",(value ? "Enabling" : "Disabling"),properties[ix].name);
+				trace_event(hSession,"%s %s\n",(value ? "Enabling" : "Disabling"),properties[ix].name);
 				return properties[ix].set(hSession, value);
 			} else {
 				return errno = EPERM;

@@ -56,11 +56,11 @@ LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H
 LIB3270_EXPORT int lib3270_action_activate(const LIB3270_ACTION *action, H3270 *hSession) {
 
 	if(!action->activatable(hSession)) {
-		lib3270_write_event_trace(hSession,"Action \"%s\" is disabled\n",action->name);
+		trace_event(hSession,"Action \"%s\" is disabled\n",action->name);
 		return errno = EPERM;
 	}
 
-	lib3270_write_event_trace(hSession,"Activating action \"%s\"\n",action->name);
+	trace_event(hSession,"Activating action \"%s\"\n",action->name);
 
 	return action->activate(hSession);
 

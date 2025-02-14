@@ -297,7 +297,7 @@ static void update_url(H3270 *hSession) {
 
 	debug("URL %s -> %s",hSession->host.url,url);
 
-	lib3270_write_event_trace(hSession,"Host URL was changed\nFrom: %s\nTo: %s\n",hSession->host.url,url);
+	trace_event(hSession,"Host URL was changed\nFrom: %s\nTo: %s\n",hSession->host.url,url);
 	lib3270_free(hSession->host.url);
 	hSession->host.url = url;
 	hSession->cbk.update_url(hSession, hSession->host.url);

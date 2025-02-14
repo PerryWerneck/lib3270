@@ -708,7 +708,7 @@ static void do_query_reply(H3270 *hSession, unsigned char code) {
 
 #ifdef DEBUG
 			if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
-				lib3270_trace_data(
+				trace_data(
 				    hSession,
 				    see_qcode(replies[i].code),
 				    hSession->output.buf + obptr0,

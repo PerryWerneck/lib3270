@@ -30,12 +30,6 @@
  void trace_dsn(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
  void trace_ssl(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
  void trace_screen(H3270 *hSession);
-
- // TODO: Rename and turn them private.
- LIB3270_EXPORT void lib3270_write_trace(const H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_dstrace(const H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_nettrace(const H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_screen_trace(const H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_event_trace(const H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_trace_event(const H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
+ void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
+ void trace_event(const H3270 *hSession, const char *fmt, ...);
+ void trace_network(const H3270 *hSession, const char *fmt, ...);

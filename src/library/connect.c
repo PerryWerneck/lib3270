@@ -109,7 +109,7 @@
 
 	if(hSession->connection.context) {
 		debug("%s:%s (context: %p)",__FUNCTION__,strerror(EBUSY),hSession->connection.context);
-		lib3270_write_event_trace(
+		trace_event(
 			hSession,
 			"Connection to %s:%s with %d seconds rejected: %s\n",
 				hostname,
@@ -139,7 +139,7 @@
 	//
 	// Starting 'connect' task.
 	//
-	lib3270_write_event_trace(
+	trace_event(
 		hSession,
 		"Connecting to %s:%s with %d seconds timeout\n",
 			hostname,

@@ -59,10 +59,6 @@ const LIB3270_ACTION * lib3270_action_get_by_name(const char *name) {
 	return NULL;
 }
 
-const LIB3270_ACTION * lib3270_get_action(const char *name) {
-	return lib3270_action_get_by_name(name);
-}
-
 LIB3270_EXPORT int lib3270_action_is_activatable(const LIB3270_ACTION *action, H3270 *hSession) {
 	return action->activatable(hSession) > 0;
 }
@@ -87,10 +83,6 @@ LIB3270_EXPORT int lib3270_activate_by_name(H3270 *hSession, const char *name) {
 		return lib3270_action_activate(action, hSession);
 
 	return hSession->cbk.action(hSession,name);
-}
-
-LIB3270_EXPORT int lib3270_action(H3270 *hSession, const char *name) {
-	return lib3270_activate_by_name(hSession,name);
 }
 
 LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_GROUP group) {

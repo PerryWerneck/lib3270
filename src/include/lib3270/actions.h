@@ -101,21 +101,6 @@ LIB3270_EXPORT int lib3270_unregister_action_group_listener(H3270 *hSession, LIB
  *
  * @return The action return code.
  *
- * @retval EPERM	Action is disabled.
- * @retval ENOTSUP	Action name is invalid.
- *
- */
-LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_action(H3270 *hSession, const char *name));
-
-/**
- *
- * @brief Call lib3270 action by name.
- *
- * @param hSession	TN3270 Session handle.
- * @param name	Name of the action to call.
- *
- * @return The action return code.
- *
  * @retval ENOENT	Can't find action with the supplied name.
  * @retval EPERM	Action is disabled.
  * @retval ENOTSUP	Action name is invalid.
@@ -552,8 +537,6 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession);
  *
  */
 LIB3270_EXPORT const LIB3270_ACTION * lib3270_action_get_by_name(const char *name);
-
-LIB3270_EXPORT const LIB3270_ACTION * LIB3270_DEPRECATED(lib3270_get_action(const char *name));
 
 /**
  *

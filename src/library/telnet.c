@@ -376,7 +376,7 @@ static void setup_lus(H3270 *hSession) {
 static int net_connected(H3270 *hSession) {
 
 	// Set up SSL.
-	trace_dsn(hSession,"Connected to %s%s.\n", hSession->host.current,hSession->ssl.host ? " using SSL": "");
+	trace_dsn(hSession,"Connected to %s%s.\n", hSession->connection.url, hSession->ssl.host ? " using SSL": "");
 
 /*
 	if(hSession->ssl.host && hSession->ssl.state == LIB3270_SSL_UNDEFINED) {

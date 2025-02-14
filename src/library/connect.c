@@ -60,7 +60,7 @@
  ///
  LIB3270_EXPORT int lib3270_connect(H3270 *hSession, int seconds) {
 
-	if(!(hSession->host.url && *hSession->host.url)) {
+	if(!(hSession->connection.url && *hSession->connection.url)) {
 		return ENODATA;
 	}
 
@@ -72,7 +72,7 @@
 	// https://uriparser.github.io/doc/api/latest/
 	UriUriA uri;
 	const char * errorPos;
-	if(uriParseSingleUriA(&uri, hSession->host.url, &errorPos) != URI_SUCCESS) {
+	if(uriParseSingleUriA(&uri, hSession->connection.url, &errorPos) != URI_SUCCESS) {
 		return EINVAL;	
 	}
 
@@ -176,7 +176,7 @@
 		        &failed,
 				_("Unsupported scheme '%s' in URL %s"),
 		        scheme,
-		        hSession->host.url
+		        hSession->connection.url
 		    );
 
 		lib3270_popup(hSession, popup, 0);
@@ -213,7 +213,7 @@
 	trace_dsn(
 		hSession,
 		"Connected to %s%s.\n", 
-		hSession->host.url,hSession->ssl.host ? " using SSL": ""
+		hSession->connection.url,hSession->ssl.host ? " using SSL": ""
 	);
 
 	//if(lib3270_start_tls(hSession)) {
@@ -268,8 +268,8 @@
 	}
 
 	// Do I have a defined host?
-	if(!(hSession->host.url && *hSession->host.url)) {
-		debug("%s('%s')",__FUNCTION__,hSession->host.url);
+	if(!(hSession->connection.url && *hSession->connection.url)) {
+		debug("%s('%s')",__FUNCTION__,hSession->connection.url);
 		errno = ENODATA;
 		return 0;
 	}

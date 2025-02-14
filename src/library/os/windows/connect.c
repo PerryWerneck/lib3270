@@ -229,9 +229,8 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		lib3270_autoptr(LIB3270_POPUP) popup =
 		    lib3270_popup_clone_printf(
 		        NULL,
-		        _( "Can't connect to %s:%s"),
-		        hSession->host.current,
-		        hSession->host.srvc
+		        _( "Can't connect to %s"),
+		        hSession->connection.url,
 		    );
 
 		lib3270_autoptr(char) syserror =

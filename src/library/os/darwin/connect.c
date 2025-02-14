@@ -103,6 +103,7 @@ static int sock_connect(H3270 *hSession, int sock, const struct sockaddr *addres
 }
 
 
+/*
 int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	// Reset state
@@ -175,6 +176,7 @@ int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 
 	return sock;
 }
+*/
 
 /*
 static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {

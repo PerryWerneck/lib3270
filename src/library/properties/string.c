@@ -338,6 +338,7 @@ LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession) {
 	return (const char **) hSession->lu.names;
 }
 
+/*
 LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h) {
 	return h->host.current;
 }
@@ -345,4 +346,5 @@ LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h) {
 LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h) {
 	return h->host.srvc;
 }
+*/
 

@@ -70,13 +70,14 @@
 	int 	(*wait)(H3270 *session, int seconds);
 	int		(*run)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
-	// Run callback on main thread, copy parms to malloced buffer if needed.
+	/// @brief Run callback on main thread, copy parms to malloced buffer if needed.
 	void	(*post)(void(*callback)(void *), void *parm, size_t parmlen);
 
-	// Networking
+	/// @brief The connection & network info for this session.
 	struct {
 
-		/// @brief Connection context.
+		char 	   	    	* url;				///< @brief The host URL.
+
 		LIB3270_NET_CONTEXT * context;			///< @brief Connection context.
 
 		LIB3270_CSTATE		  state;			///< @brief Connection state.
@@ -132,14 +133,6 @@
 	char					* model_name;
 	unsigned int			  model_num;
 	char  	     	    	* termtype;
-
-	struct {
-		char 	   	    	* url;				/**< The host URL, for use in reconnecting */
-		char				* current;			/**< The hostname part, stripped of qualifiers, luname and port number */
-		char				* srvc;				/**< The service name */
-		char	   	    	* qualified;
-	} host;
-
 	char					* termname;
 
 	struct lib3270_charset	  charset;
@@ -152,7 +145,7 @@
 	unsigned short			  current_port;
 
 	// Misc
-	H3270FT					* ft;					/**< @brief Active file transfer data */
+	H3270FT					* ft;					///< @brief Active file transfer session.
 
 	// screen info
 
@@ -175,18 +168,17 @@
 		unsigned int		  cols;
 	} view;
 
-	// LIB3270_POINTER			  pointer;				/**< @brief Current pointer. */
 	int						  cursor_addr;
 	int						  buffer_addr;
 	char					  flipped;
-	int						  screen_alt;			/**< @brief alternate screen? */
+	int						  screen_alt;			///< @brief alternate screen?
 	int						  is_altbuffer;
 
 	// Screen contents
-	void 					* buffer[2];			/**< @brief Internal buffers */
-	struct lib3270_ea  		* ea_buf;				/**< @brief 3270 device buffer. ea_buf[-1] is the dummy default field attribute */
-	struct lib3270_ea		* aea_buf;				/**< @brief alternate 3270 extended attribute buffer */
-	struct lib3270_text		* text;					/**< @brief Converted 3270 chars */
+	void 					* buffer[2];			///< @brief Internal buffers
+	struct lib3270_ea  		* ea_buf;				///< @brief 3270 device buffer. ea_buf[-1] is the dummy default field attribute
+	struct lib3270_ea		* aea_buf;				///< @brief alternate 3270 extended attribute buffer
+	struct lib3270_text		* text;					///< @brief Converted 3270 chars
 
 	// host.c
 	char	 				  std_ds_host;
@@ -208,22 +200,18 @@
 	unsigned int			  mticking			: 1;
 	int						  crm_nattr;
 	unsigned char			  crm_attr[16];
-	unsigned char 			* zero_buf;				/**< @brief Empty buffer, for area clears */
-
-//	struct timeval			  t_start;
-//	void					* tick_id;
-//	struct timeval			  t_want;
+	unsigned char 			* zero_buf;				///< @brief Empty buffer, for area clears
 
 	// Telnet.c
 	unsigned char 			* ibuf;
-	int      				  ibuf_size;			/**< @brief size of ibuf */
+	int      				  ibuf_size;			///< @brief size of ibuf
 	time_t          		  ns_time;
 	int             		  ns_brcvd;
 	int             		  ns_rrcvd;
 	int             		  ns_bsent;
 	int             		  ns_rsent;
 	struct timeval 			  ds_ts;
-	unsigned short			  e_xmit_seq;			/**< @brief transmit sequence number */
+	unsigned short			  e_xmit_seq;			///< @brief transmit sequence number
 	int						  response_required;
 	int						  ansi_data;
 	int						  lnext;
@@ -250,12 +238,12 @@
 		E_SSCP
 	}						  tn3270e_submode;
 
-	unsigned long			  e_funcs;				/**< @brief negotiated TN3270E functions */
+	unsigned long			  e_funcs;			///< @brief negotiated TN3270E functions
 	int						  tn3270e_bound;
 	int						  tn3270e_negotiated;
 
 	// Line mode
-	unsigned char 			* lbuf;					/**< @brief line-mode input buffer */
+	unsigned char 			* lbuf;				///< @brief line-mode input buffer
 	unsigned char 			* lbptr;
 
 	// 3270 input buffer
@@ -263,7 +251,7 @@
 
 	// Output buffer.
 	struct {
-		unsigned char		* buf;				///< @brief 3270 output buffer */
+		unsigned char		* buf;				///< @brief 3270 output buffer
 		unsigned char 		* base;
 		int					  length;			///< @brief Length of the output buffer.
 		unsigned char		* ptr;

@@ -68,7 +68,7 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
 	if(hSession->auto_reconnect_inprogress && !hSession->connection.context) {
 
 		if(hSession->cbk.reconnect_allowed(hSession) == 0) {
-			lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",hSession->host.url);
+			lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",hSession->connection.url);
 			hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
 			lib3270_connect(hSession,hSession->connection.timeout);
 
@@ -325,9 +325,8 @@ LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession)
 }
 
 LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession) {
-	if(hSession->host.url)
-		return hSession->host.url;
-
+	if(hSession->connection.url)
+		return hSession->connection.url;
 	return lib3270_get_default_host(hSession);
 }
 
@@ -388,109 +387,27 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *hSession, const char *url) {
 		return EINVAL;
 	}
 
-	if(hSession->host.url) {
-		if(!strcmp(url,hSession->host.url)) {
+	if(hSession->connection.url) {
+		if(!strcmp(url,hSession->connection.url)) {
 			return 0;
 		}
-		free(hSession->host.url);
+		free(hSession->connection.url);
 	}
 
-	hSession->host.url = strdup(url);
-	hSession->cbk.update_url(hSession, hSession->host.url);
+	hSession->connection.url = strdup(url);
+	hSession->cbk.update_url(hSession, hSession->connection.url);
 
 	// The "reconnect" action is now available.
 	lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_OFFLINE);
 
-
-	/*
-	if(!n)
-		n = lib3270_get_default_host(h);
-
-	if(!n)
-		return errno = ENOENT;
-
-	lib3270_autoptr(char)	  str 		= strdup(n);
-	char					* hostname 	= lib3270_set_network_module_from_url(h,str);
-	const char 				* srvc;
-	char					* ptr;
-	char					* query		= "";
-
-	trace("%s(%s)",__FUNCTION__,str);
-
-	if(!(hostname && *hostname)) {
-		trace("Empty hostname, rejecting '%s'",str);
-		return 0;
-	}
-
-	srvc = h->network.module->service;
-
-	ptr = strchr(hostname,':');
-	if(ptr) {
-		*(ptr++) = 0;
-		srvc  = ptr;
-		query = strchr(ptr,'?');
-
-	} else {
-		srvc = "3270";
-		query = strchr(hostname,'?');
-	}
-
-	if(query)
-		*(query++) = 0;
-	else
-		query = "";
-
-	trace("SRVC=[%s]",srvc);
-
-	Replace(h->host.current,strdup(hostname));
-	Replace(h->host.srvc,strdup(srvc));
-
-	// Verifica parâmetros
-	if(query && *query) {
-		lib3270_autoptr(char) str = strdup(query);
-		char *ptr;
-
-#ifdef HAVE_STRTOK_R
-		char *saveptr	= NULL;
-		for(ptr = strtok_r(str,"&",&saveptr); ptr; ptr=strtok_r(NULL,"&",&saveptr))
-#else
-		for(ptr = strtok(str,"&"); ptr; ptr=strtok(NULL,"&"))
-#endif
-		{
-			char *var = ptr;
-			char *val = strchr(ptr,'=');
-			if(val) {
-				*(val++) = 0;
-
-				if(lib3270_set_string_property(h, var, val, 0) == 0)
-					continue;
-
-				lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
-
-			} else {
-				if(lib3270_set_int_property(h,var,1,0))
-					continue;
-
-				lib3270_write_log(h,"","Can't set attribute \"%s\": %s",var,strerror(errno));
-			}
-
-		}
-
-	}
-
-	// Notifica atualização
-	update_url(h);
-
-	// The "reconnect" action is now available.
-	lib3270_action_group_notify(h, LIB3270_ACTION_GROUP_OFFLINE);
-
-	*/
 	return 0;
 }
 
+/*
 LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h) {
 	return h->host.url;
 }
+*/
 
 LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h) {
 	return (h->oia.flag[LIB3270_FLAG_SCRIPT] != 0);

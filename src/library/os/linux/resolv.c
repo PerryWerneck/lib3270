@@ -141,9 +141,9 @@
 			lib3270_autoptr(LIB3270_POPUP) popup =
 				lib3270_popup_clone_printf(
 					&template,
-					_("Received signal with unexpected si_code '%d'"),
+					_("Received signal with unexpected si_code '%d' while connecting to %s"),
 					ssi.ssi_code,
-					hSession->host.url
+					hSession->connection.url
 				);
 
 			failed(hSession,context);

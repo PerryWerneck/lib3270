@@ -32,9 +32,13 @@
  #endif
 
  /// @brief Close trace for session.
- /// @param hSession 
+ /// @param hSession The session to close the trace.
  LIB3270_EXPORT void lib3270_trace_close(H3270 *hSession);
 
+ /// @brief Open trace to file
+ /// @param hSession The session to trace.
+ /// @param filename The filename to write the trace.
+ /// @return 0 if success, error code otherwise.
  LIB3270_EXPORT int lib3270_trace_open_file(H3270 *hSession, const char *filename);
 
  #ifdef __cplusplus

@@ -22,6 +22,7 @@
 #define LIB3270_TOGGLE_H_INCLUDED 1
 
 #include <lib3270.h>
+#include <lib3270/properties.h>
 
 #ifdef __cplusplus
 extern "C" {

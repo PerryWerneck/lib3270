@@ -283,23 +283,6 @@ typedef enum _lib3270_action_group {
 
 
 /**
- * @brief Head for property descriptors.
- *
- */
-#define LIB3270_PROPERTY_HEAD	\
-		const char * name; \
-		LIB3270_ACTION_GROUP group; \
-		const char * label; \
-		const char * icon; \
-		const char * summary; \
-		const char * description; \
-		const char * (*describe)(const H3270 *);
-
-typedef struct _lib3270_property {
-	LIB3270_PROPERTY_HEAD
-} LIB3270_PROPERTY;
-
-/**
  * @brief State change IDs.
  *
  */
@@ -420,16 +403,6 @@ LIB3270_EXPORT const char * lib3270_get_url(const H3270 *hSession);
 LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(const H3270 *hSession);
 
 LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession);
-
-/**
- * @brief Get URL of the hostname for the connect/reconnect operations.
- *
- * @param h		Session handle.
- *
- * @return Pointer to host URL set (internal data, do not change it)
- *
- */
-LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h));
 
 /**
  * @brief Check if the session can connect.
@@ -943,8 +916,6 @@ LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession);
  */
 LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession);
 
-LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_has_selection(const H3270 *hSession));
-
 /**
  * @brief Check if the terminal has stored clipboard contents.
  *
@@ -1042,8 +1013,6 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0);
  *
  */
 LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr0);
-
-LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_is_protected(H3270 *h, unsigned int baddr));
 
 /**
  * @brief Check if the screen is formatted.
@@ -1173,9 +1142,6 @@ LIB3270_EXPORT int lib3270_get_field_start(H3270 *hSession, int baddr);
 LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr);
 
 LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *hSession, int baddr, int *start, int *end);
-
-LIB3270_EXPORT int 			  LIB3270_DEPRECATED(lib3270_set_model(H3270 *hSession, const char *model_name));
-LIB3270_EXPORT const char	* LIB3270_DEPRECATED(lib3270_get_model(const H3270 *session));
 
 LIB3270_EXPORT const char	* lib3270_get_model_name(const H3270 *session);
 LIB3270_EXPORT int			  lib3270_set_model_name(H3270 *hSession, const char *model_name);

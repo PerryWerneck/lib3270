@@ -26,7 +26,12 @@
  */
 
 /**
- * @brief Handle linked lists.
+ * @file linkedlist.c
+ * @brief Implementation of linked list methods.
+ *
+ * This file contains the functions and data structures necessary to create,
+ * manipulate, and manage linked lists. It provides basic operations such as
+ * insertion and deletion within a linked list.
  */
 
 #include <lib3270.h>
@@ -37,7 +42,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
-void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, size_t szBlock, void *userdata) {
+void * lib3270_linked_list_append_node(lib3270_linked_list *head, size_t szBlock, void *userdata) {
 	struct lib3270_linked_list_node * node = lib3270_malloc(szBlock);
 
 	memset(node,0,szBlock);
@@ -72,7 +77,7 @@ void * lib3270_linked_list_append_node(struct lib3270_linked_list_head *head, si
 
 }
 
-int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const void *node) {
+int lib3270_linked_list_delete_node(lib3270_linked_list *head, const void *node) {
 
 	struct lib3270_linked_list_node * current;
 
@@ -117,7 +122,7 @@ int lib3270_linked_list_delete_node(struct lib3270_linked_list_head *head, const
 	return errno = ENOENT;
 }
 
-void lib3270_linked_list_free(struct lib3270_linked_list_head *head) {
+void lib3270_linked_list_free(lib3270_linked_list *head) {
 	struct lib3270_linked_list_node * node = head->first;
 
 	while(node) {

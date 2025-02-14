@@ -32,6 +32,7 @@
 #include <private/session.h>
 #include <private/intl.h>
 #include <private/network.h>
+#include <private/session.h>
 
 #include "kybdc.h"
 #include "ansic.h"
@@ -69,6 +70,16 @@ void lib3270_session_free(H3270 *h) {
 
 	if(h->connection.context) {
 		lib3270_connection_close(h,-1);
+	}
+
+	if(h->timer.context) {
+		h->timer.finalize(h,h->timer.context);
+		h->timer.context = NULL;
+	}
+
+	if(h->poll.context) {
+		h->poll.finalize(h,h->poll.context);
+		h->poll.context = NULL;
 	}
 
 	// Do we have pending tasks?
@@ -126,12 +137,6 @@ void lib3270_session_free(H3270 *h) {
 
 	release_pointer(h->sbbuf);
 	release_pointer(h->tabs);
-
-	// Release timeouts
-	lib3270_linked_list_free(&h->timeouts);
-
-	// Release inputs;
-	lib3270_linked_list_free(&h->input.list);
 
 	// Release logfile
 	release_pointer(h->log.file);

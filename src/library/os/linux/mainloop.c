@@ -48,6 +48,15 @@
  //
  static pthread_mutex_t guard = PTHREAD_MUTEX_INITIALIZER;
 
+ struct _lib3270_poll_context {
+	LIB3270_LINKED_LIST
+	unsigned int changed;
+ };
+
+ struct _lib3270_timer_context {
+	LIB3270_LINKED_LIST
+ };
+
  typedef struct timeout {
 	LIB3270_LINKED_LIST_HEAD
 	unsigned char in_play;
@@ -87,7 +96,7 @@
 	}
 
 	// Find where to insert this item.
-	for (t = (timeout_t *) session->timeouts.first; t != NULL; t = (timeout_t *) t->next) {
+	for (t = (timeout_t *) session->timer.context->first; t != NULL; t = (timeout_t *) t->next) {
 		if (t->tv.tv_sec > t_new->tv.tv_sec || (t->tv.tv_sec == t_new->tv.tv_sec && t->tv.tv_usec > t_new->tv.tv_usec))
 			break;
 		prev = t;
@@ -96,13 +105,13 @@
 	// Insert it.
 	if (prev == NULL) {
 		// t_new is Front.
-		t_new->next = session->timeouts.first;
-		session->timeouts.first = (struct lib3270_linked_list_node *) t_new;
+		t_new->next = session->timer.context->first;
+		session->timer.context->first = (struct lib3270_linked_list_node *) t_new;
 	} else if (t == NULL) {
 		// t_new is Rear.
 		t_new->next = NULL;
 		prev->next = (struct lib3270_linked_list_node *) t_new;
-		session->timeouts.last = (struct lib3270_linked_list_node *) t_new;
+		session->timer.context->last = (struct lib3270_linked_list_node *) t_new;
 	} else {
 		// t_new is Middle.
 		t_new->next = (struct lib3270_linked_list_node *) t;
@@ -124,7 +133,7 @@
 	if(timer) {
 		pthread_mutex_lock(&guard);
 		if(!((timeout_t *)timer)->in_play)
-			lib3270_linked_list_delete_node(&session->timeouts,timer);
+			lib3270_linked_list_delete_node( (lib3270_linked_list *) session->timer.context,timer);
 		pthread_mutex_unlock(&guard);
 	}
 
@@ -134,13 +143,17 @@
 
 	pthread_mutex_lock(&guard);
 
-	input_t *ip = (input_t *) lib3270_linked_list_append_node(&session->input.list,sizeof(input_t), userdata);
+	input_t *ip = (input_t *) lib3270_linked_list_append_node(
+									(lib3270_linked_list *) session->poll.context,
+									sizeof(input_t), 
+									userdata
+								);
 
 	ip->enabled					= 1;
 	ip->fd						= fd;
 	ip->flag					= flag;
 	ip->call					= proc;
-	session->input.changed = 1;
+	session->poll.context->changed = 1;
 
 	pthread_mutex_unlock(&guard);
 
@@ -152,8 +165,8 @@
 
 	if(id) {
 		pthread_mutex_lock(&guard);
-		lib3270_linked_list_delete_node(&hSession->input.list,id);
-		hSession->input.changed = 1;
+		lib3270_linked_list_delete_node( (lib3270_linked_list *) hSession->poll.context,id);
+		hSession->poll.context->changed = 1;
 		pthread_mutex_unlock(&guard);
 	}
 
@@ -171,7 +184,7 @@
 
  retry:
 
-	hSession->input.changed = 0;
+	hSession->poll.context->changed = 0;
 
 	// If we've processed any input, then don't block again.
 	if(processed_any)
@@ -184,7 +197,7 @@
 	FD_ZERO(&xfds);
 
 	pthread_mutex_lock(&guard);
-	for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next) {
+	for (ip = (input_t *) hSession->poll.context->first; ip != (input_t *)NULL; ip = (input_t *) ip->next) {
 		if(!ip->enabled) {
 			debug("Socket %d is disabled",ip->fd);
 			continue;
@@ -208,10 +221,10 @@
 	pthread_mutex_unlock(&guard);
 
 	if (block) {
-		if (hSession->timeouts.first) {
+		if (hSession->timer.context->first) {
 			(void) gettimeofday(&now, (void *)NULL);
-			twait.tv_sec = ((timeout_t *) hSession->timeouts.first)->tv.tv_sec - now.tv_sec;
-			twait.tv_usec = ((timeout_t *) hSession->timeouts.first)->tv.tv_usec - now.tv_usec;
+			twait.tv_sec = ((timeout_t *) hSession->timer.context->first)->tv.tv_sec - now.tv_sec;
+			twait.tv_usec = ((timeout_t *) hSession->timer.context->first)->tv.tv_usec - now.tv_usec;
 			if (twait.tv_usec < 0L) {
 				twait.tv_sec--;
 				twait.tv_usec += MILLION;
@@ -244,25 +257,25 @@
 		                        strerror(errno));
 	} else {
 
-		for (ip = (input_t *) hSession->input.list.first; ip != (input_t *) NULL; ip = (input_t *) ip->next) {
+		for (ip = (input_t *) hSession->poll.context->first; ip != (input_t *) NULL; ip = (input_t *) ip->next) {
 			if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds)) {
 				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_READ,ip->userdata);
 				processed_any = 1;
-				if (hSession->input.changed)
+				if (hSession->poll.context->changed)
 					goto retry;
 			}
 
 			if((ip->flag & LIB3270_IO_FLAG_WRITE) && FD_ISSET(ip->fd, &wfds)) {
 				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_WRITE,ip->userdata);
 				processed_any = 1;
-				if (hSession->input.changed)
+				if (hSession->poll.context->changed)
 					goto retry;
 			}
 
 			if((ip->flag & LIB3270_IO_FLAG_EXCEPTION) && FD_ISSET(ip->fd, &xfds)) {
 				(*ip->call)(hSession,ip->fd,LIB3270_IO_FLAG_EXCEPTION,ip->userdata);
 				processed_any = 1;
-				if (hSession->input.changed)
+				if (hSession->poll.context->changed)
 					goto retry;
 			}
 		}
@@ -270,19 +283,19 @@
 	}
 
 	// See what's expired.
-	if (hSession->timeouts.first) {
+	if (hSession->timer.context->first) {
 		struct timeout *t;
 		(void) gettimeofday(&now, (void *)NULL);
 
 		pthread_mutex_lock(&guard);
-		while(hSession->timeouts.first) {
-			t = (struct timeout *) hSession->timeouts.first;
+		while(hSession->timer.context->first) {
+			t = (struct timeout *) hSession->timer.context->first;
 
 			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec)) {
 				t->in_play = 1;
 
 				(*t->call)(hSession,t->userdata);
-				lib3270_linked_list_delete_node(&hSession->timeouts,t);
+				lib3270_linked_list_delete_node((lib3270_linked_list *) hSession->timer.context,t);
 
 				processed_any = 1;
 
@@ -296,7 +309,7 @@
 
 	}
 
-	if (hSession->input.changed)
+	if (hSession->poll.context->changed)
 		goto retry;
 
 	return processed_any;
@@ -642,16 +655,32 @@
 
  }
 
- int lib3270_setup_mainloop(H3270 *hSession, int glib) {
+ static void timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {
+	lib3270_linked_list_free((lib3270_linked_list *) context);
+	lib3270_free(context);
+ }
 
-	debug("%s",__FUNCTION__);
+ static	void poll_finalize(H3270 *session, LIB3270_POLL_CONTEXT * context) {
+	lib3270_linked_list_free((lib3270_linked_list *) context);
+	lib3270_free(context);
+ }
 
-	// Set default mainloop implementation.
+ /// @brief Set default mainloop implementation.
+ static void lib3270_setup_internal_mainloop(H3270 *hSession) {
+
+	debug("%s: Internal mainloop implementation enabled",__FUNCTION__);
+
  	hSession->timer.add = default_timer_add;
  	hSession->timer.remove = default_timer_remove;
+	hSession->timer.context = lib3270_malloc(sizeof(struct _lib3270_timer_context));
+	hSession->timer.finalize = timer_finalize;
+	memset(hSession->timer.context,0,sizeof(struct _lib3270_timer_context));
 
  	hSession->poll.add = default_poll_add;
  	hSession->poll.remove = default_poll_remove;
+	hSession->poll.context = lib3270_malloc(sizeof(struct _lib3270_poll_context));
+	hSession->poll.finalize = poll_finalize;
+	memset(hSession->poll.context,0,sizeof(struct _lib3270_poll_context));
 
  	hSession->event_dispatcher = default_event_dispatcher;
  	hSession->run = default_run;
@@ -659,8 +688,12 @@
 
  	hSession->wait = default_wait;
 
+ }
+
+ int lib3270_setup_mainloop(H3270 *hSession, int glib) {
+
 	if(!glib || glibstate == GLIB_NOT_AVAILABLE) {
-		debug("%s: Default mainloop implementation enabled",__FUNCTION__);
+		lib3270_setup_internal_mainloop(hSession);
 		return 0;
 	}
 
@@ -671,6 +704,7 @@
 		if(dlerror() != NULL) {
 			glibstate = GLIB_NOT_AVAILABLE;
 			debug("%s: Error loading %s", __FUNCTION__, glibnames[ix]);
+			lib3270_setup_internal_mainloop(hSession);
 			return -1;
 		}
 	}

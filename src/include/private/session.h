@@ -40,6 +40,9 @@
 	 #define LIB3270_TA void
  #endif // !LIB3270_TA
 
+ typedef struct _lib3270_timer_context LIB3270_TIMER_CONTEXT;
+ typedef struct _lib3270_poll_context LIB3270_POLL_CONTEXT;
+
  struct _h3270 {
 
 	/// @brief Session Identifier.
@@ -47,15 +50,20 @@
 
 	struct lib3270_session_callbacks	  cbk;					///< @brief Callback table - Always the first one.
 
-	/// @brief I/O handlers for this session.
+	/// @brief Timers for this session.
 	struct {
 		void *	(*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
 		void	(*remove)(H3270 *session, void *timer);
+		void	(*finalize)(H3270 *session, LIB3270_TIMER_CONTEXT * context);
+		LIB3270_TIMER_CONTEXT * context;
 	} timer;
 
+	/// @brief I/O handlers for this session.
 	struct {
 		void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 		void	(*remove)(H3270 *session, void *id);
+		void	(*finalize)(H3270 *session, LIB3270_POLL_CONTEXT * context);
+		LIB3270_POLL_CONTEXT * context;
 	} poll;
 
 	int		(*event_dispatcher)(H3270 *session,int wait);
@@ -385,12 +393,14 @@
 	} xio;
 	*/
 
-	struct lib3270_linked_list_head timeouts;
+	// struct lib3270_linked_list_head timeouts;
 
+	/*
 	struct {
 		struct lib3270_linked_list_head	list;
 		unsigned int changed : 1;
 	} input;
+	*/
 
 	// Trace methods.
 	struct {
@@ -417,13 +427,13 @@
 	/// @brief Event Listeners.
 	struct {
 		/// @brief State listeners.
-		struct lib3270_linked_list_head state[LIB3270_STATE_USER];
+		lib3270_linked_list state[LIB3270_STATE_USER];
 
 		/// @brief Toggle listeners.
-		struct lib3270_linked_list_head toggle[LIB3270_TOGGLE_COUNT];
+		lib3270_linked_list toggle[LIB3270_TOGGLE_COUNT];
 
 		/// @brief Action listeners.
-		struct lib3270_linked_list_head actions[LIB3270_ACTION_GROUP_CUSTOM];
+		lib3270_linked_list actions[LIB3270_ACTION_GROUP_CUSTOM];
 
 	} listeners;
 

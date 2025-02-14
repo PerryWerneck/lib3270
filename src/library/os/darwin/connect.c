@@ -176,6 +176,7 @@ int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 	return sock;
 }
 
+/*
 static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), void GNUC_UNUSED(*dunno)) {
 	int 		err	= 0;
 	socklen_t	len	= sizeof(err);
@@ -253,7 +254,9 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	lib3270_notify_tls(hSession);
 
 }
+*/
 
+/*
 int net_reconnect(H3270 *hSession, int seconds) {
 	
 	LIB3270_NETWORK_STATE state;
@@ -347,8 +350,6 @@ int net_reconnect(H3270 *hSession, int seconds) {
 		trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
 	}
 
-
-	/*
 	#if defined(OMTU)
 	else if (setsockopt(hSession->sock, SOL_SOCKET, SO_SNDBUF, (char *)&mtu,sizeof(mtu)) < 0)
 	{
@@ -356,8 +357,6 @@ int net_reconnect(H3270 *hSession, int seconds) {
 		SOCK_CLOSE(hSession);
 	}
 	#endif
-
-	*/
 
 	// Connecting, set callbacks, wait for connection
 	lib3270_set_cstate(hSession, LIB3270_PENDING);
@@ -375,7 +374,6 @@ int net_reconnect(H3270 *hSession, int seconds) {
 			return errno = rc;
 		}
 
-		/*
 		time_t end = time(0)+seconds;
 
 		while(time(0) < end)
@@ -413,10 +411,9 @@ int net_reconnect(H3270 *hSession, int seconds) {
 		lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 
 		return errno = ETIMEDOUT;
-		*/
 	}
 
 	return 0;
 
 }
-
+*/

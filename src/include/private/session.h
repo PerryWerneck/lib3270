@@ -376,12 +376,14 @@
 	unsigned char			  bg;
 	unsigned char			  saved_bg;
 
+	/*
 	// xio
 	struct {
 		void 				* read;
 		void 				* write;
 		void 				* except;
 	} xio;
+	*/
 
 	struct lib3270_linked_list_head timeouts;
 

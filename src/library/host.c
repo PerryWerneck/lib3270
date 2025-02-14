@@ -48,7 +48,6 @@
 #include "telnetc.h"
 #include "trace_dsc.h"
 #include "utilc.h"
-#include "xioc.h"
 #include "screenc.h"
 
 #include <errno.h>

@@ -96,7 +96,6 @@
 #include "trace_dsc.h"
 #include "utilc.h"
 #include "w3miscc.h"
-#include "xioc.h"
 #include "screen.h"
 
 #include <lib3270/internals.h>

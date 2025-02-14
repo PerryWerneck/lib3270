@@ -47,8 +47,31 @@
 #include <private/session.h>
 #include <lib3270/trace.h>
 
+#include <linux/limits.h>
+
 /* Maximum size of a tracefile header. */
 // #define MAX_HEADER_SIZE		(10*1024)
+
+char * trace_filename(const H3270 *session, const char *template) {
+
+	char buffer[PATH_MAX+1];
+
+	{
+		time_t ltime;
+		time(&ltime);
+
+#ifdef HAVE_LOCALTIME_R
+		struct tm tm;
+		strftime(buffer, PATH_MAX, template, localtime_r(&ltime,&tm));
+#else
+		strftime(buffer, PATH_MAX, template, localtime(&ltime));
+#endif // HAVE_LOCALTIME_R
+
+	}
+
+	return lib3270_strdup(buffer);
+
+}
 
 /**
  * @brief Write to the trace file.
@@ -313,18 +336,17 @@ struct trace_file_context {
 	lib3270_free(context);
  }
 
- LIB3270_EXPORT int lib3270_trace_open_file(H3270 *hSession, const char *filename) {
+ LIB3270_EXPORT int lib3270_trace_open_file(H3270 *hSession, const char *template) {
+
+	lib3270_autoptr(char) filename = trace_filename(hSession, template);
+	FILE *fp = fopen(filename,"wa");
+	if(!fp) {
+		return errno;
+	}
 
 	struct trace_file_context *context = lib3270_malloc(sizeof(struct trace_file_context));
 
-	context->fp = fopen(filename,"wa");
-
-	if(!context->fp) {
-		int error = errno;
-		lib3270_free(context);
-		return error;
-	}
-
+	context->fp = fp;
 	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
 	hSession->trace.write = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *, const char *, va_list)) write_file;
 	hSession->trace.finalize = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *)) finalize_file;

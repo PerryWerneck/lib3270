@@ -23,6 +23,8 @@
 
  const char *rcba(const H3270 *session, int baddr);
 
+ char * trace_filename(const H3270 *session, const char *template);
+
  void trace_ansi_disc(H3270 *hSession);
  void trace_char(const H3270 *hSession, char c);
  void trace_ds(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);

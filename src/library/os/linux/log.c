@@ -19,6 +19,7 @@
 
  #include <config.h>
  #include <private/session.h>
+ #include <private/trace.h>
  #include <lib3270/log.h>
  #include <stdio.h>
  #include <linux/limits.h>
@@ -103,36 +104,25 @@
 	lib3270_free(context);
  }
 
- LIB3270_EXPORT int lib3270_log_open_file(H3270 *hSession, const char *filename, time_t maxage) {
+ LIB3270_EXPORT int lib3270_log_open_file(H3270 *hSession, const char *template, time_t maxage) {
 
 	if(hSession->log.context) {
 		hSession->log.finalize(hSession,hSession->log.context);
 		hSession->log.context = NULL;
 	}
 
-	// Open file
-	char buffer[PATH_MAX+1];
-
-	{
-		time_t ltime;
-		time(&ltime);
-
-#ifdef HAVE_LOCALTIME_R
-		struct tm tm;
-		strftime(buffer, PATH_MAX, filename, localtime_r(&ltime,&tm));
-#else
-		strftime(buffer, PATH_MAX, filename, localtime(&ltime));
-#endif // HAVE_LOCALTIME_R
-
+	lib3270_autoptr(char) filename = trace_filename(hSession, template);
+	if(!filename) {
+		return ENOMEM;
 	}
 
 	struct stat st;
-	if(!stat(buffer,&st) && (time(0) - st.st_mtime) > maxage) {
+	if(!stat(filename,&st) && (time(0) - st.st_mtime) > maxage) {
 		// file is old, remove it
-		remove(buffer);
+		remove(filename);
 	}
 
-	FILE *fp = fopen(buffer,"a");
+	FILE *fp = fopen(filename,"a");
 	if(!fp) {
 		return errno;
 	}

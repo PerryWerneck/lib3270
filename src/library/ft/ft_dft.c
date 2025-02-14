@@ -383,7 +383,7 @@ static void dft_get_request(H3270 *hSession) {
 			/* Binary read. */
 			numread = fread(bufptr, 1, numbytes, ft->local_file);
 			if (numread <= 0) {
-				lib3270_write_log(hSession,"ft","Error %s reading source file (rc=%d)",strerror(errno),errno);
+				lib3270_log_write(hSession,"ft","Error %s reading source file (rc=%d)",strerror(errno),errno);
 				break;
 			}
 

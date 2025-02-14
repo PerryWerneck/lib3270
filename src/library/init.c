@@ -90,7 +90,7 @@ static char parse_ctlchar(char *s) {
 }
 
 int lib3270_loaded(void) {
-	trace("%s",__FUNCTION__);
+	debug("%s",__FUNCTION__);
 
 	ansictl.vintr   = parse_ctlchar("^C");
 	ansictl.vquit   = parse_ctlchar("^\\");
@@ -123,7 +123,7 @@ int lib3270_loaded(void) {
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 
 #ifdef HAVE_LIBCURL
-	trace("%s.curl_global_init",__FUNCTION__);
+	debug("%s.curl_global_init",__FUNCTION__);
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 #endif // HAVE_LIBCURL
 
@@ -131,18 +131,12 @@ int lib3270_loaded(void) {
 }
 
 int lib3270_unloaded(void) {
-	trace("%s",__FUNCTION__);
+	debug("%s",__FUNCTION__);
 
 #ifdef HAVE_LIBCURL
-	trace("%s.curl_global_cleanup",__FUNCTION__);
+	debug("%s.curl_global_cleanup",__FUNCTION__);
 	curl_global_cleanup();
 #endif // HAVE_LIBCURL
-
-#ifdef HAVE_SYSLOG
-	if(use_syslog) {
-		closelog();
-	}
-#endif // HAVE_SYSLOG
 
 	return 0;
 }

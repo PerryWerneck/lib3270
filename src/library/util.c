@@ -61,7 +61,7 @@ char * lib3270_vsprintf(const char *fmt, va_list args) {
 #if defined(HAVE_VASPRINTF)
 
 	if(vasprintf(&r, fmt, args) < 0 || !r)
-		lib3270_write_log(NULL, "lib3270", "Error in vasprintf");
+		lib3270_log_write(NULL, "lib3270", "Error in vasprintf");
 
 #else
 
@@ -70,7 +70,7 @@ char * lib3270_vsprintf(const char *fmt, va_list args) {
 
 	nc = vsnprintf(buf, sizeof(buf), fmt, args);
 	if(nc < 0) {
-		lib3270_write_log(NULL, "lib3270", "Error on vsnprintf");
+		lib3270_log_write(NULL, "lib3270", "Error on vsnprintf");
 	} else if (nc < sizeof(buf)) {
 		r = lib3270_malloc(nc + 1);
 		strcpy(r, buf);
@@ -78,7 +78,7 @@ char * lib3270_vsprintf(const char *fmt, va_list args) {
 	} else {
 		r = lib3270_malloc(nc + 1);
 		if(vsnprintf(r, nc, fmt, args) < 0) {
-			lib3270_write_log(NULL, "lib3270", "Error on vsnprintf");
+			lib3270_log_write(NULL, "lib3270", "Error on vsnprintf");
 			free(r);
 			return NULL;
 		}

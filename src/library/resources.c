@@ -137,7 +137,7 @@ const char * get_resource(H3270 *hSession, const char *name)
 	{
 		if (!strcmp(d->name, name))
 		{
-			lib3270_write_log(hSession,"resource","%s=\"%s\"",name,d->value);
+			lib3270_log_write(hSession,"resource","%s=\"%s\"",name,d->value);
 			return d->value;
 		}
 	}
@@ -147,7 +147,7 @@ const char * get_resource(H3270 *hSession, const char *name)
 		if (!strncmp(fallbacks[i], name, strlen(name)) && *(fallbacks[i] + strlen(name)) == ':')
 		{
 			const char *ret =  fallbacks[i] + strlen(name) + 2;
-			lib3270_write_log(hSession,"resource","%s=\"%s\"",name,ret);
+			lib3270_log_write(hSession,"resource","%s=\"%s\"",name,ret);
 			return ret;
 		}
 	}
@@ -157,7 +157,7 @@ const char * get_resource(H3270 *hSession, const char *name)
 	{
 		if (!strcmp(rdb[i].name, name))
 		{
-			lib3270_write_log(hSession,"resource","%s=\"%s\"",name,rdb[i].value);
+			lib3270_log_write(hSession,"resource","%s=\"%s\"",name,rdb[i].value);
 			return rdb[i].value;
 		}
 	}

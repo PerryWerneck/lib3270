@@ -286,7 +286,7 @@ void popup_a_sockerr(H3270 *hSession, char *fmt, ...) {
 	text = lib3270_vsprintf(fmt, args);
 	va_end(args);
 
-	lib3270_write_log(
+	lib3270_log_write(
 	    hSession,
 	    "3270",
 	    "Network error:\n%s\n%s",
@@ -901,7 +901,7 @@ static int telnet_fsm(H3270 *hSession, unsigned char c) {
 			if (c == TELOPT_TM && !hSession->bsd_tm)
 				goto wont;
 
-			trace("hSession->myopts[c]=%d",hSession->myopts[c]);
+			debug("hSession->myopts[c]=%d",hSession->myopts[c]);
 			if (!hSession->myopts[c]) {
 				if (c != TELOPT_TM)
 					hSession->myopts[c] = 1;
@@ -1390,7 +1390,7 @@ static void process_bind(H3270 *hSession, unsigned char *buf, int buflen) {
 
 static int process_eor(H3270 *hSession) {
 
-	trace("%s: syncing=%s",__FUNCTION__,hSession->syncing ? "Yes" : "No");
+	debug("%s: syncing=%s",__FUNCTION__,hSession->syncing ? "Yes" : "No");
 
 	if (hSession->syncing || !(hSession->ibptr - hSession->ibuf))
 		return(0);

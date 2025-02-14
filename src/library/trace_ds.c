@@ -50,12 +50,10 @@
 /* Maximum size of a tracefile header. */
 // #define MAX_HEADER_SIZE		(10*1024)
 
-#undef trace
-
 /**
  * @brief Write to the trace file.
  */
-static void wtrace(H3270 *hSession, const char *fmt, ...) {
+static void wtrace(const H3270 *hSession, const char *fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
 	hSession->trace.write(hSession,hSession->trace.context,fmt,args);
@@ -63,14 +61,14 @@ static void wtrace(H3270 *hSession, const char *fmt, ...) {
 }
 
 /* display a (row,col) */
-const char * rcba(H3270 *hSession, int baddr) {
+const char * rcba(const H3270 *hSession, int baddr) {
 	static char buf[48];
 	(void) snprintf(buf, 48, "(%d,%d)", baddr/hSession->view.cols + 1, baddr%hSession->view.cols + 1);
 	return buf;
 }
 
 /* Data Stream trace print, handles line wraps */
-static void trace_ds_s(H3270 *hSession, char *s, Boolean can_break) {
+static void trace_ds_s(const H3270 *hSession, char *s, Boolean can_break) {
 
 	static int      dscnt = 0;
 	int len = strlen(s);
@@ -106,7 +104,7 @@ static void trace_ds_s(H3270 *hSession, char *s, Boolean can_break) {
 	}
 }
 
-void trace_ds(H3270 *hSession, const char *fmt, ...) {
+void trace_ds(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
 		char	* text;
@@ -123,7 +121,7 @@ void trace_ds(H3270 *hSession, const char *fmt, ...) {
 
 }
 
-void trace_ds_nb(H3270 *hSession, const char *fmt, ...) {
+void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
 		char *text;
@@ -141,7 +139,7 @@ void trace_ds_nb(H3270 *hSession, const char *fmt, ...) {
 /**
  * @brief Conditional data stream trace, without line splitting.
  */
-void trace_dsn(H3270 *hSession, const char *fmt, ...) {
+void trace_dsn(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -155,7 +153,7 @@ void trace_dsn(H3270 *hSession, const char *fmt, ...) {
 /**
  * @brief Conditional ssl stream trace, without line splitting.
  */
-void trace_ssl(H3270 *hSession, const char *fmt, ...) {
+void trace_ssl(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -166,7 +164,7 @@ void trace_ssl(H3270 *hSession, const char *fmt, ...) {
 
 }
 
-LIB3270_EXPORT void lib3270_write_trace(H3270 *hSession, const char *fmt, ...) {
+LIB3270_EXPORT void lib3270_write_trace(const H3270 *hSession, const char *fmt, ...) {
 
 	if(hSession->trace.context) {
 		va_list args;
@@ -178,7 +176,7 @@ LIB3270_EXPORT void lib3270_write_trace(H3270 *hSession, const char *fmt, ...) {
 }
 
 
-LIB3270_EXPORT void lib3270_write_dstrace(H3270 *hSession, const char *fmt, ...) {
+LIB3270_EXPORT void lib3270_write_dstrace(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -189,7 +187,7 @@ LIB3270_EXPORT void lib3270_write_dstrace(H3270 *hSession, const char *fmt, ...)
 
 }
 
-LIB3270_EXPORT void lib3270_write_nettrace(H3270 *hSession, const char *fmt, ...) {
+LIB3270_EXPORT void lib3270_write_nettrace(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -200,7 +198,7 @@ LIB3270_EXPORT void lib3270_write_nettrace(H3270 *hSession, const char *fmt, ...
 
 }
 
-LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *hSession, const char *fmt, ...) {
+LIB3270_EXPORT void lib3270_write_screen_trace(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -211,7 +209,7 @@ LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *hSession, const char *fmt,
 
 }
 
-LIB3270_EXPORT void lib3270_write_event_trace(H3270 *hSession, const char *fmt, ...) {
+LIB3270_EXPORT void lib3270_write_event_trace(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -222,7 +220,7 @@ LIB3270_EXPORT void lib3270_write_event_trace(H3270 *hSession, const char *fmt, 
 
 }
 
-LIB3270_EXPORT void lib3270_trace_event(H3270 *hSession, const char *fmt, ...) {
+LIB3270_EXPORT void lib3270_trace_event(const H3270 *hSession, const char *fmt, ...) {
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
 		va_list args;
@@ -264,7 +262,7 @@ void trace_screen(H3270 *session) {
 
 
 /* Called from ANSI emulation code to log a single character. */
-void trace_char(H3270 *hSession, char c) {
+void trace_char(const H3270 *hSession, char c) {
 	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE) && hSession->trace.context)
 		wtrace(hSession,"%c",c);
 	return;
@@ -279,7 +277,6 @@ void trace_char(H3270 *hSession, char c) {
  * (In a gross violation of data hiding and modularity, trace_skipping is
  * manipulated directly in ctlr_clear()).
  *
- *
  */
 void trace_ansi_disc(H3270 *hSession) {
 	unsigned int i;
@@ -292,7 +289,7 @@ void trace_ansi_disc(H3270 *hSession) {
 	hSession->trace_skipping = 1;
 }
 
-void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen) {
+void lib3270_trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen) {
 	// 00000000001111111111222222222233333333334444444444555555555566666666667777777777
 	// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
 	// xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx . . . . . . . . . . . . . . . .
@@ -329,10 +326,10 @@ void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *d
 }
 
 
-static void dummy_writer(H3270 *session, void *context, const char *fmt, va_list args) {
+static void dummy_writer(const H3270 *session, LIB3270_TRACE_CONTEXT *context, const char *fmt, va_list args) {
 }
 
-static void dummy_finalizer(H3270 *session, void *context) {
+static void dummy_finalizer(const H3270 *session, LIB3270_TRACE_CONTEXT *context) {
 }
 
 LIB3270_EXPORT void lib3270_trace_close(H3270 *hSession) {
@@ -351,12 +348,12 @@ struct trace_file_context {
 	FILE *fp;
 };
 
- static void write_file(H3270 *, struct trace_file_context *context, const char *fmt, va_list args) {
+ static void write_file(const H3270 *, struct trace_file_context *context, const char *fmt, va_list args) {
 	vfprintf(context->fp,fmt,args);
 	fflush(context->fp);
  }
 
- static void finalize_file(H3270 *session, struct trace_file_context *context) {
+ static void finalize_file(const H3270 *session, struct trace_file_context *context) {
 	fclose(context->fp);
 	lib3270_free(context);
  }
@@ -374,8 +371,8 @@ struct trace_file_context {
 	}
 
 	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
-	hSession->trace.write = (void (*)(H3270 *, void *, const char *, va_list)) write_file;
-	hSession->trace.finalize = (void (*)(H3270 *, void *)) finalize_file;
+	hSession->trace.write = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *, const char *, va_list)) write_file;
+	hSession->trace.finalize = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *)) finalize_file;
 
 	return 0;
 }

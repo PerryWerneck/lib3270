@@ -155,7 +155,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 
 #if !defined(OPENSSL_FIPS)
 
-	lib3270_write_log(
+	lib3270_log_write(
 		hSession,
 		"openssl",
 		"Initializing %s\n",
@@ -187,7 +187,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 					memset(err_buff,0,sizeof(err_buff));
 					(void) ERR_error_string_n(ERR_get_error(), err_buff, 1023);
 
-					lib3270_write_log(
+					lib3270_log_write(
 						hSession,
 						"openssl",
 						"Cant set FIPS mode to %u: %s\n",
@@ -196,7 +196,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 					);
 
 				} else {
-					lib3270_write_log(
+					lib3270_log_write(
 						hSession,
 						"openssl",
 						"FIPS mode set to %u\n",
@@ -205,7 +205,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 				}
 			}
 
-			lib3270_write_log(
+			lib3270_log_write(
 				hSession,
 				"openssl",
 				"Initializing windows %s using fips mode %u.\n",
@@ -216,7 +216,7 @@ SSL_CTX * lib3270_openssl_get_context(H3270 *hSession) {
 		}
 #else
 
-	lib3270_write_log(
+	lib3270_log_write(
 		hSession,
 		"openssl",
 		"Initializing %s %s FIPS.\n",

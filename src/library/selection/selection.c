@@ -269,7 +269,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 
 	memset(buffer,0,len+1);
 
-	// trace("len=%d buffer=%p",len,buffer);
+	// debug("len=%d buffer=%p",len,buffer);
 
 	while(len > 0) {
 		if(h->text[offset].attr & LIB3270_ATTR_CG)
@@ -288,7 +288,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 			len--;
 		}
 	}
-//	trace("len=%d buffer=%p pos=%d",len,buffer,ptr-buffer);
+//	debug("len=%d buffer=%p pos=%d",len,buffer,ptr-buffer);
 
 	*ptr = 0;
 

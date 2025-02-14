@@ -292,6 +292,8 @@ lib_src += [
   'src/library/os/' + host_machine.system() + '/connect.c',
   'src/library/os/' + host_machine.system() + '/connected.c',
   'src/library/os/' + host_machine.system() + '/mainloop.c',
+  'src/library/os/' + host_machine.system() + '/log.c',
+
 ]
 
 gobject_src = [
@@ -305,7 +307,6 @@ linux_src =[
   'src/library/os/linux/curl.c',
   'src/library/os/linux/download.c',
   'src/library/os/linux/ldap.c',
-  'src/library/os/linux/log.c',
   'src/library/os/linux/util.c',
 ] 
 
@@ -314,7 +315,6 @@ darwin_src = [
   'src/library/os/darwin/curl.c',
   'src/library/os/darwin/download.c',
   'src/library/os/darwin/ldap.c',
-  'src/library/os/darwin/log.c',
   'src/library/os/darwin/util.c',
 ]
 
@@ -323,7 +323,6 @@ win_src = [
   'src/library/os/windows/download.c',
   'src/library/os/windows/http.c',
   'src/library/os/windows/ldap.c',
-  'src/library/os/windows/log.c',
   'src/library/os/windows/registry.c',
   'src/library/os/windows/util.c',
 ]
@@ -648,7 +647,6 @@ install_headers(
   'src/include/lib3270/charset.h',
   'src/include/lib3270/filetransfer.h',
   'src/include/lib3270.h',
-  'src/include/lib3270/html.h',
   'src/include/lib3270/internals.h',
   'src/include/lib3270/keyboard.h',
   'src/include/lib3270/log.h',

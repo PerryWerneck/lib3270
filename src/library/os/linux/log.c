@@ -1,79 +1,150 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <internals.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <config.h>
-#include <lib3270.h>
-#include <lib3270/log.h>
+ #include <config.h>
+ #include <private/session.h>
+ #include <lib3270/log.h>
+ #include <stdio.h>
+ #include <linux/limits.h>
+ #include <sys/stat.h>
 
-#ifdef HAVE_SYSLOG
-#include <syslog.h>
-#endif // HAVE_SYSLOG
-
-/*---[ Implementacao ]--------------------------------------------------------------------------------------*/
-
-int use_syslog = 0;
-
-int default_loghandler(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int GNUC_UNUSED(rc), const char *message) {
-#ifdef HAVE_SYSLOG
-	if(use_syslog) {
-		syslog(LOG_INFO, "%s: %s", module, message);
-	} else {
-		printf("%s %s\n", module, message);
-		fflush(stdout);
-	}
-#else
-	printf("%s %s\n", module, message);
-	fflush(stdout);
-#endif
+ #ifdef HAVE_SYSLOG
+ 	#include <syslog.h>
+ 
+ struct syslog_context {
+	int dummy;
+ };
+ 
+ static int syslog_write(const H3270 *session, struct syslog_context *context, const char *domain, const char *fmt, va_list args) {
+	vsyslog(LOG_INFO, fmt, args);
 	return 0;
-}
+ }
 
-LIB3270_EXPORT int lib3270_set_syslog(int flag) {
-#ifdef HAVE_SYSLOG
-	if(flag) {
-		if(!use_syslog) {
-			openlog(LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME), LOG_CONS, LOG_USER);
-			use_syslog = 1;
-		}
-	} else {
-		if(use_syslog) {
-			closelog();
-			use_syslog = 0;
-		}
+ static void syslog_finalize(const H3270 *session, struct syslog_context *context) {
+	lib3270_free(context);
+	closelog();
+ }
+
+ LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession) {
+
+	if(hSession->log.context) {
+		hSession->log.finalize(hSession,hSession->log.context);
+		hSession->log.context = NULL;
 	}
 
+	openlog(PACKAGE_NAME, LOG_CONS, LOG_USER);
+
+	struct syslog_context *context = (struct syslog_context *) lib3270_malloc(sizeof(struct syslog_context));
+	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
+	hSession->log.write = (void *) syslog_write;
+	hSession->log.finalize = (void *) syslog_finalize;
+	
 	return 0;
 
+ }
+
+ #else 
+
+ LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession) {
+	return ENOTSUP;
+ }
+
+ #endif // HAVE_SYSLOG
+
+ struct file_context {
+	FILE *fp;
+ };
+
+ static int file_write(H3270 *session, struct file_context *context, const char *domain, const char *fmt, va_list args) {
+
+	char timestamp[20];
+
+	{
+		time_t ltime;
+		time(&ltime);
+
+#ifdef HAVE_LOCALTIME_R
+		struct tm tm;
+		strftime(timestamp, 20, "%x %X", localtime_r(&ltime,&tm));
 #else
-	return errno  = ENOENT;
-#endif // HAVE_SYSLOG
-}
+		strftime(timestamp, 20, "%x %X", localtime(&ltime));
+#endif // HAVE_LOCALTIME_R
+
+	}
+	
+	fprintf(context->fp, "%s\t%-8s ", timestamp, domain);
+	vfprintf(context->fp, fmt, args);
+	fprintf(context->fp, "\n");
+
+	fflush(context->fp);
+
+	return 0;
+
+ }
+
+ static void file_finalize(H3270 *session, struct file_context *context) {
+	fclose(context->fp);
+	lib3270_free(context);
+ }
+
+ LIB3270_EXPORT int lib3270_log_open_file(H3270 *hSession, const char *filename, time_t maxage) {
+
+	if(hSession->log.context) {
+		hSession->log.finalize(hSession,hSession->log.context);
+		hSession->log.context = NULL;
+	}
+
+	// Open file
+	char buffer[PATH_MAX+1];
+
+	{
+		time_t ltime;
+		time(&ltime);
+
+#ifdef HAVE_LOCALTIME_R
+		struct tm tm;
+		strftime(buffer, PATH_MAX, filename, localtime_r(&ltime,&tm));
+#else
+		strftime(buffer, PATH_MAX, filename, localtime(&ltime));
+#endif // HAVE_LOCALTIME_R
+
+	}
+
+	struct stat st;
+	if(!stat(buffer,&st) && (time(0) - st.st_mtime) > maxage) {
+		// file is old, remove it
+		remove(buffer);
+	}
+
+	FILE *fp = fopen(buffer,"a");
+	if(!fp) {
+		return errno;
+	}
+
+	struct file_context *context = lib3270_malloc(sizeof(struct file_context));
+
+	context->fp = fp;
+
+	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
+	hSession->log.write =  (void *) file_write;
+	hSession->log.finalize = (void *) file_finalize;
+
+	return 0;
+ }
+

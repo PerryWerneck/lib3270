@@ -43,6 +43,7 @@
  typedef struct _lib3270_timer_context LIB3270_TIMER_CONTEXT;
  typedef struct _lib3270_poll_context LIB3270_POLL_CONTEXT;
  typedef struct _lib3270_trace_context LIB3270_TRACE_CONTEXT;
+ typedef struct _lib3270_log_context LIB3270_LOG_CONTEXT;
 
  struct _h3270 {
 
@@ -391,17 +392,18 @@
 	} input;
 	*/
 
-	// Trace methods.
+	// Trace file writer.
 	struct {
 		LIB3270_TRACE_CONTEXT *context;
-		void (*write)(H3270 *session, void *context, const char *fmt, va_list args);
-		void (*finalize)(H3270 *session, void *context);
+		void (*write)(const H3270 *session, LIB3270_TRACE_CONTEXT *context, const char *fmt, va_list args);
+		void (*finalize)(const H3270 *session, LIB3270_TRACE_CONTEXT *context);
 	} trace;
 
+	// log file writer.
 	struct {
-		char *file; 		///< @brief Log file name (if set).
-		LIB3270_LOG_HANDLER handler;
-		void *userdata;
+		LIB3270_LOG_CONTEXT *context;
+		int (*write)(const H3270 *session, LIB3270_LOG_CONTEXT *context, const char *domain, const char *fmt, va_list args);
+		void (*finalize)(const H3270 *session, LIB3270_LOG_CONTEXT *context);
 	} log;
 
 	struct {

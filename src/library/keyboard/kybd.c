@@ -414,7 +414,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code) {
 	if (IN_ANSI) {
 		register unsigned i;
 
-		trace("aid_code: %02x IN_ANSI: %d",aid_code,IN_ANSI);
+		debug("aid_code: %02x IN_ANSI: %d",aid_code,IN_ANSI);
 
 		if (aid_code == AID_ENTER) {
 			net_sendc(hSession, '\r');
@@ -438,7 +438,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code) {
 	plugin_aid(aid_code);
 #endif /*]*/
 
-	trace("IN_SSCP: %d cursor_addr: %d",IN_SSCP,hSession->cursor_addr);
+	debug("IN_SSCP: %d cursor_addr: %d",IN_SSCP,hSession->cursor_addr);
 
 	if (IN_SSCP) {
 		if (hSession->kybdlock & KL_OIA_MINUS)
@@ -881,7 +881,7 @@ LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *st
 	int rc = 0;
 
 	if(check_online_session(hSession)) {
-		trace("%s: %s",__FUNCTION__,strerror(errno));
+		debug("%s: %s",__FUNCTION__,strerror(errno));
 		return errno;
 	}
 
@@ -894,7 +894,7 @@ LIB3270_EXPORT int lib3270_input_string(H3270 *hSession, const unsigned char *st
 			return (errno = EPERM);
 
 		rc = key_ACharacter(hSession,(str[pos] & 0xff), KT_STD, IA_KEY, NULL);
-		trace("%s: key_ACharacter(%c)=%d",__FUNCTION__,str[pos] & 0xff,rc);
+		debug("%s: key_ACharacter(%c)=%d",__FUNCTION__,str[pos] & 0xff,rc);
 	}
 
 	screen_update(hSession,0,hSession->view.rows * hSession->view.cols);
@@ -1213,7 +1213,7 @@ LIB3270_EXPORT int lib3270_fieldmark(H3270 *hSession) {
 LIB3270_EXPORT int lib3270_enter(H3270 *hSession) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	trace("%s (kybdlock & KL_OIA_MINUS): %d kybdlock: %d",__FUNCTION__,(hSession->kybdlock & KL_OIA_MINUS),hSession->kybdlock);
+	debug("%s (kybdlock & KL_OIA_MINUS): %d kybdlock: %d",__FUNCTION__,(hSession->kybdlock & KL_OIA_MINUS),hSession->kybdlock);
 
 	if (hSession->kybdlock & KL_OIA_MINUS) {
 		return errno = EPERM;

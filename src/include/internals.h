@@ -271,12 +271,6 @@ LIB3270_INTERNAL HANDLE hEventLog;
 LIB3270_INTERNAL HANDLE hModule;
 #endif // _WIN32
 
-#ifdef HAVE_SYSLOG
-/// @brief Windows Event Log Handler.
-LIB3270_INTERNAL int use_syslog;
-#endif // HAVE_SYSLOG
-
-
 /* Library internal calls */
 LIB3270_INTERNAL int	key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum iaction cause,Boolean *skipped);
 LIB3270_INTERNAL int	cursor_move(H3270 *session, int baddr);

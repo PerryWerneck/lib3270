@@ -142,7 +142,7 @@ static int paste_char(H3270 *hSession, PASTE_DATA *data, unsigned char c) {
 	data->qtd++;
 
 	if(BA_TO_ROW(hSession->cursor_addr) != ((unsigned int) data->row)) {
-		trace("Row changed from %d to %d",data->row,BA_TO_ROW(hSession->cursor_addr));
+		debug("Row changed from %d to %d",data->row,BA_TO_ROW(hSession->cursor_addr));
 		if(!remargin(hSession,data->orig_col))
 			return 0;
 		data->row = BA_TO_ROW(hSession->cursor_addr);
@@ -240,7 +240,7 @@ LIB3270_EXPORT int lib3270_set_string_at(H3270 *hSession, unsigned int row, unsi
 	rc = set_string(hSession, str, length);
 	hSession->cbk.resume(hSession);
 
-	trace("%s rc=%d",__FUNCTION__,rc);
+	debug("%s rc=%d",__FUNCTION__,rc);
 
 	return rc;
 }

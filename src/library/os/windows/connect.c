@@ -210,7 +210,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	socklen_t	len		= sizeof(err);
 
 	if(hSession->xio.write) {
-		trace("%s write=%p",__FUNCTION__,hSession->xio.write);
+		debug"%s write=%p",__FUNCTION__,hSession->xio.write);
 		hSession->poll.remove(hSession, hSession->xio.write);
 		hSession->xio.write = NULL;
 	}
@@ -390,13 +390,13 @@ int net_reconnect(H3270 *hSession, int seconds) {
 
 	hSession->xio.write = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_WRITE,net_connected,0);
 
-	trace("%s: Connection in progress",__FUNCTION__);
+	debug("%s: Connection in progress",__FUNCTION__);
 
 	if(seconds) {
 		int rc = lib3270_wait_for_cstate(hSession,LIB3270_CONNECTED_TN3270E,seconds);
 		if(rc) {
 			lib3270_connection_close(hSession,rc);
-			lib3270_write_log(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
+			lib3270_log_write(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 			return errno = rc;
 		}
 

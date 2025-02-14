@@ -68,7 +68,7 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
 	if(hSession->auto_reconnect_inprogress && !hSession->connection.context) {
 
 		if(hSession->cbk.reconnect_allowed(hSession) == 0) {
-			lib3270_write_log(hSession,"3270","Starting auto-reconnect on %s",hSession->connection.url);
+			lib3270_log_write(hSession,"3270","Starting auto-reconnect on %s",hSession->connection.url);
 			hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
 			lib3270_connect(hSession,hSession->connection.timeout);
 
@@ -114,12 +114,12 @@ LIB3270_EXPORT int lib3270_disconnect(H3270 *hSession) {
 }
 
 int connection_write_offline(H3270 *hSession, const void *a , size_t v, LIB3270_NET_CONTEXT *c) {
-	lib3270_write_log(hSession,"3270","Attempt to write when disconnected");
+	lib3270_log_write(hSession,"3270","Attempt to write when disconnected");
 	return -ENOTCONN;
 }
 
 int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *) {
-	lib3270_write_log(hSession,"3270","Attempt to activate exception handler on a disconnected session");
+	lib3270_log_write(hSession,"3270","Attempt to activate exception handler on a disconnected session");
 	return -ENOTCONN;
 }
 
@@ -143,7 +143,7 @@ int lib3270_connection_close(H3270 *hSession, int failed) {
 	if(hSession->connection.context) {
 		int rc = hSession->connection.context->disconnect(hSession,hSession->connection.context);
 		if(rc) {
-			lib3270_write_log(hSession, "3270", "Network context disconnection returned %d", rc);
+			lib3270_log_write(hSession, "3270", "Network context disconnection returned %d", rc);
 		}
 		free(hSession->connection.context);
 		hSession->connection.context = NULL;
@@ -157,7 +157,7 @@ int lib3270_connection_close(H3270 *hSession, int failed) {
 		hSession->lu.associated = CN;
 		status_lu(hSession,CN);
 
-		trace("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
+		debug("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
 
 		//
 		// Remember a disconnect from ANSI mode, to keep screen tracing in sync.

@@ -104,7 +104,7 @@ static int internal_curl_trace_callback(CURL GNUC_UNUSED(*handle), curl_infotype
 
 	switch (type) {
 	case CURLINFO_TEXT:
-		lib3270_write_log(((CURLDATA *) userp)->hSession,"curl","%s",data);
+		lib3270_log_write(((CURLDATA *) userp)->hSession,"curl","%s",data);
 		return 0;
 
 	case CURLINFO_HEADER_OUT:
@@ -185,11 +185,11 @@ char * lib3270_url_get_using_curl(H3270 *hSession, const char *url, const char *
 
 	if(res != CURLE_OK) {
 		if(curl_data->errbuf[0])
-			lib3270_write_log(hSession,"curl","%s: %s",url, curl_data->errbuf);
+			lib3270_log_write(hSession,"curl","%s: %s",url, curl_data->errbuf);
 
 		*error = curl_easy_strerror(res);
 
-		lib3270_write_log(hSession,"curl","%s: %s",url, *error);
+		lib3270_log_write(hSession,"curl","%s: %s",url, *error);
 		errno = EINVAL;
 		return NULL;
 

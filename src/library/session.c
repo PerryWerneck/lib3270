@@ -84,7 +84,7 @@ void lib3270_session_free(H3270 *h) {
 
 	// Do we have pending tasks?
 	if(h->tasks) {
-		lib3270_write_log(h,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),"Destroying session with %u active task(s)",h->tasks);
+		lib3270_log_write(h,LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),"Destroying session with %u active task(s)",h->tasks);
 	}
 
 	shutdown_toggles(h);
@@ -138,7 +138,7 @@ void lib3270_session_free(H3270 *h) {
 
 	// Release logfile
 	lib3270_trace_close(h);
-	release_pointer(h->log.file);
+	lib3270_log_close(h);
 	lib3270_free(h);
 
 }
@@ -151,19 +151,19 @@ static int default_action(H3270 GNUC_UNUSED(*hSession), const char GNUC_UNUSED(*
 }
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode)) {
-	lib3270_write_log(session, "print", "%s", "Printing is unavailable");
+	lib3270_log_write(session, "print", "%s", "Printing is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't print" ), _( "Unable to print" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 
 static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char GNUC_UNUSED(*filename)) {
-	lib3270_write_log(session, "save", "%s", "Saving is unavailable");
+	lib3270_log_write(session, "save", "%s", "Saving is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't save" ), _( "Unable to save" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
 
 static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
-	lib3270_write_log(session, "load", "%s", "Loading from file is unavailable");
+	lib3270_log_write(session, "load", "%s", "Loading from file is unavailable");
 	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't load" ), _( "Unable to load from file" ), "%s", strerror(ENOTSUP));
 	return errno = ENOTSUP;
 }
@@ -220,7 +220,7 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 	#pragma GCC diagnostic pop
 
 	lib3270_set_popup_handler(hSession, NULL);
-	lib3270_set_log_handler(hSession,NULL,NULL);
+	lib3270_log_close(hSession);
 	lib3270_trace_close(hSession);
 
 }
@@ -325,7 +325,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 H3270 * lib3270_session_new(const char *model, int gui) {
 	H3270 * hSession;
 
-	trace("%s - gui=%s",__FUNCTION__,gui ? "Yes" : "No");
+	debug("%s - gui=%s",__FUNCTION__,gui ? "Yes" : "No");
 
 	hSession = lib3270_malloc(sizeof(H3270));
 	lib3270_session_init(hSession, model, "bracket" );
@@ -341,12 +341,12 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 		return NULL;
 	}
 
-	trace("%s: Initializing KYBD",__FUNCTION__);
+	debug("%s: Initializing KYBD",__FUNCTION__);
 	lib3270_register_schange(hSession,LIB3270_STATE_CONNECT,kybd_connect,NULL);
 	lib3270_register_schange(hSession,LIB3270_STATE_3270_MODE,kybd_in3270,NULL);
 
 #if defined(X3270_ANSI)
-	trace("%s: Initializing ANSI",__FUNCTION__);
+	debug("%s: Initializing ANSI",__FUNCTION__);
 	lib3270_register_schange(hSession,LIB3270_STATE_3270_MODE,ansi_in3270,NULL);
 #endif // X3270_ANSI
 
@@ -357,7 +357,7 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 
 	lib3270_set_url(hSession,NULL);	// Set default URL (if available).
 
-	trace("%s finished",__FUNCTION__);
+	debug("%s finished",__FUNCTION__);
 
 	errno = 0;
 	return hSession;
@@ -411,13 +411,13 @@ struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession
 
 	if(revision && strcasecmp(revision,REQUIRED_REVISION) < 0) {
 		errno = EINVAL;
-		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid revision %s when setting callback table",revision);
+		lib3270_log_write(hSession,PACKAGE_NAME,"Invalid revision %s when setting callback table",revision);
 		return NULL;
 	}
 
 	if(sz != sizeof(struct lib3270_session_callbacks)) {
 
-		lib3270_write_log(hSession,PACKAGE_NAME,"Invalid callback table (sz=%u expected=%u)",sz,(unsigned int) sizeof(struct lib3270_session_callbacks));
+		lib3270_log_write(hSession,PACKAGE_NAME,"Invalid callback table (sz=%u expected=%u)",sz,(unsigned int) sizeof(struct lib3270_session_callbacks));
 		errno = EINVAL;
 		return NULL;
 	}

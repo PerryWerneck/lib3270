@@ -19,22 +19,23 @@
 
  #pragma once
  #include <lib3270/defs.h>
+ #include <time.h>
 
- const char *rcba(H3270 *session, int baddr);
+ const char *rcba(const H3270 *session, int baddr);
 
  void trace_ansi_disc(H3270 *hSession);
- void trace_char(H3270 *hSession, char c);
- void trace_ds(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_ds_nb(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_dsn(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_ssl(H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ void trace_char(const H3270 *hSession, char c);
+ void trace_ds(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ void trace_dsn(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ void trace_ssl(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
  void trace_screen(H3270 *hSession);
 
  // TODO: Rename and turn them private.
- LIB3270_EXPORT void lib3270_write_trace(H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_dstrace(H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_nettrace(H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_screen_trace(H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_write_event_trace(H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_trace_event(H3270 *hSession, const char *fmt, ...);
- LIB3270_EXPORT void lib3270_trace_data(H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
+ LIB3270_EXPORT void lib3270_write_trace(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_EXPORT void lib3270_write_dstrace(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_EXPORT void lib3270_write_nettrace(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_EXPORT void lib3270_write_screen_trace(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_EXPORT void lib3270_write_event_trace(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_EXPORT void lib3270_trace_event(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_EXPORT void lib3270_trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);

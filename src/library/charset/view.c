@@ -38,7 +38,7 @@
 #include <internals.h>
 #include <lib3270/charset.h>
 #include <lib3270/log.h>
-#include <lib3270/trace.h>
+#include <private/trace.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
@@ -53,7 +53,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 	int s,r;
 	const char *ptr;
 
-	trace("%s","Showing charset table");
+	lib3270_trace_event(hSession,"%s","Showing charset table");
 
 	(void) memset(
 	    (char *) hSession->ea_buf,

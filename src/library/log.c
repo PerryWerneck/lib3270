@@ -1,154 +1,97 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como log.c e possui 151 linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- * macmiranda@bb.com.br		(Marco Aurélio Caldas Miranda)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+ #include <lib3270/defs.h>
+ #include <stdarg.h>
+ #include <private/session.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <errno.h>
 
-#ifdef WIN32
-#include <winsock2.h>
-#include <windows.h>
-#endif // WIN32
+ static int dummy_writer(H3270 *session, LIB3270_LOG_CONTEXT *context, const char *domain, const char *fmt, va_list args) {
+	return errno = EBADF;
+ }
 
-#include <internals.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <config.h>
-#include <lib3270.h>
-#include <lib3270/log.h>
-#include <errno.h>
+ static void dummy_finalizer(H3270 *session, LIB3270_LOG_CONTEXT *context) {
+ }
 
-/*---[ Constants ]------------------------------------------------------------------------------------------*/
+ LIB3270_EXPORT void lib3270_log_close(H3270 *hSession) {
 
-static LIB3270_LOG_HANDLER loghandler = default_loghandler;
-static void *loguserdata = NULL;
-
-/*---[ Implementacao ]--------------------------------------------------------------------------------------*/
-
-static void write_log(const H3270 *session, const char *module, int rc, const char *fmt, va_list args) {
-
-	// 'mount' message.
-	char *message = lib3270_vsprintf(fmt,args);
-
-	// Write log
-	if(session) {
-
-		if(session->log.file) {
-
-			// Has log file. Use it if possible.
-			FILE *f = fopen(session->log.file, "a");
-
-			if(f) {
-
-				time_t ltime = time(0);
-
-			   char timestamp[80];
-		#ifdef HAVE_LOCALTIME_R
-				struct tm tm;
-				strftime(timestamp, 79, "%x %X", localtime_r(&ltime,&tm));
-		#else
-				strftime(timestamp, 79, "%x %X", localtime(&ltime));
-		#endif // HAVE_LOCALTIME_R
-
-				fprintf(f,"%s %s\t%s\n",timestamp,module,message);
-
-				fclose(f);
-
-			}
-
-		}
-
-		session->log.handler(session,session->log.userdata,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,message);
-
-	} else {
-
-		loghandler(session, loguserdata, (module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),rc,message);
-
+	if(hSession->log.context) {
+		hSession->log.finalize(hSession,hSession->log.context);
+		hSession->log.context = NULL;
 	}
 
-	lib3270_free(message);
+	hSession->log.write = (void *) dummy_writer;
+	hSession->log.finalize = (void *) dummy_finalizer;
 
-}
+ }
 
-LIB3270_EXPORT const char * lib3270_get_log_filename(const H3270 * hSession) {
-	return hSession->log.file;
-}
-
-LIB3270_EXPORT int lib3270_set_log_filename(H3270 * hSession, const char *filename) {
-
-	if(!hSession) {
-		return EINVAL;
+ LIB3270_EXPORT int lib3270_log_write(const H3270 *hSession, const char *module, const char *fmt, ...) {
+	if(!hSession->log.context) {
+		return EBADF;
 	}
 
-	if(hSession->log.file) {
-		lib3270_free(hSession->log.file);
-	}
-
-	hSession->log.file = NULL;
-
-	if(filename && *filename) {
-		hSession->log.file = lib3270_strdup(filename);
-	}
-
-	return 0;
-
-}
-
-LIB3270_EXPORT void lib3270_set_log_handler(H3270 *session, const LIB3270_LOG_HANDLER handler, void *userdata) {
-
-	if(session) {
-		session->log.handler = (handler ? handler : loghandler);
-		session->log.userdata = userdata;
-	} else {
-		loghandler = (handler ? handler : default_loghandler);
-		loguserdata = userdata;
-	}
-}
-
-LIB3270_EXPORT int lib3270_write_log(const H3270 *session, const char *module, const char *fmt, ...) {
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
-	write_log(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg_ptr);
-	va_end(arg_ptr);
-	return 0;
-}
-
-LIB3270_EXPORT int lib3270_write_rc(const H3270 *session, const char *module, int rc, const char *fmt, ...) {
-	va_list arg_ptr;
-	va_start(arg_ptr, fmt);
-	write_log(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc,fmt,arg_ptr);
+	int rc = hSession->log.write(
+		hSession,
+		hSession->log.context,
+		(module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),
+		fmt,
+		arg_ptr
+	);
 	va_end(arg_ptr);
 	return rc;
-}
 
-LIB3270_EXPORT void lib3270_write_va_log(const H3270 *session, const char *module, const char *fmt, va_list arg) {
-	write_log(session,module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),0,fmt,arg);
-}
+ }
 
+ LIB3270_EXPORT int lib3270_log_write_rc(const H3270 *hSession, const char *module, int rc, const char *fmt, ...) {
+
+	if(!hSession->log.context) {
+		return EBADF;
+	}
+
+	va_list arg_ptr;
+	va_start(arg_ptr, fmt);
+	lib3270_autoptr(char) message = lib3270_vsprintf(fmt,arg_ptr);
+	va_end(arg_ptr);
+	
+	return lib3270_log_write(
+				hSession,
+				module,
+				"%s (rc=%d - %s)",message,rc,strerror(rc));
+
+ }
+
+ LIB3270_EXPORT void lib3270_log_write_va(const H3270 *hSession, const char *module, const char *fmt, va_list arg) {
+
+	if(!hSession->log.context) {
+		return;
+	}
+
+	hSession->log.write(
+		hSession,
+		hSession->log.context,
+		(module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),
+		fmt,
+		arg
+	);
+
+ }

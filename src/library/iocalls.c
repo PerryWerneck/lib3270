@@ -133,7 +133,7 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 	timeout_t *t;
 	timeout_t *prev = TN;
 
-	trace("%s session=%p proc=%p interval=%ld",__FUNCTION__,session,proc,interval_ms);
+	debug("%s session=%p proc=%p interval=%ld",__FUNCTION__,session,proc,interval_ms);
 
 	t_new = (timeout_t *) lib3270_malloc(sizeof(timeout_t));
 
@@ -187,7 +187,7 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 		prev->next = (struct lib3270_linked_list_node *) t_new;
 	}
 
-	trace("Timer %p added with value %ld",t_new,interval_ms);
+	debug("Timer %p added with value %ld",t_new,interval_ms);
 
 	return t_new;
 }
@@ -195,7 +195,7 @@ static void * internal_add_timer(H3270 *session, unsigned long interval_ms, int 
 static void internal_remove_timer(H3270 *session, void * timer) {
 	timeout_t *st = (timeout_t *)timer;
 
-	trace("Removing timeout: %p",st);
+	debug("Removing timeout: %p",st);
 
 	if(!st->in_play)
 		lib3270_linked_list_delete_node(&session->timeouts,timer);
@@ -260,7 +260,7 @@ LIB3270_EXPORT void lib3270_remove_poll_fd(H3270 *session, int fd) {
 		}
 	}
 
-	lib3270_write_log(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
+	lib3270_log_write(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
 
 }
 */
@@ -275,7 +275,7 @@ LIB3270_EXPORT void lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FL
 		}
 	}
 
-	lib3270_write_log(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
+	lib3270_log_write(session,"iocalls","Invalid or unexpected FD on %s(%d)",__FUNCTION__,fd);
 
 }
 
@@ -312,7 +312,7 @@ void * lib3270_add_timer(unsigned long interval_ms, H3270 *hSession, int (*proc)
 		userdata
 	);
 
-	trace("Timeout %p created with %ld ms",timer,interval_ms);
+	debug("Timeout %p created with %ld ms",timer,interval_ms);
 
 	return timer;
 }
@@ -322,7 +322,7 @@ void * lib3270_add_timer(unsigned long interval_ms, H3270 *hSession, int (*proc)
 void lib3270_remove_timer(H3270 *hSession, void * timer) {
 	if(!timer)
 		return;
-	trace("Removing timeout %p",timer);
+	debug("Removing timeout %p",timer);
 	return hSession->timer.remove(hSession, timer);
 }
 */

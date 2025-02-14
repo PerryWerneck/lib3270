@@ -732,7 +732,7 @@ static void rpq_warning(H3270 *hSession, const char *fmt, ...) {
 	va_list a;
 
 	va_start(a, fmt);
-	lib3270_write_va_log(hSession,"RPQ",fmt,a);
+	lib3270_log_write_va(hSession,"RPQ",fmt,a);
 	va_end(a);
 
 	/*

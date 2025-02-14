@@ -162,7 +162,7 @@ static void def_failed(H3270 *hSession, unsigned long length, double kbytes_sec,
 }
 
 static void def_message(H3270 *hSession, const char *msg, void GNUC_UNUSED(*userdata)) {
-	lib3270_write_log(hSession,"ft","%s",msg);
+	lib3270_log_write(hSession,"ft","%s",msg);
 }
 
 static void def_update(H3270 GNUC_UNUSED(*hSession), unsigned long GNUC_UNUSED(current), unsigned long GNUC_UNUSED(length), double GNUC_UNUSED(kbytes_sec), void GNUC_UNUSED(*userdata)) {
@@ -406,7 +406,7 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 	         (ft->flags & LIB3270_FT_OPTION_APPEND)	? " APPEND"	: ""
 	        );
 
-	trace("tso=%s",lib3270_is_tso(hSession) ? "yes" : "No");
+	debug("tso=%s",lib3270_is_tso(hSession) ? "yes" : "No");
 
 	if(!(ft->flags & LIB3270_FT_OPTION_RECEIVE)) {
 		// Sending file
@@ -458,14 +458,14 @@ LIB3270_EXPORT int lib3270_ft_start(H3270 *hSession) {
 
 	snconcat(buffer,4095,"%s","\n");
 
-	trace("%s file using %s",(ft->flags & LIB3270_FT_OPTION_RECEIVE) ? "Receiving" : "Sending",buffer);
+	debug("%s file using %s",(ft->flags & LIB3270_FT_OPTION_RECEIVE) ? "Receiving" : "Sending",buffer);
 
 	trace_ds(hSession,"\n%s file using %s",(ft->flags & LIB3270_FT_OPTION_RECEIVE) ? "Receiving" : "Sending",buffer);
 
 	// Erase the line and enter the command.
 	flen = kybd_prime(ft->host);
 	if (!flen || flen < strlen(buffer) - 1) {
-		lib3270_write_log(ft->host, "ft", "Unable to send command \"%s\" (flen=%d szBuffer=%u)",buffer,flen,(unsigned int) strlen(buffer));
+		lib3270_log_write(ft->host, "ft", "Unable to send command \"%s\" (flen=%d szBuffer=%u)",buffer,flen,(unsigned int) strlen(buffer));
 		ft_failed(ft,_( "Unable to send file-transfer request" ));
 		return errno = EINVAL;
 	}

@@ -205,7 +205,7 @@ int lib3270_set_model_number(H3270 *hSession, unsigned int model_number) {
 		model_number = 3;
 #endif
 
-	trace("Model_number: %d",model_number);
+	debug("Model_number: %d",model_number);
 
 	// Check for oversize
 	char junk;

@@ -226,7 +226,7 @@ static int cursor_right(H3270 *hSession) {
 static int cursor_up(H3270 *hSession) {
 	register int	baddr;
 
-	trace("kybdlock=%d OERR=%s",(int) hSession->kybdlock, (KYBDLOCK_IS_OERR(hSession) ? "yes" : "no"));
+	debug("kybdlock=%d OERR=%s",(int) hSession->kybdlock, (KYBDLOCK_IS_OERR(hSession) ? "yes" : "no"));
 	if (hSession->kybdlock) {
 		if (KYBDLOCK_IS_OERR(hSession)) {
 			lib3270_kybdlock_clear(hSession,KL_OERR_MASK);

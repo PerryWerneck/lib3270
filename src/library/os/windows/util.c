@@ -65,7 +65,7 @@ int get_version_info(void) {
 	memset(&info, '\0', sizeof(info));
 	info.dwOSVersionInfoSize = sizeof(info);
 	if(GetVersionEx(&info) == 0) {
-		lib3270_write_log(NULL,"lib3270","%s","Can't get Windows version");
+		lib3270_log_write(NULL,"lib3270","%s","Can't get Windows version");
 		return -1;
 	}
 
@@ -133,10 +133,10 @@ LIB3270_EXPORT char * lib3270_win32_translate_error_code(int lasterror) {
 		// Convert from windows codepage to pw3270´s default charset (UTF-8)
 		iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
 
-		trace("[%s]",buffer);
+		debug("[%s]",buffer);
 
 		if(hConv == (iconv_t) -1) {
-			lib3270_write_log(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
+			lib3270_log_write(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
 		} else {
 			size_t				  in 		= strlen(buffer);
 			size_t				  out 		= (in << 1);
@@ -180,10 +180,10 @@ LIB3270_EXPORT const char * lib3270_win32_strerror(int e) {
 		// Convert from windows codepage to UTF-8 pw3270´s default charset
 		iconv_t hConv = iconv_open("UTF-8",lib3270_win32_local_charset());
 
-		trace("[%s]",buffer);
+		debug("[%s]",buffer);
 
 		if(hConv == (iconv_t) -1) {
-			lib3270_write_log(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
+			lib3270_log_write(NULL,"iconv","%s: Error creating charset conversion",__FUNCTION__);
 		} else {
 			size_t				  in 		= strlen(buffer);
 			size_t				  out 		= (in << 1);
@@ -222,7 +222,7 @@ LIB3270_EXPORT const char * lib3270_win32_local_charset(void) {
 
 	/// TODO: Use GetACP() to identify the correct code page
 
-	trace("Windows CHARSET is %u",GetACP());
+	debug("Windows CHARSET is %u",GetACP());
 
 	return "CP1252";
 }

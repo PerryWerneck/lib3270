@@ -181,8 +181,10 @@ static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char 
 	size_t ix;
 
 	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++) {
-		if(text[ix])
-			lib3270_write_log(hSession,"popup","%s",text[ix]);
+		if(text[ix]) {
+			debug("---> %s",text[ix]);
+			lib3270_log_write(hSession,"popup","%s",text[ix]);
+		}
 	}
 
 	return ENOTSUP;
@@ -195,7 +197,6 @@ LIB3270_EXPORT void lib3270_set_popup_handler(H3270 *hSession, int (*handler)(H3
 		hSession->cbk.popup = handler;
 	else
 		hSession->cbk.popup = def_popup;
-
 
 }
 

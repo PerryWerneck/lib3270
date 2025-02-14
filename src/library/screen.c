@@ -268,7 +268,7 @@ void update_model_info(H3270 *hSession, unsigned int model, unsigned int cols, u
 	else
 		hSession->termtype = hSession->full_model_name;
 
-	trace("Termtype: %s",hSession->termtype);
+	debug("Termtype: %s",hSession->termtype);
 
 	hSession->cbk.update_model(hSession, hSession->model_name,hSession->model_num,rows,cols);
 }
@@ -354,13 +354,13 @@ void screen_update(H3270 *session, int bstart, int bend) {
 #ifdef DEBUG
 		{
 			char *text = lib3270_get_string_at_address(session,0,-1,'\n');
-			trace("First screen:\n%s\n",text);
+			debug("First screen:\n%s\n",text);
 			lib3270_free(text);
 		}
 #endif
 	}
 
-//	trace("%s ends",__FUNCTION__);
+//	debug("%s ends",__FUNCTION__);
 
 }
 
@@ -414,7 +414,7 @@ LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned 
 LIB3270_EXPORT int lib3270_set_cursor_address(H3270 *hSession, int baddr) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
-	trace("%s(%d)",__FUNCTION__,baddr);
+	debug("%s(%d)",__FUNCTION__,baddr);
 
 	if( ((unsigned int) baddr) > (hSession->view.rows * hSession->view.cols))
 		return - (errno = EOVERFLOW);
@@ -525,13 +525,13 @@ void status_connecting(H3270 *hSession) {
 void status_reset(H3270 *session) {
 
 	if (session->kybdlock & KL_ENTER_INHIBIT) {
-		trace("%s",__FUNCTION__);
+		debug("%s",__FUNCTION__);
 		status_changed(session,LIB3270_MESSAGE_INHIBIT);
 	} else if (session->kybdlock & KL_DEFERRED_UNLOCK) {
-		trace("%s",__FUNCTION__);
+		debug("%s",__FUNCTION__);
 		status_changed(session,LIB3270_MESSAGE_X);
 	} else {
-		trace("%s",__FUNCTION__);
+		debug("%s",__FUNCTION__);
 		session->cbk.cursor(session,LIB3270_POINTER_UNLOCKED);
 		status_changed(session,LIB3270_MESSAGE_NONE);
 	}
@@ -614,7 +614,7 @@ void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols) {
 	session->view.rows = rows;
 	session->view.cols = cols;
 
-	trace("View size changes to %dx%d (configure=%p)",rows,cols,session->cbk.configure);
+	debug("View size changes to %dx%d (configure=%p)",rows,cols,session->cbk.configure);
 
 	if(session->cbk.configure)
 		session->cbk.configure(session,session->view.rows,session->view.cols);

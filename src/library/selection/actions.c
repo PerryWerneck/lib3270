@@ -32,7 +32,7 @@
 LIB3270_EXPORT int lib3270_unselect(H3270 *hSession) {
 	int a;
 
-	trace("%s",__FUNCTION__);
+	debug("%s",__FUNCTION__);
 
 	if(hSession->selected) {
 		hSession->selected = 0;
@@ -97,7 +97,7 @@ LIB3270_EXPORT int lib3270_select_word_at(H3270 *session, int baddr) {
 	if(rc)
 		return rc;
 
-	trace("%s: baddr=%d start=%d end=%d",__FUNCTION__,baddr,start,end);
+	debug("%s: baddr=%d start=%d end=%d",__FUNCTION__,baddr,start,end);
 
 	rc = do_select(session,start,end,0);
 	if(rc)
@@ -212,7 +212,7 @@ LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int orig
 		return origin;
 
 	/*
-		trace("%s: flag=%04x %s %s %s %s",__FUNCTION__,
+		debug("%s: flag=%04x %s %s %s %s",__FUNCTION__,
 					flag,
 					flag & SELECTION_LEFT	? "Left"	: "-",
 					flag & SELECTION_TOP	? "Top"		: "-",
@@ -241,7 +241,7 @@ LIB3270_EXPORT int lib3270_drag_selection(H3270 *h, unsigned char flag, int orig
 	if(flag & SELECTION_BOTTOM)		// Update bottom margin
 		origin = last = (row*h->view.cols) + (last%h->view.cols);
 
-	trace("origin=%d first=%d last=%d",origin,first,last);
+	debug("origin=%d first=%d last=%d",origin,first,last);
 
 	if(first < last)
 		do_select(h,first,last,h->rectsel);

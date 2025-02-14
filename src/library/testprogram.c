@@ -29,7 +29,9 @@
  #include <lib3270/defs.h>
  #include <lib3270.h>
  #include <lib3270/session.h>
+ #include <private/session.h>
  #include <lib3270/trace.h>
+ #include <lib3270/log.h>
  #include <private/network.h>
  #include <stdio.h>
 
@@ -37,7 +39,11 @@
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
 
-	lib3270_trace_open_file(hSession,"test.trace");
+	lib3270_trace_open_file(hSession,"lib3270.trace");
+	lib3270_log_open_file(hSession,"lib3270.log",86400);
+
+	debug("--> %p",hSession->log.context);
+
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,1);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,1);
@@ -47,6 +53,8 @@
 	lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
 	// lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
 	
+	debug("--> %p",hSession->log.context);
+
 	lib3270_connect(hSession,5);
 
 	while(1) {
@@ -126,7 +134,7 @@ int main(int argc, char *argv[]) {
 	int			  rc	= 0;
 
 	lib3270_set_log_filename(h,"testprogram.log");
-	lib3270_write_log(h,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
+	lib3270_log_write(h,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 
 	lib3270_autoptr(char) version_info = lib3270_get_version_info();
 	printf("3270 session %p created\n%s\n]",h,version_info);

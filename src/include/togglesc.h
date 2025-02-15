@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <private/session.h>
 #include <lib3270/toggle.h>
 
 LIB3270_INTERNAL void initialize_toggles(H3270 *session);

@@ -20,6 +20,7 @@
  #pragma once
 
  #include <config.h>
+ #include <lib3270/defs.h>
  
 //
 // Compiler-specific #defines.
@@ -37,3 +38,28 @@
 	#define printflike(s, f)
 
 #endif
+
+/// @brief Shorthand macros
+#define CN	((char *) NULL)
+#define PN	((XtPointer) NULL)
+#define Replace(var, value) { lib3270_free(var); var = (value); };
+
+/* These first definitions were cribbed from X11 -- but no X code is used. */
+#define False 0
+#define True 1
+
+#ifdef __APPLE__
+	typedef unsigned char Boolean;
+#else
+	typedef char Boolean;
+#endif
+
+LIB3270_INTERNAL int check_online_session(const H3270 *hSession);
+LIB3270_INTERNAL int check_offline_session(const H3270 *hSession);
+
+/// @brief Returns -1 if the session is invalid or not online (sets errno).
+#define FAIL_IF_NOT_ONLINE(x) if(check_online_session(x)) return errno;
+
+/// @brief Returns -1 if the session is invalid or online (sets errno).
+#define FAIL_IF_ONLINE(x) if(check_offline_session(x)) return errno;
+

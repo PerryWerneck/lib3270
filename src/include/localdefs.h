@@ -21,6 +21,7 @@
  */
 
 #include <string.h>
+#include <private/defs.h>
 
 /* Identify ourselves. */
 #define C3270	1
@@ -32,15 +33,6 @@
 #define C3270_80_132 1
 #endif /*]*/
 
-/* These first definitions were cribbed from X11 -- but no X code is used. */
-#define False 0
-#define True 1
-
-#ifdef __APPLE__
-typedef unsigned char Boolean;
-#else
-typedef char Boolean;
-#endif
 
 typedef char *String;
 //typedef unsigned long KeySym;

@@ -137,10 +137,6 @@ LIB3270_INTERNAL Boolean		dbcs;
 #define CS_DBCS			0x03	///< @brief DBCS character set (X'F8') */
 #define CS_GE			0x04	///< @brief cs flag for Graphic Escape */
 
-/// @brief Shorthand macros
-#define CN	((char *) NULL)
-#define PN	((XtPointer) NULL)
-#define Replace(var, value) { lib3270_free(var); var = (value); };
 
 
 /* Portability macros */
@@ -278,15 +274,6 @@ LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
  * @retval EBUSY	Auto reconnect is already active.
  */
 LIB3270_INTERNAL int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec);
-
-LIB3270_INTERNAL int check_online_session(const H3270 *hSession);
-LIB3270_INTERNAL int check_offline_session(const H3270 *hSession);
-
-/// @brief Returns -1 if the session is invalid or not online (sets errno).
-#define FAIL_IF_NOT_ONLINE(x) if(check_online_session(x)) return errno;
-
-/// @brief Returns -1 if the session is invalid or online (sets errno).
-#define FAIL_IF_ONLINE(x) if(check_offline_session(x)) return errno;
 
 LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
 

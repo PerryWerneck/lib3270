@@ -34,7 +34,9 @@
  */
 
 #include <config.h>
-#include <internals.h>
+#include <lib3270/defs.h>
+#include <private/defs.h>
+#include <private/intl.h>
 #include <lib3270/toggle.h>
 #include "togglesc.h"
 #include "utilc.h"

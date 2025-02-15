@@ -33,6 +33,7 @@
 #pragma once
 
 #include <config.h>
+#include <private/defs.h>
 
 enum pds {
 	PDS_OKAY_NO_OUTPUT = 0,	/* command accepted, produced no output */

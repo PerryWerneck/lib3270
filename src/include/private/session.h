@@ -45,6 +45,23 @@
  typedef struct _lib3270_trace_context LIB3270_TRACE_CONTEXT;
  typedef struct _lib3270_log_context LIB3270_LOG_CONTEXT;
 
+ struct lib3270_text {
+	unsigned char  chr;		///< @brief ASCII character code
+	unsigned short attr;	///< @brief Converted character attribute (color & etc)
+ };
+
+ /// @brief Extended attributes
+ struct lib3270_ea {
+	unsigned char cc;		///< @brief EBCDIC or ASCII character code
+	unsigned char fa;		///< @brief field attribute, it nonzero
+	unsigned char fg;		///< @brief foreground color (0x00 or 0xf<n>)
+	unsigned char bg;		///< @brief background color (0x00 or 0xf<n>)
+	unsigned char gr;		///< @brief ANSI graphics rendition bits
+	unsigned char cs;		///< @brief character set (GE flag, or 0..2)
+	unsigned char ic;		///< @brief input control (DBCS)
+	unsigned char db;		///< @brief DBCS state
+ };
+
  struct _h3270 {
 
 	/// @brief Session Identifier.

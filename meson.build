@@ -299,8 +299,6 @@ lib_src += [
 gobject_src = [
   'src/gobject/object.c',
   'src/gobject/callbacks.c',
-  'src/gobject/mainloop.c',
-  'src/gobject/os/' + host_machine.system() + '/iosource.c',
 ]
 
 linux_src =[
@@ -647,7 +645,6 @@ install_headers(
   'src/include/lib3270/charset.h',
   'src/include/lib3270/filetransfer.h',
   'src/include/lib3270.h',
-  'src/include/lib3270/internals.h',
   'src/include/lib3270/keyboard.h',
   'src/include/lib3270/log.h',
   'src/include/lib3270/popup.h',

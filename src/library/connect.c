@@ -26,7 +26,13 @@
  */
 
 #include <config.h>
+
+#ifdef HAVE_UNISTD_H
+	#include <unistd.h>
+#endif
+
 #include <internals.h>
+
 #include "telnetc.h"
 #include "hostc.h"
 #include "statusc.h"
@@ -134,7 +140,7 @@
 	    hSession->extended ? "-E" : ""
 	);
 
-	hSession->ever_3270	= False;
+	hSession->ever_3270	= 0;
 
 	//
 	// Starting 'connect' task.
@@ -185,7 +191,7 @@
 	}
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
+	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, 1);
 	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 
 	hSession->connection.timeout = seconds;

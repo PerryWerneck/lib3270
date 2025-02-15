@@ -183,25 +183,6 @@ LIB3270_INTERNAL struct _ansictl {
 	char     vlnext;
 } ansictl;
 
-/**
- * @brief Extended attributes
- */
-struct lib3270_ea {
-	unsigned char cc;		///< @brief EBCDIC or ASCII character code
-	unsigned char fa;		///< @brief field attribute, it nonzero
-	unsigned char fg;		///< @brief foreground color (0x00 or 0xf<n>)
-	unsigned char bg;		///< @brief background color (0x00 or 0xf<n>)
-	unsigned char gr;		///< @brief ANSI graphics rendition bits
-	unsigned char cs;		///< @brief character set (GE flag, or 0..2)
-	unsigned char ic;		///< @brief input control (DBCS)
-	unsigned char db;		///< @brief DBCS state
-};
-
-struct lib3270_text {
-	unsigned char  chr;		///< @brief ASCII character code
-	unsigned short attr;	///< @brief Converted character attribute (color & etc)
-};
-
 
 
 

@@ -75,10 +75,6 @@
 
  static void * default_timer_add(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
-	debug("%s: session=%p interval=%lu", __FUNCTION__, session, interval_ms);
-
-	pthread_mutex_lock(&guard);
-
 	timeout_t *t_new = (timeout_t *) lib3270_malloc(sizeof(timeout_t));
 	timeout_t *t = NULL;
 	timeout_t *prev = NULL;
@@ -86,6 +82,10 @@
 	t_new->call = proc;
 	t_new->userdata = userdata;
 	t_new->in_play = 0;
+
+	debug("%s: timer=%p session=%p interval=%lu", __FUNCTION__, t_new, session, interval_ms);
+
+	pthread_mutex_lock(&guard);
 
 	gettimeofday(&t_new->tv, NULL);
 	t_new->tv.tv_sec += interval_ms / 1000L;
@@ -120,8 +120,6 @@
 	}
 
 	pthread_mutex_unlock(&guard);
-
-	debug("%s: session=%p timer=%p", __FUNCTION__, session, t_new);
 
 	return t_new;
 
@@ -295,7 +293,11 @@
 			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec)) {
 				t->in_play = 1;
 
+				debug("do_timer: timer=%p session=%p", t, hSession);
+
+				t->in_play = 1;
 				(*t->call)(hSession,t->userdata);
+				t->in_play = 0;
 				lib3270_linked_list_delete_node((lib3270_linked_list *) hSession->timer.context,t);
 
 				processed_any = 1;

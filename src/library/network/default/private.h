@@ -27,6 +27,9 @@
  *
  */
 
+#error deprecated
+ 
+ 
 /*
 #ifndef LIB3270_DEFAULT_MODULE_PRIVATE_H_INCLUDED
 

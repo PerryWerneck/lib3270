@@ -27,6 +27,9 @@
  *
  */
 
+#error deprecated
+ 
+ 
 /// @brief OpenSSL states.
 
 #include "private.h"

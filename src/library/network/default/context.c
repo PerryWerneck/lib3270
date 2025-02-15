@@ -30,7 +30,6 @@
  *
  */
 
-
  #include <config.h>
  #include <private/defs.h>
  #include <private/network.h>

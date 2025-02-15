@@ -27,6 +27,9 @@
  *
  */
 
+#error deprecated
+ 
+ 
 #ifndef LIB3270_OPENSSL_MODULE_PRIVATE_H_INCLUDED
 
 #define LIB3270_OPENSSL_MODULE_PRIVATE_H_INCLUDED

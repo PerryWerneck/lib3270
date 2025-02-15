@@ -27,6 +27,9 @@
  *
  */
 
+#error deprecated
+ 
+ 
 /**
  * @brief Default networking methods.
  *

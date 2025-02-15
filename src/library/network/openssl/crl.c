@@ -27,6 +27,10 @@
  *
  */
 
+#error deprecated
+ 
+ 
+
 /// @brief Get CRL info from X509 cert.
 ///
 /// References:

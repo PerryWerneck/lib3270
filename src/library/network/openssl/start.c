@@ -22,6 +22,9 @@
  *
  */
 
+#error deprecated
+ 
+ 
 #include "private.h"
 #include <lib3270/properties.h>
 #include <utilc.h>

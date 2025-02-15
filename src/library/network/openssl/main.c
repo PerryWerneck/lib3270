@@ -27,6 +27,9 @@
  *
  */
 
+#error deprecated
+ 
+ 
 /**
  * @brief OpenSSL based networking methods.
  *

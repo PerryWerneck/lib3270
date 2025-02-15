@@ -33,7 +33,7 @@
  #include <lib3270/session.h>
  #include <lib3270/ssl.h>
  #include <glib-object.h>
- #include <glib-tn3270.h>
+ #include <lib3270/glib.h>
  #include <private/intl.h>
 
  //
@@ -42,13 +42,13 @@
  //		// https://docs.gtk.org/gobject/tutorial.html
  //
 
- G_DEFINE_TYPE_WITH_PRIVATE (TN3270Session, tn3270_session, G_TYPE_OBJECT)
+ G_DEFINE_TYPE_WITH_PRIVATE (Tn3270Session, tn3270_session, G_TYPE_OBJECT)
 
  static void tn3270_session_dispose(GObject *gobject);
  static void tn3270_session_finalize(GObject *gobject);
  static void tn3270_session_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
  static void tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
- static void tn3270_session_install_property(TN3270SessionClass *klass, guint property_id, GParamSpec *pspec);
+ static void tn3270_session_install_property(Tn3270SessionClass *klass, guint property_id, GParamSpec *pspec);
  
  /// @brief Internal properties
  enum Properties {
@@ -58,11 +58,11 @@
  };
 
  static void
- tn3270_session_class_init (TN3270SessionClass *klass)
+ tn3270_session_class_init (Tn3270SessionClass *klass)
  {
 	size_t ix;
 
-	debug("%s","Initializing TN3270SessionClass");
+	debug("%s","Initializing Tn3270SessionClass");
 
 	{
 		GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -242,12 +242,12 @@
  }
 
  static void
- tn3270_session_init (TN3270Session *gobject)
+ tn3270_session_init (Tn3270Session *gobject)
  {
-	debug("%s","Initializing TN3270Session");
+	debug("%s","Initializing Tn3270Session");
 	
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(gobject);
-	TN3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
+	Tn3270SessionClass *klass = TN3270_SESSION_GET_CLASS(gobject);
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(gobject);
 	
 	self->handler = lib3270_session_new("2",1);
 	lib3270_set_user_data(self->handler,gobject);
@@ -274,7 +274,7 @@
  static void 
  tn3270_session_dispose(GObject *object)
  {
-	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
 
 	if(self->handler) {
 
@@ -301,7 +301,7 @@
  static void
  tn3270_session_finalize(GObject *object) {
 
-	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
 
 	if(self->handler) {
 		lib3270_disconnect(self->handler);
@@ -313,8 +313,8 @@
  static void 
  tn3270_session_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
  {
-	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	Tn3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
 
 	debug("Setting property %s with id %u (max %lu)",pspec->name,prop_id,klass->properties.count);
 
@@ -372,8 +372,8 @@
  static void 
  tn3270_session_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
  {
-	TN3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
-	TN3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
+	Tn3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
 
 	debug("Getting property %s with id %u (max %lu)",pspec->name,prop_id,klass->properties.count);
 
@@ -423,7 +423,7 @@
  }
 
  static void
- tn3270_session_install_property(TN3270SessionClass *klass, guint property_id, GParamSpec *pspec)
+ tn3270_session_install_property(Tn3270SessionClass *klass, guint property_id, GParamSpec *pspec)
  {
 	static const char *names[] = {
 		"connected",
@@ -457,9 +457,9 @@
  *
  * Creates a new tn3270 session object.
  *
- * Returns: (transfer none) (type tn3270.session): a new #TN3270Session object
+ * Returns: (transfer none) (type tn3270.session): a new #Tn3270Session object
  */
- LIB3270_EXPORT TN3270Session * tn3270_session_new() {
+ LIB3270_EXPORT Tn3270Session * tn3270_session_new() {
 	return g_object_new(TN3270_TYPE_SESSION,NULL);
  }
 

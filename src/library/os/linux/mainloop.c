@@ -395,6 +395,7 @@
 
  typedef struct {
 	H3270 *hSession;
+	int enabled;
 	void *userdata;
 	void *channel;
 	LIB3270_IO_FLAG	  flag;
@@ -402,11 +403,13 @@
  } PollSource;
 
  static int do_timer(TimerSource *timer) {
+	debug("----------------- %s: %p",__FUNCTION__,timer);
 	timer->proc(timer->hSession,timer->userdata);
 	return 0;
  }
 
  static void free_timer(TimerSource *timer) {	
+	debug("----------------- %s: %p",__FUNCTION__,timer);
 	lib3270_free(timer);
  }
 
@@ -429,15 +432,18 @@
 					(void *) free_timer // cleanup
 			);
 
+	debug("----------------- %s: %p",__FUNCTION__,timer);
 	return (void *) rc;
  }
 
  static void gui_source_remove(H3270 *session, void *id) {
+	debug("----------------- %s: %p",__FUNCTION__,id);
 	int (*g_source_remove)(unsigned int id) = glibmethods[G_SOURCE_REMOVE];
 	g_source_remove((intptr_t) id);
  }
 
  static void free_channel(PollSource *ps) {	
+	debug("----------------- %s: %p",__FUNCTION__,ps);
 	void (*g_io_channel_unref)(void *channel) 
 		= glibmethods[G_IO_CHANNEL_UNREF];
 	g_io_channel_unref(ps->channel);
@@ -455,6 +461,8 @@
 
  static int do_channel(void* source, int condition, PollSource *ps) {
 
+	debug("----------------- %s: %p (%p)",__FUNCTION__,ps,source);
+
 	int (*g_io_channel_unix_get_fd)(void* channel) = glibmethods[G_IO_CHANNEL_UNIX_GET_FD];
 
 	int sock = g_io_channel_unix_get_fd(ps->channel);
@@ -469,7 +477,7 @@
 
 	ps->call(ps->hSession,sock,flag,ps->userdata);
 
-	return 0;
+	return ps->enabled;
  }
 
  static void * gui_poll_add(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata ) {
@@ -489,6 +497,7 @@
 	
 	PollSource *ps = (PollSource *) lib3270_malloc(sizeof(PollSource));
 
+	ps->enabled = 1;
 	ps->hSession = session;
 	ps->userdata = userdata;
 	ps->channel = g_io_channel_unix_new(fd);
@@ -516,6 +525,7 @@
 		(void *) free_channel
 	);
 
+	debug("----------------- %s: %p (%p)",__FUNCTION__,ps,(void *) id);
 	return (void *) id;
  }
 

@@ -20,14 +20,14 @@
  #include <config.h>
  #include <glib.h>
  #include <glib-object.h>
- #include <glib-tn3270.h>
+ #include <lib3270/glib.h>
 
  int main(int argc, char *argv[]) {
 
 	GMainLoop *loop = g_main_loop_new(g_main_context_default(), FALSE);
 
-	g_autoptr(TN3270Session) session = tn3270_session_new();
-	// g_object_set(session, "autoconnect", TRUE, NULL);
+	g_autoptr(Tn3270Session) hSession = tn3270_session_new();
+	g_object_set(hSession, "autoconnect", TRUE, NULL);
 
 	g_main_loop_run(loop);
 	g_main_loop_unref(loop);

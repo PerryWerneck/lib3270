@@ -25,7 +25,7 @@
  #include <lib3270/session.h>
  #include <glib.h>
  #include <glib-object.h>
- #include <glib-tn3270.h>
+ #include <lib3270/glib.h>
  #include <private/intl.h>
  #include <private/gobject.h>
  #include <lib3270/mainloop.h>
@@ -34,138 +34,138 @@
  /// @brief Callback called when a toggle property changes.
  static void handle_toggle_changed(H3270 *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->toggle_changed(self,id,value,reason,name);
  }
 
  /// @brief Callback called when connect state changes.
  static void handle_connect_changed(H3270 *session, unsigned char connected)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->connect_changed(self,connected);
  }
 
  /// @brief Callback called when associated lu changes
  static void handle_luname_changed(H3270 *session, const char *name)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->luname_changed(self,name);
  }
 
  /// @brief Callback called when the connection URL changes.
  static void handle_url_changed(H3270 *session, const char *name)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->url_changed(self,name);
  }
 
  /// @brief Callback called when the model changes.
  static void handle_model_changed(H3270 *session, const char *name, int model, int rows, int cols)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->model_changed(self,name,model,rows,cols);
  }
 
  /// @brief Callback called when the SSL state changes.
  static void handle_ssl_changed(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state) 
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->ssl_changed(self,state);
  }
 
  static void handle_set_timer(H3270 *session, unsigned char on)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->set_timer(self,on);
  }
 
  static void handle_changed(H3270 *session, int offset, int len)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->changed(self,offset,len);
  }
 
  static void handle_selection_changed(H3270 *session, int start, int end)
  {
-	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->selection_changed(self,start,end);
  }
 
  static void handle_status_changed(H3270 *session, LIB3270_MESSAGE id) 
  {
- 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+ 	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->status_changed(self,id);
  }
 
  static	void handle_erase(H3270 *session)
  {
- 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+ 	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->erase(self);
  }
 
  static	void handle_display(H3270 *session)
  {
- 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+ 	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->display(self);
  }
 
  static void handle_ring_bell(H3270 *session, int id) {
- 	TN3270Session *self = (TN3270Session *) lib3270_get_user_data(session);
+ 	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
 	TN3270_SESSION_GET_CLASS(self)->ring_bell(self,id);
  }
 
- static inline void notify(TN3270Session *session, GParamSpec *id)
+ static inline void notify(Tn3270Session *session, GParamSpec *id)
  {
 	debug("--> Property '%s' has changed",id->name);
  	g_object_notify_by_pspec(G_OBJECT(session),id);
  }
 
- static void toggle_changed(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
+ static void toggle_changed(Tn3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.toggle[id]);
  }
 
- static void connect_changed(TN3270Session *session, unsigned char connected)
+ static void connect_changed(Tn3270Session *session, unsigned char connected)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_CONNECTED]);
  }
 
- static void luname_changed(TN3270Session *session, const char *name)
+ static void luname_changed(Tn3270Session *session, const char *name)
  {	
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_ASSOCIATED_LU]);
  }
  
- static void url_changed(TN3270Session *session, const char *name)
+ static void url_changed(Tn3270Session *session, const char *name)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_URL]);
  }
  
- static void model_changed(TN3270Session *session, const char *name, int model, int rows, int cols)
+ static void model_changed(Tn3270Session *session, const char *name, int model, int rows, int cols)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_MODEL_NUMBER]);
  }
  
- static void ssl_changed(TN3270Session *session, LIB3270_SSL_STATE state)
+ static void ssl_changed(Tn3270Session *session, LIB3270_SSL_STATE state)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_SSL_STATE]);
  }
 
- static void set_timer(TN3270Session *session, gboolean busy)
+ static void set_timer(Tn3270Session *session, gboolean busy)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.timer);
  }
 
- static void selection_changed(TN3270Session *session, int start, int end)
+ static void selection_changed(Tn3270Session *session, int start, int end)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_HAS_SELECTION]);
  }
 
- static void status_changed(TN3270Session *session, LIB3270_MESSAGE id)
+ static void status_changed(Tn3270Session *session, LIB3270_MESSAGE id)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_PROGRAM_MESSAGE]);
  }
 
- static void ring_bell(TN3270Session *session, int id)
+ static void ring_bell(Tn3270Session *session, int id)
  {
 	g_message("Ring bell %d",id);
  }
@@ -173,7 +173,7 @@
  static void nop_void() {
  }
 
- void tn3270_session_class_setup_callbacks(TN3270SessionClass *klass)
+ void tn3270_session_class_setup_callbacks(Tn3270SessionClass *klass)
  {
  	klass->toggle_changed = toggle_changed;
  	klass->connect_changed = connect_changed;
@@ -190,7 +190,7 @@
 	klass->ring_bell = ring_bell;
  }
 
- int tn3270_session_setup_callbacks(TN3270SessionClass *klass, TN3270SessionPrivate *self)
+ int tn3270_session_setup_callbacks(Tn3270SessionClass *klass, Tn3270SessionPrivate *self)
  {
 	struct lib3270_session_callbacks *cbk = lib3270_get_session_callbacks(self->handler,G_STRINGIFY(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
 	if(!cbk)

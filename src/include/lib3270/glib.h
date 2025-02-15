@@ -29,9 +29,9 @@
 
  // Type declaration
  #define TN3270_TYPE_SESSION tn3270_session_get_type()
- G_DECLARE_DERIVABLE_TYPE (TN3270Session, tn3270_session, TN3270, SESSION, GObject)
+ G_DECLARE_DERIVABLE_TYPE (Tn3270Session, tn3270_session, TN3270, SESSION, GObject)
 
- enum TN3270SessionProperties {
+ enum Tn3270SessionProperties {
 	TN3270_SESSION_PROPERTY_NONE,
 	TN3270_SESSION_PROPERTY_CONNECTED,
 	TN3270_SESSION_PROPERTY_ASSOCIATED_LU,
@@ -45,7 +45,7 @@
 	TN3270_SESSION_PROPERTY_COUNT
  };
  
- struct _TN3270SessionClass {
+ struct _Tn3270SessionClass {
 	GObjectClass parent_class;
 
 	struct {
@@ -64,29 +64,29 @@
 	} properties;
 
 	// Properties
- 	void (*toggle_changed)(TN3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name);
-	void (*connect_changed)(TN3270Session *session, unsigned char connected);
-	void (*luname_changed)(TN3270Session *session, const char *name);
- 	void (*url_changed)(TN3270Session *session, const char *name);
-	void (*model_changed)(TN3270Session *session, const char *name, int model, int rows, int cols);
-	void (*ssl_changed)(TN3270Session *session, LIB3270_SSL_STATE state);
- 	void (*status_changed)(TN3270Session *hSession, LIB3270_MESSAGE id);
-	void (*selection_changed)(TN3270Session *session, int start, int end);
+ 	void (*toggle_changed)(Tn3270Session *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name);
+	void (*connect_changed)(Tn3270Session *session, unsigned char connected);
+	void (*luname_changed)(Tn3270Session *session, const char *name);
+ 	void (*url_changed)(Tn3270Session *session, const char *name);
+	void (*model_changed)(Tn3270Session *session, const char *name, int model, int rows, int cols);
+	void (*ssl_changed)(Tn3270Session *session, LIB3270_SSL_STATE state);
+ 	void (*status_changed)(Tn3270Session *hSession, LIB3270_MESSAGE id);
+	void (*selection_changed)(Tn3270Session *session, int start, int end);
 
 	// Terminal contents
-	void (*display)(TN3270Session *session);
-	void (*erase)(TN3270Session *session);
-	void (*changed)(TN3270Session *session, int offset, int len);
+	void (*display)(Tn3270Session *session);
+	void (*erase)(Tn3270Session *session);
+	void (*changed)(Tn3270Session *session, int offset, int len);
 
 	// States
-	void (*set_timer)(TN3270Session *session, gboolean busy);
-	void (*ring_bell)(TN3270Session *session, int id);
+	void (*set_timer)(Tn3270Session *session, gboolean busy);
+	void (*ring_bell)(Tn3270Session *session, int id);
 
 	gpointer padding[8];
 	
  };
 
- LIB3270_EXPORT TN3270Session * tn3270_session_new();
-
+ LIB3270_EXPORT Tn3270Session * tn3270_session_new();
+ LIB3270_EXPORT GType 			tn3270_session_get_type(void);
 
  G_END_DECLS

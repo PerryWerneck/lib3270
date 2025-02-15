@@ -575,7 +575,7 @@ if gobject.found()
     include_directories: includes_dir
   )
 
-  # gnome = import('gnome')
+  gnome = import('gnome')
 
   #gnome.gtkdoc(
   #  meson.project_name(),
@@ -585,19 +585,30 @@ if gobject.found()
   #  include_directories: includes_dir
   #)
 
-  #gnome.generate_gir(
-  #  glib_shared,
-  #  namespace: 'tn3270',
-  #  link_with: [ glib_shared ],
-  #  nsversion: '2.0',
-  #  header: 'tn3270'[
-  #    'src/include/glib/tn3270.h',
-  #  ],
-  #  includes: [
-  #    'GLib-2.0',
-  #    'GObject-2.0',
-  #  ],    
-  #)
+#  gjs_private_gir = gnome.generate_gir(libgjs,
+#    includes: ['GObject-2.0', 'Gio-2.0'], sources: libgjs_private_sources,
+#    namespace: 'GjsPrivate', nsversion: '1.0', identifier_prefix: 'Gjs',
+#    symbol_prefix: 'gjs_', fatal_warnings: get_option('werror'), install: true,
+#    install_gir: false, install_dir_typelib: pkglibdir / 'girepository-1.0')
+#gjs_private_typelib = gjs_private_gir[1]
+
+
+
+#  gnome.generate_gir(
+#    glib_shared,
+#    includes: ['GObject-2.0', 'Gio-2.0'], 
+#    sources: gobject_src + [ 'src/include/lib3270/glib.h'],
+#    nsversion: '1.0',
+#    namespace: 'tn3270',
+#    symbol_prefix: 'tn3270_',
+#    identifier_prefix: 'tn3270',
+#    export_packages: ['libhello_string'],
+#    link_with: glib_shared,
+#    install: false,
+#    extra_args: [
+#    '--warn-all',
+#    ],
+# )
 
   static_library(
     '3270-glib', 

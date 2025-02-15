@@ -37,6 +37,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
+#include <lib3270/malloc.h>
 #include <private/session.h>
 
 const char * lib3270_get_oversize(const H3270 *hSession) {

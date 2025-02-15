@@ -38,6 +38,7 @@ struct ta;
 
 #include <config.h>
 #include <internals.h>
+#include <lib3270/malloc.h>
 #include <lib3270/trace.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>

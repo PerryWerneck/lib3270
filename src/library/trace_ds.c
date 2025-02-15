@@ -23,6 +23,9 @@
  *
  */
 
+#include <config.h>
+#include <lib3270/malloc.h>
+
 #include <internals.h>
 #include <lib3270/trace.h>
 

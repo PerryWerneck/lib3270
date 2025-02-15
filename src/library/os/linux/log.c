@@ -21,6 +21,7 @@
  #include <private/session.h>
  #include <private/trace.h>
  #include <lib3270/log.h>
+ #include <lib3270/malloc.h>
  #include <stdio.h>
  #include <linux/limits.h>
  #include <sys/stat.h>

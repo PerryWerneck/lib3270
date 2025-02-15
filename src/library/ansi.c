@@ -42,6 +42,7 @@
 
 #include <internals.h>
 #include <lib3270/toggle.h>
+#include <lib3270/malloc.h>
 
 #if defined(X3270_ANSI) /*[*/
 

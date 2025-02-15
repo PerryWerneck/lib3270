@@ -34,6 +34,7 @@
 #include <stdarg.h>
 #include <internals.h>
 #include <lib3270/os.h>
+#include <lib3270/malloc.h>
 
 static char * concat(char *path, const char *name, size_t *length) {
 	size_t szCurrent = strlen(path);

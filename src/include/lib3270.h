@@ -1194,18 +1194,6 @@ LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *session);
  */
 LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr);
 
-/**
- * @brief Get a block of memory, fill it with zeros.
- *
- * @param len	Length of memory block to get.
- *
- * @return Pointer to new memory block.
- *
- */
-LIB3270_EXPORT void * lib3270_malloc(int len);
-
-LIB3270_EXPORT void * lib3270_realloc(void *p, int len);
-LIB3270_EXPORT void * lib3270_strdup(const char *str);
 
 /**
  * @brief Removes trailing white space from a string.

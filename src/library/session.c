@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include <lib3270/popup.h>
+#include <lib3270/malloc.h>
 
 #include <private/defs.h>
 #include <private/session.h>

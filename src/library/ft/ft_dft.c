@@ -43,6 +43,7 @@
 
 #include <lib3270.h>
 #include <lib3270/filetransfer.h>
+#include <lib3270/malloc.h>
 #include <internals.h>
 
 #if defined(X3270_FT) /*[*/

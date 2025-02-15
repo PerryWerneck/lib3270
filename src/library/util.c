@@ -34,6 +34,9 @@
 
 #define _GNU_SOURCE
 
+#include <config.h>
+#include <lib3270/malloc.h>
+
 #include <internals.h>
 #include "utilc.h"
 #include "popupsc.h"

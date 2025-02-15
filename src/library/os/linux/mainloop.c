@@ -32,6 +32,7 @@
  #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270.h>
+ #include <lib3270/malloc.h>
  #include <lib3270/toggle.h>
  #include <private/mainloop.h>
  #include <private/session.h>
@@ -75,7 +76,7 @@
 
  static void * default_timer_add(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
-	timeout_t *t_new = (timeout_t *) lib3270_malloc(sizeof(timeout_t));
+	timeout_t *t_new = lib3270_new(timeout_t);
 	timeout_t *t = NULL;
 	timeout_t *prev = NULL;
 

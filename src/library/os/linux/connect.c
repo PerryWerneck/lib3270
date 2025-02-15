@@ -40,6 +40,7 @@
  #include <lib3270/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
+ #include <lib3270/malloc.h>
 
  #include <internals.h>
  #include <hostc.h>

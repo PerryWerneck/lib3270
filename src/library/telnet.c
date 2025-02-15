@@ -102,6 +102,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/toggle.h>
+#include <lib3270/malloc.h>
 #include <private/network.h>
 
 #if !defined(TELOPT_NAWS) /*[*/

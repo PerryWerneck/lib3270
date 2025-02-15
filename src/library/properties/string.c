@@ -35,6 +35,7 @@
 #include <lib3270/log.h>
 #include <lib3270/ssl.h>
 #include <lib3270/trace.h>
+#include <lib3270/malloc.h>
 
 LIB3270_EXPORT const char * lib3270_get_termtype(const H3270 *hSession) {
 	return hSession->termtype;

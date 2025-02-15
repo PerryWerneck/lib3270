@@ -115,7 +115,7 @@
 
 			LIB3270_POPUP popup = {
 				.name		= "dns-error",
-				.type		= LIB3270_NOTIFY_ERROR,
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 				.title		= _("DNS error"),
 				.summary	= _("Error resolving host name"),
 				.body		= _("Unexpected number of bytes read from signalfd"),
@@ -131,7 +131,7 @@
 
 			LIB3270_POPUP template = {
 				.name		= "dns-error",
-				.type		= LIB3270_NOTIFY_ERROR,
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 				.title		= _("DNS error"),
 				.summary	= _("Error resolving host name"),
 				.body		= "",
@@ -166,7 +166,7 @@
 
 				LIB3270_POPUP popup = {
 					.name		= "dns-error",
-					.type		= LIB3270_NOTIFY_ERROR,
+					.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 					.title		= _("DNS error"),
 					.summary	= _("Error resolving host name"),
 					.body		= gai_strerror(rc),
@@ -253,7 +253,7 @@
 
 		LIB3270_POPUP popup = {
 			.name		= "dns-error",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 			.title		= _("DNS error"),
 			.summary	= _("Unexpected response to cancel request"),
 			.body		= gai_strerror(rc),
@@ -266,7 +266,7 @@
 
 		LIB3270_POPUP popup = {
 			.name		= "dns-timeout",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 			.title		= _("DNS error"),
 			.summary	= _("Unable to resolve host name"),
 			.body		= strerror(ETIMEDOUT),
@@ -338,7 +338,7 @@
 
 		LIB3270_POPUP popup = {
 			.name		= "dns-error",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 			.title		= _("DNS error"),
 			.summary	= _("Unable to resolve host name"),
 			.body		= gai_strerror(ret),

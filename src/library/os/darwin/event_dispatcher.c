@@ -126,7 +126,7 @@ retry:
 
 	if (ns < 0 && errno != EINTR) {
 		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_ERROR,
+		                        LIB3270_NOTIFY_CRITICAL,
 		                        _( "Network error" ),
 		                        _( "Select() failed when processing for events." ),
 		                        "%s",

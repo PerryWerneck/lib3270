@@ -193,7 +193,7 @@ int lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_STATE *state) {
 	if(sock < 0) {
 		static const LIB3270_POPUP popup = {
 			.name = "CantConnect",
-			.type = LIB3270_NOTIFY_ERROR,
+			.type = LIB3270_NOTIFY_CONNECTION_ERROR,
 			.summary = N_("Can't connect to host"),
 			.label = N_("Try again")
 		};
@@ -353,7 +353,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	if(hSession->network.module->setsockopt(hSession, SOL_SOCKET, SO_OOBINLINE, &optval, sizeof(optval)) < 0) {
 		int rc = errno;
 		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_ERROR,
+		                        LIB3270_NOTIFY_CONNECTION_ERROR,
 		                        _( "Connection error" ),
 		                        _( "setsockopt(SO_OOBINLINE) has failed" ),
 		                        _( "The system error was %s" ),
@@ -371,7 +371,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 		snprintf(buffer,4095,_( "Can't %s network keep-alive" ), optval ? _( "enable" ) : _( "disable" ));
 
 		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_ERROR,
+		                        LIB3270_NOTIFY_CONNECTION_ERROR,
 		                        _( "Connection error" ),
 		                        buffer,
 		                        _( "The system error was %s" ),

@@ -186,7 +186,7 @@ int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
 
 	if(ioctlsocket(sock,FIONBIO,&iMode)) {
 		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_ERROR,
+		                        LIB3270_NOTIFY_CONNECTION_ERROR,
 		                        _( "Connection error" ),
 		                        _( "ioctlsocket(FIONBIO) failed." ),
 		                        "%s", lib3270_win32_strerror(GetLastError()));
@@ -203,7 +203,7 @@ int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
 
 		LIB3270_POPUP popup = {
 			.name		= "socket-api-error",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 			.title		= _("System error"),
 			.summary	= _( "fcntl() error when getting socket state." ),
 			.body		= strerror(error),
@@ -228,7 +228,7 @@ int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
 
 		LIB3270_POPUP popup = {
 			.name		= "socket-api-error",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 			.title		= _("System error"),
 			.summary	= _( "fcntl() error when setting socket state." ),
 			.body		= strerror(error),

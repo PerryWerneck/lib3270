@@ -33,15 +33,24 @@ extern "C" {
  *
  */
 typedef enum _LIB3270_NOTIFY {
-	LIB3270_NOTIFY_INFO,		///< @brief Simple information dialog.
-	LIB3270_NOTIFY_WARNING,		///< @brief Warning message.
-	LIB3270_NOTIFY_ERROR,		///< @brief Error message.
-	LIB3270_NOTIFY_CRITICAL,	///< @brief Critical error, user can abort application.
-	LIB3270_NOTIFY_SECURE,		///< @brief Secure host dialog.
 
-	LIB3270_NOTIFY_USER			///< @brief Reserved, always the last one.
+	// Dialog types.
+	LIB3270_NOTIFY_INFO				= 0x0001,	///< @brief Simple information dialog.
+	LIB3270_NOTIFY_WARNING			= 0x0002,	///< @brief Warning message.
+	LIB3270_NOTIFY_ERROR			= 0x0003,	///< @brief Error message.
+	LIB3270_NOTIFY_CRITICAL			= 0x0004,	///< @brief Critical error, user can abort application.
+	LIB3270_NOTIFY_SECURE			= 0x0005,	///< @brief Secure host dialog.
+	LIB3270_NOTIFY_SSL				= 0x0006,	///< @brief SSL related messages.
+
+	// Connection related messages.
+	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x0013,	///< @brief Connection error.
+
+	// Dialog filters.
+	LIB3270_NOTIFY_DIALOG			= 0x000F,	///< @brief Filter for dialog type.
+	LIB3270_NOTIFY_ALLOW_RECONNECT	= 0x0010,	///< @brief Connection related messages (allow 'Retry' button).
+	LIB3270_NOTIFY_APPLICATION		= 0x1000,	///< @brief Application specifics.
+
 } LIB3270_NOTIFY;
-
 
 /**
  * @brief Head for popup descriptors.

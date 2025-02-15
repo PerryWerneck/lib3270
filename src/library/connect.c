@@ -169,7 +169,7 @@
 
 		static const LIB3270_POPUP failed = {
 			.name		= "invalid-scheme",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CRITICAL,
 			.title		= N_("Connection error"),
 			.summary	= N_("Invalid connection scheme"),
 			.body		= "",
@@ -225,20 +225,38 @@
 	//	lib3270_connection_close(hSession,-1);
 	//	return;
 	//}
-
-	lib3270_setup_session(hSession);
-	lib3270_set_connected_initial(hSession);
-
 	lib3270_set_block_mode(hSession,sock,1);	// Set blocking mode.
 
 	if(hSession->ssl.host) {
 
+	// TODO: Implement optional Windows Secure channel (https://learn.microsoft.com/en-us/windows/win32/secauthn/secure-channel)
+	// https://learn.microsoft.com/en-us/windows-server/security/tls/tls-ssl-schannel-ssp-overview
+#if defined(HAVE_OPENSSL)
+		// Negotiate SSL
 		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 		// FIX-ME: Add ssl support.
 
 		close(sock);
 		lib3270_connection_close(hSession,ENOTSUP);
+#else
+
+		close(sock);
+		lib3270_connection_close(hSession,ENOTSUP);
+
+		static const LIB3270_POPUP popup = {
+			.name		= "openssl-not-available",
+			.type		= LIB3270_NOTIFY_CRITICAL,
+			.title		= N_("Connection error"),
+			.summary	= N_("Unable to activate SSL connection"),
+			.body		= N_("The OpenSSL library is not available in this build"),
+			.label		= N_("OK")
+		};
+
+		lib3270_popup(hSession, &popup, 0);
+
+#endif // HAVE_OPENSSL
+
 		return;
 
 	} else {
@@ -251,6 +269,9 @@
 		hSession->connection.context = setup_non_ssl_context(hSession,sock);
 
 	}
+
+	lib3270_setup_session(hSession);
+	lib3270_set_connected_initial(hSession);
 
  }
 

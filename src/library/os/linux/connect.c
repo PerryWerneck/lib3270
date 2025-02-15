@@ -67,7 +67,7 @@
 
 	LIB3270_POPUP popup = {
 		.name		= "connect-error",
-		.type		= LIB3270_NOTIFY_ERROR,
+		.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 		.title		= _("Connection error"),
 		.summary	= _("Unable to connect to host"),
 		.body		= strerror(error),
@@ -110,7 +110,7 @@
 
 			LIB3270_POPUP popup = {
 				.name		= "connect-error",
-				.type		= LIB3270_NOTIFY_ERROR,
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 				.title		= _("Connection error"),
 				.summary	= _("Unable to get connection state."),
 				.body		= strerror(error),
@@ -132,7 +132,7 @@
 
 			LIB3270_POPUP popup = {
 				.name		= "cant-connect",
-				.type		= LIB3270_NOTIFY_ERROR,
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 				.title		= _("Connection error"),
 				.summary	= summary,
 				.body		= "",
@@ -164,7 +164,7 @@
 
 		LIB3270_POPUP popup = {
 			.name		= "connect-error",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 			.title		= _("Connection error"),
 			.summary	= summary,
 			.body		= "",
@@ -197,7 +197,7 @@
 
 	LIB3270_POPUP popup = {
 		.name		= "connect-error",
-		.type		= LIB3270_NOTIFY_ERROR,
+		.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 		.title		= _("Connection error"),
 		.summary	= _("Unable to connect to host"),
 		.body		= strerror(ETIMEDOUT),

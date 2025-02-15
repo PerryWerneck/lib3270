@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 05:57-0300\n"
+"POT-Creation-Date: 2025-02-15 15:42-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -18,6 +18,1271 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "X-Generator: Gtranslator 40.0\n"
+
+#: src/library/paste.c:373
+msgid "Action failed"
+msgstr "Ação falhou"
+
+#: src/library/paste.c:374
+msgid "Unable to paste text"
+msgstr "Incapaz de colar texto"
+
+#: src/library/paste.c:375
+msgid "Keyboard is locked"
+msgstr "Teclado está bloqueado"
+
+#: src/library/paste.c:375
+msgid "Unexpected error"
+msgstr "Erro inesperado"
+
+#: src/library/keyboard/kybd.c:267
+#, c-format
+msgid "Unexpected type %d in typeahead queue"
+msgstr "Tipo inesperado %d na fila de teclado"
+
+#: src/library/keyboard/kybd.c:1568
+#, c-format
+msgid "Unknown PA key %d"
+msgstr "PA %d desconhecida"
+
+#: src/library/keyboard/kybd.c:1581
+#, c-format
+msgid "Unknown PF key %d"
+msgstr "PF %d desconhecida"
+
+#: src/library/keyboard/kybd.c:1782
+#, c-format
+msgid "%s: Bell not supported"
+msgstr "%s: Alerta sonoro não suportado"
+
+#: src/library/keyboard/kybd.c:1833
+#, c-format
+msgid "%s: Vertical tab not supported"
+msgstr "%s: Tabulação vertical não é suportada"
+
+#: src/library/keyboard/kybd.c:1880
+#, c-format
+msgid "%s: Unknown character after \\p"
+msgstr "%s: Caractere desconhecido depois de \\p"
+
+#: src/library/keyboard/kybd.c:1891
+#, c-format
+msgid "%s: Unknown character after \\pf"
+msgstr "%s: Caractere desconhecido depois de \\pf"
+
+#: src/library/keyboard/kybd.c:1908
+#, c-format
+msgid "%s: Unknown character after \\pa"
+msgstr "%s: Caractere desconhecido depois de \\pa"
+
+#: src/library/keyboard/kybd.c:1927
+#, c-format
+msgid "%s: Missing hex digits after \\x"
+msgstr "%s: Faltando dígitos hexadecimais após \\x"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:53
+msgid "Monocase"
+msgstr "Só Maiúsculas"
+
+#: src/library/toggles/table.c:54
+msgid "Uppercase only"
+msgstr "Apenas maiúsculas"
+
+#: src/library/toggles/table.c:55
+msgid "If set, the terminal operates in uppercase-only mode"
+msgstr "Se ativo o terminal opera apenas com caracteres maiúsculos"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:64 src/library/toggles/table.c:65
+msgid "Blinking Cursor"
+msgstr "Cursor piscante"
+
+#: src/library/toggles/table.c:66
+msgid "If set, the cursor blinks"
+msgstr "Se ativo o cursor pisca"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:74 src/library/toggles/table.c:75
+msgid "Show timer when processing"
+msgstr "Show timer when processing"
+
+#: src/library/toggles/table.c:76
+msgid ""
+"If set, the time taken by the host to process an AID is displayed on the "
+"status line"
+msgstr ""
+"If set, the time taken by the host to process an AID is displayed on the "
+"status line"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:84
+msgid "Track Cursor"
+msgstr "Mostrar posição do cursor"
+
+#: src/library/toggles/table.c:85
+msgid "Track Cursor location"
+msgstr "Mostrar posição do cursor"
+
+#: src/library/toggles/table.c:86
+msgid "Display the cursor location in the OIA (the status line)"
+msgstr "Mostra posição do cursor na lista de informações ao operador"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:95 src/library/toggles/table.c:96
+msgid "Trace Data Stream"
+msgstr "Trace Data Stream"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:105 src/library/toggles/table.c:106
+msgid "Wrap around"
+msgstr "Wrap around"
+
+#: src/library/toggles/table.c:107
+msgid ""
+"If set, the NVT terminal emulator automatically assumes a NEWLINE character "
+"when it reaches the end of a line."
+msgstr ""
+"Se ativo o emulador de terminal assume automaticamente uma quebra de linha "
+"quando chega ao final de uma linha"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:115 src/library/toggles/table.c:116
+msgid "Blank Fill"
+msgstr "Completar com espaços"
+
+#: src/library/toggles/table.c:117
+msgid ""
+"Automatically convert trailing blanks in a field to NULLs in order to insert "
+"a character, and will automatically convert leading NULLs to blanks so that "
+"input data is not squeezed to the left"
+msgstr ""
+"Automatically convert trailing blanks in a field to NULLs in order to insert "
+"a character, and will automatically convert leading NULLs to blanks so that "
+"input data is not squeezed to the left"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:126
+msgid "Trace Screen"
+msgstr "Trace de tela"
+
+#: src/library/toggles/table.c:127
+msgid "Trace screen contents"
+msgstr "Trace do conteúdo da tela"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:137
+msgid "Trace Events"
+msgstr "Trace de Eventos"
+
+#: src/library/toggles/table.c:138
+msgid "Trace interface and application events"
+msgstr "Registra eventos da interface gráfica e aplicação"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:147
+msgid "Margined paste"
+msgstr "Colar com margem"
+
+#: src/library/toggles/table.c:148
+msgid "Paste with left margin"
+msgstr "Colar com margem esquerda"
+
+#: src/library/toggles/table.c:149
+msgid ""
+"If set, puts restrictions on how pasted text is placed on the screen. The "
+"position of the cursor at the time the paste operation is begun is used as a "
+"left margin. No pasted text will fill any area of the screen to the left of "
+"that position. This option is useful for pasting into certain IBM editors "
+"that use the left side of the screen for control information"
+msgstr ""
+"If set, puts restrictions on how pasted text is placed on the screen. The "
+"position of the cursor at the time the paste operation is begun is used as a "
+"left margin. No pasted text will fill any area of the screen to the left of "
+"that position. This option is useful for pasting into certain IBM editors "
+"that use the left side of the screen for control information"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:157 src/library/toggles/table.c:158
+msgid "Select by rectangles"
+msgstr "Seleção retangular"
+
+#: src/library/toggles/table.c:159
+msgid ""
+"If set, the terminal will always select rectangular areas of the screen. "
+"Otherwise, it selects continuous regions of the screen"
+msgstr ""
+"Se ativo o terminal sempre selecionará áreas retangulares, se inativo "
+"selecionará áreas contínuas da tela"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:167 src/library/toggles/table.c:168
+msgid "Cross hair cursor"
+msgstr "Cursor mira"
+
+#: src/library/toggles/table.c:169
+msgid ""
+"If set, the terminal will display a crosshair over the cursor: lines "
+"extending the full width and height of the screen, centered over the cursor "
+"position. This makes locating the cursor on the screen much easier"
+msgstr ""
+"If set, the terminal will display a crosshair over the cursor: lines "
+"extending the full width and height of the screen, centered over the cursor "
+"position. This makes locating the cursor on the screen much easier"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:177 src/library/toggles/table.c:178
+msgid "Full Screen"
+msgstr "Tela cheia"
+
+#: src/library/toggles/table.c:179
+msgid "If set, asks to place the toplevel window in the fullscreen state"
+msgstr "Se ativo pede para colocar a janela principal em modo de tela cheia"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:187
+msgid "Insert"
+msgstr "Inserção"
+
+#: src/library/toggles/table.c:188
+msgid "Set insert mode"
+msgstr "Set insert mode"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:197 src/library/toggles/table.c:198
+msgid "Smart paste"
+msgstr "Colar inteligente"
+
+#: src/library/toggles/table.c:199
+msgid ""
+"If set the characters pasted over protected areas will be skipped to avoid "
+"locks"
+msgstr ""
+"Se ativo caracters colados sobre áreas protegidas serão ignorados para "
+"evitar o bloqueio do terminal"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:207 src/library/toggles/table.c:208
+msgid "Bold"
+msgstr "Negrito"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:217 src/library/toggles/table.c:218
+msgid "Keep selected"
+msgstr "Manter selecionado"
+
+#: src/library/toggles/table.c:219
+msgid "If set the selection will not be removed on screen changes"
+msgstr "Se ativo a seleção não será removida quando a tela mudar"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:227
+msgid "Underline"
+msgstr "Sublinhados"
+
+#: src/library/toggles/table.c:228
+msgid "Show Underline"
+msgstr "Mostrar sublinhado"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:237
+msgid "Connect on startup"
+msgstr "Conectar ao iniciar"
+
+#: src/library/toggles/table.c:238
+msgid "Automatically connect to host on startup"
+msgstr "Conecta automaticamente na inicialização"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:247 src/library/toggles/table.c:248
+msgid "Use +/- for field navigation"
+msgstr "Usar teclas +/- para navegar por campos"
+
+#: src/library/toggles/table.c:249
+msgid "Use the keys +/- from keypad to select editable fields"
+msgstr "Use the keys +/- from keypad to select editable fields"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:257
+msgid "Sound"
+msgstr "Som"
+
+#: src/library/toggles/table.c:258
+msgid "Alert sound"
+msgstr "Aviso sonoro"
+
+#: src/library/toggles/table.c:259
+msgid "Beep on errors"
+msgstr "Emitir som nos erros"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:267
+msgid "Show Field"
+msgstr "Mostra campos"
+
+#: src/library/toggles/table.c:268
+msgid "Show Field attributes"
+msgstr "Mostra atributos de campo"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:277
+msgid "Auto Resize"
+msgstr "Redimensionamento automático"
+
+#: src/library/toggles/table.c:278
+msgid "Resize on alternate screen"
+msgstr "Mudar tamanho do terminal em tela alternativa"
+
+#: src/library/toggles/table.c:279
+msgid "Change screen size on alternative screen"
+msgstr "Mudar tamanho do terminal em tela alternativa"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:287
+msgid "Network keep alive"
+msgstr "Manter rede ativa"
+
+#: src/library/toggles/table.c:288
+msgid "Enable use of network keep alive"
+msgstr "Habilita opção \"keep-alive\""
+
+#: src/library/toggles/table.c:289
+msgid "Enable network keep-alive with SO_KEEPALIVE"
+msgstr "Enable network keep-alive with SO_KEEPALIVE"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:298
+msgid "Trace Network"
+msgstr "Trace de rede"
+
+#: src/library/toggles/table.c:299
+msgid "Trace network data flow"
+msgstr "Trace network data flow"
+
+#: src/library/toggles/table.c:300
+msgid "Enable network in/out trace"
+msgstr "Habilitar trace de entrada/saída de rede"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:309
+msgid "Trace Security"
+msgstr "Trace de segurança"
+
+#: src/library/toggles/table.c:310
+msgid "Trace SSL negotiation"
+msgstr "Trace da negociação SSL"
+
+#: src/library/toggles/table.c:311
+msgid "Enable security negotiation trace"
+msgstr "Habilita trace da negociação de segurança"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:320 src/library/toggles/table.c:321
+msgid "Auto-Reconnect"
+msgstr "Reconectar automaticamente"
+
+#: src/library/toggles/table.c:322
+msgid "Automatically reconnect to the host if it ever disconnects"
+msgstr "Reconecta automaticamente caso o servidor desconecte"
+
+#: src/library/rpq.c:220
+msgid "RPQ Error"
+msgstr "Erro RPQ"
+
+#: src/library/rpq.c:221
+msgid "Unsupported RPQ term"
+msgstr "Unsupported RPQ term"
+
+#: src/library/rpq.c:222
+#, c-format
+msgid "RPQ term %d is unknown"
+msgstr "Termo RPM %d não foi reconhecido"
+
+#: src/library/rpq.c:227
+#, c-format
+msgid "RPQ %s term omitted due to insufficient space"
+msgstr "Termo RPQ %s omitido por falta de espaço"
+
+#: src/library/rpq.c:336
+#, c-format
+msgid "RPQ %s term override ignored"
+msgstr "RPQ %s term override ignored"
+
+#: src/library/rpq.c:348
+#, c-format
+msgid "RPQ term \"%s\" is unrecognized"
+msgstr "Termo RPQ desconhecido: \"%s\" "
+
+#: src/library/rpq.c:401 src/library/rpq.c:410
+msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
+msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
+
+#: src/library/rpq.c:422
+msgid "RPQ: Unable to determine workstation local time"
+msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
+
+#: src/library/rpq.c:432 src/library/rpq.c:442
+msgid "RPQ: Unable to determine workstation UTC time"
+msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
+
+#: src/library/rpq.c:463
+msgid "RPQ timezone exceeds 12 hour UTC offset"
+msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
+
+#: src/library/rpq.c:518
+msgid "RPQ USER term has non-hex character"
+msgstr "Termo RPQ USER tem caractere não hexadecimal"
+
+#: src/library/rpq.c:524
+#, c-format
+msgid "RPQ USER term truncated after %d bytes"
+msgstr "Termo RPQ USER truncado depois de %d bytes"
+
+#: src/library/rpq.c:543
+msgid "RPQ USER term has odd number of hex digits"
+msgstr "RPQ USER term has odd number of hex digits"
+
+#: src/library/rpq.c:568
+#, c-format
+msgid "RPQ USER term truncated after %d characters"
+msgstr "Termo RPQ USER truncado depois de %d caracteres"
+
+#: src/library/rpq.c:640 src/library/rpq.c:716
+#, c-format
+msgid "RPQ ADDRESS term has unrecognized family %u"
+msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
+
+#: src/library/rpq.c:648 src/library/rpq.c:677 src/library/rpq.c:723
+msgid "RPQ ADDRESS term incomplete due to space limit"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/rpq.c:653
+#, c-format
+msgid "RPQ: can't resolve '%s': %s"
+msgstr "RPQ: Não foi possível resolver '%s': %s"
+
+#: src/library/rpq.c:666
+msgid "RPQ: gethostbyname error"
+msgstr "RPQ: Erro em gethostbyname"
+
+#: src/library/rpq.c:695
+#, fuzzy
+msgid "RPQ ADDRESS term incomplete: connection context not found"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/util.c:273
+#, c-format
+msgid "The system error was '%s' (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
+
+#: src/library/session.c:156
+msgid "Can't print"
+msgstr "Não é possível imprimir"
+
+#: src/library/session.c:156
+msgid "Unable to print"
+msgstr "Incapaz de imprimir"
+
+#: src/library/session.c:162
+msgid "Can't save"
+msgstr "Não é possível salvar"
+
+#: src/library/session.c:162
+msgid "Unable to save"
+msgstr "Incapaz de salvar"
+
+#: src/library/session.c:168
+msgid "Can't load"
+msgstr "Não foi possível carregar"
+
+#: src/library/session.c:168
+msgid "Unable to load from file"
+msgstr "Não foi possível ler do arquivo"
+
+#: src/library/network/default/context.c:102
+#: src/library/network/default/context.c:175
+#: src/library/os/linux/event_dispatcher.c:130
+#: src/library/os/linux/mainloop.c:254
+#: src/library/os/darwin/event_dispatcher.c:130
+#: src/library/os/windows/event_dispatcher.c:135
+#: src/library/os/windows/connect.c:223 src/library/telnet.c:301
+msgid "Network error"
+msgstr "Erro de rede"
+
+#: src/library/network/default/context.c:103
+#, fuzzy
+msgid "Failed to receive data from the host"
+msgstr "Erro recebendo dados do servidor"
+
+#: src/library/network/default/context.c:105
+#: src/library/network/default/context.c:178 src/library/network/tools.c:210
+#: src/library/network/tools.c:235 src/library/os/linux/connect.c:75
+#: src/library/os/linux/connect.c:118 src/library/os/linux/connect.c:140
+#: src/library/os/linux/connect.c:172 src/library/os/linux/connect.c:205
+#: src/library/os/linux/resolv.c:123 src/library/os/linux/resolv.c:139
+#: src/library/os/linux/resolv.c:174 src/library/os/linux/resolv.c:261
+#: src/library/os/linux/resolv.c:274 src/library/os/linux/resolv.c:346
+#: src/library/connect.c:176 src/library/connect.c:253
+msgid "OK"
+msgstr ""
+
+#: src/library/network/default/context.c:176
+#, fuzzy
+msgid "Failed to send data to the host"
+msgstr "Erro ao enviar dados para o servidor"
+
+#: src/library/network/default/context.c:215
+msgid "The session is not secure"
+msgstr "A sessão não é segura"
+
+#: src/library/network/default/context.c:216
+msgid "No TLS/SSL support on this session"
+msgstr "Sem suporte TLS/SSL nessa sessão"
+
+#: src/library/network/openssl/context.c:239
+msgid "Can't initialize the TLS/SSL context."
+msgstr "Erro ao inicializar contexto TLS/SSL"
+
+#: src/library/network/openssl/context.c:289
+msgid "Cant open custom certificate directory."
+msgstr "Não foi possível abrir o diretório de certificados personalizados"
+
+#: src/library/network/openssl/context.c:294
+#, c-format
+msgid "Can't open \"%s\" (The Windows error code was %ld)"
+msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)"
+
+#: src/library/network/openssl/context.c:307
+#, c-format
+msgid "Can't open \"%s\": %s"
+msgstr "Não foi possível abrir %s: %s"
+
+#: src/library/network/openssl/context.c:319
+msgid "Cant read custom certificate file."
+msgstr "Não foi possível ler certificado personalizado"
+
+#: src/library/network/openssl/context.c:325
+#, c-format
+msgid "Can't read \"%s\": %s"
+msgstr "Não foi possível ler \"%s\": %s"
+
+#: src/library/network/openssl/context.c:335
+msgid "Cant load custom certificate file."
+msgstr "Não foi possível ler arquivo de certificado personalizado"
+
+#: src/library/network/openssl/context.c:341
+#, c-format
+msgid "Can't load \"%s\": %s"
+msgstr "Não foi possível carregar \"%s\": %s"
+
+#: src/library/network/openssl/main.c:103
+#: src/library/network/openssl/main.c:151 src/library/ft/ft.c:244
+msgid "Disconnected from host."
+msgstr "Desconectado do servidor."
+
+#: src/library/network/openssl/main.c:105
+#: src/library/network/openssl/main.c:153
+msgid "The secure connection has been closed cleanly."
+msgstr "A conexão segura foi fechada corretamente"
+
+#: src/library/network/openssl/main.c:126
+msgid "Error writing to host."
+msgstr "Erro enviando para o servidor"
+
+#: src/library/network/openssl/main.c:127
+#: src/library/network/openssl/main.c:174
+#, c-format
+msgid "The SSL error message was %s"
+msgstr "A mensagem de erro SSL foi \"%s\""
+
+#: src/library/network/openssl/main.c:173
+msgid "Error reading from host"
+msgstr "Erro lendo do servidor"
+
+#: src/library/network/openssl/messages.c:55
+msgid "Secure connection was successful."
+msgstr "Conexão segura efetuada com sucesso."
+
+#: src/library/network/openssl/messages.c:56
+msgid "The connection is secure and the host identity was confirmed."
+msgstr "A conexão é segura e a identidade do servidor foi confirmada."
+
+#: src/library/network/openssl/messages.c:66
+msgid "Unable to get issuer certificate"
+msgstr "Não foi possível obter emissor do certificado"
+
+#: src/library/network/openssl/messages.c:67
+msgid ""
+"The issuer certificate of a looked up certificate could not be found. This "
+"normally means the list of trusted certificates is not complete."
+msgstr ""
+"The issuer certificate of a looked up certificate could not be found. This "
+"normally means the list of trusted certificates is not complete."
+
+#: src/library/network/openssl/messages.c:81
+msgid "Unable to get certificate CRL."
+msgstr "Incapaz de obter o CRL de um certificado."
+
+#: src/library/network/openssl/messages.c:82
+msgid ""
+"The Certificate revocation list (CRL) of a certificate could not be found."
+msgstr ""
+"A lista de revogação de certificados (CRL) de um certificado não pôde ser "
+"encontrada."
+
+#: src/library/network/openssl/messages.c:83
+#: src/library/network/openssl/messages.c:256
+#: src/library/network/openssl/messages.c:271
+msgid "Continue"
+msgstr "Continuar"
+
+#: src/library/network/openssl/messages.c:93
+msgid "Unable to decrypt certificate's signature"
+msgstr "Incapaz de decifrar a assinatura do certificado"
+
+#: src/library/network/openssl/messages.c:94
+msgid ""
+"The certificate signature could not be decrypted. This means that the actual "
+"signature value could not be determined rather than it not matching the "
+"expected value, this is only meaningful for RSA keys."
+msgstr ""
+"The certificate signature could not be decrypted. This means that the actual "
+"signature value could not be determined rather than it not matching the "
+"expected value, this is only meaningful for RSA keys."
+
+#: src/library/network/openssl/messages.c:104
+msgid "Unable to decrypt CRL's signature"
+msgstr ""
+"Não foi possível decriptar assinatura da lista de certificados revogados"
+
+#: src/library/network/openssl/messages.c:105
+msgid ""
+"The CRL signature could not be decrypted: this means that the actual "
+"signature value could not be determined rather than it not matching the "
+"expected value. Unused."
+msgstr ""
+"The CRL signature could not be decrypted: this means that the actual "
+"signature value could not be determined rather than it not matching the "
+"expected value. Unused."
+
+#: src/library/network/openssl/messages.c:115
+msgid "Unable to decode issuer public key"
+msgstr "Não é possível decodificar chave pública do emissor"
+
+#: src/library/network/openssl/messages.c:116
+msgid ""
+"The public key in the certificate SubjectPublicKeyInfo could not be read."
+msgstr ""
+"The public key in the certificate SubjectPublicKeyInfo could not be read."
+
+#: src/library/network/openssl/messages.c:126
+msgid "Certificate signature failure"
+msgstr "Falha na assinatura do certificado"
+
+#: src/library/network/openssl/messages.c:127
+#: src/library/network/openssl/messages.c:138
+msgid "The signature of the certificate is invalid."
+msgstr "A assinatura do certificado não é válida."
+
+#: src/library/network/openssl/messages.c:137
+msgid "CRL signature failure"
+msgstr "Erro na assinatura CRL"
+
+#: src/library/network/openssl/messages.c:148
+msgid "Certificate is not yet valid"
+msgstr "O certificado ainda não é válido"
+
+#: src/library/network/openssl/messages.c:149
+msgid ""
+"The certificate is not yet valid: the notBefore date is after the current "
+"time."
+msgstr ""
+"The certificate is not yet valid: the notBefore date is after the current "
+"time."
+
+#: src/library/network/openssl/messages.c:159
+msgid "Certificate has expired"
+msgstr "O certificado expirou"
+
+#: src/library/network/openssl/messages.c:160
+msgid ""
+"The certificate has expired: that is the notAfter date is before the current "
+"time."
+msgstr ""
+"The certificate has expired: that is the notAfter date is before the current "
+"time."
+
+#: src/library/network/openssl/messages.c:170
+msgid "The CRL is not yet valid."
+msgstr "A lista de certificados revogados ainda não é válida."
+
+#: src/library/network/openssl/messages.c:171
+msgid "The Certificate revocation list (CRL) is not yet valid."
+msgstr "A lista de revogação de certificados (CRL) ainda não é válida."
+
+#: src/library/network/openssl/messages.c:185
+msgid "The CRL has expired."
+msgstr "A lista de certificados revogados expirou."
+
+#: src/library/network/openssl/messages.c:186
+msgid "The Certificate revocation list (CRL) has expired."
+msgstr "A lista de revogação de certificados (CRL) está expirada."
+
+#: src/library/network/openssl/messages.c:196
+msgid "Format error in certificate's notBefore field"
+msgstr "Erro de formato no campo \"notBefore\" do certificado"
+
+#: src/library/network/openssl/messages.c:197
+msgid "The certificate notBefore field contains an invalid time."
+msgstr "The certificate notBefore field contains an invalid time."
+
+#: src/library/network/openssl/messages.c:207
+msgid "Format error in certificate's notAfter field"
+msgstr "Erro de formato no campo \"notAfter\" do certificado"
+
+#: src/library/network/openssl/messages.c:208
+msgid "The certificate notAfter field contains an invalid time."
+msgstr "The certificate notAfter field contains an invalid time."
+
+#: src/library/network/openssl/messages.c:218
+msgid "Format error in CRL's lastUpdate field"
+msgstr "Erro de formato no campo \"lastUpdate\" do CRL"
+
+#: src/library/network/openssl/messages.c:219
+msgid "The CRL lastUpdate field contains an invalid time."
+msgstr "Campo \"lastUpdate\" do CRL contem horário inválido."
+
+#: src/library/network/openssl/messages.c:229
+msgid "Format error in CRL's nextUpdate field"
+msgstr "Erro de formato no campo \"nextUpdate\" do CRL"
+
+#: src/library/network/openssl/messages.c:230
+msgid "The CRL nextUpdate field contains an invalid time."
+msgstr "Campo \"nextUpdate\" contem horário inválido."
+
+#: src/library/network/openssl/messages.c:240
+msgid "Out of memory"
+msgstr "Memória insuficiente"
+
+#: src/library/network/openssl/messages.c:241
+msgid "An error occurred trying to allocate memory. This should never happen."
+msgstr ""
+"Ocorreu um erro ao tentar alocar memória. Isso nunca deveria acontecer."
+
+#: src/library/network/openssl/messages.c:255
+msgid "Self signed certificate"
+msgstr "Certificado auto assinado"
+
+#: src/library/network/openssl/messages.c:257
+msgid ""
+"The passed certificate is self signed and the same certificate cannot be "
+"found in the list of trusted certificates."
+msgstr ""
+"The passed certificate is self signed and the same certificate cannot be "
+"found in the list of trusted certificates."
+
+#: src/library/network/openssl/messages.c:272
+msgid "Self signed certificate in certificate chain"
+msgstr "Certificado auto assinado na cadeia de certificados"
+
+#: src/library/network/openssl/messages.c:273
+msgid ""
+"The certificate chain could be built up using the untrusted certificates but "
+"the root could not be found locally."
+msgstr ""
+"The certificate chain could be built up using the untrusted certificates but "
+"the root could not be found locally."
+
+#: src/library/network/openssl/messages.c:283
+msgid "Unable to get local issuer certificate"
+msgstr "Unable to get local issuer certificate"
+
+#: src/library/network/openssl/messages.c:284
+msgid ""
+"The issuer certificate could not be found: this occurs if the issuer "
+"certificate of an untrusted certificate cannot be found."
+msgstr ""
+"The issuer certificate could not be found: this occurs if the issuer "
+"certificate of an untrusted certificate cannot be found."
+
+#: src/library/network/openssl/messages.c:294
+msgid "Unable to verify the first certificate"
+msgstr "Não foi possível verificar o primeiro certificado"
+
+#: src/library/network/openssl/messages.c:295
+msgid ""
+"No signatures could be verified because the chain contains only one "
+"certificate and it is not self signed."
+msgstr ""
+"Nenhuma assinatura pode ser verificada, porque a cadeia contém apenas um "
+"certificado e não é auto assinado."
+
+#: src/library/network/openssl/messages.c:305
+msgid "Certificate revoked"
+msgstr "Certificado revogado"
+
+#: src/library/network/openssl/messages.c:306
+msgid "The certificate has been revoked."
+msgstr "O certificado foi revogado."
+
+#: src/library/network/openssl/messages.c:316
+msgid "Invalid CA certificate"
+msgstr "Certificado CA inválido"
+
+#: src/library/network/openssl/messages.c:317
+msgid ""
+"A CA certificate is invalid. Either it is not a CA or its extensions are not "
+"consistent with the supplied purpose."
+msgstr ""
+"A CA certificate is invalid. Either it is not a CA or its extensions are not "
+"consistent with the supplied purpose."
+
+#: src/library/network/openssl/messages.c:327
+msgid "Path length constraint exceeded"
+msgstr "Path length constraint exceeded"
+
+#: src/library/network/openssl/messages.c:328
+msgid "The basicConstraints pathlength parameter has been exceeded."
+msgstr "The basicConstraints pathlength parameter has been exceeded."
+
+#: src/library/network/openssl/messages.c:338
+msgid "Unsupported certificate purpose"
+msgstr "Finalidade do certificado não é suportada"
+
+#: src/library/network/openssl/messages.c:339
+msgid "The supplied certificate cannot be used for the specified purpose."
+msgstr ""
+"O certificado fornecido não pode ser utilizado para a finalidade "
+"especificada."
+
+#: src/library/network/openssl/messages.c:349
+msgid "Certificate not trusted"
+msgstr "O certificado não é confiável"
+
+#: src/library/network/openssl/messages.c:350
+msgid "The root CA is not marked as trusted for the specified purpose."
+msgstr ""
+"O Certificado raiz não está marcado como confiável para os fins "
+"especificados."
+
+#: src/library/network/openssl/messages.c:360
+msgid "Certificate rejected"
+msgstr "Certificado rejeitado"
+
+#: src/library/network/openssl/messages.c:361
+msgid "The root CA is marked to reject the specified purpose."
+msgstr ""
+"O certificado raiz está marcado para rejeitar a finalidade especificada."
+
+#: src/library/network/openssl/messages.c:371
+msgid "Subject issuer mismatch"
+msgstr "Divergência na identidade do emissor"
+
+#: src/library/network/openssl/messages.c:372
+msgid ""
+"The current candidate issuer certificate was rejected because its subject "
+"name did not match the issuer name of the current certificate. Only "
+"displayed when the -issuer_checks option is set."
+msgstr ""
+"The current candidate issuer certificate was rejected because its subject "
+"name did not match the issuer name of the current certificate. Only "
+"displayed when the -issuer_checks option is set."
+
+#: src/library/network/openssl/messages.c:382
+msgid "Authority and subject key identifier mismatch"
+msgstr "Authority and subject key identifier mismatch"
+
+#: src/library/network/openssl/messages.c:383
+msgid ""
+"The current candidate issuer certificate was rejected because its subject "
+"key identifier was present and did not match the authority key identifier "
+"current certificate. Only displayed when the -issuer_checks option is set."
+msgstr ""
+"The current candidate issuer certificate was rejected because its subject "
+"key identifier was present and did not match the authority key identifier "
+"current certificate. Only displayed when the -issuer_checks option is set."
+
+#: src/library/network/openssl/messages.c:393
+msgid "Authority and issuer serial number mismatch"
+msgstr "Divergência nos números de série da autoridade e emissor "
+
+#: src/library/network/openssl/messages.c:394
+msgid ""
+"The current candidate issuer certificate was rejected because its issuer "
+"name and serial number was present and did not match the authority key "
+"identifier of the current certificate. Only displayed when the -"
+"issuer_checks option is set."
+msgstr ""
+"The current candidate issuer certificate was rejected because its issuer "
+"name and serial number was present and did not match the authority key "
+"identifier of the current certificate. Only displayed when the -"
+"issuer_checks option is set."
+
+#: src/library/network/openssl/messages.c:404
+msgid "Key usage does not include certificate signing"
+msgstr "Uso da chave não permite assinatura de certificados"
+
+#: src/library/network/openssl/messages.c:405
+msgid ""
+"The current candidate issuer certificate was rejected because its keyUsage "
+"extension does not permit certificate signing."
+msgstr ""
+"The current candidate issuer certificate was rejected because its keyUsage "
+"extension does not permit certificate signing."
+
+#: src/library/network/openssl/start.c:46
+msgid "No LDAP support"
+msgstr "Sem suporte LDAP"
+
+#: src/library/network/openssl/start.c:64
+msgid "Can't decode CRL data"
+msgstr "Não foi possível decodificar dados do CRL"
+
+#: src/library/network/openssl/start.c:200
+#, fuzzy
+msgid "Cant get SSL context for current connection."
+msgstr ""
+"Não foi possível criar uma nova estrutura de controle SSL para a conexão "
+"atual."
+
+#: src/library/network/openssl/start.c:215
+msgid "Cant create a new SSL structure for current connection."
+msgstr ""
+"Não foi possível criar uma nova estrutura de controle SSL para a conexão "
+"atual."
+
+#: src/library/network/openssl/start.c:230
+msgid "SSL negotiation failed"
+msgstr "Negociação SSL falhou"
+
+#: src/library/network/openssl/start.c:231
+msgid ""
+"Cant set the file descriptor for the input/output facility for the TLS/SSL "
+"(encrypted) side of ssl."
+msgstr ""
+"Não foi possível definir o descritor de arquivo para a conexão TLS/SSL "
+"(encriptada)."
+
+#: src/library/network/openssl/start.c:248
+msgid "Connection failed"
+msgstr "Conexão falhou"
+
+#: src/library/network/openssl/start.c:249
+msgid "Unable to negotiate a secure connection with the host"
+msgstr "Incapaz de negociar uma conexão segura com o host"
+
+#: src/library/network/openssl/start.c:266
+msgid "An EOF was observed that violates the protocol"
+msgstr "Um EOF que viola o protocolo foi encontrado"
+
+#: src/library/network/openssl/start.c:270
+msgid "Unexpected I/O error"
+msgstr "Erro de I/O inesperado"
+
+#: src/library/network/state.c:77
+msgid "The connection is insecure"
+msgstr "A conexão não é segura"
+
+#: src/library/network/tools.c:46
+msgid ""
+"The connection timed out. This usually indicates that the remote server is "
+"not responding. Please check the server status or network configuration and "
+"try reconnecting."
+msgstr ""
+
+#: src/library/network/tools.c:50
+msgid ""
+"The connection was closed by the host. This usually indicates that the "
+"remote server has terminated the connection unexpectedly. Please check the "
+"server status or network configuration and try reconnecting."
+msgstr ""
+
+#: src/library/network/tools.c:54
+msgid ""
+"The connection was reset by the remote server. This typically happens when "
+"the server forcefully closes the connection, possibly due to a timeout, "
+"server restart, or network issues. Please verify the server status and "
+"network connectivity, then try reconnecting."
+msgstr ""
+
+#: src/library/network/tools.c:58
+msgid ""
+"The remote server refused the connection. This usually indicates that the "
+"server is not accepting connections on the specified port. Please verify the "
+"server status and network configuration, then try reconnecting."
+msgstr ""
+
+#: src/library/network/tools.c:190 src/library/os/linux/connect.c:72
+#: src/library/os/linux/connect.c:115 src/library/os/linux/connect.c:137
+#: src/library/os/linux/connect.c:169 src/library/os/linux/connect.c:202
+#: src/library/os/linux/connect.c:273 src/library/os/linux/connect.c:289
+#: src/library/os/windows/connect.c:357 src/library/os/windows/connect.c:375
+#: src/library/connect.c:173 src/library/connect.c:250
+msgid "Connection error"
+msgstr "Erro de conexão"
+
+#: src/library/network/tools.c:191
+msgid "ioctlsocket(FIONBIO) failed."
+msgstr "ioctlsocket(FIONBIO) falhou."
+
+#: src/library/network/tools.c:207 src/library/network/tools.c:232
+#, fuzzy
+msgid "System error"
+msgstr "Erro de interpretação"
+
+#: src/library/network/tools.c:208
+msgid "fcntl() error when getting socket state."
+msgstr "erro fcntl() ao obter estado do socket."
+
+#: src/library/network/tools.c:233
+#, fuzzy
+msgid "fcntl() error when setting socket state."
+msgstr "erro fcntl() ao obter estado do socket."
+
+#. Can't get contents
+#: src/library/os/linux/download.c:55 src/library/os/darwin/download.c:55
+#: src/library/os/windows/download.c:62
+msgid "No handler for URL scheme."
+msgstr "Nenhum manipulador para o esquema de URL"
+
+#: src/library/os/linux/event_dispatcher.c:131
+#: src/library/os/linux/mainloop.c:255
+#: src/library/os/darwin/event_dispatcher.c:131
+#: src/library/os/windows/event_dispatcher.c:136
+msgid "Select() failed when processing for events."
+msgstr "Select() falhou ao processar eventos."
+
+#: src/library/os/linux/ldap.c:82 src/library/os/linux/ldap.c:91
+#: src/library/os/darwin/ldap.c:82 src/library/os/darwin/ldap.c:91
+#: src/library/os/windows/ldap.c:101 src/library/os/windows/ldap.c:110
+msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
+msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
+
+#: src/library/os/linux/ldap.c:147 src/library/os/darwin/ldap.c:147
+#, fuzzy
+msgid "LDAP search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/library/os/linux/ldap.c:157 src/library/os/darwin/ldap.c:157
+#, fuzzy
+msgid "LDAP search did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
+
+#: src/library/os/linux/ldap.c:167 src/library/os/darwin/ldap.c:167
+#: src/library/os/windows/ldap.c:204
+msgid "Can't decode certificate revocation list"
+msgstr "Não foi possível decodificar a lista de certificados revogados"
+
+#: src/library/os/linux/connect.c:73 src/library/os/linux/connect.c:203
+#, fuzzy
+msgid "Unable to connect to host"
+msgstr "Não é possível conectar em servidores seguros"
+
+#: src/library/os/linux/connect.c:116 src/library/os/windows/connect.c:224
+msgid "Unable to get connection state."
+msgstr "Não foi possível obter o estado da conexão."
+
+#: src/library/os/linux/connect.c:130 src/library/os/windows/connect.c:232
+#, fuzzy, c-format
+msgid "Can't connect to %s"
+msgstr "Não foi possível conectar a %s:%s"
+
+#: src/library/os/linux/connect.c:162
+#, fuzzy, c-format
+msgid "Failed to establish connection to %s"
+msgstr "Não foi possível obter o estado da conexão."
+
+#: src/library/os/linux/connect.c:274 src/library/os/windows/connect.c:358
+msgid "setsockopt(SO_OOBINLINE) has failed"
+msgstr "setsockopt(SO_OOBINLINE) falhou"
+
+#: src/library/os/linux/connect.c:285 src/library/os/windows/connect.c:371
+#, c-format
+msgid "Can't %s network keep-alive"
+msgstr "Não foi possível %s opção \"keep-alive\""
+
+#: src/library/os/linux/connect.c:285 src/library/os/windows/connect.c:371
+msgid "enable"
+msgstr "habilitar"
+
+#: src/library/os/linux/connect.c:285 src/library/os/windows/connect.c:371
+msgid "disable"
+msgstr "desabilitar"
+
+#: src/library/os/linux/connect.c:301
+#, c-format
+msgid "setsockopt(%s)"
+msgstr "setsockopt(%s)"
+
+#: src/library/os/linux/resolv.c:120 src/library/os/linux/resolv.c:136
+#: src/library/os/linux/resolv.c:171 src/library/os/linux/resolv.c:258
+#: src/library/os/linux/resolv.c:271 src/library/os/linux/resolv.c:343
+#, fuzzy
+msgid "DNS error"
+msgstr "Erro no socket"
+
+#: src/library/os/linux/resolv.c:121 src/library/os/linux/resolv.c:137
+#: src/library/os/linux/resolv.c:172
+#, fuzzy
+msgid "Error resolving host name"
+msgstr "Erro ao resolver %s: %s"
+
+#: src/library/os/linux/resolv.c:122
+msgid "Unexpected number of bytes read from signalfd"
+msgstr ""
+
+#: src/library/os/linux/resolv.c:145
+#, c-format
+msgid "Received signal with unexpected si_code '%d' while connecting to %s"
+msgstr ""
+
+#: src/library/os/linux/resolv.c:259
+msgid "Unexpected response to cancel request"
+msgstr ""
+
+#: src/library/os/linux/resolv.c:272 src/library/os/linux/resolv.c:344
+#, fuzzy
+msgid "Unable to resolve host name"
+msgstr "Não consegui encontrar o host selecionado."
+
+#: src/library/os/linux/curl.c:163 src/library/os/darwin/curl.c:171
+msgid "Can't initialize curl operation"
+msgstr "Erro ao inicializar operação CURL"
+
+#: src/library/os/windows/util.c:128 src/library/os/windows/util.c:174
+#, c-format
+msgid "Windows error %d"
+msgstr "Erro windows foi %d"
+
+#: src/library/os/windows/connect.c:111
+msgid "WSAStartup failed"
+msgstr "WSAStartup falhou"
+
+#: src/library/os/windows/connect.c:123
+msgid "Bad winsock version"
+msgstr "Versão winsock inválida"
+
+#: src/library/os/windows/connect.c:124
+msgid "Can't use this system winsock"
+msgstr "Não posso usar a winsock do sistema"
+
+#: src/library/os/windows/connect.c:197
+msgid "Can't connect to host"
+msgstr "Não foi possível conectar no host"
+
+#: src/library/os/windows/connect.c:198
+msgid "Try again"
+msgstr "Tentar novamente"
+
+#: src/library/os/windows/connect.c:225 src/library/os/windows/connect.c:359
+#: src/library/os/windows/connect.c:377
+#, c-format
+msgid "The system error was %s"
+msgstr "O erro do sistema operacional foi \"%s\""
+
+#: src/library/os/windows/connect.c:238
+#, c-format
+msgid "The system error was \"%s\""
+msgstr "O erro do sistema operacional foi \"%s\""
+
+#: src/library/os/windows/connect.c:275
+#, c-format
+msgid "Can't connect to %s:%s"
+msgstr "Não foi possível conectar a %s:%s"
+
+#: src/library/os/windows/connect.c:297 src/library/os/windows/connect.c:305
+#: src/library/os/windows/connect.c:313 src/library/os/windows/connect.c:323
+#, c-format
+msgid "The system error was \"%s\" (rc=%d)"
+msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
+
+#: src/library/os/windows/connect.c:298
+msgid "Timeout conneting to host"
+msgstr "Timeout ao conectar com o host"
+
+#: src/library/os/windows/connect.c:306
+msgid "Not connected to host"
+msgstr "Sem conexão com servidor"
+
+#. To cleanup states.
+#: src/library/os/windows/connect.c:339
+msgid "_Retry"
+msgstr "_Repetir"
+
+#: src/library/os/windows/http.c:99
+msgid "Can't open HTTP session"
+msgstr "Não foi possível abrir sessão HTTP"
+
+#: src/library/os/windows/http.c:110
+msgid "Can't connect to HTTP server."
+msgstr "Não foi possível conectar ao servidor HTTP"
+
+#: src/library/os/windows/http.c:121
+msgid "Can't create HTTP request."
+msgstr "Não foi possível criar requisição HTTP"
+
+#: src/library/os/windows/http.c:134
+msgid "Can't send HTTP request."
+msgstr "Não posso enviar requisição HTTP"
+
+#: src/library/os/windows/http.c:145
+msgid "Error receiving HTTP response."
+msgstr "Erro recebendo resposta HTTP."
+
+#: src/library/os/windows/http.c:157
+msgid "Empty response from HTTP server."
+msgstr "Recebi resposta vazia do servidor HTTP"
+
+#: src/library/os/windows/http.c:173
+msgid "Can't read HTTP response size."
+msgstr "Não posso obter tamanho da resposta HTTP"
+
+#: src/library/os/windows/ldap.c:133
+msgid "Can't initialize LDAP"
+msgstr "Erro ao inicializar LDAP"
+
+#: src/library/os/windows/ldap.c:141
+msgid "Can't set LDAP protocol version"
+msgstr "Não é possível setar a versão do protocolo LDAP"
+
+#: src/library/os/windows/ldap.c:149
+msgid "Can't bind to LDAP server"
+msgstr "Não foi possível conectar ao servidor LDAP"
+
+#: src/library/os/windows/ldap.c:179
+msgid "LDAP Search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/library/os/windows/ldap.c:186
+msgid "LDAPSearch did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
 
 #: src/library/actions/table.c:112
 msgid "_Reconnect"
@@ -371,128 +1636,46 @@ msgstr "Program Action 2"
 msgid "Program Action 3"
 msgstr "Program Action 3"
 
-#: src/library/ft/ft.c:97
-msgid "No transfer in progress"
-msgstr "Nenhuma transferência em andamento"
-
-#: src/library/ft/ft.c:98
-msgid "Ack received, data flowing"
-msgstr "Confirmação recebida, transferindo dados"
-
-#: src/library/ft/ft.c:99
-msgid "Awaiting chance to send an abort"
-msgstr "Aguardando para enviar pedido de cancelamento"
-
-#: src/library/ft/ft.c:100
-msgid "Abort sent; awaiting response"
-msgstr "Cancelamento enviado; aguardando resposta"
-
-#: src/library/ft/ft.c:151
-msgid "Cancelled by user"
-msgstr "Cancelado pelo usuário"
-
-#. Nao tem destino para a mensagem, apresenta
-#: src/library/ft/ft.c:192
-msgid "Request failed"
-msgstr "Requisição falhou"
-
-#: src/library/ft/ft.c:192
-msgid "Can't start file transfer."
-msgstr "Não foi possível iniciar transferência de arquivo."
-
-#: src/library/ft/ft.c:244 src/library/network/openssl/main.c:100
-#: src/library/network/openssl/main.c:148
-msgid "Disconnected from host."
-msgstr "Desconectado do servidor."
-
-#: src/library/ft/ft.c:247
-msgid "File transfer is already active in this session."
-msgstr "Transferência de arquivos já está ativa nesta sessão."
-
-#: src/library/ft/ft.c:251
-msgid "The remote file name is invalid."
-msgstr "O nome do arquivo remoto não é válido."
-
-#: src/library/ft/ft.c:391
-msgid "Can't get file size"
-msgstr "Não foi possível obter o tamanho do arquivo"
-
-#: src/library/ft/ft.c:478
-msgid "Unable to send file-transfer request"
-msgstr "Não foi possível enviar a requisição de transferência de arquivo"
-
-#: src/library/ft/ft.c:487
-msgid "Waiting for GET response"
-msgstr "Aguardando resposta do pedido de download"
-
-#: src/library/ft/ft.c:489
-msgid "Waiting for PUT response"
-msgstr "Aguardando resposta do pedido de upload"
-
-#: src/library/ft/ft.c:526
-msgid "Transfer complete"
-msgstr "Transferência completa"
-
-#: src/library/ft/ft.c:530
-msgid "Transfer failed"
-msgstr "Transferência falhou"
-
-#: src/library/ft/ft.c:612
-msgid "Aborting..."
-msgstr "Cancelando..."
-
-#: src/library/ft/ft.c:620
-msgid "Host disconnected, transfer cancelled"
-msgstr "Servidor desconectou, transferência cancelada"
-
-#: src/library/ft/ft.c:626
-msgid "Not in 3270 mode, transfer cancelled"
-msgstr "Não está no modo 3270, transferência cancelada"
-
-#: src/library/ft/ft_cut.c:163 src/library/ft/ft_cut.c:171
+#: src/library/ft/ft_cut.c:164 src/library/ft/ft_cut.c:172
 msgid "Data conversion error"
 msgstr "Erro na conversão de dados"
 
-#: src/library/ft/ft_cut.c:297
+#: src/library/ft/ft_cut.c:298
 msgid "Unknown frame type from host"
 msgstr "Servidor enviou tipo de frame desconhecido"
 
-#: src/library/ft/ft_cut.c:360
+#: src/library/ft/ft_cut.c:361
 msgid "Transfer cancelled by host"
 msgstr "Transferência cancelada pelo host"
 
-#: src/library/ft/ft_cut.c:368
+#: src/library/ft/ft_cut.c:369
 msgid "Unknown FT control code from host"
 msgstr "Servidor enviou código de controle FT desconhecido"
 
-#: src/library/ft/ft_cut.c:387 src/library/ft/ft_cut.c:475
-#: src/library/ft/ft_dft.c:213 src/library/ft/ft_dft.c:344
+#: src/library/ft/ft_cut.c:388 src/library/ft/ft_cut.c:476
+#: src/library/ft/ft_dft.c:214 src/library/ft/ft_dft.c:345
 msgid "Transfer cancelled by user"
 msgstr "Transferência cancelada pelo usuário"
 
 #. Abort the transfer.
-#: src/library/ft/ft_cut.c:408 src/library/ft/ft_dft.c:413
+#: src/library/ft/ft_cut.c:409 src/library/ft/ft_dft.c:414
 #, c-format
 msgid "Error \"%s\" reading from local file (rc=%d)"
 msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
 
-#: src/library/ft/ft_cut.c:447
+#: src/library/ft/ft_cut.c:448
 msgid "Transmission error"
 msgstr "Erro de transmissão"
 
-#: src/library/ft/ft_cut.c:484
+#: src/library/ft/ft_cut.c:485
 msgid "Illegal frame length"
 msgstr "Comprimento de frame inválido"
 
 #. write failed
-#: src/library/ft/ft_cut.c:504 src/library/ft/ft_dft.c:306
+#: src/library/ft/ft_cut.c:505 src/library/ft/ft_dft.c:307
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
-
-#: src/library/ft/ft_dft.c:161
-msgid "Uknown DFT Open type from host"
-msgstr "Host enviou código de abertura DFT desconhecido"
 
 #: src/library/ft/ftmessages.c:45
 msgid "Error in file transfer: file transfer canceled"
@@ -720,122 +1903,82 @@ msgstr "Erro código xxxxxxxxxx no aplicativo do host: Transferência cancelada"
 msgid "This is a host program error."
 msgstr "Este é um erro no programa do host."
 
-#: src/library/keyboard/kybd.c:269
-#, c-format
-msgid "Unexpected type %d in typeahead queue"
-msgstr "Tipo inesperado %d na fila de teclado"
+#: src/library/ft/ft_dft.c:162
+msgid "Uknown DFT Open type from host"
+msgstr "Host enviou código de abertura DFT desconhecido"
 
-#: src/library/keyboard/kybd.c:1547
-#, c-format
-msgid "Unknown PA key %d"
-msgstr "PA %d desconhecida"
+#: src/library/ft/ft.c:99
+msgid "No transfer in progress"
+msgstr "Nenhuma transferência em andamento"
 
-#: src/library/keyboard/kybd.c:1560
-#, c-format
-msgid "Unknown PF key %d"
-msgstr "PF %d desconhecida"
+#: src/library/ft/ft.c:100
+msgid "Ack received, data flowing"
+msgstr "Confirmação recebida, transferindo dados"
 
-#: src/library/keyboard/kybd.c:1763
-#, c-format
-msgid "%s: Bell not supported"
-msgstr "%s: Alerta sonoro não suportado"
+#: src/library/ft/ft.c:101
+msgid "Awaiting chance to send an abort"
+msgstr "Aguardando para enviar pedido de cancelamento"
 
-#: src/library/keyboard/kybd.c:1814
-#, c-format
-msgid "%s: Vertical tab not supported"
-msgstr "%s: Tabulação vertical não é suportada"
+#: src/library/ft/ft.c:102
+msgid "Abort sent; awaiting response"
+msgstr "Cancelamento enviado; aguardando resposta"
 
-#: src/library/keyboard/kybd.c:1861
-#, c-format
-msgid "%s: Unknown character after \\p"
-msgstr "%s: Caractere desconhecido depois de \\p"
+#: src/library/ft/ft.c:151
+msgid "Cancelled by user"
+msgstr "Cancelado pelo usuário"
 
-#: src/library/keyboard/kybd.c:1872
-#, c-format
-msgid "%s: Unknown character after \\pf"
-msgstr "%s: Caractere desconhecido depois de \\pf"
+#. Nao tem destino para a mensagem, apresenta
+#: src/library/ft/ft.c:192
+msgid "Request failed"
+msgstr "Requisição falhou"
 
-#: src/library/keyboard/kybd.c:1889
-#, c-format
-msgid "%s: Unknown character after \\pa"
-msgstr "%s: Caractere desconhecido depois de \\pa"
+#: src/library/ft/ft.c:192
+msgid "Can't start file transfer."
+msgstr "Não foi possível iniciar transferência de arquivo."
 
-#: src/library/keyboard/kybd.c:1908
-#, c-format
-msgid "%s: Missing hex digits after \\x"
-msgstr "%s: Faltando dígitos hexadecimais após \\x"
+#: src/library/ft/ft.c:247
+msgid "File transfer is already active in this session."
+msgstr "Transferência de arquivos já está ativa nesta sessão."
 
-#. Property name.
-#: src/library/properties/boolean.c:61
-msgid "Is terminal ready"
-msgstr "O terminal está pronto"
+#: src/library/ft/ft.c:251
+msgid "The remote file name is invalid."
+msgstr "O nome do arquivo remoto não é válido."
 
-#. Property name.
-#: src/library/properties/boolean.c:68
-msgid "Is terminal connected"
-msgstr "O terminal está conectado"
+#: src/library/ft/ft.c:384
+msgid "Can't get file size"
+msgstr "Não foi possível obter o tamanho do arquivo"
 
-#. Property name.
-#: src/library/properties/boolean.c:75
-msgid "Is connection secure"
-msgstr "A conexão é segura ?"
+#: src/library/ft/ft.c:471
+msgid "Unable to send file-transfer request"
+msgstr "Não foi possível enviar a requisição de transferência de arquivo"
 
-#. Property name.
-#. Property group.
-#: src/library/properties/boolean.c:83
-msgid "Non zero if the host is TSO."
-msgstr "Diferente de zero se o host é TSO"
+#: src/library/ft/ft.c:480
+msgid "Waiting for GET response"
+msgstr "Aguardando resposta do pedido de download"
 
-#. Property name.
-#. Property group.
-#: src/library/properties/boolean.c:91
-msgid "Non zero if the host is AS400."
-msgstr "Diferente de zero se o host é AS400"
+#: src/library/ft/ft.c:482
+msgid "Waiting for PUT response"
+msgstr "Aguardando resposta do pedido de upload"
 
-#. Property name.
-#: src/library/properties/boolean.c:126
-msgid "State is 3270, TN3270e or SSCP"
-msgstr "Estado do terminal é 3270, TN3270e or SSCP"
+#: src/library/ft/ft.c:519
+msgid "Transfer complete"
+msgstr "Transferência completa"
 
-#. Property name.
-#: src/library/properties/boolean.c:147
-msgid "Is terminal in the INITIAL_E state?"
-msgstr "O terminal está no estad INITIAL_E?"
+#: src/library/ft/ft.c:523
+msgid "Transfer failed"
+msgstr "Transferência falhou"
 
-#. Property name.
-#: src/library/properties/boolean.c:154
-msgid "Has selected area"
-msgstr "Tem área selecionada"
+#: src/library/ft/ft.c:601
+msgid "Aborting..."
+msgstr "Cancelando..."
 
-#. Property name.
-#: src/library/properties/boolean.c:161
-msgid "Still have text to paste"
-msgstr "Ainda existe texto para colar"
+#: src/library/ft/ft.c:609
+msgid "Host disconnected, transfer cancelled"
+msgstr "Servidor desconectou, transferência cancelada"
 
-#. Property name.
-#: src/library/properties/boolean.c:168
-msgid "Is starting (no first screen)?"
-msgstr "Está iniciando (não recebeu a primeira tela)?"
-
-#. Property name.
-#: src/library/properties/boolean.c:175
-msgid "Formatted screen"
-msgstr "Tela formatada"
-
-#. Property name.
-#: src/library/properties/boolean.c:182
-msgid "Lock keyboard on operator error"
-msgstr "Bloqueia teclado em caso de erro do operador"
-
-#. Property name.
-#: src/library/properties/boolean.c:189
-msgid "numeric lock"
-msgstr "numeric lock"
-
-#. Property name.
-#: src/library/properties/boolean.c:196
-msgid "Non zero if the download of CRL is enabled"
-msgstr "Diferente de zero se o host se o download do CRL está habilitado"
+#: src/library/ft/ft.c:615
+msgid "Not in 3270 mode, transfer cancelled"
+msgstr "Não está no modo 3270, transferência cancelada"
 
 #: src/library/properties/signed.c:42
 #, fuzzy
@@ -883,8 +2026,8 @@ msgid "Connected in TN3270E mode, 3270 mode"
 msgstr ""
 
 #: src/library/properties/signed.c:59 src/library/properties/signed.c:88
-#: src/library/properties/signed.c:108 src/library/telnet.c:1774
-#: src/library/telnet.c:1794
+#: src/library/properties/signed.c:108 src/library/telnet.c:1838
+#: src/library/telnet.c:1858
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -989,100 +2132,6 @@ msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
 #. Property name.
-#: src/library/properties/string.c:62
-msgid "The name of the LU associated with the session"
-msgstr "O nome da LU associada à sessão"
-
-#. Property group.
-#. Property icon.
-#: src/library/properties/string.c:74
-msgid "URL of the current host"
-msgstr "URL do host atual"
-
-#. Property name.
-#. Property group.
-#: src/library/properties/string.c:82
-msgid "Model name"
-msgstr "Nome do modelo"
-
-#. Property name.
-#. Property group.
-#: src/library/properties/string.c:90
-msgid "Host type name"
-msgstr "Nome do tipo de host"
-
-#. Property name.
-#: src/library/properties/string.c:97
-msgid "Terminal type"
-msgstr "Tipo do terminal"
-
-#. Property name.
-#: src/library/properties/string.c:104
-msgid "Terminal name"
-msgstr "Nome do terminal"
-
-#. Property name.
-#. Default charset.
-#. Property group.
-#: src/library/properties/string.c:113
-msgid "Host charset"
-msgstr "Página de código do host"
-
-#. Property name.
-#: src/library/properties/string.c:120
-msgid "Display charset"
-msgstr "Tabela de caracteres para a tela"
-
-#. Property name.
-#: src/library/properties/string.c:127
-msgid "Protocol library version"
-msgstr ""
-
-#. Property name.
-#: src/library/properties/string.c:134
-msgid "Protocol library revision"
-msgstr ""
-
-#. Property name.
-#. Property group.
-#: src/library/properties/string.c:142
-msgid "Preferred protocol for CRL download"
-msgstr "Protocolo preferido para download da CRL"
-
-#. Property name.
-#: src/library/properties/string.c:149
-msgid "Default host URL"
-msgstr "URL parão para acesso ao host"
-
-#. Property name.
-#: src/library/properties/string.c:156
-msgid "The security state"
-msgstr "O estado da segurança"
-
-#. Property name.
-#: src/library/properties/string.c:163
-msgid "Description of the current security state"
-msgstr "Descrição do estado de segurança atual"
-
-#. Property name.
-#. Property group.
-#: src/library/properties/string.c:171
-msgid "Screen oversize if larger than the chosen model"
-msgstr "\"oversize\" maior que o modelo escolhido"
-
-#. Property name.
-#. Property group.
-#: src/library/properties/string.c:179
-msgid "The log file name"
-msgstr "Define o nome do arquivo de log"
-
-#. Property name.
-#. Property group.
-#: src/library/properties/string.c:187
-msgid "The trace file name"
-msgstr "O nome do arquivo de trace"
-
-#. Property name.
 #. Default value for the property.
 #. Property group.
 #: src/library/properties/unsigned.c:79
@@ -1152,585 +2201,263 @@ msgstr ""
 msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
-#: src/library/session.c:164
-msgid "Can't print"
-msgstr "Não é possível imprimir"
+#. Property name.
+#: src/library/properties/string.c:63
+msgid "The name of the LU associated with the session"
+msgstr "O nome da LU associada à sessão"
 
-#: src/library/session.c:164
-msgid "Unable to print"
-msgstr "Incapaz de imprimir"
+#. Property group.
+#. Property icon.
+#: src/library/properties/string.c:75
+msgid "URL of the current host"
+msgstr "URL do host atual"
 
-#: src/library/session.c:170
-msgid "Can't save"
-msgstr "Não é possível salvar"
+#. Property name.
+#. Property group.
+#: src/library/properties/string.c:83
+msgid "Model name"
+msgstr "Nome do modelo"
 
-#: src/library/session.c:170
-msgid "Unable to save"
-msgstr "Incapaz de salvar"
+#. Property name.
+#. Property group.
+#: src/library/properties/string.c:91
+msgid "Host type name"
+msgstr "Nome do tipo de host"
 
-#: src/library/session.c:176
-msgid "Can't load"
-msgstr "Não foi possível carregar"
+#. Property name.
+#: src/library/properties/string.c:98
+msgid "Terminal type"
+msgstr "Tipo do terminal"
 
-#: src/library/session.c:176
-msgid "Unable to load from file"
-msgstr "Não foi possível ler do arquivo"
+#. Property name.
+#: src/library/properties/string.c:105
+msgid "Terminal name"
+msgstr "Nome do terminal"
 
-#: src/library/toggles/init.c:83 src/library/os/linux/connect.c:334
-#: src/library/os/windows/connect.c:372 src/library/os/darwin/connect.c:334
+#. Property name.
+#. Default charset.
+#. Property group.
+#: src/library/properties/string.c:114
+msgid "Host charset"
+msgstr "Página de código do host"
+
+#. Property name.
+#: src/library/properties/string.c:121
+msgid "Display charset"
+msgstr "Tabela de caracteres para a tela"
+
+#. Property name.
+#: src/library/properties/string.c:128
+msgid "Protocol library version"
+msgstr ""
+
+#. Property name.
+#: src/library/properties/string.c:135
+msgid "Protocol library revision"
+msgstr ""
+
+#. Property name.
+#: src/library/properties/string.c:152
+msgid "Default host URL"
+msgstr "URL parão para acesso ao host"
+
+#. Property name.
+#: src/library/properties/string.c:159
+msgid "The security state"
+msgstr "O estado da segurança"
+
+#. Property name.
+#: src/library/properties/string.c:166
+msgid "Description of the current security state"
+msgstr "Descrição do estado de segurança atual"
+
+#. Property name.
+#. Property group.
+#: src/library/properties/string.c:174
+msgid "Screen oversize if larger than the chosen model"
+msgstr "\"oversize\" maior que o modelo escolhido"
+
+#. Property name.
+#: src/library/properties/boolean.c:62
+msgid "Is terminal ready"
+msgstr "O terminal está pronto"
+
+#. Property name.
+#: src/library/properties/boolean.c:69
+msgid "Is terminal connected"
+msgstr "O terminal está conectado"
+
+#. Property name.
+#: src/library/properties/boolean.c:76
+msgid "Is connection secure"
+msgstr "A conexão é segura ?"
+
+#. Property name.
+#. Property group.
+#: src/library/properties/boolean.c:84
+msgid "Non zero if the host is TSO."
+msgstr "Diferente de zero se o host é TSO"
+
+#. Property name.
+#. Property group.
+#: src/library/properties/boolean.c:92
+msgid "Non zero if the host is AS400."
+msgstr "Diferente de zero se o host é AS400"
+
+#. Property name.
+#: src/library/properties/boolean.c:127
+msgid "State is 3270, TN3270e or SSCP"
+msgstr "Estado do terminal é 3270, TN3270e or SSCP"
+
+#. Property name.
+#: src/library/properties/boolean.c:148
+msgid "Is terminal in the INITIAL_E state?"
+msgstr "O terminal está no estad INITIAL_E?"
+
+#. Property name.
+#: src/library/properties/boolean.c:155
+msgid "Has selected area"
+msgstr "Tem área selecionada"
+
+#. Property name.
+#: src/library/properties/boolean.c:162
+msgid "Still have text to paste"
+msgstr "Ainda existe texto para colar"
+
+#. Property name.
+#: src/library/properties/boolean.c:169
+msgid "Is starting (no first screen)?"
+msgstr "Está iniciando (não recebeu a primeira tela)?"
+
+#. Property name.
+#: src/library/properties/boolean.c:176
+msgid "Formatted screen"
+msgstr "Tela formatada"
+
+#. Property name.
+#: src/library/properties/boolean.c:183
+msgid "Lock keyboard on operator error"
+msgstr "Bloqueia teclado em caso de erro do operador"
+
+#. Property name.
+#: src/library/properties/boolean.c:190
+msgid "numeric lock"
+msgstr "numeric lock"
+
+#. Property name.
+#: src/library/properties/boolean.c:197
+msgid "Non zero if the download of CRL is enabled"
+msgstr "Diferente de zero se o host se o download do CRL está habilitado"
+
+#: src/library/connect.c:174
+#, fuzzy
+msgid "Invalid connection scheme"
+msgstr "A conexão é segura ?"
+
+#: src/library/connect.c:182
 #, c-format
-msgid "Can't %s network keep-alive"
-msgstr "Não foi possível %s opção \"keep-alive\""
-
-#: src/library/toggles/init.c:83 src/library/os/linux/connect.c:334
-#: src/library/os/windows/connect.c:372 src/library/os/darwin/connect.c:334
-msgid "enable"
-msgstr "habilitar"
-
-#: src/library/toggles/init.c:83 src/library/os/linux/connect.c:334
-#: src/library/os/windows/connect.c:372 src/library/os/darwin/connect.c:334
-msgid "disable"
-msgstr "desabilitar"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:51
-msgid "Monocase"
-msgstr "Só Maiúsculas"
-
-#: src/library/toggles/table.c:52
-msgid "Uppercase only"
-msgstr "Apenas maiúsculas"
-
-#: src/library/toggles/table.c:53
-msgid "If set, the terminal operates in uppercase-only mode"
-msgstr "Se ativo o terminal opera apenas com caracteres maiúsculos"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:62 src/library/toggles/table.c:63
-msgid "Blinking Cursor"
-msgstr "Cursor piscante"
-
-#: src/library/toggles/table.c:64
-msgid "If set, the cursor blinks"
-msgstr "Se ativo o cursor pisca"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:72 src/library/toggles/table.c:73
-msgid "Show timer when processing"
-msgstr "Show timer when processing"
-
-#: src/library/toggles/table.c:74
-msgid ""
-"If set, the time taken by the host to process an AID is displayed on the "
-"status line"
+msgid "Unsupported scheme '%s' in URL %s"
 msgstr ""
-"If set, the time taken by the host to process an AID is displayed on the "
-"status line"
 
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:82
-msgid "Track Cursor"
-msgstr "Mostrar posição do cursor"
+#: src/library/connect.c:251
+#, fuzzy
+msgid "Unable to activate SSL connection"
+msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/toggles/table.c:83
-msgid "Track Cursor location"
-msgstr "Mostrar posição do cursor"
-
-#: src/library/toggles/table.c:84
-msgid "Display the cursor location in the OIA (the status line)"
-msgstr "Mostra posição do cursor na lista de informações ao operador"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:93 src/library/toggles/table.c:94
-msgid "Trace Data Stream"
-msgstr "Trace Data Stream"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:103 src/library/toggles/table.c:104
-msgid "Wrap around"
-msgstr "Wrap around"
-
-#: src/library/toggles/table.c:105
-msgid ""
-"If set, the NVT terminal emulator automatically assumes a NEWLINE character "
-"when it reaches the end of a line."
+#: src/library/connect.c:252
+msgid "The OpenSSL library is not available in this build"
 msgstr ""
-"Se ativo o emulador de terminal assume automaticamente uma quebra de linha "
-"quando chega ao final de uma linha"
 
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:113 src/library/toggles/table.c:114
-msgid "Blank Fill"
-msgstr "Completar com espaços"
-
-#: src/library/toggles/table.c:115
-msgid ""
-"Automatically convert trailing blanks in a field to NULLs in order to insert "
-"a character, and will automatically convert leading NULLs to blanks so that "
-"input data is not squeezed to the left"
-msgstr ""
-"Automatically convert trailing blanks in a field to NULLs in order to insert "
-"a character, and will automatically convert leading NULLs to blanks so that "
-"input data is not squeezed to the left"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:124
-msgid "Trace Screen"
-msgstr "Trace de tela"
-
-#: src/library/toggles/table.c:125
-msgid "Trace screen contents"
-msgstr "Trace do conteúdo da tela"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:135
-msgid "Trace Events"
-msgstr "Trace de Eventos"
-
-#: src/library/toggles/table.c:136
-msgid "Trace interface and application events"
-msgstr "Registra eventos da interface gráfica e aplicação"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:145
-msgid "Margined paste"
-msgstr "Colar com margem"
-
-#: src/library/toggles/table.c:146
-msgid "Paste with left margin"
-msgstr "Colar com margem esquerda"
-
-#: src/library/toggles/table.c:147
-msgid ""
-"If set, puts restrictions on how pasted text is placed on the screen. The "
-"position of the cursor at the time the paste operation is begun is used as a "
-"left margin. No pasted text will fill any area of the screen to the left of "
-"that position. This option is useful for pasting into certain IBM editors "
-"that use the left side of the screen for control information"
-msgstr ""
-"If set, puts restrictions on how pasted text is placed on the screen. The "
-"position of the cursor at the time the paste operation is begun is used as a "
-"left margin. No pasted text will fill any area of the screen to the left of "
-"that position. This option is useful for pasting into certain IBM editors "
-"that use the left side of the screen for control information"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:155 src/library/toggles/table.c:156
-msgid "Select by rectangles"
-msgstr "Seleção retangular"
-
-#: src/library/toggles/table.c:157
-msgid ""
-"If set, the terminal will always select rectangular areas of the screen. "
-"Otherwise, it selects continuous regions of the screen"
-msgstr ""
-"Se ativo o terminal sempre selecionará áreas retangulares, se inativo "
-"selecionará áreas contínuas da tela"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:165 src/library/toggles/table.c:166
-msgid "Cross hair cursor"
-msgstr "Cursor mira"
-
-#: src/library/toggles/table.c:167
-msgid ""
-"If set, the terminal will display a crosshair over the cursor: lines "
-"extending the full width and height of the screen, centered over the cursor "
-"position. This makes locating the cursor on the screen much easier"
-msgstr ""
-"If set, the terminal will display a crosshair over the cursor: lines "
-"extending the full width and height of the screen, centered over the cursor "
-"position. This makes locating the cursor on the screen much easier"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:175 src/library/toggles/table.c:176
-msgid "Full Screen"
-msgstr "Tela cheia"
-
-#: src/library/toggles/table.c:177
-msgid "If set, asks to place the toplevel window in the fullscreen state"
-msgstr "Se ativo pede para colocar a janela principal em modo de tela cheia"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:185
-msgid "Insert"
-msgstr "Inserção"
-
-#: src/library/toggles/table.c:186
-msgid "Set insert mode"
-msgstr "Set insert mode"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:195 src/library/toggles/table.c:196
-msgid "Smart paste"
-msgstr "Colar inteligente"
-
-#: src/library/toggles/table.c:197
-msgid ""
-"If set the characters pasted over protected areas will be skipped to avoid "
-"locks"
-msgstr ""
-"Se ativo caracters colados sobre áreas protegidas serão ignorados para "
-"evitar o bloqueio do terminal"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:205 src/library/toggles/table.c:206
-msgid "Bold"
-msgstr "Negrito"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:215 src/library/toggles/table.c:216
-msgid "Keep selected"
-msgstr "Manter selecionado"
-
-#: src/library/toggles/table.c:217
-msgid "If set the selection will not be removed on screen changes"
-msgstr "Se ativo a seleção não será removida quando a tela mudar"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:225
-msgid "Underline"
-msgstr "Sublinhados"
-
-#: src/library/toggles/table.c:226
-msgid "Show Underline"
-msgstr "Mostrar sublinhado"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:235
-msgid "Connect on startup"
-msgstr "Conectar ao iniciar"
-
-#: src/library/toggles/table.c:236
-msgid "Automatically connect to host on startup"
-msgstr "Conecta automaticamente na inicialização"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:245 src/library/toggles/table.c:246
-msgid "Use +/- for field navigation"
-msgstr "Usar teclas +/- para navegar por campos"
-
-#: src/library/toggles/table.c:247
-msgid "Use the keys +/- from keypad to select editable fields"
-msgstr "Use the keys +/- from keypad to select editable fields"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:255
-msgid "Sound"
-msgstr "Som"
-
-#: src/library/toggles/table.c:256
-msgid "Alert sound"
-msgstr "Aviso sonoro"
-
-#: src/library/toggles/table.c:257
-msgid "Beep on errors"
-msgstr "Emitir som nos erros"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:265
-msgid "Show Field"
-msgstr "Mostra campos"
-
-#: src/library/toggles/table.c:266
-msgid "Show Field attributes"
-msgstr "Mostra atributos de campo"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:275
-msgid "Auto Resize"
-msgstr "Redimensionamento automático"
-
-#: src/library/toggles/table.c:276
-msgid "Resize on alternate screen"
-msgstr "Mudar tamanho do terminal em tela alternativa"
-
-#: src/library/toggles/table.c:277
-msgid "Change screen size on alternative screen"
-msgstr "Mudar tamanho do terminal em tela alternativa"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:285
-msgid "Network keep alive"
-msgstr "Manter rede ativa"
-
-#: src/library/toggles/table.c:286
-msgid "Enable use of network keep alive"
-msgstr "Habilita opção \"keep-alive\""
-
-#: src/library/toggles/table.c:287
-msgid "Enable network keep-alive with SO_KEEPALIVE"
-msgstr "Enable network keep-alive with SO_KEEPALIVE"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:296
-msgid "Trace Network"
-msgstr "Trace de rede"
-
-#: src/library/toggles/table.c:297
-msgid "Trace network data flow"
-msgstr "Trace network data flow"
-
-#: src/library/toggles/table.c:298
-msgid "Enable network in/out trace"
-msgstr "Habilitar trace de entrada/saída de rede"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:307
-msgid "Trace Security"
-msgstr "Trace de segurança"
-
-#: src/library/toggles/table.c:308
-msgid "Trace SSL negotiation"
-msgstr "Trace da negociação SSL"
-
-#: src/library/toggles/table.c:309
-msgid "Enable security negotiation trace"
-msgstr "Habilita trace da negociação de segurança"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:318 src/library/toggles/table.c:319
-msgid "Auto-Reconnect"
-msgstr "Reconectar automaticamente"
-
-#: src/library/toggles/table.c:320
-msgid "Automatically reconnect to the host if it ever disconnects"
-msgstr "Reconecta automaticamente caso o servidor desconecte"
-
-#: src/library/connect.c:167
-msgid "Can't determine the TLS/SSL state"
-msgstr "Não foi possível determinar o estado TLS/SSL"
-
-#: src/library/connect.c:168
-msgid ""
-"The network module didn't set the TLS/SSL state message, this is not "
-"supposed to happen and can be a coding error"
-msgstr ""
-"O módulo de rede não definiu uma mensagem para o estado TLS/SSL, isso não "
-"deveria acontecer e pode ser um erro de codificação"
-
-#: src/library/ctlr.c:171 src/library/ctlr.c:181 src/library/ctlr.c:192
-#: src/library/ctlr.c:203
+#: src/library/ctlr.c:169 src/library/ctlr.c:179 src/library/ctlr.c:190
+#: src/library/ctlr.c:201
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
-#: src/library/ctlr.c:172
+#: src/library/ctlr.c:170
 msgid "The oversize values are invalid."
 msgstr "Os valores para 'oversize' não são válidos."
 
-#: src/library/ctlr.c:173
+#: src/library/ctlr.c:171
 #, c-format
 msgid "%dx%d is negative or zero"
 msgstr "%dx%d é negativa ou zero"
 
-#: src/library/ctlr.c:182
+#: src/library/ctlr.c:180
 msgid "The oversize values are too big."
 msgstr "Os valores do 'oversize' são muito grandes."
 
-#: src/library/ctlr.c:183
+#: src/library/ctlr.c:181
 #, c-format
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
 
-#: src/library/ctlr.c:193
+#: src/library/ctlr.c:191
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
-#: src/library/ctlr.c:194
+#: src/library/ctlr.c:192
 #, c-format
 msgid "The width %d is less than model %d columns (%d)"
 msgstr "A largura %d é menor que a do modelo %d (%d)"
 
-#: src/library/ctlr.c:204
+#: src/library/ctlr.c:202
 msgid "The oversize height is too small."
 msgstr "A altura definida para 'oversize' é muito pequena."
 
-#: src/library/ctlr.c:205
+#: src/library/ctlr.c:203
 #, c-format
 msgid "The height %d is less than model %d rows (%d)"
 msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
 
 #. unknown 3270 command
-#: src/library/ctlr.c:402
+#: src/library/ctlr.c:397
 #, c-format
 msgid "Unknown 3270 Data Stream command: 0x%X"
 msgstr "Unknown 3270 Data Stream command: 0x%X"
 
-#: src/library/options.c:42
+#: src/library/options.c:46
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/library/options.c:48
+#: src/library/options.c:52
 msgid "IBM AS/400"
 msgstr "IBM AS/400"
 
-#: src/library/options.c:54
+#: src/library/options.c:58
 msgid "Other (TSO)"
 msgstr "Outro (TSO)"
 
-#: src/library/options.c:60
+#: src/library/options.c:64
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/library/paste.c:373
-msgid "Action failed"
-msgstr "Ação falhou"
-
-#: src/library/paste.c:374
-msgid "Unable to paste text"
-msgstr "Incapaz de colar texto"
-
-#: src/library/paste.c:375
-msgid "Keyboard is locked"
-msgstr "Teclado está bloqueado"
-
-#: src/library/paste.c:375
-msgid "Unexpected error"
-msgstr "Erro inesperado"
-
-#: src/library/rpq.c:222
-msgid "RPQ Error"
-msgstr "Erro RPQ"
-
-#: src/library/rpq.c:223
-msgid "Unsupported RPQ term"
-msgstr "Unsupported RPQ term"
-
-#: src/library/rpq.c:224
-#, c-format
-msgid "RPQ term %d is unknown"
-msgstr "Termo RPM %d não foi reconhecido"
-
-#: src/library/rpq.c:229
-#, c-format
-msgid "RPQ %s term omitted due to insufficient space"
-msgstr "Termo RPQ %s omitido por falta de espaço"
-
-#: src/library/rpq.c:338
-#, c-format
-msgid "RPQ %s term override ignored"
-msgstr "RPQ %s term override ignored"
-
-#: src/library/rpq.c:350
-#, c-format
-msgid "RPQ term \"%s\" is unrecognized"
-msgstr "Termo RPQ desconhecido: \"%s\" "
-
-#: src/library/rpq.c:403 src/library/rpq.c:412
-msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
-msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
-
-#: src/library/rpq.c:424
-msgid "RPQ: Unable to determine workstation local time"
-msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
-
-#: src/library/rpq.c:434 src/library/rpq.c:444
-msgid "RPQ: Unable to determine workstation UTC time"
-msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
-
-#: src/library/rpq.c:465
-msgid "RPQ timezone exceeds 12 hour UTC offset"
-msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
-
-#: src/library/rpq.c:520
-msgid "RPQ USER term has non-hex character"
-msgstr "Termo RPQ USER tem caractere não hexadecimal"
-
-#: src/library/rpq.c:526
-#, c-format
-msgid "RPQ USER term truncated after %d bytes"
-msgstr "Termo RPQ USER truncado depois de %d bytes"
-
-#: src/library/rpq.c:545
-msgid "RPQ USER term has odd number of hex digits"
-msgstr "RPQ USER term has odd number of hex digits"
-
-#: src/library/rpq.c:570
-#, c-format
-msgid "RPQ USER term truncated after %d characters"
-msgstr "Termo RPQ USER truncado depois de %d caracteres"
-
-#: src/library/rpq.c:642 src/library/rpq.c:712
-#, c-format
-msgid "RPQ ADDRESS term has unrecognized family %u"
-msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
-
-#: src/library/rpq.c:650 src/library/rpq.c:679 src/library/rpq.c:719
-msgid "RPQ ADDRESS term incomplete due to space limit"
-msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
-
-#: src/library/rpq.c:655
-#, c-format
-msgid "RPQ: can't resolve '%s': %s"
-msgstr "RPQ: Não foi possível resolver '%s': %s"
-
-#: src/library/rpq.c:668
-msgid "RPQ: gethostbyname error"
-msgstr "RPQ: Erro em gethostbyname"
-
-#: src/library/telnet.c:304 src/library/os/linux/connect.c:200
-#: src/library/os/linux/event_dispatcher.c:130
-#: src/library/os/windows/connect.c:223
-#: src/library/os/windows/event_dispatcher.c:135
-#: src/library/os/darwin/connect.c:200
-#: src/library/os/darwin/event_dispatcher.c:130
-msgid "Network error"
-msgstr "Erro de rede"
-
-#: src/library/telnet.c:727
+#: src/library/telnet.c:776
 msgid "Warning"
 msgstr "Alerta"
 
-#: src/library/telnet.c:728
+#: src/library/telnet.c:777
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
 
 #. None of the LUs worked.
-#: src/library/telnet.c:928
+#: src/library/telnet.c:977
 msgid "Cannot connect to specified LU"
 msgstr "Não foi possível conectar na LU pedida"
 
-#: src/library/telnet.c:995
+#: src/library/telnet.c:1044
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
 
-#: src/library/telnet.c:1163
+#: src/library/telnet.c:1213
 msgid "Host rejected device type or request type"
 msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 
 #. No more LUs to try.  Give up.
-#: src/library/telnet.c:1173
+#: src/library/telnet.c:1223
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
-#: src/library/telnet.c:1175
+#: src/library/telnet.c:1225
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
@@ -1738,773 +2465,165 @@ msgstr "Tipo de dispositivo rejeitado"
 #. * They've added something.  Abandon
 #. * TN3270E, they're brain dead.
 #.
-#: src/library/telnet.c:1233
+#: src/library/telnet.c:1283
 msgid "Host illegally added function(s)"
 msgstr "Host illegally added function(s)"
 
-#: src/library/telnet.c:1761
+#: src/library/telnet.c:1825
 msgid "Unconnected"
 msgstr "Não conectado"
 
-#: src/library/telnet.c:1762 src/library/telnet.c:1781
-msgid "Resolving"
-msgstr "Resolvendo"
-
-#: src/library/telnet.c:1763
-msgid "Pending"
-msgstr "Pendente"
-
-#: src/library/telnet.c:1764
-msgid "Connected initial"
-msgstr "Connected initial"
-
-#: src/library/telnet.c:1765
-msgid "TN3270 NVT"
-msgstr "TN3270 NVT"
-
-#: src/library/telnet.c:1766
-msgid "TN3270 3270"
-msgstr "TN3270 3270"
-
-#: src/library/telnet.c:1767
-msgid "TN3270E"
-msgstr "TN3270E"
-
-#: src/library/telnet.c:1768
-msgid "TN3270E NVT"
-msgstr "TN3270E NVT"
-
-#: src/library/telnet.c:1769
-msgid "TN3270E SSCP-LU"
-msgstr "TN3270E SSCP-LU"
-
-#: src/library/telnet.c:1770
-msgid "TN3270E 3270"
-msgstr "TN3270E 3270"
-
-#: src/library/telnet.c:1782
+#: src/library/telnet.c:1826 src/library/telnet.c:1846
 msgid "Connecting"
 msgstr "Conectando"
 
-#: src/library/telnet.c:1783
+#: src/library/telnet.c:1827
+msgid "Pending"
+msgstr "Pendente"
+
+#: src/library/telnet.c:1828
+msgid "Connected initial"
+msgstr "Connected initial"
+
+#: src/library/telnet.c:1829
+msgid "TN3270 NVT"
+msgstr "TN3270 NVT"
+
+#: src/library/telnet.c:1830
+msgid "TN3270 3270"
+msgstr "TN3270 3270"
+
+#: src/library/telnet.c:1831
+msgid "TN3270E"
+msgstr "TN3270E"
+
+#: src/library/telnet.c:1832
+msgid "TN3270E NVT"
+msgstr "TN3270E NVT"
+
+#: src/library/telnet.c:1833
+msgid "TN3270E SSCP-LU"
+msgstr "TN3270E SSCP-LU"
+
+#: src/library/telnet.c:1834
+msgid "TN3270E 3270"
+msgstr "TN3270E 3270"
+
+#: src/library/telnet.c:1845
+msgid "Resolving"
+msgstr "Resolvendo"
+
+#: src/library/telnet.c:1847
 msgid "Half connect"
 msgstr "Half connect"
 
-#: src/library/telnet.c:1784
+#: src/library/telnet.c:1848
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/library/telnet.c:1785
+#: src/library/telnet.c:1849
 msgid "3270 Mode"
 msgstr "Modo 3270"
 
-#: src/library/telnet.c:1786
+#: src/library/telnet.c:1850
 msgid "Line mode"
 msgstr "Line mode"
 
-#: src/library/telnet.c:1787
+#: src/library/telnet.c:1851
 msgid "Remodel"
 msgstr "Remodel"
 
-#: src/library/telnet.c:1788
+#: src/library/telnet.c:1852
 msgid "Printer"
 msgstr "Impressão"
 
-#: src/library/telnet.c:1789
+#: src/library/telnet.c:1853
 msgid "Exiting"
 msgstr "Saindo"
 
-#: src/library/telnet.c:1790
+#: src/library/telnet.c:1854
 msgid "Charset"
 msgstr "Tabela de caracteres"
 
-#: src/library/util.c:270
-#, c-format
-msgid "The system error was '%s' (rc=%d)"
-msgstr "O erro do sistema foi \"%s\" (rc=%d)"
-
-#: src/library/network/default/main.c:148
-msgid "The session is not secure"
-msgstr "A sessão não é segura"
-
-#: src/library/network/default/main.c:149
-msgid "No TLS/SSL support on this session"
-msgstr "Sem suporte TLS/SSL nessa sessão"
-
-#: src/library/network/openssl/context.c:236
-msgid "Can't initialize the TLS/SSL context."
-msgstr "Erro ao inicializar contexto TLS/SSL"
-
-#: src/library/network/openssl/context.c:286
-msgid "Cant open custom certificate directory."
-msgstr "Não foi possível abrir o diretório de certificados personalizados"
-
-#: src/library/network/openssl/context.c:291
-#, c-format
-msgid "Can't open \"%s\" (The Windows error code was %ld)"
-msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)"
-
-#: src/library/network/openssl/context.c:304
-#, c-format
-msgid "Can't open \"%s\": %s"
-msgstr "Não foi possível abrir %s: %s"
-
-#: src/library/network/openssl/context.c:316
-msgid "Cant read custom certificate file."
-msgstr "Não foi possível ler certificado personalizado"
-
-#: src/library/network/openssl/context.c:322
-#, c-format
-msgid "Can't read \"%s\": %s"
-msgstr "Não foi possível ler \"%s\": %s"
-
-#: src/library/network/openssl/context.c:332
-msgid "Cant load custom certificate file."
-msgstr "Não foi possível ler arquivo de certificado personalizado"
-
-#: src/library/network/openssl/context.c:338
-#, c-format
-msgid "Can't load \"%s\": %s"
-msgstr "Não foi possível carregar \"%s\": %s"
-
-#: src/library/network/openssl/start.c:43
-msgid "No LDAP support"
-msgstr "Sem suporte LDAP"
-
-#: src/library/network/openssl/start.c:61
-msgid "Can't decode CRL data"
-msgstr "Não foi possível decodificar dados do CRL"
-
-#: src/library/network/openssl/start.c:197
+#: src/gobject/callbacks.c:203 src/gobject/callbacks.c:223
 #, fuzzy
-msgid "Cant get SSL context for current connection."
-msgstr ""
-"Não foi possível criar uma nova estrutura de controle SSL para a conexão "
-"atual."
+msgid "Initialization error"
+msgstr "Erro interno"
 
-#: src/library/network/openssl/start.c:212
-msgid "Cant create a new SSL structure for current connection."
-msgstr ""
-"Não foi possível criar uma nova estrutura de controle SSL para a conexão "
-"atual."
+#: src/gobject/callbacks.c:204 src/gobject/callbacks.c:224
+#, fuzzy
+msgid "Version mismatch"
+msgstr "Divergência de versão GTK"
 
-#: src/library/network/openssl/start.c:227
-msgid "SSL negotiation failed"
-msgstr "Negociação SSL falhou"
-
-#: src/library/network/openssl/start.c:228
-msgid ""
-"Cant set the file descriptor for the input/output facility for the TLS/SSL "
-"(encrypted) side of ssl."
-msgstr ""
-"Não foi possível definir o descritor de arquivo para a conexão TLS/SSL "
-"(encriptada)."
-
-#: src/library/network/openssl/start.c:245
-msgid "Connection failed"
-msgstr "Conexão falhou"
-
-#: src/library/network/openssl/start.c:246
-msgid "Unable to negotiate a secure connection with the host"
-msgstr "Incapaz de negociar uma conexão segura com o host"
-
-#: src/library/network/openssl/start.c:263
-msgid "An EOF was observed that violates the protocol"
-msgstr "Um EOF que viola o protocolo foi encontrado"
-
-#: src/library/network/openssl/start.c:267
-msgid "Unexpected I/O error"
-msgstr "Erro de I/O inesperado"
-
-#: src/library/network/openssl/main.c:102
-#: src/library/network/openssl/main.c:150
-msgid "The secure connection has been closed cleanly."
-msgstr "A conexão segura foi fechada corretamente"
-
-#: src/library/network/openssl/main.c:123
-msgid "Error writing to host."
-msgstr "Erro enviando para o servidor"
-
-#: src/library/network/openssl/main.c:124
-#: src/library/network/openssl/main.c:171
+#: src/gobject/callbacks.c:205 src/gobject/callbacks.c:212
 #, c-format
-msgid "The SSL error message was %s"
-msgstr "A mensagem de erro SSL foi \"%s\""
-
-#: src/library/network/openssl/main.c:170
-msgid "Error reading from host"
-msgstr "Erro lendo do servidor"
-
-#: src/library/network/openssl/messages.c:52
-msgid "Secure connection was successful."
-msgstr "Conexão segura efetuada com sucesso."
-
-#: src/library/network/openssl/messages.c:53
-msgid "The connection is secure and the host identity was confirmed."
-msgstr "A conexão é segura e a identidade do servidor foi confirmada."
-
-#: src/library/network/openssl/messages.c:63
-msgid "Unable to get issuer certificate"
-msgstr "Não foi possível obter emissor do certificado"
-
-#: src/library/network/openssl/messages.c:64
 msgid ""
-"The issuer certificate of a looked up certificate could not be found. This "
-"normally means the list of trusted certificates is not complete."
+"Invalid callback table, the release %s of %s can't be used (expecting "
+"revision %s)"
 msgstr ""
-"The issuer certificate of a looked up certificate could not be found. This "
-"normally means the list of trusted certificates is not complete."
 
-#: src/library/network/openssl/messages.c:78
-msgid "Unable to get certificate CRL."
-msgstr "Incapaz de obter o CRL de um certificado."
-
-#: src/library/network/openssl/messages.c:79
-msgid ""
-"The Certificate revocation list (CRL) of a certificate could not be found."
-msgstr ""
-"A lista de revogação de certificados (CRL) de um certificado não pôde ser "
-"encontrada."
-
-#: src/library/network/openssl/messages.c:80
-#: src/library/network/openssl/messages.c:253
-#: src/library/network/openssl/messages.c:268
-msgid "Continue"
-msgstr "Continuar"
-
-#: src/library/network/openssl/messages.c:90
-msgid "Unable to decrypt certificate's signature"
-msgstr "Incapaz de decifrar a assinatura do certificado"
-
-#: src/library/network/openssl/messages.c:91
-msgid ""
-"The certificate signature could not be decrypted. This means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value, this is only meaningful for RSA keys."
-msgstr ""
-"The certificate signature could not be decrypted. This means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value, this is only meaningful for RSA keys."
-
-#: src/library/network/openssl/messages.c:101
-msgid "Unable to decrypt CRL's signature"
-msgstr ""
-"Não foi possível decriptar assinatura da lista de certificados revogados"
-
-#: src/library/network/openssl/messages.c:102
-msgid ""
-"The CRL signature could not be decrypted: this means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value. Unused."
-msgstr ""
-"The CRL signature could not be decrypted: this means that the actual "
-"signature value could not be determined rather than it not matching the "
-"expected value. Unused."
-
-#: src/library/network/openssl/messages.c:112
-msgid "Unable to decode issuer public key"
-msgstr "Não é possível decodificar chave pública do emissor"
-
-#: src/library/network/openssl/messages.c:113
-msgid ""
-"The public key in the certificate SubjectPublicKeyInfo could not be read."
-msgstr ""
-"The public key in the certificate SubjectPublicKeyInfo could not be read."
-
-#: src/library/network/openssl/messages.c:123
-msgid "Certificate signature failure"
-msgstr "Falha na assinatura do certificado"
-
-#: src/library/network/openssl/messages.c:124
-#: src/library/network/openssl/messages.c:135
-msgid "The signature of the certificate is invalid."
-msgstr "A assinatura do certificado não é válida."
-
-#: src/library/network/openssl/messages.c:134
-msgid "CRL signature failure"
-msgstr "Erro na assinatura CRL"
-
-#: src/library/network/openssl/messages.c:145
-msgid "Certificate is not yet valid"
-msgstr "O certificado ainda não é válido"
-
-#: src/library/network/openssl/messages.c:146
-msgid ""
-"The certificate is not yet valid: the notBefore date is after the current "
-"time."
-msgstr ""
-"The certificate is not yet valid: the notBefore date is after the current "
-"time."
-
-#: src/library/network/openssl/messages.c:156
-msgid "Certificate has expired"
-msgstr "O certificado expirou"
-
-#: src/library/network/openssl/messages.c:157
-msgid ""
-"The certificate has expired: that is the notAfter date is before the current "
-"time."
-msgstr ""
-"The certificate has expired: that is the notAfter date is before the current "
-"time."
-
-#: src/library/network/openssl/messages.c:167
-msgid "The CRL is not yet valid."
-msgstr "A lista de certificados revogados ainda não é válida."
-
-#: src/library/network/openssl/messages.c:168
-msgid "The Certificate revocation list (CRL) is not yet valid."
-msgstr "A lista de revogação de certificados (CRL) ainda não é válida."
-
-#: src/library/network/openssl/messages.c:182
-msgid "The CRL has expired."
-msgstr "A lista de certificados revogados expirou."
-
-#: src/library/network/openssl/messages.c:183
-msgid "The Certificate revocation list (CRL) has expired."
-msgstr "A lista de revogação de certificados (CRL) está expirada."
-
-#: src/library/network/openssl/messages.c:193
-msgid "Format error in certificate's notBefore field"
-msgstr "Erro de formato no campo \"notBefore\" do certificado"
-
-#: src/library/network/openssl/messages.c:194
-msgid "The certificate notBefore field contains an invalid time."
-msgstr "The certificate notBefore field contains an invalid time."
-
-#: src/library/network/openssl/messages.c:204
-msgid "Format error in certificate's notAfter field"
-msgstr "Erro de formato no campo \"notAfter\" do certificado"
-
-#: src/library/network/openssl/messages.c:205
-msgid "The certificate notAfter field contains an invalid time."
-msgstr "The certificate notAfter field contains an invalid time."
-
-#: src/library/network/openssl/messages.c:215
-msgid "Format error in CRL's lastUpdate field"
-msgstr "Erro de formato no campo \"lastUpdate\" do CRL"
-
-#: src/library/network/openssl/messages.c:216
-msgid "The CRL lastUpdate field contains an invalid time."
-msgstr "Campo \"lastUpdate\" do CRL contem horário inválido."
-
-#: src/library/network/openssl/messages.c:226
-msgid "Format error in CRL's nextUpdate field"
-msgstr "Erro de formato no campo \"nextUpdate\" do CRL"
-
-#: src/library/network/openssl/messages.c:227
-msgid "The CRL nextUpdate field contains an invalid time."
-msgstr "Campo \"nextUpdate\" contem horário inválido."
-
-#: src/library/network/openssl/messages.c:237
-msgid "Out of memory"
-msgstr "Memória insuficiente"
-
-#: src/library/network/openssl/messages.c:238
-msgid "An error occurred trying to allocate memory. This should never happen."
-msgstr ""
-"Ocorreu um erro ao tentar alocar memória. Isso nunca deveria acontecer."
-
-#: src/library/network/openssl/messages.c:252
-msgid "Self signed certificate"
-msgstr "Certificado auto assinado"
-
-#: src/library/network/openssl/messages.c:254
-msgid ""
-"The passed certificate is self signed and the same certificate cannot be "
-"found in the list of trusted certificates."
-msgstr ""
-"The passed certificate is self signed and the same certificate cannot be "
-"found in the list of trusted certificates."
-
-#: src/library/network/openssl/messages.c:269
-msgid "Self signed certificate in certificate chain"
-msgstr "Certificado auto assinado na cadeia de certificados"
-
-#: src/library/network/openssl/messages.c:270
-msgid ""
-"The certificate chain could be built up using the untrusted certificates but "
-"the root could not be found locally."
-msgstr ""
-"The certificate chain could be built up using the untrusted certificates but "
-"the root could not be found locally."
-
-#: src/library/network/openssl/messages.c:280
-msgid "Unable to get local issuer certificate"
-msgstr "Unable to get local issuer certificate"
-
-#: src/library/network/openssl/messages.c:281
-msgid ""
-"The issuer certificate could not be found: this occurs if the issuer "
-"certificate of an untrusted certificate cannot be found."
-msgstr ""
-"The issuer certificate could not be found: this occurs if the issuer "
-"certificate of an untrusted certificate cannot be found."
-
-#: src/library/network/openssl/messages.c:291
-msgid "Unable to verify the first certificate"
-msgstr "Não foi possível verificar o primeiro certificado"
-
-#: src/library/network/openssl/messages.c:292
-msgid ""
-"No signatures could be verified because the chain contains only one "
-"certificate and it is not self signed."
-msgstr ""
-"Nenhuma assinatura pode ser verificada, porque a cadeia contém apenas um "
-"certificado e não é auto assinado."
-
-#: src/library/network/openssl/messages.c:302
-msgid "Certificate revoked"
-msgstr "Certificado revogado"
-
-#: src/library/network/openssl/messages.c:303
-msgid "The certificate has been revoked."
-msgstr "O certificado foi revogado."
-
-#: src/library/network/openssl/messages.c:313
-msgid "Invalid CA certificate"
-msgstr "Certificado CA inválido"
-
-#: src/library/network/openssl/messages.c:314
-msgid ""
-"A CA certificate is invalid. Either it is not a CA or its extensions are not "
-"consistent with the supplied purpose."
-msgstr ""
-"A CA certificate is invalid. Either it is not a CA or its extensions are not "
-"consistent with the supplied purpose."
-
-#: src/library/network/openssl/messages.c:324
-msgid "Path length constraint exceeded"
-msgstr "Path length constraint exceeded"
-
-#: src/library/network/openssl/messages.c:325
-msgid "The basicConstraints pathlength parameter has been exceeded."
-msgstr "The basicConstraints pathlength parameter has been exceeded."
-
-#: src/library/network/openssl/messages.c:335
-msgid "Unsupported certificate purpose"
-msgstr "Finalidade do certificado não é suportada"
-
-#: src/library/network/openssl/messages.c:336
-msgid "The supplied certificate cannot be used for the specified purpose."
-msgstr ""
-"O certificado fornecido não pode ser utilizado para a finalidade "
-"especificada."
-
-#: src/library/network/openssl/messages.c:346
-msgid "Certificate not trusted"
-msgstr "O certificado não é confiável"
-
-#: src/library/network/openssl/messages.c:347
-msgid "The root CA is not marked as trusted for the specified purpose."
-msgstr ""
-"O Certificado raiz não está marcado como confiável para os fins "
-"especificados."
-
-#: src/library/network/openssl/messages.c:357
-msgid "Certificate rejected"
-msgstr "Certificado rejeitado"
-
-#: src/library/network/openssl/messages.c:358
-msgid "The root CA is marked to reject the specified purpose."
-msgstr ""
-"O certificado raiz está marcado para rejeitar a finalidade especificada."
-
-#: src/library/network/openssl/messages.c:368
-msgid "Subject issuer mismatch"
-msgstr "Divergência na identidade do emissor"
-
-#: src/library/network/openssl/messages.c:369
-msgid ""
-"The current candidate issuer certificate was rejected because its subject "
-"name did not match the issuer name of the current certificate. Only "
-"displayed when the -issuer_checks option is set."
-msgstr ""
-"The current candidate issuer certificate was rejected because its subject "
-"name did not match the issuer name of the current certificate. Only "
-"displayed when the -issuer_checks option is set."
-
-#: src/library/network/openssl/messages.c:379
-msgid "Authority and subject key identifier mismatch"
-msgstr "Authority and subject key identifier mismatch"
-
-#: src/library/network/openssl/messages.c:380
-msgid ""
-"The current candidate issuer certificate was rejected because its subject "
-"key identifier was present and did not match the authority key identifier "
-"current certificate. Only displayed when the -issuer_checks option is set."
-msgstr ""
-"The current candidate issuer certificate was rejected because its subject "
-"key identifier was present and did not match the authority key identifier "
-"current certificate. Only displayed when the -issuer_checks option is set."
-
-#: src/library/network/openssl/messages.c:390
-msgid "Authority and issuer serial number mismatch"
-msgstr "Divergência nos números de série da autoridade e emissor "
-
-#: src/library/network/openssl/messages.c:391
-msgid ""
-"The current candidate issuer certificate was rejected because its issuer "
-"name and serial number was present and did not match the authority key "
-"identifier of the current certificate. Only displayed when the -"
-"issuer_checks option is set."
-msgstr ""
-"The current candidate issuer certificate was rejected because its issuer "
-"name and serial number was present and did not match the authority key "
-"identifier of the current certificate. Only displayed when the -"
-"issuer_checks option is set."
-
-#: src/library/network/openssl/messages.c:401
-msgid "Key usage does not include certificate signing"
-msgstr "Uso da chave não permite assinatura de certificados"
-
-#: src/library/network/openssl/messages.c:402
-msgid ""
-"The current candidate issuer certificate was rejected because its keyUsage "
-"extension does not permit certificate signing."
-msgstr ""
-"The current candidate issuer certificate was rejected because its keyUsage "
-"extension does not permit certificate signing."
-
-#: src/library/network/state.c:77
-msgid "The connection is insecure"
-msgstr "A conexão não é segura"
-
-#: src/library/network/tools.c:66 src/library/network/tools.c:82
-msgid "Error receiving data from host"
-msgstr "Erro recebendo dados do servidor"
-
-#: src/library/network/tools.c:67 src/library/network/tools.c:101
+#: src/gobject/callbacks.c:225 src/gobject/callbacks.c:231
 #, c-format
-msgid "The windows error code was %u"
-msgstr "O erro do windows foi %u"
+msgid "Unexpected callback table, the release %s of %s is invalid"
+msgstr ""
 
-#: src/library/network/tools.c:83 src/library/network/tools.c:135
+#: src/gobject/object.c:84
+msgid "Timer is enabled, usually activates when session is busy"
+msgstr ""
+
+#~ msgid "Preferred protocol for CRL download"
+#~ msgstr "Protocolo preferido para download da CRL"
+
+#~ msgid "The log file name"
+#~ msgstr "Define o nome do arquivo de log"
+
+#~ msgid "The trace file name"
+#~ msgstr "O nome do arquivo de trace"
+
+#~ msgid "Can't determine the TLS/SSL state"
+#~ msgstr "Não foi possível determinar o estado TLS/SSL"
+
+#~ msgid ""
+#~ "The network module didn't set the TLS/SSL state message, this is not "
+#~ "supposed to happen and can be a coding error"
+#~ msgstr ""
+#~ "O módulo de rede não definiu uma mensagem para o estado TLS/SSL, isso não "
+#~ "deveria acontecer e pode ser um erro de codificação"
+
 #, c-format
-msgid "The system error code was %d (%s)"
-msgstr "O erro do sistema operacional foi \"%d\" (%s)"
+#~ msgid "The windows error code was %u"
+#~ msgstr "O erro do windows foi %u"
 
-#: src/library/network/tools.c:100
-msgid "Erro sending data to host"
-msgstr "Erro ao enviar dados para o servidor"
-
-#: src/library/network/tools.c:113
-msgid "Broken pipe"
-msgstr "Conexão interrompida"
-
-#: src/library/network/tools.c:114 src/library/network/tools.c:123
 #, c-format
-msgid "The system error code was %d"
-msgstr "O erro do sistema operacional foi %d"
+#~ msgid "The system error code was %d (%s)"
+#~ msgstr "O erro do sistema operacional foi \"%d\" (%s)"
 
-#: src/library/network/tools.c:122
-msgid "Connection reset by peer"
-msgstr "Conexão foi cancelada pelo servidor"
+#~ msgid "Broken pipe"
+#~ msgstr "Conexão interrompida"
 
-#: src/library/network/tools.c:134
-msgid "Unexpected error writing to network socket"
-msgstr "Erro inesperado gravando socket"
-
-#: src/library/network/tools.c:160 src/library/os/linux/connect.c:230
-#: src/library/os/linux/connect.c:321 src/library/os/linux/connect.c:338
-#: src/library/os/windows/connect.c:358 src/library/os/windows/connect.c:376
-#: src/library/os/darwin/connect.c:230 src/library/os/darwin/connect.c:321
-#: src/library/os/darwin/connect.c:338
-msgid "Connection error"
-msgstr "Erro de conexão"
-
-#: src/library/network/tools.c:161
-msgid "ioctlsocket(FIONBIO) failed."
-msgstr "ioctlsocket(FIONBIO) falhou."
-
-#: src/library/network/tools.c:173 src/library/network/tools.c:189
-msgid "Socket error"
-msgstr "Erro no socket"
-
-#: src/library/network/tools.c:174
-msgid "fcntl() error when getting socket state."
-msgstr "erro fcntl() ao obter estado do socket."
-
-#: src/library/network/tools.c:175 src/library/network/tools.c:191
 #, c-format
-msgid "%s"
-msgstr "%s"
+#~ msgid "The system error code was %d"
+#~ msgstr "O erro do sistema operacional foi %d"
 
-#: src/library/network/tools.c:190
-msgid "Can't set socket to blocking mode."
-msgstr "Não foi possível mudar o socket para o modo blocante."
+#~ msgid "Connection reset by peer"
+#~ msgstr "Conexão foi cancelada pelo servidor"
 
-#: src/library/network/tools.c:190
-msgid "Can't set socket to non blocking mode"
-msgstr "Não foi possível setar o socket para o modo não blocante."
+#~ msgid "Unexpected error writing to network socket"
+#~ msgstr "Erro inesperado gravando socket"
 
-#: src/library/os/linux/connect.c:165 src/library/os/windows/connect.c:197
-#: src/library/os/darwin/connect.c:165
-msgid "Can't connect to host"
-msgstr "Não foi possível conectar no host"
+#, c-format
+#~ msgid "%s"
+#~ msgstr "%s"
 
-#: src/library/os/linux/connect.c:166 src/library/os/windows/connect.c:198
-#: src/library/os/darwin/connect.c:166
-msgid "Try again"
-msgstr "Tentar novamente"
+#~ msgid "Can't set socket to blocking mode."
+#~ msgstr "Não foi possível mudar o socket para o modo blocante."
 
-#: src/library/os/linux/connect.c:191 src/library/os/darwin/connect.c:191
+#~ msgid "Can't set socket to non blocking mode"
+#~ msgstr "Não foi possível setar o socket para o modo não blocante."
+
 #, fuzzy, c-format
-msgid "The System error was '%s' (rc=%d)"
-msgstr "O erro do sistema foi \"%s\" (rc=%d)"
-
-#: src/library/os/linux/connect.c:201 src/library/os/windows/connect.c:224
-#: src/library/os/darwin/connect.c:201
-msgid "Unable to get connection state."
-msgstr "Não foi possível obter o estado da conexão."
-
-#: src/library/os/linux/connect.c:215 src/library/os/linux/connect.c:269
-#: src/library/os/windows/connect.c:232 src/library/os/windows/connect.c:276
-#: src/library/os/darwin/connect.c:215 src/library/os/darwin/connect.c:269
-#, c-format
-msgid "Can't connect to %s:%s"
-msgstr "Não foi possível conectar a %s:%s"
-
-#: src/library/os/linux/connect.c:222 src/library/os/linux/connect.c:282
-#: src/library/os/windows/connect.c:298 src/library/os/windows/connect.c:306
-#: src/library/os/windows/connect.c:314 src/library/os/windows/connect.c:324
-#: src/library/os/darwin/connect.c:222 src/library/os/darwin/connect.c:282
-#, c-format
-msgid "The system error was \"%s\" (rc=%d)"
-msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
-
-#. To cleanup states.
-#: src/library/os/linux/connect.c:233 src/library/os/linux/connect.c:302
-#: src/library/os/windows/connect.c:340 src/library/os/darwin/connect.c:233
-#: src/library/os/darwin/connect.c:302
-msgid "_Retry"
-msgstr "_Repetir"
-
-#: src/library/os/linux/connect.c:322 src/library/os/windows/connect.c:359
-#: src/library/os/darwin/connect.c:322
-msgid "setsockopt(SO_OOBINLINE) has failed"
-msgstr "setsockopt(SO_OOBINLINE) falhou"
-
-#: src/library/os/linux/curl.c:171 src/library/os/darwin/curl.c:171
-msgid "Can't initialize curl operation"
-msgstr "Erro ao inicializar operação CURL"
-
-#. Can't get contents
-#: src/library/os/linux/download.c:55 src/library/os/windows/download.c:62
-#: src/library/os/darwin/download.c:55
-msgid "No handler for URL scheme."
-msgstr "Nenhum manipulador para o esquema de URL"
-
-#: src/library/os/linux/event_dispatcher.c:131
-#: src/library/os/windows/event_dispatcher.c:136
-#: src/library/os/darwin/event_dispatcher.c:131
-msgid "Select() failed when processing for events."
-msgstr "Select() falhou ao processar eventos."
-
-#: src/library/os/linux/ldap.c:82 src/library/os/linux/ldap.c:91
-#: src/library/os/windows/ldap.c:101 src/library/os/windows/ldap.c:110
-#: src/library/os/darwin/ldap.c:82 src/library/os/darwin/ldap.c:91
-msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
-msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
-
-#: src/library/os/linux/ldap.c:147 src/library/os/darwin/ldap.c:147
-#, fuzzy
-msgid "LDAP search did not produce any attributes."
-msgstr "Pesquisa LDAP não produziu atributos."
-
-#: src/library/os/linux/ldap.c:157 src/library/os/darwin/ldap.c:157
-#, fuzzy
-msgid "LDAP search did not produce any values."
-msgstr "Pesquisa LDAP não produziu valores."
-
-#: src/library/os/linux/ldap.c:167 src/library/os/windows/ldap.c:204
-#: src/library/os/darwin/ldap.c:167
-msgid "Can't decode certificate revocation list"
-msgstr "Não foi possível decodificar a lista de certificados revogados"
-
-#: src/library/os/windows/util.c:128 src/library/os/windows/util.c:174
-#, c-format
-msgid "Windows error %d"
-msgstr "Erro windows foi %d"
-
-#: src/library/os/windows/connect.c:111
-msgid "WSAStartup failed"
-msgstr "WSAStartup falhou"
-
-#: src/library/os/windows/connect.c:123
-msgid "Bad winsock version"
-msgstr "Versão winsock inválida"
-
-#: src/library/os/windows/connect.c:124
-msgid "Can't use this system winsock"
-msgstr "Não posso usar a winsock do sistema"
-
-#: src/library/os/windows/connect.c:225 src/library/os/windows/connect.c:360
-#: src/library/os/windows/connect.c:378
-#, c-format
-msgid "The system error was %s"
-msgstr "O erro do sistema operacional foi \"%s\""
-
-#: src/library/os/windows/connect.c:239
-#, c-format
-msgid "The system error was \"%s\""
-msgstr "O erro do sistema operacional foi \"%s\""
-
-#: src/library/os/windows/connect.c:299
-msgid "Timeout conneting to host"
-msgstr "Timeout ao conectar com o host"
-
-#: src/library/os/windows/connect.c:307
-msgid "Not connected to host"
-msgstr "Sem conexão com servidor"
-
-#: src/library/os/windows/http.c:99
-msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir sessão HTTP"
-
-#: src/library/os/windows/http.c:110
-msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP"
-
-#: src/library/os/windows/http.c:121
-msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP"
-
-#: src/library/os/windows/http.c:134
-msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP"
-
-#: src/library/os/windows/http.c:145
-msgid "Error receiving HTTP response."
-msgstr "Erro recebendo resposta HTTP."
-
-#: src/library/os/windows/http.c:157
-msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP"
-
-#: src/library/os/windows/http.c:173
-msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP"
-
-#: src/library/os/windows/ldap.c:133
-msgid "Can't initialize LDAP"
-msgstr "Erro ao inicializar LDAP"
-
-#: src/library/os/windows/ldap.c:141
-msgid "Can't set LDAP protocol version"
-msgstr "Não é possível setar a versão do protocolo LDAP"
-
-#: src/library/os/windows/ldap.c:149
-msgid "Can't bind to LDAP server"
-msgstr "Não foi possível conectar ao servidor LDAP"
-
-#: src/library/os/windows/ldap.c:179
-msgid "LDAP Search did not produce any attributes."
-msgstr "Pesquisa LDAP não produziu atributos."
-
-#: src/library/os/windows/ldap.c:186
-msgid "LDAPSearch did not produce any values."
-msgstr "Pesquisa LDAP não produziu valores."
+#~ msgid "The System error was '%s' (rc=%d)"
+#~ msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
@@ -3109,9 +3228,6 @@ msgstr "Pesquisa LDAP não produziu valores."
 #~ msgid "Error loading CRL"
 #~ msgstr "Erro lendo CRL"
 
-#~ msgid "Error resolving %s: %s"
-#~ msgstr "Erro ao resolver %s: %s"
-
 #~ msgid "Estimated transfer arrival"
 #~ msgstr "Tempo estimado para a transferência"
 
@@ -3184,9 +3300,6 @@ msgstr "Pesquisa LDAP não produziu valores."
 
 #~ msgid "Function bar"
 #~ msgstr "Barra de funções"
-
-#~ msgid "GTK Version mismatch"
-#~ msgstr "Divergência de versão GTK"
 
 #~ msgid "Get transfer queue from an external XML file"
 #~ msgstr "Obtém a fila de transferência de um arquivo XML externo"
@@ -3301,9 +3414,6 @@ msgstr "Pesquisa LDAP não produziu valores."
 
 #~ msgid "Intensified/Unprotected"
 #~ msgstr "Intensificado/Desprotegido"
-
-#~ msgid "Internal error"
-#~ msgstr "Erro interno"
 
 #~ msgid "Invalid CGCSGID '%s', ignoring"
 #~ msgstr "Invalid CGCSGID '%s', ignoring"
@@ -3555,9 +3665,6 @@ msgstr "Pesquisa LDAP não produziu valores."
 
 #~ msgid "PF9"
 #~ msgstr "PF9"
-
-#~ msgid "Parse error"
-#~ msgstr "Erro de interpretação"
 
 #~ msgid "Parse error in %s"
 #~ msgstr "Erro de interpretação em %s"
@@ -4298,15 +4405,8 @@ msgstr "Pesquisa LDAP não produziu valores."
 #~ msgid "Unable to complete print job"
 #~ msgstr "Incapaz de concluir o serviço de impressão"
 
-#, fuzzy
-#~ msgid "Unable to connect to host."
-#~ msgstr "Não é possível conectar em servidores seguros"
-
 #~ msgid "Unable to connect to secure hosts"
 #~ msgstr "Não é possível conectar em servidores seguros"
-
-#~ msgid "Unable to find selected hostname."
-#~ msgstr "Não consegui encontrar o host selecionado."
 
 #, fuzzy
 #~ msgid "Unable to open the defined CRL file"
@@ -4546,9 +4646,6 @@ msgstr "Pesquisa LDAP não produziu valores."
 
 #~ msgid "lib3270 version"
 #~ msgstr "Versão da lib3270"
-
-#~ msgid "setsockopt(%s)"
-#~ msgstr "setsockopt(%s)"
 
 #~ msgid "socket"
 #~ msgstr "socket"

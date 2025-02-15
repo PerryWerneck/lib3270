@@ -655,6 +655,7 @@ install_headers(
   'src/include/lib3270/actions.h',
   'src/include/lib3270/charset.h',
   'src/include/lib3270/filetransfer.h',
+  'src/include/lib3270/malloc.h',
   'src/include/lib3270.h',
   'src/include/lib3270/keyboard.h',
   'src/include/lib3270/log.h',

@@ -35,19 +35,23 @@ extern "C" {
 typedef enum _LIB3270_NOTIFY {
 
 	// Dialog types.
-	LIB3270_NOTIFY_INFO				= 0x0001,	///< @brief Simple information dialog.
-	LIB3270_NOTIFY_WARNING			= 0x0002,	///< @brief Warning message.
-	LIB3270_NOTIFY_ERROR			= 0x0003,	///< @brief Error message.
-	LIB3270_NOTIFY_CRITICAL			= 0x0004,	///< @brief Critical error, user can abort application.
-	LIB3270_NOTIFY_SECURE			= 0x0005,	///< @brief Secure host dialog.
-	LIB3270_NOTIFY_SSL				= 0x0006,	///< @brief SSL related messages.
+	LIB3270_NOTIFY_INFO				= 0x0001,	///< @brief Simple information dialog (dialog-information).
+	LIB3270_NOTIFY_WARNING			= 0x0002,	///< @brief Warning message (dialog-warning).
+	LIB3270_NOTIFY_ERROR			= 0x0003,	///< @brief Error message (dialog-error).
+
+	// Security related messages
+	LIB3270_NOTIFY_SECURITY_HIGH	= 0x0010,	///< @brief High security level (security-high).
+	LIB3270_NOTIFY_SECURITY_MEDIUM	= 0x0020,	///< @brief Medium security level (security-medium).
+	LIB3270_NOTIFY_SECURITY_LOW		= 0x0030,	///< @brief Low security level (security-low).
 
 	// Connection related messages.
-	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x0013,	///< @brief Connection error.
+	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x0103,	///< @brief Connection error.
 
 	// Dialog filters.
-	LIB3270_NOTIFY_DIALOG			= 0x000F,	///< @brief Filter for dialog type.
-	LIB3270_NOTIFY_ALLOW_RECONNECT	= 0x0010,	///< @brief Connection related messages (allow 'Retry' button).
+	LIB3270_NOTIFY_DIALOG_TYPE		= 0x000F,	///< @brief Filter for dialog type.
+	LIB3270_NOTIFY_SECURITY_TYPE	= 0x00F0,	///< @brief Filter for security type.
+	LIB3270_NOTIFY_ALLOW_RECONNECT	= 0x0100,	///< @brief Connection related messages (allow 'Retry' button).
+	LIB3270_NOTIFY_CRITICAL			= 0x0200,	///< @brief Critical error, user can abort application.
 	LIB3270_NOTIFY_APPLICATION		= 0x1000,	///< @brief Application specifics.
 
 } LIB3270_NOTIFY;

@@ -89,7 +89,7 @@
 	int 	(*wait)(H3270 *session, int seconds);
 	int		(*run)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
-	/// @brief Run callback on main thread, copy parms to malloced buffer if needed.
+	/// @brief Execute callback on the main thread, copying parameters to a dynamically allocated buffer if necessary.
 	void	(*post)(void(*callback)(void *), void *parm, size_t parmlen);
 
 	/// @brief The connection & network info for this session.

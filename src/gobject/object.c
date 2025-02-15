@@ -386,28 +386,32 @@
 	if(prop_id > klass->properties.type.str)
 	{
 		prop_id -= klass->properties.type.str;
-	
+		g_value_set_string(value,(lib3270_get_string_properties_list()+prop_id)->get(self->handler));
+		debug("String property %s get %s",pspec->name,g_value_get_string(value));
 		return;
 	}
 
 	if(prop_id > klass->properties.type.uint)
 	{
 		prop_id -= klass->properties.type.uint;
-
+		g_value_set_uint(value,(lib3270_get_unsigned_properties_list()+prop_id)->get(self->handler));
+		debug("Unsigned int property %s get %u",pspec->name,g_value_get_uint(value));
 		return;
 	}
 
 	if(prop_id > klass->properties.type.integer)
 	{
 		prop_id -= klass->properties.type.integer;
-
+		g_value_set_int(value,(lib3270_get_int_properties_list()+prop_id)->get(self->handler));
+		debug("Int property %s get %d",pspec->name,g_value_get_int(value));
 		return;
 	}
 
 	if(prop_id > klass->properties.type.boolean)
 	{
 		prop_id -= klass->properties.type.boolean;
-
+		g_value_set_boolean(value,(lib3270_get_boolean_properties_list()+prop_id)->get(self->handler));
+		debug("Boolean property %s get %s",pspec->name,g_value_get_boolean(value) ? "true" : "false");
 		return;
 	}
 
@@ -415,9 +419,11 @@
 	{
 		prop_id -= SESSION_PROPERTY_CUSTOM;
 		g_value_set_boolean(value,lib3270_get_toggle(self->handler,(lib3270_get_toggles()+prop_id)->id));
+		debug("Toggle property %s (%u) get %s",pspec->name,prop_id,g_value_get_boolean(value) ? "true" : "false");
+		return;
 	}
 
-	debug("Getting internal property %s",pspec->name);
+	debug("Error getting internal property %s",pspec->name);
 
  	return;
  }
@@ -455,9 +461,9 @@
 /**
  * tn3270_session_new:
  *
- * Creates a new tn3270 session object.
+ * Creates a new TN3270 session.
  *
- * Returns: (transfer none) (type tn3270.session): a new #Tn3270Session object
+ * Returns: (transfer full): a new #TN3270Session.
  */
  LIB3270_EXPORT Tn3270Session * tn3270_session_new() {
 	return g_object_new(TN3270_TYPE_SESSION,NULL);

@@ -25,8 +25,8 @@
 extern "C" {
 #endif
 
-LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf);
-LIB3270_EXPORT void lib3270_set_disconnected(H3270 *hSession);
+// LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned char *netrbuf);
+// LIB3270_EXPORT void lib3270_set_disconnected(H3270 *hSession);
 
 
 #ifdef __cplusplus

@@ -123,6 +123,27 @@ int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *) {
 	return -ENOTCONN;
 }
 
+static void set_disconnected(H3270 *hSession) {
+
+	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
+	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
+	hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
+	hSession->starting	= 0;
+	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;
+
+	set_status(hSession,LIB3270_FLAG_UNDERA,False);
+
+	lib3270_st_changed(hSession,LIB3270_STATE_CONNECT, False);
+
+	status_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
+
+	if(hSession->cbk.update_connect)
+		hSession->cbk.update_connect(hSession,0);
+
+	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
+
+}
+
 /// @brief Disconnect from host.
 /// @param hSession The tn3270 session
 /// @param failed Non zero if it was a failure.
@@ -165,7 +186,7 @@ int lib3270_connection_close(H3270 *hSession, int failed) {
 		if (IN_ANSI && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE))
 			trace_ansi_disc(hSession);
 
-		lib3270_set_disconnected(hSession);
+		set_disconnected(hSession);
 
 		if(failed && hSession->connection.retry && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT))
 			lib3270_activate_auto_reconnect(hSession,hSession->connection.retry);
@@ -236,27 +257,6 @@ void lib3270_set_connected_initial(H3270 *hSession) {
 	lib3270_st_changed(hSession, LIB3270_STATE_CONNECT, True);
 	if(hSession->cbk.update_connect)
 		hSession->cbk.update_connect(hSession,1);
-}
-
-void lib3270_set_disconnected(H3270 *hSession) {
-
-	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
-	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
-	hSession->starting	= 0;
-	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;
-
-	set_status(hSession,LIB3270_FLAG_UNDERA,False);
-
-	lib3270_st_changed(hSession,LIB3270_STATE_CONNECT, False);
-
-	status_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
-
-	if(hSession->cbk.update_connect)
-		hSession->cbk.update_connect(hSession,0);
-
-	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
-
 }
 
 /**

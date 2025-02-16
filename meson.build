@@ -53,7 +53,7 @@ subdir('po')
 #
 
 c = meson.get_compiler('c')
-libssl = dependency('libssl', required: false)
+libssl = dependency('libssl', required: false, version: '>=3.0.0')
 libintl = dependency('intl', required : false)
 libiconv = dependency('iconv', required : false)
 gobject = dependency('gobject-2.0', required: false)
@@ -66,7 +66,6 @@ lib_extra = [
 lib_deps = [
   libssl,
   dependency('liburiparser', method : 'pkg-config'),
-  dependency('libcrypto'),
 ]
 
 #
@@ -364,7 +363,17 @@ if host_machine.system() == 'windows'
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    libraries: [ '-l3270.dll' ]
+    libraries: [ '-l3270.dll' ],
+    requires_private: [ 
+      lib_deps 
+    ],
+    libraries_private: [ 
+      '-l3270',
+      '-lwinhttp',
+      '-lws2_32',
+      '-lwtsapi32',
+      '-lcomdlg32' 
+    ]
   )
 
   pkg.generate(
@@ -398,7 +407,9 @@ else
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    libraries: [ '-l3270' ]
+    libraries: [ '-l3270' ],
+    requires_private: [ lib_deps ],
+    libraries_private: [ lib_deps ],
   )
 
   pkg.generate(
@@ -414,7 +425,7 @@ else
 endif
 
 # Check for OSs
-#https://mesonbuild.com/Reference-manual_builtin_host_machine.html
+# https://mesonbuild.com/Reference-manual_builtin_host_machine.html
 
 if host_machine.system() == 'windows'
 
@@ -575,8 +586,7 @@ if gobject.found()
     include_directories: includes_dir
   )
 
-  gnome = import('gnome')
-
+  
   #gnome.gtkdoc(
   #  meson.project_name(),
   #  src_dir: 'src/gobject',
@@ -594,6 +604,7 @@ if gobject.found()
 
 
 
+#  gnome = import('gnome')
 #  gnome.generate_gir(
 #    glib_shared,
 #    includes: ['GObject-2.0', 'Gio-2.0'], 

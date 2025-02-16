@@ -301,16 +301,13 @@ gobject_src = [
 ]
 
 linux_src =[
-  'src/library/os/linux/curl.c',
-  'src/library/os/linux/download.c',
-  'src/library/os/linux/ldap.c',
   'src/library/os/linux/util.c',
 ] 
 
 darwin_src = [
   'src/library/os/darwin/connect.c',
   'src/library/os/darwin/curl.c',
-  'src/library/os/darwin/download.c',
+  'src/lix  brary/os/darwin/download.c',
   'src/library/os/darwin/ldap.c',
   'src/library/os/darwin/util.c',
 ]

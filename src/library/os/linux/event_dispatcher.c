@@ -27,6 +27,8 @@
  *
  */
 
+#error deprecated
+
 /**
  * @brief Implements the default event dispatcher for linux.
  *
@@ -43,7 +45,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-/**
+/
  * @brief lib3270's default event dispatcher.
  *
  * @param hSession	TN3270 session to process.

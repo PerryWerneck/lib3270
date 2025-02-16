@@ -27,6 +27,8 @@
  *
  */
 
+#error deprected
+
 #ifndef PRIVATE_H_INCLUDED
 
 #define PRIVATE_H_INCLUDED

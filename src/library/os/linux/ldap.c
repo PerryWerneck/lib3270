@@ -27,6 +27,8 @@
  *
  */
 
+#error deprecated
+
 #include <config.h>
 
 #if defined(HAVE_LDAP) && defined(HAVE_LIBSSL)

@@ -27,8 +27,11 @@
  #include <sys/stat.h>
 
  #ifdef HAVE_SYSLOG
- 	#include <syslog.h>
+
+ #include <syslog.h>
  
+ static size_t syslog_instances = 0;
+
  struct syslog_context {
 	int dummy;
  };
@@ -40,7 +43,11 @@
 
  static void syslog_finalize(const H3270 *session, struct syslog_context *context) {
 	lib3270_free(context);
-	closelog();
+
+	if(--syslog_instances == 0) {
+		closelog();
+	}
+	
  }
 
  LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession) {
@@ -50,7 +57,9 @@
 		hSession->log.context = NULL;
 	}
 
-	openlog(PACKAGE_NAME, LOG_CONS, LOG_USER);
+	if(syslog_instances++ == 0) {
+		openlog(PACKAGE_NAME, LOG_CONS, LOG_USER);
+	}
 
 	struct syslog_context *context = (struct syslog_context *) lib3270_malloc(sizeof(struct syslog_context));
 	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;

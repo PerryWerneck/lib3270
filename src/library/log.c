@@ -24,20 +24,11 @@
  #include <string.h>
  #include <errno.h>
 
- static int dummy_writer(H3270 *session, LIB3270_LOG_CONTEXT *context, const char *domain, const char *fmt, va_list args) {
-	return errno = EBADF;
- }
-
- static void dummy_finalizer(H3270 *session, LIB3270_LOG_CONTEXT *context) {
- }
-
  LIB3270_EXPORT void lib3270_log_close(H3270 *hSession) {
-
 	if(hSession->log) {
 		hSession->log->finalize(hSession,hSession->log);
 		hSession->log = NULL;
 	}
-
  }
 
  LIB3270_EXPORT int lib3270_log_write(const H3270 *hSession, const char *module, const char *fmt, ...) {

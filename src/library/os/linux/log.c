@@ -37,12 +37,12 @@ dentifier: LGPL-3.0-or-later */
  static size_t syslog_instances = 0;
 
  
- static int syslog_write(const H3270 *session, struct syslog_context *context, const char *domain, const char *fmt, va_list args) {
+ static int syslog_write(const H3270 *session, LIB3270_LOG_CONTEXT *context, const char *domain, const char *fmt, va_list args) {
 	vsyslog(LOG_INFO, fmt, args);
 	return 0;
  }
 
- static void syslog_finalize(const H3270 *session, struct syslog_context *context) {
+ static void syslog_finalize(const H3270 *session, LIB3270_LOG_CONTEXT *context) {
 	lib3270_free(context);
 
 	if(--syslog_instances == 0) {

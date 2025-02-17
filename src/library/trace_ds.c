@@ -82,7 +82,7 @@ char * trace_filename(const H3270 *session, const char *template) {
 static void wtrace(const H3270 *hSession, const char *fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+	hSession->trace->write(hSession,hSession->trace,fmt,args);
 	va_end(args);
 }
 
@@ -132,7 +132,7 @@ static void trace_ds_s(const H3270 *hSession, char *s, Boolean can_break) {
 
 void trace_ds(const H3270 *hSession, const char *fmt, ...) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 		char	* text;
 		va_list   args;
 
@@ -149,7 +149,7 @@ void trace_ds(const H3270 *hSession, const char *fmt, ...) {
 
 void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 		char *text;
 		va_list args;
 
@@ -167,10 +167,10 @@ void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) {
  */
 void trace_dsn(const H3270 *hSession, const char *fmt, ...) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE) && hSession->trace.context) {
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 		va_list args;
 		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		hSession->trace->write(hSession,hSession->trace,fmt,args);
 		va_end(args);
 	}
 	
@@ -181,10 +181,10 @@ void trace_dsn(const H3270 *hSession, const char *fmt, ...) {
  */
 void trace_ssl(const H3270 *hSession, const char *fmt, ...) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE) && hSession->trace.context) {
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 		va_list args;
 		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		hSession->trace->write(hSession,hSession->trace,fmt,args);
 		va_end(args);
 	}
 
@@ -192,10 +192,10 @@ void trace_ssl(const H3270 *hSession, const char *fmt, ...) {
 
 void trace_network(const H3270 *hSession, const char *fmt, ...) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE) && hSession->trace.context) {
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE)) {
 		va_list args;
 		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		hSession->trace->write(hSession,hSession->trace,fmt,args);
 		va_end(args);
 	}
 
@@ -203,10 +203,10 @@ void trace_network(const H3270 *hSession, const char *fmt, ...) {
 
 void trace_event(const H3270 *hSession, const char *fmt, ...) {
 
-	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE) && hSession->trace.context) {
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE)) {
 		va_list args;
 		va_start(args, fmt);
-		hSession->trace.write(hSession,hSession->trace.context,fmt,args);
+		hSession->trace->write(hSession,hSession->trace,fmt,args);
 		va_end(args);
 	}
 
@@ -217,26 +217,27 @@ void trace_event(const H3270 *hSession, const char *fmt, ...) {
  *
  * @param session	Session Handle
  */
-void trace_screen(H3270 *session) {
-	session->trace_skipping = 0;
+void trace_screen(H3270 *hSession) {
 
-	if (lib3270_get_toggle(session,LIB3270_TOGGLE_SCREEN_TRACE) && session->trace.context) {
+	hSession->trace_skipping = 0;
+
+	if (hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE)) {
 		unsigned int row, baddr;
 
-		for(row=baddr=0; row < session->view.rows; row++) {
+		for(row=baddr=0; row < hSession->view.rows; row++) {
 			unsigned int col;
-			wtrace(session,"%02d ",row+1);
+			wtrace(hSession,"%02d ",row+1);
 
-			for(col = 0; col < session->view.cols; col++) {
-				if(session->text[baddr].attr & LIB3270_ATTR_CG)
-					wtrace(session,"%c",'.');
-				else if(session->text[baddr].chr)
-					wtrace(session,"%c",session->text[baddr].chr);
+			for(col = 0; col < hSession->view.cols; col++) {
+				if(hSession->text[baddr].attr & LIB3270_ATTR_CG)
+					wtrace(hSession,"%c",'.');
+				else if(hSession->text[baddr].chr)
+					wtrace(hSession,"%c",hSession->text[baddr].chr);
 				else
-					wtrace(session,"%c",'.');
+					wtrace(hSession,"%c",'.');
 				baddr++;
 			}
-			wtrace(session,"%s\n","");
+			wtrace(hSession,"%s\n","");
 		}
 	}
 }
@@ -244,7 +245,7 @@ void trace_screen(H3270 *session) {
 
 /* Called from ANSI emulation code to log a single character. */
 void trace_char(const H3270 *hSession, char c) {
-	if (lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE) && hSession->trace.context)
+	if (hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE))
 		wtrace(hSession,"%c",c);
 	return;
 }
@@ -307,29 +308,20 @@ void trace_data(const H3270 *hSession, const char *msg, const unsigned char *dat
 }
 
  LIB3270_EXPORT const char * lib3270_trace_get_filename(const H3270 *hSession) {
-	return hSession->trace.filename;
+	return hSession->trace ? hSession->trace->filename : "";
  }
-
-static void dummy_writer(const H3270 *session, LIB3270_TRACE_CONTEXT *context, const char *fmt, va_list args) {
-}
-
-static void dummy_finalizer(const H3270 *session, LIB3270_TRACE_CONTEXT *context) {
-}
 
 LIB3270_EXPORT void lib3270_trace_close(H3270 *hSession) {
 
-	if(hSession->trace.context) {
-		hSession->trace.finalize(hSession,hSession->trace.context);
-		hSession->trace.context = NULL;
+	if(hSession->trace) {
+		hSession->trace->finalize(hSession,hSession->trace);
+		hSession->trace = NULL;
 	}
-
-	hSession->trace.filename = "";
-	hSession->trace.write = dummy_writer;
-	hSession->trace.finalize = dummy_finalizer;
 
 }
 
 struct trace_file_context {
+	LIB3270_TRACE_CONTEXT parent;
 	FILE *fp;
 };
 
@@ -356,12 +348,13 @@ struct trace_file_context {
 	struct trace_file_context *context = lib3270_malloc(sizeof(struct trace_file_context)+strlen(filename)+1);
 	context->fp = fp;
 	
-	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
-	hSession->trace.write = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *, const char *, va_list)) write_file;
-	hSession->trace.finalize = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *)) finalize_file;
+	context->parent.write = (void *) write_file;
+	context->parent.finalize = (void *) finalize_file;
 
-	hSession->trace.filename = (char *) (context+1);
-	strcpy(hSession->trace.filename,filename);
+	context->parent.filename = (char *) (context+1);
+	strcpy((char *) context->parent.filename,filename);
+
+	hSession->trace = (LIB3270_TRACE_CONTEXT *) context;
 
 	return 0;
  }
@@ -378,9 +371,10 @@ struct trace_file_context {
 
 	context->fp = option ? stderr : stdout;
 
-	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
-	hSession->trace.write =  (void *) write_file;
-	hSession->trace.finalize = (void *) console_finalize;
+	context->parent.write =  (void *) write_file;
+	context->parent.finalize = (void *) console_finalize;
+
+	hSession->trace = (LIB3270_TRACE_CONTEXT *) context;
 
 	return 0;
 

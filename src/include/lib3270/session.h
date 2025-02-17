@@ -40,6 +40,12 @@ typedef struct _lib3270_log_context {
 	void (*finalize)(const H3270 *session, struct _lib3270_log_context *context);
 } LIB3270_LOG_CONTEXT;
 
+typedef struct _lib3270_trace_context {
+	const char *filename;
+	int (*write)(const H3270 *session, struct _lib3270_trace_context *context, const char *fmt, va_list args);
+	void (*finalize)(const H3270 *session, struct _lib3270_trace_context *context);
+} LIB3270_TRACE_CONTEXT;
+
 /**
  * @brief Creates an empty TN3270 session.
  *

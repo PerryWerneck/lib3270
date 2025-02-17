@@ -53,6 +53,9 @@ static const char * get_revision(const H3270 GNUC_UNUSED(*hSession)) {
 	return lib3270_get_revision();
 }
 
+static int log_open(H3270 *hSession, const char *filename) {
+	return lib3270_log_open_file(hSession,filename,86400);
+}
 
 LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_list(void) {
 
@@ -174,6 +177,20 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
 			.description = N_( "Screen oversize if larger than the chosen model"),	//  Property description.
 			.get = lib3270_get_oversize,											//  Get value.
 			.set = lib3270_set_oversize												//  Set value.
+		},
+
+		{
+			.name = "tracefile",													//  Property name.
+			.description = N_( "Trace filename"),									//  Property description.
+			.get = lib3270_trace_get_filename,										//  Get value.
+			.set = lib3270_trace_open_file											//  Set value.
+		},
+
+		{
+			.name = "logfile",														//  Property name.
+			.description = N_( "Log filename"),										//  Property description.
+			.get = lib3270_log_get_filename,										//  Get value.
+			.set = log_open															//  Set value.
 		},
 
 		{

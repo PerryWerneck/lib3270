@@ -411,6 +411,7 @@
 	// Trace file writer.
 	struct {
 		LIB3270_TRACE_CONTEXT *context;
+		const char *filename;
 		void (*write)(const H3270 *session, LIB3270_TRACE_CONTEXT *context, const char *fmt, va_list args);
 		void (*finalize)(const H3270 *session, LIB3270_TRACE_CONTEXT *context);
 	} trace;
@@ -418,6 +419,7 @@
 	// log file writer.
 	struct {
 		LIB3270_LOG_CONTEXT *context;
+		const char *filename;
 		int (*write)(const H3270 *session, LIB3270_LOG_CONTEXT *context, const char *domain, const char *fmt, va_list args);
 		void (*finalize)(const H3270 *session, LIB3270_LOG_CONTEXT *context);
 	} log;

@@ -34,6 +34,9 @@
 	#define debug( fmt, ... )	// fprintf(stderr, "%s(%d) " fmt "\n", __FILE__, __LINE__, __VA_ARGS__ ); fflush(stderr);
  #endif
 
+ /// @brief Get trace filename.
+ LIB3270_EXPORT const char * lib3270_log_get_filename(const H3270 *hSession);
+
  /// @brief Open log to file
  /// @param hSession The session.
  /// @param filename The filename to write the log (strftime formattted).
@@ -44,6 +47,11 @@
  /// @brief Open log to syslog
  /// @param hSession The session.
  LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession);
+
+ /// @brief Open log to console.
+ /// @param hSession The session.
+ /// @param option The log target (0 = stdout, 1 = stderr)
+ LIB3270_EXPORT int lib3270_log_open_console(H3270 *hSession, int option);
 
  /// @brief Close log for session.
  /// @param hSession The session to close the log.

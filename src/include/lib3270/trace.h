@@ -25,11 +25,19 @@
  extern "C" {
  #endif
 
+ /// @brief Get trace filename.
+ LIB3270_EXPORT const char * lib3270_trace_get_filename(const H3270 *hSession);
+
  /// @brief Open trace to file
  /// @param hSession The session to trace.
  /// @param filename The filename to write the trace.
  /// @return 0 if success, error code otherwise.
  LIB3270_EXPORT int lib3270_trace_open_file(H3270 *hSession, const char *filename);
+
+/// @brief Open trace to console.
+ /// @param hSession The session.
+ /// @param option The log target (0 = stdout, 1 = stderr)
+ LIB3270_EXPORT int lib3270_trace_open_console(H3270 *hSession, int option);
 
  /// @brief Close trace for session.
  /// @param hSession The session to close the trace.

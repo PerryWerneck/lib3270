@@ -38,6 +38,7 @@
 		hSession->log.context = NULL;
 	}
 
+	hSession->log.filename = "";
 	hSession->log.write = (void *) dummy_writer;
 	hSession->log.finalize = (void *) dummy_finalizer;
 

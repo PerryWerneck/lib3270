@@ -1,4 +1,7 @@
-/* SPDX-License-Identifier: LGPL-3.0-or-later */
+/* SPDX-License-I static void console_finalize(H3270 *session, struct file_context *context) {
+	lib3270_free(context);
+ }
+dentifier: LGPL-3.0-or-later */
 
 /*
  * Copyright (C) 2008 Banco do Brasil S.A.
@@ -25,6 +28,7 @@
  #include <stdio.h>
  #include <linux/limits.h>
  #include <sys/stat.h>
+ #include <string.h>
 
  #ifdef HAVE_SYSLOG
 
@@ -47,15 +51,12 @@
 	if(--syslog_instances == 0) {
 		closelog();
 	}
-	
+
  }
 
  LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession) {
 
-	if(hSession->log.context) {
-		hSession->log.finalize(hSession,hSession->log.context);
-		hSession->log.context = NULL;
-	}
+	lib3270_log_close(hSession);
 
 	if(syslog_instances++ == 0) {
 		openlog(PACKAGE_NAME, LOG_CONS, LOG_USER);
@@ -78,6 +79,23 @@
 
  #endif // HAVE_SYSLOG
 
+ /// @brief Get log filename.
+ LIB3270_EXPORT const char * lib3270_log_get_filename(const H3270 *hSession) {
+	return hSession->log.filename;
+ }
+
+ static void get_timestamp(char timestamp[20]) {
+	time_t ltime;
+	time(&ltime);
+
+#ifdef HAVE_LOCALTIME_R
+	struct tm tm;
+	strftime(timestamp, 20, "%x %X", localtime_r(&ltime,&tm));
+#else
+	strftime(timestamp, 20, "%x %X", localtime(&ltime));
+#endif // HAVE_LOCALTIME_R
+ }
+
  struct file_context {
 	FILE *fp;
  };
@@ -86,18 +104,7 @@
 
 	char timestamp[20];
 
-	{
-		time_t ltime;
-		time(&ltime);
-
-#ifdef HAVE_LOCALTIME_R
-		struct tm tm;
-		strftime(timestamp, 20, "%x %X", localtime_r(&ltime,&tm));
-#else
-		strftime(timestamp, 20, "%x %X", localtime(&ltime));
-#endif // HAVE_LOCALTIME_R
-
-	}
+	get_timestamp(timestamp);
 	
 	fprintf(context->fp, "%s\t%-8s ", timestamp, domain);
 	vfprintf(context->fp, fmt, args);
@@ -116,10 +123,7 @@
 
  LIB3270_EXPORT int lib3270_log_open_file(H3270 *hSession, const char *template, time_t maxage) {
 
-	if(hSession->log.context) {
-		hSession->log.finalize(hSession,hSession->log.context);
-		hSession->log.context = NULL;
-	}
+	lib3270_log_close(hSession);
 
 	lib3270_autoptr(char) filename = trace_filename(hSession, template);
 	if(!filename) {
@@ -137,7 +141,7 @@
 		return errno;
 	}
 
-	struct file_context *context = lib3270_malloc(sizeof(struct file_context));
+	struct file_context *context = lib3270_malloc(sizeof(struct file_context)+strlen(filename)+1);
 
 	context->fp = fp;
 
@@ -145,6 +149,28 @@
 	hSession->log.write =  (void *) file_write;
 	hSession->log.finalize = (void *) file_finalize;
 
+	hSession->log.filename = (char *) (context+1);
+	strcpy((char *) hSession->log.filename,filename);
+
 	return 0;
  }
 
+ static void console_finalize(H3270 *session, struct file_context *context) {
+	lib3270_free(context);
+ }
+
+ LIB3270_EXPORT int lib3270_log_open_console(H3270 *hSession, int option) {
+
+	lib3270_log_close(hSession);
+
+	struct file_context *context = lib3270_new(struct file_context);
+
+	context->fp = option ? stderr : stdout;
+
+	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
+	hSession->log.write =  (void *) file_write;
+	hSession->log.finalize = (void *) console_finalize;
+
+	return 0;
+
+ }

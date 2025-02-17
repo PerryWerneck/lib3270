@@ -306,6 +306,9 @@ void trace_data(const H3270 *hSession, const char *msg, const unsigned char *dat
 
 }
 
+ LIB3270_EXPORT const char * lib3270_trace_get_filename(const H3270 *hSession) {
+	return hSession->trace.filename;
+ }
 
 static void dummy_writer(const H3270 *session, LIB3270_TRACE_CONTEXT *context, const char *fmt, va_list args) {
 }
@@ -320,6 +323,7 @@ LIB3270_EXPORT void lib3270_trace_close(H3270 *hSession) {
 		hSession->trace.context = NULL;
 	}
 
+	hSession->trace.filename = "";
 	hSession->trace.write = dummy_writer;
 	hSession->trace.finalize = dummy_finalizer;
 
@@ -341,18 +345,43 @@ struct trace_file_context {
 
  LIB3270_EXPORT int lib3270_trace_open_file(H3270 *hSession, const char *template) {
 
+	lib3270_trace_close(hSession);
+
 	lib3270_autoptr(char) filename = trace_filename(hSession, template);
 	FILE *fp = fopen(filename,"wa");
 	if(!fp) {
 		return errno;
 	}
 
-	struct trace_file_context *context = lib3270_malloc(sizeof(struct trace_file_context));
-
+	struct trace_file_context *context = lib3270_malloc(sizeof(struct trace_file_context)+strlen(filename)+1);
 	context->fp = fp;
+	
 	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
 	hSession->trace.write = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *, const char *, va_list)) write_file;
 	hSession->trace.finalize = (void (*)(const H3270 *, LIB3270_TRACE_CONTEXT *)) finalize_file;
 
+	hSession->trace.filename = (char *) (context+1);
+	strcpy(hSession->trace.filename,filename);
+
 	return 0;
-}
+ }
+
+ static void console_finalize(H3270 *session, struct trace_file_context *context) {
+	lib3270_free(context);
+ }
+
+ LIB3270_EXPORT int lib3270_trace_open_console(H3270 *hSession, int option) {
+
+	lib3270_trace_close(hSession);
+
+	struct trace_file_context *context = lib3270_new(struct trace_file_context);
+
+	context->fp = option ? stderr : stdout;
+
+	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
+	hSession->log.write =  (void *) write_file;
+	hSession->log.finalize = (void *) console_finalize;
+
+	return 0;
+
+ }

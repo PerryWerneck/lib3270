@@ -158,8 +158,6 @@
 		unsigned char		  flag[LIB3270_FLAG_COUNT];
 	} oia;
 
-	// unsigned short			  current_port;
-
 	// Misc
 	H3270FT					* ft;					///< @brief Active file transfer session.
 
@@ -387,24 +385,6 @@
 
 	unsigned char			  bg;
 	unsigned char			  saved_bg;
-
-	/*
-	// xio
-	struct {
-		void 				* read;
-		void 				* write;
-		void 				* except;
-	} xio;
-	*/
-
-	// struct lib3270_linked_list_head timeouts;
-
-	/*
-	struct {
-		struct lib3270_linked_list_head	list;
-		unsigned int changed : 1;
-	} input;
-	*/
 
 	// Trace file writer.
 	LIB3270_TRACE_CONTEXT *trace;

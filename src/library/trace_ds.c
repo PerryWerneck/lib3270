@@ -219,10 +219,10 @@ void trace_event(const H3270 *hSession, const char *fmt, ...) {
  */
 void trace_screen(H3270 *hSession) {
 
-	hSession->trace_skipping = 0;
-
 	if (hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE)) {
 		unsigned int row, baddr;
+
+		hSession->trace_skipping = 0;
 
 		for(row=baddr=0; row < hSession->view.rows; row++) {
 			unsigned int col;
@@ -261,14 +261,18 @@ void trace_char(const H3270 *hSession, char c) {
  *
  */
 void trace_ansi_disc(H3270 *hSession) {
-	unsigned int i;
 
-	wtrace(hSession,"%c",'\n');
-	for (i = 0; i < hSession->view.cols; i++)
-		wtrace(hSession,"%c",'=');
-	wtrace(hSession,"%c",'\n');
+	if(hSession->trace) {
+		unsigned int i;
 
-	hSession->trace_skipping = 1;
+		wtrace(hSession,"%c",'\n');
+		for (i = 0; i < hSession->view.cols; i++)
+			wtrace(hSession,"%c",'=');
+		wtrace(hSession,"%c",'\n');
+
+		hSession->trace_skipping = 1;
+	}
+
 }
 
 void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen) {
@@ -276,6 +280,10 @@ void trace_data(const H3270 *hSession, const char *msg, const unsigned char *dat
 	// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
 	// xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx . . . . . . . . . . . . . . . .
 
+	if(!hSession->trace) {
+		return;
+	}
+	
 	size_t ix;
 	char buffer[80];
 	char hexvalue[3];

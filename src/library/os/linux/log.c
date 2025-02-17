@@ -36,9 +36,6 @@ dentifier: LGPL-3.0-or-later */
  
  static size_t syslog_instances = 0;
 
- struct syslog_context {
-	int dummy;
- };
  
  static int syslog_write(const H3270 *session, struct syslog_context *context, const char *domain, const char *fmt, va_list args) {
 	vsyslog(LOG_INFO, fmt, args);
@@ -51,7 +48,6 @@ dentifier: LGPL-3.0-or-later */
 	if(--syslog_instances == 0) {
 		closelog();
 	}
-
  }
 
  LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession) {
@@ -62,10 +58,11 @@ dentifier: LGPL-3.0-or-later */
 		openlog(PACKAGE_NAME, LOG_CONS, LOG_USER);
 	}
 
-	struct syslog_context *context = (struct syslog_context *) lib3270_malloc(sizeof(struct syslog_context));
-	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
-	hSession->log.write = (void *) syslog_write;
-	hSession->log.finalize = (void *) syslog_finalize;
+	LIB3270_LOG_CONTEXT *context = lib3270_new(LIB3270_LOG_CONTEXT);
+	context->filename = "@syslog";
+	context->write = (void *) syslog_write;
+	context->finalize = (void *) syslog_finalize;
+	hSession->log = (LIB3270_LOG_CONTEXT *) context;
 	
 	return 0;
 
@@ -81,7 +78,7 @@ dentifier: LGPL-3.0-or-later */
 
  /// @brief Get log filename.
  LIB3270_EXPORT const char * lib3270_log_get_filename(const H3270 *hSession) {
-	return hSession->log.filename;
+	return hSession->log->filename;
  }
 
  static void get_timestamp(char timestamp[20]) {
@@ -97,6 +94,7 @@ dentifier: LGPL-3.0-or-later */
  }
 
  struct file_context {
+	LIB3270_LOG_CONTEXT parent;
 	FILE *fp;
  };
 
@@ -145,12 +143,13 @@ dentifier: LGPL-3.0-or-later */
 
 	context->fp = fp;
 
-	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
-	hSession->log.write =  (void *) file_write;
-	hSession->log.finalize = (void *) file_finalize;
+	context->parent.write =  (void *) file_write;
+	context->parent.finalize = (void *) file_finalize;
 
-	hSession->log.filename = (char *) (context+1);
-	strcpy((char *) hSession->log.filename,filename);
+	context->parent.filename = (char *) (context+1);
+	strcpy((char *) context->parent.filename,filename);
+
+	hSession->log = (LIB3270_LOG_CONTEXT *) context;
 
 	return 0;
  }
@@ -167,9 +166,10 @@ dentifier: LGPL-3.0-or-later */
 
 	context->fp = option ? stderr : stdout;
 
-	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
-	hSession->log.write =  (void *) file_write;
-	hSession->log.finalize = (void *) console_finalize;
+	context->parent.write =  (void *) file_write;
+	context->parent.finalize = (void *) console_finalize;
+
+	hSession->log = (LIB3270_LOG_CONTEXT *) context;
 
 	return 0;
 

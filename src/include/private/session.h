@@ -43,7 +43,6 @@
  typedef struct _lib3270_timer_context LIB3270_TIMER_CONTEXT;
  typedef struct _lib3270_poll_context LIB3270_POLL_CONTEXT;
  typedef struct _lib3270_trace_context LIB3270_TRACE_CONTEXT;
- typedef struct _lib3270_log_context LIB3270_LOG_CONTEXT;
 
  struct lib3270_text {
 	unsigned char  chr;		///< @brief ASCII character code
@@ -416,13 +415,8 @@
 		void (*finalize)(const H3270 *session, LIB3270_TRACE_CONTEXT *context);
 	} trace;
 
-	// log file writer.
-	struct {
-		LIB3270_LOG_CONTEXT *context;
-		const char *filename;
-		int (*write)(const H3270 *session, LIB3270_LOG_CONTEXT *context, const char *domain, const char *fmt, va_list args);
-		void (*finalize)(const H3270 *session, LIB3270_LOG_CONTEXT *context);
-	} log;
+	// log context.
+	LIB3270_LOG_CONTEXT *log;
 
 	struct {
 		unsigned int					  host			: 1;		///< @brief Non zero if host requires SSL.

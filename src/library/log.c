@@ -33,27 +33,24 @@
 
  LIB3270_EXPORT void lib3270_log_close(H3270 *hSession) {
 
-	if(hSession->log.context) {
-		hSession->log.finalize(hSession,hSession->log.context);
-		hSession->log.context = NULL;
+	if(hSession->log) {
+		hSession->log->finalize(hSession,hSession->log);
+		hSession->log = NULL;
 	}
-
-	hSession->log.filename = "";
-	hSession->log.write = (void *) dummy_writer;
-	hSession->log.finalize = (void *) dummy_finalizer;
 
  }
 
  LIB3270_EXPORT int lib3270_log_write(const H3270 *hSession, const char *module, const char *fmt, ...) {
-	if(!hSession->log.context) {
+
+	if(!hSession->log) {
 		return EBADF;
 	}
 
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
-	int rc = hSession->log.write(
+	int rc = hSession->log->write(
 		hSession,
-		hSession->log.context,
+		hSession->log,
 		(module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),
 		fmt,
 		arg_ptr
@@ -65,7 +62,7 @@
 
  LIB3270_EXPORT int lib3270_log_write_rc(const H3270 *hSession, const char *module, int rc, const char *fmt, ...) {
 
-	if(!hSession->log.context) {
+	if(!hSession->log) {
 		return EBADF;
 	}
 
@@ -83,13 +80,13 @@
 
  LIB3270_EXPORT void lib3270_log_write_va(const H3270 *hSession, const char *module, const char *fmt, va_list arg) {
 
-	if(!hSession->log.context) {
+	if(!hSession->log) {
 		return;
 	}
 
-	hSession->log.write(
+	hSession->log->write(
 		hSession,
-		hSession->log.context,
+		hSession->log,
 		(module ? module : LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)),
 		fmt,
 		arg

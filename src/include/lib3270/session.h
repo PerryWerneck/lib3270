@@ -34,6 +34,12 @@
 #include <lib3270/ssl.h>
 #include <lib3270/mainloop.h>
 
+typedef struct _lib3270_log_context {
+	const char *filename;
+	int (*write)(const H3270 *session, struct _lib3270_log_context *context, const char *domain, const char *fmt, va_list args);
+	void (*finalize)(const H3270 *session, struct _lib3270_log_context *context);
+} LIB3270_LOG_CONTEXT;
+
 /**
  * @brief Creates an empty TN3270 session.
  *

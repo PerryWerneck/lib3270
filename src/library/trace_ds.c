@@ -378,9 +378,9 @@ struct trace_file_context {
 
 	context->fp = option ? stderr : stdout;
 
-	hSession->log.context = (LIB3270_LOG_CONTEXT *) context;
-	hSession->log.write =  (void *) write_file;
-	hSession->log.finalize = (void *) console_finalize;
+	hSession->trace.context = (LIB3270_TRACE_CONTEXT *) context;
+	hSession->trace.write =  (void *) write_file;
+	hSession->trace.finalize = (void *) console_finalize;
 
 	return 0;
 

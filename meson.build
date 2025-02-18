@@ -284,7 +284,7 @@ lib_src += [
   'src/library/selection/get.c',
   'src/library/selection/selection.c',
   'src/library/network/state.c',
-  'src/library/network/default/context.c',
+  'src/library/network/insecure.c',
   'src/library/network/tools.c',
   'src/library/mainloop.c',
   'src/library/os/' + host_machine.system() + '/resolv.c',

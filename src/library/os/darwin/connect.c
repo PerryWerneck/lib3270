@@ -266,7 +266,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 
 	// Initialize and connect to host
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
+	set_cstate(hSession,LIB3270_CONNECTING);
 
 	if(lib3270_run_task(hSession, "reconnect", (int(*)(H3270 *, void *)) hSession->network.module->connect, &state)) {
 		lib3270_autoptr(LIB3270_POPUP) popup =
@@ -361,7 +361,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	#endif
 
 	// Connecting, set callbacks, wait for connection
-	lib3270_set_cstate(hSession, LIB3270_PENDING);
+	set_cstate(hSession, LIB3270_PENDING);
 	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
 	hSession->xio.write = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_WRITE,net_connected,0);

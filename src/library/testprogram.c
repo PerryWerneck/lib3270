@@ -34,28 +34,62 @@
  #include <lib3270/log.h>
  #include <private/network.h>
  #include <stdio.h>
+ #include <getopt.h>
 
- int main(int argv, const char **argc) {
+ int main(int argc, char *argv[]) {
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
 
-	lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
-	// lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
+	if(argc == 1) {
 
-	lib3270_trace_open_file(hSession,"lib3270.trace");
-	lib3270_log_open_file(hSession,"lib3270.log",86400);
-
-	lib3270_log_write(hSession,"TEST","Testprogram %s starts (%s)",argc[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
-
-	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
-	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,1);
-	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,1);
-	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,1);
-	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,1);
+		lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
 	
-	lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,1);
+		lib3270_trace_open_file(hSession,"lib3270.trace");
+		lib3270_log_open_file(hSession,"lib3270.log",86400);
 	
-//	lib3270_connect(hSession,5);
+		lib3270_log_write(hSession,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
+	
+		lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
+		lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,1);
+		lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,1);
+		lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,1);
+		lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,1);
+		
+		lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,1);
+		
+		lib3270_connect(hSession,5);
+	
+	} else {
+
+		int c;
+		while( (c = getopt(argc, argv, "u:t:l:ac")) != -1) {
+
+			switch(c) {
+			case 'u':
+				lib3270_set_url(hSession,optarg);
+				break;
+
+			case 't':
+				lib3270_trace_open_file(hSession,optarg ? optarg : "lib3270.trace");
+				break;
+
+			case 'l':
+				lib3270_log_open_file(hSession,optarg ? optarg : "lib3270.log",86400);
+				lib3270_log_write(hSession,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
+				break;
+
+			case 'a':
+				lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,1);
+				break;
+
+			case 'c':
+				lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,0);
+				lib3270_connect(hSession,5);
+				break;
+			}
+
+		}
+	}
 
 	while(1) {
 		lib3270_mainloop_run(hSession,1);

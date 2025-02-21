@@ -129,7 +129,7 @@ int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *) {
 
 static void set_disconnected(H3270 *hSession) {
 
-	lib3270_set_cstate(hSession,LIB3270_NOT_CONNECTED);
+	set_cstate(hSession,LIB3270_NOT_CONNECTED);
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 	hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
 	hSession->starting	= 0;
@@ -203,7 +203,7 @@ int connection_close(H3270 *hSession, int failed) {
 
 }
 
-int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate) {
+int set_cstate(H3270 *hSession, LIB3270_CSTATE cstate) {
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_connection_state_get_name(cstate),(int) cstate);
 
 	if(hSession->connection.state != cstate) {
@@ -248,13 +248,13 @@ void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate) {
 	                   new_cstate == LIB3270_CONNECTED_SSCP ||
 	                   new_cstate == LIB3270_CONNECTED_TN3270E);
 
-	lib3270_set_cstate(hSession,new_cstate);
+	set_cstate(hSession,new_cstate);
 	hSession->ever_3270 = now3270;
 	notify_new_state(hSession, LIB3270_STATE_3270_MODE, now3270);
 }
 
 void set_connected_initial(H3270 *hSession) {
-	lib3270_set_cstate(hSession,LIB3270_CONNECTED_INITIAL);
+	set_cstate(hSession,LIB3270_CONNECTED_INITIAL);
 
 	hSession->starting	= 1;	// Enable autostart
 

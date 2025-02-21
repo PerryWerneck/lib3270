@@ -243,7 +243,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	}
 
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
-	lib3270_set_cstate(hSession,LIB3270_CONNECTING);
+	set_cstate(hSession,LIB3270_CONNECTING);
 
 	if(connect(sock,addr,addrlen) && errno != EINPROGRESS) {
 
@@ -305,7 +305,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
 	}
 
-	lib3270_set_cstate(hSession, LIB3270_PENDING);
+	set_cstate(hSession, LIB3270_PENDING);
 	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
 	Context *context = lib3270_malloc(sizeof(Context));

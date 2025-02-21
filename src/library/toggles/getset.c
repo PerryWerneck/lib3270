@@ -61,13 +61,21 @@ static void toggle_notify(H3270 *session, struct lib3270_toggle *t, LIB3270_TOGG
 }
 
 /**
- * @brief Set toggle state.
+ * @brief Set the state of a specified toggle.
+ *
+ * This function sets the state of a toggle identified by its index. If the
+ * toggle is already in the desired state, the function returns 0. If the
+ * toggle state is changed, the function returns 1. In case of an error,
+ * such as an invalid toggle index, the function returns a negative value
+ * and sets the errno accordingly.
  *
  * @param h		Session handle.
- * @param ix	Toggle id.
+ * @param ix	Toggle index.
  * @param value	New toggle state (non zero for true).
  *
  * @returns 0 if the toggle is already at the state, 1 if the toggle was changed; < 0 on error (sets errno).
+ * @retval -EINVAL Invalid toggle index.
+ * 
  */
 LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int value) {
 
@@ -89,6 +97,19 @@ LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int 
 	return 1;
 }
 
+/**
+ * @brief Gets the status of a specific toggle in the given 3270 session.
+ *
+ * This function retrieves the status of the toggle identified by the given
+ * toggle index for the specified 3270 session.
+ *
+ * @param session A pointer to the H3270 session structure.
+ * @param ix The toggle index of the setting to be retrieved.
+ * @return An integer indicating the status of the toggle.
+ *         Returns 1 if the toggle is enabled, 0 if it is disabled, or a
+ *         negative error code on failure.
+ * @retval -EINVAL The specified toggle index is invalid.
+ */
 LIB3270_EXPORT int lib3270_toggle(H3270 *session, LIB3270_TOGGLE_ID ix) {
 	struct lib3270_toggle	*t;
 

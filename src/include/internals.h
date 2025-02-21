@@ -198,8 +198,8 @@ typedef struct timeout {
  *
  * @brief I/O events.
  *
- */
-typedef struct _input_t {
+ */ /*
+ ypedef struct _input_t {
 	LIB3270_LINKED_LIST_HEAD
 
 	unsigned char	  enabled;
@@ -209,6 +209,8 @@ typedef struct _input_t {
 	void (*call)(H3270 *, int, LIB3270_IO_FLAG, void *);
 
 } input_t;
+*/
+
 
 struct lib3270_state_callback {
 	LIB3270_LINKED_LIST_HEAD
@@ -245,7 +247,7 @@ LIB3270_INTERNAL int	cursor_move(H3270 *session, int baddr);
 
 LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect);
 
-LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
+// LIB3270_INTERNAL void	connection_failed(H3270 *hSession, const char *message);
 
 /**
  * @brief Activate auto-reconnect timer.
@@ -269,7 +271,7 @@ LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);
 LIB3270_INTERNAL unsigned char get_field_attribute(H3270 *session, int baddr);
 
 /// @brief Default log writer.
-LIB3270_INTERNAL int default_loghandler(const H3270 *session, void *dunno, const char *module, int rc, const char *message);
+// LIB3270_INTERNAL int default_loghandler(const H3270 *session, void *dunno, const char *module, int rc, const char *message);
 
 LIB3270_INTERNAL char * lib3270_get_user_name();
 
@@ -295,7 +297,7 @@ LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 *hSession, const char *f
 
 
 /// @brief Fire CState change.
-LIB3270_INTERNAL int lib3270_set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
+LIB3270_INTERNAL int set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
 
 ///
 /// @brief Start TLS/SSL

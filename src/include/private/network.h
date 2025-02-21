@@ -31,7 +31,6 @@
 	int (*disconnect)(H3270 *hSession, struct _lib3270_net_context *context);
  } LIB3270_NET_CONTEXT;
 
-
  /// @brief Close connection to host.
  /// @param hSession The TN3270 session
  /// @param code The error code (0 = ok) 

@@ -1,29 +1,27 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como screen.c e possui 894 linhas de código.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
  * Contatos:
  *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ * perry.werneck@gmail.com      (Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com     (Erico Mascarenhas Mendonça)
  *
  */
 
@@ -52,6 +50,7 @@
 #include <lib3270/actions.h>
 #include <lib3270/log.h>
 #include <lib3270/toggle.h>
+#include <private/session.h>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -500,13 +499,13 @@ void status_oerr(H3270 *session, int error_type) {
 void status_reset(H3270 *session) {
 
 	if (session->kybdlock & KL_ENTER_INHIBIT) {
-		debug("%s",__FUNCTION__);
+		debug("%s: KL_ENTER_INHIBIT",__FUNCTION__);
 		message_changed(session,LIB3270_MESSAGE_INHIBIT);
 	} else if (session->kybdlock & KL_DEFERRED_UNLOCK) {
-		debug("%s",__FUNCTION__);
+		debug("%s: KL_DEFERRED_UNLOCK",__FUNCTION__);
 		message_changed(session,LIB3270_MESSAGE_X);
 	} else {
-		debug("%s",__FUNCTION__);
+		debug("%s: LIB3270_MESSAGE_NONE",__FUNCTION__);
 		session->cbk.cursor(session,LIB3270_POINTER_UNLOCKED);
 		message_changed(session,LIB3270_MESSAGE_NONE);
 	}
@@ -589,17 +588,8 @@ void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols) {
 	session->view.rows = rows;
 	session->view.cols = cols;
 
-	debug("View size changes to %dx%d (configure=%p)",rows,cols,session->cbk.configure);
-
-	if(session->cbk.configure)
-		session->cbk.configure(session,session->view.rows,session->view.cols);
-
-}
-
-void status_lu(H3270 *session, const char *lu) {
-
-	if(session->cbk.update_luname)
-		session->cbk.update_luname(session,lu);
+	debug("View size changes to %dx%d (callback=%p)",rows,cols,session->cbk.update_viewsize);
+	session->cbk.update_viewsize(session,session->view.rows,session->view.cols);
 
 }
 

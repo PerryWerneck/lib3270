@@ -477,7 +477,7 @@ void net_disconnect(H3270 *hSession) {
 
 	// We're not connected to an LU any more.
 	hSession->lu.associated = CN;
-	status_lu(hSession,CN);
+	hSession->cbk.update_luname(hSession,"");
 
 }
 */
@@ -986,7 +986,7 @@ wont:
 					hSession->lu.associated = CN;
 				}
 
-				status_lu(hSession,hSession->lu.associated);
+				hSession->cbk.update_luname(hSession,hSession->lu.associated);
 
 				tb_len = 4 + tt_len + 2;
 				tt_out = lib3270_malloc(tb_len + 1);
@@ -1196,7 +1196,7 @@ static int tn3270e_negotiate(H3270 *hSession) {
 				(void)strncpy(hSession->lu.reported,(char *)&hSession->sbbuf[3+tnlen+1], snlen);
 				hSession->lu.reported[snlen] = '\0';
 				hSession->lu.associated = hSession->lu.reported;
-				status_lu(hSession,hSession->lu.associated);
+				hSession->cbk.update_luname(hSession,hSession->lu.associated);
 			}
 
 			/* Tell them what we can do. */

@@ -180,7 +180,7 @@ int lib3270_connection_close(H3270 *hSession, int failed) {
 
 		// We're not connected to an LU any more.
 		hSession->lu.associated = CN;
-		status_lu(hSession,CN);
+		hSession->cbk.update_luname(hSession,"");
 
 		debug("Disconnected (Failed: %d Reconnect: %d in_progress: %d)",failed,lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT),hSession->auto_reconnect_inprogress);
 

@@ -68,7 +68,9 @@ LIB3270_EXPORT void lib3270_session_free(H3270 *h);
 
 
 struct lib3270_session_callbacks {
-	void (*configure)(H3270 *session, unsigned short rows, unsigned short cols);
+
+	/// @brief The screen size has changed.
+	void (*update_viewsize)(H3270 *session, unsigned short rows, unsigned short cols);
 	void (*update)(H3270 *session, int baddr, unsigned char c, unsigned short attr, unsigned char cursor);
 	void (*changed)(H3270 *session, int offset, int len);
 	void (*display)(H3270 *session);

@@ -184,12 +184,14 @@ static int reconnect_allowed(H3270 *session) {
 }
 
 void lib3270_reset_callbacks(H3270 *hSession) {
+	
 	// Default calls
 	memset(&hSession->cbk,0,sizeof(hSession->cbk));
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 
+	hSession->cbk.update_viewsize		= nop_void;
 	hSession->cbk.update 				= nop_void;
 	hSession->cbk.update_model			= nop_void;
 	hSession->cbk.update_toggle			= nop_void;

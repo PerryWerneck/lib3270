@@ -507,7 +507,6 @@ if host_machine.system() == 'windows'
     '3270', 
     config_src + lib_src + resources,
     install: true,
-    gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps + lib_extra,
     include_directories: includes_dir,
     link_args: [
@@ -559,7 +558,6 @@ else
     install: true,
     version : libversion,
     soversion : libversion,
-    gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps + lib_extra,
     include_directories: includes_dir
   )
@@ -582,7 +580,6 @@ if gobject.found()
     install: true,
     version : libversion,
     soversion : libversion,
-    gnu_symbol_visibility: 'hidden',
     link_with : [ dynamic ],
     dependencies: lib_deps + lib_extra + [ gobject ],
     include_directories: includes_dir

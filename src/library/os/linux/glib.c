@@ -289,14 +289,14 @@
 	int(*callback)(H3270 *, void *);
  } ThreadData;
 
- void * gui_thread_complete(ThreadData *data) {
+ static void * gui_thread_complete(ThreadData *data) {
 	void (*g_main_loop_quit)(void *loop) =
 		glibmethods[G_MAIN_LOOP_QUIT];
 	g_main_loop_quit(data->mainloop);
 	return 0;
  }
 
- void * gui_thread(ThreadData *data) {
+ static void * gui_thread(ThreadData *data) {
 
 	unsigned int (*g_idle_add_once)(void *function, void * data) =
 		glibmethods[G_IDLE_ADD_ONCE];

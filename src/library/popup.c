@@ -31,6 +31,7 @@
 #include <lib3270/log.h>
 #include <networking.h>
 #include <private/trace.h>
+#include <popupsc.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

@@ -21,17 +21,17 @@
  #include <lib3270/defs.h>
  #include <time.h>
 
- const char *rcba(const H3270 *session, int baddr);
+ LIB3270_INTERNAL const char *rcba(const H3270 *session, int baddr);
 
- char * trace_filename(const H3270 *session, const char *template);
+ LIB3270_INTERNAL char * trace_filename(const H3270 *session, const char *template);
 
- void trace_ansi_disc(H3270 *hSession);
- void trace_char(const H3270 *hSession, char c);
- void trace_ds(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_dsn(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_ssl(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- void trace_screen(H3270 *hSession);
- void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
- void trace_event(const H3270 *hSession, const char *fmt, ...);
- void trace_network(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_INTERNAL void trace_ansi_disc(H3270 *hSession);
+ LIB3270_INTERNAL void trace_char(const H3270 *hSession, char c);
+ LIB3270_INTERNAL void trace_ds(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ LIB3270_INTERNAL void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ LIB3270_INTERNAL void trace_dsn(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ LIB3270_INTERNAL void trace_ssl(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ LIB3270_INTERNAL void trace_screen(H3270 *hSession);
+ LIB3270_INTERNAL void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
+ LIB3270_INTERNAL void trace_event(const H3270 *hSession, const char *fmt, ...);
+ LIB3270_INTERNAL void trace_network(const H3270 *hSession, const char *fmt, ...);

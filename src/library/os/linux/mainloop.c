@@ -355,7 +355,7 @@
  }
 
  /// @brief Set default mainloop implementation.
- LIB3270_INTERNAL void setup_internal_mainloop(H3270 *hSession) {
+ LIB3270_INTERNAL void setup_default_mainloop(H3270 *hSession) {
 
 	debug("%s: Internal mainloop implementation enabled",__FUNCTION__);
 

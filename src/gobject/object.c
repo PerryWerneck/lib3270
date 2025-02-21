@@ -64,6 +64,10 @@
 
 	debug("%s","Initializing Tn3270SessionClass");
 
+	if(strcasecmp(RPQ_REVISION,lib3270_get_revision()) != 0) {
+		g_error("lib3270 Revision mismatch: %s != %s",RPQ_REVISION,lib3270_get_revision());
+	}
+
 	{
 		GObjectClass *object_class = G_OBJECT_CLASS (klass);
 		object_class->dispose = tn3270_session_dispose;

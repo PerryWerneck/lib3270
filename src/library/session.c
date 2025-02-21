@@ -337,10 +337,10 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 
 #ifdef _WIN32
 	// Win32 mainloop already support gui.
-	setup_internal_mainloop(hSession);
+	setup_default_mainloop(hSession);
 #else
 	if(!gui || setup_glib_mainloop(hSession)) {
-		setup_internal_mainloop(hSession);
+		setup_default_mainloop(hSession);
 	}
 #endif // _WIN32
 

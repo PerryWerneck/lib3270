@@ -208,6 +208,10 @@ if c.compiles('#include <unistd.h>', name : 'unistd.h')
   app_conf.set('HAVE_UNISTD_H', 1)
 endif
 
+if c.compiles('#include <signal.h>', name : 'signal.h')
+  app_conf.set('HAVE_SIGNAL_H', 1)
+endif
+
 if c.compiles('#include <syslog.h>', name : 'syslog.h')
   app_conf.set('HAVE_SYSLOG', 1)
 endif
@@ -638,7 +642,7 @@ if gobject.found()
 
 endif
 
-static_library(
+static_library( 
   '3270', 
   config_src + lib_src,
   pic: true,

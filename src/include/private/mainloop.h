@@ -26,7 +26,7 @@
  /// @brief Use internal mainloop methods for the session.
  /// @param hSession The session to be set.
  /// @param gui Non-zero if the session is running in GUI mode.
- LIB3270_INTERNAL void setup_internal_mainloop(H3270 *hSession);
+ LIB3270_INTERNAL void setup_default_mainloop(H3270 *hSession);
  
  /// @brief Try to set the glib mainloop methods for the session.
  /// @return 0 if ok, error code if not

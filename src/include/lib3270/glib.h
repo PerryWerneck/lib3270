@@ -89,4 +89,6 @@
  LIB3270_EXPORT Tn3270Session * tn3270_session_new();
  LIB3270_EXPORT GType 			tn3270_session_get_type(void);
 
+ LIB3270_EXPORT H3270 * tn3270_session_get_h3270(Tn3270Session *session);
+
  G_END_DECLS

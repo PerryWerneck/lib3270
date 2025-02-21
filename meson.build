@@ -631,7 +631,7 @@ if gobject.found()
     meson.project_name() + '-gobject',
     [ 'src/gobject/testprogram.c' ],
     install: false,
-    link_with : [ glib_shared ],
+    link_with : [ glib_shared, dynamic ],
     dependencies: lib_deps + [ gobject ],
     include_directories: includes_dir
   )

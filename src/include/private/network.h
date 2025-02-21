@@ -36,16 +36,16 @@
  /// @param hSession The TN3270 session
  /// @param code The error code (0 = ok) 
  /// @return 0 if ok or error code if not.
- LIB3270_INTERNAL int lib3270_connection_close(H3270 *hSession,int code);
- LIB3270_INTERNAL void lib3270_set_connected_socket(H3270 *hSession, int sock);
- LIB3270_INTERNAL void lib3270_set_connected_initial(H3270 *hSession);
- LIB3270_INTERNAL void lib3270_net_input(H3270 *hSession, const unsigned char *buffer, size_t len);
+ LIB3270_INTERNAL int connection_close(H3270 *hSession,int code);
+ LIB3270_INTERNAL void set_connected_socket(H3270 *hSession, int sock);
+ LIB3270_INTERNAL void set_connected_initial(H3270 *hSession);
+ LIB3270_INTERNAL void net_input(H3270 *hSession, const unsigned char *buffer, size_t len);
 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * resolv_hostname(H3270 *hSession, const char *hostname, const char *service, time_t timeout);	
- LIB3270_INTERNAL int lib3270_connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen);
+ LIB3270_INTERNAL int connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen);
  
- LIB3270_INTERNAL void lib3270_setup_session(H3270 *hSession);
- LIB3270_INTERNAL int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on);
+ LIB3270_INTERNAL void setup_session(H3270 *hSession);
+ LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on);
 
  LIB3270_INTERNAL int connection_write_offline(H3270 *, const void * , size_t, LIB3270_NET_CONTEXT *);
  LIB3270_INTERNAL int connection_except_offline(H3270 *, LIB3270_NET_CONTEXT *);

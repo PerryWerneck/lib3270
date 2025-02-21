@@ -173,7 +173,7 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 }
 */
 
-int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
+int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
 
 	if(sock < 0) {
 		return EINVAL;
@@ -199,7 +199,7 @@ int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
 	if((f = fcntl(sock, F_GETFL, 0))== -1) {
 
 		int error = errno;
-		lib3270_connection_close(hSession,error);
+		connection_close(hSession,error);
 
 		LIB3270_POPUP popup = {
 			.name		= "socket-api-error",
@@ -224,7 +224,7 @@ int lib3270_set_block_mode(H3270 *hSession, int sock, const unsigned char on) {
 	if(fcntl(sock, F_SETFL, f) < 0) {
 
 		int error = errno;
-		lib3270_connection_close(hSession,error);
+		connection_close(hSession,error);
 
 		LIB3270_POPUP popup = {
 			.name		= "socket-api-error",

@@ -187,7 +187,7 @@
 		    );
 
 		lib3270_popup(hSession, popup, 0);
-		lib3270_connection_close(hSession,ENOTSUP);
+		connection_close(hSession,ENOTSUP);
 		return ENOTSUP;
 
 	}
@@ -202,7 +202,7 @@
 	if(!hSession->connection.context) {
 		// No context, the DNS query has failed, call disconnect to clear flags.
 		trace_event(hSession,"Unable to start DNS resolver\n");
-		lib3270_connection_close(hSession,ENOTCONN);
+		connection_close(hSession,ENOTCONN);
 		return errno = ENOTCONN;
 	}
 
@@ -211,7 +211,7 @@
 
  }
 
- void lib3270_set_connected_socket(H3270 *hSession, int sock) {
+ void set_connected_socket(H3270 *hSession, int sock) {
 
 	if(hSession->connection.context) {
 		free(hSession->connection.context);
@@ -225,10 +225,10 @@
 	);
 
 	//if(lib3270_start_tls(hSession)) {
-	//	lib3270_connection_close(hSession,-1);
+	//	connection_close(hSession,-1);
 	//	return;
 	//}
-	lib3270_set_block_mode(hSession,sock,1);	// Set blocking mode.
+	set_blocking_mode(hSession,sock,1);	// Set blocking mode.
 
 	if(hSession->ssl.host) {
 
@@ -241,11 +241,11 @@
 		// FIX-ME: Add ssl support.
 
 		close(sock);
-		lib3270_connection_close(hSession,ENOTSUP);
+		connection_close(hSession,ENOTSUP);
 #else
 
 		close(sock);
-		lib3270_connection_close(hSession,ENOTSUP);
+		connection_close(hSession,ENOTSUP);
 
 		static const LIB3270_POPUP popup = {
 			.name		= "openssl-not-available",
@@ -273,8 +273,8 @@
 
 	}
 
-	lib3270_setup_session(hSession);
-	lib3270_set_connected_initial(hSession);
+	setup_session(hSession);
+	set_connected_initial(hSession);
 
  }
 

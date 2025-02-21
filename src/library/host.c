@@ -114,7 +114,7 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 
 LIB3270_EXPORT int lib3270_disconnect(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
-	return lib3270_connection_close(hSession,0);
+	return connection_close(hSession,0);
 }
 
 int connection_write_offline(H3270 *hSession, const void *a , size_t v, LIB3270_NET_CONTEXT *c) {
@@ -152,7 +152,7 @@ static void set_disconnected(H3270 *hSession) {
 /// @param hSession The tn3270 session
 /// @param failed Non zero if it was a failure.
 /// @return 0 if ok or error code if not.
-int lib3270_connection_close(H3270 *hSession, int failed) {
+int connection_close(H3270 *hSession, int failed) {
 
 	debug("%s: connected=%s half connected=%s context=%p failed=%d",
 	      __FUNCTION__,
@@ -253,7 +253,7 @@ void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate) {
 	notify_new_state(hSession, LIB3270_STATE_3270_MODE, now3270);
 }
 
-void lib3270_set_connected_initial(H3270 *hSession) {
+void set_connected_initial(H3270 *hSession) {
 	lib3270_set_cstate(hSession,LIB3270_CONNECTED_INITIAL);
 
 	hSession->starting	= 1;	// Enable autostart

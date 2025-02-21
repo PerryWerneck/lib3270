@@ -93,7 +93,7 @@
 		close(context->sock);
 		context->sock = -1;
 	}
-	lib3270_connection_close(hSession,-1);
+	connection_close(hSession,-1);
  }
 
  static void net_response(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
@@ -214,7 +214,7 @@
 							strerror(error)
 						);
 						continue;
-					} else if(lib3270_connect_socket(hSession, sock, ai->ai_addr, ai->ai_addrlen) == 0) {
+					} else if(connect_socket(hSession, sock, ai->ai_addr, ai->ai_addrlen) == 0) {
 						// Connect socket suceeded, the context was replaced, release it.
 						freeaddrinfo(req->ar_result);	
 						finalize(hSession,context);

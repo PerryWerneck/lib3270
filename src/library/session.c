@@ -70,7 +70,7 @@ void lib3270_session_free(H3270 *h) {
 		return;
 
 	if(h->connection.context) {
-		lib3270_connection_close(h,-1);
+		connection_close(h,-1);
 	}
 
 	if(h->timer.context) {

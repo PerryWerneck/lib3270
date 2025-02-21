@@ -64,7 +64,7 @@
     }
 
 	debug("%s: failed: %s",__FUNCTION__,strerror(error));
-	lib3270_connection_close(hSession,error);
+	connection_close(hSession,error);
 
 	LIB3270_POPUP popup = {
 		.name		= "connect-error",
@@ -76,7 +76,7 @@
 	};
 
 	lib3270_popup(hSession, &popup, 0);
-	lib3270_connection_close(hSession,error);
+	connection_close(hSession,error);
 
  }
 
@@ -107,7 +107,7 @@
 		if(getsockopt(sock, SOL_SOCKET, SO_ERROR, (void *)&error, &errlen) < 0) {
 
 			error = errno;
-			lib3270_connection_close(hSession, error);
+			connection_close(hSession, error);
 
 			LIB3270_POPUP popup = {
 				.name		= "connect-error",
@@ -123,7 +123,7 @@
 
 		} else if(error) {
 
-			lib3270_connection_close(hSession, error);
+			connection_close(hSession, error);
 
 			lib3270_autoptr(char) summary =
 				lib3270_strdup_printf(
@@ -155,7 +155,7 @@
 	if (getpeername(sock, (struct sockaddr *)&addr, &len) == -1) {
 
 		int error = errno;
-		lib3270_connection_close(hSession, error);
+		connection_close(hSession, error);
 
 		lib3270_autoptr(char) summary =
 			lib3270_strdup_printf(
@@ -187,14 +187,14 @@
 		);
 	}
 
-	lib3270_set_connected_socket(hSession,sock);
+	set_connected_socket(hSession,sock);
 
  }
 
  static int net_timeout(H3270 *hSession, Context *context) {
 
 	context->timer = NULL;
-	lib3270_connection_close(hSession,ETIMEDOUT);
+	connection_close(hSession,ETIMEDOUT);
 
 	LIB3270_POPUP popup = {
 		.name		= "connect-error",
@@ -235,10 +235,10 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	return 0;
  }
 
- LIB3270_INTERNAL int lib3270_connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen) {
+ LIB3270_INTERNAL int connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen) {
 
 	// Set non blocking mode
-	if(lib3270_set_block_mode(hSession,sock,0)) {
+	if(set_blocking_mode(hSession,sock,0)) {
 		return -1;
 	}
 

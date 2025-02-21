@@ -52,7 +52,7 @@
 	trace_dsn(hSession,"RCVD network exception: %s\n",strerror(error));
 
 	debug("%s: failed: %s",__FUNCTION__,strerror(error));
-	lib3270_connection_close(hSession,error);
+	connection_close(hSession,error);
 
 	LIB3270_POPUP popup = {
 		.name		= "network-error",
@@ -64,7 +64,7 @@
 	};
 
 	lib3270_popup(hSession, &popup, 0);
-	lib3270_connection_close(hSession,-1);
+	connection_close(hSession,-1);
 
  }
 
@@ -92,7 +92,7 @@
 		};
 
 		lib3270_popup(hSession, &popup, 0);
-		lib3270_connection_close(hSession,error);
+		connection_close(hSession,error);
 
 	} else if(bytes == 0) {
 
@@ -109,7 +109,7 @@
 		};
 
 		lib3270_popup(hSession, &popup, 0);
-		lib3270_connection_close(hSession,ECONNRESET);
+		connection_close(hSession,ECONNRESET);
 
 	} else {
 
@@ -140,7 +140,7 @@
 	};
 
 	lib3270_popup(hSession, &popup, 0);
-	lib3270_connection_close(hSession,error);
+	connection_close(hSession,error);
 
 	return -error;
  }

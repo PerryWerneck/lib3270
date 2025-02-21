@@ -216,7 +216,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 
 	if(hSession->network.module->getsockopt(hSession, SOL_SOCKET, SO_ERROR, (char *) &err, &len) < 0) {
-		lib3270_connection_close(hSession,err);
+		connection_close(hSession,err);
 		lib3270_popup_dialog(
 		    hSession,
 		    LIB3270_NOTIFY_ERROR,
@@ -246,15 +246,15 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 	}
 
 	if(lib3270_start_tls(hSession)) {
-		lib3270_connection_close(hSession,-1);
+		connection_close(hSession,-1);
 		return;
 	}
 
 	hSession->xio.except = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_EXCEPTION,net_exception,0);
 	hSession->xio.read = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_READ,net_input,0);
 
-	lib3270_setup_session(hSession);
-	lib3270_set_connected_initial(hSession);
+	setup_session(hSession);
+	set_connected_initial(hSession);
 
 	lib3270_notify_tls(hSession);
 
@@ -334,7 +334,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 				popup->body = syserror;
 		}
 
-		lib3270_connection_close(hSession,-1);	// To cleanup states.
+		connection_close(hSession,-1);	// To cleanup states.
 
 		popup->label = _("_Retry");
 		if(lib3270_popup(hSession,popup,!hSession->auto_reconnect_inprogress) == 0)
@@ -395,7 +395,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 	if(seconds) {
 		int rc = lib3270_wait_for_cstate(hSession,LIB3270_CONNECTED_TN3270E,seconds);
 		if(rc) {
-			lib3270_connection_close(hSession,rc);
+			connection_close(hSession,rc);
 			lib3270_log_write(hSession,"connect", "%s: %s",__FUNCTION__,strerror(ETIMEDOUT));
 			return errno = rc;
 		}

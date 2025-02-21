@@ -118,7 +118,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 		// TODO: Translate WSA Error, update message body.
 		#error TODO: Translate WSA Error, update message body.
 
-		lib3270_connection_close(hSession,wsaError);
+		connection_close(hSession,wsaError);
 #else 
 
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -126,7 +126,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 		}
 
 		set_popup_body(&popup,errno);
-		lib3270_connection_close(hSession,errno);
+		connection_close(hSession,errno);
 
 #endif 
 
@@ -135,7 +135,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	}
 
 	debug("Recv %ld bytes",length);
- 	lib3270_net_input(hSession, buffer, length);
+ 	net_input(hSession, buffer, length);
 
  }
 

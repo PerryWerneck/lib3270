@@ -386,7 +386,7 @@ static int net_connected(H3270 *hSession) {
 	}
 */
 
-	lib3270_setup_session(hSession);
+	setup_session(hSession);
 //	lib3270_notify_tls(hSession);
 
 	return 0;
@@ -401,7 +401,7 @@ static int net_connected(H3270 *hSession) {
  * @param hSession	3270 session to setup.
  *
  */
- void lib3270_setup_session(H3270 *hSession) {
+ void setup_session(H3270 *hSession) {
 	(void) memset((char *) hSession->myopts, 0, sizeof(hSession->myopts));
 	(void) memset((char *) hSession->hisopts, 0, sizeof(hSession->hisopts));
 
@@ -458,7 +458,7 @@ static void connection_complete(H3270 *session) {
 		host_disconnect(session,True);
 		return;
 	}
-	lib3270_set_connected_initial(session);
+	set_connected_initial(session);
 	net_connected(session);
 }
 */
@@ -494,7 +494,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 	for (cp = netrbuf; cp < (netrbuf + nr); cp++) {
 		if(telnet_fsm(hSession,*cp)) {
 			(void) ctlr_dbcs_postprocess(hSession);
-			lib3270_connection_close(hSession,-1);
+			connection_close(hSession,-1);
 			return;
 		}
 	}
@@ -523,12 +523,12 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
  /// @param buffer		Buffer with the data received.
  /// @param len			Length of the buffer.
  /// 
- void lib3270_net_input(H3270 *hSession, const unsigned char *buffer, size_t len) {
+ void net_input(H3270 *hSession, const unsigned char *buffer, size_t len) {
 
 	if(len == 0) {
 		// Disconnected
 		trace_dsn(hSession,"RCVD disconnect\n");
-		lib3270_connection_close(hSession,ENOTCONN);
+		connection_close(hSession,ENOTCONN);
 		return;
 	}
 
@@ -536,7 +536,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 	
 	if (HALF_CONNECTED) {
 		trace_dsn(hSession, "Received %lu bytes with half-connect\n", len);
-		lib3270_set_connected_initial(hSession);
+		set_connected_initial(hSession);
 		if(net_connected(hSession)) {
 			return;
 		}
@@ -552,7 +552,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 #ifdef X3270_DBCS
 			ctlr_dbcs_postprocess(hSession);
 #endif // X3270_DBCS
-			lib3270_connection_close(hSession,-1);
+			connection_close(hSession,-1);
 			return;
 		}
 	}
@@ -624,7 +624,7 @@ void net_input(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED
 				host_disconnect(hSession,True);
 				return;
 			}
-			lib3270_set_connected_initial(hSession);
+			set_connected_initial(hSession);
 			if(net_connected(hSession))
 				return;
 		}
@@ -1043,7 +1043,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 		trace_dsn(hSession,"%s ? %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 		popup_an_error(hSession,_( "TLS negotiation failure"));
 		trace_dsn(hSession,"SENT disconnect\n");
-		lib3270_connection_close(hSession,-1);
+		connection_close(hSession,-1);
 		return;
 	}
 
@@ -1052,7 +1052,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 
 	hSession->ssl.host = 1;	// Set host type as SSL.
 	if(lib3270_start_tls(hSession)) {
-		lib3270_connection_close(hSession,-1);
+		connection_close(hSession,-1);
 		return;
 	}
 

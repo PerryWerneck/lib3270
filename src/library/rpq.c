@@ -57,7 +57,7 @@
 #include <stdarg.h>
 #include "3270ds.h"
 
-#include "popupsc.h"
+#include <private/popup.h>
 //#include "tablesc.h"
 #include "telnetc.h"
 #include <private/trace.h>

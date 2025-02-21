@@ -51,10 +51,10 @@
 //#include "aplc.h"
 #include "ctlrc.h"
 #include "ftc.h"
-#include "hostc.h"
+#include <private/host.h>
 // #include "keypadc.h"
 #include "kybdc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 // #include "printc.h"
 #include "screenc.h"
 

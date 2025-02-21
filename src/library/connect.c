@@ -34,7 +34,7 @@
 #include <internals.h>
 
 #include "telnetc.h"
-#include "hostc.h"
+#include <private/host.h>
 #include "statusc.h"
 #include <errno.h>
 #include <lib3270/log.h>
@@ -193,7 +193,7 @@
 	}
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, 1);
+	notify_new_state(hSession, LIB3270_STATE_RESOLVING, 1);
 	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 
 	hSession->connection.timeout = seconds;
@@ -318,7 +318,7 @@ void lib3270_notify_tls(H3270 *hSession) {
 	// Negotiation complete is the connection secure?
 	if(hSession->ssl.message->type != LIB3270_NOTIFY_INFO) {
 		// Ask user what I can do!
-		if(lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
+		if(popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
 			lib3270_disconnect(hSession);
 		}
 	}
@@ -366,7 +366,7 @@ int lib3270_start_tls(H3270 *hSession) {
 		};
 
 		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-		lib3270_popup_translated(hSession,&message,0);
+		popup_translated(hSession,&message,0);
 		return EINVAL;
 
 	}
@@ -377,7 +377,7 @@ int lib3270_start_tls(H3270 *hSession) {
 		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
 		if(hSession->ssl.message) {
-			lib3270_popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,0);
+			popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,0);
 		}
 
 		return rc;

@@ -328,21 +328,6 @@ LIB3270_INTERNAL int lib3270_start_tls(H3270 *hSession);
 // LIB3270_INTERNAL void lib3270_notify_tls(H3270 *hSession);
 
 
-/**
- * @brief Emit translated popup message.
- *
- * @param hSession	TN3270 Session handle.
- * @param popup		Popup descriptor.
- * @param wait		If non zero waits for user response.
- *
- * @return User action.
- *
- * @retval 0			User has confirmed, continue action.
- * @retval ECANCELED	Operation was canceled.
- * @retval ENOTSUP		No popup handler available.
- */
-LIB3270_INTERNAL int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
-
 #if defined(HAVE_LDAP) && defined (HAVE_LIBSSL)
 /**
  * @brief Download X509 CRL using LDAP backend.

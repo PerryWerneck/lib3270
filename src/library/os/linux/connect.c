@@ -43,7 +43,7 @@
  #include <lib3270/malloc.h>
 
  #include <internals.h>
- #include <hostc.h>
+ #include <private/host.h>
  #include <statusc.h>
  #include <private/trace.h>
 
@@ -306,7 +306,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	}
 
 	lib3270_set_cstate(hSession, LIB3270_PENDING);
-	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
+	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
 	Context *context = lib3270_malloc(sizeof(Context));
 	memset(context,0,sizeof(Context));

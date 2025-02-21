@@ -51,7 +51,7 @@
 #include "ft_cut_ds.h"
 #include "ftc.h"
 #include "kybdc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>
 #include "utilc.h"

@@ -56,7 +56,7 @@
 
 #include "ansic.h"
 #include "ctlrc.h"
-#include "hostc.h"
+#include <private/host.h>
 #include "screenc.h"
 #include "telnetc.h"
 #include <private/trace.h>

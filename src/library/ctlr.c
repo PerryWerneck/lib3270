@@ -49,9 +49,9 @@
 #include "ftc.h"
 #include "ft_cutc.h"
 #include "ft_dftc.h"
-#include "hostc.h"
+#include <private/host.h>
 #include "kybdc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 #include "screenc.h"
 #include "seec.h"
 #include "sf.h"

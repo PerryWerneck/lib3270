@@ -39,7 +39,7 @@
 #include "3270ds.h"
 //#include "resources.h"
 #include "ctlrc.h"
-#include "hostc.h"
+#include <private/host.h>
 #include "kybdc.h"
 #include "screenc.h"
 #include <private/trace.h>
@@ -507,7 +507,7 @@ void status_resolving(H3270 *hSession) {
 	debug("%s",__FUNCTION__);
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	lib3270_st_changed(hSession, LIB3270_STATE_RESOLVING, True);
+	notify_new_state(hSession, LIB3270_STATE_RESOLVING, True);
 	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 }
 */
@@ -518,7 +518,7 @@ void status_connecting(H3270 *hSession) {
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 
-	lib3270_st_changed(hSession, LIB3270_STATE_CONNECTING, True);
+	notify_new_state(hSession, LIB3270_STATE_CONNECTING, True);
 	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
 }
 */

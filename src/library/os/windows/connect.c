@@ -39,7 +39,7 @@
 #include <lib3270/internals.h>
 
 #include "telnetc.h"
-#include "hostc.h"
+#include <private/host.h>
 #include <private/trace.h>
 #include "screen.h"
 
@@ -386,7 +386,7 @@ int net_reconnect(H3270 *hSession, int seconds) {
 
 	// Connecting, set callbacks, wait for connection
 	lib3270_set_cstate(hSession, LIB3270_PENDING);
-	lib3270_st_changed(hSession, LIB3270_STATE_HALF_CONNECT, True);
+	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, True);
 
 	hSession->xio.write = hSession->network.module->add_poll(hSession,LIB3270_IO_FLAG_WRITE,net_connected,0);
 

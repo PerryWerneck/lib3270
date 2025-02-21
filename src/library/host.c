@@ -42,9 +42,9 @@
 #include <stdlib.h>
 //#include "resources.h"
 
-#include "hostc.h"
+#include <private/host.h>
 #include "statusc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>
 #include "utilc.h"
@@ -137,7 +137,7 @@ static void set_disconnected(H3270 *hSession) {
 
 	set_status(hSession,LIB3270_FLAG_UNDERA,False);
 
-	lib3270_st_changed(hSession,LIB3270_STATE_CONNECT, False);
+	notify_new_state(hSession,LIB3270_STATE_CONNECT, False);
 
 	status_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
 
@@ -250,7 +250,7 @@ void host_in3270(H3270 *hSession, LIB3270_CSTATE new_cstate) {
 
 	lib3270_set_cstate(hSession,new_cstate);
 	hSession->ever_3270 = now3270;
-	lib3270_st_changed(hSession, LIB3270_STATE_3270_MODE, now3270);
+	notify_new_state(hSession, LIB3270_STATE_3270_MODE, now3270);
 }
 
 void lib3270_set_connected_initial(H3270 *hSession) {
@@ -258,7 +258,7 @@ void lib3270_set_connected_initial(H3270 *hSession) {
 
 	hSession->starting	= 1;	// Enable autostart
 
-	lib3270_st_changed(hSession, LIB3270_STATE_CONNECT, True);
+	notify_new_state(hSession, LIB3270_STATE_CONNECT, True);
 	if(hSession->cbk.update_connect)
 		hSession->cbk.update_connect(hSession,1);
 }
@@ -266,7 +266,7 @@ void lib3270_set_connected_initial(H3270 *hSession) {
 /**
  * @brief Signal a state change.
  */
-void lib3270_st_changed(H3270 *hSession, LIB3270_STATE tx, int mode) {
+void notify_new_state(H3270 *hSession, LIB3270_STATE tx, int mode) {
 	struct lib3270_linked_list_node * node;
 
 	debug("%s(%s,%d)",__FUNCTION__,lib3270_state_get_name(tx),mode);

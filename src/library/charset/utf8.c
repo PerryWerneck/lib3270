@@ -38,7 +38,7 @@
 #include <internals.h>
 // #include "api.h"
 
-#include "popupsc.h"
+#include <private/popup.h>
 //#include "utf8c.h"
 
 // char *locale_codeset = CN;

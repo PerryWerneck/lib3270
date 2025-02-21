@@ -84,10 +84,10 @@
 
 #include "ansic.h"
 #include "ctlrc.h"
-#include "hostc.h"
+#include <private/host.h>
 #include "kybdc.h"
 // #include "macrosc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 // #include "proxyc.h"
 //#include "resolverc.h"
 #include "statusc.h"
@@ -2016,7 +2016,7 @@ static void check_linemode(H3270 *hSession, Boolean init) {
 	hSession->linemode = hSession->hisopts[TELOPT_ECHO] ? 0 : 1 /* && !hisopts[TELOPT_SGA] */;
 
 	if (init || hSession->linemode != wasline) {
-		lib3270_st_changed(hSession,LIB3270_STATE_LINE_MODE, hSession->linemode);
+		notify_new_state(hSession,LIB3270_STATE_LINE_MODE, hSession->linemode);
 		if (!init) {
 			trace_dsn(hSession,"Operating in %s mode.\n",hSession->linemode ? "line" : "character-at-a-time");
 		}

@@ -39,7 +39,7 @@
 
 #include <internals.h>
 #include "utilc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
 #include <sys/stat.h>

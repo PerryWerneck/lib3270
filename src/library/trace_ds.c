@@ -42,7 +42,7 @@
 #include <fcntl.h>
 #include "3270ds.h"
 #include "ctlrc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>
 #include "utilc.h"

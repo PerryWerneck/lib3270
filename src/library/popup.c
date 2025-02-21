@@ -31,7 +31,7 @@
 #include <lib3270/log.h>
 #include <networking.h>
 #include <private/trace.h>
-#include <popupsc.h>
+#include <private/popup.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -39,7 +39,7 @@ LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, un
 	return hSession->cbk.popup(hSession,popup,wait);
 }
 
-int lib3270_popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+int popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
 	LIB3270_POPUP translated = *popup;
 

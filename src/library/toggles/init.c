@@ -48,7 +48,7 @@
 
 #include "ansic.h"
 #include "ctlrc.h"
-#include "popupsc.h"
+#include <private/popup.h>
 #include "screenc.h"
 #include <private/trace.h>
 #include <private/session.h>

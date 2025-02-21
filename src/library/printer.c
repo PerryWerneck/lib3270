@@ -62,8 +62,8 @@
 
 #include "charsetc.h"
 #include "ctlrc.h"
-#include "hostc.h"
-#include "popupsc.h"
+#include <private/host.h>
+#include <private/popup.h>
 #include "printerc.h"
 #include "printc.h"
 #include "savec.h"

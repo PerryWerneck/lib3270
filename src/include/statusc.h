@@ -35,7 +35,7 @@ LIB3270_INTERNAL void 		status_oerr(H3270 *session, int error_type);
 LIB3270_INTERNAL void 		status_reset(H3270 *session);
 LIB3270_INTERNAL void 		status_twait(H3270 *session);
 
-LIB3270_INTERNAL void 		status_changed(H3270 *session, LIB3270_MESSAGE id);
+LIB3270_INTERNAL void 		message_changed(H3270 *session, LIB3270_MESSAGE id);
 LIB3270_INTERNAL void 		set_status(H3270 *session, LIB3270_FLAG id, Boolean on);
 
 

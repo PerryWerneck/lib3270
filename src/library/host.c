@@ -139,7 +139,7 @@ static void set_disconnected(H3270 *hSession) {
 
 	notify_new_state(hSession,LIB3270_STATE_CONNECT, False);
 
-	status_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
+	message_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
 
 	if(hSession->cbk.update_connect)
 		hSession->cbk.update_connect(hSession,0);

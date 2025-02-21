@@ -311,7 +311,7 @@ static void kybdlock_set(H3270 *hSession, unsigned int bits) {
 			hSession->unlock_delay_time = time(NULL);
 		}
 		hSession->kybdlock = n;
-		status_changed(hSession,LIB3270_MESSAGE_KYBDLOCK);
+		message_changed(hSession,LIB3270_MESSAGE_KYBDLOCK);
 	}
 }
 
@@ -333,7 +333,7 @@ void lib3270_kybdlock_clear(H3270 *hSession, LIB3270_KEYBOARD_LOCK_STATE bits) {
 			hSession->unlock_delay_time = 0;
 		}
 		hSession->kybdlock = n;
-		status_changed(hSession,LIB3270_MESSAGE_KYBDLOCK);
+		message_changed(hSession,LIB3270_MESSAGE_KYBDLOCK);
 	}
 }
 
@@ -446,7 +446,7 @@ static void key_AID(H3270 *hSession, unsigned char aid_code) {
 			return;
 
 		if (aid_code != AID_ENTER && aid_code != AID_CLEAR) {
-			status_changed(hSession,LIB3270_MESSAGE_MINUS);
+			message_changed(hSession,LIB3270_MESSAGE_MINUS);
 			kybdlock_set(hSession,KL_OIA_MINUS);
 			return;
 		}

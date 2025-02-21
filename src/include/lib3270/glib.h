@@ -70,7 +70,7 @@
  	void (*url_changed)(Tn3270Session *session, const char *name);
 	void (*model_changed)(Tn3270Session *session, const char *name, int model, int rows, int cols);
 	void (*ssl_changed)(Tn3270Session *session, LIB3270_SSL_STATE state);
- 	void (*status_changed)(Tn3270Session *hSession, LIB3270_MESSAGE id);
+ 	void (*message_changed)(Tn3270Session *hSession, LIB3270_MESSAGE id);
 	void (*selection_changed)(Tn3270Session *session, int start, int end);
 
 	// Terminal contents

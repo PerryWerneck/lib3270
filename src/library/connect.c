@@ -194,7 +194,7 @@
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 	notify_new_state(hSession, LIB3270_STATE_RESOLVING, 1);
-	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
+	message_changed(hSession, LIB3270_MESSAGE_RESOLVING);
 
 	hSession->connection.timeout = seconds;
 	hSession->connection.context = resolv_hostname(hSession,hostname,port,seconds);

@@ -493,48 +493,22 @@ void status_oerr(H3270 *session, int error_type) {
 		return;
 	}
 
-	status_changed(session,sts);
+	message_changed(session,sts);
 
 }
-
-/**
- * @brief Resolving DNS name.
- *
- */
-
-/*
-void status_resolving(H3270 *hSession) {
-	debug("%s",__FUNCTION__);
-
-	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-	notify_new_state(hSession, LIB3270_STATE_RESOLVING, True);
-	status_changed(hSession, LIB3270_MESSAGE_RESOLVING);
-}
-*/
-
-/*
-void status_connecting(H3270 *hSession) {
-	debug("%s",__FUNCTION__);
-
-	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
-
-	notify_new_state(hSession, LIB3270_STATE_CONNECTING, True);
-	status_changed(hSession, LIB3270_MESSAGE_CONNECTING);
-}
-*/
 
 void status_reset(H3270 *session) {
 
 	if (session->kybdlock & KL_ENTER_INHIBIT) {
 		debug("%s",__FUNCTION__);
-		status_changed(session,LIB3270_MESSAGE_INHIBIT);
+		message_changed(session,LIB3270_MESSAGE_INHIBIT);
 	} else if (session->kybdlock & KL_DEFERRED_UNLOCK) {
 		debug("%s",__FUNCTION__);
-		status_changed(session,LIB3270_MESSAGE_X);
+		message_changed(session,LIB3270_MESSAGE_X);
 	} else {
 		debug("%s",__FUNCTION__);
 		session->cbk.cursor(session,LIB3270_POINTER_UNLOCKED);
-		status_changed(session,LIB3270_MESSAGE_NONE);
+		message_changed(session,LIB3270_MESSAGE_NONE);
 	}
 
 	session->cbk.display(session);
@@ -588,7 +562,7 @@ LIB3270_EXPORT int lib3270_is_ready(const H3270 *hSession) {
 }
 
 
-void status_changed(H3270 *hSession, LIB3270_MESSAGE id) {
+void message_changed(H3270 *hSession, LIB3270_MESSAGE id) {
 	if(id == hSession->oia.status || id < 0)
 		return;
 
@@ -604,7 +578,7 @@ void status_changed(H3270 *hSession, LIB3270_MESSAGE id) {
 
 void status_twait(H3270 *session) {
 	set_status(session,LIB3270_FLAG_UNDERA,False);
-	status_changed(session,LIB3270_MESSAGE_TWAIT);
+	message_changed(session,LIB3270_MESSAGE_TWAIT);
 }
 
 void set_viewsize(H3270 *session, unsigned int rows, unsigned int cols) {
@@ -647,7 +621,7 @@ static void status_connect(H3270 *hSession, int connected, void GNUC_UNUSED(*dun
 		id = LIB3270_MESSAGE_DISCONNECTED;
 	}
 
-	status_changed(hSession,id);
+	message_changed(hSession,id);
 
 }
 

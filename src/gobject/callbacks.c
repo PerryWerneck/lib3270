@@ -91,10 +91,10 @@
 	TN3270_SESSION_GET_CLASS(self)->selection_changed(self,start,end);
  }
 
- static void handle_status_changed(H3270 *session, LIB3270_MESSAGE id) 
+ static void handle_message_changed(H3270 *session, LIB3270_MESSAGE id) 
  {
  	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(session);
-	TN3270_SESSION_GET_CLASS(self)->status_changed(self,id);
+	TN3270_SESSION_GET_CLASS(self)->message_changed(self,id);
  }
 
  static	void handle_erase(H3270 *session)
@@ -160,7 +160,7 @@
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_HAS_SELECTION]);
  }
 
- static void status_changed(Tn3270Session *session, LIB3270_MESSAGE id)
+ static void message_changed(Tn3270Session *session, LIB3270_MESSAGE id)
  {
 	notify(session,TN3270_SESSION_GET_CLASS(session)->properties.specs[TN3270_SESSION_PROPERTY_PROGRAM_MESSAGE]);
  }
@@ -184,7 +184,7 @@
 	klass->set_timer = set_timer;
 	klass->changed = nop_void;
 	klass->selection_changed = selection_changed;
-	klass->status_changed = status_changed;
+	klass->message_changed = message_changed;
 	klass->display = nop_void;
 	klass->erase = nop_void;
 	klass->ring_bell = ring_bell;
@@ -250,7 +250,7 @@
 	cbk->set_timer = handle_set_timer;
 	cbk->changed = handle_changed;
 	cbk->update_selection = handle_selection_changed;
-	cbk->update_status = handle_status_changed;
+	cbk->update_status = handle_message_changed;
 	cbk->erase = handle_erase;
 	cbk->display = handle_display;
 	cbk->ring_bell = handle_ring_bell;

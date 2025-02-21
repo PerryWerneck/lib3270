@@ -19,6 +19,7 @@
 
  #pragma once
  #include <config.h>
+ #include <lib3270/defs.h>
  #include <lib3270.h>
  #include <lib3270/glib.h>
  #include <lib3270/mainloop.h>
@@ -29,8 +30,8 @@
 
  } Tn3270SessionPrivate;
 
- void tn3270_session_class_setup_callbacks(Tn3270SessionClass *klass);
- int tn3270_session_setup_callbacks(Tn3270SessionClass *klass, Tn3270SessionPrivate *self);
+ LIB3270_INTERNAL void tn3270_session_class_setup_callbacks(Tn3270SessionClass *klass);
+ LIB3270_INTERNAL int tn3270_session_setup_callbacks(Tn3270SessionClass *klass, Tn3270SessionPrivate *self);
 
 
 

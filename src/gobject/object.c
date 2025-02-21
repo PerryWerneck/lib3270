@@ -469,11 +469,11 @@
  *
  * Returns: (transfer full): a new #TN3270Session.
  */
- LIB3270_EXPORT Tn3270Session * tn3270_session_new() {
+ Tn3270Session * tn3270_session_new() {
 	return g_object_new(TN3270_TYPE_SESSION,NULL);
  }
 
- LIB3270_EXPORT H3270 * tn3270_session_get_h3270(Tn3270Session *session) {
+ H3270 * tn3270_session_get_h3270(Tn3270Session *session) {
 	g_return_val_if_fail(TN3270_IS_SESSION(session),NULL);
 	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(session);
 	return self->handler;

@@ -23,10 +23,11 @@
  #include <lib3270/defs.h>
  #include <lib3270.h>
 
- /// @brief Set the mainloop methods for the session.
+ /// @brief Use internal mainloop methods for the session.
  /// @param hSession The session to be set.
  /// @param gui Non-zero if the session is running in GUI mode.
- LIB3270_INTERNAL int lib3270_setup_mainloop(H3270 *hSession, int gui);
-
- // LIB3270_INTERNAL void	* lib3270_add_timer(unsigned long msec, H3270 *session, int (*fn)(H3270 *session, void *userdata), void *userdata);
- // LIB3270_INTERNAL void	  lib3270_remove_timer(H3270 *session, void *cookie);
+ LIB3270_INTERNAL void setup_internal_mainloop(H3270 *hSession);
+ 
+ /// @brief Try to set the glib mainloop methods for the session.
+ /// @return 0 if ok, error code if not
+ LIB3270_INTERNAL int setup_glib_mainloop(H3270 *hSession);

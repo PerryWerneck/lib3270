@@ -320,12 +320,10 @@ void trace_data(const H3270 *hSession, const char *msg, const unsigned char *dat
  }
 
 LIB3270_EXPORT void lib3270_trace_close(H3270 *hSession) {
-
 	if(hSession->trace) {
 		hSession->trace->finalize(hSession,hSession->trace);
 		hSession->trace = NULL;
 	}
-
 }
 
 struct trace_file_context {

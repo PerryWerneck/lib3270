@@ -302,6 +302,7 @@ gobject_src = [
 
 linux_src =[
   'src/library/os/linux/util.c',
+  'src/library/os/linux/glib.c',
 ] 
 
 darwin_src = [

@@ -324,6 +324,7 @@ static void lib3270_session_init(H3270 *hSession, const char *model, const char 
 }
 
 H3270 * lib3270_session_new(const char *model, int gui) {
+
 	H3270 * hSession;
 
 	debug("%s - gui=%s",__FUNCTION__,gui ? "Yes" : "No");
@@ -332,10 +333,16 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 	lib3270_session_init(hSession, model, "bracket" );
 	
 	lib3270_trace_close(hSession); // Initialize trace callbacks.
+	lib3270_log_close(hSession); // Initialize log callbacks.
 
-	lib3270_setup_mainloop(hSession,gui);
-
-
+#ifdef _WIN32
+	// Win32 mainloop already support gui.
+	setup_internal_mainloop(hSession);
+#else
+	if(!gui || setup_glib_mainloop(hSession)) {
+		setup_internal_mainloop(hSession);
+	}
+#endif // _WIN32
 
 	if(screen_init(hSession)) {
 		lib3270_free(hSession);

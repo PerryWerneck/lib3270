@@ -39,6 +39,9 @@
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
 
+	lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
+	// lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
+
 	lib3270_trace_open_file(hSession,"lib3270.trace");
 	lib3270_log_open_file(hSession,"lib3270.log",86400);
 
@@ -50,10 +53,9 @@
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,1);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,1);
 	
-	lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
-	// lib3270_set_url(hSession,"tn3270://127.0.0.1:40050");
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,1);
 	
-	lib3270_connect(hSession,5);
+//	lib3270_connect(hSession,5);
 
 	while(1) {
 		lib3270_mainloop_run(hSession,1);

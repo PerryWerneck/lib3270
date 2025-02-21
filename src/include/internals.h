@@ -257,7 +257,7 @@ LIB3270_INTERNAL int	cursor_move(H3270 *session, int baddr);
 
 // LIB3270_INTERNAL int	lib3270_sock_send(H3270 *hSession, unsigned const char *buf, int len);
 
-LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
+// LIB3270_INTERNAL int	lib3270_default_event_dispatcher(H3270 *hSession, int block);
 
 LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, unsigned int rect);
 

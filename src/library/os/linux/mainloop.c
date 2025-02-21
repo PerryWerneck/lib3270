@@ -288,28 +288,36 @@
 		(void) gettimeofday(&now, (void *)NULL);
 
 		pthread_mutex_lock(&guard);
-		while(hSession->timer.context->first) {
-			t = (struct timeout *) hSession->timer.context->first;
+		t = (struct timeout *) hSession->timer.context->first;
+		pthread_mutex_unlock(&guard);
+
+		while(t) {
 
 			if (t->tv.tv_sec < now.tv_sec ||(t->tv.tv_sec == now.tv_sec && t->tv.tv_usec < now.tv_usec)) {
+
 				t->in_play = 1;
-
 				debug("do_timer: timer=%p session=%p", t, hSession);
-
 				t->in_play = 1;
 				(*t->call)(hSession,t->userdata);
 				t->in_play = 0;
+
+				pthread_mutex_lock(&guard);
 				lib3270_linked_list_delete_node((lib3270_linked_list *) hSession->timer.context,t);
+				pthread_mutex_unlock(&guard);
 
 				processed_any = 1;
 
-
 			} else {
+
 				break;
+
 			}
 
+			pthread_mutex_lock(&guard);
+			t = (struct timeout *) hSession->timer.context->first;
+			pthread_mutex_unlock(&guard);
+	
 		}
-		pthread_mutex_unlock(&guard);
 
 	}
 

@@ -60,15 +60,18 @@
 #include <lib3270/keyboard.h>
 #include <private/network.h>
 
-/**
- * @brief Called from timer to attempt an automatic reconnection.
- */
+//
+// @brief Called from timer to attempt an automatic reconnection.
+//
 static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)) {
 
 	if(hSession->auto_reconnect_inprogress && !hSession->connection.context) {
 
 		if(hSession->cbk.reconnect_allowed(hSession) == 0) {
-			lib3270_log_write(hSession,"3270","Starting auto-reconnect on %s",hSession->connection.url);
+
+			debug("%s","-----------------------> Reconnecting");
+
+			trace_event(hSession,"Reconnecting\n");
 			hSession->auto_reconnect_inprogress = 0; // Reset "in-progress" to allow reconnection.
 			lib3270_connect(hSession,hSession->connection.timeout);
 
@@ -102,6 +105,7 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 	if(hSession->auto_reconnect_inprogress)
 		return EBUSY;
 
+	trace_event(hSession,"Auto-reconnect activated\n");
 	hSession->auto_reconnect_inprogress = 1;
 	hSession->timer.add(hSession, msec, check_for_auto_reconnect, NULL);
 

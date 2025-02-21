@@ -66,11 +66,13 @@
  LIB3270_EXPORT int lib3270_connect(H3270 *hSession, int seconds) {
 
 	if(!(hSession->connection.url && *hSession->connection.url)) {
+		trace_event(hSession,"No URL to connect to\n");
 		return ENODATA;
 	}
 
 	if(!lib3270_allow_connect(hSession)) {
 		debug("%s:%s",__FUNCTION__,strerror(errno));
+		trace_event(hSession,"Unable to connect: %s\n",strerror(errno));
 		return errno == 0 ? -1 : errno;
 	}
 
@@ -199,6 +201,7 @@
 
 	if(!hSession->connection.context) {
 		// No context, the DNS query has failed, call disconnect to clear flags.
+		trace_event(hSession,"Unable to start DNS resolver\n");
 		lib3270_connection_close(hSession,ENOTCONN);
 		return errno = ENOTCONN;
 	}

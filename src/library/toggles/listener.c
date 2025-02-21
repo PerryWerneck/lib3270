@@ -37,6 +37,7 @@
 #include <internals.h>
 #include <lib3270/toggle.h>
 #include <lib3270/log.h>
+#include <private/toggle.h>
 
 #include <errno.h>
 #include <sys/types.h>

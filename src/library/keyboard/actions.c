@@ -64,7 +64,7 @@ struct ta;
 #include "screen.h"
 #include "statusc.h"
 #include "telnetc.h"
-#include <private/toggles.h>
+#include <private/toggle.h>
 #include <private/trace.h>
 //#include "utf8c.h"
 #include "utilc.h"

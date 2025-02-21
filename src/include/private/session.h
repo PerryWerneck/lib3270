@@ -30,6 +30,7 @@
 
  #include <networking.h>
  #include <private/linkedlist.h>
+ #include <private/toggle.h>
  
  #define LIB3270_FULL_MODEL_NAME_LENGTH	13
  #define LIB3270_LU_MAX					32
@@ -138,10 +139,7 @@
 	unsigned int			  formatted					: 1;	///< @brief Formatted screen flag
 	unsigned int			  starting					: 1;	///< @brief Is starting (no first screen)?
 
-	struct lib3270_toggle {
-		char value;																		///< @brief toggle value
-		void (*upcall)(H3270 *, const struct lib3270_toggle *, LIB3270_TOGGLE_TYPE);	///< @brief change value
-	} toggle[LIB3270_TOGGLE_COUNT];
+	struct lib3270_toggle toggle[LIB3270_TOGGLE_COUNT];
 
 	// Network & Termtype
 	char					* connected_type;

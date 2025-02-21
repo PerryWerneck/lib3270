@@ -52,7 +52,7 @@
 #include "screenc.h"
 #include <private/trace.h>
 #include <private/session.h>
-#include <private/toggles.h>
+#include <private/toggle.h>
 #include "utilc.h"
 #include <lib3270/log.h>
 

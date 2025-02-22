@@ -20,7 +20,7 @@
  #include <config.h>
  #include <internals.h>
  #include <lib3270.h>
- #include "3270ds.h"
+ #include <private/3270ds.h>
 
 /**
  * @brief Get field address.

@@ -47,7 +47,7 @@
 #include <private/trace.h>
 #include "telnetc.h"
 #include <private/screen.h>
-#include "utilc.h"
+#include <private/util.h>
 
 #include <lib3270/internals.h>
 #include <lib3270/log.h>

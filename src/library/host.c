@@ -40,14 +40,13 @@
 
 #include <internals.h>
 #include <stdlib.h>
-//#include "resources.h"
 
 #include <private/host.h>
 #include <private/status.h>
 #include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include "screenc.h"
 
 #include <errno.h>

@@ -36,11 +36,11 @@
  #include <stdlib.h>
  #include <lib3270.h>
  #include <lib3270/session.h>
- #include "3270ds.h"
+ #include <private/3270ds.h>
  #include <lib3270/html.h>
 
  #include <internals.h>
- #include "utilc.h"
+ #include <private/util.h>
 
  struct chr_xlat
  {

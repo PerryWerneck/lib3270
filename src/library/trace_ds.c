@@ -40,12 +40,12 @@
 #include <signal.h>
 #include <stdarg.h>
 #include <fcntl.h>
-#include "3270ds.h"
+#include <private/3270ds.h>
 #include "ctlrc.h"
 #include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include <lib3270/toggle.h>
 #include <private/session.h>
 #include <lib3270/trace.h>

@@ -45,7 +45,7 @@
 #include <netinet/in.h>
 #endif /*]*/
 
-#include "3270ds.h"
+#include <private/3270ds.h>
 #include <private/screen.h>
 //#include "resources.h"
 #include "ctlrc.h"
@@ -60,7 +60,7 @@
 #include "sf.h"
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 
 /* Screen globals. */
 /*

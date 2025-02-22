@@ -41,7 +41,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <winhttp.h>
-#include <utilc.h>
+#include <private/util.h>
 #include <lib3270/win32.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -60,7 +60,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 
 	{
 		// Strip URL
-		char * unescaped = lib3270_unescape(url);
+		char * unescaped = unescape(url);
 
 		char *hostname = strstr(unescaped,"://");
 		if(!hostname)

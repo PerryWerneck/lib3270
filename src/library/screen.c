@@ -34,14 +34,14 @@
 
 #include <internals.h>
 #include <signal.h>
-#include "3270ds.h"
+#include <private/3270ds.h>
 //#include "resources.h"
 #include "ctlrc.h"
 #include <private/host.h>
 #include "kybdc.h"
 #include "screenc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include "widec.h"
 #include <private/screen.h>
 #include "errno.h"

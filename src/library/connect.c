@@ -44,7 +44,7 @@
 #include <private/session.h>
 #include <private/intl.h>
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 
 #include <private/network.h>
 

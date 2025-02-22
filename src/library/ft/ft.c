@@ -60,7 +60,7 @@
 #include "screenc.h"
 // #include "tablesc.h"
 #include "telnetc.h"
-#include "utilc.h"
+#include <private/util.h>
 #include <private/trace.h>
 
 static void ft_connected(H3270 *session, int ignored, void *unused);

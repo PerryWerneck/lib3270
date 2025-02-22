@@ -55,13 +55,13 @@
 
 #include <assert.h>
 #include <stdarg.h>
-#include "3270ds.h"
+#include <private/3270ds.h>
 
 #include <private/popup.h>
 //#include "tablesc.h"
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include "sf.h"
 
 #include <lib3270/log.h>

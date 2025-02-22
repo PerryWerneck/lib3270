@@ -21,7 +21,7 @@
 #include <lib3270/log.h>
 #include <private/trace.h>
 #include <lib3270/actions.h>
-#include <utilc.h>
+#include <private/util.h>
 
 struct lib3270_action_callback {
 	LIB3270_LINKED_LIST_HEAD
@@ -41,7 +41,7 @@ const LIB3270_ACTION * lib3270_action_get_by_name(const char *name) {
 
 	// Check only alphabetic and numeric (for compatibility)
 	for(f=0; actions[f].name; f++) {
-		if(!lib3270_compare_alnum(name,actions[f].name))
+		if(!compare_alnum(name,actions[f].name))
 			return actions+f;
 	}
 

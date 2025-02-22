@@ -43,7 +43,7 @@
 
 #include <fcntl.h>
 
-#include "3270ds.h"
+#include <private/3270ds.h>
 //#include "resources.h"
 
 //#include "actionsc.h"
@@ -70,7 +70,7 @@
 #include <private/toggle.h>
 #include <private/trace.h>
 //#include "utf8c.h"
-#include "utilc.h"
+#include <private/util.h>
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/

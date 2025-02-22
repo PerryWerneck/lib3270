@@ -51,7 +51,7 @@ struct ta;
 #endif /*]*/
 
 #include <fcntl.h>
-#include "3270ds.h"
+#include <private/3270ds.h>
 //#include "resources.h"
 
 #include "ansic.h"
@@ -67,7 +67,7 @@ struct ta;
 #include <private/toggle.h>
 #include <private/trace.h>
 //#include "utf8c.h"
-#include "utilc.h"
+#include <private/util.h>
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/

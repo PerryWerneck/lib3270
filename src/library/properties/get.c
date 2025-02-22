@@ -32,7 +32,7 @@
 #include <string.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
-#include <utilc.h>
+#include <private/util.h>
 
 LIB3270_EXPORT const char * lib3270_property_get_name(const LIB3270_PROPERTY * property) {
 
@@ -93,7 +93,7 @@ LIB3270_EXPORT const LIB3270_PROPERTY * lib3270_property_get_by_name(const char 
 
 		while(property->name) {
 
-			if(!lib3270_compare_alnum(name,property->name))
+			if(!compare_alnum(name,property->name))
 				return (const LIB3270_PROPERTY *) property;
 
 			property++;
@@ -108,7 +108,7 @@ LIB3270_EXPORT const LIB3270_PROPERTY * lib3270_property_get_by_name(const char 
 
 		while(property->name) {
 
-			if(!lib3270_compare_alnum(name,property->name))
+			if(!compare_alnum(name,property->name))
 				return (const LIB3270_PROPERTY *) property;
 
 			property++;

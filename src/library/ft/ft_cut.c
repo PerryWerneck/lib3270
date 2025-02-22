@@ -45,7 +45,7 @@
 
 #if defined(X3270_FT) /*[*/
 
-#include "3270ds.h"
+#include <private/3270ds.h>
 #include "ctlrc.h"
 #include "ft_cutc.h"
 #include "ft_cut_ds.h"
@@ -54,7 +54,7 @@
 #include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 
 // static Boolean cut_xfer_in_progress = 0;
 

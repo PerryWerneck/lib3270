@@ -53,7 +53,7 @@
 #include <private/trace.h>
 #include <private/session.h>
 #include <private/toggle.h>
-#include "utilc.h"
+#include <private/util.h>
 #include <lib3270/log.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/

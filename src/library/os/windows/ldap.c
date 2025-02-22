@@ -40,7 +40,7 @@
 
 #include "private.h"
 #include <winldap.h>
-#include <utilc.h>
+#include <private/util.h>
 #include <lib3270/toggle.h>
 #include <lib3270/trace.h>
 
@@ -90,7 +90,7 @@ X509_CRL * lib3270_crl_get_using_ldap(H3270 *hSession, const char *consturl, con
 
 	// Strip query.
 
-	lib3270_autoptr(char) urldup = lib3270_unescape(consturl);
+	lib3270_autoptr(char) urldup = unescape(consturl);
 
 	char * url = urldup+7;
 	char * base = strchr(url,'/');

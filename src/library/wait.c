@@ -32,7 +32,7 @@
 #include <lib3270/trace.h>
 #include <lib3270/keyboard.h>
 #include "kybdc.h"
-#include "utilc.h"
+#include <private/util.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 

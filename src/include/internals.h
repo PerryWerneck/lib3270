@@ -177,22 +177,23 @@ LIB3270_INTERNAL struct _ansictl {
  *
  * @brief Timeout control structure.
  *
- */
+ */ /*
 typedef struct timeout {
 	LIB3270_LINKED_LIST_HEAD
 
 	unsigned char in_play;
 
-#if defined(_WIN32) /*[*/
+#if defined(_WIN32)
 	unsigned long long ts;
-#else /*][*/
+#else
 	struct timeval tv;
-#endif /*]*/
+#endif
 
 	int (*proc)(H3270 *session, void *userdata);
 
 } timeout_t;
 
+*/
 
 /**
  *

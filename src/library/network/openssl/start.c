@@ -27,7 +27,7 @@
  
 #include "private.h"
 #include <lib3270/properties.h>
-#include <utilc.h>
+#include <private/util.h>
 
 static int import_crl(H3270 *hSession, SSL_CTX * ssl_ctx, LIB3270_NET_CONTEXT * context, const char *url) {
 

@@ -35,7 +35,7 @@
 #include <string.h>
 
 #include <internals.h>
-#include "utilc.h"
+#include <private/util.h>
 #include <lib3270/log.h>
 
 extern String fallbacks[];

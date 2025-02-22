@@ -78,7 +78,7 @@
 // #include <stdarg.h>
 
 #include "tn3270e.h"
-#include "3270ds.h"
+#include <private/3270ds.h>
 
 // #include "appres.h"
 
@@ -94,7 +94,7 @@
 // #include "tablesc.h"
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include "w3miscc.h"
 #include <private/screen.h>
 

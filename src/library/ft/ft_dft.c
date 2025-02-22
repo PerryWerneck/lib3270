@@ -48,14 +48,14 @@
 
 #if defined(X3270_FT) /*[*/
 
-#include "3270ds.h"
+#include <private/3270ds.h>
 #include "ft_dft_ds.h"
 #include "kybdc.h"
 #include "ft_dftc.h"
 #include "ftc.h"
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include <lib3270/log.h>
 
 #include <errno.h>

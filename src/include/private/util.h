@@ -33,7 +33,7 @@ LIB3270_INTERNAL void	  xs_warning(const char *fmt, ...) LIB3270_GNUC_FORMAT(1, 
  * @return Converted string (release it with g_free).
  *
  */
-LIB3270_INTERNAL char * lib3270_unescape(const char *text);
+LIB3270_INTERNAL char * unescape(const char *text);
 
 /**
  * @brief Compare strings ignoring non alphanumeric chars.
@@ -44,5 +44,5 @@ LIB3270_INTERNAL char * lib3270_unescape(const char *text);
  * @return 0 if equal, non zero if not.
  *
  */
-LIB3270_INTERNAL int lib3270_compare_alnum(const char *s1, const char *s2);
+LIB3270_INTERNAL int compare_alnum(const char *s1, const char *s2);
 

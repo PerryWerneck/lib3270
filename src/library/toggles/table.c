@@ -39,7 +39,7 @@
 #include <private/intl.h>
 #include <lib3270/toggle.h>
 #include <private/toggle.h>
-#include "utilc.h"
+#include <private/util.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
@@ -373,7 +373,7 @@ LIB3270_EXPORT const LIB3270_TOGGLE * lib3270_toggle_get_by_name(const char *nam
 	if(name) {
 		int ix;
 		for(ix=0; ix<LIB3270_TOGGLE_COUNT; ix++) {
-			if(!lib3270_compare_alnum(name,toggle_descriptor[ix].name))
+			if(!compare_alnum(name,toggle_descriptor[ix].name))
 				return &toggle_descriptor[ix];
 		}
 	}
@@ -384,7 +384,7 @@ LIB3270_EXPORT LIB3270_TOGGLE_ID lib3270_get_toggle_id(const char *name) {
 	if(name) {
 		int f;
 		for(f=0; f<LIB3270_TOGGLE_COUNT; f++) {
-			if(!lib3270_compare_alnum(name,toggle_descriptor[f].name))
+			if(!compare_alnum(name,toggle_descriptor[f].name))
 				return f;
 		}
 	}

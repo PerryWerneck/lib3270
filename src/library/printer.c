@@ -55,7 +55,7 @@
 #include <signal.h>
 #include <stdarg.h>
 #include <fcntl.h>
-#include "3270ds.h"
+#include <private/3270ds.h>
 #include "appres.h"
 #include "objects.h"
 //#include "resources.h"
@@ -75,7 +75,7 @@
 #include "tablesc.h"
 #include "telnetc.h"
 #include <private/trace.h>
-#include "utilc.h"
+#include <private/util.h>
 #include "w3miscc.h"
 
 #define PRINTER_BUF	1024

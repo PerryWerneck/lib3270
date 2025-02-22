@@ -38,7 +38,7 @@
 #include <lib3270/malloc.h>
 
 #include <internals.h>
-#include "utilc.h"
+#include <private/util.h>
 #include <private/popup.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
@@ -407,7 +407,7 @@ static int unescape_character(const char *scanner) {
 
 }
 
-char * lib3270_unescape(const char *text) {
+char * unescape(const char *text) {
 	if(!text)
 		return NULL;
 
@@ -445,7 +445,7 @@ char * lib3270_unescape(const char *text) {
 	return outString;
 }
 
-int lib3270_compare_alnum(const char *s1, const char *s2) {
+int compare_alnum(const char *s1, const char *s2) {
 	while(*s1 && *s2) {
 
 		char c1 = toupper(*s1);

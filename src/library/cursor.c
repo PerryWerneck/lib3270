@@ -39,7 +39,7 @@
 #include "ctlrc.h"
 #include "ansic.h"
 #include <private/status.h>
-#include "3270ds.h"
+#include <private/3270ds.h>
 
 /*---[ Prototipes ]---------------------------------------------------------------------------------*/
 

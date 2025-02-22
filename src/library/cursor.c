@@ -37,8 +37,8 @@
 #include <lib3270/toggle.h>
 
 #include "kybdc.h"
-#include "ctlrc.h"
-#include "ansic.h"
+#include <private/ctlr.h>
+#include <private/ansi.h>
 #include <private/status.h>
 #include <private/3270ds.h>
 

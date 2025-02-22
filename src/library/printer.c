@@ -61,7 +61,7 @@
 //#include "resources.h"
 
 #include "charsetc.h"
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include <private/host.h>
 #include <private/popup.h>
 #include "printerc.h"

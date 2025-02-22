@@ -47,7 +47,7 @@
 #include <lib3270/log.h>
 #include <lib3270/popup.h>
 #include <lib3270/os.h>
-#include <array.h>
+#include <private/array.h>
 #include <internals.h>
 // #include <networking.h>
 #include <private/trace.h>

@@ -47,9 +47,9 @@
 //#include "resources.h"
 
 //#include "actionsc.h"
-#include "ansic.h"
+#include <private/ansi.h>
 //#include "aplc.h"
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include "ftc.h"
 #include <private/host.h>
 // #include "keypadc.h"

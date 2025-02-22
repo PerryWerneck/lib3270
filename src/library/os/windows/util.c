@@ -55,8 +55,8 @@
 
 #define my_isspace(c)	isspace((unsigned char)c)
 
-int is_nt = 1;
-int has_ipv6 = 1;
+static int is_nt = 1;
+static int has_ipv6 = 1;
 
 int get_version_info(void) {
 	OSVERSIONINFO info;

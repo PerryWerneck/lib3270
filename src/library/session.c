@@ -36,11 +36,11 @@
 #include <private/session.h>
 
 #include "kybdc.h"
-#include "ansic.h"
+#include <private/ansi.h>
 #include <private/toggle.h>
 #include <private/screen.h>
 #include "screenc.h"
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include "ftc.h"
 #include "kybdc.h"
 #include <private/3270ds.h>

@@ -66,16 +66,12 @@ LIB3270_INTERNAL void ctlr_write_sscp_lu(H3270 *session, unsigned char buf[], in
 LIB3270_INTERNAL void mdt_clear(H3270 *hSession, int baddr);
 LIB3270_INTERNAL void mdt_set(H3270 *hSession, int baddr);
 
-// #define next_unprotected(session, baddr0) lib3270_get_next_unprotected(session, baddr0)
-
 LIB3270_INTERNAL enum pds process_ds(H3270 *hSession, unsigned char *buf, int buflen);
 LIB3270_INTERNAL void ps_process(H3270 *hSession);
 
 LIB3270_INTERNAL void update_model_info(H3270 *session, unsigned int model, unsigned int cols, unsigned int rows);
 LIB3270_INTERNAL void ctlr_set_rows_cols(H3270 *session, int mn, int ovc, int ovr);
 LIB3270_INTERNAL void ctlr_erase(H3270 *session, int alt);
-
-// LIB3270_INTERNAL void ticking_start(H3270 *session, Boolean anyway);
 
 enum dbcs_state {
 	DBCS_NONE = 0,		///< @brief position is not DBCS
@@ -126,7 +122,7 @@ enum dbcs_why { DBCS_FIELD, DBCS_SUBFIELD, DBCS_ATTRIBUTE };
  *
  */
 inline enum dbcs_state ctlr_dbcs_state(int baddr) {
-#if defined(X3270_DBCS) /*[*/
+#if defined(X3270_DBCS)
 	return dbcs? ea_buf[baddr].db: DBCS_NONE;
 #else
 	return DBCS_NONE;

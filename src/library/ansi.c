@@ -43,8 +43,8 @@
 #include <lib3270/3270ds.h>
 #endif /*]*/
 
-#include "ansic.h"
-#include "ctlrc.h"
+#include <private/ansi.h>
+#include <private/ctlr.h>
 #include <private/host.h>
 #include "screenc.h"
 #include "telnetc.h"

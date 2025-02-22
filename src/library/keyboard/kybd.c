@@ -43,7 +43,7 @@ struct ta;
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
 #include <lib3270/toggle.h>
-#include <ctlrc.h>
+#include <private/ctlr.h>
 #include <stdlib.h>
 
 #if defined(X3270_DISPLAY) /*[*/
@@ -58,8 +58,8 @@ struct ta;
 #include <private/3270ds.h>
 //#include "resources.h"
 
-#include "ansic.h"
-#include "ctlrc.h"
+#include <private/ansi.h>
+#include <private/ctlr.h>
 #include "ftc.h"
 #include <private/host.h>
 #include "kybdc.h"

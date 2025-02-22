@@ -83,8 +83,8 @@
 
 // #include "appres.h"
 
-#include "ansic.h"
-#include "ctlrc.h"
+#include <private/ansi.h>
+#include <private/ctlr.h>
 #include <private/host.h>
 #include "kybdc.h"
 // #include "macrosc.h"

@@ -41,7 +41,7 @@
 #include <stdarg.h>
 #include <fcntl.h>
 #include <private/3270ds.h>
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include <private/popup.h>
 #include "telnetc.h"
 #include <private/trace.h>

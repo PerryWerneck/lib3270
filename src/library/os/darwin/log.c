@@ -40,6 +40,7 @@
 
 /*---[ Implementacao ]--------------------------------------------------------------------------------------*/
 
+/*
 int use_syslog = 0;
 
 int default_loghandler(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int GNUC_UNUSED(rc), const char *message) {
@@ -77,3 +78,4 @@ LIB3270_EXPORT int lib3270_set_syslog(int flag) {
 	return errno  = ENOENT;
 #endif // HAVE_SYSLOG
 }
+*/

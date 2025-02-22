@@ -33,7 +33,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <private/screen.h>
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include <private/popup.h>
 #include <lib3270/trace.h>
 #include <lib3270/log.h>

@@ -45,7 +45,7 @@
 #include <private/3270ds.h>
 #include <private/screen.h>
 
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include "ftc.h"
 #include "ft_cutc.h"
 #include "ft_dftc.h"

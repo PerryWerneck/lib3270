@@ -37,7 +37,7 @@
 #include <signal.h>
 #include <private/3270ds.h>
 //#include "resources.h"
-#include "ctlrc.h"
+#include <private/ctlr.h>
 #include <private/host.h>
 #include "kybdc.h"
 #include "screenc.h"
@@ -349,7 +349,6 @@ void screen_update(H3270 *session, int bstart, int bend) {
 
 	if(session->starting && session->formatted && !session->kybdlock && lib3270_in_3270(session)) {
 		session->starting = 0;
-		session->cbk.autostart(session);
 
 		trace_event(session,"First screen\n");
 		trace_screen(session);
@@ -361,6 +360,9 @@ void screen_update(H3270 *session, int bstart, int bend) {
 			lib3270_free(text);
 		}
 #endif
+
+		session->cbk.autostart(session);
+
 	}
 
 }
@@ -476,6 +478,7 @@ void status_ctlr_done(H3270 *session) {
 }
 
 void status_oerr(H3270 *session, int error_type) {
+
 	LIB3270_MESSAGE sts = LIB3270_MESSAGE_USER;
 
 	switch (error_type) {
@@ -624,22 +627,6 @@ static void status_3270_mode(H3270 *hSession, int GNUC_UNUSED(ignored), void GNU
 	set_status(hSession,LIB3270_FLAG_BOXSOLID,oia_boxsolid);
 
 }
-
-/*
-void mcursor_set(H3270 *hSession,LIB3270_POINTER m) {
-
-	if(hSession->pointer != ((unsigned short) m)) {
-
-		// Pointer changed
-		hSession->pointer = (unsigned short) m;
-		hSession->cbk.cursor(hSession,m & 0x03);
-
-		// Notify lock state change.
-		lib3270_action_group_notify(hSession, LIB3270_ACTION_GROUP_FORMATTED);
-
-	}
-}
-*/
 
 LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession) {
 	static const unsigned char text_pat[] = {

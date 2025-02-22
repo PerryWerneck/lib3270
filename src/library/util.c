@@ -108,7 +108,7 @@ LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...) {
  *
  * @param format	A printf format string with '%s's in it.
  *
- */
+ */ /*
 char * xs_buffer(const char *fmt, ...) {
 	va_list args;
 	char *r;
@@ -117,7 +117,8 @@ char * xs_buffer(const char *fmt, ...) {
 	r = lib3270_vsprintf(fmt, args);
 	va_end(args);
 	return r;
-}
+}  */
+
 
 /**
  *	@brief Expands a character in the manner of "cat -v".

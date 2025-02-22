@@ -40,7 +40,7 @@
 #include <lib3270/log.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
-
+/*
 int default_loghandler(const H3270 GNUC_UNUSED(*session), void GNUC_UNUSED(*userdata), const char *module, int rc, const char *msg) {
 
 	if(hEventLog) {
@@ -79,3 +79,4 @@ LIB3270_EXPORT int lib3270_set_syslog(int GNUC_UNUSED(flag)) {
 	return errno  = ENOENT;
 }
 
+*/

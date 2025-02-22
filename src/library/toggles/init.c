@@ -46,8 +46,8 @@
 #include <lib3270/toggle.h>
 #include <internals.h>
 
-#include "ansic.h"
-#include "ctlrc.h"
+#include <private/ansi.h>
+#include <private/ctlr.h>
 #include <private/popup.h>
 #include "screenc.h"
 #include <private/trace.h>

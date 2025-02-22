@@ -37,7 +37,7 @@
 #include <private/3270ds.h>
 #include <private/screen.h>
 //#include "resources.h"
-#include "ctlrc.h"
+#include <private/ctlr.h>
 
 #if defined(X3270_FT)
 #include "ft_dftc.h"

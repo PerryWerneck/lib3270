@@ -32,6 +32,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <private/screen.h>
 #include <private/ctlr.h>
 #include <private/popup.h>

@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
+ * Copyright 1995, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 by Paul Mattes.
  * Copyright (C) 2008 Banco do Brasil S.A.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,6 +38,7 @@
 #include <lib3270/trace.h>
 #include <X11keysym.h>
 #include <string.h>
+#include <stdio.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 

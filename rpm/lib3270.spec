@@ -16,8 +16,10 @@
 # Please submit bugfixes or comments via https://github.com/PerryWerneck/lib3270/issues
 #
 
+%define gobject_version 2
+
 Name:           lib3270
-Version:        5.5.0+git20250123
+Version:        5.5.0
 Release:        0
 Summary:        TN3270 Access library
 License:        LGPL-3.0-only
@@ -25,24 +27,17 @@ Group:          System/Libraries
 URL:            https://github.com/PerryWerneck/lib3270
 Source:         %{name}-%{version}.tar.xz
 
-BuildRequires:  fdupes
-BuildRequires:  pkgconfig
-BuildRequires:  gettext-devel
-BuildRequires:  pkgconfig(libcurl)
-BuildRequires:  pkgconfig(libssl)
-
-%if 0%{?suse_version} == 01500
-BuildRequires:  meson >= 0.61.4
-%else
-BuildRequires:  meson
-%endif
+BuildRequires:	fdupes
+BuildRequires:	pkgconfig
+BuildRequires:	gettext-devel
+BuildRequires:	pkgconfig(libcurl)
+BuildRequires:	pkgconfig(libssl) >= 3.0.0
+BuildRequires:	pkgconfig(liburiparser)
+BuildRequires:	pkgconfig(gobject-%{gobject_version}.0)
+BuildRequires:	meson
 
 %description
 TN3270 access library, originally designed as part of the pw3270 application.
-
-For more details, see https://softwarepublico.gov.br/social/pw3270/ .
-
-#---[ Library ]-------------------------------------------------------------------------------------------------------
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
@@ -55,8 +50,6 @@ Group:		Development/Libraries/C and C++
 %description -n %{name}-%{_libvrs}
 TN3270 access library, originally designed as part of the pw3270 application.
 
-For more details, see https://softwarepublico.gov.br/social/pw3270/ .
-
 %package devel
 Summary:	TN3270 Access library development files
 Group:		Development/Libraries/C and C++
@@ -65,9 +58,15 @@ Requires:	%{name}-%{_libvrs} = %{version}
 %description devel
 Header files for the TN3270 access library.
 
-%lang_package -n %{name}-%{_libvrs}
+%package glib%{gobject_version}
+Summary:	Glib wrapper for %{name}
+Group:		Development/Libraries/C and C++
+Requires:	%{name}-%{_libvrs} = %{version}
 
-#---[ Build & Install ]-----------------------------------------------------------------------------------------------
+%description glib%{gobject_version}
+GLib wrapper for lib3270 library, providing a tn3270 gobject for gtk/glib application
+
+%lang_package -n %{name}-%{_libvrs}
 
 %prep
 %autosetup

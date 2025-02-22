@@ -7,7 +7,7 @@
 		<param name="url">https://github.com/PerryWerneck/lib3270.git</param>
 		<param name="versionformat">@PARENT_TAG@+git%cd</param>
 		<param name="scm">git</param>
-		<param name="revision">master</param>
+		<param name="revision">develop</param>
 	</service>
   
 	<service name="recompress">

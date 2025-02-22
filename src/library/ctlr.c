@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
+ * Copyright 1995, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 by Paul Mattes.
  * Copyright (C) 2008 Banco do Brasil S.A.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -815,7 +816,7 @@ enum pds ctlr_write(H3270 *hSession, unsigned char buf[], int buflen, Boolean er
 	enum pds	rv = PDS_OKAY_NO_OUTPUT;
 	int		fa_addr;
 	Boolean		add_dbcs;
-	unsigned char	add_c1, add_c2 = 0;
+	unsigned char	add_c1 = 0, add_c2 = 0;
 	Boolean		aborted = False;
 #if defined(X3270_DBCS)
 	enum dbcs_state	d;

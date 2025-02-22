@@ -19,7 +19,7 @@
 %define gobject_version 2
 
 Name:           lib3270
-Version: 5.6.0
+Version:        5.5.0
 Release:        0
 Summary:        TN3270 Access library
 License:        LGPL-3.0-only
@@ -58,15 +58,15 @@ Requires:	%{name}-%{_libvrs} = %{version}
 %description devel
 Header files for the TN3270 access library.
 
-%package glib%{gobject_version}
+%package glib%{gobject_version}-%{_libvrs}
 Summary:	Glib wrapper for %{name}
 Group:		Development/Libraries/C and C++
-Requires:	%{name}-%{_libvrs} = %{version}
 
-%description glib%{gobject_version}
+%description glib%{gobject_version}-%{_libvrs}
 GLib wrapper for lib3270 library, providing a tn3270 gobject for gtk/glib application
 
 %lang_package -n %{name}-%{_libvrs}
+%debug_package
 
 %prep
 %autosetup
@@ -91,7 +91,18 @@ GLib wrapper for lib3270 library, providing a tn3270 gobject for gtk/glib applic
 %else
 %doc LICENSE AUTHORS README.md
 %endif
-%{_libdir}/*.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+
+%files glib%{gobject_version}-%{_libvrs}
+
+# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
+%if 0%{?sle_version} > 120200
+%doc AUTHORS README.md
+%license LICENSE
+%else
+%doc LICENSE AUTHORS README.md
+%endif
+%{_libdir}/%{name}-glib.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %files devel
 %{_libdir}/*.so
@@ -105,5 +116,8 @@ GLib wrapper for lib3270 library, providing a tn3270 gobject for gtk/glib applic
 
 %post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 %postun -n %{name}-%{_libvrs} -p /sbin/ldconfig
+
+%post glib%{gobject_version}-%{_libvrs} -p /sbin/ldconfig
+%postun glib%{gobject_version}-%{_libvrs} -p /sbin/ldconfig
 
 %changelog

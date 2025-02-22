@@ -54,8 +54,10 @@
 	void *timer;
 	void *resolved;
 
-	char buffer[0];
- } Context;
+	char *hostname;
+	char *service;
+
+} Context;
 
  static int finalize(H3270 *hSession, Context *context) {	
 
@@ -302,17 +304,18 @@
 	// Allocate and setup context
 	Context *context = lib3270_malloc(sizeof(Context) + strlen(hostname) + strlen(service) + 3);
 	memset(context,0,sizeof(Context));
+	context->hostname = (char *) (context + 1);
+	strcpy(context->hostname,hostname);
+	context->service = context->hostname + strlen(hostname) + 1;
+	strcpy(context->service,service);	
 	
 	// Set disconnect handler
 	context->parent.disconnect = (void *) finalize;
 
 	// Setup DNS search
 	context->list[0] = malloc(sizeof(struct gaicb));
-	context->list[0]->ar_name = context->buffer;
-	strcpy((char *) context->list[0]->ar_name,hostname);
-
-	context->list[0]->ar_service = context->list[0]->ar_name + strlen(hostname) + 1;
-	strcpy((char *) context->list[0]->ar_service,service);
+	context->list[0]->ar_name = context->hostname;
+	context->list[0]->ar_service = context->service;
 
 	context->hints.ai_family 		= AF_UNSPEC;	// Allow IPv4 or IPv6
 	context->hints.ai_socktype		= SOCK_STREAM;	// Stream socket

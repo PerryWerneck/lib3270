@@ -64,7 +64,7 @@
 #endif
 */
 
-#include "statusc.h"
+#include <private/status.h>
 // #include "tablesc.h"
 #include "telnetc.h"
 #include <private/toggle.h>

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#error deprecated
+
 #include <private/network.h>
 
 #ifndef LIB3270_NETWORKING_H_INCLUDED

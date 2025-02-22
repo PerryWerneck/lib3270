@@ -44,7 +44,8 @@
 
  #include <internals.h>
  #include <private/host.h>
- #include <statusc.h>
+ #include <private/status.h>
+ 
  #include <private/trace.h>
 
  typedef struct {

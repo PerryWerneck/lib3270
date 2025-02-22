@@ -31,7 +31,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "screen.h"
+#include <private/screen.h>
 #include "ctlrc.h"
 #include <private/popup.h>
 #include <lib3270/trace.h>

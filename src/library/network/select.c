@@ -36,7 +36,7 @@
 #include <lib3270.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
-#include <networking.h>
+// #include <networking.h>
 #include <string.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/

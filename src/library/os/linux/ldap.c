@@ -38,7 +38,7 @@
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <openssl/x509.h>
-#include <networking.h>
+// #include <networking.h>
 
 #define LDAP_DEPRECATED 1
 #include <ldap.h>

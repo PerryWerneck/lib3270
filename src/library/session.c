@@ -38,7 +38,7 @@
 #include "kybdc.h"
 #include "ansic.h"
 #include <private/toggle.h>
-#include "screen.h"
+#include <private/screen.h>
 #include "screenc.h"
 #include "ctlrc.h"
 #include "ftc.h"

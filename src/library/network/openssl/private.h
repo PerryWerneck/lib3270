@@ -49,7 +49,7 @@
 #include <lib3270/os.h>
 #include <array.h>
 #include <internals.h>
-#include <networking.h>
+// #include <networking.h>
 #include <private/trace.h>
 
 #include <openssl/ssl.h>

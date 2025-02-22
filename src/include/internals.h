@@ -29,7 +29,7 @@
 #include <lib3270/session.h>
 #include <lib3270/actions.h>
 #include <lib3270/popup.h>
-#include <networking.h>
+// #include <networking.h>
 #include <lib3270/os.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>

@@ -98,7 +98,7 @@ LIB3270_EXPORT int lib3270_set_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, int 
 }
 
 /**
- * @brief Gets the status of a specific toggle in the given 3270 session.
+ * @brief Gets the state of a specific toggle in the given 3270 session.
  *
  * This function retrieves the status of the toggle identified by the given
  * toggle index for the specified 3270 session.

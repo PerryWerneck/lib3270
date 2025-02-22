@@ -26,6 +26,11 @@
 
  #define NETWORK_BUFFER_LENGTH	16384
 
+ typedef struct lib3270_ssl_message {
+	LIB3270_POPUP_HEAD			///< @brief Standard popup fields.
+	const char		* icon;		///< @brief Icon name from https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+ } LIB3270_SSL_MESSAGE;
+
  typedef struct _lib3270_net_context {
 	int sock;
 	int (*disconnect)(H3270 *hSession, struct _lib3270_net_context *context);

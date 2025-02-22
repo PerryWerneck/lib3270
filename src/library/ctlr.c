@@ -43,7 +43,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include "3270ds.h"
-#include "screen.h"
+#include <private/screen.h>
 
 #include "ctlrc.h"
 #include "ftc.h"
@@ -55,7 +55,7 @@
 #include "screenc.h"
 #include "seec.h"
 #include "sf.h"
-#include "statusc.h"
+#include <private/status.h>
 #include "telnetc.h"
 #include <private/trace.h>
 #include "utilc.h"

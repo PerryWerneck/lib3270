@@ -43,9 +43,9 @@
 #include <private/trace.h>
 #include "utilc.h"
 #include "widec.h"
-#include "screen.h"
+#include <private/screen.h>
 #include "errno.h"
-#include "statusc.h"
+#include <private/status.h>
 #include <private/toggle.h>
 #include <lib3270/actions.h>
 #include <lib3270/log.h>

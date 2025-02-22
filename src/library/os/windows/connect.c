@@ -41,7 +41,7 @@
 #include "telnetc.h"
 #include <private/host.h>
 #include <private/trace.h>
-#include "screen.h"
+#include <private/screen.h>
 
 /*---[ Implement ]-------------------------------------------------------------------------------*/
 

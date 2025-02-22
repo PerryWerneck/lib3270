@@ -35,7 +35,7 @@
 
 #include "telnetc.h"
 #include <private/host.h>
-#include "statusc.h"
+#include <private/status.h>
 #include <errno.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>

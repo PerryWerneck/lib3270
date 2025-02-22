@@ -28,9 +28,10 @@
  #include <lib3270/log.h>
  #include <sys/time.h>
 
- #include <networking.h>
+ // #include <networking.h>
  #include <private/linkedlist.h>
  #include <private/toggle.h>
+ #include <private/network.h>
  
  #define LIB3270_FULL_MODEL_NAME_LENGTH	13
  #define LIB3270_LU_MAX					32
@@ -384,7 +385,7 @@
 	unsigned char			  bg;
 	unsigned char			  saved_bg;
 
-	// Trace file writer.
+	// Trace context.
 	LIB3270_TRACE_CONTEXT *trace;
 
 	// log context.

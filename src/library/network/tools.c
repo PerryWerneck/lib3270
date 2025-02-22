@@ -29,7 +29,7 @@
  #include <config.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
- #include <networking.h>
+ // #include <networking.h>
  #include <private/network.h>
  #include <fcntl.h>
  #include <private/intl.h>

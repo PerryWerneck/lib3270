@@ -46,14 +46,14 @@
 #include <private/host.h>
 #include <private/trace.h>
 #include "telnetc.h"
-#include "screen.h"
+#include <private/screen.h>
 #include "utilc.h"
 
 #include <lib3270/internals.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/os.h>
-#include <networking.h>
+// #include <networking.h>
 //#include <fcntl.h>
 #include <poll.h>
 

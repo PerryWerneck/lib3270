@@ -46,7 +46,7 @@
 #endif /*]*/
 
 #include "3270ds.h"
-#include "screen.h"
+#include <private/screen.h>
 //#include "resources.h"
 #include "ctlrc.h"
 

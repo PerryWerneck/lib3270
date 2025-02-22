@@ -61,8 +61,8 @@ struct ta;
 #include "kybdc.h"
 #include <private/popup.h>
 #include "screenc.h"
-#include "screen.h"
-#include "statusc.h"
+#include <private/screen.h>
+#include <private/status.h>
 #include "telnetc.h"
 #include <private/toggle.h>
 #include <private/trace.h>

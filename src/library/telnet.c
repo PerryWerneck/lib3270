@@ -90,13 +90,13 @@
 #include <private/popup.h>
 // #include "proxyc.h"
 //#include "resolverc.h"
-#include "statusc.h"
+#include <private/status.h>
 // #include "tablesc.h"
 #include "telnetc.h"
 #include <private/trace.h>
 #include "utilc.h"
 #include "w3miscc.h"
-#include "screen.h"
+#include <private/screen.h>
 
 #include <lib3270/internals.h>
 #include <lib3270/trace.h>

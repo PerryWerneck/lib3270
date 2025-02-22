@@ -462,36 +462,25 @@
 
  }
 
-/**
- * tn3270_session_new:
- *
- * Creates a new TN3270 session.
- *
- * Returns: (transfer full): a new #TN3270Session.
- */
  Tn3270Session * tn3270_session_new() {
 	return g_object_new(TN3270_TYPE_SESSION,NULL);
  }
 
- H3270 * tn3270_session_get_h3270(Tn3270Session *session) {
+ H3270 * tn3270_session_get_h3270(GObject *session) {
 	g_return_val_if_fail(TN3270_IS_SESSION(session),NULL);
-	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(session);
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(session));
 	return self->handler;
  }
 
- void tn3270_session_connect(GObject *session, int timeout) {
-	g_return_if_fail(TN3270_IS_SESSION(session));
+ int tn3270_session_connect(GObject *session, int timeout) {
+	g_return_val_if_fail(TN3270_IS_SESSION(session),-(errno = EINVAL));
 	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(session));
-
-	lib3270_connect(self->handler,timeout);
-
+	return lib3270_connect(self->handler,timeout);
  }
 
- void tn3270_session_disconnect(GObject *session) {
-	g_return_if_fail(TN3270_IS_SESSION(session));
+ int tn3270_session_disconnect(GObject *session) {
+	g_return_val_if_fail(TN3270_IS_SESSION(session),-(errno = EINVAL));
 	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(session));
-
-	lib3270_disconnect(self->handler);
-
+	return lib3270_disconnect(self->handler);
  }
 

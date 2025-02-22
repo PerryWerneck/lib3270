@@ -86,10 +86,26 @@
 	
  };
 
- Tn3270Session * tn3270_session_new();
- GType 			tn3270_session_get_type(void);
+ GType tn3270_session_get_type(void);
 
- H3270 * tn3270_session_get_h3270(Tn3270Session *session);
+/**
+ * tn3270_session_new:
+ *
+ * Creates a new Tn3270Session instance.
+ *
+ * Returns: (Transfer full): A pointer to the newly created Tn3270Session instance.
+ */
+ Tn3270Session * tn3270_session_new();
+ 
+/**
+ * tn3270_session_get_h3270:
+ * @session: A pointer to a Tn3270Session structure.
+ *
+ * Retrieves the H3270 handle associated with the given TN3270 session.
+ *
+ * Returns: (Transfer none): A pointer to the H3270 handle.
+ */
+ H3270 * tn3270_session_get_h3270(GObject *session);
 
 /**
  * @brief Establishes a connection for a TN3270 session.
@@ -100,7 +116,7 @@
  * This function initiates a connection for the given TN3270 session. It sets up
  * the necessary parameters and establishes communication with the TN3270 server.
  */
- void tn3270_session_connect(GObject *session, int timeout);
+ int tn3270_session_connect(GObject *session, int timeout);
  
 /**
  * tn3270_disconnect:
@@ -109,6 +125,6 @@
  * Disconnects the given TN3270 session. This function will terminate the connection
  * associated with the provided session and perform any necessary cleanup.
  */
- void tn3270_session_disconnect(GObject *session);
+ int tn3270_session_disconnect(GObject *session);
 
  G_END_DECLS

@@ -42,55 +42,53 @@
 
 	loop = g_main_loop_new(g_main_context_default(), FALSE);
 
-	g_autoptr(Tn3270Session) object = tn3270_session_new();
-
-	H3270 * hSession = tn3270_session_get_h3270(object);
+	g_autoptr(GObject) object = G_OBJECT(tn3270_session_new());
 
 	if(argc == 1) {
 
-		lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
+		g_object_set(
+			object,
+				"url","tn3270://127.0.0.1:3270",
+				"tracefile","lib3270.trace",
+				"logfile","lib3270.log",
+				"screentrace", TRUE,
+				"eventtrace", TRUE,
+				"autoconnect", TRUE,
+				"nettrace", TRUE,
+				"ssltrace", TRUE,
+				NULL
+		);	
+
+		g_message("Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 	
-		lib3270_trace_open_file(hSession,"lib3270.trace");
-		lib3270_log_open_file(hSession,"lib3270.log",86400);
-	
-		lib3270_log_write(hSession,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
-	
-		lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
-		lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,1);
-		lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,1);
-		lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,1);
-		lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,1);
-		
-		lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,1);
-		
-		lib3270_connect(hSession,5);
-	
+		tn3270_session_connect(object,5);
+
 	} else {
 
 		int c;
 		while( (c = getopt(argc, argv, "u:t:l:ac")) != -1) {
 
 			switch(c) {
-			case 'u':
-				lib3270_set_url(hSession,optarg);
+			case 'u':	
+				g_object_set(object,"url",optarg,NULL);
 				break;
 
 			case 't':
-				lib3270_trace_open_file(hSession,optarg ? optarg : "lib3270.trace");
+				g_object_set(object,"tracefile",optarg ? optarg : "lib3270.trace",NULL);
 				break;
 
 			case 'l':
-				lib3270_log_open_file(hSession,optarg ? optarg : "lib3270.log",86400);
-				lib3270_log_write(hSession,"TEST","Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
+				g_object_set(object,"logfile",optarg ? optarg : "lib3270.log",NULL);
+				g_message("Testprogram %s starts (%s)",argv[0],LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 				break;
 
 			case 'a':
-				lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,1);
+				g_object_set(object,"autoconnect",TRUE,NULL);
 				break;
 
 			case 'c':
-				lib3270_set_toggle(hSession,LIB3270_TOGGLE_CONNECT_ON_STARTUP,0);
-				lib3270_connect(hSession,5);
+				g_object_set(object,"autoconnect",FALSE,NULL);
+				tn3270_session_connect(object,5);
 				break;
 			}
 

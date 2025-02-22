@@ -86,9 +86,29 @@
 	
  };
 
- LIB3270_EXPORT Tn3270Session * tn3270_session_new();
- LIB3270_EXPORT GType 			tn3270_session_get_type(void);
+ Tn3270Session * tn3270_session_new();
+ GType 			tn3270_session_get_type(void);
 
- LIB3270_EXPORT H3270 * tn3270_session_get_h3270(Tn3270Session *session);
+ H3270 * tn3270_session_get_h3270(Tn3270Session *session);
+
+/**
+ * @brief Establishes a connection for a TN3270 session.
+ * 
+ * @param session A pointer to the Tn3270Session structure representing the session to connect.
+ * @param timeout The timeout in seconds to wait for the connection to be established.
+ * 
+ * This function initiates a connection for the given TN3270 session. It sets up
+ * the necessary parameters and establishes communication with the TN3270 server.
+ */
+ void tn3270_session_connect(GObject *session, int timeout);
+ 
+/**
+ * tn3270_disconnect:
+ * @session: A pointer to a Tn3270Session structure representing the session to be disconnected.
+ *
+ * Disconnects the given TN3270 session. This function will terminate the connection
+ * associated with the provided session and perform any necessary cleanup.
+ */
+ void tn3270_session_disconnect(GObject *session);
 
  G_END_DECLS

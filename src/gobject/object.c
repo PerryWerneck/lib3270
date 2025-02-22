@@ -320,7 +320,7 @@
 	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(object));
 	Tn3270SessionClass *klass = TN3270_SESSION_GET_CLASS(object);
 
-	debug("Setting property %s with id %u (max %lu)",pspec->name,prop_id,klass->properties.count);
+	debug("----> Setting property %s with id %u (max %lu)",pspec->name,prop_id,klass->properties.count);
 
 	if(prop_id > klass->properties.count) 
 	{
@@ -478,3 +478,20 @@
 	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(session);
 	return self->handler;
  }
+
+ void tn3270_session_connect(GObject *session, int timeout) {
+	g_return_if_fail(TN3270_IS_SESSION(session));
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(session));
+
+	lib3270_connect(self->handler,timeout);
+
+ }
+
+ void tn3270_session_disconnect(GObject *session) {
+	g_return_if_fail(TN3270_IS_SESSION(session));
+	Tn3270SessionPrivate *self = tn3270_session_get_instance_private(TN3270_SESSION(session));
+
+	lib3270_disconnect(self->handler);
+
+ }
+

@@ -81,6 +81,10 @@
 	}
 
 	if(context->list[0]) {
+		if(context->list[0]->ar_result) {
+			freeaddrinfo(context->list[0]->ar_result);
+			context->list[0]->ar_result = NULL;
+		}
 		free(context->list[0]);
 		context->list[0] = NULL;
 	}
@@ -218,7 +222,8 @@
 						continue;
 					} else if(connect_socket(hSession, sock, ai->ai_addr, ai->ai_addrlen) == 0) {
 						// Connect socket suceeded, the context was replaced, release it.
-						freeaddrinfo(req->ar_result);	
+						freeaddrinfo(req->ar_result);
+						req->ar_result = NULL;	
 						finalize(hSession,context);
 						lib3270_free(context);
 						return;
@@ -231,7 +236,8 @@
 
 				// Release resources
 				debug("%s: Releasing ar_result",__FUNCTION__);
-				freeaddrinfo(req->ar_result);	
+				freeaddrinfo(req->ar_result);
+				req->ar_result = NULL;	
 
 			}
 

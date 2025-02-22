@@ -36,6 +36,18 @@
  #include <stdio.h>
  #include <getopt.h>
 
+ #ifdef HAVE_SIGNAL_H
+ 	#include <signal.h>
+ #endif // HAVE_SIGNAL_H
+
+ static int enabled = 1;
+
+ #ifdef HAVE_SIGNAL_H
+ static void handle_signal(int sig) {
+	enabled = 0;
+ }
+ #endif // HAVE_SIGNAL_H
+
  int main(int argc, char *argv[]) {
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
@@ -91,7 +103,14 @@
 		}
 	}
 
-	while(1) {
+	#ifdef HAVE_SIGNAL_H
+		signal(SIGINT,handle_signal);
+		signal(SIGTERM,handle_signal);
+		signal(SIGQUIT,handle_signal);
+		signal(SIGHUP,handle_signal);
+	#endif // HAVE_SIGNAL_H
+   
+	while(enabled) {
 		lib3270_mainloop_run(hSession,1);
 	}
 

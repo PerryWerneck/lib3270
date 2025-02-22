@@ -28,7 +28,7 @@ ExclusiveArch:  do_not_build
 
 Summary:		TN3270 access library for 64 bits Windows
 Name:			mingw64-%{_libname}
-Version: 5.5.1
+Version: 5.6.0
 Release:		0
 License:		LGPL-3.0
 

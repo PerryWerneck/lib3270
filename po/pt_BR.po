@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-15 15:42-0300\n"
+"POT-Creation-Date: 2025-02-22 10:12-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -18,22 +18,6 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "X-Generator: Gtranslator 40.0\n"
-
-#: src/library/paste.c:373
-msgid "Action failed"
-msgstr "Ação falhou"
-
-#: src/library/paste.c:374
-msgid "Unable to paste text"
-msgstr "Incapaz de colar texto"
-
-#: src/library/paste.c:375
-msgid "Keyboard is locked"
-msgstr "Teclado está bloqueado"
-
-#: src/library/paste.c:375
-msgid "Unexpected error"
-msgstr "Erro inesperado"
 
 #: src/library/keyboard/kybd.c:267
 #, c-format
@@ -79,6 +63,46 @@ msgstr "%s: Caractere desconhecido depois de \\pa"
 #, c-format
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
+
+#: src/library/session.c:156
+msgid "Can't print"
+msgstr "Não é possível imprimir"
+
+#: src/library/session.c:156
+msgid "Unable to print"
+msgstr "Incapaz de imprimir"
+
+#: src/library/session.c:162
+msgid "Can't save"
+msgstr "Não é possível salvar"
+
+#: src/library/session.c:162
+msgid "Unable to save"
+msgstr "Incapaz de salvar"
+
+#: src/library/session.c:168
+msgid "Can't load"
+msgstr "Não foi possível carregar"
+
+#: src/library/session.c:168
+msgid "Unable to load from file"
+msgstr "Não foi possível ler do arquivo"
+
+#: src/library/paste.c:373
+msgid "Action failed"
+msgstr "Ação falhou"
+
+#: src/library/paste.c:374
+msgid "Unable to paste text"
+msgstr "Incapaz de colar texto"
+
+#: src/library/paste.c:375
+msgid "Keyboard is locked"
+msgstr "Teclado está bloqueado"
+
+#: src/library/paste.c:375
+msgid "Unexpected error"
+msgstr "Erro inesperado"
 
 #. Default keycode
 #. Icon name
@@ -497,74 +521,10 @@ msgstr "RPQ: Erro em gethostbyname"
 msgid "RPQ ADDRESS term incomplete: connection context not found"
 msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 
-#: src/library/util.c:273
+#: src/library/util.c:274
 #, c-format
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
-
-#: src/library/session.c:156
-msgid "Can't print"
-msgstr "Não é possível imprimir"
-
-#: src/library/session.c:156
-msgid "Unable to print"
-msgstr "Incapaz de imprimir"
-
-#: src/library/session.c:162
-msgid "Can't save"
-msgstr "Não é possível salvar"
-
-#: src/library/session.c:162
-msgid "Unable to save"
-msgstr "Incapaz de salvar"
-
-#: src/library/session.c:168
-msgid "Can't load"
-msgstr "Não foi possível carregar"
-
-#: src/library/session.c:168
-msgid "Unable to load from file"
-msgstr "Não foi possível ler do arquivo"
-
-#: src/library/network/default/context.c:102
-#: src/library/network/default/context.c:175
-#: src/library/os/linux/event_dispatcher.c:130
-#: src/library/os/linux/mainloop.c:254
-#: src/library/os/darwin/event_dispatcher.c:130
-#: src/library/os/windows/event_dispatcher.c:135
-#: src/library/os/windows/connect.c:223 src/library/telnet.c:301
-msgid "Network error"
-msgstr "Erro de rede"
-
-#: src/library/network/default/context.c:103
-#, fuzzy
-msgid "Failed to receive data from the host"
-msgstr "Erro recebendo dados do servidor"
-
-#: src/library/network/default/context.c:105
-#: src/library/network/default/context.c:178 src/library/network/tools.c:210
-#: src/library/network/tools.c:235 src/library/os/linux/connect.c:75
-#: src/library/os/linux/connect.c:118 src/library/os/linux/connect.c:140
-#: src/library/os/linux/connect.c:172 src/library/os/linux/connect.c:205
-#: src/library/os/linux/resolv.c:123 src/library/os/linux/resolv.c:139
-#: src/library/os/linux/resolv.c:174 src/library/os/linux/resolv.c:261
-#: src/library/os/linux/resolv.c:274 src/library/os/linux/resolv.c:346
-#: src/library/connect.c:176 src/library/connect.c:253
-msgid "OK"
-msgstr ""
-
-#: src/library/network/default/context.c:176
-#, fuzzy
-msgid "Failed to send data to the host"
-msgstr "Erro ao enviar dados para o servidor"
-
-#: src/library/network/default/context.c:215
-msgid "The session is not secure"
-msgstr "A sessão não é segura"
-
-#: src/library/network/default/context.c:216
-msgid "No TLS/SSL support on this session"
-msgstr "Sem suporte TLS/SSL nessa sessão"
 
 #: src/library/network/openssl/context.c:239
 msgid "Can't initialize the TLS/SSL context."
@@ -1006,7 +966,7 @@ msgstr "Um EOF que viola o protocolo foi encontrado"
 msgid "Unexpected I/O error"
 msgstr "Erro de I/O inesperado"
 
-#: src/library/network/state.c:77
+#: src/library/network/state.c:67
 msgid "The connection is insecure"
 msgstr "A conexão não é segura"
 
@@ -1039,12 +999,12 @@ msgid ""
 "server status and network configuration, then try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:190 src/library/os/linux/connect.c:72
-#: src/library/os/linux/connect.c:115 src/library/os/linux/connect.c:137
-#: src/library/os/linux/connect.c:169 src/library/os/linux/connect.c:202
-#: src/library/os/linux/connect.c:273 src/library/os/linux/connect.c:289
+#: src/library/network/tools.c:190 src/library/os/linux/connect.c:73
+#: src/library/os/linux/connect.c:116 src/library/os/linux/connect.c:138
+#: src/library/os/linux/connect.c:170 src/library/os/linux/connect.c:203
+#: src/library/os/linux/connect.c:274 src/library/os/linux/connect.c:290
 #: src/library/os/windows/connect.c:357 src/library/os/windows/connect.c:375
-#: src/library/connect.c:173 src/library/connect.c:250
+#: src/library/connect.c:175 src/library/connect.c:253
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -1061,125 +1021,212 @@ msgstr "Erro de interpretação"
 msgid "fcntl() error when getting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
+#: src/library/network/tools.c:210 src/library/network/tools.c:235
+#: src/library/network/insecure.c:105 src/library/network/insecure.c:178
+#: src/library/os/linux/connect.c:76 src/library/os/linux/connect.c:119
+#: src/library/os/linux/connect.c:141 src/library/os/linux/connect.c:173
+#: src/library/os/linux/connect.c:206 src/library/os/linux/resolv.c:129
+#: src/library/os/linux/resolv.c:145 src/library/os/linux/resolv.c:180
+#: src/library/os/linux/resolv.c:269 src/library/os/linux/resolv.c:282
+#: src/library/os/linux/resolv.c:355 src/library/connect.c:178
+#: src/library/connect.c:256
+msgid "OK"
+msgstr ""
+
 #: src/library/network/tools.c:233
 #, fuzzy
 msgid "fcntl() error when setting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
+#: src/library/network/insecure.c:102 src/library/network/insecure.c:175
+#: src/library/os/linux/event_dispatcher.c:132
+#: src/library/os/linux/mainloop.c:254
+#: src/library/os/darwin/event_dispatcher.c:132
+#: src/library/os/windows/event_dispatcher.c:137
+#: src/library/os/windows/connect.c:223 src/library/telnet.c:302
+msgid "Network error"
+msgstr "Erro de rede"
+
+#: src/library/network/insecure.c:103
+#, fuzzy
+msgid "Failed to receive data from the host"
+msgstr "Erro recebendo dados do servidor"
+
+#: src/library/network/insecure.c:176
+#, fuzzy
+msgid "Failed to send data to the host"
+msgstr "Erro ao enviar dados para o servidor"
+
+#: src/library/network/insecure.c:215
+msgid "The session is not secure"
+msgstr "A sessão não é segura"
+
+#: src/library/network/insecure.c:216
+msgid "No TLS/SSL support on this session"
+msgstr "Sem suporte TLS/SSL nessa sessão"
+
 #. Can't get contents
-#: src/library/os/linux/download.c:55 src/library/os/darwin/download.c:55
+#: src/library/os/linux/download.c:57 src/library/os/darwin/download.c:55
 #: src/library/os/windows/download.c:62
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
-#: src/library/os/linux/event_dispatcher.c:131
+#: src/library/os/linux/event_dispatcher.c:133
 #: src/library/os/linux/mainloop.c:255
-#: src/library/os/darwin/event_dispatcher.c:131
-#: src/library/os/windows/event_dispatcher.c:136
+#: src/library/os/darwin/event_dispatcher.c:133
+#: src/library/os/windows/event_dispatcher.c:138
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
-#: src/library/os/linux/ldap.c:82 src/library/os/linux/ldap.c:91
+#: src/library/os/linux/ldap.c:84 src/library/os/linux/ldap.c:93
 #: src/library/os/darwin/ldap.c:82 src/library/os/darwin/ldap.c:91
 #: src/library/os/windows/ldap.c:101 src/library/os/windows/ldap.c:110
 msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
 msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
 
-#: src/library/os/linux/ldap.c:147 src/library/os/darwin/ldap.c:147
+#: src/library/os/linux/ldap.c:149 src/library/os/darwin/ldap.c:147
 #, fuzzy
 msgid "LDAP search did not produce any attributes."
 msgstr "Pesquisa LDAP não produziu atributos."
 
-#: src/library/os/linux/ldap.c:157 src/library/os/darwin/ldap.c:157
+#: src/library/os/linux/ldap.c:159 src/library/os/darwin/ldap.c:157
 #, fuzzy
 msgid "LDAP search did not produce any values."
 msgstr "Pesquisa LDAP não produziu valores."
 
-#: src/library/os/linux/ldap.c:167 src/library/os/darwin/ldap.c:167
+#: src/library/os/linux/ldap.c:169 src/library/os/darwin/ldap.c:167
 #: src/library/os/windows/ldap.c:204
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/library/os/linux/connect.c:73 src/library/os/linux/connect.c:203
+#: src/library/os/linux/connect.c:74 src/library/os/linux/connect.c:204
 #, fuzzy
 msgid "Unable to connect to host"
 msgstr "Não é possível conectar em servidores seguros"
 
-#: src/library/os/linux/connect.c:116 src/library/os/windows/connect.c:224
+#: src/library/os/linux/connect.c:117 src/library/os/windows/connect.c:224
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/os/linux/connect.c:130 src/library/os/windows/connect.c:232
+#: src/library/os/linux/connect.c:131 src/library/os/windows/connect.c:232
 #, fuzzy, c-format
 msgid "Can't connect to %s"
 msgstr "Não foi possível conectar a %s:%s"
 
-#: src/library/os/linux/connect.c:162
+#: src/library/os/linux/connect.c:163
 #, fuzzy, c-format
 msgid "Failed to establish connection to %s"
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/os/linux/connect.c:274 src/library/os/windows/connect.c:358
+#: src/library/os/linux/connect.c:275 src/library/os/windows/connect.c:358
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) falhou"
 
-#: src/library/os/linux/connect.c:285 src/library/os/windows/connect.c:371
+#: src/library/os/linux/connect.c:286 src/library/os/windows/connect.c:371
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/library/os/linux/connect.c:285 src/library/os/windows/connect.c:371
+#: src/library/os/linux/connect.c:286 src/library/os/windows/connect.c:371
 msgid "enable"
 msgstr "habilitar"
 
-#: src/library/os/linux/connect.c:285 src/library/os/windows/connect.c:371
+#: src/library/os/linux/connect.c:286 src/library/os/windows/connect.c:371
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/library/os/linux/connect.c:301
+#: src/library/os/linux/connect.c:302
 #, c-format
 msgid "setsockopt(%s)"
 msgstr "setsockopt(%s)"
 
-#: src/library/os/linux/resolv.c:120 src/library/os/linux/resolv.c:136
-#: src/library/os/linux/resolv.c:171 src/library/os/linux/resolv.c:258
-#: src/library/os/linux/resolv.c:271 src/library/os/linux/resolv.c:343
+#: src/library/os/linux/curl.c:165 src/library/os/darwin/curl.c:171
+msgid "Can't initialize curl operation"
+msgstr "Erro ao inicializar operação CURL"
+
+#: src/library/os/linux/resolv.c:126 src/library/os/linux/resolv.c:142
+#: src/library/os/linux/resolv.c:177 src/library/os/linux/resolv.c:266
+#: src/library/os/linux/resolv.c:279 src/library/os/linux/resolv.c:352
 #, fuzzy
 msgid "DNS error"
 msgstr "Erro no socket"
 
-#: src/library/os/linux/resolv.c:121 src/library/os/linux/resolv.c:137
-#: src/library/os/linux/resolv.c:172
+#: src/library/os/linux/resolv.c:127 src/library/os/linux/resolv.c:143
+#: src/library/os/linux/resolv.c:178
 #, fuzzy
 msgid "Error resolving host name"
 msgstr "Erro ao resolver %s: %s"
 
-#: src/library/os/linux/resolv.c:122
+#: src/library/os/linux/resolv.c:128
 msgid "Unexpected number of bytes read from signalfd"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:145
+#: src/library/os/linux/resolv.c:151
 #, c-format
 msgid "Received signal with unexpected si_code '%d' while connecting to %s"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:259
+#: src/library/os/linux/resolv.c:267
 msgid "Unexpected response to cancel request"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:272 src/library/os/linux/resolv.c:344
+#: src/library/os/linux/resolv.c:280 src/library/os/linux/resolv.c:353
 #, fuzzy
 msgid "Unable to resolve host name"
 msgstr "Não consegui encontrar o host selecionado."
-
-#: src/library/os/linux/curl.c:163 src/library/os/darwin/curl.c:171
-msgid "Can't initialize curl operation"
-msgstr "Erro ao inicializar operação CURL"
 
 #: src/library/os/windows/util.c:128 src/library/os/windows/util.c:174
 #, c-format
 msgid "Windows error %d"
 msgstr "Erro windows foi %d"
+
+#: src/library/os/windows/http.c:99
+msgid "Can't open HTTP session"
+msgstr "Não foi possível abrir sessão HTTP"
+
+#: src/library/os/windows/http.c:110
+msgid "Can't connect to HTTP server."
+msgstr "Não foi possível conectar ao servidor HTTP"
+
+#: src/library/os/windows/http.c:121
+msgid "Can't create HTTP request."
+msgstr "Não foi possível criar requisição HTTP"
+
+#: src/library/os/windows/http.c:134
+msgid "Can't send HTTP request."
+msgstr "Não posso enviar requisição HTTP"
+
+#: src/library/os/windows/http.c:145
+msgid "Error receiving HTTP response."
+msgstr "Erro recebendo resposta HTTP."
+
+#: src/library/os/windows/http.c:157
+msgid "Empty response from HTTP server."
+msgstr "Recebi resposta vazia do servidor HTTP"
+
+#: src/library/os/windows/http.c:173
+msgid "Can't read HTTP response size."
+msgstr "Não posso obter tamanho da resposta HTTP"
+
+#: src/library/os/windows/ldap.c:133
+msgid "Can't initialize LDAP"
+msgstr "Erro ao inicializar LDAP"
+
+#: src/library/os/windows/ldap.c:141
+msgid "Can't set LDAP protocol version"
+msgstr "Não é possível setar a versão do protocolo LDAP"
+
+#: src/library/os/windows/ldap.c:149
+msgid "Can't bind to LDAP server"
+msgstr "Não foi possível conectar ao servidor LDAP"
+
+#: src/library/os/windows/ldap.c:179
+msgid "LDAP Search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/library/os/windows/ldap.c:186
+msgid "LDAPSearch did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
 
 #: src/library/os/windows/connect.c:111
 msgid "WSAStartup failed"
@@ -1235,54 +1282,6 @@ msgstr "Sem conexão com servidor"
 #: src/library/os/windows/connect.c:339
 msgid "_Retry"
 msgstr "_Repetir"
-
-#: src/library/os/windows/http.c:99
-msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir sessão HTTP"
-
-#: src/library/os/windows/http.c:110
-msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP"
-
-#: src/library/os/windows/http.c:121
-msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP"
-
-#: src/library/os/windows/http.c:134
-msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP"
-
-#: src/library/os/windows/http.c:145
-msgid "Error receiving HTTP response."
-msgstr "Erro recebendo resposta HTTP."
-
-#: src/library/os/windows/http.c:157
-msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP"
-
-#: src/library/os/windows/http.c:173
-msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP"
-
-#: src/library/os/windows/ldap.c:133
-msgid "Can't initialize LDAP"
-msgstr "Erro ao inicializar LDAP"
-
-#: src/library/os/windows/ldap.c:141
-msgid "Can't set LDAP protocol version"
-msgstr "Não é possível setar a versão do protocolo LDAP"
-
-#: src/library/os/windows/ldap.c:149
-msgid "Can't bind to LDAP server"
-msgstr "Não foi possível conectar ao servidor LDAP"
-
-#: src/library/os/windows/ldap.c:179
-msgid "LDAP Search did not produce any attributes."
-msgstr "Pesquisa LDAP não produziu atributos."
-
-#: src/library/os/windows/ldap.c:186
-msgid "LDAPSearch did not produce any values."
-msgstr "Pesquisa LDAP não produziu valores."
 
 #: src/library/actions/table.c:112
 msgid "_Reconnect"
@@ -2026,8 +2025,8 @@ msgid "Connected in TN3270E mode, 3270 mode"
 msgstr ""
 
 #: src/library/properties/signed.c:59 src/library/properties/signed.c:88
-#: src/library/properties/signed.c:108 src/library/telnet.c:1838
-#: src/library/telnet.c:1858
+#: src/library/properties/signed.c:108 src/library/telnet.c:1839
+#: src/library/telnet.c:1859
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -2202,80 +2201,92 @@ msgid "Keyboard lock status"
 msgstr "Estado de bloqueio do teclado"
 
 #. Property name.
-#: src/library/properties/string.c:63
+#: src/library/properties/string.c:66
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
 
 #. Property group.
 #. Property icon.
-#: src/library/properties/string.c:75
+#: src/library/properties/string.c:78
 msgid "URL of the current host"
 msgstr "URL do host atual"
 
 #. Property name.
 #. Property group.
-#: src/library/properties/string.c:83
+#: src/library/properties/string.c:86
 msgid "Model name"
 msgstr "Nome do modelo"
 
 #. Property name.
 #. Property group.
-#: src/library/properties/string.c:91
+#: src/library/properties/string.c:94
 msgid "Host type name"
 msgstr "Nome do tipo de host"
 
 #. Property name.
-#: src/library/properties/string.c:98
+#: src/library/properties/string.c:101
 msgid "Terminal type"
 msgstr "Tipo do terminal"
 
 #. Property name.
-#: src/library/properties/string.c:105
+#: src/library/properties/string.c:108
 msgid "Terminal name"
 msgstr "Nome do terminal"
 
 #. Property name.
 #. Default charset.
 #. Property group.
-#: src/library/properties/string.c:114
+#: src/library/properties/string.c:117
 msgid "Host charset"
 msgstr "Página de código do host"
 
 #. Property name.
-#: src/library/properties/string.c:121
+#: src/library/properties/string.c:124
 msgid "Display charset"
 msgstr "Tabela de caracteres para a tela"
 
 #. Property name.
-#: src/library/properties/string.c:128
+#: src/library/properties/string.c:131
 msgid "Protocol library version"
 msgstr ""
 
 #. Property name.
-#: src/library/properties/string.c:135
+#: src/library/properties/string.c:138
 msgid "Protocol library revision"
 msgstr ""
 
 #. Property name.
-#: src/library/properties/string.c:152
+#: src/library/properties/string.c:155
 msgid "Default host URL"
 msgstr "URL parão para acesso ao host"
 
 #. Property name.
-#: src/library/properties/string.c:159
+#: src/library/properties/string.c:162
 msgid "The security state"
 msgstr "O estado da segurança"
 
 #. Property name.
-#: src/library/properties/string.c:166
+#: src/library/properties/string.c:169
 msgid "Description of the current security state"
 msgstr "Descrição do estado de segurança atual"
 
 #. Property name.
 #. Property group.
-#: src/library/properties/string.c:174
+#: src/library/properties/string.c:177
 msgid "Screen oversize if larger than the chosen model"
 msgstr "\"oversize\" maior que o modelo escolhido"
+
+#. Property name.
+#: src/library/properties/string.c:184
+#, fuzzy
+msgid "Trace filename"
+msgstr "O nome do arquivo de trace"
+
+#. Property name.
+#: src/library/properties/string.c:191
+#, fuzzy
+msgid "Log filename"
+msgstr "Define o nome do arquivo de log"
 
 #. Property name.
 #: src/library/properties/boolean.c:62
@@ -2349,22 +2360,22 @@ msgstr "numeric lock"
 msgid "Non zero if the download of CRL is enabled"
 msgstr "Diferente de zero se o host se o download do CRL está habilitado"
 
-#: src/library/connect.c:174
+#: src/library/connect.c:176
 #, fuzzy
 msgid "Invalid connection scheme"
 msgstr "A conexão é segura ?"
 
-#: src/library/connect.c:182
+#: src/library/connect.c:184
 #, c-format
 msgid "Unsupported scheme '%s' in URL %s"
 msgstr ""
 
-#: src/library/connect.c:251
+#: src/library/connect.c:254
 #, fuzzy
 msgid "Unable to activate SSL connection"
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/connect.c:252
+#: src/library/connect.c:255
 msgid "The OpenSSL library is not available in this build"
 msgstr ""
 
@@ -2431,33 +2442,33 @@ msgstr "Outro (TSO)"
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/library/telnet.c:776
+#: src/library/telnet.c:777
 msgid "Warning"
 msgstr "Alerta"
 
-#: src/library/telnet.c:777
+#: src/library/telnet.c:778
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
 
 #. None of the LUs worked.
-#: src/library/telnet.c:977
+#: src/library/telnet.c:978
 msgid "Cannot connect to specified LU"
 msgstr "Não foi possível conectar na LU pedida"
 
-#: src/library/telnet.c:1044
+#: src/library/telnet.c:1045
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
 
-#: src/library/telnet.c:1213
+#: src/library/telnet.c:1214
 msgid "Host rejected device type or request type"
 msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 
 #. No more LUs to try.  Give up.
-#: src/library/telnet.c:1223
+#: src/library/telnet.c:1224
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
-#: src/library/telnet.c:1225
+#: src/library/telnet.c:1226
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
@@ -2465,83 +2476,83 @@ msgstr "Tipo de dispositivo rejeitado"
 #. * They've added something.  Abandon
 #. * TN3270E, they're brain dead.
 #.
-#: src/library/telnet.c:1283
+#: src/library/telnet.c:1284
 msgid "Host illegally added function(s)"
 msgstr "Host illegally added function(s)"
 
-#: src/library/telnet.c:1825
+#: src/library/telnet.c:1826
 msgid "Unconnected"
 msgstr "Não conectado"
 
-#: src/library/telnet.c:1826 src/library/telnet.c:1846
+#: src/library/telnet.c:1827 src/library/telnet.c:1847
 msgid "Connecting"
 msgstr "Conectando"
 
-#: src/library/telnet.c:1827
+#: src/library/telnet.c:1828
 msgid "Pending"
 msgstr "Pendente"
 
-#: src/library/telnet.c:1828
+#: src/library/telnet.c:1829
 msgid "Connected initial"
 msgstr "Connected initial"
 
-#: src/library/telnet.c:1829
+#: src/library/telnet.c:1830
 msgid "TN3270 NVT"
 msgstr "TN3270 NVT"
 
-#: src/library/telnet.c:1830
+#: src/library/telnet.c:1831
 msgid "TN3270 3270"
 msgstr "TN3270 3270"
 
-#: src/library/telnet.c:1831
+#: src/library/telnet.c:1832
 msgid "TN3270E"
 msgstr "TN3270E"
 
-#: src/library/telnet.c:1832
+#: src/library/telnet.c:1833
 msgid "TN3270E NVT"
 msgstr "TN3270E NVT"
 
-#: src/library/telnet.c:1833
+#: src/library/telnet.c:1834
 msgid "TN3270E SSCP-LU"
 msgstr "TN3270E SSCP-LU"
 
-#: src/library/telnet.c:1834
+#: src/library/telnet.c:1835
 msgid "TN3270E 3270"
 msgstr "TN3270E 3270"
 
-#: src/library/telnet.c:1845
+#: src/library/telnet.c:1846
 msgid "Resolving"
 msgstr "Resolvendo"
 
-#: src/library/telnet.c:1847
+#: src/library/telnet.c:1848
 msgid "Half connect"
 msgstr "Half connect"
 
-#: src/library/telnet.c:1848
+#: src/library/telnet.c:1849
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/library/telnet.c:1849
+#: src/library/telnet.c:1850
 msgid "3270 Mode"
 msgstr "Modo 3270"
 
-#: src/library/telnet.c:1850
+#: src/library/telnet.c:1851
 msgid "Line mode"
 msgstr "Line mode"
 
-#: src/library/telnet.c:1851
+#: src/library/telnet.c:1852
 msgid "Remodel"
 msgstr "Remodel"
 
-#: src/library/telnet.c:1852
+#: src/library/telnet.c:1853
 msgid "Printer"
 msgstr "Impressão"
 
-#: src/library/telnet.c:1853
+#: src/library/telnet.c:1854
 msgid "Exiting"
 msgstr "Saindo"
 
-#: src/library/telnet.c:1854
+#: src/library/telnet.c:1855
 msgid "Charset"
 msgstr "Tabela de caracteres"
 
@@ -2567,18 +2578,12 @@ msgstr ""
 msgid "Unexpected callback table, the release %s of %s is invalid"
 msgstr ""
 
-#: src/gobject/object.c:84
+#: src/gobject/object.c:88
 msgid "Timer is enabled, usually activates when session is busy"
 msgstr ""
 
 #~ msgid "Preferred protocol for CRL download"
 #~ msgstr "Protocolo preferido para download da CRL"
-
-#~ msgid "The log file name"
-#~ msgstr "Define o nome do arquivo de log"
-
-#~ msgid "The trace file name"
-#~ msgstr "O nome do arquivo de trace"
 
 #~ msgid "Can't determine the TLS/SSL state"
 #~ msgstr "Não foi possível determinar o estado TLS/SSL"

@@ -424,6 +424,7 @@ else
     libraries: [ '-l:' + meson.project_name() + '.a' ]
   )
 
+
 endif
 
 # Check for OSs
@@ -490,6 +491,17 @@ config_src = [
       configuration : app_conf
   )
 ]
+
+#hotdoc = import('hotdoc')
+#hotdoc.generate_doc(
+#  meson.project_name(),
+#  project_version: meson.project_version(),
+#  sitemap: 'sitemap.txt',
+#  index: 'index.md',
+#  c_sources: lib_src,
+#  c_smart_index: true,
+#  install: true,
+#)
 
 if host_machine.system() == 'windows'
 

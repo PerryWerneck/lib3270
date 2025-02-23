@@ -57,9 +57,13 @@
 	char *hostname;
 	char *service;
 
-} Context;
+ } Context;
 
- static int finalize(H3270 *hSession, Context *context) {	
+ /// @brief Called with the user asks for disconnection/cancel.
+ /// @param hSession The tn3270 session.
+ /// @param context The current context
+ /// @return 0 if ok
+ static int cancel(H3270 *hSession, Context *context) {	
 
 	debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
 
@@ -92,6 +96,15 @@
 	debug("%s: DISCONNECT rc=%d",__FUNCTION__,rc);
 
 	return rc;
+ }
+
+ static int finalize(H3270 *hSession, Context *context) {
+
+	debug("%s: Releasing resolver context %p",__FUNCTION__,context);
+	cancel(hSession,context);
+	lib3270_free(context);
+	return 0;
+
  }
 
  static void failed(H3270 *hSession, Context *context) {
@@ -225,7 +238,6 @@
 						freeaddrinfo(req->ar_result);
 						req->ar_result = NULL;	
 						finalize(hSession,context);
-						lib3270_free(context);
 						return;
 					} else {
 						// Socket was rejected, close it.
@@ -316,7 +328,8 @@
 	strcpy(context->service,service);	
 	
 	// Set disconnect handler
-	context->parent.disconnect = (void *) finalize;
+	context->parent.disconnect = (void *) cancel;
+	context->parent.finalize = (void *) finalize;
 
 	// Setup DNS search
 	context->list[0] = malloc(sizeof(struct gaicb));

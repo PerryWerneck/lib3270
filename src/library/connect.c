@@ -213,8 +213,10 @@
 
  void set_connected_socket(H3270 *hSession, int sock) {
 
+	hSession->connection.sock = sock;
+
 	if(hSession->connection.context) {
-		free(hSession->connection.context);
+		hSession->connection.context->finalize(hSession,hSession->connection.context);
 		hSession->connection.context = NULL;
 	}
 
@@ -265,11 +267,11 @@
 	} else {
 
 		if(hSession->connection.context) {
-			free(hSession->connection.context);
+			hSession->connection.context->finalize(hSession,hSession->connection.context);
 			hSession->connection.context = NULL;
 		}
 
-		hSession->connection.context = setup_non_ssl_context(hSession,sock);
+		hSession->connection.context = setup_non_ssl_context(hSession);
 
 	}
 

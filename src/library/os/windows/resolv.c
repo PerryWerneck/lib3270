@@ -17,75 +17,57 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ // References:
+ //		https://learn.microsoft.com/en-us/windows/win32/api/windns/nf-windns-dnsqueryex [Not available on MinGW]
+
  #include <config.h>
  #include <winsock2.h>
  #include <windows.h>
 
- #include <private/network.h>
  #include <private/intl.h>
- #include <lib3270/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
- #include <private/trace.h>
  #include <private/session.h>
 
  typedef struct {
+
 	LIB3270_NET_CONTEXT parent;
-	SOCKET sock;
+
+	int enabled;
+	HANDLE thread;
 
 	const char *hostname;
 	const char *service;
 
-	void *timer;
-	void *resolved;
 
  } Context;
 
- static int finalize(H3270 *hSession, Context *context) {	
+ static int cancel(H3270 *hSession, Context *context) {	
 
 	debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
 
-	int rc = 0;
-
-	if(context->timer) {
-		hSession->timer.remove(hSession,context->timer);
-		context->timer = NULL;
-	}
 	
-	if(context->resolved) {
-		hSession->poll.remove(hSession,context->resolved);
-		context->resolved = NULL;
-	}
-
-	if(context->sock != INVALID_SOCKET) {
-		closesocket(context->sock);
-		context->sock = INVALID_SOCKET;	
-	}
-
-	return rc;
- }
-
- static void failed(H3270 *hSession, Context *context) {
-	if(context->sock != INVALID_SOCKET) {
-		closesocket(context->sock);
-		context->sock = INVALID_SOCKET;	
-	}
-	connection_close(hSession,-1);
- }
-
- static void net_response(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
-
-	debug("%s: GOT response on context %p",__FUNCTION__,context);
-
- }
-
- static int net_timeout(H3270 *hSession, Context *context) {
-
-	debug("%s: TIMEOUT",__FUNCTION__);
-	context->timer = NULL;
 
 	return 0;
  }
+
+ static void failed(H3270 *hSession, Context *context) {
+ }
+
+ static DWORD __stdcall resolver_thread(LPVOID lpParam) {
+
+	Context *context = (Context *) lpParam;
+	debug("%s: Resolving hostname %s",__FUNCTION__,context->hostname);
+
+
+
+
+
+	debug("%s: Resolver thread finished",__FUNCTION__);
+	return 0;
+
+ }
+
 
  ///
  /// @brief Asynchronously resolves the hostname to an IP address.
@@ -111,12 +93,13 @@
 	context->service = context->hostname + strlen(hostname) + 1;
 	strcpy(context->service,service);
 
-	context->sock = INVALID_SOCKET;
-	
 	// Set disconnect handler
-	context->parent.disconnect = (void *) finalize;
+	context->parent.disconnect = (void *) cancel;
+	context->parent.finalize = (void *) finalize;
 
-	// TODO: Implement the resolver
+	// Call resolver in background
+	context->enabled = 1;
+	context->thread = CreateThread(NULL,0,resolver_thread,context,0,NULL);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

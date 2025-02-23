@@ -39,8 +39,13 @@
  } LIB3270_SSL_MESSAGE;
 
  typedef struct _lib3270_net_context {
-	int sock;
+
+	/// @brief Disconnect context, doesnt cleanup.
 	int (*disconnect)(H3270 *hSession, struct _lib3270_net_context *context);
+
+	/// @brief Release context resources.
+	int (*finalize)(H3270 *hSession, struct _lib3270_net_context *context);
+
  } LIB3270_NET_CONTEXT;
 
  /// @brief Close connection to host.
@@ -64,7 +69,7 @@
  LIB3270_INTERNAL int connection_write_offline(H3270 *, const void * , size_t, LIB3270_NET_CONTEXT *);
  LIB3270_INTERNAL int connection_except_offline(H3270 *, LIB3270_NET_CONTEXT *);
 
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession, int sock);
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession);
  
  /// @brief Set the popup body based on network error code.
  /// @param popup The popup to update.

@@ -50,6 +50,7 @@
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
+	int sock;
 	void *timer;
 	void *connected;
 	void *except;
@@ -228,13 +229,18 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 		context->timer = NULL;
 	}
 
-	if(context->parent.sock != -1) {
-		close(context->parent.sock);
-		context->parent.sock = -1;
+	if(context->sock != -1) {
+		close(context->sock);
+		context->sock = -1;
 	}
 
 	return 0;
  }
+
+ static int net_finalize(H3270 *hSession, Context *context) {
+	lib3270_free(context);
+	return 0;
+}
 
  LIB3270_INTERNAL int connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen) {
 
@@ -312,7 +318,9 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	Context *context = lib3270_malloc(sizeof(Context));
 	memset(context,0,sizeof(Context));
 
+	context->sock = -1;
 	context->parent.disconnect = (void *) net_disconnect;
+	context->parent.finalize = (void *) net_finalize;
 
 	context->timer = hSession->timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
 	context->except = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) net_except,context);

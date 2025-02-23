@@ -170,7 +170,7 @@ int connection_close(H3270 *hSession, int failed) {
 		if(rc) {
 			lib3270_log_write(hSession, "3270", "Network context disconnection returned %d", rc);
 		}
-		free(hSession->connection.context);
+		hSession->connection.context->finalize(hSession,hSession->connection.context);
 		hSession->connection.context = NULL;
 	}
 

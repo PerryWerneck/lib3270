@@ -88,6 +88,10 @@ static int disconnect(H3270 *hSession, Context *context) {
  
  }
 
+ static int finalize(H3270 *hSession, Context *context) {
+	lib3270_free(context);
+ }
+
  static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
  
 	unsigned char buffer[NETWORK_BUFFER_LENGTH];
@@ -206,7 +210,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 
  }
 
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession, int sock) {
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession) {
 
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
@@ -222,6 +226,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 
 	context->parent.sock = sock;
 	context->parent.disconnect = (void *) disconnect;
+	context->parent.finalize = (void *) finalize;
 
 	context->xio.read = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
 	context->xio.except = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);

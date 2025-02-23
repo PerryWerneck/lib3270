@@ -108,6 +108,12 @@
 
 		char 	   	    	* url;				///< @brief The host URL.
 
+#ifdef _WIN32
+		SOCKET				 sock;
+#else
+		int					 sock;
+#endif
+
 		LIB3270_NET_CONTEXT * context;			///< @brief Connection context.
 
 		LIB3270_CSTATE		  state;			///< @brief Connection state.

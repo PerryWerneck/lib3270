@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
+ * Copyright 1995, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 by Paul Mattes.
  * Copyright (C) 2008 Banco do Brasil S.A.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,8 +33,10 @@
  *
  */
 
+#define _GNU_SOURCE
 #include <config.h>
 #include <lib3270/memory.h>
+#include <private/session.h>
 
 #include <internals.h>
 #include <errno.h>
@@ -696,8 +699,11 @@ static int get_rpq_address(H3270 *hSession, unsigned char *buf, const int maxlen
 			return 0;
 		}
 		
-		if(getsockname(hSession->connection.context->sock, (struct sockaddr *) &u, &addrlen) < 0)
+		if(getsockname(hSession->connection.sock, (struct sockaddr *) &u, &addrlen) < 0) {
+			lib3270_log_write(hSession,"rpq","getsockname failed: %s",strerror(errno));
+			rpq_warning(hSession, _("RPQ ADDRESS term incomplete: getsockname failed"));
 			return 0;
+		}
 			
 		SET16(buf, u.sa.sa_family);
 		x += 2;

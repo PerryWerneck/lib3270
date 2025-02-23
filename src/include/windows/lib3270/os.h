@@ -27,6 +27,8 @@
  *
  */
 
+#error deprecetaed
+
 /**
  * @brief TN3270 API windows definitions.
  *

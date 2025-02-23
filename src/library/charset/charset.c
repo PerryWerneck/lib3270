@@ -39,6 +39,7 @@
 #include <lib3270/charset.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <lib3270/memory.h>
 
 /*
  * EBCDIC-to-Unicode translation tables.
@@ -206,8 +207,6 @@ static void copy_charset(const unsigned short *from, unsigned short *to) {
 LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, const char * display, unsigned long cgcsgid) {
 	int f;
 
-#define replace_pointer(x,v) if(x) { lib3270_free(x); }; x = strdup(v)
-
 	if(!host)
 		host = "us";
 
@@ -216,8 +215,8 @@ LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, co
 
 	debug("%s(%s,%s)",__FUNCTION__,host,display);
 
-	replace_pointer(hSession->charset.host, host);
-	replace_pointer(hSession->charset.display,display);
+	lib3270_replace(hSession->charset.host, host);
+	lib3270_replace(hSession->charset.display,display);
 
 	hSession->charset.cgcsgid = cgcsgid;
 

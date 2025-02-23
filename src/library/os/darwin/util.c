@@ -30,7 +30,6 @@
 #include <CoreFoundation/CFURL.h>
 #include <sys/syslimits.h>
 #include <lib3270.h>
-#include <lib3270/os.h>
 
 static char * concat(char *path, const char *name, size_t *length) {
 	size_t szCurrent = strlen(path);

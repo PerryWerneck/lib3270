@@ -36,7 +36,7 @@
 
 #include <config.h>
 #include <lib3270.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 #include <lib3270/log.h>
 #include <private/linkedlist.h>
 #include <string.h>

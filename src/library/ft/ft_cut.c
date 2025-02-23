@@ -41,7 +41,7 @@
 
 #include <lib3270.h>
 #include <lib3270/actions.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 
 #if defined(X3270_FT) /*[*/
 

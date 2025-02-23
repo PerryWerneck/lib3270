@@ -31,6 +31,7 @@
  *	@brief	Initialize toggles.
  */
 
+#include <config.h>
 #include <errno.h>
 #include <sys/types.h>
 
@@ -55,6 +56,7 @@
 #include <private/toggle.h>
 #include <private/util.h>
 #include <lib3270/log.h>
+#include <lib3270/memory.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 

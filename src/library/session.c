@@ -26,8 +26,9 @@
  */
 
 #include <config.h>
+#include <lib3270/defs.h>
 #include <lib3270/popup.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 
 #include <private/defs.h>
 #include <private/session.h>
@@ -42,13 +43,13 @@
 #include "screenc.h"
 #include <private/ctlr.h>
 #include "ftc.h"
-#include "kybdc.h"
 #include <private/3270ds.h>
 #include <private/popup.h>
 #include <lib3270/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/properties.h>
 #include <private/mainloop.h>
+
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
 
@@ -108,7 +109,6 @@ void lib3270_session_free(H3270 *h) {
 		h->lu.names = NULL;
 	}
 
-
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;
 
@@ -123,7 +123,6 @@ void lib3270_session_free(H3270 *h) {
 	}
 
 	// Release hostname info
-	//release_pointer(h->host.current);
 	release_pointer(h->connection.url);
 
 	release_pointer(h->charset.host);
@@ -136,6 +135,10 @@ void lib3270_session_free(H3270 *h) {
 
 	release_pointer(h->sbbuf);
 	release_pointer(h->tabs);
+
+#ifdef _WIN32
+	win32_mainloop_free(h);
+#endif
 
 	// Release logfile
 	lib3270_trace_close(h);
@@ -339,7 +342,7 @@ H3270 * lib3270_session_new(const char *model, int gui) {
 
 #ifdef _WIN32
 	// Win32 mainloop already support gui.
-	setup_default_mainloop(hSession);
+	win32_mainloop_new(hSession);
 #else
 	if(!gui || setup_glib_mainloop(hSession)) {
 		setup_default_mainloop(hSession);

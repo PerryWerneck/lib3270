@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 /*
  * Contatos:
  *
@@ -35,7 +36,7 @@
  #include <private/network.h>
  #include <lib3270/ssl.h>
  #include <lib3270/mainloop.h>
- #include <lib3270/malloc.h>
+ #include <lib3270/memory.h>
  #include <private/trace.h>
  #include <private/session.h>
  #include <private/network.h>
@@ -79,7 +80,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	}
 
 	if(context->parent.sock != -1) {
-		close(context->parent.sock);
+		closesocket(context->parent.sock);
 		context->parent.sock = -1;
 	}
 
@@ -92,7 +93,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	unsigned char buffer[NETWORK_BUFFER_LENGTH];
 
 	debug("%s",__FUNCTION__);
-	ssize_t length = recv(sock,buffer,NETWORK_BUFFER_LENGTH,MSG_DONTWAIT);
+	ssize_t length = recv(sock,(void *) buffer,NETWORK_BUFFER_LENGTH,0);
 
 	if(length < 0) {
 
@@ -116,7 +117,6 @@ static int disconnect(H3270 *hSession, Context *context) {
 		set_popup_body(&popup,wsaError);
 
 		// TODO: Translate WSA Error, update message body.
-		#error TODO: Translate WSA Error, update message body.
 
 		connection_close(hSession,wsaError);
 #else 

@@ -17,7 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
  #include <lib3270/defs.h>
+ #include <lib3270/memory.h>
  #include <stdarg.h>
  #include <private/session.h>
  #include <errno.h>

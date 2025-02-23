@@ -36,6 +36,8 @@
  *
  */
 
+#error deprecated
+
 #include <config.h>
 #include <internals.h>
 #include <lib3270/log.h>

@@ -1233,17 +1233,6 @@ LIB3270_EXPORT char * lib3270_chug(char *str);
 LIB3270_EXPORT char * lib3270_strip(char *str);
 
 /**
- * @brief Release allocated memory.
- *
- * @param p	Memory block to release (can be NULL)
- *
- * @return NULL
- */
-LIB3270_EXPORT void  * lib3270_free(void *p);
-
-LIB3270_EXPORT void   lib3270_autoptr_cleanup_char(char **ptr);
-
-/**
  * Get library version.
  *
  * @return Version of active library as string.

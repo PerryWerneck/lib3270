@@ -27,6 +27,8 @@
  *
  */
 
+#error deprecated
+
 #include "private.h"
 #include <private/util.h>
 

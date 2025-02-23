@@ -31,7 +31,7 @@
 
 #include <internals.h>
 #include <lib3270/toggle.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 
 #if defined(X3270_ANSI) /*[*/
 

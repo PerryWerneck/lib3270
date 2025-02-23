@@ -31,6 +31,10 @@
 
 #include <winsock2.h>
 #include <windows.h>
+ 
+#include <config.h>
+#include <lib3270/defs.h>
+#include <lib3270/memory.h>
 #include <lmcons.h>
 #include <internals.h>
 #include <io.h>

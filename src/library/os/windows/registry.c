@@ -33,6 +33,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <lib3270.h>
+#include <lib3270/memory.h>
 
 LIB3270_EXPORT LSTATUS lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY phkResult) {
 

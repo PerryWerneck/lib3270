@@ -35,7 +35,7 @@
 
 #include <lib3270.h>
 #include <lib3270/log.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 #include <private/array.h>
 
 /*---[ Implement ]------------------------------------------------------------------------------------------------------------*/

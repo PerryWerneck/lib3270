@@ -31,7 +31,7 @@
 #include <lib3270/session.h>
 #include <lib3270/selection.h>
 #include <lib3270/log.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 #include <private/3270ds.h>
 #include "kybdc.h"
 

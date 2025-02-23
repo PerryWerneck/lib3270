@@ -98,8 +98,8 @@
 	#ifdef HAVE_SIGNAL_H
 		signal(SIGINT,handle_signal);
 		signal(SIGTERM,handle_signal);
-		signal(SIGQUIT,handle_signal);
-		signal(SIGHUP,handle_signal);
+//		signal(SIGQUIT,handle_signal);
+//		signal(SIGHUP,handle_signal);
 	#endif // HAVE_SIGNAL_H
 
 	g_main_loop_run(loop);

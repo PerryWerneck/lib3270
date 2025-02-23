@@ -19,10 +19,17 @@
 
  #pragma once
  #include <config.h>
+
+ #ifdef _WIN32
+	#include <winsock2.h>
+	#include <windows.h>
+ #else
+	 #include <sys/socket.h>
+ #endif
+
  #include <time.h>
  #include <lib3270/defs.h>
  #include <lib3270/popup.h>
- #include <sys/socket.h>
 
  #define NETWORK_BUFFER_LENGTH	16384
 
@@ -46,7 +53,10 @@
  LIB3270_INTERNAL void net_input(H3270 *hSession, const unsigned char *buffer, size_t len);
 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * resolv_hostname(H3270 *hSession, const char *hostname, const char *service, time_t timeout);	
+ 
+ #ifndef _WIN32
  LIB3270_INTERNAL int connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen);
+ #endif // _WIN32
  
  LIB3270_INTERNAL void setup_session(H3270 *hSession);
  LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on);

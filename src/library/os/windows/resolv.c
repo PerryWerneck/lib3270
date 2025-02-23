@@ -27,6 +27,7 @@
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
  #include <private/trace.h>
+ #include <private/session.h>
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
@@ -81,7 +82,6 @@
  static int net_timeout(H3270 *hSession, Context *context) {
 
 	debug("%s: TIMEOUT",__FUNCTION__);
-
 	context->timer = NULL;
 
 	return 0;
@@ -105,10 +105,13 @@
 	// Allocate and setup context
 	Context *context = lib3270_malloc(sizeof(Context) + strlen(hostname) + strlen(service) + 3);
 	memset(context,0,sizeof(Context));
+	
 	context->hostname = (char *) (context+1);
 	strcpy(context->hostname,hostname);
 	context->service = context->hostname + strlen(hostname) + 1;
 	strcpy(context->service,service);
+
+	context->sock = INVALID_SOCKET;
 	
 	// Set disconnect handler
 	context->parent.disconnect = (void *) finalize;

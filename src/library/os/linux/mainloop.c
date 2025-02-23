@@ -32,7 +32,7 @@
  #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270.h>
- #include <lib3270/malloc.h>
+ #include <lib3270/memory.h>
  #include <lib3270/toggle.h>
  #include <private/mainloop.h>
  #include <private/session.h>

@@ -208,6 +208,10 @@ if c.compiles('#include <unistd.h>', name : 'unistd.h')
   app_conf.set('HAVE_UNISTD_H', 1)
 endif
 
+if c.compiles('#include <linux/limits.h>', name : 'limits.h')
+  app_conf.set('HAVE_LINUX_LIMITS_H', 1)
+endif
+
 if c.compiles('#include <signal.h>', name : 'signal.h')
   app_conf.set('HAVE_SIGNAL_H', 1)
 endif
@@ -288,12 +292,11 @@ lib_src += [
   'src/library/selection/get.c',
   'src/library/selection/selection.c',
   'src/library/network/state.c',
-  'src/library/network/insecure.c',
   'src/library/network/tools.c',
   'src/library/mainloop.c',
   'src/library/os/' + host_machine.system() + '/resolv.c',
   'src/library/os/' + host_machine.system() + '/connect.c',
-  'src/library/os/' + host_machine.system() + '/connected.c',
+  'src/library/os/' + host_machine.system() + '/insecure.c',
   'src/library/os/' + host_machine.system() + '/mainloop.c',
   'src/library/os/' + host_machine.system() + '/log.c',
 
@@ -319,9 +322,6 @@ darwin_src = [
 
 win_src = [
   'src/library/os/windows/connect.c',
-  'src/library/os/windows/download.c',
-  'src/library/os/windows/http.c',
-  'src/library/os/windows/ldap.c',
   'src/library/os/windows/registry.c',
   'src/library/os/windows/util.c',
 ]
@@ -437,11 +437,6 @@ if host_machine.system() == 'windows'
     'src/include/windows',
   )
 
-  install_headers(
-    'src/include/windows/lib3270/os.h',
-    subdir: 'lib3270'  
-  )
-
   app_conf.set_quoted('LIBEXT', '.dll')
   lib_src += win_src
 
@@ -452,11 +447,6 @@ if host_machine.system() == 'linux'
   includes_dir = include_directories(
     'src/include',
     'src/include/linux',
-  )
-
-  install_headers(
-    'src/include/linux/lib3270/os.h',
-    subdir: 'lib3270'  
   )
 
   app_conf.set_quoted('LIBEXT', '.so')
@@ -471,11 +461,6 @@ if host_machine.system() == 'darwin'
   includes_dir = include_directories(
     'src/include',
     'src/include/darwin',
-  )
-
-  install_headers(
-    'src/include/darwin/lib3270/os.h',
-    subdir: 'lib3270'  
   )
 
   lib_src += darwin_src
@@ -677,7 +662,7 @@ install_headers(
   'src/include/lib3270/actions.h',
   'src/include/lib3270/charset.h',
   'src/include/lib3270/filetransfer.h',
-  'src/include/lib3270/malloc.h',
+  'src/include/lib3270/memory.h',
   'src/include/lib3270.h',
   'src/include/lib3270/keyboard.h',
   'src/include/lib3270/log.h',

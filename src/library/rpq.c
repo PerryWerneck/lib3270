@@ -33,7 +33,7 @@
  */
 
 #include <config.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 
 #include <internals.h>
 #include <errno.h>

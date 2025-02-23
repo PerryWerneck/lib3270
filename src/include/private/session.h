@@ -20,6 +20,13 @@
  #pragma once
 
  #include <config.h>
+
+ #ifdef _WIN32
+	#include <winsock2.h>
+	#include <windows.h>
+ #endif
+
+ #include <lib3270/defs.h>
  #include <lib3270.h>
  #include <lib3270/toggle.h>
  #include <lib3270/session.h>
@@ -68,6 +75,10 @@
 	char id;
 
 	struct lib3270_session_callbacks	  cbk;					///< @brief Callback table - Always the first one.
+
+#ifdef _WIN32
+	HWND hwnd;
+#endif // _WIN32
 
 	/// @brief Timers for this session.
 	struct {

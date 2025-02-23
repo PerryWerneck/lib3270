@@ -52,12 +52,12 @@
 
 #include <errno.h>
 #include <lib3270/internals.h>
-#include <lib3270/os.h>
 #include <lib3270/properties.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 #include <lib3270/keyboard.h>
+#include <lib3270/memory.h>
 #include <private/network.h>
 
 //

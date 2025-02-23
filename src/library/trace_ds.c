@@ -24,7 +24,7 @@
  */
 
 #include <config.h>
-#include <lib3270/malloc.h>
+#include <lib3270/memory.h>
 
 #include <internals.h>
 #include <lib3270/trace.h>
@@ -50,7 +50,9 @@
 #include <private/session.h>
 #include <lib3270/trace.h>
 
-#include <linux/limits.h>
+#ifdef HAVE_LINUX_LIMITS_H
+	#include <linux/limits.h>
+#endif // HAVE_LINUX_LIMITS_H
 
 /* Maximum size of a tracefile header. */
 // #define MAX_HEADER_SIZE		(10*1024)

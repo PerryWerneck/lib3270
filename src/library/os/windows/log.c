@@ -79,8 +79,8 @@
 
 	struct syslog_context * context = lib3270_new(struct syslog_context);
 
-	context->parent.finalize = syslog_finalize;
-	context->parent.write = syslog_write;
+	context->parent.finalize = (void *) syslog_finalize;
+	context->parent.write = (void *) syslog_write;
 	context->handle = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 
 	return ENOTSUP;

@@ -536,7 +536,7 @@ LIB3270_EXPORT void lib3270_data_recv(H3270 *hSession, size_t nr, const unsigned
 	hSession->ansi_data = 0;
 	
 	if (HALF_CONNECTED) {
-		trace_dsn(hSession, "Received %lu bytes with half-connect\n", len);
+		trace_dsn(hSession, "Received %lu bytes with half-connect\n", (unsigned long) len);
 		set_connected_initial(hSession);
 		if(net_connected(hSession)) {
 			return;

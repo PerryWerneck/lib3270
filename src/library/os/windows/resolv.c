@@ -27,6 +27,7 @@
  #include <private/intl.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
+ #include <lib3270/memory.h>
  #include <private/session.h>
 
  typedef struct {
@@ -54,6 +55,17 @@
  static void failed(H3270 *hSession, Context *context) {
  }
 
+ static void finalize(H3270 *hSession, Context *context) {
+
+	if(context->thread) {
+		context->enabled = 0;
+		lib3270_log_write(hSession,"win32","Resolver thread still active, delaying context cleanup");
+	} else {
+		lib3270_free(context);
+	}
+
+ }
+
  static DWORD __stdcall resolver_thread(LPVOID lpParam) {
 
 	Context *context = (Context *) lpParam;
@@ -64,6 +76,7 @@
 
 
 	debug("%s: Resolver thread finished",__FUNCTION__);
+	context->thread = NULL;
 	return 0;
 
  }

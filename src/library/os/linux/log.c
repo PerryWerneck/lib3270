@@ -1,7 +1,4 @@
-/* SPDX-License-I static void console_finalize(H3270 *session, struct file_context *context) {
-	lib3270_free(context);
- }
-dentifier: LGPL-3.0-or-later */
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
  * Copyright (C) 2008 Banco do Brasil S.A.

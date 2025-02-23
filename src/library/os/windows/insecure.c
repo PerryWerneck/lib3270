@@ -79,9 +79,9 @@ static int disconnect(H3270 *hSession, Context *context) {
 		context->xio.write = NULL;
 	}
 
-	if(context->parent.sock != -1) {
-		closesocket(context->parent.sock);
-		context->parent.sock = -1;
+	if(hSession->connection.sock != -1) {
+		closesocket(hSession->connection.sock);
+		hSession->connection.sock = -1;
 	}
 
 	return 0;
@@ -90,6 +90,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 
  static int finalize(H3270 *hSession, Context *context) {
 	lib3270_free(context);
+	return 0;
  }
 
  static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
@@ -162,13 +163,13 @@ static int disconnect(H3270 *hSession, Context *context) {
 	if(context->xio.except) {
 		return EBUSY;
 	}
-	context->xio.except = hSession->poll.add(hSession,context->parent.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+	context->xio.except = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
 	return 0;
  }
 
  static int on_write(H3270 *hSession, const void *buffer, size_t length, Context *context) {
 
-	ssize_t bytes = send(context->parent.sock,buffer,length,0);
+	ssize_t bytes = send(hSession->connection.sock,buffer,length,0);
 
 	if(bytes >= 0)
 		return bytes;
@@ -224,12 +225,11 @@ static int disconnect(H3270 *hSession, Context *context) {
 	Context *context = lib3270_malloc(sizeof(Context));
 	memset(context,0,sizeof(Context));
 
-	context->parent.sock = sock;
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
 
-	context->xio.read = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
-	context->xio.except = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+	context->xio.read = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
+	context->xio.except = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
 
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;

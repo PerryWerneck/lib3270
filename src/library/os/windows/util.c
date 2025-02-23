@@ -256,6 +256,7 @@ LIB3270_EXPORT char	* lib3270_get_installation_path() {
 	return strdup(lpFilename);
 }
 
+/*
 char * lib3270_get_user_name() {
 	char	username[UNLEN + 1];
 	DWORD	szName = UNLEN;
@@ -266,6 +267,7 @@ char * lib3270_get_user_name() {
 	return strdup(username);
 
 }
+*/
 
 static char * concat(char *path, const char *name, size_t *length) {
 	char *ptr;

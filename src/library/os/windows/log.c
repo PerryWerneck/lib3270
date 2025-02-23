@@ -18,6 +18,8 @@
  */
 
  #include <config.h>
+ #include <winsock2.h>
+ #include <windows.h>
  #include <private/session.h>
  #include <private/trace.h>
  #include <lib3270/log.h>
@@ -38,7 +40,12 @@
 
  static int syslog_write(H3270 *session, struct syslog_context *context, const char *domain, const char *fmt, va_list args) {
 
-	lib3270_autoptr(char) username = lib3270_get_user_name();
+	char	username[201];
+	DWORD	szName = 200;
+
+	memset(username,0,201);
+	GetUserName(username, &szName);
+	
 	lib3270_autoptr(char) msg = lib3270_vsprintf(fmt,args);
 
 	const char *outMsg[] = {

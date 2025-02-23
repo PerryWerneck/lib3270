@@ -25,6 +25,15 @@
 
 #ifdef _WIN32
 
+	#include <winsock2.h>
+	#include <windows.h>
+
+	enum MessageTypes {
+		WM_CHECK_TIMERS				= WM_USER+101,
+		WM_ADD_TIMER				= WM_USER+102,
+		WM_REMOVE_TIMER				= WM_USER+103,
+	};
+
  	LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession);
 	LIB3270_INTERNAL void win32_mainloop_free(H3270 *hSession);
 

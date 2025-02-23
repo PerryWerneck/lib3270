@@ -36,6 +36,10 @@
 #include <lib3270/memory.h>
 #include <fcntl.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif // HAVE_UNISTD_H
+
 static char * concat(char *path, const char *name, size_t *length) {
 	size_t szCurrent = strlen(path);
 

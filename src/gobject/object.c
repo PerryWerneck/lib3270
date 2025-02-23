@@ -34,6 +34,7 @@
  #include <lib3270/ssl.h>
  #include <glib-object.h>
  #include <lib3270/glib.h>
+ #include <lib3270/memory.h>
  #include <private/intl.h>
 
  //

@@ -45,6 +45,11 @@
  #include <errno.h>
 
  #include <internals.h>
+
+ #ifdef HAVE_UNISTD_H
+ #include <unistd.h>
+ #endif // HAVE_UNISTD_H
+
  
  /// @brief Connection context for insecure (non SSL) connections.
  typedef struct {

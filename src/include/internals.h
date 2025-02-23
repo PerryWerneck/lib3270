@@ -229,7 +229,6 @@ struct lib3270_state_callback {
 
 #ifdef _WIN32
 /// @brief Windows Event Log Handler.
-LIB3270_INTERNAL HANDLE hEventLog;
 LIB3270_INTERNAL HANDLE hModule;
 #endif // _WIN32
 

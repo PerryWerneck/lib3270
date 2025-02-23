@@ -67,7 +67,6 @@ int lib3270_unloaded(void) __attribute__((destructor));
 
 #ifdef _WIN32
 /// @brief Windows Event Log Handler.
-HANDLE hEventLog = 0;
 HANDLE hModule = 0;
 #endif // _WIN32
 
@@ -150,17 +149,12 @@ BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID GNUC_UNUSED(lp
 	switch(dwcallpurpose) {
 	case DLL_PROCESS_ATTACH:
 		hModule = hInstance;
-		hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
 		get_version_info();
 		lib3270_loaded();
 		break;
 
 	case DLL_PROCESS_DETACH:
 		lib3270_unloaded();
-		if(hEventLog) {
-			DeregisterEventSource(hEventLog);
-		}
-		hEventLog = NULL;
 		break;
 
 	}

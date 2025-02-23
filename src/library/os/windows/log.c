@@ -26,7 +26,56 @@
  #include <sys/stat.h>
  #include <string.h>
 
+ struct syslog_context {
+	LIB3270_LOG_CONTEXT parent;
+	HANDLE handle;
+ };
+
+ static void syslog_finalize(H3270 *session, struct syslog_context *context) {
+	DeregisterEventSource(context->handle);
+	lib3270_free(context);
+ }
+
+ static int syslog_write(H3270 *session, struct syslog_context *context, const char *domain, const char *fmt, va_list args) {
+
+	lib3270_autoptr(char) username = lib3270_get_user_name();
+	lib3270_autoptr(char) msg = lib3270_vsprintf(fmt,args);
+
+	const char *outMsg[] = {
+		username,
+		domain,
+		msg
+	};
+
+#ifdef DEBUG
+	fprintf(stderr,"LOG(%s): %s\n",domain,msg);
+	fflush(stderr);
+#endif // DEBUG
+
+	ReportEvent(
+		context->handle,
+		EVENTLOG_INFORMATION_TYPE,
+		1,
+		0,
+		NULL,
+		3,
+		0,
+		outMsg,
+		NULL
+	);
+
+	return 0;
+
+ }
+
  LIB3270_EXPORT int lib3270_log_open_syslog(H3270 *hSession) {
+
+	struct syslog_context * context = lib3270_new(struct syslog_context);
+
+	context->parent.finalize = syslog_finalize;
+	context->parent.write = syslog_write;
+	context->handle = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
+
 	return ENOTSUP;
  }
 

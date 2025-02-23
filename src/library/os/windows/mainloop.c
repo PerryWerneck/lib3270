@@ -41,8 +41,6 @@
  static size_t instances = 0;
  static ATOM identifier;	
 
- #define IDT_CHECK_TIMERS 1
-
  static LRESULT WINAPI hwndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
  struct _lib3270_poll_context {
@@ -50,10 +48,11 @@
  };
 
  typedef struct timeout {
+
 	LIB3270_LINKED_LIST_HEAD
 
-	/// @brief The timestamp, in getCurrentTime() units, for next activation.
-	unsigned long activation_time;
+	LPARAM id;
+	unsigned long interval_ms;
 
 	/// @brief The timer callback.
 	int (*call)(H3270 *, void *);
@@ -73,10 +72,13 @@
 
  static void * win32_timer_add(H3270 *hSession, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
 
+	static LPARAM id = 0;
+
 	timeout_t *t_new = lib3270_new(timeout_t);
 
 	t_new->call = proc;
-	t_new->activation_time = getCurrentTime() + interval_ms;
+	t_new->id = ++id;
+	t_new->interval_ms = interval_ms;
 	t_new->userdata = userdata;
 
 	PostMessage(hSession->hwnd,WM_ADD_TIMER,0,(LPARAM) t_new);
@@ -172,94 +174,41 @@
 
 	switch(uMsg) {
 	case WM_CREATE:
-		if(hSession->timer.context->interval) {
-			SetTimer(hwnd,IDT_CHECK_TIMERS,hSession->timer.context->interval,(TIMERPROC) NULL);
-		}
 		hSession->hwnd = hwnd;
 		break;
 	
 	case WM_DESTROY:
-		if(hSession->timer.context->interval) {
-			KillTimer(hwnd, IDT_CHECK_TIMERS);
+		{
+			timeout_t *t;
+			for (t = (timeout_t *) hSession->timer.context->timers.first; t != NULL; t = (timeout_t *) t->next) {
+				KillTimer(hwnd, t->id);
+			}
+			hSession->hwnd = NULL;
 		}
-		hSession->hwnd = NULL;
 		break;
 
 	case WM_TIMER:
-		if(wParam == IDT_CHECK_TIMERS) {
-			PostMessage(hwnd,WM_CHECK_TIMERS,0,0);
-		}
-		return 0;
-
-	case WM_CHECK_TIMERS:
 		{
-			debug("%s","Checking timers");
-			unsigned long now = getCurrentTime();
-			unsigned long wait = 0;
-
 			timeout_t *t;
 			for (t = (timeout_t *) hSession->timer.context->timers.first; t != NULL; t = (timeout_t *) t->next) {
-				if (t->activation_time <= now) {
+				if(t->id == wParam) {
 					t->call(hSession,t->userdata);
-				} else {
-					wait = t->activation_time - now;
+					SendMessage(hwnd,WM_REMOVE_TIMER,0,(LPARAM) t);
 					break;
 				}
 			}
-
-			if(!wait) {
-
-				// Empty list.
-				KillTimer(hwnd,IDT_CHECK_TIMERS);
-				hSession->timer.context->interval = 0;
-
-			} if(!hSession->timer.context->interval) {
-
-				// New list.
-				SetTimer(hwnd,IDT_CHECK_TIMERS,wait,(TIMERPROC) NULL);
-				hSession->timer.context->interval = wait;
-
-			} else if(wait != hSession->timer.context->interval) {
-
-				// Update list.
-				SetTimer(hwnd,IDT_CHECK_TIMERS,wait,(TIMERPROC) NULL);
-				hSession->timer.context->interval = wait;
-
-			}
-
 		}
 		return 0;
 
 	case WM_ADD_TIMER:
 		{
-			timeout_t *t_new = (timeout_t *) lParam;
-			timeout_t *t = NULL;
-			timeout_t *prev = NULL;
+			timeout_t *t = (timeout_t *) lParam;
 
-			// Find where to insert this item.
-			for (t = (timeout_t *) hSession->timer.context->timers.first; t != NULL; t = (timeout_t *) t->next) {
-				if (t->activation_time > t_new->activation_time)
-					break;
-				prev = t;
-			}
-
-			// Insert it.
-			if (prev == NULL) {
-				// t_new is Front.
-				t_new->next = hSession->timer.context->timers.first;
-				hSession->timer.context->timers.first = (struct lib3270_linked_list_node *) t_new;
-			} else if (t == NULL) {
-				// t_new is Rear.
-				t_new->next = NULL;
-				prev->next = (struct lib3270_linked_list_node *) t_new;
-				hSession->timer.context->timers.last = (struct lib3270_linked_list_node *) t_new;
-			} else {
-				// t_new is Middle.
-				t_new->next = (struct lib3270_linked_list_node *) t;
-				prev->next = (struct lib3270_linked_list_node *) t_new;
-			}
-
-			SendMessage(hwnd,WM_CHECK_TIMERS,0,0);
+			t->prev = hSession->timer.context->timers.last;
+			t->next = NULL;
+			hSession->timer.context->timers.last = (struct lib3270_linked_list_node *) t;	
+			
+			SetTimer(hwnd,t->id,t->interval_ms,(TIMERPROC) NULL);
 
 		}
 		return 0;
@@ -268,12 +217,12 @@
 		{	
 			timeout_t *timer = (timeout_t *) lParam;
 			if(timer) {
+				KillTimer(hwnd,timer->id);
 				lib3270_linked_list_delete_node( 
 					(lib3270_linked_list *) &hSession->timer.context->timers,
 					timer
 				);
 			}			
-			SendMessage(hwnd,WM_CHECK_TIMERS,0,0);
 		}
 		return 0;
 

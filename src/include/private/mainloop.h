@@ -29,7 +29,6 @@
 	#include <windows.h>
 
 	enum MessageTypes {
-		WM_CHECK_TIMERS				= WM_USER+101,
 		WM_ADD_TIMER				= WM_USER+102,
 		WM_REMOVE_TIMER				= WM_USER+103,
 	};

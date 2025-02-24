@@ -63,7 +63,7 @@
 	return 0;
  }
 
- static void timeout(H3270 *hSession, Context *context) {
+ static void net_timeout(H3270 *hSession, Context *context) {
 
 	trace_network(
 		hSession,
@@ -245,9 +245,9 @@
 	context->parent.finalize = (void *) finalize;
 
 	// Call resolver in background
-	context->enabled = 0;
+	context->enabled = 1;
 	context->hSession = hSession;
-	context->timer = hSession->timer.add(hSession,timeout*1000,(void *) timeout,context);
+	context->timer = hSession->timer.add(hSession,timeout*1000,(void *) net_timeout,context);
 	context->thread = CreateThread(NULL,0,resolver_thread,context,0,NULL);
 
 	return (LIB3270_NET_CONTEXT *) context;

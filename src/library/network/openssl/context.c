@@ -93,7 +93,8 @@ static void info_callback(INFO_CONST SSL *s, int where, int ret) {
 			}
 #if defined(_WIN32)
 			else if (GetLastError() != 0) {
-				strncpy(err_buf,lib3270_win32_strerror(GetLastError()),1023);
+				lib3270_autoptr(char) msg = lib3270_win32_strerror(GetLastError());
+				strncpy(err_buf,msg,1023);
 			}
 #else
 			else if (errno != 0) {

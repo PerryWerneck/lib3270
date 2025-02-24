@@ -37,7 +37,7 @@ LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 	/// @param popup Popup description.
 	/// @param wait Non zero to wait for response.
 	/// @return User's response if wait is non zero.
-	LIB3270_INTERNAL int popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup, unsigned char wait);
+	LIB3270_INTERNAL int popup_win32_error(H3270 *hSession, int code, const LIB3270_POPUP *popup, unsigned char wait);
 #endif
 
 /**

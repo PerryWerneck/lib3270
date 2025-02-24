@@ -29,8 +29,8 @@
  #include <config.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
- // #include <networking.h>
  #include <private/network.h>
+ #include <lib3270/memory.h>
  #include <fcntl.h>
  #include <private/intl.h>
  #include <string.h>
@@ -185,11 +185,13 @@ int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
 	u_long iMode= on ? 1 : 0;
 
 	if(ioctlsocket(sock,FIONBIO,&iMode)) {
+		lib3270_autoptr(char) msg = lib3270_win32_strerror(GetLastError());
 		lib3270_popup_dialog(	hSession,
 		                        LIB3270_NOTIFY_CONNECTION_ERROR,
 		                        _( "Connection error" ),
 		                        _( "ioctlsocket(FIONBIO) failed." ),
-		                        "%s", lib3270_win32_strerror(GetLastError()));
+		                        "%s", msg
+							);					
 		return -1;
 	}
 

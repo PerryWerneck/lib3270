@@ -55,16 +55,26 @@
  LIB3270_INTERNAL int connection_close(H3270 *hSession,int code);
 
  #ifdef _WIN32
+
+	 /// @brief Connection completed, set socket session.
+	 /// @param hSession The tn3270 session.
+	 /// @param sock The socket to use.
+	 /// @return 
 	 LIB3270_INTERNAL void set_connected_socket(H3270 *hSession, SOCKET sock);
 
 	 /// @brief DNS resolver completed, wait for connection.
 	 /// @param hSession TN3270 session.
 	 /// @param sock Socket with pending connection.
-	 LIB3270_INTERNAL void set_resolved(H3270 *hSession, SOCKET sock);
+	 LIB3270_INTERNAL int set_resolved(H3270 *hSession, SOCKET sock);
 
  #else
 
+	 /// @brief Connection completed, set socket session.
+	 /// @param hSession The tn3270 session.
+	 /// @param sock The socket to use.
+	 /// @return 
  	LIB3270_INTERNAL void set_connected_socket(H3270 *hSession, int sock);
+
 	LIB3270_INTERNAL int connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen);
  
  #endif

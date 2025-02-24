@@ -182,7 +182,7 @@
 
 	char host[NI_MAXHOST];
 	if (getnameinfo((struct sockaddr *) &addr, sizeof(addr), host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
-		trace_dsn(
+		trace_network(
 			hSession,
 			"Established connection to %s\n",
 			host
@@ -257,7 +257,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 		int error = errno;
 		close(sock);
 
-		trace_dsn(
+		trace_network(
 			hSession,
 			"Connection failed: %s\n",
 			strerror(error)
@@ -299,7 +299,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 									strerror(rc));
 			return rc;
 		} else {
-			trace_dsn(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
+			trace_network(hSession,"Network keep-alive is %s\n",optval ? "enabled" : "disabled" );
 		}
 
 #if defined(OMTU)

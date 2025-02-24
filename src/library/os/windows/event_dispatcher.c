@@ -132,11 +132,13 @@ retry:
 		int ns = select(maxSock+1, &rfds, &wfds, &xfds, &tm);
 
 		if (ns < 0 && errno != EINTR) {
+			lib3270_autoptr(char) msg = lib3270_win32_strerror(WSAGetLastError());
 			lib3270_popup_dialog(	hSession,
 			                        LIB3270_NOTIFY_ERROR,
 			                        _( "Network error" ),
 			                        _( "Select() failed when processing for events." ),
-			                        lib3270_win32_strerror(WSAGetLastError()));
+			                        msg
+								);
 		} else {
 			for (ip = (input_t *) hSession->input.list.first; ip != (input_t *)NULL; ip = (input_t *) ip->next) {
 				if((ip->flag & LIB3270_IO_FLAG_READ) && FD_ISSET(ip->fd, &rfds)) {

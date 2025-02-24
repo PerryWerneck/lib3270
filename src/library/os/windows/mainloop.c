@@ -247,7 +247,7 @@
 			};
 
 			connection_close(hSession,-1);
-			popup_wsa_error(hSession,wParam,&popup,0);
+			popup_win32_error(hSession,wParam,&popup,0);
 
 		}
 		return 0;

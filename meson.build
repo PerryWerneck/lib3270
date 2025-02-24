@@ -324,6 +324,7 @@ win_src = [
   'src/library/os/windows/connect.c',
   'src/library/os/windows/registry.c',
   'src/library/os/windows/util.c',
+  'src/library/os/windows/popup.c',
 ]
 
 #

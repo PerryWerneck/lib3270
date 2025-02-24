@@ -34,25 +34,28 @@ extern "C" {
  */
 typedef enum _LIB3270_NOTIFY {
 
-	// Dialog types.
+	// Standard dialog types
 	LIB3270_NOTIFY_INFO				= 0x0001,	///< @brief Simple information dialog (dialog-information).
 	LIB3270_NOTIFY_WARNING			= 0x0002,	///< @brief Warning message (dialog-warning).
 	LIB3270_NOTIFY_ERROR			= 0x0003,	///< @brief Error message (dialog-error).
+	LIB3270_NOTIFY_NETWORK			= 0x0010,	///< @brief Network related messages
+	LIB3270_NOTIFY_CONNECTION		= 0x0020,	///< @brief Connection related messages (network-server).
+	LIB3270_NOTIFY_NETWORK_ERROR	= 0x0013,	///< @brief Network related messages (network-error)
 
-	// Security related messages
-	LIB3270_NOTIFY_SECURITY_HIGH	= 0x0010,	///< @brief High security level (security-high).
-	LIB3270_NOTIFY_SECURITY_MEDIUM	= 0x0020,	///< @brief Medium security level (security-medium).
-	LIB3270_NOTIFY_SECURITY_LOW		= 0x0030,	///< @brief Low security level (security-low).
+	// Security message types
+	LIB3270_NOTIFY_SECURITY_HIGH	= 0x0100,	///< @brief High security level (security-high).
+	LIB3270_NOTIFY_SECURITY_MEDIUM	= 0x0200,	///< @brief Medium security level (security-medium).
+	LIB3270_NOTIFY_SECURITY_LOW		= 0x0300,	///< @brief Low security level (security-low).
 
-	// Connection related messages.
-	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x0103,	///< @brief Connection error.
+	// Dialog buttons.
+	LIB3270_NOTIFY_ALLOW_RETRY		= 0x1000,	///< @brief Connection related messages (allow 'Retry' button).
+	LIB3270_NOTIFY_ALLOW_RECONNECT	= 0x2000,	///< @brief Connection related messages (allow 'Reconnect' button).
+	LIB3270_NOTIFY_ALLOW_IGNORE		= 0x4000,	///< @brief Connection related messages (allow 'Ignore' button).
+	LIB3270_NOTIFY_CRITICAL			= 0x8000,	///< @brief Critical error, user can abort application.
 
-	// Dialog filters.
-	LIB3270_NOTIFY_DIALOG_TYPE		= 0x000F,	///< @brief Filter for dialog type.
-	LIB3270_NOTIFY_SECURITY_TYPE	= 0x00F0,	///< @brief Filter for security type.
-	LIB3270_NOTIFY_ALLOW_RECONNECT	= 0x0100,	///< @brief Connection related messages (allow 'Retry' button).
-	LIB3270_NOTIFY_CRITICAL			= 0x0200,	///< @brief Critical error, user can abort application.
-	LIB3270_NOTIFY_APPLICATION		= 0x1000,	///< @brief Application specifics.
+	// Network related messages.
+	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x1023,	///< @brief Connection error (icon 'network-server', button 'retry').
+	LIB3270_NOTIFY_NETWORK_IO_ERROR	= 0x2013,	///< @brief Network I/O error (icon 'network-error', button 'reconnect').
 
 } LIB3270_NOTIFY;
 

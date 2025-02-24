@@ -180,7 +180,7 @@
 			if(rc != 0) {
 
 				if(rc == EAI_INPROGRESS) {
-					trace_dsn(hSession,"DNS request still in progress\n");
+					trace_network(hSession,"DNS request still in progress\n");
 					continue;
 				}
 
@@ -198,7 +198,7 @@
 
 			} else {
 
-				trace_dsn(hSession,"DNS request completed\n");
+				trace_network(hSession,"DNS request completed\n");
 
 				int error = -1;
 
@@ -206,7 +206,7 @@
 
 					char host[NI_MAXHOST];
 					if (getnameinfo(ai->ai_addr, ai->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
-						trace_dsn(
+						trace_network(
 							hSession,
 							"Connecting address %s for '%s:%s'\n",
 							host,
@@ -214,7 +214,7 @@
 							context->list[0]->ar_service
 						);
 					} else {
-						trace_dsn(
+						trace_network(
 							hSession,
 							"Unable to get address for '%s:%s'\n",
 							context->list[0]->ar_name,
@@ -226,7 +226,7 @@
 					if(sock < 0) {
 						// Can't get socket.
 						error = errno;
-						trace_dsn(
+						trace_network(
 							hSession,
 							"Cant get socket for connection to %s: %s\n",
 							host,

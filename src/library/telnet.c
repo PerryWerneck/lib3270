@@ -276,7 +276,7 @@ socklen_t ha_len = sizeof(haddr);
 
 void popup_a_sockerr(H3270 *hSession, char *fmt, ...) {
 #if defined(_WIN32)
-	const char *msg = lib3270_win32_strerror(socket_errno());
+	lib3270_autoptr(char) msg = lib3270_win32_strerror(socket_errno());
 #else
 	const char *msg = strerror(errno);
 #endif // WIN32

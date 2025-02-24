@@ -95,7 +95,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	lib3270_autoptr(HINTERNET) httpSession = WinHttpOpen(wUserAgent, WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0 );
 
 	if(!httpSession) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Can't open session for %s: %s\n",url, windows_error);
 
 		*error_message = _( "Can't open HTTP session" );
@@ -106,7 +106,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	// Connect to server
 	lib3270_autoptr(HINTERNET) hConnect = WinHttpConnect(httpSession, wHostname, INTERNET_DEFAULT_HTTP_PORT, 0);
 	if(!hConnect) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Can't connect to %s: %s\n", url, windows_error);
 
 		*error_message = _( "Can't connect to HTTP server." );
@@ -117,7 +117,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	// Create request.
 	lib3270_autoptr(HINTERNET) hRequest = WinHttpOpenRequest(hConnect, L"GET", wPath, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_ESCAPE_PERCENT);
 	if(!hConnect) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Can't open request for %s: %s\n", url, windows_error);
 
 		*error_message = _( "Can't create HTTP request." );
@@ -130,7 +130,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 
 	// Send request.
 	if(!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0)) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Can't send request for %s: %s\n", url, windows_error);
 
 		*error_message = _( "Can't send HTTP request." );
@@ -141,7 +141,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 
 	// Get response
 	if(!WinHttpReceiveResponse(hRequest, NULL)) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Can't receive response for %s: %s\n", url, windows_error);
 
 		*error_message = _( "Error receiving HTTP response." );
@@ -153,7 +153,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 
 	DWORD szResponse = 0;
 	if(!WinHttpQueryDataAvailable(hRequest, &szResponse)) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Error checking for available data after response to %s: %s\n", url, windows_error);
 
 		*error_message = _( "Empty response from HTTP server." );
@@ -169,7 +169,7 @@ char * lib3270_url_get_using_http(H3270 *hSession, const char *url, const char *
 	debug("Response before: %u", (unsigned int) szResponse);
 
 	if(!WinHttpReadData(hRequest,httpText,szResponse,&szResponse)) {
-		lib3270_autoptr(char) windows_error = lib3270_win32_translate_error_code(GetLastError());
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		trace_network(hSession,"Can't read response size for %s: %s\n", url, windows_error);
 
 		*error_message = _( "Can't read HTTP response size." );

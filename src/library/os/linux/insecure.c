@@ -37,6 +37,7 @@
  #include <lib3270/ssl.h>
  #include <lib3270/mainloop.h>
  #include <lib3270/memory.h>
+ #include <private/popup.h>
  #include <private/trace.h>
  #include <private/session.h>
  #include <private/network.h>
@@ -95,6 +96,7 @@
 
  static int finalize(H3270 *hSession, Context *context) {
 	lib3270_free(context);
+	return 0;
  }
 
  static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
@@ -108,7 +110,7 @@
 
 		LIB3270_POPUP popup = {
 			.name		= "recv-failed",
-			.type		= LIB3270_NOTIFY_ERROR,
+			.type		= LIB3270_NOTIFY_NETWORK_ERROR,
 			.title		= N_("Network error"),
 			.summary	= N_("Failed to receive data from the host"),
 			.body		= "",
@@ -117,31 +119,28 @@
 
 #ifdef _WIN32
 
-		int wsaError = WSAGetLastError();
+	
+		int error = WSAGetLastError();
 
 		// EWOULDBLOCK & EAGAIN should return directly.
-		if(wsaError == WSAEWOULDBLOCK || wsaError == WSAEINPROGRESS)
+		if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS)
 			return;
 
-		set_popup_body(&popup,wsaError);
+		popup_win32_error(hSession,error,&popup,0);
+		connection_close(hSession,error);
 
-		// TODO: Translate WSA Error, update message body.
-		#error TODO: Translate WSA Error, update message body.
-
-		connection_close(hSession,wsaError);
 #else 
 
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			return;
 		}
 
-		set_popup_body(&popup,errno);
+		lib3270_popup(hSession, &popup, 0);
 		connection_close(hSession,errno);
 
 #endif 
-
-		lib3270_popup(hSession, &popup, 0);
 		return;
+
 	}
 
 	debug("Recv %ld bytes",length);

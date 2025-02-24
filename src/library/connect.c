@@ -220,6 +220,7 @@
 	hSession->connection.sock = sock;
 
 	if(hSession->connection.context) {
+		trace_network(hSession,"Connection established, cleaning network context\n");
 		hSession->connection.context->finalize(hSession,hSession->connection.context);
 		hSession->connection.context = NULL;
 	}

@@ -46,9 +46,8 @@
 
 	void *timer;
 
-	const char *hostname;
-	const char *service;
-
+	char *hostname;
+	char *service;
 
  } Context;
 
@@ -202,7 +201,7 @@
 	} else if(sock == INVALID_SOCKET) {
 		PostMessage(context->hSession->hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
 	} else {
-		PostMessage(context->hSession->hwnd,WM_RESOLV_SUCCESS,0,socket);
+		PostMessage(context->hSession->hwnd,WM_RESOLV_SUCCESS,0,(LPARAM) socket);
 	}
 
 	debug("%s: Resolver thread finished",__FUNCTION__);

@@ -32,6 +32,7 @@
  #include <private/mainloop.h>
  #include <private/session.h>
  #include <private/intl.h>
+ #include <private/popup.h>
  
  #include <winsock2.h>
  #include <windows.h>
@@ -60,8 +61,7 @@
 } timeout_t;
 
  struct _lib3270_timer_context {
-	unsigned long interval;
-	lib3270_linked_list timers;
+	LIB3270_LINKED_LIST
  };
 
  static unsigned long getCurrentTime() {
@@ -89,6 +89,11 @@
 
  static void win32_timer_remove(H3270 *hSession, void *timer) {
 	PostMessage(hSession->hwnd,WM_REMOVE_TIMER,0,(LPARAM) timer);
+ }
+
+ static void win32_timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {
+	lib3270_linked_list_free((lib3270_linked_list *) context);
+	lib3270_free(context);
  }
 
  LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession) {
@@ -133,9 +138,8 @@
 	hSession->timer.add = win32_timer_add;
  	hSession->timer.remove = win32_timer_remove;
 	hSession->timer.context = lib3270_new(struct _lib3270_timer_context);
-	// hSession->timer.finalize = win32_timer_finalize;
+	hSession->timer.finalize = win32_timer_finalize;
 	memset(hSession->timer.context,0,sizeof(struct _lib3270_timer_context));
-	hSession->timer.context->interval = 100;
 
 	/*
  	hSession->poll.add = win32_poll_add;
@@ -180,7 +184,7 @@
 	case WM_DESTROY:
 		{
 			timeout_t *t;
-			for (t = (timeout_t *) hSession->timer.context->timers.first; t != NULL; t = (timeout_t *) t->next) {
+			for (t = (timeout_t *) hSession->timer.context->first; t != NULL; t = (timeout_t *) t->next) {
 				KillTimer(hwnd, t->id);
 			}
 			hSession->hwnd = NULL;
@@ -190,7 +194,7 @@
 	case WM_TIMER:
 		{
 			timeout_t *t;
-			for (t = (timeout_t *) hSession->timer.context->timers.first; t != NULL; t = (timeout_t *) t->next) {
+			for (t = (timeout_t *) hSession->timer.context->first; t != NULL; t = (timeout_t *) t->next) {
 				if(t->id == wParam) {
 					t->call(hSession,t->userdata);
 					SendMessage(hwnd,WM_REMOVE_TIMER,0,(LPARAM) t);
@@ -204,9 +208,9 @@
 		{
 			timeout_t *t = (timeout_t *) lParam;
 
-			t->prev = hSession->timer.context->timers.last;
+			t->prev = hSession->timer.context->last;
 			t->next = NULL;
-			hSession->timer.context->timers.last = (struct lib3270_linked_list_node *) t;	
+			hSession->timer.context->last = (struct lib3270_linked_list_node *) t;	
 			
 			SetTimer(hwnd,t->id,t->interval_ms,(TIMERPROC) NULL);
 
@@ -219,11 +223,55 @@
 			if(timer) {
 				KillTimer(hwnd,timer->id);
 				lib3270_linked_list_delete_node( 
-					(lib3270_linked_list *) &hSession->timer.context->timers,
+					(lib3270_linked_list *) hSession->timer.context,
 					timer
 				);
 			}			
 		}
+		return 0;
+
+	case WM_RESOLV_FAILED:
+		{
+			debug("%s: WM_RESOLV_FAILED",__FUNCTION__);
+			lib3270_autoptr(char) summary = lib3270_strdup_printf(
+				_( "Can't connect to %s"),lib3270_get_url(hSession)
+			);
+
+			LIB3270_POPUP popup = {
+				.name		= "dns-error",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("DNS error"),
+				.summary	= summary,
+				.body		= "",
+				.label		= _("OK")
+			};
+
+			connection_close(hSession,-1);
+			popup_wsa_error(hSession,wParam,&popup,0);
+
+		}
+		return 0;
+
+	case WM_RESOLV_TIMEOUT:
+		{
+			LIB3270_POPUP popup = {
+				.name		= "dns-timeout",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("DNS error"),
+				.summary	= _("Unable to resolve host name"),
+				.body		= strerror(ETIMEDOUT),
+				.label		= _("OK")
+			};
+	
+			connection_close(hSession,ETIMEDOUT);
+			lib3270_popup(hSession, &popup, 0);
+
+		}
+		return 0;
+
+	case WM_RESOLV_SUCCESS:
+		debug("%s: WM_RESOLV_SUCCESS",__FUNCTION__);
+		set_resolved(hSession,(SOCKET) lParam);
 		return 0;
 
 	}

@@ -80,7 +80,7 @@
 	HWND hwnd;
 #endif // _WIN32
 
-	/// @brief Timers for this session.
+	/// @brief Timer handlers.
 	struct {
 		void *	(*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
 		void	(*remove)(H3270 *session, void *timer);
@@ -88,9 +88,13 @@
 		LIB3270_TIMER_CONTEXT * context;
 	} timer;
 
-	/// @brief I/O handlers for this session.
+	/// @brief Network I/O handlers.
 	struct {
+#ifdef _WIN32
+		void *	(*add)(H3270 *session, SOCKET fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+#else
 		void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+#endif // _WIN32
 		void	(*remove)(H3270 *session, void *id);
 		void	(*finalize)(H3270 *session, LIB3270_POLL_CONTEXT * context);
 		LIB3270_POLL_CONTEXT * context;
@@ -114,7 +118,7 @@
 		int					 sock;
 #endif
 
-		LIB3270_NET_CONTEXT * context;			///< @brief Connection context.
+		LIB3270_NET_CONTEXT * context;			///< @brief Network context.
 
 		LIB3270_CSTATE		  state;			///< @brief Connection state.
 		unsigned int		  timeout;			///< @brief Connection timeout in seconds.
@@ -311,6 +315,7 @@
 
 	// rpq.c
 	unsigned int			  rpq_complained : 1;
+	
 #if !defined(_WIN32)
 	unsigned int			  omit_due_space_limit : 1;
 #endif

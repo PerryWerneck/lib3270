@@ -31,12 +31,23 @@
 	enum MessageTypes {
 		WM_ADD_TIMER				= WM_USER+102,
 		WM_REMOVE_TIMER				= WM_USER+103,
+		WM_ADD_SOCKET				= WM_USER+104,
+		WM_REMOVE_SOCKET			= WM_USER+105,
+		WM_RESOLV_FAILED			= WM_USER+106,
+		WM_RESOLV_SUCCESS			= WM_USER+107,
+		WM_RESOLV_TIMEOUT			= WM_USER+108,
 	};
 
+ 	/// @brief Create win32 object window for the session
+ 	/// @param hSession The session to be associated with the object window.
  	LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession);
+
+	/// @brief Destroy win32 object window for the session
+	/// @param hSession The session to be dissociated from the object window.
 	LIB3270_INTERNAL void win32_mainloop_free(H3270 *hSession);
 
 #else
+
 	/// @brief Use internal mainloop methods for the session.
 	/// @param hSession The session to be set.
 	/// @param gui Non-zero if the session is running in GUI mode.
@@ -45,5 +56,6 @@
 	/// @brief Try to set the glib mainloop methods for the session.
 	/// @return 0 if ok, error code if not
 	LIB3270_INTERNAL int setup_glib_mainloop(H3270 *hSession);
+
 #endif // _WIN32
 

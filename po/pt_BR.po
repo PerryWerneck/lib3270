@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-22 10:14-0300\n"
+"POT-Creation-Date: 2025-02-24 07:39-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -19,72 +19,72 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "X-Generator: Gtranslator 40.0\n"
 
-#: src/library/keyboard/kybd.c:267
+#: src/library/keyboard/kybd.c:268
 #, c-format
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
 
-#: src/library/keyboard/kybd.c:1568
+#: src/library/keyboard/kybd.c:1569
 #, c-format
 msgid "Unknown PA key %d"
 msgstr "PA %d desconhecida"
 
-#: src/library/keyboard/kybd.c:1581
+#: src/library/keyboard/kybd.c:1582
 #, c-format
 msgid "Unknown PF key %d"
 msgstr "PF %d desconhecida"
 
-#: src/library/keyboard/kybd.c:1782
+#: src/library/keyboard/kybd.c:1783
 #, c-format
 msgid "%s: Bell not supported"
 msgstr "%s: Alerta sonoro não suportado"
 
-#: src/library/keyboard/kybd.c:1833
+#: src/library/keyboard/kybd.c:1834
 #, c-format
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
 
-#: src/library/keyboard/kybd.c:1880
+#: src/library/keyboard/kybd.c:1881
 #, c-format
 msgid "%s: Unknown character after \\p"
 msgstr "%s: Caractere desconhecido depois de \\p"
 
-#: src/library/keyboard/kybd.c:1891
+#: src/library/keyboard/kybd.c:1892
 #, c-format
 msgid "%s: Unknown character after \\pf"
 msgstr "%s: Caractere desconhecido depois de \\pf"
 
-#: src/library/keyboard/kybd.c:1908
+#: src/library/keyboard/kybd.c:1909
 #, c-format
 msgid "%s: Unknown character after \\pa"
 msgstr "%s: Caractere desconhecido depois de \\pa"
 
-#: src/library/keyboard/kybd.c:1927
+#: src/library/keyboard/kybd.c:1928
 #, c-format
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
 
-#: src/library/session.c:156
+#: src/library/session.c:159
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/library/session.c:156
+#: src/library/session.c:159
 msgid "Unable to print"
 msgstr "Incapaz de imprimir"
 
-#: src/library/session.c:162
+#: src/library/session.c:165
 msgid "Can't save"
 msgstr "Não é possível salvar"
 
-#: src/library/session.c:162
+#: src/library/session.c:165
 msgid "Unable to save"
 msgstr "Incapaz de salvar"
 
-#: src/library/session.c:168
+#: src/library/session.c:171
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/library/session.c:168
+#: src/library/session.c:171
 msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
 
@@ -436,92 +436,97 @@ msgstr "Reconectar automaticamente"
 msgid "Automatically reconnect to the host if it ever disconnects"
 msgstr "Reconecta automaticamente caso o servidor desconecte"
 
-#: src/library/rpq.c:220
+#: src/library/rpq.c:223
 msgid "RPQ Error"
 msgstr "Erro RPQ"
 
-#: src/library/rpq.c:221
+#: src/library/rpq.c:224
 msgid "Unsupported RPQ term"
 msgstr "Unsupported RPQ term"
 
-#: src/library/rpq.c:222
+#: src/library/rpq.c:225
 #, c-format
 msgid "RPQ term %d is unknown"
 msgstr "Termo RPM %d não foi reconhecido"
 
-#: src/library/rpq.c:227
+#: src/library/rpq.c:230
 #, c-format
 msgid "RPQ %s term omitted due to insufficient space"
 msgstr "Termo RPQ %s omitido por falta de espaço"
 
-#: src/library/rpq.c:336
+#: src/library/rpq.c:339
 #, c-format
 msgid "RPQ %s term override ignored"
 msgstr "RPQ %s term override ignored"
 
-#: src/library/rpq.c:348
+#: src/library/rpq.c:351
 #, c-format
 msgid "RPQ term \"%s\" is unrecognized"
 msgstr "Termo RPQ desconhecido: \"%s\" "
 
-#: src/library/rpq.c:401 src/library/rpq.c:410
+#: src/library/rpq.c:404 src/library/rpq.c:413
 msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
 msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
 
-#: src/library/rpq.c:422
+#: src/library/rpq.c:425
 msgid "RPQ: Unable to determine workstation local time"
 msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
 
-#: src/library/rpq.c:432 src/library/rpq.c:442
+#: src/library/rpq.c:435 src/library/rpq.c:445
 msgid "RPQ: Unable to determine workstation UTC time"
 msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
 
-#: src/library/rpq.c:463
+#: src/library/rpq.c:466
 msgid "RPQ timezone exceeds 12 hour UTC offset"
 msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
 
-#: src/library/rpq.c:518
+#: src/library/rpq.c:521
 msgid "RPQ USER term has non-hex character"
 msgstr "Termo RPQ USER tem caractere não hexadecimal"
 
-#: src/library/rpq.c:524
+#: src/library/rpq.c:527
 #, c-format
 msgid "RPQ USER term truncated after %d bytes"
 msgstr "Termo RPQ USER truncado depois de %d bytes"
 
-#: src/library/rpq.c:543
+#: src/library/rpq.c:546
 msgid "RPQ USER term has odd number of hex digits"
 msgstr "RPQ USER term has odd number of hex digits"
 
-#: src/library/rpq.c:568
+#: src/library/rpq.c:571
 #, c-format
 msgid "RPQ USER term truncated after %d characters"
 msgstr "Termo RPQ USER truncado depois de %d caracteres"
 
-#: src/library/rpq.c:640 src/library/rpq.c:716
+#: src/library/rpq.c:643 src/library/rpq.c:722
 #, c-format
 msgid "RPQ ADDRESS term has unrecognized family %u"
 msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
 
-#: src/library/rpq.c:648 src/library/rpq.c:677 src/library/rpq.c:723
+#: src/library/rpq.c:651 src/library/rpq.c:680 src/library/rpq.c:729
 msgid "RPQ ADDRESS term incomplete due to space limit"
 msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 
-#: src/library/rpq.c:653
+#: src/library/rpq.c:656
 #, c-format
 msgid "RPQ: can't resolve '%s': %s"
 msgstr "RPQ: Não foi possível resolver '%s': %s"
 
-#: src/library/rpq.c:666
+#: src/library/rpq.c:669
 msgid "RPQ: gethostbyname error"
 msgstr "RPQ: Erro em gethostbyname"
 
-#: src/library/rpq.c:695
+#: src/library/rpq.c:698
 #, fuzzy
 msgid "RPQ ADDRESS term incomplete: connection context not found"
 msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 
-#: src/library/util.c:274
+#: src/library/rpq.c:704
+#, fuzzy
+msgid "RPQ ADDRESS term incomplete: getsockname failed"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/util.c:268
 #, c-format
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
@@ -999,12 +1004,11 @@ msgid ""
 "server status and network configuration, then try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:190 src/library/os/linux/connect.c:73
-#: src/library/os/linux/connect.c:116 src/library/os/linux/connect.c:138
-#: src/library/os/linux/connect.c:170 src/library/os/linux/connect.c:203
-#: src/library/os/linux/connect.c:274 src/library/os/linux/connect.c:290
-#: src/library/os/windows/connect.c:357 src/library/os/windows/connect.c:375
-#: src/library/connect.c:175 src/library/connect.c:253
+#: src/library/network/tools.c:190 src/library/os/linux/connect.c:74
+#: src/library/os/linux/connect.c:117 src/library/os/linux/connect.c:139
+#: src/library/os/linux/connect.c:171 src/library/os/linux/connect.c:204
+#: src/library/os/linux/connect.c:280 src/library/os/linux/connect.c:296
+#: src/library/connect.c:175 src/library/connect.c:259
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -1022,14 +1026,16 @@ msgid "fcntl() error when getting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
 #: src/library/network/tools.c:210 src/library/network/tools.c:235
-#: src/library/network/insecure.c:105 src/library/network/insecure.c:178
-#: src/library/os/linux/connect.c:76 src/library/os/linux/connect.c:119
-#: src/library/os/linux/connect.c:141 src/library/os/linux/connect.c:173
-#: src/library/os/linux/connect.c:206 src/library/os/linux/resolv.c:129
-#: src/library/os/linux/resolv.c:145 src/library/os/linux/resolv.c:180
-#: src/library/os/linux/resolv.c:269 src/library/os/linux/resolv.c:282
-#: src/library/os/linux/resolv.c:355 src/library/connect.c:178
-#: src/library/connect.c:256
+#: src/library/os/linux/connect.c:77 src/library/os/linux/connect.c:120
+#: src/library/os/linux/connect.c:142 src/library/os/linux/connect.c:174
+#: src/library/os/linux/connect.c:207 src/library/os/linux/resolv.c:142
+#: src/library/os/linux/resolv.c:158 src/library/os/linux/resolv.c:193
+#: src/library/os/linux/resolv.c:281 src/library/os/linux/resolv.c:294
+#: src/library/os/linux/resolv.c:368 src/library/os/linux/insecure.c:115
+#: src/library/os/linux/insecure.c:188 src/library/os/windows/mainloop.c:246
+#: src/library/os/windows/mainloop.c:263 src/library/os/windows/insecure.c:111
+#: src/library/os/windows/insecure.c:183 src/library/connect.c:178
+#: src/library/connect.c:262
 msgid "OK"
 msgstr ""
 
@@ -1038,38 +1044,21 @@ msgstr ""
 msgid "fcntl() error when setting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
-#: src/library/network/insecure.c:102 src/library/network/insecure.c:175
-#: src/library/os/linux/event_dispatcher.c:132
-#: src/library/os/linux/mainloop.c:254
-#: src/library/os/darwin/event_dispatcher.c:132
-#: src/library/os/windows/event_dispatcher.c:137
-#: src/library/os/windows/connect.c:223 src/library/telnet.c:302
-msgid "Network error"
-msgstr "Erro de rede"
-
-#: src/library/network/insecure.c:103
-#, fuzzy
-msgid "Failed to receive data from the host"
-msgstr "Erro recebendo dados do servidor"
-
-#: src/library/network/insecure.c:176
-#, fuzzy
-msgid "Failed to send data to the host"
-msgstr "Erro ao enviar dados para o servidor"
-
-#: src/library/network/insecure.c:215
-msgid "The session is not secure"
-msgstr "A sessão não é segura"
-
-#: src/library/network/insecure.c:216
-msgid "No TLS/SSL support on this session"
-msgstr "Sem suporte TLS/SSL nessa sessão"
-
 #. Can't get contents
 #: src/library/os/linux/download.c:57 src/library/os/darwin/download.c:55
-#: src/library/os/windows/download.c:62
+#: src/library/os/windows/download.c:64
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
+
+#: src/library/os/linux/event_dispatcher.c:132
+#: src/library/os/linux/mainloop.c:254 src/library/os/linux/insecure.c:112
+#: src/library/os/linux/insecure.c:185
+#: src/library/os/darwin/event_dispatcher.c:132
+#: src/library/os/windows/event_dispatcher.c:137
+#: src/library/os/windows/insecure.c:108 src/library/os/windows/insecure.c:180
+#: src/library/telnet.c:302
+msgid "Network error"
+msgstr "Erro de rede"
 
 #: src/library/os/linux/event_dispatcher.c:133
 #: src/library/os/linux/mainloop.c:255
@@ -1099,43 +1088,43 @@ msgstr "Pesquisa LDAP não produziu valores."
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/library/os/linux/connect.c:74 src/library/os/linux/connect.c:204
+#: src/library/os/linux/connect.c:75 src/library/os/linux/connect.c:205
 #, fuzzy
 msgid "Unable to connect to host"
 msgstr "Não é possível conectar em servidores seguros"
 
-#: src/library/os/linux/connect.c:117 src/library/os/windows/connect.c:224
+#: src/library/os/linux/connect.c:118
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/os/linux/connect.c:131 src/library/os/windows/connect.c:232
+#: src/library/os/linux/connect.c:132 src/library/os/windows/mainloop.c:237
 #, fuzzy, c-format
 msgid "Can't connect to %s"
 msgstr "Não foi possível conectar a %s:%s"
 
-#: src/library/os/linux/connect.c:163
+#: src/library/os/linux/connect.c:164
 #, fuzzy, c-format
 msgid "Failed to establish connection to %s"
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/os/linux/connect.c:275 src/library/os/windows/connect.c:358
+#: src/library/os/linux/connect.c:281
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) falhou"
 
-#: src/library/os/linux/connect.c:286 src/library/os/windows/connect.c:371
+#: src/library/os/linux/connect.c:292
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/library/os/linux/connect.c:286 src/library/os/windows/connect.c:371
+#: src/library/os/linux/connect.c:292
 msgid "enable"
 msgstr "habilitar"
 
-#: src/library/os/linux/connect.c:286 src/library/os/windows/connect.c:371
+#: src/library/os/linux/connect.c:292
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/library/os/linux/connect.c:302
+#: src/library/os/linux/connect.c:308
 #, c-format
 msgid "setsockopt(%s)"
 msgstr "setsockopt(%s)"
@@ -1144,67 +1133,87 @@ msgstr "setsockopt(%s)"
 msgid "Can't initialize curl operation"
 msgstr "Erro ao inicializar operação CURL"
 
-#: src/library/os/linux/resolv.c:126 src/library/os/linux/resolv.c:142
-#: src/library/os/linux/resolv.c:177 src/library/os/linux/resolv.c:266
-#: src/library/os/linux/resolv.c:279 src/library/os/linux/resolv.c:352
+#: src/library/os/linux/resolv.c:139 src/library/os/linux/resolv.c:155
+#: src/library/os/linux/resolv.c:190 src/library/os/linux/resolv.c:278
+#: src/library/os/linux/resolv.c:291 src/library/os/linux/resolv.c:365
+#: src/library/os/windows/mainloop.c:243 src/library/os/windows/mainloop.c:260
 #, fuzzy
 msgid "DNS error"
 msgstr "Erro no socket"
 
-#: src/library/os/linux/resolv.c:127 src/library/os/linux/resolv.c:143
-#: src/library/os/linux/resolv.c:178
+#: src/library/os/linux/resolv.c:140 src/library/os/linux/resolv.c:156
+#: src/library/os/linux/resolv.c:191
 #, fuzzy
 msgid "Error resolving host name"
 msgstr "Erro ao resolver %s: %s"
 
-#: src/library/os/linux/resolv.c:128
+#: src/library/os/linux/resolv.c:141
 msgid "Unexpected number of bytes read from signalfd"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:151
+#: src/library/os/linux/resolv.c:164
 #, c-format
 msgid "Received signal with unexpected si_code '%d' while connecting to %s"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:267
+#: src/library/os/linux/resolv.c:279
 msgid "Unexpected response to cancel request"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:280 src/library/os/linux/resolv.c:353
+#: src/library/os/linux/resolv.c:292 src/library/os/linux/resolv.c:366
+#: src/library/os/windows/mainloop.c:261
 #, fuzzy
 msgid "Unable to resolve host name"
 msgstr "Não consegui encontrar o host selecionado."
 
-#: src/library/os/windows/util.c:128 src/library/os/windows/util.c:174
+#: src/library/os/linux/insecure.c:113 src/library/os/windows/insecure.c:109
+#, fuzzy
+msgid "Failed to receive data from the host"
+msgstr "Erro recebendo dados do servidor"
+
+#: src/library/os/linux/insecure.c:186 src/library/os/windows/insecure.c:181
+#, fuzzy
+msgid "Failed to send data to the host"
+msgstr "Erro ao enviar dados para o servidor"
+
+#: src/library/os/linux/insecure.c:225 src/library/os/windows/insecure.c:220
+msgid "The session is not secure"
+msgstr "A sessão não é segura"
+
+#: src/library/os/linux/insecure.c:226 src/library/os/windows/insecure.c:221
+msgid "No TLS/SSL support on this session"
+msgstr "Sem suporte TLS/SSL nessa sessão"
+
+#: src/library/os/windows/util.c:132 src/library/os/windows/util.c:178
 #, c-format
 msgid "Windows error %d"
 msgstr "Erro windows foi %d"
 
-#: src/library/os/windows/http.c:99
+#: src/library/os/windows/http.c:101
 msgid "Can't open HTTP session"
 msgstr "Não foi possível abrir sessão HTTP"
 
-#: src/library/os/windows/http.c:110
+#: src/library/os/windows/http.c:112
 msgid "Can't connect to HTTP server."
 msgstr "Não foi possível conectar ao servidor HTTP"
 
-#: src/library/os/windows/http.c:121
+#: src/library/os/windows/http.c:123
 msgid "Can't create HTTP request."
 msgstr "Não foi possível criar requisição HTTP"
 
-#: src/library/os/windows/http.c:134
+#: src/library/os/windows/http.c:136
 msgid "Can't send HTTP request."
 msgstr "Não posso enviar requisição HTTP"
 
-#: src/library/os/windows/http.c:145
+#: src/library/os/windows/http.c:147
 msgid "Error receiving HTTP response."
 msgstr "Erro recebendo resposta HTTP."
 
-#: src/library/os/windows/http.c:157
+#: src/library/os/windows/http.c:159
 msgid "Empty response from HTTP server."
 msgstr "Recebi resposta vazia do servidor HTTP"
 
-#: src/library/os/windows/http.c:173
+#: src/library/os/windows/http.c:175
 msgid "Can't read HTTP response size."
 msgstr "Não posso obter tamanho da resposta HTTP"
 
@@ -1227,61 +1236,6 @@ msgstr "Pesquisa LDAP não produziu atributos."
 #: src/library/os/windows/ldap.c:186
 msgid "LDAPSearch did not produce any values."
 msgstr "Pesquisa LDAP não produziu valores."
-
-#: src/library/os/windows/connect.c:111
-msgid "WSAStartup failed"
-msgstr "WSAStartup falhou"
-
-#: src/library/os/windows/connect.c:123
-msgid "Bad winsock version"
-msgstr "Versão winsock inválida"
-
-#: src/library/os/windows/connect.c:124
-msgid "Can't use this system winsock"
-msgstr "Não posso usar a winsock do sistema"
-
-#: src/library/os/windows/connect.c:197
-msgid "Can't connect to host"
-msgstr "Não foi possível conectar no host"
-
-#: src/library/os/windows/connect.c:198
-msgid "Try again"
-msgstr "Tentar novamente"
-
-#: src/library/os/windows/connect.c:225 src/library/os/windows/connect.c:359
-#: src/library/os/windows/connect.c:377
-#, c-format
-msgid "The system error was %s"
-msgstr "O erro do sistema operacional foi \"%s\""
-
-#: src/library/os/windows/connect.c:238
-#, c-format
-msgid "The system error was \"%s\""
-msgstr "O erro do sistema operacional foi \"%s\""
-
-#: src/library/os/windows/connect.c:275
-#, c-format
-msgid "Can't connect to %s:%s"
-msgstr "Não foi possível conectar a %s:%s"
-
-#: src/library/os/windows/connect.c:297 src/library/os/windows/connect.c:305
-#: src/library/os/windows/connect.c:313 src/library/os/windows/connect.c:323
-#, c-format
-msgid "The system error was \"%s\" (rc=%d)"
-msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
-
-#: src/library/os/windows/connect.c:298
-msgid "Timeout conneting to host"
-msgstr "Timeout ao conectar com o host"
-
-#: src/library/os/windows/connect.c:306
-msgid "Not connected to host"
-msgstr "Sem conexão com servidor"
-
-#. To cleanup states.
-#: src/library/os/windows/connect.c:339
-msgid "_Retry"
-msgstr "_Repetir"
 
 #: src/library/actions/table.c:112
 msgid "_Reconnect"
@@ -2370,58 +2324,58 @@ msgstr "A conexão é segura ?"
 msgid "Unsupported scheme '%s' in URL %s"
 msgstr ""
 
-#: src/library/connect.c:254
+#: src/library/connect.c:260
 #, fuzzy
 msgid "Unable to activate SSL connection"
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/connect.c:255
+#: src/library/connect.c:261
 msgid "The OpenSSL library is not available in this build"
 msgstr ""
 
-#: src/library/ctlr.c:169 src/library/ctlr.c:179 src/library/ctlr.c:190
-#: src/library/ctlr.c:201
+#: src/library/ctlr.c:170 src/library/ctlr.c:180 src/library/ctlr.c:191
+#: src/library/ctlr.c:202
 msgid "Invalid oversize"
 msgstr "Valor inválido para 'oversize'"
 
-#: src/library/ctlr.c:170
+#: src/library/ctlr.c:171
 msgid "The oversize values are invalid."
 msgstr "Os valores para 'oversize' não são válidos."
 
-#: src/library/ctlr.c:171
+#: src/library/ctlr.c:172
 #, c-format
 msgid "%dx%d is negative or zero"
 msgstr "%dx%d é negativa ou zero"
 
-#: src/library/ctlr.c:180
+#: src/library/ctlr.c:181
 msgid "The oversize values are too big."
 msgstr "Os valores do 'oversize' são muito grandes."
 
-#: src/library/ctlr.c:181
+#: src/library/ctlr.c:182
 #, c-format
 msgid "%dx%d screen size is bigger than the maximum size"
 msgstr "Tela %dx%d é maior que o tamanho máximo"
 
-#: src/library/ctlr.c:191
+#: src/library/ctlr.c:192
 msgid "The oversize width is too small."
 msgstr "A largura do 'oversize' é muito pequena."
 
-#: src/library/ctlr.c:192
+#: src/library/ctlr.c:193
 #, c-format
 msgid "The width %d is less than model %d columns (%d)"
 msgstr "A largura %d é menor que a do modelo %d (%d)"
 
-#: src/library/ctlr.c:202
+#: src/library/ctlr.c:203
 msgid "The oversize height is too small."
 msgstr "A altura definida para 'oversize' é muito pequena."
 
-#: src/library/ctlr.c:203
+#: src/library/ctlr.c:204
 #, c-format
 msgid "The height %d is less than model %d rows (%d)"
 msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
 
 #. unknown 3270 command
-#: src/library/ctlr.c:397
+#: src/library/ctlr.c:398
 #, c-format
 msgid "Unknown 3270 Data Stream command: 0x%X"
 msgstr "Unknown 3270 Data Stream command: 0x%X"
@@ -2578,9 +2532,49 @@ msgstr ""
 msgid "Unexpected callback table, the release %s of %s is invalid"
 msgstr ""
 
-#: src/gobject/object.c:88
+#: src/gobject/object.c:89
 msgid "Timer is enabled, usually activates when session is busy"
 msgstr ""
+
+#~ msgid "WSAStartup failed"
+#~ msgstr "WSAStartup falhou"
+
+#~ msgid "Bad winsock version"
+#~ msgstr "Versão winsock inválida"
+
+#~ msgid "Can't use this system winsock"
+#~ msgstr "Não posso usar a winsock do sistema"
+
+#~ msgid "Can't connect to host"
+#~ msgstr "Não foi possível conectar no host"
+
+#~ msgid "Try again"
+#~ msgstr "Tentar novamente"
+
+#, c-format
+#~ msgid "The system error was %s"
+#~ msgstr "O erro do sistema operacional foi \"%s\""
+
+#, c-format
+#~ msgid "The system error was \"%s\""
+#~ msgstr "O erro do sistema operacional foi \"%s\""
+
+#, c-format
+#~ msgid "Can't connect to %s:%s"
+#~ msgstr "Não foi possível conectar a %s:%s"
+
+#, c-format
+#~ msgid "The system error was \"%s\" (rc=%d)"
+#~ msgstr "O erro do sistema operacional foi \"%s\" (rc=%d)"
+
+#~ msgid "Timeout conneting to host"
+#~ msgstr "Timeout ao conectar com o host"
+
+#~ msgid "Not connected to host"
+#~ msgstr "Sem conexão com servidor"
+
+#~ msgid "_Retry"
+#~ msgstr "_Repetir"
 
 #~ msgid "Preferred protocol for CRL download"
 #~ msgstr "Protocolo preferido para download da CRL"

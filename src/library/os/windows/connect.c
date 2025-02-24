@@ -59,7 +59,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	return 0;
  }
 
- LIB3270_INTERNAL int connect_socket(H3270 *hSession, int sock, const struct sockaddr *addr, socklen_t addrlen) {
+ LIB3270_INTERNAL int set_resolved(H3270 *hSession, SOCKET sock) {
 
 	hSession->ever_3270 = 0;
 

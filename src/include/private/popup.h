@@ -30,6 +30,16 @@ LIB3270_INTERNAL void popup_a_sockerr(H3270 *session, char *fmt, ...) LIB3270_GN
 LIB3270_INTERNAL void Error(H3270 *session, const char *fmt, ...);
 LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 
+#ifdef _WIN32
+	/// @brief Popup a Windows Socket error.
+	/// @param hSession TN3270 session handle.
+	/// @param code Error code form WSAGetLastError().
+	/// @param popup Popup description.
+	/// @param wait Non zero to wait for response.
+	/// @return User's response if wait is non zero.
+	LIB3270_INTERNAL int popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup, unsigned char wait);
+#endif
+
 /**
  * @brief Emit translated popup message.
  *

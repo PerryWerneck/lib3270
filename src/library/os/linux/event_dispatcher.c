@@ -45,7 +45,7 @@
 
 /*---[ Implement ]------------------------------------------------------------------------------------------*/
 
-/
+/*
  * @brief lib3270's default event dispatcher.
  *
  * @param hSession	TN3270 session to process.

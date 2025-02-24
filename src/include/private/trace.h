@@ -35,3 +35,6 @@
  LIB3270_INTERNAL void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
  LIB3270_INTERNAL void trace_event(const H3270 *hSession, const char *fmt, ...);
  LIB3270_INTERNAL void trace_network(const H3270 *hSession, const char *fmt, ...);
+
+ #define trace(hSession, fmt, ... )	trace_event(hSession, fmt "\n", __VA_ARGS__ );
+ 

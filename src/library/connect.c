@@ -211,7 +211,11 @@
 
  }
 
+#ifdef _WIN32
+ void set_connected_socket(H3270 *hSession, SOCKET sock) {
+#else
  void set_connected_socket(H3270 *hSession, int sock) {
+#endif //_WIN32
 
 	hSession->connection.sock = sock;
 

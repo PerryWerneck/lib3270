@@ -340,8 +340,8 @@
 	return callback(hSession,parm);
  }
 
- static	void default_post(void(*callback)(void *), void *parm, size_t len) {
-	callback(parm);
+ static	void default_post(H3270 *hSession, void(*callback)(H3270 *,void *), void *parm, size_t) {
+	callback(hSession,parm);
  }
 
  static void timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {

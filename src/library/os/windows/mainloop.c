@@ -37,9 +37,8 @@
  #include <winsock2.h>
  #include <windows.h>
 
- #define MILLION 1000000L
-
  static size_t instances = 0;
+ static LPARAM timer_id = 0;
  static ATOM identifier;	
 
  static LRESULT WINAPI hwndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -64,20 +63,16 @@
 	LIB3270_LINKED_LIST
  };
 
- static unsigned long getCurrentTime() {
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000) + (tv.tv_usec /1000);
-}
+ typedef struct {
+	void (*callback)(void *);
+ } PostData;
 
  static void * win32_timer_add(H3270 *hSession, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata) {
-
-	static LPARAM id = 0;
 
 	timeout_t *t_new = lib3270_new(timeout_t);
 
 	t_new->call = proc;
-	t_new->id = ++id;
+	t_new->id = ++timer_id;
 	t_new->interval_ms = interval_ms;
 	t_new->userdata = userdata;
 
@@ -94,6 +89,13 @@
  static void win32_timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {
 	lib3270_linked_list_free((lib3270_linked_list *) context);
 	lib3270_free(context);
+ }
+
+ static void win32_post(H3270 *hSession, void(*callback)(void *), void *parm, size_t parmlen) {
+	PostData *pd = (PostData *) lib3270_malloc(sizeof(PostData)+parmlen+1);
+	pd->callback = callback;
+	memcpy((pd+1),parm,parmlen);
+	PostMessage(hSession->hwnd,WM_POST_CALLBACK,0,pd);
  }
 
  LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession) {
@@ -135,26 +137,27 @@
 	SetWindowLongPtr(hSession->hwnd, 0, (LONG_PTR) hSession);
 
 	// Setup callbacks
-	hSession->timer.add = win32_timer_add;
- 	hSession->timer.remove = win32_timer_remove;
 	hSession->timer.context = lib3270_new(struct _lib3270_timer_context);
-	hSession->timer.finalize = win32_timer_finalize;
 	memset(hSession->timer.context,0,sizeof(struct _lib3270_timer_context));
 
+	hSession->timer.add = win32_timer_add;
+ 	hSession->timer.remove = win32_timer_remove;
+	hSession->timer.finalize = win32_timer_finalize;
+
 	/*
- 	hSession->poll.add = win32_poll_add;
- 	hSession->poll.remove = win32_poll_remove;
 	hSession->poll.context = lib3270_new(struct _lib3270_poll_context);
-	hSession->poll.finalize = win32_poll_finalize;
 	memset(hSession->poll.context,0,sizeof(struct _lib3270_poll_context));
 
+	hSession->poll.add = win32_poll_add;
+ 	hSession->poll.remove = win32_poll_remove;
+	hSession->poll.finalize = win32_poll_finalize;
  	hSession->event_dispatcher = win32_event_dispatcher;
  	hSession->run = win32_run;
-	hSession->post = win32_post;
 
  	hSession->wait = win32_wait;
 	*/
 
+	hSession->post = win32_post;
 
  }
 
@@ -227,6 +230,9 @@
 					timer
 				);
 			}			
+			if(!hSession->timer.context->first) {
+				timer_id = 0;
+			}
 		}
 		return 0;
 
@@ -273,6 +279,15 @@
 		debug("%s: WM_RESOLV_SUCCESS",__FUNCTION__);
 		set_resolved(hSession,(SOCKET) lParam);
 		return 0;
+
+	case WM_POST_CALLBACK:
+		{
+			PostData *pd = (PostData *) lParam;
+			pd->callback((void *) (pd+1));
+			lib3270_free(pd);
+		}
+		return 0;
+		
 
 	}
 

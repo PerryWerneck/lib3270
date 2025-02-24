@@ -345,23 +345,24 @@
  }
  
  typedef struct {
-	void (*callback)(void *);
-	u_int8_t parm[0];
+	H3270 *hSession;
+	void (*callback)(H3270 *hSession, void *);
  } PostData;
 
  static void post_complete(PostData *pd) {
-	pd->callback(pd->parm);
+	pd->callback(pd->hSession,(pd+1));
 	lib3270_free(pd);
  }
 
- static	void gui_post(void(*callback)(void *), void *parm, size_t parmlen) {
+ static	void gui_post(H3270 *hSession, void(*callback)(H3270 *session, void *), void *parm, size_t parmlen) {
 
 	unsigned int (*g_idle_add_once)(void *function, void * data) =
 		glibmethods[G_IDLE_ADD_ONCE];
 
 	PostData *pd = (PostData *) lib3270_malloc(sizeof(PostData)+parmlen+1);
+	pd->hSession = hSession;
 	pd->callback = callback;
-	memcpy(pd->parm,parm,parmlen);
+	memcpy((pd+1),parm,parmlen);
 
 	g_idle_add_once((void *) post_complete, pd);
 

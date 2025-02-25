@@ -132,6 +132,12 @@ LIB3270_EXPORT char * lib3270_win32_strerror(int lasterror) {
 		snprintf(buffer, 4095, _( "Windows error %d" ), lasterror);
 	}
 
+	for(unsigned char *ptr = buffer;*ptr;ptr++) {
+		if(*ptr < ' ') {
+			*ptr = ' ';
+		}
+	}
+
 #ifdef HAVE_ICONV
 	{
 		// Convert from windows codepage to pw3270´s default charset (UTF-8)

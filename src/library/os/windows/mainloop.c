@@ -176,6 +176,8 @@
 		GetExitCodeThread(tp.thread,&rc);
 	}
 
+	CloseHandle(tp.thread);
+
 	return 0;
 
  }
@@ -366,7 +368,18 @@
 			lib3270_free(pd);
 		}
 		return 0;
-		
+
+	case WM_CLOSE_THREAD:
+		{
+			debug("%s:","WM_CLOSE_THREAD");
+
+			HANDLE thread = (HANDLE) lParam;
+			debug("Waiting for thread %p",thread);	
+			WaitForSingleObject(thread,INFINITE);
+			debug("Closing thread %p",thread);	
+			CloseHandle(thread);
+		}
+		return 0;
 
 	}
 

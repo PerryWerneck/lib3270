@@ -51,6 +51,9 @@ LIB3270_EXPORT DWORD		  lib3270_win32_get_dword(HKEY hKey, const char *name, DWO
 LIB3270_EXPORT LSTATUS		  lib3270_win32_set_registry(LPCSTR module, LPCSTR keyname, LPCSTR value);
 LIB3270_EXPORT LSTATUS		  lib3270_win32_set_string(LPCSTR module, LPCSTR keyname, LPCSTR value);
 
+LIB3270_EXPORT void			  lib3270_add_handle(H3270 *hSession, HANDLE handle, void (*callback)(H3270 *, HANDLE, void *), void *parm);
+LIB3270_EXPORT void			  lib3270_remove_handle(H3270 *hSession, HANDLE handle);
+
 /**
  * @brief Get lib3270's installation path.
  *

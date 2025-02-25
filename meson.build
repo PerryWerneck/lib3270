@@ -321,6 +321,7 @@ darwin_src = [
 
 win_src = [
   'src/library/os/windows/connect.c',
+  'src/library/os/windows/handle.c',
   'src/library/os/windows/registry.c',
   'src/library/os/windows/util.c',
   'src/library/os/windows/popup.c',
@@ -547,6 +548,18 @@ if host_machine.system() == 'windows'
     install_dir: get_option('libdir')
   )
 
+  executable(
+    meson.project_name(),
+    config_src + [ 'src/library/testprogram.c' ],
+    install: false,
+    link_with : [ dynamic ],
+    dependencies: lib_deps + libintl,
+    link_args: [
+      '-lws2_32',
+    ],
+    include_directories: includes_dir
+  )  
+
 else
 
   dynamic = shared_library(
@@ -559,6 +572,15 @@ else
     include_directories: includes_dir
   )
 
+  executable(
+    meson.project_name(),
+    config_src + [ 'src/library/testprogram.c' ],
+    install: false,
+    link_with : [ dynamic ],
+    dependencies: lib_deps + libintl,
+    include_directories: includes_dir
+  )
+  
 endif
 
 if gobject.found()
@@ -642,15 +664,6 @@ static_library(
   pic: true,
   install: true,
   dependencies: lib_deps,
-  include_directories: includes_dir
-)
-
-executable(
-  meson.project_name(),
-  config_src + [ 'src/library/testprogram.c' ],
-  install: false,
-  link_with : [ dynamic ],
-  dependencies: lib_deps + libintl,
   include_directories: includes_dir
 )
 

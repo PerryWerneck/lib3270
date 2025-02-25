@@ -33,6 +33,7 @@
  #include <private/trace.h>
  #include <private/session.h>
  #include <private/mainloop.h>
+ #include <lib3270/win32.h>
 
  typedef struct {
 
@@ -40,6 +41,7 @@
 
 	int enabled;
 	int finalized;
+	int running;
 
 	H3270 *hSession;
 	HANDLE thread;
@@ -79,16 +81,19 @@
 
  static void finalize(H3270 *hSession, Context *context) {
 
+	debug("%s: Finalizing resolver context %p and thread %p",__FUNCTION__,context,context->thread);
+	
 	if(context->timer) {
 		hSession->timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 
-	if(context->thread) {
+	if(context->running) {
 		context->enabled = 0;
 		context->finalized = 1;
 		trace_network(hSession,"Resolver thread still active, delaying context finalization\n");
 	} else {
+		debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
 		lib3270_free(context);
 	}
 
@@ -97,6 +102,9 @@
  static DWORD __stdcall resolver_thread(LPVOID lpParam) {
 
 	Context *context = (Context *) lpParam;
+	HWND hwnd = context->hSession->hwnd;
+	HANDLE thread = context->thread;
+
 	trace_network(context->hSession,"Resolving %s:%s\n",context->hostname,context->service);
 
 	// https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo
@@ -117,6 +125,7 @@
 	if(rc) {
 
 		// Name resolution has failed.
+		debug("Name resolution failed with error %d",rc);
 		
 		if(context->enabled) {
 			// Context was not canceled.
@@ -139,12 +148,25 @@
 	struct addrinfo *ptr = NULL;
 	int error = 0;
 
-	for(ptr=result; ptr != NULL && sock == INVALID_SOCKET && context->enabled; ptr=ptr->ai_next) {
+	debug("%s: Processing responses enabled=%d result=%p",__FUNCTION__,context->enabled,result);
+
+	for(ptr=result; ptr != NULL && context->enabled; ptr=ptr->ai_next) {
 
 		sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if(sock == INVALID_SOCKET) {
+			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
+			debug("---> %s",error);
+			trace_network(
+				context->hSession,
+				"Cant get socket for '%s:%s': %s\n",
+				context->hostname,
+				context->service,
+				error
+			);
 			continue;
 		}
+
+		debug("-----------------------> %s: Got socket",__FUNCTION__);
 
 		char host[NI_MAXHOST];
 		if (getnameinfo(ptr->ai_addr, ptr->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
@@ -175,19 +197,26 @@
 			continue;
 		}
 
-		if(connect(sock, ptr->ai_addr, ptr->ai_addrlen)) {
+		debug("%s: Connecting",__FUNCTION__);
+		if(connect(sock, ptr->ai_addr, ptr->ai_addrlen) == 0) {
 			// Connection established.
+			trace_network(context->hSession,"Connected to %s\n",host);
+			debug("%s: Connected!",__FUNCTION__);
 			break;
 		}
 
 		error = WSAGetLastError();
-		if(error != WSAEINPROGRESS) {
-			trace_network(context->hSession,"Failed to connect socket to %s\n",host);
-			closesocket(sock);
-			sock = INVALID_SOCKET;
-			continue;
+		if(error == WSAEINPROGRESS) {
+			debug("Connected to %s:%s",context->hostname,context->service);
+			break;
 		}
 
+		{
+			lib3270_autoptr(char) message = lib3270_win32_strerror(error);
+			trace_network(context->hSession,"Failed to connect socket to %s: %s\n",host,message);
+			closesocket(sock);
+			sock = INVALID_SOCKET;
+		}
 		error = 0; // Reset error for next address.
 
 	}
@@ -199,18 +228,19 @@
 		// Context was canceled.
 		trace_network(context->hSession,"Hostname resolution to %s:%s was cancelled\n",context->hostname,context->service);
 	} else if(sock == INVALID_SOCKET) {
-		PostMessage(context->hSession->hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
+		PostMessage(hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
 	} else {
-		PostMessage(context->hSession->hwnd,WM_RESOLV_SUCCESS,0,(LPARAM) socket);
+		PostMessage(hwnd,WM_RESOLV_SUCCESS,0,(LPARAM) socket);
 	}
 
 	debug("%s: Resolver thread finished",__FUNCTION__);
-	context->thread = NULL;
 
+	context->running = 0;
 	if(context->finalized) {
 		lib3270_free(context);
 	}
 
+	PostMessage(hwnd,WM_CLOSE_THREAD,0,(LPARAM) thread);
 	return 0;
 
  }
@@ -246,9 +276,12 @@
 
 	// Call resolver in background
 	context->enabled = 1;
+	context->running = 1;
 	context->hSession = hSession;
 	context->timer = hSession->timer.add(hSession,timeout*1000,(void *) net_timeout,context);
 	context->thread = CreateThread(NULL,0,resolver_thread,context,0,NULL);
+
+	debug("Started resolver thread %p for %s:%s",context->thread,hostname,service);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

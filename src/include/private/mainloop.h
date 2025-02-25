@@ -37,6 +37,7 @@
 		WM_RESOLV_SUCCESS			= WM_USER+107,
 		WM_RESOLV_TIMEOUT			= WM_USER+108,
 		WM_POST_CALLBACK			= WM_USER+109,
+		WM_CLOSE_THREAD				= WM_USER+110,
 	};
 
  	/// @brief Create win32 object window for the session

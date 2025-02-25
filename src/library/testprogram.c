@@ -39,16 +39,20 @@
  #ifdef HAVE_SIGNAL_H
  	#include <signal.h>
  #endif // HAVE_SIGNAL_H
-
+ 
+ #if defined(HAVE_SIGNAL_H) && !defined(_WIN32)
  static int enabled = 1;
-
- #ifdef HAVE_SIGNAL_H
  static void handle_signal(int sig) {
-	enabled = 0;
+ 	enabled = 0;
  }
  #endif // HAVE_SIGNAL_H
 
  int main(int argc, char *argv[]) {
+
+#ifdef _WIN32
+	WSADATA WSAData;
+	WSAStartup(MAKEWORD(2,2), &WSAData);
+#endif // _WIN32
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
 
@@ -103,19 +107,33 @@
 		}
 	}
 
-	#ifdef HAVE_SIGNAL_H
+#if defined(HAVE_SIGNAL_H) && !defined(_WIN32)
 		signal(SIGINT,handle_signal);
 		signal(SIGTERM,handle_signal);
-//		signal(SIGQUIT,handle_signal);
-//		signal(SIGHUP,handle_signal);
-	#endif // HAVE_SIGNAL_H
+		signal(SIGQUIT,handle_signal);
+		signal(SIGHUP,handle_signal);
+#endif // HAVE_SIGNAL_H
    
+#ifdef _WIN32
+	BOOL bRet;
+	MSG msg;
+	while( (bRet = GetMessage( &msg, NULL, 0, 0 )) != 0) { 
+		if (bRet == -1) {
+			exit(-1);
+		} else {
+			TranslateMessage(&msg); 
+			DispatchMessage(&msg); 
+		}
+	} 
+#else
 	while(enabled) {
 		if(lib3270_mainloop_run(hSession,1) < 0) {
 			break;
 		}
 	}
+#endif
 
+	debug("Exiting %s",argv[0]);
 	return 0;
 
  }

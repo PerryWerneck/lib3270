@@ -354,6 +354,10 @@
 	lib3270_free(context);
  }
 
+ LIB3270_EXPORT void lib3270_mainloop_run(H3270 *hSession, int block) {
+	hSession->event_dispatcher(hSession,block);
+ }
+
  /// @brief Set default mainloop implementation.
  LIB3270_INTERNAL void setup_default_mainloop(H3270 *hSession) {
 

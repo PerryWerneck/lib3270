@@ -44,7 +44,7 @@
  static LRESULT WINAPI hwndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
  struct _lib3270_poll_context {
-	LIB3270_LINKED_LIST
+	int dunno;
  };
 
  typedef struct timeout {
@@ -91,11 +91,79 @@
 	lib3270_free(context);
  }
 
+ static void win32_poll_finalize(H3270 *session, LIB3270_POLL_CONTEXT * context) {
+	lib3270_free(context);
+ }
+
  static void win32_post(H3270 *hSession, void(*callback)(void *), void *parm, size_t parmlen) {
 	PostData *pd = (PostData *) lib3270_malloc(sizeof(PostData)+parmlen+1);
 	pd->callback = callback;
 	memcpy((pd+1),parm,parmlen);
-	PostMessage(hSession->hwnd,WM_POST_CALLBACK,0,pd);
+	PostMessage(hSession->hwnd,WM_POST_CALLBACK,0,(LPARAM) pd);
+ }
+
+ LIB3270_EXPORT int lib3270_mainloop_run(H3270 *hSession, int wait) {
+
+	// https://learn.microsoft.com/pt-br/windows/win32/api/winuser/nf-winuser-getmessage
+	// https://learn.microsoft.com/pt-br/windows/win32/api/winuser/nf-winuser-peekmessagea
+
+	MSG msg;
+	BOOL bRet;
+	
+	if(wait) {
+		bRet = GetMessage(&msg, NULL, 0, 0 );		
+	} else {
+		bRet = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);	
+	}
+
+	if(bRet == -1) {
+		return -GetLastError();
+	}
+
+	if(bRet) {
+		TranslateMessage(&msg); 
+		DispatchMessage(&msg); 
+		return 1;
+	}
+
+	return 0;
+
+ }
+
+ typedef struct {
+	int running;
+	HANDLE thread;
+	H3270 *hSession;
+	int(*callback)(H3270 *, void *);
+	void *parm;
+ } ThreadParms;
+
+ static DWORD __stdcall background_thread(LPVOID lpParam) {
+	ThreadParms *tp = (ThreadParms *) lpParam;
+	tp->callback(tp->hSession,tp->parm);
+	return 0;
+ }
+
+ static int win32_run(H3270 *hSession, const char *name, int(*callback)(H3270 *, void *), void *parm) {
+
+	ThreadParms tp;
+
+	tp.hSession = hSession;
+	tp.callback = callback;
+	tp.parm = parm;
+
+	tp.thread = CreateThread(NULL,0,background_thread,&tp,0,NULL);
+
+	DWORD rc = STILL_ACTIVE;
+	while(rc == STILL_ACTIVE) {
+		if(lib3270_mainloop_run(hSession,1) < 0) {
+			Sleep(100);
+		}
+		GetExitCodeThread(tp.thread,&rc);
+	}
+
+	return 0;
+
  }
 
  LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession) {
@@ -144,20 +212,12 @@
  	hSession->timer.remove = win32_timer_remove;
 	hSession->timer.finalize = win32_timer_finalize;
 
-	/*
 	hSession->poll.context = lib3270_new(struct _lib3270_poll_context);
 	memset(hSession->poll.context,0,sizeof(struct _lib3270_poll_context));
-
-	hSession->poll.add = win32_poll_add;
- 	hSession->poll.remove = win32_poll_remove;
 	hSession->poll.finalize = win32_poll_finalize;
- 	hSession->event_dispatcher = win32_event_dispatcher;
- 	hSession->run = win32_run;
 
- 	hSession->wait = win32_wait;
-	*/
-
-	hSession->post = win32_post;
+	hSession->post = (void *) win32_post;
+	hSession->run = (void *) win32_run;
 
  }
 
@@ -180,10 +240,6 @@
 	H3270 *hSession = (H3270 *) GetWindowLongPtr(hwnd,0);
 
 	switch(uMsg) {
-	case WM_CREATE:
-		hSession->hwnd = hwnd;
-		break;
-	
 	case WM_DESTROY:
 		{
 			timeout_t *t;

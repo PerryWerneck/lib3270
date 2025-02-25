@@ -36,29 +36,6 @@
 	void *except;
  } Context;
 
- static void net_except(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
-
-
- }
-
- static void net_connected(H3270 *hSession, int sock, LIB3270_IO_FLAG flag, Context *context) {
-
-
-
- }
-
- static int net_timeout(H3270 *hSession, Context *context) {
-
-
-	return 0;
- }
-
-static int net_disconnect(H3270 *hSession, Context *context) {
-
-
-	return 0;
- }
-
  LIB3270_INTERNAL int set_resolved(H3270 *hSession, SOCKET sock) {
 
 	hSession->ever_3270 = 0;

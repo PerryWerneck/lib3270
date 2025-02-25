@@ -50,13 +50,6 @@
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
 
-	// I/O handlers.
-	struct {
-		void *except;
-		void *read;
-		void *write;
-	} xio;
-
  } Context;
 
 
@@ -64,24 +57,10 @@ static int disconnect(H3270 *hSession, Context *context) {
 
 	debug("%s",__FUNCTION__);
 
-	if(context->xio.read) {
-		hSession->poll.remove(hSession,context->xio.read);
-		context->xio.read = NULL;
-	}
 
-	if(context->xio.except) {
-		hSession->poll.remove(hSession,context->xio.except);
-		context->xio.except = NULL;
-	}
-
-	if(context->xio.write) {
-		hSession->poll.remove(hSession,context->xio.write);
-		context->xio.write = NULL;
-	}
-
-	if(hSession->connection.sock != -1) {
+	if(hSession->connection.sock != INVALID_SOCKET) {
 		closesocket(hSession->connection.sock);
-		hSession->connection.sock = -1;
+		hSession->connection.sock = INVALID_SOCKET;
 	}
 
 	return 0;
@@ -91,124 +70,6 @@ static int disconnect(H3270 *hSession, Context *context) {
  static int finalize(H3270 *hSession, Context *context) {
 	lib3270_free(context);
 	return 0;
- }
-
- static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
- 
-	unsigned char buffer[NETWORK_BUFFER_LENGTH];
-
-	debug("%s",__FUNCTION__);
-	ssize_t length = recv(sock,(void *) buffer,NETWORK_BUFFER_LENGTH,0);
-
-	if(length < 0) {
-
-		LIB3270_POPUP popup = {
-			.name		= "recv-failed",
-			.type		= LIB3270_NOTIFY_ERROR,
-			.title		= N_("Network error"),
-			.summary	= N_("Failed to receive data from the host"),
-			.body		= "",
-			.label		= N_("OK")
-		};
-
-#ifdef _WIN32
-
-		int wsaError = WSAGetLastError();
-
-		// EWOULDBLOCK & EAGAIN should return directly.
-		if(wsaError == WSAEWOULDBLOCK || wsaError == WSAEINPROGRESS)
-			return;
-
-		set_popup_body(&popup,wsaError);
-
-		// TODO: Translate WSA Error, update message body.
-
-		connection_close(hSession,wsaError);
-#else 
-
-		if(errno == EAGAIN || errno == EWOULDBLOCK) {
-			return;
-		}
-
-		set_popup_body(&popup,errno);
-		connection_close(hSession,errno);
-
-#endif 
-
-		lib3270_popup(hSession, &popup, 0);
-		return;
-	}
-
-	debug("Recv %ld bytes",length);
- 	net_input(hSession, buffer, length);
-
- }
-
- static void on_exception(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
-
-	debug("%s",__FUNCTION__);
-	trace_dsn(hSession,"RCVD urgent data indication\n");
-
-	if (!hSession->syncing) {
-		hSession->syncing = 1;
-		if(context->xio.except) {
-			hSession->poll.remove(hSession, context->xio.except);
-			context->xio.except = NULL;
-		}
-	}
-
- }
-
- static int enable_exception(H3270 *hSession, Context *context) {
-	if(context->xio.except) {
-		return EBUSY;
-	}
-	context->xio.except = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
-	return 0;
- }
-
- static int on_write(H3270 *hSession, const void *buffer, size_t length, Context *context) {
-
-	ssize_t bytes = send(hSession->connection.sock,buffer,length,0);
-
-	if(bytes >= 0)
-		return bytes;
-
-	LIB3270_POPUP popup = {
-		.name		= "send-failed",
-		.type		= LIB3270_NOTIFY_ERROR,
-		.title		= N_("Network error"),
-		.summary	= N_("Failed to send data to the host"),
-		.body		= "",
-		.label		= N_("OK")
-	};
-
-#ifdef _WIN32
-
-	int error = WSAGetLastError();
-
-	// EWOULDBLOCK & EAGAIN should return directly.
-	if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS)
-		return 0;
-
-	set_popup_body(&popup,error);
-
-#else 
-
-	int error = errno;
-
-	if(error == EWOULDBLOCK || error == EAGAIN) {
-		return 0;
-	}
-	
-	set_popup_body(&popup,error);
-
-#endif
-
-	lib3270_popup(hSession, &popup, 0);
-
-	return -error;
-
  }
 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession) {
@@ -227,12 +88,6 @@ static int disconnect(H3270 *hSession, Context *context) {
 
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
-
-	context->xio.read = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
-	context->xio.except = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
-
-	hSession->connection.except = (void *) enable_exception;
-	hSession->connection.write = (void *) on_write;
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

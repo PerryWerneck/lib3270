@@ -70,7 +70,12 @@ LIB3270_EXPORT int lib3270_wait_for_ready(H3270 *hSession, int seconds) {
 		}
 
 		debug("%s: Waiting",__FUNCTION__);
-		hSession->event_dispatcher(hSession,1);
+		int msgrc = lib3270_mainloop_run(hSession,1);
+		if(msgrc < 0) {
+			rc = -msgrc;
+			break;
+		}
+
 	}
 	hSession->timer.remove(hSession,timer);
 
@@ -117,7 +122,11 @@ int lib3270_wait_for_string(H3270 *hSession, const char *key, int seconds) {
 
 		lib3270_free(contents);
 
-		hSession->event_dispatcher(hSession,1);
+		int msgrc = lib3270_mainloop_run(hSession,1);
+		if(msgrc < 0) {
+			rc = -msgrc;
+			break;
+		}
 
 	}
 	hSession->timer.remove(hSession,timer);
@@ -157,7 +166,11 @@ int lib3270_wait_for_string_at_address(H3270 *hSession, int baddr, const char *k
 			break;
 		}
 
-		hSession->event_dispatcher(hSession,1);
+		int msgrc = lib3270_mainloop_run(hSession,1);
+		if(msgrc < 0) {
+			rc = -msgrc;
+			break;
+		}
 
 	}
 	hSession->timer.remove(hSession,timer);
@@ -196,7 +209,11 @@ LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds) {
 			break;
 		}
 
-		hSession->event_dispatcher(hSession,1);
+		int msgrc = lib3270_mainloop_run(hSession,1);
+		if(msgrc < 0) {
+			rc = -msgrc;
+			break;
+		}
 
 	}
 	hSession->timer.remove(hSession,timer);
@@ -227,7 +244,11 @@ LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstat
 			break;
 		}
 
-		hSession->event_dispatcher(hSession,1);
+		int msgrc = lib3270_mainloop_run(hSession,1);
+		if(msgrc < 0) {
+			rc = -msgrc;
+			break;
+		}
 
 	}
 	hSession->timer.remove(hSession,timer);
@@ -264,7 +285,11 @@ LIB3270_EXPORT LIB3270_KEYBOARD_LOCK_STATE lib3270_wait_for_keyboard_unlock(H327
 			break;
 
 		debug("%s: Waiting",__FUNCTION__);
-		hSession->event_dispatcher(hSession,1);
+		int msgrc = lib3270_mainloop_run(hSession,1);
+		if(msgrc < 0) {
+			rc = -msgrc;
+			break;
+		}
 
 	}
 

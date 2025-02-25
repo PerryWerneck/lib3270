@@ -90,21 +90,25 @@
 
 	/// @brief Network I/O handlers.
 	struct {
-#ifdef _WIN32
-		void *	(*add)(H3270 *session, SOCKET fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-#else
-		void *	(*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-#endif // _WIN32
+#ifndef _WIN32
+		void *	(*add)(H3270 *session, int sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 		void	(*remove)(H3270 *session, void *id);
+#endif // _WIN32
 		void	(*finalize)(H3270 *session, LIB3270_POLL_CONTEXT * context);
 		LIB3270_POLL_CONTEXT * context;
 	} poll;
 
+#ifndef _WIN32
 	int		(*event_dispatcher)(H3270 *session,int wait);
+#endif // !_WIN32
+
+	/// @brief Block current thread for a given amount of time, keep the main loop running.
 	int 	(*wait)(H3270 *session, int seconds);
+
+	/// @brief Execute callback on background thread, wait for thread to finish keeping main loop active.
 	int		(*run)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
 
-	/// @brief Execute callback on the main thread, copying parameters to a dynamically allocated buffer if necessary.
+	/// @brief Execute callback on the main thread, copy parameters to a dynamically allocated buffer if necessary.
 	void	(*post)(H3270 *session, void(*callback)(H3270 *session, void *), void *parm, size_t parmlen);
 
 	/// @brief The connection & network info for this session.

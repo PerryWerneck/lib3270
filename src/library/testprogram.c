@@ -111,7 +111,9 @@
 	#endif // HAVE_SIGNAL_H
    
 	while(enabled) {
-		lib3270_mainloop_run(hSession,1);
+		if(lib3270_mainloop_run(hSession,1) < 0) {
+			break;
+		}
 	}
 
 	return 0;

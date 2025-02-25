@@ -1421,7 +1421,11 @@ LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_
  */
 LIB3270_EXPORT const char * lib3270_get_translation_domain();
 
-LIB3270_EXPORT void lib3270_mainloop_run(H3270 *hSession, int block);
+/// @brief Run main loop.
+/// @param hSession The session handle.
+/// @param block Non zero to block (linux only).
+/// @return 1 if a message was processed, 0 if the queue is empty, negative on error.
+LIB3270_EXPORT int lib3270_mainloop_run(H3270 *hSession, int block);
 
 #ifdef __cplusplus
 }

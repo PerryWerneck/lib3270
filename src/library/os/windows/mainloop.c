@@ -29,6 +29,7 @@
  #include <lib3270/trace.h>
  #include <lib3270/memory.h>
  #include <lib3270/log.h>
+ #include <lib3270/win32.h>
  #include <private/mainloop.h>
  #include <private/session.h>
  #include <private/intl.h>
@@ -76,14 +77,23 @@
 	t_new->interval_ms = interval_ms;
 	t_new->userdata = userdata;
 
-	PostMessage(hSession->hwnd,WM_ADD_TIMER,0,(LPARAM) t_new);
+	debug("%s: Posting WM_ADD_TIMER",__FUNCTION__);
+
+	if(!PostMessage(hSession->hwnd,WM_ADD_TIMER,0,(LPARAM) t_new)) {
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
+		lib3270_log_write(hSession,"win32","Error adding timer: %s",windows_error);
+	}
 
 	return t_new;
 
  }
 
  static void win32_timer_remove(H3270 *hSession, void *timer) {
-	PostMessage(hSession->hwnd,WM_REMOVE_TIMER,0,(LPARAM) timer);
+	if(!PostMessage(hSession->hwnd,WM_REMOVE_TIMER,0,(LPARAM) timer)) {
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
+		lib3270_log_write(hSession,"win32","Error removing timer: %s",windows_error);
+	}
+
  }
 
  static void win32_timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {
@@ -99,7 +109,11 @@
 	PostData *pd = (PostData *) lib3270_malloc(sizeof(PostData)+parmlen+1);
 	pd->callback = callback;
 	memcpy((pd+1),parm,parmlen);
-	PostMessage(hSession->hwnd,WM_POST_CALLBACK,0,(LPARAM) pd);
+	if(!PostMessage(hSession->hwnd,WM_POST_CALLBACK,0,(LPARAM) pd)) {
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
+		lib3270_log_write(hSession,"win32","Error posting callback: %s",windows_error);
+	}
+
  }
 
  LIB3270_EXPORT int lib3270_mainloop_run(H3270 *hSession, int wait) {
@@ -252,8 +266,11 @@
 
 	case WM_TIMER:
 		{
+			debug("Got timer %d first=%p",(int) wParam, hSession->timer.context->first);
+
 			timeout_t *t;
 			for (t = (timeout_t *) hSession->timer.context->first; t != NULL; t = (timeout_t *) t->next) {
+				debug("t-id=%d wParam=%d",t->id,wParam);
 				if(t->id == wParam) {
 					t->call(hSession,t->userdata);
 					SendMessage(hwnd,WM_REMOVE_TIMER,0,(LPARAM) t);
@@ -267,8 +284,14 @@
 		{
 			timeout_t *t = (timeout_t *) lParam;
 
-			t->prev = hSession->timer.context->last;
-			t->next = NULL;
+			debug("Adding timer %lu with %lu ms",t->id,t->interval_ms);
+
+			if(!hSession->timer.context->first) {
+				hSession->timer.context->first = (struct lib3270_linked_list_node *) t;
+			} else {
+				t->prev = hSession->timer.context->last;
+			}
+
 			hSession->timer.context->last = (struct lib3270_linked_list_node *) t;	
 			
 			SetTimer(hwnd,t->id,t->interval_ms,(TIMERPROC) NULL);

@@ -65,6 +65,8 @@
 //
 static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)) {
 
+	debug("%s: -------> in_progress=%d context=%p",__FUNCTION__,hSession->auto_reconnect_inprogress,hSession->connection.context);
+
 	if(hSession->auto_reconnect_inprogress && !hSession->connection.context) {
 
 		if(hSession->cbk.reconnect_allowed(hSession) == 0) {
@@ -76,6 +78,7 @@ static int check_for_auto_reconnect(H3270 *hSession, void GNUC_UNUSED(*userdata)
 			lib3270_connect(hSession,hSession->connection.timeout);
 
 		} else if(hSession->connection.retry) {
+
 			hSession->timer.add(
 				hSession,
 				hSession->connection.retry,
@@ -104,6 +107,8 @@ int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec) {
 
 	if(hSession->auto_reconnect_inprogress)
 		return EBUSY;
+
+	debug("%s: msec=%lu",__FUNCTION__,msec);
 
 	trace_event(hSession,"Auto-reconnect activated\n");
 	hSession->auto_reconnect_inprogress = 1;

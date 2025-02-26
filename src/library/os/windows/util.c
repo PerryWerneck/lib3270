@@ -45,6 +45,7 @@
 #include <errno.h>
 #include "w3miscc.h"
 #include <malloc.h>
+#include <wininet.h>
 
 #ifdef HAVE_ICONV
 #include <iconv.h>
@@ -61,6 +62,23 @@
 
 static int is_nt = 1;
 static int has_ipv6 = 1;
+
+static const struct {
+	DWORD dwMessageId;
+	const char *message;
+ } windows_errors[] = {
+
+	// Reference: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
+
+ 	// /usr/x86_64-w64-mingw32/sys-root/mingw/include/wininet.h
+ 	{ ERROR_INTERNET_TIMEOUT,	N_("The request has timed out. Possible causes are slow or intermittent internet connection, Antivirus software, Firewall, and Proxy settings.") },
+
+ 	// http://s.web.umkc.edu/szb53/cs423_sp16/wsock_errors.html
+ 	// /usr/x86_64-w64-mingw32/sys-root/mingw/include/winerror.h
+	{ WSAHOST_NOT_FOUND,		N_("No such host is known. The name is not an official host name or alias, or it cannot be found in the database(s) being queried.") },
+
+ };
+
 
 int get_version_info(void) {
 	OSVERSIONINFO info;
@@ -129,10 +147,23 @@ LIB3270_EXPORT char * lib3270_win32_strerror(int lasterror) {
 	char * buffer = lib3270_malloc(4096);
 
 	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,lasterror,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,4096,NULL) == 0) {
-		snprintf(buffer, 4095, _( "Windows error %d" ), lasterror);
+
+		free(buffer);
+
+		for(size_t ix = 0; ix < (sizeof(windows_errors)/sizeof(windows_errors[0])); ix++) {
+			if(windows_errors[ix].dwMessageId == lasterror) {
+				return strdup(dgettext(GETTEXT_PACKAGE,windows_errors[ix].message));
+			}
+		}
+
+		return lib3270_strdup_printf(
+			_("WinSock error %d (check it in https://docs.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2)"),
+			lasterror
+		);
+
 	}
 
-	for(unsigned char *ptr = buffer;*ptr;ptr++) {
+	for(unsigned char *ptr = (unsigned char *) buffer;*ptr;ptr++) {
 		if(*ptr < ' ') {
 			*ptr = ' ';
 		}

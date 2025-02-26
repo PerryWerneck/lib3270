@@ -314,7 +314,7 @@ linux_src =[
 darwin_src = [
   'src/library/os/darwin/connect.c',
   'src/library/os/darwin/curl.c',
-  'src/lix  brary/os/darwin/download.c',
+  'src/library/os/darwin/download.c',
   'src/library/os/darwin/ldap.c',
   'src/library/os/darwin/util.c',
 ]
@@ -324,7 +324,6 @@ win_src = [
   'src/library/os/windows/handle.c',
   'src/library/os/windows/registry.c',
   'src/library/os/windows/util.c',
-  'src/library/os/windows/popup.c',
 ]
 
 #

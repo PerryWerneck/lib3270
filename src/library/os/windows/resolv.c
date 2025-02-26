@@ -67,6 +67,9 @@
 
  static void net_timeout(H3270 *hSession, Context *context) {
 
+	hSession->timer.remove(hSession,context->timer);
+	context->timer = NULL;
+
 	trace_network(
 		hSession,
 		"Hostname resolution to %s:%s has timed out, cancelling\n",
@@ -125,10 +128,9 @@
 	if(rc) {
 
 		// Name resolution has failed.
-		debug("Name resolution failed with error %d",rc);
-		
 		if(context->enabled) {
 			// Context was not canceled.
+			trace_network(context->hSession,"Hostname resolution to %s:%s has failed\n",context->hostname,context->service);
 			PostMessage(context->hSession->hwnd,WM_RESOLV_FAILED,rc,0);
 		} else {
 			// Context was canceled.
@@ -152,22 +154,6 @@
 
 	for(ptr=result; ptr != NULL && context->enabled; ptr=ptr->ai_next) {
 
-		sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if(sock == INVALID_SOCKET) {
-			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
-			debug("---> %s",error);
-			trace_network(
-				context->hSession,
-				"Cant get socket for '%s:%s': %s\n",
-				context->hostname,
-				context->service,
-				error
-			);
-			continue;
-		}
-
-		debug("-----------------------> %s: Got socket",__FUNCTION__);
-
 		char host[NI_MAXHOST];
 		if (getnameinfo(ptr->ai_addr, ptr->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
 			trace_network(
@@ -178,20 +164,36 @@
 				context->service
 			);
 		} else {
-			error = WSAGetLastError();
-			trace_network(context->hSession,"Failed to get connection state for socket\n");
-			closesocket(sock);
-			sock = INVALID_SOCKET;	
+			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
+			trace_network(
+				context->hSession,
+				"Failed to get name info for socket: %s\n",
+				error
+			);
 			continue;
 		}
 
+		sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+		if(sock == INVALID_SOCKET) {
+			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
+			debug("---> %s",error);
+			trace_network(
+				context->hSession,
+				"Cant get socket for '%s': %s\n",
+				host,
+				error
+			);
+			continue;
+		}
+
+		debug("-----------------------> %s: Got socket",__FUNCTION__);
+
 		// Got socket, set it to non blocking.
-		WSASetLastError(0);
 		u_long iMode= 0;			
 		if(ioctlsocket(sock,FIONBIO,&iMode)) {
 			// Failed to set non-blocking mode.
-			error = WSAGetLastError();
-			trace_network(context->hSession,"Failed to set non-blocking mode on socket\n");
+			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
+			trace_network(context->hSession,"Failed to set non-blocking mode on socket: %s\n",error);
 			closesocket(sock);
 			sock = INVALID_SOCKET;
 			continue;
@@ -201,13 +203,12 @@
 		if(connect(sock, ptr->ai_addr, ptr->ai_addrlen) == 0) {
 			// Connection established.
 			trace_network(context->hSession,"Connected to %s\n",host);
-			debug("%s: Connected!",__FUNCTION__);
 			break;
 		}
 
 		error = WSAGetLastError();
 		if(error == WSAEINPROGRESS) {
-			debug("Connected to %s:%s",context->hostname,context->service);
+			trace_network(context->hSession,"Connecting to %s\n",host);
 			break;
 		}
 
@@ -226,6 +227,9 @@
 
 	if(!(context->enabled && context->hSession && context->hSession->hwnd)) {
 		// Context was canceled.
+		if(sock != INVALID_SOCKET) {
+			closesocket(sock);
+		}
 		trace_network(context->hSession,"Hostname resolution to %s:%s was cancelled\n",context->hostname,context->service);
 	} else if(sock == INVALID_SOCKET) {
 		PostMessage(hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
@@ -234,6 +238,11 @@
 	}
 
 	debug("%s: Resolver thread finished",__FUNCTION__);
+
+	if(context->timer) {
+		context->hSession->timer.remove(context->hSession,context->timer);
+		context->timer = NULL;
+	}
 
 	context->running = 0;
 	if(context->finalized) {

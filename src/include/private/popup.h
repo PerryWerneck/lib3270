@@ -21,6 +21,11 @@
 #include <lib3270/defs.h>
 #include <lib3270/popup.h>
 
+#ifdef _WIN32
+	#include <private/mainloop.h>
+	#include <private/session.h>
+#endif // _WIN32
+
 #define popup_an_errno(hSession, errn, fmt, ...) lib3270_popup_an_errno(hSession, errn, fmt, __VA_ARGS__)
 
 LIB3270_INTERNAL void popup_an_error(H3270 *session, const char *fmt, ...) LIB3270_GNUC_FORMAT(2,3);
@@ -31,13 +36,29 @@ LIB3270_INTERNAL void Error(H3270 *session, const char *fmt, ...);
 LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 
 #ifdef _WIN32
-	/// @brief Popup a Windows Socket error.
+	/// @brief Popup message from thread.
 	/// @param hSession TN3270 session handle.
 	/// @param code Error code form WSAGetLastError().
 	/// @param popup Popup description.
-	/// @param wait Non zero to wait for response.
-	/// @return User's response if wait is non zero.
-	LIB3270_INTERNAL int popup_win32_error(H3270 *hSession, int code, const LIB3270_POPUP *popup, unsigned char wait);
+	inline void popup_message(H3270 *hSession, const LIB3270_POPUP *popup) {
+		PostMessage(hSession->hwnd,WM_POPUP_MESSAGE, 0, (LPARAM) popup);
+	}
+
+	/// @brief Popup a Windows error.
+	/// @param hSession TN3270 session handle.
+	/// @param code Error code form WSAGetLastError().
+	/// @param popup Popup description.
+	inline void popup_last_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
+		PostMessage(hSession->hwnd,WM_POPUP_LAST_ERROR,(WPARAM) code, (LPARAM) popup);
+	}
+
+	/// @brief Popup a WSA error.
+	/// @param hSession TN3270 session handle.
+	/// @param code Error code form WSAGetLastError().
+	/// @param popup Popup description.
+	inline void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
+		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,(WPARAM) code, (LPARAM) popup);
+	}
 #endif
 
 /**

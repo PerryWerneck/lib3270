@@ -38,6 +38,9 @@
 		WM_RESOLV_TIMEOUT			= WM_USER+108,
 		WM_POST_CALLBACK			= WM_USER+109,
 		WM_CLOSE_THREAD				= WM_USER+110,
+		WM_POPUP_MESSAGE			= WM_USER+111,
+		WM_POPUP_WSA_ERROR			= WM_USER+112,
+		WM_POPUP_LAST_ERROR			= WM_USER+113,
 	};
 
  	/// @brief Create win32 object window for the session

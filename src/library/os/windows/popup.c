@@ -24,6 +24,9 @@
  *
  */
 
+ #error deprecated
+ 
+ /*
 #include <config.h>
 #include <winsock2.h>
 #include <windows.h>
@@ -33,21 +36,10 @@
 #include <private/popup.h>
 #include <lib3270/win32.h>
 
-LIB3270_INTERNAL int popup_win32_error(H3270 *hSession, int code, const LIB3270_POPUP *popup, unsigned char wait) {
+LIB3270_INTERNAL int popup_win32_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
 
-	lib3270_autoptr(char) body = lib3270_win32_strerror(code);
-
-	LIB3270_POPUP p = {
-		.name		= popup->name,
-		.type		= popup->type,
-		.title		= popup->title,
-		.summary	= popup->summary,
-		.body		= body,
-		.label		= popup->label
-	};
-
-	return lib3270_popup(hSession,&p,wait);
 
 }
+ */
 
 

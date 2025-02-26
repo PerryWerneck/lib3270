@@ -108,7 +108,7 @@
 
 	if(length < 0) {
 
-		LIB3270_POPUP popup = {
+		static const LIB3270_POPUP popup = {
 			.name		= "recv-failed",
 			.type		= LIB3270_NOTIFY_NETWORK_ERROR,
 			.title		= N_("Network error"),
@@ -126,7 +126,7 @@
 		if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS)
 			return;
 
-		popup_win32_error(hSession,error,&popup,0);
+		popup_wsa_error(hSession,error,&popup);
 		connection_close(hSession,error);
 
 #else 

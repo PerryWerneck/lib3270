@@ -37,6 +37,7 @@
  
  #include <winsock2.h>
  #include <windows.h>
+ #include <wininet.h>
 
  static size_t instances = 0;
  static LPARAM timer_id = 0;
@@ -178,7 +179,7 @@
 
 	CloseHandle(tp.thread);
 
-	return 0;
+	return rc;
 
  }
 
@@ -317,36 +318,66 @@
 		}
 		return 0;
 
+	case WM_POPUP_MESSAGE:
+		lib3270_popup(hSession,((const LIB3270_POPUP *) lParam), 0);
+		return 0;
+
+	case WM_POPUP_WSA_ERROR:
+	case WM_POPUP_LAST_ERROR:
+		{
+			if(wParam) {
+				lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+				LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
+				popup.body = body;
+				lib3270_popup(hSession,&popup, 0);
+			} else {
+				lib3270_popup(hSession,((const LIB3270_POPUP *) lParam), 0);
+			}
+
+		}
+		return 0;
+
 	case WM_RESOLV_FAILED:
 		{
 			debug("%s: WM_RESOLV_FAILED",__FUNCTION__);
+			
 			lib3270_autoptr(char) summary = lib3270_strdup_printf(
 				_( "Can't connect to %s"),lib3270_get_url(hSession)
 			);
+
+			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
 
 			LIB3270_POPUP popup = {
 				.name		= "dns-error",
 				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 				.title		= _("DNS error"),
 				.summary	= summary,
-				.body		= "",
+				.body		= body,
 				.label		= _("OK")
 			};
 
 			connection_close(hSession,-1);
-			popup_win32_error(hSession,wParam,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 
 		}
 		return 0;
 
 	case WM_RESOLV_TIMEOUT:
 		{
+			debug("%s: WM_RESOLV_TIMEOUT",__FUNCTION__);
+
+			lib3270_autoptr(char) summary = lib3270_strdup_printf(
+				_( "Can't connect to %s"),lib3270_get_url(hSession)
+			);
+
+			lib3270_autoptr(char) body = lib3270_win32_strerror(ERROR_INTERNET_TIMEOUT);
+
 			LIB3270_POPUP popup = {
 				.name		= "dns-timeout",
 				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
 				.title		= _("DNS error"),
-				.summary	= _("Unable to resolve host name"),
-				.body		= strerror(ETIMEDOUT),
+				.summary	= summary,
+				.body		= body,
 				.label		= _("OK")
 			};
 	

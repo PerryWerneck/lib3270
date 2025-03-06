@@ -293,10 +293,6 @@ LIB3270_INTERNAL char * lib3270_url_get(H3270 *hSession, const char *url, const 
 ///
 LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 *hSession, const char *filename);
 
-
-/// @brief Fire CState change.
-LIB3270_INTERNAL int set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
-
 ///
 /// @brief Start TLS/SSL
 ///

@@ -99,10 +99,6 @@
 	lib3270_free(context);
  }
 
- void win32_poll_finalize(H3270 *session, LIB3270_POLL_CONTEXT * context) {
-	lib3270_free(context);
- }
-
  static void win32_post(H3270 *hSession, void(*callback)(void *), void *parm, size_t parmlen) {
 	PostData *pd = (PostData *) lib3270_malloc(sizeof(PostData)+parmlen+1);
 	pd->callback = callback;

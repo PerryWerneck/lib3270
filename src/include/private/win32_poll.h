@@ -72,7 +72,7 @@
  /// @param userdata The userdata to be passed to the callback.
  /// @return The id of the inserted event.
  LIB3270_INTERNAL void * win32_poll_add(H3270 *hSession, SOCKET sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, SOCKET, LIB3270_IO_FLAG, void *), void *userdata );
- 
+
  /// @brief Force the network thread to wake up.
  /// @param hSession The session asking for the wake up.
  LIB3270_INTERNAL void win32_poll_wake_up(H3270 *hSession);

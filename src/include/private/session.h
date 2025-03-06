@@ -91,9 +91,9 @@
 	/// @brief Network I/O handlers.
 	struct {
 #ifdef _WIN32
-		void *	(*add)(H3270 *session, SOCKET sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+		void *	(*add)(H3270 *session, SOCKET sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, SOCKET, LIB3270_IO_FLAG, void *), void *userdata );
 #else
-		void *	(*add)(H3270 *session, int sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, SOCKET, LIB3270_IO_FLAG, void *), void *userdata );
+		void *	(*add)(H3270 *session, int sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 #endif // _WIN32
 		void	(*remove)(H3270 *session, void *id);
 		void	(*finalize)(H3270 *session, LIB3270_POLL_CONTEXT * context);

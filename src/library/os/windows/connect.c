@@ -29,6 +29,7 @@
  #include <private/intl.h>
  #include <private/mainloop.h>
  #include <private/session.h>
+ #include <private/host.h>
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
@@ -55,6 +56,4 @@
 
  }
 
- LIB3270_INTERNAL void win32_poll_finalize(H3270 *hSession, LIB3270_POLL_CONTEXT * context) {
-	
- }
+ 

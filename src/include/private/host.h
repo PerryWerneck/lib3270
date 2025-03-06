@@ -25,6 +25,14 @@
 
 #include <lib3270.h>
 
+/// @brief Fire CState change.
+/// @param hSession The session handle.
+/// @param cstate The new CState.
+/// @return non zero if state changed.
+/// @retval 0 The state was already in the required value.
+/// @retval 1 The state was changed.
+LIB3270_INTERNAL int set_cstate(H3270 *hSession, LIB3270_CSTATE cstate);
+
 /// @brief Signal a state change.
 LIB3270_INTERNAL void notify_new_state(H3270 *h, LIB3270_STATE tx, int mode);
 

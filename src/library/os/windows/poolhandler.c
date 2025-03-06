@@ -28,6 +28,7 @@
  #include <winsock2.h>
  #include <windows.h>
  #include <wininet.h>
+ #include <assert.h>
 
  static size_t instances	= 0;
  static HANDLE mutex		= 0;
@@ -69,9 +70,9 @@
 
 	// Remove session handlers.
 	assert(WaitForSingleObject( mutex, INFINITE ) == WAIT_OBJECT_0);
-	for(handler = handlers.first;handler;handler = handler->next) {
+	for(handler = (handler_t *) handlers.first;handler;handler = (handler_t *) handler->next) {
 		if(handler->hSession == hSession && handler->sock != INVALID_SOCKET) {
-			lib3270_log_write(handler->hSession,"win32","Cleaning lost socket %p",handler->sock);
+			lib3270_log_write(handler->hSession,"win32","Cleaning lost socket %llu",handler->sock);
 			closesocket(handler->sock);
 			handler->sock = INVALID_SOCKET;
 		}
@@ -83,9 +84,9 @@
 
 		// No more instances, cleanup
 		assert(WaitForSingleObject( mutex, INFINITE ) == WAIT_OBJECT_0);
-		for(handler = handlers.first;handler;handler = handler->next) {
+		for(handler = (handler_t *) handlers.first;handler;handler = (handler_t *) handler->next) {
 			if(handler->sock != INVALID_SOCKET) {
-				lib3270_log_write(handler->hSession,"win32","Cleaning orphaned socket %p",handler->sock);
+				lib3270_log_write(handler->hSession,"win32","Cleaning orphaned socket %llu",handler->sock);
 				closesocket(handler->sock);
 				handler->sock = INVALID_SOCKET;
 			}
@@ -123,14 +124,14 @@
 		// Load FDs
 		{
 			assert(WaitForSingleObject( mutex, INFINITE ) == WAIT_OBJECT_0);
-			handler_t *handler = handlers.first;
+			handler_t *handler = (handler_t *) handlers.first;
 			while(handler) {
 
 				if(handler->sock == INVALID_SOCKET) {
 					// Remove handler
 					WSACloseEvent(handler->event);
 					handler_t *next = (handler_t *) handler->next;
-					lib3270_linked_list_delete_node(&handlers,handler);
+					lib3270_linked_list_delete_node((lib3270_linked_list *) &handlers,handler);
 					handler = next;
 					continue;
 				}
@@ -164,7 +165,7 @@
 
 		// Wait for events
 		// https://stackoverflow.com/questions/41743043/windows-wait-on-event-and-socket-simulatenously
-		DWORD result = WSAWaitForMultipleEvents(cEvents,events,FALSE,INFINITE,FALSE);
+		WSAWaitForMultipleEvents(cEvents,events,FALSE,INFINITE,FALSE);
 
 		ULONG event;
 		for(event = 0; event < cEvents; event++) {
@@ -195,6 +196,9 @@
 		ReleaseMutex(mutex);
 		CloseHandle(hThread);		
 	}
+
+	return 0;
+
  }
 
  LIB3270_INTERNAL void win32_poll_wake_up(H3270 *) {
@@ -206,16 +210,25 @@
  }
 
  LIB3270_INTERNAL void * win32_poll_add(H3270 *hSession, SOCKET sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, SOCKET, LIB3270_IO_FLAG, void *), void *userdata ) {
+
+	// TODO: if flag == FD_READ start a wsaasyncrecv instead of thread, same for FD_WRITE. 
+
+	// Add socket to the list
 	assert(WaitForSingleObject( mutex, INFINITE ) == WAIT_OBJECT_0);
 
-	handler_t *handler = lib3270_new(handler_t);
-	memset(handler,0,sizeof(handler_t));
+	handler_t *handler = 
+		(handler_t *) lib3270_linked_list_append_node(
+			(lib3270_linked_list *) &handlers,
+			sizeof(handler_t),
+			userdata
+		);
+
 	handler->hSession = hSession;
 	handler->sock = sock;
 	handler->proc = proc;
 	handler->flag = flag;
 	handler->userdata = userdata;
-
+		
 	long events = 0;
 
 	if(flag & LIB3270_IO_FLAG_READ) events |= FD_READ;
@@ -224,7 +237,6 @@
 
 	WSAEventSelect(sock, &handler->event, events);
 
-	lib3270_linked_list_append_node(&handlers,handler,userdata);
 
 	if(!thread) {
 		// No thread, start one

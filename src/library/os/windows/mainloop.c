@@ -34,6 +34,7 @@
  #include <private/session.h>
  #include <private/intl.h>
  #include <private/popup.h>
+ #include <private/win32_poll.h>
  
  #include <winsock2.h>
  #include <windows.h>
@@ -44,10 +45,6 @@
  static ATOM identifier;	
 
  static LRESULT WINAPI hwndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
- struct _lib3270_poll_context {
-	int dunno;
- };
 
  typedef struct timeout {
 
@@ -102,7 +99,7 @@
 	lib3270_free(context);
  }
 
- static void win32_poll_finalize(H3270 *session, LIB3270_POLL_CONTEXT * context) {
+ void win32_poll_finalize(H3270 *session, LIB3270_POLL_CONTEXT * context) {
 	lib3270_free(context);
  }
 
@@ -229,8 +226,9 @@
  	hSession->timer.remove = win32_timer_remove;
 	hSession->timer.finalize = win32_timer_finalize;
 
-	hSession->poll.context = lib3270_new(struct _lib3270_poll_context);
-	memset(hSession->poll.context,0,sizeof(struct _lib3270_poll_context));
+	hSession->poll.context = win32_poll_init(hSession);
+	hSession->poll.add = win32_poll_add;
+	hSession->poll.remove = win32_poll_remove;
 	hSession->poll.finalize = win32_poll_finalize;
 
 	hSession->post = (void *) win32_post;
@@ -409,6 +407,15 @@
 			WaitForSingleObject(thread,INFINITE);
 			debug("Closing thread %p",thread);	
 			CloseHandle(thread);
+		}
+		return 0;
+
+	case WM_SOCKET_EVENT:
+		{
+			handler_t *handler = (handler_t *) lParam;
+			handler->proc(handler->hSession,handler->sock,handler->flag,handler->userdata);
+			handler->disabled = 0;
+			win32_poll_wake_up(handler->hSession);
 		}
 		return 0;
 

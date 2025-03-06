@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ /*
  #include <config.h>
  #include <winsock2.h>
  #include <windows.h>
@@ -110,3 +111,4 @@
 	}
 
  } 
+ */

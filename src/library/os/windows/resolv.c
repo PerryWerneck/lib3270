@@ -98,6 +98,7 @@
 	} else {
 		debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
 		lib3270_free(context);
+		hSession->connection.context = NULL;
 	}
 
  }
@@ -244,6 +245,7 @@
 		context->timer = NULL;
 	}
 
+	context->thread = NULL;
 	context->running = 0;
 	if(context->finalized) {
 		lib3270_free(context);

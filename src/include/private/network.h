@@ -65,7 +65,7 @@
 	 /// @brief DNS resolver completed, wait for connection.
 	 /// @param hSession TN3270 session.
 	 /// @param sock Socket with pending connection.
-	 LIB3270_INTERNAL int set_resolved(H3270 *hSession, SOCKET sock);
+	 LIB3270_INTERNAL void set_resolved(H3270 *hSession, SOCKET sock);
 
  #else
 

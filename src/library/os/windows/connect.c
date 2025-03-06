@@ -23,6 +23,7 @@
  #include <windows.h>
 
  #include <lib3270/defs.h>
+ #include <lib3270/memory.h>
 
  #include <private/network.h>
  #include <private/intl.h>
@@ -31,16 +32,29 @@
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
-	void *timer;
-	void *connected;
-	void *except;
  } Context;
 
- LIB3270_INTERNAL int set_resolved(H3270 *hSession, SOCKET sock) {
+ /// @brief Connnection was started, wait for it to be available.
+ /// @param hSession The session handle.
+ /// @param sock The socket
+ LIB3270_INTERNAL void set_resolved(H3270 *hSession, SOCKET sock) {
+
+	debug("%s socket=%lu",__FUNCTION__,(unsigned long) sock);
+
+	if(hSession->connection.context) {
+		hSession->connection.context->finalize(hSession,hSession->connection.context);
+		hSession->connection.context = NULL;
+	}
 
 	hSession->ever_3270 = 0;
+	set_cstate(hSession, LIB3270_PENDING);
+	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, 1);
 
+	Context *context = lib3270_new(Context);
+	memset(context,0,sizeof(Context));
 
-	return 0;
+ }
 
+ LIB3270_INTERNAL void win32_poll_finalize(H3270 *hSession, LIB3270_POLL_CONTEXT * context) {
+	
  }

@@ -5,19 +5,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-24 07:39-0300\n"
-"PO-Revision-Date: 2023-04-21 08:40-0300\n"
+"POT-Creation-Date: 2025-03-04 09:35-0300\n"
+"PO-Revision-Date: 2025-03-04 09:37-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Portuguese\n"
-"X-Poedit-Country: BRAZIL\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 40.0\n"
+"X-Generator: Poedit 3.5\n"
 
 #: src/library/keyboard/kybd.c:268
 #, c-format
@@ -174,7 +172,7 @@ msgid ""
 "when it reaches the end of a line."
 msgstr ""
 "Se ativo o emulador de terminal assume automaticamente uma quebra de linha "
-"quando chega ao final de uma linha"
+"quando chega ao final de uma linha."
 
 #. Default keycode
 #. Icon name
@@ -462,7 +460,7 @@ msgstr "RPQ %s term override ignored"
 #: src/library/rpq.c:351
 #, c-format
 msgid "RPQ term \"%s\" is unrecognized"
-msgstr "Termo RPQ desconhecido: \"%s\" "
+msgstr "Termo RPQ desconhecido: \"%s\""
 
 #: src/library/rpq.c:404 src/library/rpq.c:413
 msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
@@ -531,38 +529,38 @@ msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
-#: src/library/network/openssl/context.c:239
+#: src/library/network/openssl/context.c:240
 msgid "Can't initialize the TLS/SSL context."
-msgstr "Erro ao inicializar contexto TLS/SSL"
+msgstr "Erro ao inicializar contexto TLS/SSL."
 
-#: src/library/network/openssl/context.c:289
+#: src/library/network/openssl/context.c:290
 msgid "Cant open custom certificate directory."
-msgstr "Não foi possível abrir o diretório de certificados personalizados"
+msgstr "Não foi possível abrir o diretório de certificados personalizados."
 
-#: src/library/network/openssl/context.c:294
+#: src/library/network/openssl/context.c:295
 #, c-format
 msgid "Can't open \"%s\" (The Windows error code was %ld)"
 msgstr "Não foi possível abrir \"%s\" (O código de erro windows foi %ld)"
 
-#: src/library/network/openssl/context.c:307
+#: src/library/network/openssl/context.c:308
 #, c-format
 msgid "Can't open \"%s\": %s"
 msgstr "Não foi possível abrir %s: %s"
 
-#: src/library/network/openssl/context.c:319
+#: src/library/network/openssl/context.c:320
 msgid "Cant read custom certificate file."
-msgstr "Não foi possível ler certificado personalizado"
+msgstr "Não foi possível ler certificado personalizado."
 
-#: src/library/network/openssl/context.c:325
+#: src/library/network/openssl/context.c:326
 #, c-format
 msgid "Can't read \"%s\": %s"
 msgstr "Não foi possível ler \"%s\": %s"
 
-#: src/library/network/openssl/context.c:335
+#: src/library/network/openssl/context.c:336
 msgid "Cant load custom certificate file."
-msgstr "Não foi possível ler arquivo de certificado personalizado"
+msgstr "Não foi possível ler arquivo de certificado personalizado."
 
-#: src/library/network/openssl/context.c:341
+#: src/library/network/openssl/context.c:342
 #, c-format
 msgid "Can't load \"%s\": %s"
 msgstr "Não foi possível carregar \"%s\": %s"
@@ -575,11 +573,11 @@ msgstr "Desconectado do servidor."
 #: src/library/network/openssl/main.c:105
 #: src/library/network/openssl/main.c:153
 msgid "The secure connection has been closed cleanly."
-msgstr "A conexão segura foi fechada corretamente"
+msgstr "A conexão segura foi fechada corretamente."
 
 #: src/library/network/openssl/main.c:126
 msgid "Error writing to host."
-msgstr "Erro enviando para o servidor"
+msgstr "Erro enviando para o servidor."
 
 #: src/library/network/openssl/main.c:127
 #: src/library/network/openssl/main.c:174
@@ -896,7 +894,7 @@ msgstr ""
 
 #: src/library/network/openssl/messages.c:393
 msgid "Authority and issuer serial number mismatch"
-msgstr "Divergência nos números de série da autoridade e emissor "
+msgstr "Divergência nos números de série da autoridade e emissor"
 
 #: src/library/network/openssl/messages.c:394
 msgid ""
@@ -1004,42 +1002,41 @@ msgid ""
 "server status and network configuration, then try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:190 src/library/os/linux/connect.c:74
+#: src/library/network/tools.c:191 src/library/os/linux/connect.c:74
 #: src/library/os/linux/connect.c:117 src/library/os/linux/connect.c:139
 #: src/library/os/linux/connect.c:171 src/library/os/linux/connect.c:204
 #: src/library/os/linux/connect.c:280 src/library/os/linux/connect.c:296
-#: src/library/connect.c:175 src/library/connect.c:259
+#: src/library/connect.c:175 src/library/connect.c:260
 msgid "Connection error"
 msgstr "Erro de conexão"
 
-#: src/library/network/tools.c:191
+#: src/library/network/tools.c:192
 msgid "ioctlsocket(FIONBIO) failed."
 msgstr "ioctlsocket(FIONBIO) falhou."
 
-#: src/library/network/tools.c:207 src/library/network/tools.c:232
+#: src/library/network/tools.c:209 src/library/network/tools.c:234
 #, fuzzy
 msgid "System error"
 msgstr "Erro de interpretação"
 
-#: src/library/network/tools.c:208
+#: src/library/network/tools.c:210
 msgid "fcntl() error when getting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
-#: src/library/network/tools.c:210 src/library/network/tools.c:235
+#: src/library/network/tools.c:212 src/library/network/tools.c:237
 #: src/library/os/linux/connect.c:77 src/library/os/linux/connect.c:120
 #: src/library/os/linux/connect.c:142 src/library/os/linux/connect.c:174
 #: src/library/os/linux/connect.c:207 src/library/os/linux/resolv.c:142
 #: src/library/os/linux/resolv.c:158 src/library/os/linux/resolv.c:193
 #: src/library/os/linux/resolv.c:281 src/library/os/linux/resolv.c:294
-#: src/library/os/linux/resolv.c:368 src/library/os/linux/insecure.c:115
-#: src/library/os/linux/insecure.c:188 src/library/os/windows/mainloop.c:246
-#: src/library/os/windows/mainloop.c:263 src/library/os/windows/insecure.c:111
-#: src/library/os/windows/insecure.c:183 src/library/connect.c:178
-#: src/library/connect.c:262
+#: src/library/os/linux/resolv.c:368 src/library/os/linux/insecure.c:117
+#: src/library/os/linux/insecure.c:187 src/library/os/windows/mainloop.c:356
+#: src/library/os/windows/mainloop.c:381 src/library/connect.c:178
+#: src/library/connect.c:263
 msgid "OK"
 msgstr ""
 
-#: src/library/network/tools.c:233
+#: src/library/network/tools.c:235
 #, fuzzy
 msgid "fcntl() error when setting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
@@ -1048,22 +1045,20 @@ msgstr "erro fcntl() ao obter estado do socket."
 #: src/library/os/linux/download.c:57 src/library/os/darwin/download.c:55
 #: src/library/os/windows/download.c:64
 msgid "No handler for URL scheme."
-msgstr "Nenhum manipulador para o esquema de URL"
+msgstr "Nenhum manipulador para o esquema de URL."
 
 #: src/library/os/linux/event_dispatcher.c:132
-#: src/library/os/linux/mainloop.c:254 src/library/os/linux/insecure.c:112
-#: src/library/os/linux/insecure.c:185
+#: src/library/os/linux/mainloop.c:254 src/library/os/linux/insecure.c:114
+#: src/library/os/linux/insecure.c:184
 #: src/library/os/darwin/event_dispatcher.c:132
-#: src/library/os/windows/event_dispatcher.c:137
-#: src/library/os/windows/insecure.c:108 src/library/os/windows/insecure.c:180
-#: src/library/telnet.c:302
+#: src/library/os/windows/event_dispatcher.c:138 src/library/telnet.c:302
 msgid "Network error"
 msgstr "Erro de rede"
 
 #: src/library/os/linux/event_dispatcher.c:133
 #: src/library/os/linux/mainloop.c:255
 #: src/library/os/darwin/event_dispatcher.c:133
-#: src/library/os/windows/event_dispatcher.c:138
+#: src/library/os/windows/event_dispatcher.c:139
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
 
@@ -1097,7 +1092,8 @@ msgstr "Não é possível conectar em servidores seguros"
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/os/linux/connect.c:132 src/library/os/windows/mainloop.c:237
+#: src/library/os/linux/connect.c:132 src/library/os/windows/mainloop.c:345
+#: src/library/os/windows/mainloop.c:370
 #, fuzzy, c-format
 msgid "Can't connect to %s"
 msgstr "Não foi possível conectar a %s:%s"
@@ -1136,7 +1132,7 @@ msgstr "Erro ao inicializar operação CURL"
 #: src/library/os/linux/resolv.c:139 src/library/os/linux/resolv.c:155
 #: src/library/os/linux/resolv.c:190 src/library/os/linux/resolv.c:278
 #: src/library/os/linux/resolv.c:291 src/library/os/linux/resolv.c:365
-#: src/library/os/windows/mainloop.c:243 src/library/os/windows/mainloop.c:260
+#: src/library/os/windows/mainloop.c:353 src/library/os/windows/mainloop.c:378
 #, fuzzy
 msgid "DNS error"
 msgstr "Erro no socket"
@@ -1161,33 +1157,50 @@ msgid "Unexpected response to cancel request"
 msgstr ""
 
 #: src/library/os/linux/resolv.c:292 src/library/os/linux/resolv.c:366
-#: src/library/os/windows/mainloop.c:261
 #, fuzzy
 msgid "Unable to resolve host name"
 msgstr "Não consegui encontrar o host selecionado."
 
-#: src/library/os/linux/insecure.c:113 src/library/os/windows/insecure.c:109
+#: src/library/os/linux/insecure.c:115
 #, fuzzy
 msgid "Failed to receive data from the host"
 msgstr "Erro recebendo dados do servidor"
 
-#: src/library/os/linux/insecure.c:186 src/library/os/windows/insecure.c:181
+#: src/library/os/linux/insecure.c:185
 #, fuzzy
 msgid "Failed to send data to the host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/library/os/linux/insecure.c:225 src/library/os/windows/insecure.c:220
+#: src/library/os/linux/insecure.c:224 src/library/os/windows/insecure.c:81
 msgid "The session is not secure"
 msgstr "A sessão não é segura"
 
-#: src/library/os/linux/insecure.c:226 src/library/os/windows/insecure.c:221
+#: src/library/os/linux/insecure.c:225 src/library/os/windows/insecure.c:82
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
-#: src/library/os/windows/util.c:132 src/library/os/windows/util.c:178
+#. Reference: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
+#. /usr/x86_64-w64-mingw32/sys-root/mingw/include/wininet.h
+#: src/library/os/windows/util.c:74
+msgid ""
+"The request has timed out. Possible causes are slow or intermittent internet "
+"connection, Antivirus software, Firewall, and Proxy settings."
+msgstr ""
+
+#. http://s.web.umkc.edu/szb53/cs423_sp16/wsock_errors.html
+#. /usr/x86_64-w64-mingw32/sys-root/mingw/include/winerror.h
+#: src/library/os/windows/util.c:78
+msgid ""
+"No such host is known. The name is not an official host name or alias, or it "
+"cannot be found in the database(s) being queried."
+msgstr ""
+
+#: src/library/os/windows/util.c:160
 #, c-format
-msgid "Windows error %d"
-msgstr "Erro windows foi %d"
+msgid ""
+"WinSock error %d (check it in https://docs.microsoft.com/en-us/windows/win32/"
+"winsock/windows-sockets-error-codes-2)"
+msgstr ""
 
 #: src/library/os/windows/http.c:101
 msgid "Can't open HTTP session"
@@ -1195,15 +1208,15 @@ msgstr "Não foi possível abrir sessão HTTP"
 
 #: src/library/os/windows/http.c:112
 msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP"
+msgstr "Não foi possível conectar ao servidor HTTP."
 
 #: src/library/os/windows/http.c:123
 msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP"
+msgstr "Não foi possível criar requisição HTTP."
 
 #: src/library/os/windows/http.c:136
 msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP"
+msgstr "Não posso enviar requisição HTTP."
 
 #: src/library/os/windows/http.c:147
 msgid "Error receiving HTTP response."
@@ -1211,11 +1224,11 @@ msgstr "Erro recebendo resposta HTTP."
 
 #: src/library/os/windows/http.c:159
 msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP"
+msgstr "Recebi resposta vazia do servidor HTTP."
 
 #: src/library/os/windows/http.c:175
 msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP"
+msgstr "Não posso obter tamanho da resposta HTTP."
 
 #: src/library/os/windows/ldap.c:133
 msgid "Can't initialize LDAP"
@@ -1538,7 +1551,7 @@ msgstr "Attn"
 
 #: src/library/actions/table.c:692
 msgid "ATTN key, per RFC 2355. Sends IP, regardless"
-msgstr "Tecla ATTN, pela RFC 2355."
+msgstr "Tecla ATTN, pela RFC 2355. Enviando IP"
 
 #: src/library/actions/table.c:705 src/library/actions/table.c:706
 msgid "Break"
@@ -2261,13 +2274,13 @@ msgstr "A conexão é segura ?"
 #. Property group.
 #: src/library/properties/boolean.c:84
 msgid "Non zero if the host is TSO."
-msgstr "Diferente de zero se o host é TSO"
+msgstr "Diferente de zero se o host é TSO."
 
 #. Property name.
 #. Property group.
 #: src/library/properties/boolean.c:92
 msgid "Non zero if the host is AS400."
-msgstr "Diferente de zero se o host é AS400"
+msgstr "Diferente de zero se o host é AS400."
 
 #. Property name.
 #: src/library/properties/boolean.c:127
@@ -2324,12 +2337,12 @@ msgstr "A conexão é segura ?"
 msgid "Unsupported scheme '%s' in URL %s"
 msgstr ""
 
-#: src/library/connect.c:260
+#: src/library/connect.c:261
 #, fuzzy
 msgid "Unable to activate SSL connection"
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/connect.c:261
+#: src/library/connect.c:262
 msgid "The OpenSSL library is not available in this build"
 msgstr ""
 
@@ -2535,6 +2548,10 @@ msgstr ""
 #: src/gobject/object.c:89
 msgid "Timer is enabled, usually activates when session is busy"
 msgstr ""
+
+#, c-format
+#~ msgid "Windows error %d"
+#~ msgstr "Erro windows foi %d"
 
 #~ msgid "WSAStartup failed"
 #~ msgstr "WSAStartup falhou"

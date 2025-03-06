@@ -41,6 +41,7 @@
 		WM_POPUP_MESSAGE			= WM_USER+111,
 		WM_POPUP_WSA_ERROR			= WM_USER+112,
 		WM_POPUP_LAST_ERROR			= WM_USER+113,
+		WM_SOCKET_EVENT				= WM_USER+114,
 	};
 
  	/// @brief Create win32 object window for the session

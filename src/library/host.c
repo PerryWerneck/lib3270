@@ -139,6 +139,7 @@ static void set_disconnected(H3270 *hSession) {
 	hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
 	hSession->starting	= 0;
 	hSession->ssl.state	= LIB3270_SSL_UNDEFINED;
+	hSession->ever_3270 = 0;
 
 	set_status(hSession,LIB3270_FLAG_UNDERA,False);
 

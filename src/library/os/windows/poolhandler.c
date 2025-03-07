@@ -238,12 +238,22 @@
 		
 	long events = 0;
 
-	if(flag & LIB3270_IO_FLAG_READ) events |= FD_READ;
-	if(flag & LIB3270_IO_FLAG_WRITE) events |= FD_WRITE;	
-	if(flag & LIB3270_IO_FLAG_EXCEPTION) events |= FD_READ;
+	if(flag & LIB3270_IO_FLAG_READ) {
+		debug("Waiting for FD_READ on socket %llu",sock);
+		events |= FD_READ;
+	}
+
+	if(flag & LIB3270_IO_FLAG_WRITE) {
+		debug("Waiting for FD_WRITE on socket %llu",sock);
+		events |= FD_WRITE;
+	}
+
+	if(flag & LIB3270_IO_FLAG_EXCEPTION) {
+		debug("Waiting for FD_READ (exception) on socket %llu",sock);
+		events |= FD_READ;
+	}
 
 	WSAEventSelect(sock, &handler->event, events);
-
 
 	if(!thread) {
 		// No thread, start one

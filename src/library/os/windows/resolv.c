@@ -188,7 +188,7 @@
 			continue;
 		}
 
-		debug("-----------------------> %s: Got socket",__FUNCTION__);
+		debug("-----------------------> %s: Got socket %llu",__FUNCTION__,sock);
 
 		// Got socket, set it to non blocking.
 		u_long iMode= 0;			
@@ -236,7 +236,8 @@
 	} else if(sock == INVALID_SOCKET) {
 		PostMessage(hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
 	} else {
-		PostMessage(hwnd,WM_RESOLV_SUCCESS,0,(LPARAM) socket);
+		debug("Resolver complete with socket %llu",sock);
+		PostMessage(hwnd,WM_RESOLV_SUCCESS,sock,sock);
 	}
 
 	debug("%s: Resolver thread finished",__FUNCTION__);

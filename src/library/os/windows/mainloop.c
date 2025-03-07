@@ -381,7 +381,7 @@
 		return 0;
 
 	case WM_RESOLV_SUCCESS:
-		debug("%s: WM_RESOLV_SUCCESS",__FUNCTION__);
+		debug("%s: WM_RESOLV_SUCCESS socket=%llu",__FUNCTION__,(SOCKET) lParam);
 		set_resolved(hSession,(SOCKET) lParam);
 		return 0;
 

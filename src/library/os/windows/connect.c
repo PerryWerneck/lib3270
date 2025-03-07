@@ -115,6 +115,7 @@
 
 	debug("---> %s","Connected to host");
 
+	set_connected_socket(hSession,sock);
 
  }
 
@@ -148,6 +149,17 @@
  }
 
  static int net_finalize(H3270 *hSession, Context *context) {
+
+	if(context->connected) {
+		hSession->poll.remove(hSession,context->connected);
+		context->connected = NULL;
+	}
+
+	if(context->timer) {
+		hSession->timer.remove(hSession,context->timer);
+		context->timer = NULL;
+	}
+
 	lib3270_free(context);
 	return 0;
  }

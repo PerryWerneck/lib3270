@@ -374,11 +374,49 @@
 				.label		= _("OK")
 			};
 
-			connection_close(hSession,-1);
+			connection_close(hSession,(int) wParam);
 			lib3270_popup(hSession,&popup,0);
 
 		}
 		return 0;
+
+	case WM_RECV_FAILED:
+		{
+			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+			lib3270_autoptr(char) name = lib3270_strdup_printf("recv-%d",(int) wParam);
+
+			LIB3270_POPUP popup = {
+				.name		= name,
+				.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+				.title		= _("Network I/O error"),
+				.summary	= _("Failed to receive data from the host"),
+				.body		= body,
+				.label		= _("OK")
+			};
+	
+			lib3270_popup(hSession,&popup,0);
+			
+		}
+		return 0;		
+
+	case WM_SEND_FAILED:
+		{
+			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+			lib3270_autoptr(char) name = lib3270_strdup_printf("send-%d",(int) wParam);
+
+			LIB3270_POPUP popup = {
+				.name		= name,
+				.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+				.title		= _("Network I/O error"),
+				.summary	= _("Failed to send data to the host"),
+				.body		= body,
+				.label		= _("OK")
+			};
+	
+			lib3270_popup(hSession,&popup,0);
+			
+		}
+		return 0;		
 
 	case WM_RESOLV_SUCCESS:
 		debug("%s: WM_RESOLV_SUCCESS socket=%llu",__FUNCTION__,(SOCKET) lParam);

@@ -41,6 +41,8 @@
  #include <private/session.h>
  #include <private/network.h>
  #include <private/intl.h>
+ #include <private/mainloop.h>
+ #include <private/popup.h>
  #include <string.h>
  #include <errno.h>
 
@@ -50,6 +52,12 @@
  typedef struct {
 	LIB3270_NET_CONTEXT parent;
 
+	// I/O handlers.
+	struct {
+		void *read;
+		void *write;
+	} xio;
+
  } Context;
 
 
@@ -57,6 +65,10 @@ static int disconnect(H3270 *hSession, Context *context) {
 
 	debug("%s",__FUNCTION__);
 
+	if(context->xio.read) {
+		hSession->poll.remove(hSession,context->xio.read);
+		context->xio.read = NULL;
+	}
 
 	if(hSession->connection.sock != INVALID_SOCKET) {
 		closesocket(hSession->connection.sock);
@@ -68,11 +80,92 @@ static int disconnect(H3270 *hSession, Context *context) {
  }
 
  static int finalize(H3270 *hSession, Context *context) {
+
+	if(context->xio.read) {
+		hSession->poll.remove(hSession,context->xio.read);
+		context->xio.read = NULL;
+	}
+
 	lib3270_free(context);
 	return 0;
  }
 
+ static void on_input(H3270 *hSession, int sock, LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
+ 
+	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsarecv
+
+	unsigned char buffer[NETWORK_BUFFER_LENGTH];
+	WSABUF wsaBuffer = {
+		.len = NETWORK_BUFFER_LENGTH,
+		.buf = (char *) buffer
+	};
+
+	DWORD received = 0;
+	DWORD flags = 0;
+
+	int rc = WSARecv(
+		hSession->connection.sock,
+		&wsaBuffer,
+		1,
+		&received,
+		&flags,
+		NULL,
+		NULL
+	  );
+
+	if(rc) {
+		int error = WSAGetLastError();
+		if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS) {
+			return;
+		}
+		PostMessage(hSession->hwnd,WM_RECV_FAILED,error,0);
+		connection_close(hSession,error);
+	}
+
+	debug("Recv %ld bytes",received);
+ 	net_input(hSession, buffer, received);
+
+ }
+
+ static int enable_exception(H3270 *hSession, Context *context) {
+	return 0;
+ }
+
+ static int on_write(H3270 *hSession, const void *buffer, size_t length, Context *context) {
+
+
+	return 0;
+ }
+ 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession) {
+
+	debug("%s",__FUNCTION__);
+
+	WSASetLastError(0);
+
+	// Set the socket I/O mode: In this case FIONBIO
+	// enables or disables the blocking mode for the 
+	// socket based on the numerical value of iMode.
+	// If iMode = 0, blocking is enabled; 
+	// If iMode != 0, non-blocking mode is enabled.
+	// https://learn.microsoft.com/pt-br/windows/win32/api/winsock/nf-winsock-ioctlsocket
+	u_long iMode= 1;
+
+	if(ioctlsocket(hSession->connection.sock,FIONBIO,&iMode)) {
+		int err = WSAGetLastError();
+		LIB3270_POPUP popup = {
+			.name		= "connect-error",
+			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+			.title		= _("Connection error"),
+			.summary	= _("Unable to set non-blocking mode."),
+			.body		= "",
+			.label		= _("OK")
+		};
+
+		popup_wsa_error(hSession,err,&popup);
+		connection_close(hSession,err);
+		return NULL;
+	}
 
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
@@ -88,6 +181,13 @@ static int disconnect(H3270 *hSession, Context *context) {
 
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
+
+	context->xio.read = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
+
+	// context->xio.except = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_EXCEPTION,(void *) on_exception,context);
+
+	hSession->connection.except = (void *) enable_exception;
+	hSession->connection.write = (void *) on_write;
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

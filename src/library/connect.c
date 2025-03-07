@@ -217,6 +217,8 @@
  void set_connected_socket(H3270 *hSession, int sock) {
 #endif //_WIN32
 
+	debug("%s(%d)",__FUNCTION__,sock);
+	
 	hSession->connection.sock = sock;
 
 	if(hSession->connection.context) {

@@ -111,25 +111,11 @@
 		static const LIB3270_POPUP popup = {
 			.name		= "recv-failed",
 			.type		= LIB3270_NOTIFY_NETWORK_ERROR,
-			.title		= N_("Network error"),
-			.summary	= N_("Failed to receive data from the host"),
+			.title		= _("Network I/O error"),
+			.summary	= _("Failed to receive data from the host"),
 			.body		= "",
-			.label		= N_("OK")
+			.label		= _("OK")
 		};
-
-#ifdef _WIN32
-
-	
-		int error = WSAGetLastError();
-
-		// EWOULDBLOCK & EAGAIN should return directly.
-		if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS)
-			return;
-
-		popup_wsa_error(hSession,error,&popup);
-		connection_close(hSession,error);
-
-#else 
 
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			return;
@@ -138,7 +124,6 @@
 		lib3270_popup(hSession, &popup, 0);
 		connection_close(hSession,errno);
 
-#endif 
 		return;
 
 	}
@@ -180,24 +165,12 @@
 
 	LIB3270_POPUP popup = {
 		.name		= "send-failed",
-		.type		= LIB3270_NOTIFY_ERROR,
-		.title		= N_("Network error"),
-		.summary	= N_("Failed to send data to the host"),
+		.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+		.title		= _("Network I/O error"),
+		.summary	= _("Failed to send data to the host"),
 		.body		= "",
-		.label		= N_("OK")
+		.label		= _("OK")
 	};
-
-#ifdef _WIN32
-
-	int error = WSAGetLastError();
-
-	// EWOULDBLOCK & EAGAIN should return directly.
-	if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS)
-		return 0;
-
-	set_popup_body(&popup,error);
-
-#else 
 
 	int error = errno;
 
@@ -206,9 +179,6 @@
 	}
 	
 	set_popup_body(&popup,error);
-
-#endif
-
 	lib3270_popup(hSession, &popup, 0);
 
 	return -error;

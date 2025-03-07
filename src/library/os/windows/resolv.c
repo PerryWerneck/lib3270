@@ -34,6 +34,7 @@
  #include <private/session.h>
  #include <private/mainloop.h>
  #include <lib3270/win32.h>
+ #include <wininet.h>
 
  typedef struct {
 
@@ -78,7 +79,7 @@
 	);
 	
 	context->enabled = 0;
-	PostMessage(context->hSession->hwnd,WM_RESOLV_TIMEOUT,ETIMEDOUT,0);
+	PostMessage(context->hSession->hwnd,WM_RESOLV_FAILED,ERROR_INTERNET_TIMEOUT,0);
 
  }
 

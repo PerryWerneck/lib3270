@@ -165,6 +165,7 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 
 static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait) {
 	const char * text[] = {
+		popup->name,
 		popup->title,
 		popup->summary,
 		popup->body
@@ -173,7 +174,7 @@ static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char 
 	size_t ix;
 
 	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++) {
-		if(text[ix]) {
+		if(text[ix] && *text[ix]) {
 			debug("---> %s",text[ix]);
 			lib3270_log_write(hSession,"popup","%s",text[ix]);
 		}

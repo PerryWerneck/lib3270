@@ -338,11 +338,12 @@
 			);
 
 			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+			lib3270_autoptr(char) name = lib3270_strdup_printf("connection-%d",(int) wParam);
 
 			LIB3270_POPUP popup = {
-				.name		= "connection-failed",
+				.name		= name,
 				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
-				.title		= _("Connection failed"),
+				.title		= _("Network connection failed"),
 				.summary	= summary,
 				.body		= body,
 				.label		= _("OK")
@@ -362,11 +363,12 @@
 			);
 
 			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+			lib3270_autoptr(char) name = lib3270_strdup_printf("resolv-%d",(int) wParam);
 
 			LIB3270_POPUP popup = {
-				.name		= "dns-error",
+				.name		= name,
 				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
-				.title		= _("DNS error"),
+				.title		= _("Name resolution failed"),
 				.summary	= summary,
 				.body		= body,
 				.label		= _("OK")
@@ -374,31 +376,6 @@
 
 			connection_close(hSession,-1);
 			lib3270_popup(hSession,&popup,0);
-
-		}
-		return 0;
-
-	case WM_RESOLV_TIMEOUT:
-		{
-			debug("%s: WM_RESOLV_TIMEOUT",__FUNCTION__);
-
-			lib3270_autoptr(char) summary = lib3270_strdup_printf(
-				_( "Failed to establish connection to %s"),lib3270_get_url(hSession)
-			);
-
-			lib3270_autoptr(char) body = lib3270_win32_strerror(ERROR_INTERNET_TIMEOUT);
-
-			LIB3270_POPUP popup = {
-				.name		= "dns-timeout",
-				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
-				.title		= _("DNS error"),
-				.summary	= summary,
-				.body		= body,
-				.label		= _("OK")
-			};
-	
-			connection_close(hSession,ETIMEDOUT);
-			lib3270_popup(hSession, &popup, 0);
 
 		}
 		return 0;

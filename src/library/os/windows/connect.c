@@ -114,8 +114,7 @@
 	}
 
 	debug("---> %s","Connected to host");
-
-	set_connected_socket(hSession,sock);
+	PostMessage(hSession->hwnd,WM_CONNECTION_SUCCESS,sock,sock);
 
  }
 

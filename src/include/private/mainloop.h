@@ -44,6 +44,7 @@
 		WM_SOCKET_EVENT				= WM_USER+114,
 		WM_RECV_FAILED				= WM_USER+115,
 		WM_SEND_FAILED				= WM_USER+116,
+		WM_CONNECTION_SUCCESS		= WM_USER+117,
 	};
 
  	/// @brief Create win32 object window for the session

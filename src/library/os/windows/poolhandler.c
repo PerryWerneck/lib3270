@@ -129,6 +129,8 @@
 
 				if(handler->sock == INVALID_SOCKET) {
 					// Remove handler
+					debug("Destroying handler %p",handler);
+
 					WSACloseEvent(handler->event);
 					handler_t *next = (handler_t *) handler->next;
 					lib3270_linked_list_delete_node((lib3270_linked_list *) &handlers,handler);
@@ -137,9 +139,15 @@
 				}
 
 				if(handler->disabled) {
+					debug("Handler %p is disabled",handler);
 					handler = (handler_t *) handler->next;
 					continue;
 				}
+#ifdef DEBUG
+				else {
+					debug("Handler %p is enabled on socket %llu",handler,handler->sock);
+				}
+#endif // DEBUG
 
 				if(cEvents >= buflen) {
 					buflen++;
@@ -269,6 +277,9 @@
  }
 
  LIB3270_INTERNAL void win32_poll_remove(H3270 *hSession, void *id) {
+
+	debug("Removing handler %p with socket %llu",((handler_t *) id),((handler_t *) id)->sock);
+
 	assert(WaitForSingleObject( mutex, INFINITE ) == WAIT_OBJECT_0);
 	((handler_t *) id)->sock = INVALID_SOCKET;
 	WSASetEvent(event);	// Force the thread to wake up

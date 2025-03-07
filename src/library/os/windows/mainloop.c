@@ -311,20 +311,34 @@
 		return 0;
 
 	case WM_POPUP_MESSAGE:
-		lib3270_popup(hSession,((const LIB3270_POPUP *) lParam), 0);
+		{
+			LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
+
+			popup.label = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->label);
+			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
+			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
+			popup.body = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->body);
+
+			hSession->cbk.popup(hSession,&popup,0);
+			
+		}
 		return 0;
 
 	case WM_POPUP_WSA_ERROR:
 	case WM_POPUP_LAST_ERROR:
 		{
-			if(wParam) {
-				lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
-				LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
-				popup.body = body;
-				lib3270_popup(hSession,&popup, 0);
-			} else {
-				lib3270_popup(hSession,((const LIB3270_POPUP *) lParam), 0);
-			}
+			LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
+			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+			lib3270_autoptr(char) name = lib3270_strdup_printf("%s-%d",((const LIB3270_POPUP *) lParam)->name,(int) wParam);
+				
+			popup.name = name;
+			popup.body = body;
+
+			popup.label = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->label);
+			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
+			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
+
+			hSession->cbk.popup(hSession,&popup,0);
 
 		}
 		return 0;
@@ -334,7 +348,7 @@
 			debug("%s: WM_CONNECTION_FAILED",__FUNCTION__);
 			
 			lib3270_autoptr(char) summary = lib3270_strdup_printf(
-				_( "Failed to establish connection to %s"),lib3270_get_url(hSession)
+				_( "Failed to establish connection to %s" ),lib3270_get_url(hSession)
 			);
 
 			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
@@ -349,7 +363,7 @@
 				.label		= _("OK")
 			};
 
-			lib3270_popup(hSession,&popup,0);
+			hSession->cbk.popup(hSession,&popup,0);
 
 		}
 		return 0;
@@ -375,7 +389,7 @@
 			};
 
 			connection_close(hSession,(int) wParam);
-			lib3270_popup(hSession,&popup,0);
+			hSession->cbk.popup(hSession,&popup,0);
 
 		}
 		return 0;
@@ -394,7 +408,7 @@
 				.label		= _("OK")
 			};
 	
-			lib3270_popup(hSession,&popup,0);
+			hSession->cbk.popup(hSession,&popup,0);
 			
 		}
 		return 0;		
@@ -412,8 +426,7 @@
 				.body		= body,
 				.label		= _("OK")
 			};
-	
-			lib3270_popup(hSession,&popup,0);
+			hSession->cbk.popup(hSession,&popup,0);
 			
 		}
 		return 0;		
@@ -421,6 +434,11 @@
 	case WM_RESOLV_SUCCESS:
 		debug("%s: WM_RESOLV_SUCCESS socket=%llu",__FUNCTION__,(SOCKET) lParam);
 		set_resolved(hSession,(SOCKET) lParam);
+		return 0;
+
+	case WM_CONNECTION_SUCCESS:
+		debug("%s: WM_CONNECTION_SUCCESS socket=%llu",__FUNCTION__,(SOCKET) lParam);
+		set_connected_socket(hSession,(SOCKET) lParam);
 		return 0;
 
 	case WM_POST_CALLBACK:
@@ -446,8 +464,8 @@
 	case WM_SOCKET_EVENT:
 		{
 			handler_t *handler = (handler_t *) lParam;
-			handler->proc(handler->hSession,handler->sock,handler->flag,handler->userdata);
 			handler->disabled = 0;
+			handler->proc(handler->hSession,handler->sock,handler->flag,handler->userdata);
 			win32_poll_wake_up(handler->hSession);
 		}
 		return 0;

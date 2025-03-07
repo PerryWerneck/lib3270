@@ -53,7 +53,8 @@
 
  
  /// @brief Connection context for insecure (non SSL) connections.
- typedef struct {
+ typedef struct _lib3270_net_context {
+	
 	LIB3270_NET_CONTEXT parent;
 
 	// I/O handlers.

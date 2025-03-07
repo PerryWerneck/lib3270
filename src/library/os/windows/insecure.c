@@ -50,28 +50,19 @@
 
  typedef struct _context Context;
 
- typedef struct {
-	WSAOVERLAPPED	overlapped;
- 	H3270 *			hSession;
-	Context *		context;
-	DWORD			flags;
-	WSABUF			wsaBuffer;
-	char buffer[NETWORK_BUFFER_LENGTH];
- } Overlapped;
-
  /// @brief Connection context for insecure (non SSL) connections.
- struct _context {
+ typedef struct _context {
 	LIB3270_NET_CONTEXT parent;
-	Overlapped *overlapped;
- };
+	void *recv;
+} Context;
 
 static int disconnect(H3270 *hSession, Context *context) {
 
 	debug("%s",__FUNCTION__);
 
-	if(context->overlapped) {
-		context->overlapped->context = NULL;
-		context->overlapped = NULL;
+	if(context->recv) {
+		hSession->poll.remove(hSession,context->recv);
+		context->recv = NULL;
 	}
 
 	if(hSession->connection.sock != INVALID_SOCKET) {
@@ -85,20 +76,21 @@ static int disconnect(H3270 *hSession, Context *context) {
 
  static int finalize(H3270 *hSession, Context *context) {
 
-	// Disable
-	if(context->overlapped) {
-		context->overlapped->context = NULL;
-		context->overlapped = NULL;
+	if(context->recv) {
+		hSession->poll.remove(hSession,context->recv);
+		context->recv = NULL;
 	}
+
 	lib3270_free(context);
 	return 0;
  }
 
- /*
  static void on_input(H3270 *hSession, SOCKET GNUC_UNUSED(sock), LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
  
 	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsarecv
 
+	debug("%s",__FUNCTION__);
+	
 	unsigned char buffer[NETWORK_BUFFER_LENGTH];
 	WSABUF wsaBuffer = {
 		.len = NETWORK_BUFFER_LENGTH,
@@ -131,7 +123,6 @@ static int disconnect(H3270 *hSession, Context *context) {
  	net_input(hSession, buffer, received);
 
  }
- */
 
  static int enable_exception(H3270 *hSession, Context *context) {
 	return 0;
@@ -142,24 +133,9 @@ static int disconnect(H3270 *hSession, Context *context) {
 	return 0;
  }
  
- static void overlappedCompletionRoutine(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-
-	Overlapped *overlapped = (Overlapped *) lpOverlapped;
-
-	debug("dwError=%d cbTransferred=%d",dwError,cbTransferred)
-
-	if(!overlapped->context) {
-		debug("%s: Context is NULL, operation was cancelled",__FUNCTION__);
-		lib3270_free(overlapped);
-		return;
-	}
-
-
- }
- 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession) {
 
-	debug("%s",__FUNCTION__);
+	debug("----------------------------------------- %s",__FUNCTION__);
 
 	WSASetLastError(0);
 
@@ -209,46 +185,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;
 
-	// Start overlapped recv.
-	context->overlapped = lib3270_new(Overlapped);
-	memset(context->overlapped,0,sizeof(Overlapped));
-
-	context->overlapped->hSession = hSession;
-	context->overlapped->context = context;
-	context->overlapped->wsaBuffer.buf = context->overlapped->buffer;
-	context->overlapped->wsaBuffer.len = NETWORK_BUFFER_LENGTH;
-	
-	int rc = 
-		WSARecv(
-			hSession->connection.sock,
-			&context->overlapped->wsaBuffer,
-			1,
-			NULL,
-  			&context->overlapped->flags,
-  			(WSAOVERLAPPED *) context->overlapped,
-  			overlappedCompletionRoutine
-		);
-
-	if(rc) {
-		int err = WSAGetLastError();
-		debug("Error %d",err);
-		if(err != WSA_IO_PENDING) {
-			static const LIB3270_POPUP popup = {
-				.name		= "recv",
-				.type		= LIB3270_NOTIFY_NETWORK_IO_ERROR,
-				.title		= N_("Unexpected network I/O error"),
-				.summary	= N_("Unexpected error starting overlapped receive."),
-				.body		= "",
-				.label		= N_("OK")
-			};
-			PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,err,(LPARAM) &popup);
-			connection_close(hSession,err);
-			lib3270_free(context->overlapped);
-			lib3270_free(context);
-			return NULL;
-		}
-	}
-
+	context->recv = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

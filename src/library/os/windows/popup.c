@@ -24,22 +24,16 @@
  *
  */
 
- #error deprecated
- 
- /*
-#include <config.h>
-#include <winsock2.h>
-#include <windows.h>
+ #include <config.h>
+ #include <winsock2.h>
+ #include <windows.h>
 
-#include <lib3270/defs.h>
-#include <lib3270/memory.h>
-#include <private/popup.h>
-#include <lib3270/win32.h>
+ #include <lib3270/defs.h>
+ #include <private/popup.h>
+ #include <private/session.h>
 
-LIB3270_INTERNAL int popup_win32_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
-
-
-}
- */
+ void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
+	PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,(WPARAM) code, (LPARAM) popup);
+ }
 
 

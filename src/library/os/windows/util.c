@@ -77,6 +77,8 @@ static const struct {
  	// /usr/x86_64-w64-mingw32/sys-root/mingw/include/winerror.h
 	{ WSAHOST_NOT_FOUND,		N_("No such host is known. The name is not an official host name or alias, or it cannot be found in the database(s) being queried.") },
 
+	{ WSAECONNREFUSED,			N_("No connection could be made because the target computer actively refused it. This usually results from trying to connect to a service that is inactive on the foreign host.") },
+
  };
 
 
@@ -144,17 +146,20 @@ const char * inet_ntop(int af, const void *src, char *dst, socklen_t cnt) {
 #endif // HAVE_INET_NTOP
 
 LIB3270_EXPORT char * lib3270_win32_strerror(int lasterror) {
+
+	for(size_t ix = 0; ix < (sizeof(windows_errors)/sizeof(windows_errors[0])); ix++) {
+		if(windows_errors[ix].dwMessageId == lasterror) {
+			return strdup(dgettext(GETTEXT_PACKAGE,windows_errors[ix].message));
+		}
+	}
+
 	char * buffer = lib3270_malloc(4096);
+
+	debug("Winsock error %d",lasterror);
 
 	if(FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,NULL,lasterror,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),buffer,4096,NULL) == 0) {
 
 		free(buffer);
-
-		for(size_t ix = 0; ix < (sizeof(windows_errors)/sizeof(windows_errors[0])); ix++) {
-			if(windows_errors[ix].dwMessageId == lasterror) {
-				return strdup(dgettext(GETTEXT_PACKAGE,windows_errors[ix].message));
-			}
-		}
 
 		return lib3270_strdup_printf(
 			_("WinSock error %d (check it in https://docs.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2)"),

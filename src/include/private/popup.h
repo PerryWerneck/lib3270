@@ -36,6 +36,7 @@ LIB3270_INTERNAL void Error(H3270 *session, const char *fmt, ...);
 LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 
 #ifdef _WIN32
+
 	/// @brief Popup message from thread.
 	/// @param hSession TN3270 session handle.
 	/// @param code Error code form WSAGetLastError().
@@ -56,9 +57,7 @@ LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 	/// @param hSession TN3270 session handle.
 	/// @param code Error code form WSAGetLastError().
 	/// @param popup Popup description.
-	inline void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
-		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,(WPARAM) code, (LPARAM) popup);
-	}
+	void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup);
 #endif
 
 /**

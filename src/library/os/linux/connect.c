@@ -129,7 +129,7 @@
 
 			lib3270_autoptr(char) summary =
 				lib3270_strdup_printf(
-					_( "Can't connect to %s"),
+					_( "Failed to establish connection to %s"),
 					lib3270_get_url(hSession)
 				);
 

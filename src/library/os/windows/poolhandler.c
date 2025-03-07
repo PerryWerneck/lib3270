@@ -169,9 +169,16 @@
 
 		ULONG event;
 		for(event = 0; event < cEvents; event++) {
+
+			if(!workers[event]) {
+				WSAResetEvent(events[event]);
+				continue;
+			}
+
 			WSANETWORKEVENTS networkEvents;
+
 			if(WSAEnumNetworkEvents(workers[event]->sock,events[event],&networkEvents) == 0) {
-				if(workers[event] && workers[event]->hSession && workers[event]->hSession->hwnd) {
+				if(workers[event]->hSession && workers[event]->hSession->hwnd) {
 					workers[event]->disabled = 1;
 					PostMessage(
 						workers[event]->hSession->hwnd,

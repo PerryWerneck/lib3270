@@ -42,6 +42,7 @@
 		WM_POPUP_WSA_ERROR			= WM_USER+112,
 		WM_POPUP_LAST_ERROR			= WM_USER+113,
 		WM_SOCKET_EVENT				= WM_USER+114,
+		WM_CONNECTION_FAILED		= WM_USER+115,
 	};
 
  	/// @brief Create win32 object window for the session

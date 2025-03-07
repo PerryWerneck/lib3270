@@ -91,7 +91,6 @@
 		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		lib3270_log_write(hSession,"win32","Error removing timer: %s",windows_error);
 	}
-
  }
 
  static void win32_timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {
@@ -107,7 +106,6 @@
 		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
 		lib3270_log_write(hSession,"win32","Error posting callback: %s",windows_error);
 	}
-
  }
 
  LIB3270_EXPORT int lib3270_mainloop_run(H3270 *hSession, int wait) {
@@ -331,12 +329,36 @@
 		}
 		return 0;
 
+	case WM_CONNECTION_FAILED:
+		{
+			debug("%s: WM_CONNECTION_FAILED",__FUNCTION__);
+			
+			lib3270_autoptr(char) summary = lib3270_strdup_printf(
+				_( "Failed to establish connection to %s"),lib3270_get_url(hSession)
+			);
+
+			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
+
+			LIB3270_POPUP popup = {
+				.name		= "connection-failed",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("Connection failed"),
+				.summary	= summary,
+				.body		= body,
+				.label		= _("OK")
+			};
+
+			lib3270_popup(hSession,&popup,0);
+
+		}
+		return 0;
+
 	case WM_RESOLV_FAILED:
 		{
 			debug("%s: WM_RESOLV_FAILED",__FUNCTION__);
 			
 			lib3270_autoptr(char) summary = lib3270_strdup_printf(
-				_( "Can't connect to %s"),lib3270_get_url(hSession)
+				_( "Failed to establish connection to %s"),lib3270_get_url(hSession)
 			);
 
 			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
@@ -361,7 +383,7 @@
 			debug("%s: WM_RESOLV_TIMEOUT",__FUNCTION__);
 
 			lib3270_autoptr(char) summary = lib3270_strdup_printf(
-				_( "Can't connect to %s"),lib3270_get_url(hSession)
+				_( "Failed to establish connection to %s"),lib3270_get_url(hSession)
 			);
 
 			lib3270_autoptr(char) body = lib3270_win32_strerror(ERROR_INTERNET_TIMEOUT);

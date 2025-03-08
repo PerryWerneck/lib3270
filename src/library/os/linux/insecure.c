@@ -53,7 +53,7 @@
 
  
  /// @brief Connection context for insecure (non SSL) connections.
- typedef struct _lib3270_net_context {
+ typedef struct {
 	
 	LIB3270_NET_CONTEXT parent;
 
@@ -109,7 +109,7 @@
 
 	if(length < 0) {
 
-		static const LIB3270_POPUP popup = {
+		LIB3270_POPUP popup = {
 			.name		= "recv-failed",
 			.type		= LIB3270_NOTIFY_NETWORK_ERROR,
 			.title		= _("Network I/O error"),

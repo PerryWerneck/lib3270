@@ -39,6 +39,7 @@
  #include <private/linkedlist.h>
  #include <private/toggle.h>
  #include <private/network.h>
+ #include <private/mainloop.h>
  
  #define LIB3270_FULL_MODEL_NAME_LENGTH	13
  #define LIB3270_LU_MAX					32

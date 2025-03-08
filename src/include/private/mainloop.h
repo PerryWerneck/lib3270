@@ -23,11 +23,6 @@
  #include <lib3270/defs.h>
  #include <lib3270.h>
 
-#ifdef _WIN32
-
-	#include <winsock2.h>
-	#include <windows.h>
-
 	/**
 	 * @brief I/O Controller.
 	 *
@@ -57,6 +52,11 @@
 	 */
 
 
+#ifdef _WIN32
+
+	#include <winsock2.h>
+	#include <windows.h>
+
 	enum MessageTypes {
 		WM_ADD_TIMER				= WM_USER+102,
 		WM_REMOVE_TIMER				= WM_USER+103,
@@ -85,6 +85,17 @@
 	LIB3270_INTERNAL void win32_mainloop_free(H3270 *hSession);
 
 #else
+
+	#include <poll.h>
+
+	typedef enum {
+		LIB3270_IO_FLAG_READ		= POLLIN,
+		LIB3270_IO_FLAG_WRITE		= POLLOUT,
+		LIB3270_IO_FLAG_EXCEPTION	= POLLPRI,
+		LIB3270_IO_FLAG_ERROR		= POLLERR,
+		LIB3270_IO_FLAG_HUP			= POLLHUP,
+		LIB3270_IO_FLAG_NVAL		= POLLNVAL,
+	} LIB3270_IO_FLAG;
 
 	/// @brief Use internal mainloop methods for the session.
 	/// @param hSession The session to be set.

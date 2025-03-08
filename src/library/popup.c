@@ -29,6 +29,7 @@
 #include <lib3270.h>
 #include <lib3270/memory.h>
 #include <lib3270/log.h>
+#include <lib3270/popup.h>
 #include <private/trace.h>
 #include <private/popup.h>
 
@@ -133,6 +134,28 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id, const c
 
 }
 
+LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone(const LIB3270_POPUP *origin) {
+
+	size_t szData = strlen(origin->body) + strlen(origin->name) + strlen(origin->title) + strlen(origin->summary) + 5;
+	LIB3270_POPUP * popup = lib3270_malloc(szData);
+	memcpy(popup, origin, sizeof(LIB3270_POPUP));
+
+	popup->name = (char *) (popup + 1);
+	strcpy((char *) popup->name, origin->name);
+
+	popup->title = popup->name + strlen(popup->name) + 1;
+	strcpy((char *) popup->title, origin->title);
+
+	popup->summary = popup->title + strlen(popup->title) + 1;
+	strcpy((char *) popup->summary, origin->summary);
+
+	popup->body = popup->summary + strlen(popup->summary) + 1;
+	strcpy((char *) popup->body, origin->body);
+
+	return popup;
+
+}
+
 LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...) {
 	va_list args;
 
@@ -144,16 +167,22 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 	va_end(args);
 
 	// Alocate new struct
-	LIB3270_POPUP * popup = lib3270_malloc(sizeof(LIB3270_POPUP)+strlen(body)+1);
+	size_t szData = strlen(body) + strlen(origin->name) + strlen(origin->title) + strlen(origin->summary) + 5;
+	LIB3270_POPUP * popup = lib3270_malloc(szData);
+	memcpy(popup, origin, sizeof(LIB3270_POPUP));
 
-	if(origin) {
-		*popup = *origin;
-	} else {
-		memset(popup,0,sizeof(LIB3270_POPUP));
-	}
+	popup->name = (char *) (popup + 1);
+	strcpy((char *) popup->name, origin->name);
 
-	strcpy((char *)(popup+1),body);
-	popup->body = (char *)(popup+1);
+	popup->title = popup->name + strlen(popup->name) + 1;
+	strcpy((char *) popup->title, origin->title);
+
+	popup->summary = popup->title + strlen(popup->title) + 1;
+	strcpy((char *) popup->summary, origin->summary);
+
+	popup->body = popup->summary + strlen(popup->summary) + 1;
+	strcpy((char *) popup->body, body);
+
 	return popup;
 }
 

@@ -99,6 +99,16 @@ LIB3270_EXPORT LIB3270_NOTIFY	lib3270_get_ssl_state_icon(const H3270 *hSession);
 LIB3270_EXPORT const char *		lib3270_get_ssl_state_icon_name(const H3270 *hSession);
 
 /**
+ * @brief Clone popup object.
+ *
+ * @param origin	Original popup definition.
+ *
+ * @return New popup object (release it with lib3270_free).
+ *
+ */
+LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone(const LIB3270_POPUP *origin);
+
+/**
  * @brief Clone popup object replacing the body contents.
  *
  * @param origin	Original popup definition.

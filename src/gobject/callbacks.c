@@ -28,7 +28,7 @@
  #include <lib3270/glib.h>
  #include <private/intl.h>
  #include <private/gobject.h>
- #include <lib3270/mainloop.h>
+ #include <private/mainloop.h>
  #include <errno.h>
 
  /// @brief Callback called when a toggle property changes.

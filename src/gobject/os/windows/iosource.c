@@ -21,7 +21,7 @@
  #include <glib.h>
  #include <private/gobject.h>
  #include <private/mainloop.h>
- #include <lib3270/mainloop.h>
+ #include <private/mainloop.h>
 
  #include <winsock2.h>
  #include <windows.h>

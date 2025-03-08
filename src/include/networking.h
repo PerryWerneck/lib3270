@@ -36,7 +36,7 @@ typedef int socklen_t;
 #endif // _WIN32
 
 #include <lib3270/popup.h>
-#include <lib3270/mainloop.h>
+#include <private/mainloop.h>
 
 typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
 

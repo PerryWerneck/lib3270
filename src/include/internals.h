@@ -31,7 +31,7 @@
 #include <lib3270/popup.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
-#include <lib3270/mainloop.h>
+#include <private/mainloop.h>
 
 #include <private/session.h>
 #include <private/defs.h>

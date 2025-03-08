@@ -37,7 +37,7 @@
  #include <private/session.h>
 
  #include <lib3270.h>
- #include <lib3270/mainloop.h>
+ #include <private/mainloop.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
  #include <lib3270/memory.h>

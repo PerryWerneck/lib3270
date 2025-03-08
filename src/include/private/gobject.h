@@ -22,7 +22,7 @@
  #include <lib3270/defs.h>
  #include <lib3270.h>
  #include <lib3270/glib.h>
- #include <lib3270/mainloop.h>
+ #include <private/mainloop.h>
 
  typedef struct _Tn3270SessionPrivate {
 

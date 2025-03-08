@@ -32,7 +32,6 @@
 #include <lib3270/popup.h>
 #include <lib3270/toggle.h>
 #include <lib3270/ssl.h>
-#include <lib3270/mainloop.h>
 
 typedef struct _lib3270_log_context {
 	const char *filename;
@@ -112,16 +111,6 @@ struct lib3270_session_callbacks {
 	void (*ring_bell)(H3270 *hSession, int id);
 
 };
-
-/**
- * Register application Handlers.
- *
- * @param cbk	Structure with the application I/O handles to set.
- *
- * @return 0 if ok, error code if not.
- *
- */
-LIB3270_EXPORT int lib3270_set_session_io_handler(const LIB3270_IO_CONTROLLER *cbk);
 
 LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);

@@ -35,7 +35,7 @@
  #include <private/defs.h>
  #include <private/network.h>
  #include <lib3270/ssl.h>
- #include <lib3270/mainloop.h>
+ #include <private/mainloop.h>
  #include <lib3270/memory.h>
  #include <private/popup.h>
  #include <private/trace.h>

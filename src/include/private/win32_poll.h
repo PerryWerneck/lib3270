@@ -66,5 +66,6 @@
  LIB3270_INTERNAL void * win32_poll_remove(void *handler);
 
  LIB3270_INTERNAL int win32_poll_enabled();
+ LIB3270_INTERNAL void win32_poll_wake_up();
 
  

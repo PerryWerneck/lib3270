@@ -24,6 +24,7 @@
  #include <private/linkedlist.h>
  #include <private/win32_poll.h>
  #include <private/mainloop.h>
+ #include <private/intl.h>
  
  #include <winsock2.h>
  #include <windows.h>
@@ -56,8 +57,6 @@
 		controller.event = WSACreateEvent();
 	}
 
-	hSession->poll.event = WSACreateEvent();
-
 	ReleaseMutex(controller.mutex);
 
  }
@@ -66,15 +65,12 @@
 
 	assert(WaitForSingleObject( controller.mutex, INFINITE ) == WAIT_OBJECT_0);
 
-	// Remove all session handlers from list.
-	// TODO
-
-	// Close event
-	WSACloseEvent(hSession->poll.event);
+	// TODO: Remove all session handlers from list.
 
 	if(!controller.first) {
 
 		// No more instances, cleanup	
+
 		if(controller.thread) {
 			WSASetEvent(controller.event);	// Force the thread to wake up
 			lib3270_log_write(NULL,"win32","Waiting for network thread to close");
@@ -99,11 +95,41 @@
 	return rc;
  }
 
+ LIB3270_INTERNAL void win32_poll_wake_up() {
+	if(controller.thread && controller.event) {
+		WSASetEvent(controller.event);	// Force the thread to wake up
+	}
+ }
+
+
  LIB3270_INTERNAL void * win32_poll_add(H3270 *hSession, SOCKET sock, long events, void (*call)(H3270 *hSession, SOCKET sock, void *userdata), void *userdata) {
 
 	assert(WaitForSingleObject(controller.mutex, INFINITE ) == WAIT_OBJECT_0);
 
-	handler_t *handler =	
+	handler_t *handler;
+	
+	// Just in case.
+	for(handler = (handler_t *) controller.first;handler;handler = (handler_t *) handler->next) {
+		if(handler->sock == sock) {
+
+			static const LIB3270_POPUP popup = {
+				.name		= "internal",
+				.type		= LIB3270_NOTIFY_ERROR,
+				.title		= N_("Internal error"),
+				.summary	= N_("Requested connection is already on the watch list."),
+				.body		= "",
+				.label		= N_("OK")
+			};
+	
+			PostMessage(hSession->hwnd,WM_POPUP_MESSAGE,-1,(LPARAM) &popup);
+			connection_close(hSession,-1);
+	
+			ReleaseMutex(controller.mutex);
+			return NULL;
+		}
+	}
+
+	handler =	
 		(handler_t *) lib3270_linked_list_append_node(
 			(lib3270_linked_list *) &controller, 
 			sizeof(handler_t), 
@@ -115,6 +141,8 @@
 	handler->events = events;
 	handler->proc = call;
 	handler->event = WSACreateEvent();
+
+	WSAEventSelect(sock, &handler->event, events);
 
 	if(controller.thread) {
 		WSASetEvent(controller.event);	// Force the thread to wake up

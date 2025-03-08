@@ -43,6 +43,7 @@
  #include <private/intl.h>
  #include <private/mainloop.h>
  #include <private/popup.h>
+ #include <private/win32_poll.h>
  #include <string.h>
  #include <errno.h>
 
@@ -61,7 +62,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	debug("%s",__FUNCTION__);
 
 	if(context->recv) {
-		hSession->poll.remove(hSession,context->recv);
+		win32_poll_remove(context->recv);
 		context->recv = NULL;
 	}
 
@@ -77,7 +78,7 @@ static int disconnect(H3270 *hSession, Context *context) {
  static int finalize(H3270 *hSession, Context *context) {
 
 	if(context->recv) {
-		hSession->poll.remove(hSession,context->recv);
+		win32_poll_remove(context->recv);
 		context->recv = NULL;
 	}
 
@@ -85,7 +86,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	return 0;
  }
 
- static void on_input(H3270 *hSession, SOCKET GNUC_UNUSED(sock), LIB3270_IO_FLAG GNUC_UNUSED(flag), Context *context) {
+ static void on_input(H3270 *hSession, SOCKET GNUC_UNUSED(sock), Context *context) {
  
 	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsarecv
 
@@ -185,7 +186,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;
 
-	context->recv = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
+	context->recv = win32_poll_add(hSession,hSession->connection.sock,FD_READ,(void *) on_input,context);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

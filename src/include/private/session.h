@@ -88,23 +88,19 @@
 		LIB3270_TIMER_CONTEXT * context;
 	} timer;
 
+#ifndef _WIN32
+
 	/// @brief Network I/O handlers.
 	struct {
-#ifdef _WIN32
-		WSAEVENT event;
-		void (*write)(H3270 *session);
-		void (*read)(H3270 *session);
-#else
 		void *	(*add)(H3270 *session, int sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 		void	(*remove)(H3270 *session, void *id);
-#endif // _WIN32
 		void	(*finalize)(H3270 *session, LIB3270_POLL_CONTEXT * context);
 		LIB3270_POLL_CONTEXT * context;
 	} poll;
 
-#ifndef _WIN32
 	int		(*event_dispatcher)(H3270 *session,int wait);
-#endif // !_WIN32
+
+#endif // _WIN32
 
 	/// @brief Block current thread for a given amount of time, keep the main loop running.
 	int 	(*wait)(H3270 *session, int seconds);

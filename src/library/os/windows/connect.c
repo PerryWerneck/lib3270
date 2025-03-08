@@ -41,12 +41,12 @@
 	void *connected;
  } Context;
 
- static void net_connected(H3270 *hSession, SOCKET sock, LIB3270_IO_FLAG flag, Context *context) {
+ static void net_connected(H3270 *hSession, SOCKET sock, Context *context) {
 
 	debug("%s: CONNECTED",__FUNCTION__);
 
 	if(context->connected) {
-		hSession->poll.remove(hSession,context->connected);
+		win32_poll_remove(context->connected);
 		context->connected = NULL;
 	}
 
@@ -130,7 +130,7 @@
  static int net_disconnect(H3270 *hSession, Context *context) {
 
 	if(context->connected) {
-		hSession->poll.remove(hSession,context->connected);
+		win32_poll_remove(context->connected);
 		context->connected = NULL;
 	}
 
@@ -150,7 +150,7 @@
  static int net_finalize(H3270 *hSession, Context *context) {
 
 	if(context->connected) {
-		hSession->poll.remove(hSession,context->connected);
+		win32_poll_remove(context->connected);
 		context->connected = NULL;
 	}
 
@@ -187,7 +187,7 @@
 	context->sock = sock;
 
 	context->timer = hSession->timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
-	context->connected = hSession->poll.add(hSession,sock,LIB3270_IO_FLAG_WRITE,(void *) net_connected,context);
+	context->connected = win32_poll_add(hSession,sock,FD_WRITE,(void *) net_connected,context);
 
 	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 

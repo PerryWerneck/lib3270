@@ -220,11 +220,10 @@
  	hSession->timer.remove = win32_timer_remove;
 	hSession->timer.finalize = win32_timer_finalize;
 
-	hSession->poll.context = win32_poll_init(hSession);
-	hSession->poll.finalize = win32_poll_finalize;
-
 	hSession->post = (void *) win32_post;
 	hSession->run = (void *) win32_run;
+
+	win32_poll_init(hSession);
 
  }
 
@@ -462,9 +461,9 @@
 	case WM_SOCKET_EVENT:
 		{
 			handler_t *handler = (handler_t *) lParam;
+			handler->proc(handler->hSession,handler->sock,handler->userdata);
 			handler->disabled = 0;
-			handler->proc(handler->hSession,handler->sock,handler->flag,handler->userdata);
-			win32_poll_wake_up(handler->hSession);
+			win32_poll_wake_up();
 		}
 		return 0;
 

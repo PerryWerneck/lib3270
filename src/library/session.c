@@ -36,6 +36,10 @@
 #include <private/network.h>
 #include <private/session.h>
 
+#ifdef _WIN32
+	#include <private/win32_poll.h>
+#endif // _WIN32
+
 #include "kybdc.h"
 #include <private/ansi.h>
 #include <private/toggle.h>
@@ -79,10 +83,14 @@ void lib3270_session_free(H3270 *h) {
 		h->timer.context = NULL;
 	}
 
+#ifdef _WIN32
+	win32_poll_finalize(h);
+#else
 	if(h->poll.context) {
 		h->poll.finalize(h,h->poll.context);
 		h->poll.context = NULL;
 	}
+#endif
 
 	// Do we have pending tasks?
 	if(h->tasks) {

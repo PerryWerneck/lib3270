@@ -101,7 +101,7 @@
 
 	int		(*event_dispatcher)(H3270 *session,int wait);
 
-#endif // _WIN32
+#endif // !_WIN32
 
 	/// @brief Block current thread for a given amount of time, keep the main loop running.
 	int 	(*wait)(H3270 *session, int seconds);
@@ -111,6 +111,9 @@
 
 	/// @brief Execute callback on the main thread, copy parameters to a dynamically allocated buffer if necessary.
 	void	(*post)(H3270 *session, void(*callback)(H3270 *session, void *), void *parm, size_t parmlen);
+
+	/// @brief Show async popup dialog.
+	void	(*popup)(H3270 *session, const LIB3270_POPUP *popup);
 
 	/// @brief The connection & network info for this session.
 	struct {

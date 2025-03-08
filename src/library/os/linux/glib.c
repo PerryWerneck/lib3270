@@ -37,6 +37,7 @@
  #include <lib3270.h>
  #include <lib3270/memory.h>
  #include <lib3270/toggle.h>
+ #include <lib3270/popup.h>
  #include <private/mainloop.h>
  #include <private/session.h>
  #include <private/linkedlist.h>
@@ -380,6 +381,48 @@
 
  }
 
+ typedef struct {
+	LIB3270_POPUP popup;
+	H3270 *hSession;
+ } PostPopup;
+
+ static void popup_posted(PostPopup *popup) {
+	popup->hSession->cbk.popup(popup->hSession,&popup->popup,0);
+	lib3270_free(popup);
+ }	
+
+ static void gui_popup(H3270 *hSession, const LIB3270_POPUP *origin) {
+ 
+	unsigned int (*g_idle_add_once)(void *function, void * data) =
+		glibmethods[G_IDLE_ADD_ONCE];
+
+	size_t szData = sizeof(PostPopup) 
+			+ strlen(origin->body) 
+			+ strlen(origin->name) 
+			+ strlen(origin->title) 
+			+ strlen(origin->summary) 
+			+ 5;
+
+	PostPopup * data = lib3270_malloc(szData);
+	memcpy(&data->popup, origin, sizeof(LIB3270_POPUP));
+	data->hSession = hSession;
+
+	data->popup.name = (char *) (data + 1);
+	strcpy((char *) data->popup.name, origin->name);
+
+	data->popup.title = (char *) data->popup.name + strlen(data->popup.name) + 1;
+	strcpy((char *) data->popup.title, origin->title);
+
+	data->popup.summary = (char *) data->popup.title + strlen(data->popup.title) + 1;
+	strcpy((char *) data->popup.summary, origin->summary);
+
+	data->popup.body = (char *) data->popup.summary + strlen(data->popup.summary) + 1;
+	strcpy((char *) data->popup.body, origin->body);
+	
+	g_idle_add_once((void *) popup_posted, data);
+
+ }
+
  LIB3270_INTERNAL int setup_glib_mainloop(H3270 *hSession) {
 
 	if(glibstate == GLIB_NOT_AVAILABLE) {
@@ -409,6 +452,7 @@
 	hSession->post = gui_post;
 
 	hSession->wait = gui_wait;
+	hSession->popup = gui_popup;
 
 	debug("%s: GLib mainloop implementation enabled",__FUNCTION__);
 

@@ -134,6 +134,8 @@ LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *o
  */
 LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
 
+LIB3270_EXPORT void lib3270_popup_async(H3270 *hSession, const LIB3270_POPUP *popup);
+
 /**
  * @brief Auto cleanup method (for use with lib3270_autoptr).
  *

@@ -344,6 +344,10 @@
 	callback(hSession,parm);
  }
 
+ static void default_popup(H3270 *session, const LIB3270_POPUP *popup) {
+	session->cbk.popup(session,popup,0);
+ }
+
  static void timer_finalize(H3270 *session, LIB3270_TIMER_CONTEXT * context) {
 	lib3270_linked_list_free((lib3270_linked_list *) context);
 	lib3270_free(context);
@@ -380,6 +384,7 @@
 	hSession->post = default_post;
 
  	hSession->wait = default_wait;
+	hSession->popup = default_popup;
 
  }
 

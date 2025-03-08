@@ -35,6 +35,36 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+LIB3270_EXPORT void lib3270_popup_async(H3270 *hSession, const LIB3270_POPUP *popup) {
+
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE)) {
+
+		trace_event(hSession,"%s",popup->name);
+
+		if(popup->title && *popup->title) {
+			trace_event(hSession," - %s\n",popup->title);
+		} else {
+			trace_event(hSession,"\n");
+		}
+
+		if(popup->summary && *popup->summary) {
+			trace_event(hSession,"\t%s\n",popup->summary);
+		}
+
+		if(popup->body && *popup->body) {
+			trace_event(hSession,"\t%s\n",popup->body);
+		}
+
+	}
+
+	if(hSession->log) {
+		lib3270_log_write(hSession,"popup","%s - %s",popup->name,popup->summary ? popup->summary : "");
+	}
+
+	hSession->popup(hSession,popup);
+
+}
+
 LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
 	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE)) {
@@ -136,7 +166,7 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id, const c
 
 LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone(const LIB3270_POPUP *origin) {
 
-	size_t szData = strlen(origin->body) + strlen(origin->name) + strlen(origin->title) + strlen(origin->summary) + 5;
+	size_t szData = sizeof(LIB3270_POPUP) + strlen(origin->body) + strlen(origin->name) + strlen(origin->title) + strlen(origin->summary) + 5;
 	LIB3270_POPUP * popup = lib3270_malloc(szData);
 	memcpy(popup, origin, sizeof(LIB3270_POPUP));
 

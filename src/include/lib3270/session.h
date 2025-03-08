@@ -65,7 +65,6 @@ LIB3270_EXPORT void lib3270_autoptr_cleanup_H3270(H3270 **ptr);
  */
 LIB3270_EXPORT void lib3270_session_free(H3270 *h);
 
-
 struct lib3270_session_callbacks {
 
 	/// @brief The screen size has changed.

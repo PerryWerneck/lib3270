@@ -29,46 +29,40 @@
 #include <lib3270.h>
 #include <lib3270/memory.h>
 #include <lib3270/log.h>
-// #include <networking.h>
 #include <private/trace.h>
 #include <private/popup.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+
+	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE)) {
+
+		trace_event(hSession,"%s",popup->name);
+
+		if(popup->title && *popup->title) {
+			trace_event(hSession," - %s\n",popup->title);
+		} else {
+			trace_event(hSession,"\n");
+		}
+
+		if(popup->summary && *popup->summary) {
+			trace_event(hSession,"\t%s\n",popup->summary);
+		}
+
+		if(popup->body && *popup->body) {
+			trace_event(hSession,"\t%s\n",popup->body);
+		}
+
+	}
+
+	if(hSession->log) {
+		lib3270_log_write(hSession,"popup","%s - %s",popup->name,popup->summary ? popup->summary : "");
+	}
+
 	return hSession->cbk.popup(hSession,popup,wait);
 }
 
-int popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
-
-	LIB3270_POPUP translated = *popup;
-
-	if(popup->title) {
-		translated.title = dgettext(GETTEXT_PACKAGE,popup->title);
-	}
-
-	if(popup->label) {
-		translated.label = dgettext(GETTEXT_PACKAGE,popup->label);
-	}
-
-	if(popup->summary) {
-		translated.summary = dgettext(GETTEXT_PACKAGE,popup->summary);
-	}
-
-	if(popup->body) {
-		translated.body = dgettext(GETTEXT_PACKAGE,popup->body);
-	}
-
-	int rc = hSession->cbk.popup(hSession,&translated,wait);
-
-	debug("%s - User response was '%s' (rc=%d)",__FUNCTION__,strerror(rc),rc);
-
-	if(rc) {
-		trace_event(hSession,"User response was '%s' (rc=%d)",strerror(rc),rc);
-	}
-
-	return rc;
-}
 
 /// @brief Pop up an error dialog.
 void popup_an_error(H3270 *hSession, const char *fmt, ...) {
@@ -87,7 +81,7 @@ void popup_an_error(H3270 *hSession, const char *fmt, ...) {
 		.summary = summary
 	};
 
-	hSession->cbk.popup(hSession,&popup,0);
+	lib3270_popup(hSession,&popup,0);
 
 }
 
@@ -109,7 +103,7 @@ void popup_system_error(H3270 *hSession, const char *title, const char *summary,
 		.body = body
 	};
 
-	hSession->cbk.popup(hSession,&popup,0);
+	lib3270_popup(hSession,&popup,0);
 
 }
 
@@ -135,7 +129,7 @@ LIB3270_EXPORT void lib3270_popup_va(H3270 *hSession, LIB3270_NOTIFY id, const c
 		.body = body
 	};
 
-	hSession->cbk.popup(hSession,&popup,0);
+	lib3270_popup(hSession,&popup,0);
 
 }
 
@@ -164,6 +158,7 @@ LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const ch
 }
 
 static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char GNUC_UNUSED wait) {
+#ifdef DEBUG 
 	const char * text[] = {
 		popup->name,
 		popup->title,
@@ -176,9 +171,9 @@ static int def_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char 
 	for(ix = 0; ix < (sizeof(text)/sizeof(text[0])); ix++) {
 		if(text[ix] && *text[ix]) {
 			debug("---> %s",text[ix]);
-			lib3270_log_write(hSession,"popup","%s",text[ix]);
 		}
 	}
+#endif // DEBUG
 
 	return ENOTSUP;
 }

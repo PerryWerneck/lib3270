@@ -245,7 +245,9 @@
 		// Wait for events
 		// https://stackoverflow.com/questions/41743043/windows-wait-on-event-and-socket-simulatenously
 		int rc = WSAWaitForMultipleEvents(cEvents,events,FALSE,INFINITE,FALSE);
-		if(rc != 0) {
+		if(rc == WSA_WAIT_FAILED) {
+
+			debug("%s -----> WSA_WAIT_FAILED",__FUNCTION__);
 			lib3270_autoptr(char) message = lib3270_win32_strerror(WSAGetLastError());
 
 			// TODO: Write to system event log.

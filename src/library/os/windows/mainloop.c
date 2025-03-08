@@ -316,7 +316,7 @@
 			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
 			popup.body = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->body);
 
-			hSession->cbk.popup(hSession,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 			
 		}
 		return 0;
@@ -335,7 +335,7 @@
 			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
 			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
 
-			hSession->cbk.popup(hSession,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 
 		}
 		return 0;
@@ -360,7 +360,7 @@
 				.label		= _("OK")
 			};
 
-			hSession->cbk.popup(hSession,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 
 		}
 		return 0;
@@ -386,7 +386,7 @@
 			};
 
 			connection_close(hSession,(int) wParam);
-			hSession->cbk.popup(hSession,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 
 		}
 		return 0;
@@ -405,7 +405,7 @@
 				.label		= _("OK")
 			};
 	
-			hSession->cbk.popup(hSession,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 			
 		}
 		return 0;		
@@ -423,7 +423,7 @@
 				.body		= body,
 				.label		= _("OK")
 			};
-			hSession->cbk.popup(hSession,&popup,0);
+			lib3270_popup(hSession,&popup,0);
 			
 		}
 		return 0;		

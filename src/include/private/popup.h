@@ -59,19 +59,3 @@ LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 	/// @param popup Popup description.
 	void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup);
 #endif
-
-/**
- * @brief Emit translated popup message.
- *
- * @param hSession	TN3270 Session handle.
- * @param popup		Popup descriptor.
- * @param wait		If non zero waits for user response.
- *
- * @return User action.
- *
- * @retval 0			User has confirmed, continue action.
- * @retval ECANCELED	Operation was canceled.
- * @retval ENOTSUP		No popup handler available.
- */
-LIB3270_INTERNAL int popup_translated(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
-

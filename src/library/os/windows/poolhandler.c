@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #error deprecated
+ 
  #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270/trace.h>
@@ -55,6 +57,7 @@
 	memset(context,0,sizeof(LIB3270_POLL_CONTEXT));
 	instances++;
 
+	context->event = WSACreateEvent();
 
 	ReleaseMutex(mutex);
 	return context;
@@ -62,6 +65,8 @@
  }
 
  LIB3270_INTERNAL void win32_poll_finalize(H3270 *hSession, LIB3270_POLL_CONTEXT * context) {
+
+	WSACloseEvent(context->event);
 
 	lib3270_free(context);
 
@@ -285,3 +290,5 @@
 	WSASetEvent(event);	// Force the thread to wake up
 	ReleaseMutex(mutex);
  }
+
+ 

@@ -325,7 +325,7 @@ win_src = [
   'src/library/os/windows/registry.c',
   'src/library/os/windows/util.c',
   'src/library/os/windows/popup.c',
-  'src/library/os/windows/poolhandler.c',
+  'src/library/os/windows/eventhandler.c',
 ]
 
 #

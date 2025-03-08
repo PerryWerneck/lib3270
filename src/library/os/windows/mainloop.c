@@ -221,8 +221,6 @@
 	hSession->timer.finalize = win32_timer_finalize;
 
 	hSession->poll.context = win32_poll_init(hSession);
-	hSession->poll.add = win32_poll_add;
-	hSession->poll.remove = win32_poll_remove;
 	hSession->poll.finalize = win32_poll_finalize;
 
 	hSession->post = (void *) win32_post;

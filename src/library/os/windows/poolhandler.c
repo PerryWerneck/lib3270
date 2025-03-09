@@ -231,8 +231,6 @@
 
  LIB3270_INTERNAL void * win32_poll_add(H3270 *hSession, SOCKET sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, SOCKET, LIB3270_IO_FLAG, void *), void *userdata ) {
 
-	// TODO: if flag == FD_READ start a wsaasyncrecv instead of thread, same for FD_WRITE. 
-
 	// Add socket to the list
 	assert(WaitForSingleObject( mutex, INFINITE ) == WAIT_OBJECT_0);
 

@@ -63,7 +63,7 @@
  /// @return The poll handler.
  LIB3270_INTERNAL void * win32_poll_add(H3270 *hSession, SOCKET sock, long events, void (*call)(H3270 *hSession, SOCKET sock, void *userdata), void *userdata);
 
- LIB3270_INTERNAL void * win32_poll_remove(void *handler);
+ LIB3270_INTERNAL void win32_poll_remove(void *handler);
 
  LIB3270_INTERNAL int win32_poll_enabled();
  LIB3270_INTERNAL void win32_poll_wake_up();

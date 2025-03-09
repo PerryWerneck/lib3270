@@ -33,6 +33,7 @@
  #include <private/host.h>
  #include <private/popup.h>
  #include <private/trace.h>
+ #include <private/win32_poll.h>
 
  typedef struct {
 	LIB3270_NET_CONTEXT parent;

@@ -21,6 +21,7 @@
  #include <lib3270/defs.h>
  #include <lib3270/trace.h>
  #include <lib3270/memory.h>
+ #include <windows/lib3270/win32.h>
  #include <private/linkedlist.h>
  #include <private/win32_poll.h>
  #include <private/mainloop.h>
@@ -151,9 +152,11 @@
 	}
 	ReleaseMutex(controller.mutex);
 
+	return handler;
+
  }
 
- LIB3270_INTERNAL void * win32_poll_remove(void *handler) {
+ LIB3270_INTERNAL void win32_poll_remove(void *handler) {
 
 	assert(WaitForSingleObject(controller.mutex, INFINITE ) == WAIT_OBJECT_0);
 	

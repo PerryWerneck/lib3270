@@ -174,6 +174,18 @@
 
  }
 
+ static void win32_popup(H3270 *hSession, const LIB3270_POPUP *origin) {
+ 
+	LIB3270_POPUP *popup = lib3270_popup_clone(origin);
+
+	if(!PostMessage(hSession->hwnd,WM_ASYNC_POPUP,0,(LPARAM) popup)) {
+		lib3270_autoptr(char) windows_error = lib3270_win32_strerror(GetLastError());
+		lib3270_log_write(hSession,"win32","Error posting popup: %s",windows_error);
+		lib3270_free(popup);
+	}
+
+ }
+ 
  LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession) {
 
 	if(instances++ == 0) {
@@ -222,6 +234,7 @@
 
 	hSession->post = (void *) win32_post;
 	hSession->run = (void *) win32_run;
+	hSession->popup = (void *) win32_popup;
 
 	win32_poll_init(hSession);
 
@@ -304,6 +317,14 @@
 			if(!hSession->timer.context->first) {
 				timer_id = 0;
 			}
+		}
+		return 0;
+
+	case WM_ASYNC_POPUP:
+		{
+			LIB3270_POPUP *popup = (const LIB3270_POPUP *) lParam;
+			hSession->cbk.popup(hSession,popup,0);
+			lib3270_free(popup);
 		}
 		return 0;
 
@@ -403,8 +424,7 @@
 				.summary	= _("Failed to receive data from the host"),
 				.body		= body,
 				.label		= _("OK")
-			};
-	
+			};	
 			lib3270_popup(hSession,&popup,0);
 			
 		}

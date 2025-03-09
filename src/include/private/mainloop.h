@@ -74,6 +74,7 @@
 		WM_RECV_FAILED				= WM_USER+115,
 		WM_SEND_FAILED				= WM_USER+116,
 		WM_CONNECTION_SUCCESS		= WM_USER+117,
+		WM_ASYNC_POPUP				= WM_USER+118,
 	};
 
  	/// @brief Create win32 object window for the session

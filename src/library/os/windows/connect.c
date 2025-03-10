@@ -188,10 +188,11 @@
 	context->sock = sock;
 
 	context->timer = hSession->timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
-	context->connected = win32_poll_add(hSession,sock,FD_WRITE,(void *) net_connected,context);
 
 	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 
- }
+	context->connected = win32_poll_add(hSession,sock,FD_CONNECT|FD_WRITE,(void *) net_connected,context);
+
+}
 
  

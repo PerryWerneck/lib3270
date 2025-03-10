@@ -112,6 +112,7 @@
 	Context *context = (Context *) lpParam;
 	HWND hwnd = context->hSession->hwnd;
 	HANDLE thread = context->thread;
+	UINT uMsg = WM_RESOLV_SUCCESS;	// The default is wait for connection
 
 	trace_network(context->hSession,"Resolving %s:%s\n",context->hostname,context->service);
 
@@ -194,7 +195,7 @@
 		debug("-----------------------> %s: Got socket %llu",__FUNCTION__,sock);
 
 		// Got socket, set it to non blocking.
-		u_long iMode= 0;			
+		u_long iMode= 1;			
 		if(ioctlsocket(sock,FIONBIO,&iMode)) {
 			// Failed to set non-blocking mode.
 			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
@@ -208,11 +209,14 @@
 		if(connect(sock, ptr->ai_addr, ptr->ai_addrlen) == 0) {
 			// Connection established.
 			trace_network(context->hSession,"Connected to %s\n",host);
+
+			// It's connected, jump directly to set socket.
+			uMsg = WM_CONNECTION_SUCCESS;
 			break;
 		}
 
 		error = WSAGetLastError();
-		if(error == WSAEINPROGRESS) {
+		if(error == WSAEINPROGRESS || WSAEWOULDBLOCK) {
 			trace_network(context->hSession,"Connecting to %s\n",host);
 			break;
 		}
@@ -240,7 +244,7 @@
 		PostMessage(hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
 	} else {
 		debug("Resolver complete with socket %llu",sock);
-		PostMessage(hwnd,WM_RESOLV_SUCCESS,sock,sock);
+		PostMessage(hwnd,uMsg,sock,sock);
 	}
 
 	debug("%s: Resolver thread finished",__FUNCTION__);

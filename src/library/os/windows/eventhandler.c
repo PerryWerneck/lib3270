@@ -25,6 +25,7 @@
  #include <private/linkedlist.h>
  #include <private/win32_poll.h>
  #include <private/mainloop.h>
+ #include <private/popup.h>
  #include <private/intl.h>
  
  #include <winsock2.h>
@@ -107,6 +108,19 @@
 
 	assert(WaitForSingleObject(controller.mutex, INFINITE ) == WAIT_OBJECT_0);
 
+	debug("---> %s %p %llu %lu %p",__FUNCTION__,hSession,sock,events,userdata);
+#ifdef DEBUG 
+	if(events & FD_READ) {
+		debug("%s: FD_READ",__FUNCTION__);
+	}
+	if(events & FD_WRITE) {
+		debug("%s: FD_WRITE",__FUNCTION__);
+	}
+	if(events & FD_CONNECT) {
+		debug("%s: FD_CONNECT",__FUNCTION__);
+	}
+#endif // DEBUG
+
 	handler_t *handler;
 	
 	// Just in case.
@@ -143,13 +157,39 @@
 	handler->proc = call;
 	handler->event = WSACreateEvent();
 
-	WSAEventSelect(sock, &handler->event, events);
+	if(WSAEventSelect(sock, handler->event, events) == SOCKET_ERROR) {
 
-	if(controller.thread) {
+		static const LIB3270_POPUP popup = {
+			.name		= "network-error",
+			.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+			.title		= N_("Unexpected network error"),
+			.summary	= N_("Unable to watch socket, WSAEventSelect has failed."),
+			.body		= "",
+			.label		= N_("OK")
+		};
+
+		int err = WSAGetLastError(); 
+		debug("%s: WSAEventSelect failed with error %d (%s)",__FUNCTION__,err,popup.summary);
+
+		connection_close(hSession,err);
+		popup_wsa_error(hSession,err,&popup);
+	
+		WSACloseEvent(handler->event);
+		lib3270_linked_list_delete_node((lib3270_linked_list *) &controller,handler);
+		handler = NULL;
+
+	} else if(controller.thread) {
+
+		debug("%s: Waking up network thread %llu",__FUNCTION__,controller.thread);
 		WSASetEvent(controller.event);	// Force the thread to wake up
+
 	} else {
+
 		controller.thread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE) win32_poll_thread,NULL,0,NULL);
+		debug("%s: Thread %llu started",__FUNCTION__,controller.thread);
+
 	}
+
 	ReleaseMutex(controller.mutex);
 
 	return handler;
@@ -160,6 +200,15 @@
 
 	assert(WaitForSingleObject(controller.mutex, INFINITE ) == WAIT_OBJECT_0);
 	
+	debug(
+		"---> %s %p %llu %lu %p",
+			__FUNCTION__,
+			((handler_t *) handler)->hSession,
+			((handler_t *) handler)->sock,
+			((handler_t *) handler)->events,
+			((handler_t *) handler)->userdata
+	);
+
 	((handler_t *) handler)->sock = INVALID_SOCKET;
 	
 	if(controller.thread) {
@@ -178,9 +227,11 @@
 
 	ReleaseMutex(controller.mutex);
 
-	if(controller.thread && !win32_poll_enabled()) {
+	if(controller.thread && !win32_poll_enabled()) {		
+		WSASetEvent(controller.event);	// Force the thread to wake up
 		debug("%s: Waiting for network thread",__FUNCTION__);
 		WaitForSingleObject(controller.thread,INFINITE);
+		debug("%s: Closing network thread",__FUNCTION__);
 		CloseHandle(controller.thread);			
 		controller.thread = 0;
 	}
@@ -189,12 +240,16 @@
 
  static DWORD __stdcall win32_poll_thread(LPVOID lpParam) {
 
+	debug("------------------> Network thread %s has started",__FUNCTION__);
+
 	size_t buflen = 1;
 	HANDLE *events = lib3270_malloc((buflen+1) * sizeof(HANDLE));
 	handler_t **workers = lib3270_malloc((buflen+1) * sizeof(handler_t *));
 
 	while(win32_poll_enabled()) {
 
+		debug("Network thread %s is waiting for events",__FUNCTION__);
+		
 		ULONG cEvents = 0;
 
 		// Load FDs
@@ -234,6 +289,8 @@
 				events[cEvents] = handler->event;
 				workers[cEvents] = handler;
 
+				debug("Event %d: handler=%p sock=%llu event=%llu",cEvents,handler,handler->sock,events[cEvents]);
+
 				cEvents++;
 				handler = (handler_t *) handler->next;
 
@@ -247,9 +304,14 @@
 		workers[cEvents] = NULL;
 		cEvents++;
 
+		debug("Network thread %s is waiting for %d events",__FUNCTION__,(int) cEvents);
+
 		// Wait for events
 		// https://stackoverflow.com/questions/41743043/windows-wait-on-event-and-socket-simulatenously
 		int rc = WSAWaitForMultipleEvents(cEvents,events,FALSE,INFINITE,FALSE);
+		
+		debug("------------------> %s rc=%d",__FUNCTION__,rc);
+
 		if(rc == WSA_WAIT_FAILED) {
 
 			debug("%s -----> WSA_WAIT_FAILED",__FUNCTION__);
@@ -272,6 +334,9 @@
 	
 				WSANETWORKEVENTS networkEvents;	
 				if(WSAEnumNetworkEvents(workers[event]->sock,events[event],&networkEvents) == 0) {
+
+					debug("---------------> Event on socket %llu: %lu",workers[event]->sock,networkEvents.lNetworkEvents);
+
 					if(workers[event]->hSession && workers[event]->hSession->hwnd) {
 						workers[event]->disabled = 1;
 						PostMessage(
@@ -290,6 +355,8 @@
 
 	lib3270_free(events);
 	lib3270_free(workers);
+
+	debug("------------------> Network thread %s has stopped",__FUNCTION__);
 
 	return 0;
  }

@@ -322,7 +322,7 @@
 
 	case WM_ASYNC_POPUP:
 		{
-			LIB3270_POPUP *popup = (const LIB3270_POPUP *) lParam;
+			LIB3270_POPUP *popup = (LIB3270_POPUP *) lParam;
 			hSession->cbk.popup(hSession,popup,0);
 			lib3270_free(popup);
 		}

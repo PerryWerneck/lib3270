@@ -160,6 +160,8 @@
 
 	assert(WaitForSingleObject(controller.mutex, INFINITE ) == WAIT_OBJECT_0);
 	
+	((handler_t *) handler)->sock = INVALID_SOCKET;
+	
 	if(controller.thread) {
 
 		WSASetEvent(controller.event);	// Force the thread to wake up

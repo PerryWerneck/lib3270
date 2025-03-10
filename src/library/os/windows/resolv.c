@@ -85,6 +85,9 @@
 
  static void finalize(H3270 *hSession, Context *context) {
 
+	// TODO: Check for WSAConnectByName
+	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsaconnectbynamea
+
 	debug("%s: Finalizing resolver context %p and thread %p",__FUNCTION__,context,context->thread);
 	
 	if(context->timer) {

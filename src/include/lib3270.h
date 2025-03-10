@@ -158,9 +158,10 @@ typedef enum _LIB3270_MESSAGE {
 	LIB3270_MESSAGE_CONNECTING,			///< @brief Connecting to host
 
 	LIB3270_MESSAGE_USER
-
+ 
 } LIB3270_MESSAGE;
 
+LIB3270_EXPORT const char * lib3270_message_as_string(LIB3270_MESSAGE message);
 
 /**
  * @brief Pointer modes.

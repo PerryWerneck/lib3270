@@ -60,7 +60,7 @@ LIB3270_EXPORT const char * lib3270_get_connection_state_as_string(const H3270 *
 
 }
 
-LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *hSession) {
+LIB3270_EXPORT const char * lib3270_message_as_string(LIB3270_MESSAGE message) {
 
 	static const char * values[] = {
 		"",
@@ -80,13 +80,17 @@ LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *h
 		N_( "X Connecting" )
 	};
 
-	size_t value = (size_t) lib3270_get_program_message(hSession);
-	if(value < (sizeof(value)/sizeof(values[0]))) {
-		return dgettext(GETTEXT_PACKAGE,values[value]);
+	if( ((size_t) message) < (sizeof(values)/sizeof(values[0]))) {
+		return dgettext(GETTEXT_PACKAGE,values[message]);
 	}
 
 	return _( "Unknown" );
 
+}
+
+
+LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *hSession) {
+	return lib3270_message_as_string(lib3270_get_program_message(hSession));
 }
 
 LIB3270_EXPORT const char * lib3270_get_ssl_state_as_string(const H3270 * hSession) {

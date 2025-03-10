@@ -572,8 +572,9 @@ void message_changed(H3270 *hSession, LIB3270_MESSAGE id) {
 
 	trace_dsn(
 	    hSession,
-	    "Status changed to %d.\n",
-	    (int) id
+	    "Status changed to %d (%s).\n",
+		(int) id,
+	    lib3270_message_as_string(id)
 	);
 
 	hSession->oia.status = id;

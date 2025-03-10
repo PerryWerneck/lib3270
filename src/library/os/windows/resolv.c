@@ -195,6 +195,12 @@
 		debug("-----------------------> %s: Got socket %llu",__FUNCTION__,sock);
 
 		// Got socket, set it to non blocking.
+		// Set the socket I/O mode: In this case FIONBIO
+		// enables or disables the blocking mode for the 
+		// socket based on the numerical value of iMode.
+		// If iMode = 0, blocking is enabled; 
+		// If iMode != 0, non-blocking mode is enabled.	
+		// https://learn.microsoft.com/pt-br/windows/win32/api/winsock/nf-winsock-ioctlsocket	
 		u_long iMode= 1;			
 		if(ioctlsocket(sock,FIONBIO,&iMode)) {
 			// Failed to set non-blocking mode.
@@ -207,10 +213,12 @@
 
 		debug("%s: Connecting",__FUNCTION__);
 		if(connect(sock, ptr->ai_addr, ptr->ai_addrlen) == 0) {
+
 			// Connection established.
 			trace_network(context->hSession,"Connected to %s\n",host);
 
-			// It's connected, jump directly to set socket.
+			// The connection has been successfully established.
+			// No need to wait for the connection to be usable.
 			uMsg = WM_CONNECTION_SUCCESS;
 			break;
 		}
@@ -218,6 +226,7 @@
 		error = WSAGetLastError();
 		if(error == WSAEINPROGRESS || WSAEWOULDBLOCK) {
 			trace_network(context->hSession,"Connecting to %s\n",host);
+			uMsg = WM_RESOLV_SUCCESS;
 			break;
 		}
 

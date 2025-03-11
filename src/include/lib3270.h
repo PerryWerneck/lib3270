@@ -1,32 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
- *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como lib3270.h e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -42,60 +30,19 @@
 
 #include <stdarg.h>
 #include <errno.h>
+#include <lib3270/defs.h>
 
 #ifdef _WIN32
-#include <winsock2.h>
-#include <windows.h>
+	#include <winsock2.h>
+	#include <windows.h>
 #endif // _WIN32
 
 #ifndef ENOTCONN
-#define ENOTCONN 126
+	#define ENOTCONN 126
 #endif // !ENOTCONN
-
-#if defined (__GNUC__) || defined (__clang__)
-
-#define LIB3270_AUTOPTR_FUNC_NAME(TypeName) lib3270_autoptr_cleanup_##TypeName
-#define lib3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
-#define lib3270_auto_cleanup(TypeName) TypeName __attribute__ ((__cleanup__(LIB3270_AUTOPTR_FUNC_NAME(TypeName))))
-
-#endif // __GNUC__
-
-#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1) || defined (__clang__)
-
-#define LIB3270_DEPRECATED(func) func __attribute__ ((deprecated))
-
-#elif defined(_WIN32) && !defined(_MSC_VER)
-
-#define LIB3270_DEPRECATED(func) __declspec(deprecated) func
-
-#else
-
-#define LIB3270_DEPRECATED(func) func
-
-#endif /* __GNUC__ */
-
-#if defined(__GNUC__)
-
-#define LIB3270_GNUC_FORMAT(s,f) __attribute__ ((__format__ (__printf__, s, f)))
-#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
-
-#elif defined(_WIN32) && !defined(_MSC_VER)
-
-#define LIB3270_GNUC_NULL_TERMINATED __attribute__((__sentinel__))
-#define LIB3270_GNUC_FORMAT(s,f)
-
-#else
-
-#define LIB3270_GNUC_NULL_TERMINATED
-#define LIB3270_GNUC_FORMAT(s,f)
-
-#endif
 
 #define LIB3270_STRINGIZE(x) #x
 #define LIB3270_STRINGIZE_VALUE_OF(x) LIB3270_STRINGIZE(x)
-
-typedef struct _h3270	H3270;
-typedef struct _h3270ft	H3270FT;
 
 /**
  * @brief BIND definitions.
@@ -211,9 +158,10 @@ typedef enum _LIB3270_MESSAGE {
 	LIB3270_MESSAGE_CONNECTING,			///< @brief Connecting to host
 
 	LIB3270_MESSAGE_USER
-
+ 
 } LIB3270_MESSAGE;
 
+LIB3270_EXPORT const char * lib3270_message_as_string(LIB3270_MESSAGE message);
 
 /**
  * @brief Pointer modes.
@@ -320,32 +268,6 @@ typedef struct _lib3270_field  {
 extern "C" {
 #endif
 
-#if defined( ANDROID )
-
-#define LIB3270_INTERNAL	extern __attribute__((visibility("hidden")))
-#define LIB3270_EXPORT		extern __attribute__((visibility("hidden")))
-
-#elif defined(_WIN32) || defined(_MSC_VER)
-
-#define LIB3270_INTERNAL	extern
-#define LIB3270_EXPORT		extern __declspec (dllexport)
-
-#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
-
-#define LIB3270_INTERNAL	__hidden extern
-#define LIB3270_EXPORT		extern
-
-#elif defined(__GNUC__) || defined(HAVE_GNUC_VISIBILITY)
-
-#define LIB3270_INTERNAL	__attribute__((visibility("hidden"))) extern
-#define LIB3270_EXPORT		__attribute__((visibility("default"))) extern
-
-#else
-
-#define LIB3270_INTERNAL
-#define LIB3270_EXPORT
-
-#endif
 
 /// @brief Action/property groups.
 typedef enum _lib3270_action_group {
@@ -360,23 +282,6 @@ typedef enum _lib3270_action_group {
 	LIB3270_ACTION_GROUP_CUSTOM					///< @brief Custom group/Number of groups.
 } LIB3270_ACTION_GROUP;
 
-
-/**
- * @brief Head for property descriptors.
- *
- */
-#define LIB3270_PROPERTY_HEAD	\
-		const char * name; \
-		LIB3270_ACTION_GROUP group; \
-		const char * label; \
-		const char * icon; \
-		const char * summary; \
-		const char * description; \
-		const char * (*describe)(const H3270 *);
-
-typedef struct _lib3270_property {
-	LIB3270_PROPERTY_HEAD
-} LIB3270_PROPERTY;
 
 /**
  * @brief State change IDs.
@@ -435,24 +340,6 @@ LIB3270_EXPORT unsigned int lib3270_get_height(const H3270 *h);
 LIB3270_EXPORT unsigned int lib3270_get_max_height(const H3270 *h);
 
 LIB3270_EXPORT unsigned int lib3270_get_length(const H3270 *h);
-
-/**
- * @brief Creates an empty TN3270 session.
- *
- * @param model	Terminal model.
- *
- * @return Handle of the new session (release it with lib3270_session_free to avoid memory leaks).
- *
- */
-LIB3270_EXPORT H3270 * lib3270_session_new(const char *model);
-
-/**
- * @brief Closes a TN3270 session releasing resources.
- *
- * @param h handle of the session to close.
- *
- */
-LIB3270_EXPORT void lib3270_session_free(H3270 *h);
 
 /**
  * @brief Register a function interested in a state change.
@@ -519,17 +406,7 @@ LIB3270_EXPORT LIB3270_HOST_TYPE lib3270_get_host_type(const H3270 *hSession);
 LIB3270_EXPORT const char * lib3270_get_host_type_name(const H3270 *hSession);
 
 /**
- * @brief Get URL of the hostname for the connect/reconnect operations.
- *
- * @param h		Session handle.
- *
- * @return Pointer to host URL set (internal data, do not change it)
- *
- */
-LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h));
-
-/**
- * @brief Check if the session can reconnect.
+ * @brief Check if the session can connect.
  *
  * @param hSession			Session handle.
  *
@@ -540,23 +417,26 @@ LIB3270_EXPORT const char * LIB3270_DEPRECATED(lib3270_get_host(const H3270 *h))
  * @retval EISCONN	Session is connected.
  *
  */
-LIB3270_EXPORT int lib3270_allow_reconnect(const H3270 *hSession);
+LIB3270_EXPORT int lib3270_allow_connect(const H3270 *hSession);
 
-/**
- * @brief Reconnect to host.
- *
- * @param hSession	Session handle.
- * @param seconds	Seconds to wait for connection.
- *
- * @return 0 for success, non zero if fails (sets errno).
- *
- * @retval ENODATA	Invalid or empty hostname.
- * @retval EBUSY	Auto reconnect in progress.
- * @retval EISCONN	Session is connected.
- * @retval -1		Unexpected error.
- *
- */
-LIB3270_EXPORT int lib3270_reconnect(H3270 *hSession,int seconds);
+ /// @brief Connect to defined host.
+ ///
+ /// This function starts the process of establishing a connection to remote
+ /// host without blocking the calling thread. It sets up necessary parameters
+ /// and begins the connection attempt, allowing other operations to proceed
+ /// concurrently.
+ ///
+ /// @param hSession	Session handle.
+ /// @param seconds		Seconds to wait for connection.
+ ///
+ /// @return 0 for success, non zero if fails (sets errno).
+ ///
+ /// @retval ENODATA	The host URL is empty.
+ /// @retval EINVAL		The host URL is invalid.
+ /// @retval EBUSY		Connection already in progress.
+ /// @retval EISCONN	Session is connected.
+ /// @retval -1			Unexpected error.
+ LIB3270_EXPORT int lib3270_connect(H3270 *hSession, int seconds);
 
 /**
  * @brief Connect by URL
@@ -565,7 +445,7 @@ LIB3270_EXPORT int lib3270_reconnect(H3270 *hSession,int seconds);
  * @param url		Host URL
  * @param seconds	Seconds to wait for connection.
  *
- * @see lib3270_reconnect
+ * @see lib3270_connect
  *
  * @return 0 for success, non zero if fails (sets errno).
  */
@@ -870,69 +750,6 @@ LIB3270_EXPORT int lib3270_load(H3270 *hSession, const char *filename);
 LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr);
 
 /**
- * @brief IO flags.
- *
- */
-typedef enum _lib3270_io_event {
-	LIB3270_IO_FLAG_READ		= 0x01,
-	LIB3270_IO_FLAG_EXCEPTION	= 0x02,
-	LIB3270_IO_FLAG_WRITE		= 0x04,
-
-	LIB3270_IO_FLAG_MASK		= 0x07
-} LIB3270_IO_FLAG;
-
-LIB3270_EXPORT void		* lib3270_add_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
-LIB3270_EXPORT void		  lib3270_remove_poll(H3270 *session, void *id);
-LIB3270_EXPORT void		  lib3270_set_poll_state(H3270 *session, void *id, int enabled);
-
-LIB3270_EXPORT void		  lib3270_remove_poll_fd(H3270 *session, int fd);
-LIB3270_EXPORT void		  lib3270_update_poll_fd(H3270 *session, int fd, LIB3270_IO_FLAG flag);
-
-/**
- * @brief I/O Controller.
- *
- * GUI unblocking I/O calls, used to replace the lib3270´s internal ones.
- *
- */
-typedef struct lib3270_io_controller {
-	unsigned short sz;
-
-	void	* (*AddTimer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
-	void	  (*RemoveTimer)(H3270 *session, void *timer);
-
-	void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
-	void	  (*remove_poll)(H3270 *session, void *id);
-	void	  (*set_poll_state)(H3270 *session, void *id, int enabled);
-
-	int		  (*Wait)(H3270 *hSession, int seconds);
-	int		  (*event_dispatcher)(H3270 *session, int wait);
-	void	  (*ring_bell)(H3270 *session);
-	int		  (*run_task)(H3270 *session, int(*callback)(H3270 *, void *), void *parm);
-
-} LIB3270_IO_CONTROLLER;
-
-/**
- * Register application Handlers.
- *
- * @param cbk	Structure with the application I/O handles to set.
- *
- * @return 0 if ok, error code if not.
- *
- */
-LIB3270_EXPORT int lib3270_register_io_controller(const LIB3270_IO_CONTROLLER *cbk);
-
-/**
- * Register time handlers.
- *
- * @param add	Callback for adding a timeout
- * @param rm	Callback for removing a timeout
- *
- */
-LIB3270_EXPORT void lib3270_register_timer_handlers(void * (*add)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata), void (*rm)(H3270 *session, void *timer));
-
-LIB3270_EXPORT void lib3270_register_fd_handlers(void * (*add)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata), void (*rm)(H3270 *, void *id));
-
-/**
  * @brief Get program message.
  *
  * @see LIB3270_MESSAGE
@@ -997,17 +814,6 @@ LIB3270_EXPORT int lib3270_is_ready(const H3270 *h);
 LIB3270_EXPORT int lib3270_is_secure(const H3270 *h);
 
 LIB3270_EXPORT LIB3270_MESSAGE		lib3270_get_lock_status(const H3270 *h);
-
-/**
- * Run main iteration.
- *
- * Run lib3270 internal iterations, check for network inputs, process signals.
- *
- * @param h		Related session.
- * @param wait	Wait for signal if not available.
- *
- */
-LIB3270_EXPORT void lib3270_main_iterate(H3270 *h, int wait);
 
 /**
  * @brief Associate user data with 3270 session.
@@ -1076,16 +882,6 @@ LIB3270_EXPORT int lib3270_wait_for_cstate(H3270 *hSession, LIB3270_CSTATE cstat
 LIB3270_EXPORT int lib3270_wait_for_connected(H3270 *hSession, int seconds);
 
 /**
- * "beep" to notify user.
- *
- * If available play a sound signal do alert user.
- *
- * @param h		Session handle.
- *
- */
-LIB3270_EXPORT void lib3270_ring_bell(H3270 *session);
-
-/**
  * Get lib3270's charset.
  *
  * @param h Session handle.
@@ -1120,8 +916,6 @@ LIB3270_EXPORT char * lib3270_cut_selected(H3270 *hSession);
  *
  */
 LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession);
-
-LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_has_selection(const H3270 *hSession));
 
 /**
  * @brief Check if the terminal has stored clipboard contents.
@@ -1220,8 +1014,6 @@ LIB3270_EXPORT int lib3270_get_next_unprotected(H3270 *hSession, int baddr0);
  *
  */
 LIB3270_EXPORT int lib3270_get_is_protected(const H3270 *hSession, int baddr0);
-
-LIB3270_EXPORT int LIB3270_DEPRECATED(lib3270_is_protected(H3270 *h, unsigned int baddr));
 
 /**
  * @brief Check if the screen is formatted.
@@ -1352,9 +1144,6 @@ LIB3270_EXPORT int lib3270_get_field_len(H3270 *hSession, int baddr);
 
 LIB3270_EXPORT int lib3270_get_word_bounds(H3270 *hSession, int baddr, int *start, int *end);
 
-LIB3270_EXPORT int 			  LIB3270_DEPRECATED(lib3270_set_model(H3270 *hSession, const char *model_name));
-LIB3270_EXPORT const char	* LIB3270_DEPRECATED(lib3270_get_model(const H3270 *session));
-
 LIB3270_EXPORT const char	* lib3270_get_model_name(const H3270 *session);
 LIB3270_EXPORT int			  lib3270_set_model_name(H3270 *hSession, const char *model_name);
 
@@ -1406,18 +1195,6 @@ LIB3270_EXPORT unsigned int lib3270_get_unlock_delay(const H3270 *session);
  */
 LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr);
 
-/**
- * @brief Get a block of memory, fill it with zeros.
- *
- * @param len	Length of memory block to get.
- *
- * @return Pointer to new memory block.
- *
- */
-LIB3270_EXPORT void * lib3270_malloc(int len);
-
-LIB3270_EXPORT void * lib3270_realloc(void *p, int len);
-LIB3270_EXPORT void * lib3270_strdup(const char *str);
 
 /**
  * @brief Removes trailing white space from a string.
@@ -1455,25 +1232,6 @@ LIB3270_EXPORT char * lib3270_chomp(char *str);
 LIB3270_EXPORT char * lib3270_chug(char *str);
 
 LIB3270_EXPORT char * lib3270_strip(char *str);
-
-/**
- * @brief Release allocated memory.
- *
- * @param p	Memory block to release (can be NULL)
- *
- * @return NULL
- */
-LIB3270_EXPORT void  * lib3270_free(void *p);
-
-LIB3270_EXPORT void   lib3270_autoptr_cleanup_char(char **ptr);
-
-/**
- * Get default session handle.
- *
- * @return Internal's lib3270 session handle.
- *
- */
-LIB3270_EXPORT H3270 * LIB3270_DEPRECATED(lib3270_get_default_session_handle(void));
 
 /**
  * Get library version.
@@ -1539,11 +1297,12 @@ LIB3270_EXPORT LIB3270_POINTER lib3270_get_pointer(H3270 *hSession, int baddr);
  * the function returns.
  *
  * @param hSession	TN3270 session.
+ * @param name		Task name.
  * @param callback	Function to call.
  * @param parm		Parameter to callback function.
  *
  */
-LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, int(*callback)(H3270 *h, void *), void *parm);
+LIB3270_EXPORT int lib3270_run_task(H3270 *hSession, const char *name, int(*callback)(H3270 *h, void *), void *parm);
 
 /**
  * @brief The host is TSO?
@@ -1662,6 +1421,12 @@ LIB3270_EXPORT void lib3270_action_group_notify(H3270 *hSession, LIB3270_ACTION_
  *
  */
 LIB3270_EXPORT const char * lib3270_get_translation_domain();
+
+/// @brief Run main loop.
+/// @param hSession The session handle.
+/// @param block Non zero to block (linux only).
+/// @return 1 if a message was processed, 0 if the queue is empty, negative on error.
+LIB3270_EXPORT int lib3270_mainloop_run(H3270 *hSession, int block);
 
 #ifdef __cplusplus
 }

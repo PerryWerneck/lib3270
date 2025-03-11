@@ -14,10 +14,10 @@ jobs:
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          brew install xz meson ninja curl gettext openssl pkgconfig
           brew upgrade
       - name: build
-        run: ./mac/ci-build.sh
-          
+        run: |
+          meson setup --reconfigure --wipe .build          
+          meson compile -C .build
 

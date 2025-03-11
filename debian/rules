@@ -23,9 +23,7 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	NOCONFIGURE=1 ./autogen.sh 
-	./configure --prefix=/usr --disable-static
-	make all
+	meson setup --prefix=/usr .build
 	# --- end custom part for compiling
 
 	touch build-stamp
@@ -48,13 +46,13 @@ install: build
 	dh_installdirs
 
 	# Build package
-	make all
+	meson compile -C .build
 
 	# Install library
-	make DESTDIR=$(PWD)/debian/$(PACKAGE_NAME) install-linux-lib
+	DESTDIR=$(PWD)/debian/$(PACKAGE_NAME) meson install -C .build --tags runtime,i18n
 
 	# Install dev
-	make DESTDIR=$(PWD)/debian/$(PACKAGE_NAME)-dev install-dev
+	DESTDIR=$(PWD)/debian/$(PACKAGE_NAME)-dev meson install -C .build --tags devel
   
 	# --- end custom part for installing
 

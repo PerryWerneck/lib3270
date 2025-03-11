@@ -12,3 +12,10 @@
    fun:FIPS_mode_set
 }
 
+{
+   getaddrinfo_a
+   Memcheck:Leak
+   ...
+   fun:getaddrinfo_a
+}
+

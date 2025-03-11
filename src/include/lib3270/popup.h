@@ -1,33 +1,24 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software PW3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como api.h e possui 444 linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+#include <lib3270/defs.h>
+#include <stdarg.h>
 
 #ifndef LIB3270_POPUP_INCLUDED
 
@@ -42,15 +33,31 @@ extern "C" {
  *
  */
 typedef enum _LIB3270_NOTIFY {
-	LIB3270_NOTIFY_INFO,		///< @brief Simple information dialog.
-	LIB3270_NOTIFY_WARNING,		///< @brief Warning message.
-	LIB3270_NOTIFY_ERROR,		///< @brief Error message.
-	LIB3270_NOTIFY_CRITICAL,	///< @brief Critical error, user can abort application.
-	LIB3270_NOTIFY_SECURE,		///< @brief Secure host dialog.
 
-	LIB3270_NOTIFY_USER			///< @brief Reserved, always the last one.
+	// Standard dialog types
+	LIB3270_NOTIFY_INFO				= 0x0001,	///< @brief Simple information dialog (dialog-information).
+	LIB3270_NOTIFY_WARNING			= 0x0002,	///< @brief Warning message (dialog-warning).
+	LIB3270_NOTIFY_ERROR			= 0x0003,	///< @brief Error message (dialog-error).
+	LIB3270_NOTIFY_NETWORK			= 0x0010,	///< @brief Network related messages
+	LIB3270_NOTIFY_CONNECTION		= 0x0020,	///< @brief Connection related messages (network-server).
+	LIB3270_NOTIFY_NETWORK_ERROR	= 0x0013,	///< @brief Network related messages (network-error)
+
+	// Security message types
+	LIB3270_NOTIFY_SECURITY_HIGH	= 0x0100,	///< @brief High security level (security-high).
+	LIB3270_NOTIFY_SECURITY_MEDIUM	= 0x0200,	///< @brief Medium security level (security-medium).
+	LIB3270_NOTIFY_SECURITY_LOW		= 0x0300,	///< @brief Low security level (security-low).
+
+	// Dialog buttons.
+	LIB3270_NOTIFY_ALLOW_RETRY		= 0x1000,	///< @brief Connection related messages (allow 'Retry' button).
+	LIB3270_NOTIFY_ALLOW_RECONNECT	= 0x2000,	///< @brief Connection related messages (allow 'Reconnect' button).
+	LIB3270_NOTIFY_ALLOW_IGNORE		= 0x4000,	///< @brief Connection related messages (allow 'Ignore' button).
+	LIB3270_NOTIFY_CRITICAL			= 0x8000,	///< @brief Critical error, user can abort application.
+
+	// Network related messages.
+	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x1023,	///< @brief Connection error (icon 'network-server', button 'retry').
+	LIB3270_NOTIFY_NETWORK_IO_ERROR	= 0x2013,	///< @brief Network I/O error (icon 'network-error', button 'reconnect').
+
 } LIB3270_NOTIFY;
-
 
 /**
  * @brief Head for popup descriptors.
@@ -92,12 +99,22 @@ LIB3270_EXPORT LIB3270_NOTIFY	lib3270_get_ssl_state_icon(const H3270 *hSession);
 LIB3270_EXPORT const char *		lib3270_get_ssl_state_icon_name(const H3270 *hSession);
 
 /**
+ * @brief Clone popup object.
+ *
+ * @param origin	Original popup definition.
+ *
+ * @return New popup object (release it with lib3270_free).
+ *
+ */
+LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone(const LIB3270_POPUP *origin);
+
+/**
  * @brief Clone popup object replacing the body contents.
  *
  * @param origin	Original popup definition.
  * @param fmt		Printf formatting string.
  *
- * @return New popup object with the body replaced (release it with g_free).
+ * @return New popup object with the body replaced (release it with free).
  *
  */
 LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *origin, const char *fmt, ...);
@@ -116,6 +133,8 @@ LIB3270_EXPORT LIB3270_POPUP * lib3270_popup_clone_printf(const LIB3270_POPUP *o
  * @retval ENOTSUP		Can't decide, use default behavior.
  */
 LIB3270_EXPORT int lib3270_popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait);
+
+LIB3270_EXPORT void lib3270_popup_async(H3270 *hSession, const LIB3270_POPUP *popup);
 
 /**
  * @brief Auto cleanup method (for use with lib3270_autoptr).

@@ -1,30 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como session.h e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef LIB3270_SESSION_H_INCLUDED
@@ -43,8 +33,42 @@
 #include <lib3270/toggle.h>
 #include <lib3270/ssl.h>
 
+typedef struct _lib3270_log_context {
+	const char *filename;
+	int (*write)(const H3270 *session, struct _lib3270_log_context *context, const char *domain, const char *fmt, va_list args);
+	void (*finalize)(const H3270 *session, struct _lib3270_log_context *context);
+} LIB3270_LOG_CONTEXT;
+
+typedef struct _lib3270_trace_context {
+	const char *filename;
+	int (*write)(const H3270 *session, struct _lib3270_trace_context *context, const char *fmt, va_list args);
+	void (*finalize)(const H3270 *session, struct _lib3270_trace_context *context);
+} LIB3270_TRACE_CONTEXT;
+
+/**
+ * @brief Creates an empty TN3270 session.
+ *
+ * @param model	Terminal model.
+ *
+ * @return Handle of the new session (release it with lib3270_session_free to avoid memory leaks).
+ *
+ */
+LIB3270_EXPORT H3270 * lib3270_session_new(const char *model, int gui);
+
+LIB3270_EXPORT void lib3270_autoptr_cleanup_H3270(H3270 **ptr);
+
+/**
+ * @brief Closes a TN3270 session releasing resources.
+ *
+ * @param h handle of the session to close.
+ *
+ */
+LIB3270_EXPORT void lib3270_session_free(H3270 *h);
+
 struct lib3270_session_callbacks {
-	void (*configure)(H3270 *session, unsigned short rows, unsigned short cols);
+
+	/// @brief The screen size has changed.
+	void (*update_viewsize)(H3270 *session, unsigned short rows, unsigned short cols);
 	void (*update)(H3270 *session, int baddr, unsigned char c, unsigned short attr, unsigned char cursor);
 	void (*changed)(H3270 *session, int offset, int len);
 	void (*display)(H3270 *session);
@@ -70,6 +94,9 @@ struct lib3270_session_callbacks {
 	void (*ctlr_done)(H3270 *session);
 	void (*autostart)(H3270 *session);
 
+	// Returns 0 to indicate that reconnection is allowed and no error code is present.
+	int (*reconnect_allowed)(H3270 *session);
+
 	int  (*print)(H3270 *session, LIB3270_CONTENT_OPTION mode);
 	int  (*save)(H3270 *session, LIB3270_CONTENT_OPTION mode, const char *filename);
 	int  (*load)(H3270 *hSession, const char *filename);
@@ -78,21 +105,11 @@ struct lib3270_session_callbacks {
 
 	int	 (*action)(H3270 *hSession, const char *name);
 
-	int  (*reconnect)(H3270 *hSession,int seconds);
-
 	void (*word_selected)(H3270 *hSession, int start, int end);
 
-};
+	void (*ring_bell)(H3270 *hSession, int id);
 
-/**
- * Register application Handlers.
- *
- * @param cbk	Structure with the application I/O handles to set.
- *
- * @return 0 if ok, error code if not.
- *
- */
-LIB3270_EXPORT int lib3270_set_session_io_handler(const LIB3270_IO_CONTROLLER *cbk);
+};
 
 LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);
 LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);

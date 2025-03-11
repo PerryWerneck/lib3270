@@ -1,0 +1,42 @@
+# Maintainer: Perry Werneck <perry.werneck@gmail.com>
+
+pkgname=lib3270
+
+pkgver=5.5.0
+pkgrel=0
+pkgdesc="TN3270 Access library"
+url="https://github.com/PerryWerneck/lib3270"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(openssl)
+makedepends=(meson openssl libtool gzip)
+checkdepends=()
+
+#groups=(gnome)
+
+source=($pkgname-$pkgver.tar.xz)
+sha256sums=('SKIP')
+
+provides=($pkgname) 
+conflicts=($pkgname)
+
+prepare() {
+  cd $pkgname-$pkgver
+  meson \
+    setup \
+      --reconfigure \
+      --wipe \
+      ".build"
+}
+
+build() {
+  cd $pkgname-$pkgver
+  meson compile -C ".build"
+}
+
+package() {
+  cd $pkgname-$pkgver
+  DESTDIR="${pkgdir}" meson install -C ".build"
+}
+
+

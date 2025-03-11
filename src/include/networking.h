@@ -1,31 +1,25 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software G3270, desenvolvido com base nos códigos fontes do WC3270  e  X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  ',  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como networking.h e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+#error deprecated
+
+#include <private/network.h>
 
 #ifndef LIB3270_NETWORKING_H_INCLUDED
 
@@ -42,9 +36,9 @@ typedef int socklen_t;
 #endif // _WIN32
 
 #include <lib3270/popup.h>
+#include <private/mainloop.h>
 
 typedef struct _lib3270_network_popup LIB3270_NETWORK_POPUP;
-typedef struct _lib3270_net_context LIB3270_NET_CONTEXT;
 
 typedef struct lib3270_ssl_message {
 	LIB3270_POPUP_HEAD			///< @brief Standard popup fields.
@@ -182,18 +176,6 @@ typedef struct lib3270_net_module {
 } LIB3270_NET_MODULE;
 
 /**
- * @brief Activate the default (and insecure) network module.
- *
- */
-LIB3270_INTERNAL void lib3270_set_default_network_module(H3270 *hSession);
-
-/**
- * @brief Set network error message.
- *
- */
-LIB3270_INTERNAL void lib3270_set_network_error(H3270 *hSession,const char *summary, const char *fmt, ...);
-
-/**
  * @brief Connect to host, returns a connected socket.
  *
  * @param hSession	Disconnected TN3270 session.
@@ -215,7 +197,7 @@ LIB3270_INTERNAL int	  lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_
  * @retval -EAGAIN		Try again.
  *
  */
-LIB3270_INTERNAL int lib3270_socket_recv_failed(H3270 *hSession);
+// LIB3270_INTERNAL int lib3270_socket_recv_failed(H3270 *hSession);
 
 /**
  * @brief Translate system socket send error codes, show popup if needed.
@@ -225,9 +207,9 @@ LIB3270_INTERNAL int lib3270_socket_recv_failed(H3270 *hSession);
  * @return Translated error code.
  *
  */
-LIB3270_INTERNAL int lib3270_socket_send_failed(H3270 *hSession);
+// LIB3270_INTERNAL int lib3270_socket_send_failed(H3270 *hSession);
 
-LIB3270_INTERNAL int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on);
+// LIB3270_INTERNAL int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on);
 
 /**
  * @breif Select the network context from URL.
@@ -235,7 +217,7 @@ LIB3270_INTERNAL int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, 
  * @return Pointer to the hostname or NULL if failed (sets errno).
  *
  */
-LIB3270_INTERNAL char * lib3270_set_network_module_from_url(H3270 *hSession, char *url);
+// LIB3270_INTERNAL char * lib3270_set_network_module_from_url(H3270 *hSession, char *url);
 
 
 /**
@@ -244,13 +226,13 @@ LIB3270_INTERNAL char * lib3270_set_network_module_from_url(H3270 *hSession, cha
  * @param hSession	TN3270 Session handle.
  *
  */
-LIB3270_INTERNAL void	  lib3270_set_default_network_module(H3270 *hSession);
+// LIB3270_INTERNAL void	  lib3270_set_default_network_module(H3270 *hSession);
 
 #ifdef HAVE_LIBSSL
 LIB3270_INTERNAL void	  lib3270_set_libssl_network_module(H3270 *hSession);
 #endif // HAVE_LIBSSL
 
-LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock);
+// LIB3270_INTERNAL int	  lib3270_activate_ssl_network_module(H3270 *hSession, int sock);
 
 
 #endif // LIB3270_NETWORKING_H_INCLUDED

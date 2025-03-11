@@ -22,7 +22,7 @@ jobs:
         with:
           msystem: mingw64
           update: true
-          install: dos2unix mingw-w64-x86_64-gcc mingw-w64-x86_64-meson mingw-w64-x86_64-iconv pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl mingw-w64-x86_64-liburiparser1 mingw-w64-x86_64-libgobject
+          install: dos2unix mingw-w64-x86_64-gcc mingw-w64-x86_64-meson mingw-w64-x86_64-iconv pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl mingw-w64-x86_64-uriparser mingw-w64-x86_64-glib2
       - name: CI-Build
         run: |
           dos2unix PKGBUILD.mingw

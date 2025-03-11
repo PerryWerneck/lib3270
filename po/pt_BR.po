@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-10 21:05-0300\n"
+"POT-Creation-Date: 2025-03-11 19:50-0300\n"
 "PO-Revision-Date: 2025-03-10 21:08-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -61,473 +61,6 @@ msgstr "%s: Caractere desconhecido depois de \\pa"
 #, c-format
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
-
-#: src/library/session.c:167
-msgid "Can't print"
-msgstr "Não é possível imprimir"
-
-#: src/library/session.c:167
-msgid "Unable to print"
-msgstr "Incapaz de imprimir"
-
-#: src/library/session.c:173
-msgid "Can't save"
-msgstr "Não é possível salvar"
-
-#: src/library/session.c:173
-msgid "Unable to save"
-msgstr "Incapaz de salvar"
-
-#: src/library/session.c:179
-msgid "Can't load"
-msgstr "Não foi possível carregar"
-
-#: src/library/session.c:179
-msgid "Unable to load from file"
-msgstr "Não foi possível ler do arquivo"
-
-#: src/library/paste.c:373
-msgid "Action failed"
-msgstr "Ação falhou"
-
-#: src/library/paste.c:374
-msgid "Unable to paste text"
-msgstr "Incapaz de colar texto"
-
-#: src/library/paste.c:375
-msgid "Keyboard is locked"
-msgstr "Teclado está bloqueado"
-
-#: src/library/paste.c:375
-msgid "Unexpected error"
-msgstr "Erro inesperado"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:53
-msgid "Monocase"
-msgstr "Só Maiúsculas"
-
-#: src/library/toggles/table.c:54
-msgid "Uppercase only"
-msgstr "Apenas maiúsculas"
-
-#: src/library/toggles/table.c:55
-msgid "If set, the terminal operates in uppercase-only mode"
-msgstr "Se ativo o terminal opera apenas com caracteres maiúsculos"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:64 src/library/toggles/table.c:65
-msgid "Blinking Cursor"
-msgstr "Cursor piscante"
-
-#: src/library/toggles/table.c:66
-msgid "If set, the cursor blinks"
-msgstr "Se ativo o cursor pisca"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:74 src/library/toggles/table.c:75
-msgid "Show timer when processing"
-msgstr "Show timer when processing"
-
-#: src/library/toggles/table.c:76
-msgid ""
-"If set, the time taken by the host to process an AID is displayed on the "
-"status line"
-msgstr ""
-"If set, the time taken by the host to process an AID is displayed on the "
-"status line"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:84
-msgid "Track Cursor"
-msgstr "Mostrar posição do cursor"
-
-#: src/library/toggles/table.c:85
-msgid "Track Cursor location"
-msgstr "Mostrar posição do cursor"
-
-#: src/library/toggles/table.c:86
-msgid "Display the cursor location in the OIA (the status line)"
-msgstr "Mostra posição do cursor na lista de informações ao operador"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:95 src/library/toggles/table.c:96
-msgid "Trace Data Stream"
-msgstr "Trace Data Stream"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:105 src/library/toggles/table.c:106
-msgid "Wrap around"
-msgstr "Wrap around"
-
-#: src/library/toggles/table.c:107
-msgid ""
-"If set, the NVT terminal emulator automatically assumes a NEWLINE character "
-"when it reaches the end of a line."
-msgstr ""
-"Se ativo o emulador de terminal assume automaticamente uma quebra de linha "
-"quando chega ao final de uma linha."
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:115 src/library/toggles/table.c:116
-msgid "Blank Fill"
-msgstr "Completar com espaços"
-
-#: src/library/toggles/table.c:117
-msgid ""
-"Automatically convert trailing blanks in a field to NULLs in order to insert "
-"a character, and will automatically convert leading NULLs to blanks so that "
-"input data is not squeezed to the left"
-msgstr ""
-"Automatically convert trailing blanks in a field to NULLs in order to insert "
-"a character, and will automatically convert leading NULLs to blanks so that "
-"input data is not squeezed to the left"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:126
-msgid "Trace Screen"
-msgstr "Trace de tela"
-
-#: src/library/toggles/table.c:127
-msgid "Trace screen contents"
-msgstr "Trace do conteúdo da tela"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:137
-msgid "Trace Events"
-msgstr "Trace de Eventos"
-
-#: src/library/toggles/table.c:138
-msgid "Trace interface and application events"
-msgstr "Registra eventos da interface gráfica e aplicação"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:147
-msgid "Margined paste"
-msgstr "Colar com margem"
-
-#: src/library/toggles/table.c:148
-msgid "Paste with left margin"
-msgstr "Colar com margem esquerda"
-
-#: src/library/toggles/table.c:149
-msgid ""
-"If set, puts restrictions on how pasted text is placed on the screen. The "
-"position of the cursor at the time the paste operation is begun is used as a "
-"left margin. No pasted text will fill any area of the screen to the left of "
-"that position. This option is useful for pasting into certain IBM editors "
-"that use the left side of the screen for control information"
-msgstr ""
-"If set, puts restrictions on how pasted text is placed on the screen. The "
-"position of the cursor at the time the paste operation is begun is used as a "
-"left margin. No pasted text will fill any area of the screen to the left of "
-"that position. This option is useful for pasting into certain IBM editors "
-"that use the left side of the screen for control information"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:157 src/library/toggles/table.c:158
-msgid "Select by rectangles"
-msgstr "Seleção retangular"
-
-#: src/library/toggles/table.c:159
-msgid ""
-"If set, the terminal will always select rectangular areas of the screen. "
-"Otherwise, it selects continuous regions of the screen"
-msgstr ""
-"Se ativo o terminal sempre selecionará áreas retangulares, se inativo "
-"selecionará áreas contínuas da tela"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:167 src/library/toggles/table.c:168
-msgid "Cross hair cursor"
-msgstr "Cursor mira"
-
-#: src/library/toggles/table.c:169
-msgid ""
-"If set, the terminal will display a crosshair over the cursor: lines "
-"extending the full width and height of the screen, centered over the cursor "
-"position. This makes locating the cursor on the screen much easier"
-msgstr ""
-"If set, the terminal will display a crosshair over the cursor: lines "
-"extending the full width and height of the screen, centered over the cursor "
-"position. This makes locating the cursor on the screen much easier"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:177 src/library/toggles/table.c:178
-msgid "Full Screen"
-msgstr "Tela cheia"
-
-#: src/library/toggles/table.c:179
-msgid "If set, asks to place the toplevel window in the fullscreen state"
-msgstr "Se ativo pede para colocar a janela principal em modo de tela cheia"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:187
-msgid "Insert"
-msgstr "Inserção"
-
-#: src/library/toggles/table.c:188
-msgid "Set insert mode"
-msgstr "Set insert mode"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:197 src/library/toggles/table.c:198
-msgid "Smart paste"
-msgstr "Colar inteligente"
-
-#: src/library/toggles/table.c:199
-msgid ""
-"If set the characters pasted over protected areas will be skipped to avoid "
-"locks"
-msgstr ""
-"Se ativo caracters colados sobre áreas protegidas serão ignorados para "
-"evitar o bloqueio do terminal"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:207 src/library/toggles/table.c:208
-msgid "Bold"
-msgstr "Negrito"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:217 src/library/toggles/table.c:218
-msgid "Keep selected"
-msgstr "Manter selecionado"
-
-#: src/library/toggles/table.c:219
-msgid "If set the selection will not be removed on screen changes"
-msgstr "Se ativo a seleção não será removida quando a tela mudar"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:227
-msgid "Underline"
-msgstr "Sublinhados"
-
-#: src/library/toggles/table.c:228
-msgid "Show Underline"
-msgstr "Mostrar sublinhado"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:237
-msgid "Connect on startup"
-msgstr "Conectar ao iniciar"
-
-#: src/library/toggles/table.c:238
-msgid "Automatically connect to host on startup"
-msgstr "Conecta automaticamente na inicialização"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:247 src/library/toggles/table.c:248
-msgid "Use +/- for field navigation"
-msgstr "Usar teclas +/- para navegar por campos"
-
-#: src/library/toggles/table.c:249
-msgid "Use the keys +/- from keypad to select editable fields"
-msgstr "Use the keys +/- from keypad to select editable fields"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:257
-msgid "Sound"
-msgstr "Som"
-
-#: src/library/toggles/table.c:258
-msgid "Alert sound"
-msgstr "Aviso sonoro"
-
-#: src/library/toggles/table.c:259
-msgid "Beep on errors"
-msgstr "Emitir som nos erros"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:267
-msgid "Show Field"
-msgstr "Mostra campos"
-
-#: src/library/toggles/table.c:268
-msgid "Show Field attributes"
-msgstr "Mostra atributos de campo"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:277
-msgid "Auto Resize"
-msgstr "Redimensionamento automático"
-
-#: src/library/toggles/table.c:278
-msgid "Resize on alternate screen"
-msgstr "Mudar tamanho do terminal em tela alternativa"
-
-#: src/library/toggles/table.c:279
-msgid "Change screen size on alternative screen"
-msgstr "Mudar tamanho do terminal em tela alternativa"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:287
-msgid "Network keep alive"
-msgstr "Manter rede ativa"
-
-#: src/library/toggles/table.c:288
-msgid "Enable use of network keep alive"
-msgstr "Habilita opção \"keep-alive\""
-
-#: src/library/toggles/table.c:289
-msgid "Enable network keep-alive with SO_KEEPALIVE"
-msgstr "Enable network keep-alive with SO_KEEPALIVE"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:298
-msgid "Trace Network"
-msgstr "Trace de rede"
-
-#: src/library/toggles/table.c:299
-msgid "Trace network data flow"
-msgstr "Trace network data flow"
-
-#: src/library/toggles/table.c:300
-msgid "Enable network in/out trace"
-msgstr "Habilitar trace de entrada/saída de rede"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:309
-msgid "Trace Security"
-msgstr "Trace de segurança"
-
-#: src/library/toggles/table.c:310
-msgid "Trace SSL negotiation"
-msgstr "Trace da negociação SSL"
-
-#: src/library/toggles/table.c:311
-msgid "Enable security negotiation trace"
-msgstr "Habilita trace da negociação de segurança"
-
-#. Default keycode
-#. Icon name
-#: src/library/toggles/table.c:320 src/library/toggles/table.c:321
-msgid "Auto-Reconnect"
-msgstr "Reconectar automaticamente"
-
-#: src/library/toggles/table.c:322
-msgid "Automatically reconnect to the host if it ever disconnects"
-msgstr "Reconecta automaticamente caso o servidor desconecte"
-
-#: src/library/rpq.c:223
-msgid "RPQ Error"
-msgstr "Erro RPQ"
-
-#: src/library/rpq.c:224
-msgid "Unsupported RPQ term"
-msgstr "Unsupported RPQ term"
-
-#: src/library/rpq.c:225
-#, c-format
-msgid "RPQ term %d is unknown"
-msgstr "Termo RPM %d não foi reconhecido"
-
-#: src/library/rpq.c:230
-#, c-format
-msgid "RPQ %s term omitted due to insufficient space"
-msgstr "Termo RPQ %s omitido por falta de espaço"
-
-#: src/library/rpq.c:339
-#, c-format
-msgid "RPQ %s term override ignored"
-msgstr "RPQ %s term override ignored"
-
-#: src/library/rpq.c:351
-#, c-format
-msgid "RPQ term \"%s\" is unrecognized"
-msgstr "Termo RPQ desconhecido: \"%s\""
-
-#: src/library/rpq.c:404 src/library/rpq.c:413
-msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
-msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
-
-#: src/library/rpq.c:425
-msgid "RPQ: Unable to determine workstation local time"
-msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
-
-#: src/library/rpq.c:435 src/library/rpq.c:445
-msgid "RPQ: Unable to determine workstation UTC time"
-msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
-
-#: src/library/rpq.c:466
-msgid "RPQ timezone exceeds 12 hour UTC offset"
-msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
-
-#: src/library/rpq.c:521
-msgid "RPQ USER term has non-hex character"
-msgstr "Termo RPQ USER tem caractere não hexadecimal"
-
-#: src/library/rpq.c:527
-#, c-format
-msgid "RPQ USER term truncated after %d bytes"
-msgstr "Termo RPQ USER truncado depois de %d bytes"
-
-#: src/library/rpq.c:546
-msgid "RPQ USER term has odd number of hex digits"
-msgstr "RPQ USER term has odd number of hex digits"
-
-#: src/library/rpq.c:571
-#, c-format
-msgid "RPQ USER term truncated after %d characters"
-msgstr "Termo RPQ USER truncado depois de %d caracteres"
-
-#: src/library/rpq.c:643 src/library/rpq.c:722
-#, c-format
-msgid "RPQ ADDRESS term has unrecognized family %u"
-msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
-
-#: src/library/rpq.c:651 src/library/rpq.c:680 src/library/rpq.c:729
-msgid "RPQ ADDRESS term incomplete due to space limit"
-msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
-
-#: src/library/rpq.c:656
-#, c-format
-msgid "RPQ: can't resolve '%s': %s"
-msgstr "RPQ: Não foi possível resolver '%s': %s"
-
-#: src/library/rpq.c:669
-msgid "RPQ: gethostbyname error"
-msgstr "RPQ: Erro em gethostbyname"
-
-#: src/library/rpq.c:698
-#, fuzzy
-msgid "RPQ ADDRESS term incomplete: connection context not found"
-msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
-
-#: src/library/rpq.c:704
-#, fuzzy
-msgid "RPQ ADDRESS term incomplete: getsockname failed"
-msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
-
-#: src/library/util.c:268
-#, c-format
-msgid "The system error was '%s' (rc=%d)"
-msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
 #: src/library/network/openssl/context.c:240
 msgid "Can't initialize the TLS/SSL context."
@@ -1027,16 +560,16 @@ msgstr "erro fcntl() ao obter estado do socket."
 #: src/library/network/tools.c:212 src/library/network/tools.c:237
 #: src/library/os/linux/connect.c:77 src/library/os/linux/connect.c:120
 #: src/library/os/linux/connect.c:142 src/library/os/linux/connect.c:174
-#: src/library/os/linux/connect.c:207 src/library/os/linux/resolv.c:142
+#: src/library/os/linux/connect.c:207 src/library/os/linux/insecure.c:118
+#: src/library/os/linux/insecure.c:173 src/library/os/linux/resolv.c:142
 #: src/library/os/linux/resolv.c:158 src/library/os/linux/resolv.c:193
 #: src/library/os/linux/resolv.c:281 src/library/os/linux/resolv.c:294
-#: src/library/os/linux/resolv.c:368 src/library/os/linux/insecure.c:118
-#: src/library/os/linux/insecure.c:173 src/library/os/windows/connect.c:74
+#: src/library/os/linux/resolv.c:368 src/library/os/windows/connect.c:74
+#: src/library/os/windows/eventhandler.c:136
+#: src/library/os/windows/eventhandler.c:168
 #: src/library/os/windows/insecure.c:191 src/library/os/windows/mainloop.c:381
 #: src/library/os/windows/mainloop.c:406 src/library/os/windows/mainloop.c:426
-#: src/library/os/windows/mainloop.c:444
-#: src/library/os/windows/eventhandler.c:136
-#: src/library/os/windows/eventhandler.c:168 src/library/connect.c:178
+#: src/library/os/windows/mainloop.c:444 src/library/connect.c:178
 #: src/library/connect.c:265
 msgid "OK"
 msgstr "OK"
@@ -1045,47 +578,6 @@ msgstr "OK"
 #, fuzzy
 msgid "fcntl() error when setting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
-
-#. Can't get contents
-#: src/library/os/linux/download.c:57 src/library/os/darwin/download.c:55
-#: src/library/os/windows/download.c:64
-msgid "No handler for URL scheme."
-msgstr "Nenhum manipulador para o esquema de URL."
-
-#: src/library/os/linux/event_dispatcher.c:132
-#: src/library/os/linux/mainloop.c:254
-#: src/library/os/darwin/event_dispatcher.c:132
-#: src/library/os/windows/event_dispatcher.c:138 src/library/telnet.c:302
-msgid "Network error"
-msgstr "Erro de rede"
-
-#: src/library/os/linux/event_dispatcher.c:133
-#: src/library/os/linux/mainloop.c:255
-#: src/library/os/darwin/event_dispatcher.c:133
-#: src/library/os/windows/event_dispatcher.c:139
-msgid "Select() failed when processing for events."
-msgstr "Select() falhou ao processar eventos."
-
-#: src/library/os/linux/ldap.c:84 src/library/os/linux/ldap.c:93
-#: src/library/os/darwin/ldap.c:82 src/library/os/darwin/ldap.c:91
-#: src/library/os/windows/ldap.c:101 src/library/os/windows/ldap.c:110
-msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
-msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
-
-#: src/library/os/linux/ldap.c:149 src/library/os/darwin/ldap.c:147
-#, fuzzy
-msgid "LDAP search did not produce any attributes."
-msgstr "Pesquisa LDAP não produziu atributos."
-
-#: src/library/os/linux/ldap.c:159 src/library/os/darwin/ldap.c:157
-#, fuzzy
-msgid "LDAP search did not produce any values."
-msgstr "Pesquisa LDAP não produziu valores."
-
-#: src/library/os/linux/ldap.c:169 src/library/os/darwin/ldap.c:167
-#: src/library/os/windows/ldap.c:204
-msgid "Can't decode certificate revocation list"
-msgstr "Não foi possível decodificar a lista de certificados revogados"
 
 #: src/library/os/linux/connect.c:75 src/library/os/linux/connect.c:205
 #, fuzzy
@@ -1128,6 +620,71 @@ msgstr "setsockopt(%s)"
 msgid "Can't initialize curl operation"
 msgstr "Erro ao inicializar operação CURL"
 
+#. Can't get contents
+#: src/library/os/linux/download.c:57 src/library/os/windows/download.c:64
+#: src/library/os/darwin/download.c:55
+msgid "No handler for URL scheme."
+msgstr "Nenhum manipulador para o esquema de URL."
+
+#: src/library/os/linux/event_dispatcher.c:132
+#: src/library/os/linux/mainloop.c:254
+#: src/library/os/windows/event_dispatcher.c:138
+#: src/library/os/darwin/event_dispatcher.c:132 src/library/telnet.c:302
+msgid "Network error"
+msgstr "Erro de rede"
+
+#: src/library/os/linux/event_dispatcher.c:133
+#: src/library/os/linux/mainloop.c:255
+#: src/library/os/windows/event_dispatcher.c:139
+#: src/library/os/darwin/event_dispatcher.c:133
+msgid "Select() failed when processing for events."
+msgstr "Select() falhou ao processar eventos."
+
+#: src/library/os/linux/insecure.c:115 src/library/os/linux/insecure.c:170
+#: src/library/os/windows/mainloop.c:423 src/library/os/windows/mainloop.c:441
+#, fuzzy
+msgid "Network I/O error"
+msgstr "Erro de rede"
+
+#: src/library/os/linux/insecure.c:116 src/library/os/windows/mainloop.c:424
+#, fuzzy
+msgid "Failed to receive data from the host"
+msgstr "Erro recebendo dados do servidor"
+
+#: src/library/os/linux/insecure.c:171 src/library/os/windows/mainloop.c:442
+#, fuzzy
+msgid "Failed to send data to the host"
+msgstr "Erro ao enviar dados para o servidor"
+
+#: src/library/os/linux/insecure.c:195 src/library/os/windows/insecure.c:203
+msgid "The session is not secure"
+msgstr "A sessão não é segura"
+
+#: src/library/os/linux/insecure.c:196 src/library/os/windows/insecure.c:204
+msgid "No TLS/SSL support on this session"
+msgstr "Sem suporte TLS/SSL nessa sessão"
+
+#: src/library/os/linux/ldap.c:84 src/library/os/linux/ldap.c:93
+#: src/library/os/windows/ldap.c:101 src/library/os/windows/ldap.c:110
+#: src/library/os/darwin/ldap.c:82 src/library/os/darwin/ldap.c:91
+msgid "The URL argument should be in the format ldap://[HOST]/[DN]?attribute"
+msgstr "A URL deve ser no formato ldap://[HOST]/[DN]?attribute"
+
+#: src/library/os/linux/ldap.c:149 src/library/os/darwin/ldap.c:147
+#, fuzzy
+msgid "LDAP search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/library/os/linux/ldap.c:159 src/library/os/darwin/ldap.c:157
+#, fuzzy
+msgid "LDAP search did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
+
+#: src/library/os/linux/ldap.c:169 src/library/os/windows/ldap.c:204
+#: src/library/os/darwin/ldap.c:167
+msgid "Can't decode certificate revocation list"
+msgstr "Não foi possível decodificar a lista de certificados revogados"
+
 #: src/library/os/linux/resolv.c:139 src/library/os/linux/resolv.c:155
 #: src/library/os/linux/resolv.c:190 src/library/os/linux/resolv.c:278
 #: src/library/os/linux/resolv.c:291 src/library/os/linux/resolv.c:365
@@ -1160,29 +717,86 @@ msgstr "Resposta inesperada ao pedido de cancelamento."
 msgid "Unable to resolve host name"
 msgstr "Não consegui encontrar o host selecionado."
 
-#: src/library/os/linux/insecure.c:115 src/library/os/linux/insecure.c:170
-#: src/library/os/windows/mainloop.c:423 src/library/os/windows/mainloop.c:441
+#: src/library/os/windows/eventhandler.c:133
 #, fuzzy
-msgid "Network I/O error"
-msgstr "Erro de rede"
+msgid "Internal error"
+msgstr "Erro interno"
 
-#: src/library/os/linux/insecure.c:116 src/library/os/windows/mainloop.c:424
+#: src/library/os/windows/eventhandler.c:134
+msgid "Requested connection is already on the watch list."
+msgstr "Conexão pedida já está na lista de controle"
+
+#: src/library/os/windows/eventhandler.c:165
 #, fuzzy
-msgid "Failed to receive data from the host"
-msgstr "Erro recebendo dados do servidor"
+msgid "Unexpected network error"
+msgstr "Erro inesperado"
 
-#: src/library/os/linux/insecure.c:171 src/library/os/windows/mainloop.c:442
+#: src/library/os/windows/eventhandler.c:166
+msgid "Unable to watch socket, WSAEventSelect has failed."
+msgstr "Incapaz de monitorar socket, WSAEventSelect falhou."
+
+#: src/library/os/windows/http.c:101
+msgid "Can't open HTTP session"
+msgstr "Não foi possível abrir sessão HTTP"
+
+#: src/library/os/windows/http.c:112
+msgid "Can't connect to HTTP server."
+msgstr "Não foi possível conectar ao servidor HTTP."
+
+#: src/library/os/windows/http.c:123
+msgid "Can't create HTTP request."
+msgstr "Não foi possível criar requisição HTTP."
+
+#: src/library/os/windows/http.c:136
+msgid "Can't send HTTP request."
+msgstr "Não posso enviar requisição HTTP."
+
+#: src/library/os/windows/http.c:147
+msgid "Error receiving HTTP response."
+msgstr "Erro recebendo resposta HTTP."
+
+#: src/library/os/windows/http.c:159
+msgid "Empty response from HTTP server."
+msgstr "Recebi resposta vazia do servidor HTTP."
+
+#: src/library/os/windows/http.c:175
+msgid "Can't read HTTP response size."
+msgstr "Não posso obter tamanho da resposta HTTP."
+
+#: src/library/os/windows/insecure.c:189
 #, fuzzy
-msgid "Failed to send data to the host"
-msgstr "Erro ao enviar dados para o servidor"
+msgid "Unable to set non-blocking mode."
+msgstr "Não foi possível mudar o socket para o modo blocante."
 
-#: src/library/os/linux/insecure.c:195 src/library/os/windows/insecure.c:203
-msgid "The session is not secure"
-msgstr "A sessão não é segura"
+#: src/library/os/windows/ldap.c:133
+msgid "Can't initialize LDAP"
+msgstr "Erro ao inicializar LDAP"
 
-#: src/library/os/linux/insecure.c:196 src/library/os/windows/insecure.c:204
-msgid "No TLS/SSL support on this session"
-msgstr "Sem suporte TLS/SSL nessa sessão"
+#: src/library/os/windows/ldap.c:141
+msgid "Can't set LDAP protocol version"
+msgstr "Não é possível setar a versão do protocolo LDAP"
+
+#: src/library/os/windows/ldap.c:149
+msgid "Can't bind to LDAP server"
+msgstr "Não foi possível conectar ao servidor LDAP"
+
+#: src/library/os/windows/ldap.c:179
+msgid "LDAP Search did not produce any attributes."
+msgstr "Pesquisa LDAP não produziu atributos."
+
+#: src/library/os/windows/ldap.c:186
+msgid "LDAPSearch did not produce any values."
+msgstr "Pesquisa LDAP não produziu valores."
+
+#: src/library/os/windows/mainloop.c:378
+#, fuzzy
+msgid "Network connection failed"
+msgstr "Conexão falhou"
+
+#: src/library/os/windows/mainloop.c:403
+#, fuzzy
+msgid "Name resolution failed"
+msgstr "Operação falhou"
 
 #. Reference: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
 #. /usr/x86_64-w64-mingw32/sys-root/mingw/include/wininet.h
@@ -1215,87 +829,6 @@ msgid ""
 msgstr ""
 "Erro winsock %d (verifique o significado em https://docs.microsoft.com/en-us/"
 "windows/win32/winsock/windows-sockets-error-codes-2)"
-
-#: src/library/os/windows/http.c:101
-msgid "Can't open HTTP session"
-msgstr "Não foi possível abrir sessão HTTP"
-
-#: src/library/os/windows/http.c:112
-msgid "Can't connect to HTTP server."
-msgstr "Não foi possível conectar ao servidor HTTP."
-
-#: src/library/os/windows/http.c:123
-msgid "Can't create HTTP request."
-msgstr "Não foi possível criar requisição HTTP."
-
-#: src/library/os/windows/http.c:136
-msgid "Can't send HTTP request."
-msgstr "Não posso enviar requisição HTTP."
-
-#: src/library/os/windows/http.c:147
-msgid "Error receiving HTTP response."
-msgstr "Erro recebendo resposta HTTP."
-
-#: src/library/os/windows/http.c:159
-msgid "Empty response from HTTP server."
-msgstr "Recebi resposta vazia do servidor HTTP."
-
-#: src/library/os/windows/http.c:175
-msgid "Can't read HTTP response size."
-msgstr "Não posso obter tamanho da resposta HTTP."
-
-#: src/library/os/windows/ldap.c:133
-msgid "Can't initialize LDAP"
-msgstr "Erro ao inicializar LDAP"
-
-#: src/library/os/windows/ldap.c:141
-msgid "Can't set LDAP protocol version"
-msgstr "Não é possível setar a versão do protocolo LDAP"
-
-#: src/library/os/windows/ldap.c:149
-msgid "Can't bind to LDAP server"
-msgstr "Não foi possível conectar ao servidor LDAP"
-
-#: src/library/os/windows/ldap.c:179
-msgid "LDAP Search did not produce any attributes."
-msgstr "Pesquisa LDAP não produziu atributos."
-
-#: src/library/os/windows/ldap.c:186
-msgid "LDAPSearch did not produce any values."
-msgstr "Pesquisa LDAP não produziu valores."
-
-#: src/library/os/windows/insecure.c:189
-#, fuzzy
-msgid "Unable to set non-blocking mode."
-msgstr "Não foi possível mudar o socket para o modo blocante."
-
-#: src/library/os/windows/mainloop.c:378
-#, fuzzy
-msgid "Network connection failed"
-msgstr "Conexão falhou"
-
-#: src/library/os/windows/mainloop.c:403
-#, fuzzy
-msgid "Name resolution failed"
-msgstr "Operação falhou"
-
-#: src/library/os/windows/eventhandler.c:133
-#, fuzzy
-msgid "Internal error"
-msgstr "Erro interno"
-
-#: src/library/os/windows/eventhandler.c:134
-msgid "Requested connection is already on the watch list."
-msgstr "Conexão pedida já está na lista de controle"
-
-#: src/library/os/windows/eventhandler.c:165
-#, fuzzy
-msgid "Unexpected network error"
-msgstr "Erro inesperado"
-
-#: src/library/os/windows/eventhandler.c:166
-msgid "Unable to watch socket, WSAEventSelect has failed."
-msgstr "Incapaz de monitorar socket, WSAEventSelect falhou."
 
 #: src/library/actions/table.c:112
 msgid "_Reconnect"
@@ -1649,6 +1182,145 @@ msgstr "Program Action 2"
 msgid "Program Action 3"
 msgstr "Program Action 3"
 
+#: src/library/connect.c:176
+#, fuzzy
+msgid "Invalid connection scheme"
+msgstr "A conexão é segura ?"
+
+#: src/library/connect.c:184
+#, c-format
+msgid "Unsupported scheme '%s' in URL %s"
+msgstr "Esquema não suportado '%s' na URL %s"
+
+#: src/library/connect.c:263
+#, fuzzy
+msgid "Unable to activate SSL connection"
+msgstr "Não foi possível obter o estado da conexão."
+
+#: src/library/connect.c:264
+msgid "The OpenSSL library is not available in this build"
+msgstr ""
+
+#: src/library/ctlr.c:170 src/library/ctlr.c:180 src/library/ctlr.c:191
+#: src/library/ctlr.c:202
+msgid "Invalid oversize"
+msgstr "Valor inválido para 'oversize'"
+
+#: src/library/ctlr.c:171
+msgid "The oversize values are invalid."
+msgstr "Os valores para 'oversize' não são válidos."
+
+#: src/library/ctlr.c:172
+#, c-format
+msgid "%dx%d is negative or zero"
+msgstr "%dx%d é negativa ou zero"
+
+#: src/library/ctlr.c:181
+msgid "The oversize values are too big."
+msgstr "Os valores do 'oversize' são muito grandes."
+
+#: src/library/ctlr.c:182
+#, c-format
+msgid "%dx%d screen size is bigger than the maximum size"
+msgstr "Tela %dx%d é maior que o tamanho máximo"
+
+#: src/library/ctlr.c:192
+msgid "The oversize width is too small."
+msgstr "A largura do 'oversize' é muito pequena."
+
+#: src/library/ctlr.c:193
+#, c-format
+msgid "The width %d is less than model %d columns (%d)"
+msgstr "A largura %d é menor que a do modelo %d (%d)"
+
+#: src/library/ctlr.c:203
+msgid "The oversize height is too small."
+msgstr "A altura definida para 'oversize' é muito pequena."
+
+#: src/library/ctlr.c:204
+#, c-format
+msgid "The height %d is less than model %d rows (%d)"
+msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
+
+#. unknown 3270 command
+#: src/library/ctlr.c:398
+#, c-format
+msgid "Unknown 3270 Data Stream command: 0x%X"
+msgstr "Unknown 3270 Data Stream command: 0x%X"
+
+#: src/library/ft/ft.c:99
+msgid "No transfer in progress"
+msgstr "Nenhuma transferência em andamento"
+
+#: src/library/ft/ft.c:100
+msgid "Ack received, data flowing"
+msgstr "Confirmação recebida, transferindo dados"
+
+#: src/library/ft/ft.c:101
+msgid "Awaiting chance to send an abort"
+msgstr "Aguardando para enviar pedido de cancelamento"
+
+#: src/library/ft/ft.c:102
+msgid "Abort sent; awaiting response"
+msgstr "Cancelamento enviado; aguardando resposta"
+
+#: src/library/ft/ft.c:151
+msgid "Cancelled by user"
+msgstr "Cancelado pelo usuário"
+
+#. Nao tem destino para a mensagem, apresenta
+#: src/library/ft/ft.c:192
+msgid "Request failed"
+msgstr "Requisição falhou"
+
+#: src/library/ft/ft.c:192
+msgid "Can't start file transfer."
+msgstr "Não foi possível iniciar transferência de arquivo."
+
+#: src/library/ft/ft.c:247
+msgid "File transfer is already active in this session."
+msgstr "Transferência de arquivos já está ativa nesta sessão."
+
+#: src/library/ft/ft.c:251
+msgid "The remote file name is invalid."
+msgstr "O nome do arquivo remoto não é válido."
+
+#: src/library/ft/ft.c:384
+msgid "Can't get file size"
+msgstr "Não foi possível obter o tamanho do arquivo"
+
+#: src/library/ft/ft.c:471
+msgid "Unable to send file-transfer request"
+msgstr "Não foi possível enviar a requisição de transferência de arquivo"
+
+#: src/library/ft/ft.c:480
+msgid "Waiting for GET response"
+msgstr "Aguardando resposta do pedido de download"
+
+#: src/library/ft/ft.c:482
+msgid "Waiting for PUT response"
+msgstr "Aguardando resposta do pedido de upload"
+
+#: src/library/ft/ft.c:519
+msgid "Transfer complete"
+msgstr "Transferência completa"
+
+#: src/library/ft/ft.c:523
+msgid "Transfer failed"
+msgstr "Transferência falhou"
+
+#: src/library/ft/ft.c:601
+msgid "Aborting..."
+msgstr "Cancelando..."
+
+#: src/library/ft/ft.c:609
+msgid "Host disconnected, transfer cancelled"
+msgstr "Servidor desconectou, transferência cancelada"
+
+#: src/library/ft/ft.c:615
+msgid "Not in 3270 mode, transfer cancelled"
+msgstr "Não está no modo 3270, transferência cancelada"
+
 #: src/library/ft/ft_cut.c:164 src/library/ft/ft_cut.c:172
 msgid "Data conversion error"
 msgstr "Erro na conversão de dados"
@@ -1689,6 +1361,10 @@ msgstr "Comprimento de frame inválido"
 #, c-format
 msgid "Error \"%s\" writing to local file (rc=%d)"
 msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
+
+#: src/library/ft/ft_dft.c:162
+msgid "Uknown DFT Open type from host"
+msgstr "Host enviou código de abertura DFT desconhecido"
 
 #: src/library/ft/ftmessages.c:45
 msgid "Error in file transfer: file transfer canceled"
@@ -1916,82 +1592,109 @@ msgstr "Erro código xxxxxxxxxx no aplicativo do host: Transferência cancelada"
 msgid "This is a host program error."
 msgstr "Este é um erro no programa do host."
 
-#: src/library/ft/ft_dft.c:162
-msgid "Uknown DFT Open type from host"
-msgstr "Host enviou código de abertura DFT desconhecido"
+#: src/library/options.c:46
+msgid "IBM S/390"
+msgstr "IBM S/390"
 
-#: src/library/ft/ft.c:99
-msgid "No transfer in progress"
-msgstr "Nenhuma transferência em andamento"
+#: src/library/options.c:52
+msgid "IBM AS/400"
+msgstr "IBM AS/400"
 
-#: src/library/ft/ft.c:100
-msgid "Ack received, data flowing"
-msgstr "Confirmação recebida, transferindo dados"
+#: src/library/options.c:58
+msgid "Other (TSO)"
+msgstr "Outro (TSO)"
 
-#: src/library/ft/ft.c:101
-msgid "Awaiting chance to send an abort"
-msgstr "Aguardando para enviar pedido de cancelamento"
+#: src/library/options.c:64
+msgid "Other (VM/CMS)"
+msgstr "Outro (VM/CMS)"
 
-#: src/library/ft/ft.c:102
-msgid "Abort sent; awaiting response"
-msgstr "Cancelamento enviado; aguardando resposta"
+#: src/library/paste.c:373
+msgid "Action failed"
+msgstr "Ação falhou"
 
-#: src/library/ft/ft.c:151
-msgid "Cancelled by user"
-msgstr "Cancelado pelo usuário"
+#: src/library/paste.c:374
+msgid "Unable to paste text"
+msgstr "Incapaz de colar texto"
 
-#. Nao tem destino para a mensagem, apresenta
-#: src/library/ft/ft.c:192
-msgid "Request failed"
-msgstr "Requisição falhou"
+#: src/library/paste.c:375
+msgid "Keyboard is locked"
+msgstr "Teclado está bloqueado"
 
-#: src/library/ft/ft.c:192
-msgid "Can't start file transfer."
-msgstr "Não foi possível iniciar transferência de arquivo."
+#: src/library/paste.c:375
+msgid "Unexpected error"
+msgstr "Erro inesperado"
 
-#: src/library/ft/ft.c:247
-msgid "File transfer is already active in this session."
-msgstr "Transferência de arquivos já está ativa nesta sessão."
+#. Property name.
+#: src/library/properties/boolean.c:62
+msgid "Is terminal ready"
+msgstr "O terminal está pronto"
 
-#: src/library/ft/ft.c:251
-msgid "The remote file name is invalid."
-msgstr "O nome do arquivo remoto não é válido."
+#. Property name.
+#: src/library/properties/boolean.c:69
+msgid "Is terminal connected"
+msgstr "O terminal está conectado"
 
-#: src/library/ft/ft.c:384
-msgid "Can't get file size"
-msgstr "Não foi possível obter o tamanho do arquivo"
+#. Property name.
+#: src/library/properties/boolean.c:76
+msgid "Is connection secure"
+msgstr "A conexão é segura ?"
 
-#: src/library/ft/ft.c:471
-msgid "Unable to send file-transfer request"
-msgstr "Não foi possível enviar a requisição de transferência de arquivo"
+#. Property name.
+#. Property group.
+#: src/library/properties/boolean.c:84
+msgid "Non zero if the host is TSO."
+msgstr "Diferente de zero se o host é TSO."
 
-#: src/library/ft/ft.c:480
-msgid "Waiting for GET response"
-msgstr "Aguardando resposta do pedido de download"
+#. Property name.
+#. Property group.
+#: src/library/properties/boolean.c:92
+msgid "Non zero if the host is AS400."
+msgstr "Diferente de zero se o host é AS400."
 
-#: src/library/ft/ft.c:482
-msgid "Waiting for PUT response"
-msgstr "Aguardando resposta do pedido de upload"
+#. Property name.
+#: src/library/properties/boolean.c:127
+msgid "State is 3270, TN3270e or SSCP"
+msgstr "Estado do terminal é 3270, TN3270e or SSCP"
 
-#: src/library/ft/ft.c:519
-msgid "Transfer complete"
-msgstr "Transferência completa"
+#. Property name.
+#: src/library/properties/boolean.c:148
+msgid "Is terminal in the INITIAL_E state?"
+msgstr "O terminal está no estad INITIAL_E?"
 
-#: src/library/ft/ft.c:523
-msgid "Transfer failed"
-msgstr "Transferência falhou"
+#. Property name.
+#: src/library/properties/boolean.c:155
+msgid "Has selected area"
+msgstr "Tem área selecionada"
 
-#: src/library/ft/ft.c:601
-msgid "Aborting..."
-msgstr "Cancelando..."
+#. Property name.
+#: src/library/properties/boolean.c:162
+msgid "Still have text to paste"
+msgstr "Ainda existe texto para colar"
 
-#: src/library/ft/ft.c:609
-msgid "Host disconnected, transfer cancelled"
-msgstr "Servidor desconectou, transferência cancelada"
+#. Property name.
+#: src/library/properties/boolean.c:169
+msgid "Is starting (no first screen)?"
+msgstr "Está iniciando (não recebeu a primeira tela)?"
 
-#: src/library/ft/ft.c:615
-msgid "Not in 3270 mode, transfer cancelled"
-msgstr "Não está no modo 3270, transferência cancelada"
+#. Property name.
+#: src/library/properties/boolean.c:176
+msgid "Formatted screen"
+msgstr "Tela formatada"
+
+#. Property name.
+#: src/library/properties/boolean.c:183
+msgid "Lock keyboard on operator error"
+msgstr "Bloqueia teclado em caso de erro do operador"
+
+#. Property name.
+#: src/library/properties/boolean.c:190
+msgid "numeric lock"
+msgstr "numeric lock"
+
+#. Property name.
+#: src/library/properties/boolean.c:197
+msgid "Non zero if the download of CRL is enabled"
+msgstr "Diferente de zero se o host se o download do CRL está habilitado"
 
 #: src/library/properties/signed.c:42
 #, fuzzy
@@ -2145,76 +1848,6 @@ msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
 #. Property name.
-#. Default value for the property.
-#. Property group.
-#: src/library/properties/unsigned.c:79
-msgid "The color type"
-msgstr "O tipo de cor"
-
-#. Property group.
-#: src/library/properties/unsigned.c:88
-msgid "Host type number"
-msgstr "Numero do tipo de host"
-
-#. Property name.
-#. Property group.
-#. Property Icon.
-#: src/library/properties/unsigned.c:97
-msgid "Terminal model"
-msgstr "Modelo do terminal"
-
-#. Property label.
-#: src/library/properties/unsigned.c:98
-msgid "The model number"
-msgstr "Nº do modelo"
-
-#. Property name.
-#: src/library/properties/unsigned.c:108
-msgid "Current screen width in columns"
-msgstr "Largura atua da tela em colunas"
-
-#. Property name.
-#: src/library/properties/unsigned.c:115
-msgid "Current screen height in rows"
-msgstr "Altura atual da tela em linhas"
-
-#. Property name.
-#: src/library/properties/unsigned.c:122
-msgid "Maximum screen width in columns"
-msgstr "Largura maxima da tela em colunas"
-
-#. Property name.
-#: src/library/properties/unsigned.c:129
-msgid "Maximum screen height in rows"
-msgstr "Altura máxima da tela em linhas"
-
-#. Property name.
-#: src/library/properties/unsigned.c:136
-msgid "Screen buffer length in bytes"
-msgstr "Tamanho do buffer de tela em bytes"
-
-#. Property name.
-#. Default value for the property.
-#: src/library/properties/unsigned.c:144
-msgid "Time for auto-reconnect"
-msgstr "Tempo para reconexão automática"
-
-#: src/library/properties/unsigned.c:159
-msgid "Unlock delay"
-msgstr "Atraso no desbloqueio"
-
-#: src/library/properties/unsigned.c:160
-msgid "The delay between the host unlocking the keyboard and the actual unlock"
-msgstr ""
-"Intervalo de tempo entre o desbloqueio de teclado pelo host e o desbloqueio "
-"real"
-
-#. Property name.
-#: src/library/properties/unsigned.c:167
-msgid "Keyboard lock status"
-msgstr "Estado de bloqueio do teclado"
-
-#. Property name.
 #: src/library/properties/string.c:66
 msgid "The name of the LU associated with the session"
 msgstr "O nome da LU associada à sessão"
@@ -2303,158 +1936,188 @@ msgid "Log filename"
 msgstr "Define o nome do arquivo de log"
 
 #. Property name.
-#: src/library/properties/boolean.c:62
-msgid "Is terminal ready"
-msgstr "O terminal está pronto"
+#. Default value for the property.
+#. Property group.
+#: src/library/properties/unsigned.c:79
+msgid "The color type"
+msgstr "O tipo de cor"
 
-#. Property name.
-#: src/library/properties/boolean.c:69
-msgid "Is terminal connected"
-msgstr "O terminal está conectado"
-
-#. Property name.
-#: src/library/properties/boolean.c:76
-msgid "Is connection secure"
-msgstr "A conexão é segura ?"
+#. Property group.
+#: src/library/properties/unsigned.c:88
+msgid "Host type number"
+msgstr "Numero do tipo de host"
 
 #. Property name.
 #. Property group.
-#: src/library/properties/boolean.c:84
-msgid "Non zero if the host is TSO."
-msgstr "Diferente de zero se o host é TSO."
+#. Property Icon.
+#: src/library/properties/unsigned.c:97
+msgid "Terminal model"
+msgstr "Modelo do terminal"
+
+#. Property label.
+#: src/library/properties/unsigned.c:98
+msgid "The model number"
+msgstr "Nº do modelo"
 
 #. Property name.
-#. Property group.
-#: src/library/properties/boolean.c:92
-msgid "Non zero if the host is AS400."
-msgstr "Diferente de zero se o host é AS400."
+#: src/library/properties/unsigned.c:108
+msgid "Current screen width in columns"
+msgstr "Largura atua da tela em colunas"
 
 #. Property name.
-#: src/library/properties/boolean.c:127
-msgid "State is 3270, TN3270e or SSCP"
-msgstr "Estado do terminal é 3270, TN3270e or SSCP"
+#: src/library/properties/unsigned.c:115
+msgid "Current screen height in rows"
+msgstr "Altura atual da tela em linhas"
 
 #. Property name.
-#: src/library/properties/boolean.c:148
-msgid "Is terminal in the INITIAL_E state?"
-msgstr "O terminal está no estad INITIAL_E?"
+#: src/library/properties/unsigned.c:122
+msgid "Maximum screen width in columns"
+msgstr "Largura maxima da tela em colunas"
 
 #. Property name.
-#: src/library/properties/boolean.c:155
-msgid "Has selected area"
-msgstr "Tem área selecionada"
+#: src/library/properties/unsigned.c:129
+msgid "Maximum screen height in rows"
+msgstr "Altura máxima da tela em linhas"
 
 #. Property name.
-#: src/library/properties/boolean.c:162
-msgid "Still have text to paste"
-msgstr "Ainda existe texto para colar"
+#: src/library/properties/unsigned.c:136
+msgid "Screen buffer length in bytes"
+msgstr "Tamanho do buffer de tela em bytes"
 
 #. Property name.
-#: src/library/properties/boolean.c:169
-msgid "Is starting (no first screen)?"
-msgstr "Está iniciando (não recebeu a primeira tela)?"
+#. Default value for the property.
+#: src/library/properties/unsigned.c:144
+msgid "Time for auto-reconnect"
+msgstr "Tempo para reconexão automática"
 
-#. Property name.
-#: src/library/properties/boolean.c:176
-msgid "Formatted screen"
-msgstr "Tela formatada"
+#: src/library/properties/unsigned.c:159
+msgid "Unlock delay"
+msgstr "Atraso no desbloqueio"
 
-#. Property name.
-#: src/library/properties/boolean.c:183
-msgid "Lock keyboard on operator error"
-msgstr "Bloqueia teclado em caso de erro do operador"
-
-#. Property name.
-#: src/library/properties/boolean.c:190
-msgid "numeric lock"
-msgstr "numeric lock"
-
-#. Property name.
-#: src/library/properties/boolean.c:197
-msgid "Non zero if the download of CRL is enabled"
-msgstr "Diferente de zero se o host se o download do CRL está habilitado"
-
-#: src/library/connect.c:176
-#, fuzzy
-msgid "Invalid connection scheme"
-msgstr "A conexão é segura ?"
-
-#: src/library/connect.c:184
-#, c-format
-msgid "Unsupported scheme '%s' in URL %s"
-msgstr "Esquema não suportado '%s' na URL %s"
-
-#: src/library/connect.c:263
-#, fuzzy
-msgid "Unable to activate SSL connection"
-msgstr "Não foi possível obter o estado da conexão."
-
-#: src/library/connect.c:264
-msgid "The OpenSSL library is not available in this build"
+#: src/library/properties/unsigned.c:160
+msgid "The delay between the host unlocking the keyboard and the actual unlock"
 msgstr ""
+"Intervalo de tempo entre o desbloqueio de teclado pelo host e o desbloqueio "
+"real"
 
-#: src/library/ctlr.c:170 src/library/ctlr.c:180 src/library/ctlr.c:191
-#: src/library/ctlr.c:202
-msgid "Invalid oversize"
-msgstr "Valor inválido para 'oversize'"
+#. Property name.
+#: src/library/properties/unsigned.c:167
+msgid "Keyboard lock status"
+msgstr "Estado de bloqueio do teclado"
 
-#: src/library/ctlr.c:171
-msgid "The oversize values are invalid."
-msgstr "Os valores para 'oversize' não são válidos."
+#: src/library/rpq.c:223
+msgid "RPQ Error"
+msgstr "Erro RPQ"
 
-#: src/library/ctlr.c:172
+#: src/library/rpq.c:224
+msgid "Unsupported RPQ term"
+msgstr "Unsupported RPQ term"
+
+#: src/library/rpq.c:225
 #, c-format
-msgid "%dx%d is negative or zero"
-msgstr "%dx%d é negativa ou zero"
+msgid "RPQ term %d is unknown"
+msgstr "Termo RPM %d não foi reconhecido"
 
-#: src/library/ctlr.c:181
-msgid "The oversize values are too big."
-msgstr "Os valores do 'oversize' são muito grandes."
-
-#: src/library/ctlr.c:182
+#: src/library/rpq.c:230
 #, c-format
-msgid "%dx%d screen size is bigger than the maximum size"
-msgstr "Tela %dx%d é maior que o tamanho máximo"
+msgid "RPQ %s term omitted due to insufficient space"
+msgstr "Termo RPQ %s omitido por falta de espaço"
 
-#: src/library/ctlr.c:192
-msgid "The oversize width is too small."
-msgstr "A largura do 'oversize' é muito pequena."
-
-#: src/library/ctlr.c:193
+#: src/library/rpq.c:339
 #, c-format
-msgid "The width %d is less than model %d columns (%d)"
-msgstr "A largura %d é menor que a do modelo %d (%d)"
+msgid "RPQ %s term override ignored"
+msgstr "RPQ %s term override ignored"
 
-#: src/library/ctlr.c:203
-msgid "The oversize height is too small."
-msgstr "A altura definida para 'oversize' é muito pequena."
-
-#: src/library/ctlr.c:204
+#: src/library/rpq.c:351
 #, c-format
-msgid "The height %d is less than model %d rows (%d)"
-msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
+msgid "RPQ term \"%s\" is unrecognized"
+msgstr "Termo RPQ desconhecido: \"%s\""
 
-#. unknown 3270 command
-#: src/library/ctlr.c:398
+#: src/library/rpq.c:404 src/library/rpq.c:413
+msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
+msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
+
+#: src/library/rpq.c:425
+msgid "RPQ: Unable to determine workstation local time"
+msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
+
+#: src/library/rpq.c:435 src/library/rpq.c:445
+msgid "RPQ: Unable to determine workstation UTC time"
+msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
+
+#: src/library/rpq.c:466
+msgid "RPQ timezone exceeds 12 hour UTC offset"
+msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
+
+#: src/library/rpq.c:521
+msgid "RPQ USER term has non-hex character"
+msgstr "Termo RPQ USER tem caractere não hexadecimal"
+
+#: src/library/rpq.c:527
 #, c-format
-msgid "Unknown 3270 Data Stream command: 0x%X"
-msgstr "Unknown 3270 Data Stream command: 0x%X"
+msgid "RPQ USER term truncated after %d bytes"
+msgstr "Termo RPQ USER truncado depois de %d bytes"
 
-#: src/library/options.c:46
-msgid "IBM S/390"
-msgstr "IBM S/390"
+#: src/library/rpq.c:546
+msgid "RPQ USER term has odd number of hex digits"
+msgstr "RPQ USER term has odd number of hex digits"
 
-#: src/library/options.c:52
-msgid "IBM AS/400"
-msgstr "IBM AS/400"
+#: src/library/rpq.c:571
+#, c-format
+msgid "RPQ USER term truncated after %d characters"
+msgstr "Termo RPQ USER truncado depois de %d caracteres"
 
-#: src/library/options.c:58
-msgid "Other (TSO)"
-msgstr "Outro (TSO)"
+#: src/library/rpq.c:643 src/library/rpq.c:722
+#, c-format
+msgid "RPQ ADDRESS term has unrecognized family %u"
+msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
 
-#: src/library/options.c:64
-msgid "Other (VM/CMS)"
-msgstr "Outro (VM/CMS)"
+#: src/library/rpq.c:651 src/library/rpq.c:680 src/library/rpq.c:729
+msgid "RPQ ADDRESS term incomplete due to space limit"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/rpq.c:656
+#, c-format
+msgid "RPQ: can't resolve '%s': %s"
+msgstr "RPQ: Não foi possível resolver '%s': %s"
+
+#: src/library/rpq.c:669
+msgid "RPQ: gethostbyname error"
+msgstr "RPQ: Erro em gethostbyname"
+
+#: src/library/rpq.c:698
+#, fuzzy
+msgid "RPQ ADDRESS term incomplete: connection context not found"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/rpq.c:704
+#, fuzzy
+msgid "RPQ ADDRESS term incomplete: getsockname failed"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/session.c:167
+msgid "Can't print"
+msgstr "Não é possível imprimir"
+
+#: src/library/session.c:167
+msgid "Unable to print"
+msgstr "Incapaz de imprimir"
+
+#: src/library/session.c:173
+msgid "Can't save"
+msgstr "Não é possível salvar"
+
+#: src/library/session.c:173
+msgid "Unable to save"
+msgstr "Incapaz de salvar"
+
+#: src/library/session.c:179
+msgid "Can't load"
+msgstr "Não foi possível carregar"
+
+#: src/library/session.c:179
+msgid "Unable to load from file"
+msgstr "Não foi possível ler do arquivo"
 
 #: src/library/telnet.c:777
 msgid "Warning"
@@ -2569,6 +2232,343 @@ msgstr "Saindo"
 #: src/library/telnet.c:1855
 msgid "Charset"
 msgstr "Tabela de caracteres"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:53
+msgid "Monocase"
+msgstr "Só Maiúsculas"
+
+#: src/library/toggles/table.c:54
+msgid "Uppercase only"
+msgstr "Apenas maiúsculas"
+
+#: src/library/toggles/table.c:55
+msgid "If set, the terminal operates in uppercase-only mode"
+msgstr "Se ativo o terminal opera apenas com caracteres maiúsculos"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:64 src/library/toggles/table.c:65
+msgid "Blinking Cursor"
+msgstr "Cursor piscante"
+
+#: src/library/toggles/table.c:66
+msgid "If set, the cursor blinks"
+msgstr "Se ativo o cursor pisca"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:74 src/library/toggles/table.c:75
+msgid "Show timer when processing"
+msgstr "Show timer when processing"
+
+#: src/library/toggles/table.c:76
+msgid ""
+"If set, the time taken by the host to process an AID is displayed on the "
+"status line"
+msgstr ""
+"If set, the time taken by the host to process an AID is displayed on the "
+"status line"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:84
+msgid "Track Cursor"
+msgstr "Mostrar posição do cursor"
+
+#: src/library/toggles/table.c:85
+msgid "Track Cursor location"
+msgstr "Mostrar posição do cursor"
+
+#: src/library/toggles/table.c:86
+msgid "Display the cursor location in the OIA (the status line)"
+msgstr "Mostra posição do cursor na lista de informações ao operador"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:95 src/library/toggles/table.c:96
+msgid "Trace Data Stream"
+msgstr "Trace Data Stream"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:105 src/library/toggles/table.c:106
+msgid "Wrap around"
+msgstr "Wrap around"
+
+#: src/library/toggles/table.c:107
+msgid ""
+"If set, the NVT terminal emulator automatically assumes a NEWLINE character "
+"when it reaches the end of a line."
+msgstr ""
+"Se ativo o emulador de terminal assume automaticamente uma quebra de linha "
+"quando chega ao final de uma linha."
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:115 src/library/toggles/table.c:116
+msgid "Blank Fill"
+msgstr "Completar com espaços"
+
+#: src/library/toggles/table.c:117
+msgid ""
+"Automatically convert trailing blanks in a field to NULLs in order to insert "
+"a character, and will automatically convert leading NULLs to blanks so that "
+"input data is not squeezed to the left"
+msgstr ""
+"Automatically convert trailing blanks in a field to NULLs in order to insert "
+"a character, and will automatically convert leading NULLs to blanks so that "
+"input data is not squeezed to the left"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:126
+msgid "Trace Screen"
+msgstr "Trace de tela"
+
+#: src/library/toggles/table.c:127
+msgid "Trace screen contents"
+msgstr "Trace do conteúdo da tela"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:137
+msgid "Trace Events"
+msgstr "Trace de Eventos"
+
+#: src/library/toggles/table.c:138
+msgid "Trace interface and application events"
+msgstr "Registra eventos da interface gráfica e aplicação"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:147
+msgid "Margined paste"
+msgstr "Colar com margem"
+
+#: src/library/toggles/table.c:148
+msgid "Paste with left margin"
+msgstr "Colar com margem esquerda"
+
+#: src/library/toggles/table.c:149
+msgid ""
+"If set, puts restrictions on how pasted text is placed on the screen. The "
+"position of the cursor at the time the paste operation is begun is used as a "
+"left margin. No pasted text will fill any area of the screen to the left of "
+"that position. This option is useful for pasting into certain IBM editors "
+"that use the left side of the screen for control information"
+msgstr ""
+"If set, puts restrictions on how pasted text is placed on the screen. The "
+"position of the cursor at the time the paste operation is begun is used as a "
+"left margin. No pasted text will fill any area of the screen to the left of "
+"that position. This option is useful for pasting into certain IBM editors "
+"that use the left side of the screen for control information"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:157 src/library/toggles/table.c:158
+msgid "Select by rectangles"
+msgstr "Seleção retangular"
+
+#: src/library/toggles/table.c:159
+msgid ""
+"If set, the terminal will always select rectangular areas of the screen. "
+"Otherwise, it selects continuous regions of the screen"
+msgstr ""
+"Se ativo o terminal sempre selecionará áreas retangulares, se inativo "
+"selecionará áreas contínuas da tela"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:167 src/library/toggles/table.c:168
+msgid "Cross hair cursor"
+msgstr "Cursor mira"
+
+#: src/library/toggles/table.c:169
+msgid ""
+"If set, the terminal will display a crosshair over the cursor: lines "
+"extending the full width and height of the screen, centered over the cursor "
+"position. This makes locating the cursor on the screen much easier"
+msgstr ""
+"If set, the terminal will display a crosshair over the cursor: lines "
+"extending the full width and height of the screen, centered over the cursor "
+"position. This makes locating the cursor on the screen much easier"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:177 src/library/toggles/table.c:178
+msgid "Full Screen"
+msgstr "Tela cheia"
+
+#: src/library/toggles/table.c:179
+msgid "If set, asks to place the toplevel window in the fullscreen state"
+msgstr "Se ativo pede para colocar a janela principal em modo de tela cheia"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:187
+msgid "Insert"
+msgstr "Inserção"
+
+#: src/library/toggles/table.c:188
+msgid "Set insert mode"
+msgstr "Set insert mode"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:197 src/library/toggles/table.c:198
+msgid "Smart paste"
+msgstr "Colar inteligente"
+
+#: src/library/toggles/table.c:199
+msgid ""
+"If set the characters pasted over protected areas will be skipped to avoid "
+"locks"
+msgstr ""
+"Se ativo caracters colados sobre áreas protegidas serão ignorados para "
+"evitar o bloqueio do terminal"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:207 src/library/toggles/table.c:208
+msgid "Bold"
+msgstr "Negrito"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:217 src/library/toggles/table.c:218
+msgid "Keep selected"
+msgstr "Manter selecionado"
+
+#: src/library/toggles/table.c:219
+msgid "If set the selection will not be removed on screen changes"
+msgstr "Se ativo a seleção não será removida quando a tela mudar"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:227
+msgid "Underline"
+msgstr "Sublinhados"
+
+#: src/library/toggles/table.c:228
+msgid "Show Underline"
+msgstr "Mostrar sublinhado"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:237
+msgid "Connect on startup"
+msgstr "Conectar ao iniciar"
+
+#: src/library/toggles/table.c:238
+msgid "Automatically connect to host on startup"
+msgstr "Conecta automaticamente na inicialização"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:247 src/library/toggles/table.c:248
+msgid "Use +/- for field navigation"
+msgstr "Usar teclas +/- para navegar por campos"
+
+#: src/library/toggles/table.c:249
+msgid "Use the keys +/- from keypad to select editable fields"
+msgstr "Use the keys +/- from keypad to select editable fields"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:257
+msgid "Sound"
+msgstr "Som"
+
+#: src/library/toggles/table.c:258
+msgid "Alert sound"
+msgstr "Aviso sonoro"
+
+#: src/library/toggles/table.c:259
+msgid "Beep on errors"
+msgstr "Emitir som nos erros"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:267
+msgid "Show Field"
+msgstr "Mostra campos"
+
+#: src/library/toggles/table.c:268
+msgid "Show Field attributes"
+msgstr "Mostra atributos de campo"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:277
+msgid "Auto Resize"
+msgstr "Redimensionamento automático"
+
+#: src/library/toggles/table.c:278
+msgid "Resize on alternate screen"
+msgstr "Mudar tamanho do terminal em tela alternativa"
+
+#: src/library/toggles/table.c:279
+msgid "Change screen size on alternative screen"
+msgstr "Mudar tamanho do terminal em tela alternativa"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:287
+msgid "Network keep alive"
+msgstr "Manter rede ativa"
+
+#: src/library/toggles/table.c:288
+msgid "Enable use of network keep alive"
+msgstr "Habilita opção \"keep-alive\""
+
+#: src/library/toggles/table.c:289
+msgid "Enable network keep-alive with SO_KEEPALIVE"
+msgstr "Enable network keep-alive with SO_KEEPALIVE"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:298
+msgid "Trace Network"
+msgstr "Trace de rede"
+
+#: src/library/toggles/table.c:299
+msgid "Trace network data flow"
+msgstr "Trace network data flow"
+
+#: src/library/toggles/table.c:300
+msgid "Enable network in/out trace"
+msgstr "Habilitar trace de entrada/saída de rede"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:309
+msgid "Trace Security"
+msgstr "Trace de segurança"
+
+#: src/library/toggles/table.c:310
+msgid "Trace SSL negotiation"
+msgstr "Trace da negociação SSL"
+
+#: src/library/toggles/table.c:311
+msgid "Enable security negotiation trace"
+msgstr "Habilita trace da negociação de segurança"
+
+#. Default keycode
+#. Icon name
+#: src/library/toggles/table.c:320 src/library/toggles/table.c:321
+msgid "Auto-Reconnect"
+msgstr "Reconectar automaticamente"
+
+#: src/library/toggles/table.c:322
+msgid "Automatically reconnect to the host if it ever disconnects"
+msgstr "Reconecta automaticamente caso o servidor desconecte"
+
+#: src/library/util.c:268
+#, c-format
+msgid "The system error was '%s' (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
 #: src/gobject/callbacks.c:203 src/gobject/callbacks.c:223
 #, fuzzy

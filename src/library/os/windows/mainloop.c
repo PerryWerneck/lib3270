@@ -482,7 +482,6 @@
 		{
 			handler_t *handler = (handler_t *) lParam;
 			handler->proc(handler->hSession,handler->sock,handler->userdata);
-			handler->disabled = 0;
 			win32_poll_wake_up();
 		}
 		return 0;

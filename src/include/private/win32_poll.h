@@ -40,7 +40,6 @@
 	H3270 *hSession;
 	SOCKET sock;
 	WSAEVENT event;
-	char disabled;
 	long events;
 	void (*proc)(H3270 *hSession, SOCKET sock, void *userdata);
  } handler_t;

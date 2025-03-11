@@ -269,17 +269,6 @@
 					continue;
 				}
 
-				if(handler->disabled) {
-					debug("Handler %p is disabled",handler);
-					handler = (handler_t *) handler->next;
-					continue;
-				}
-#ifdef DEBUG
-				else {
-					debug("Handler %p is enabled on socket %llu",handler,handler->sock);
-				}
-#endif // DEBUG
-
 				if(cEvents >= buflen) {
 					buflen++;
 					events = lib3270_realloc(events,(buflen+1) * sizeof(HANDLE));
@@ -338,7 +327,6 @@
 					debug("---------------> Event on socket %llu: %lu",workers[event]->sock,networkEvents.lNetworkEvents);
 
 					if(workers[event]->hSession && workers[event]->hSession->hwnd) {
-						workers[event]->disabled = 1;
 						PostMessage(
 							workers[event]->hSession->hwnd,
 							WM_SOCKET_EVENT,

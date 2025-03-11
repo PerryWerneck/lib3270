@@ -131,7 +131,37 @@ static int disconnect(H3270 *hSession, Context *context) {
 
  static int on_write(H3270 *hSession, const void *buffer, size_t length, Context *context) {
 
-	return 0;
+	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasend
+
+	debug("%s",__FUNCTION__);
+
+
+	WSABUF wsaBuffer = {
+		.len = length,
+		.buf = (char *) buffer
+	};
+
+	DWORD sent = 0;
+	int rc = WSASend(
+		hSession->connection.sock,
+		&wsaBuffer,
+		1,
+		&sent,
+		0,
+		NULL,
+		NULL
+	);
+
+	if(rc == SOCKET_ERROR) {
+		int error = WSAGetLastError();
+		if(error == WSAEWOULDBLOCK || error == WSAEINPROGRESS) {
+			return 0;
+		}
+		PostMessage(hSession->hwnd,WM_SEND_FAILED,error,0);
+		connection_close(hSession,error);
+	}
+
+	return (int) sent;
  }
  
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession) {

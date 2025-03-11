@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 09:35-0300\n"
-"PO-Revision-Date: 2025-03-04 09:37-0300\n"
+"POT-Creation-Date: 2025-03-10 21:05-0300\n"
+"PO-Revision-Date: 2025-03-10 21:08-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -62,27 +62,27 @@ msgstr "%s: Caractere desconhecido depois de \\pa"
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
 
-#: src/library/session.c:159
+#: src/library/session.c:167
 msgid "Can't print"
 msgstr "Não é possível imprimir"
 
-#: src/library/session.c:159
+#: src/library/session.c:167
 msgid "Unable to print"
 msgstr "Incapaz de imprimir"
 
-#: src/library/session.c:165
+#: src/library/session.c:173
 msgid "Can't save"
 msgstr "Não é possível salvar"
 
-#: src/library/session.c:165
+#: src/library/session.c:173
 msgid "Unable to save"
 msgstr "Incapaz de salvar"
 
-#: src/library/session.c:171
+#: src/library/session.c:179
 msgid "Can't load"
 msgstr "Não foi possível carregar"
 
-#: src/library/session.c:171
+#: src/library/session.c:179
 msgid "Unable to load from file"
 msgstr "Não foi possível ler do arquivo"
 
@@ -1006,7 +1006,8 @@ msgstr ""
 #: src/library/os/linux/connect.c:117 src/library/os/linux/connect.c:139
 #: src/library/os/linux/connect.c:171 src/library/os/linux/connect.c:204
 #: src/library/os/linux/connect.c:280 src/library/os/linux/connect.c:296
-#: src/library/connect.c:175 src/library/connect.c:260
+#: src/library/os/windows/connect.c:71 src/library/os/windows/insecure.c:188
+#: src/library/connect.c:175 src/library/connect.c:262
 msgid "Connection error"
 msgstr "Erro de conexão"
 
@@ -1029,12 +1030,16 @@ msgstr "erro fcntl() ao obter estado do socket."
 #: src/library/os/linux/connect.c:207 src/library/os/linux/resolv.c:142
 #: src/library/os/linux/resolv.c:158 src/library/os/linux/resolv.c:193
 #: src/library/os/linux/resolv.c:281 src/library/os/linux/resolv.c:294
-#: src/library/os/linux/resolv.c:368 src/library/os/linux/insecure.c:117
-#: src/library/os/linux/insecure.c:187 src/library/os/windows/mainloop.c:356
-#: src/library/os/windows/mainloop.c:381 src/library/connect.c:178
-#: src/library/connect.c:263
+#: src/library/os/linux/resolv.c:368 src/library/os/linux/insecure.c:118
+#: src/library/os/linux/insecure.c:173 src/library/os/windows/connect.c:74
+#: src/library/os/windows/insecure.c:191 src/library/os/windows/mainloop.c:381
+#: src/library/os/windows/mainloop.c:406 src/library/os/windows/mainloop.c:426
+#: src/library/os/windows/mainloop.c:444
+#: src/library/os/windows/eventhandler.c:136
+#: src/library/os/windows/eventhandler.c:168 src/library/connect.c:178
+#: src/library/connect.c:265
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: src/library/network/tools.c:235
 #, fuzzy
@@ -1048,8 +1053,7 @@ msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL."
 
 #: src/library/os/linux/event_dispatcher.c:132
-#: src/library/os/linux/mainloop.c:254 src/library/os/linux/insecure.c:114
-#: src/library/os/linux/insecure.c:184
+#: src/library/os/linux/mainloop.c:254
 #: src/library/os/darwin/event_dispatcher.c:132
 #: src/library/os/windows/event_dispatcher.c:138 src/library/telnet.c:302
 msgid "Network error"
@@ -1088,17 +1092,12 @@ msgstr "Não foi possível decodificar a lista de certificados revogados"
 msgid "Unable to connect to host"
 msgstr "Não é possível conectar em servidores seguros"
 
-#: src/library/os/linux/connect.c:118
+#: src/library/os/linux/connect.c:118 src/library/os/windows/connect.c:72
 msgid "Unable to get connection state."
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/os/linux/connect.c:132 src/library/os/windows/mainloop.c:345
-#: src/library/os/windows/mainloop.c:370
-#, fuzzy, c-format
-msgid "Can't connect to %s"
-msgstr "Não foi possível conectar a %s:%s"
-
-#: src/library/os/linux/connect.c:164
+#: src/library/os/linux/connect.c:132 src/library/os/linux/connect.c:164
+#: src/library/os/windows/mainloop.c:369 src/library/os/windows/mainloop.c:394
 #, fuzzy, c-format
 msgid "Failed to establish connection to %s"
 msgstr "Não foi possível obter o estado da conexão."
@@ -1132,7 +1131,6 @@ msgstr "Erro ao inicializar operação CURL"
 #: src/library/os/linux/resolv.c:139 src/library/os/linux/resolv.c:155
 #: src/library/os/linux/resolv.c:190 src/library/os/linux/resolv.c:278
 #: src/library/os/linux/resolv.c:291 src/library/os/linux/resolv.c:365
-#: src/library/os/windows/mainloop.c:353 src/library/os/windows/mainloop.c:378
 #, fuzzy
 msgid "DNS error"
 msgstr "Erro no socket"
@@ -1145,37 +1143,44 @@ msgstr "Erro ao resolver %s: %s"
 
 #: src/library/os/linux/resolv.c:141
 msgid "Unexpected number of bytes read from signalfd"
-msgstr ""
+msgstr "Número inesperado de caracteres ao ler signalfd"
 
 #: src/library/os/linux/resolv.c:164
 #, c-format
 msgid "Received signal with unexpected si_code '%d' while connecting to %s"
 msgstr ""
+"Recebi sinal com valor inesperado de si_code '%d' durante a conexão a %s"
 
 #: src/library/os/linux/resolv.c:279
 msgid "Unexpected response to cancel request"
-msgstr ""
+msgstr "Resposta inesperada ao pedido de cancelamento."
 
 #: src/library/os/linux/resolv.c:292 src/library/os/linux/resolv.c:366
 #, fuzzy
 msgid "Unable to resolve host name"
 msgstr "Não consegui encontrar o host selecionado."
 
-#: src/library/os/linux/insecure.c:115
+#: src/library/os/linux/insecure.c:115 src/library/os/linux/insecure.c:170
+#: src/library/os/windows/mainloop.c:423 src/library/os/windows/mainloop.c:441
+#, fuzzy
+msgid "Network I/O error"
+msgstr "Erro de rede"
+
+#: src/library/os/linux/insecure.c:116 src/library/os/windows/mainloop.c:424
 #, fuzzy
 msgid "Failed to receive data from the host"
 msgstr "Erro recebendo dados do servidor"
 
-#: src/library/os/linux/insecure.c:185
+#: src/library/os/linux/insecure.c:171 src/library/os/windows/mainloop.c:442
 #, fuzzy
 msgid "Failed to send data to the host"
 msgstr "Erro ao enviar dados para o servidor"
 
-#: src/library/os/linux/insecure.c:224 src/library/os/windows/insecure.c:81
+#: src/library/os/linux/insecure.c:195 src/library/os/windows/insecure.c:203
 msgid "The session is not secure"
 msgstr "A sessão não é segura"
 
-#: src/library/os/linux/insecure.c:225 src/library/os/windows/insecure.c:82
+#: src/library/os/linux/insecure.c:196 src/library/os/windows/insecure.c:204
 msgid "No TLS/SSL support on this session"
 msgstr "Sem suporte TLS/SSL nessa sessão"
 
@@ -1195,12 +1200,21 @@ msgid ""
 "cannot be found in the database(s) being queried."
 msgstr ""
 
-#: src/library/os/windows/util.c:160
+#: src/library/os/windows/util.c:80
+msgid ""
+"No connection could be made because the target computer actively refused it. "
+"This usually results from trying to connect to a service that is inactive on "
+"the foreign host."
+msgstr ""
+
+#: src/library/os/windows/util.c:165
 #, c-format
 msgid ""
 "WinSock error %d (check it in https://docs.microsoft.com/en-us/windows/win32/"
 "winsock/windows-sockets-error-codes-2)"
 msgstr ""
+"Erro winsock %d (verifique o significado em https://docs.microsoft.com/en-us/"
+"windows/win32/winsock/windows-sockets-error-codes-2)"
 
 #: src/library/os/windows/http.c:101
 msgid "Can't open HTTP session"
@@ -1249,6 +1263,39 @@ msgstr "Pesquisa LDAP não produziu atributos."
 #: src/library/os/windows/ldap.c:186
 msgid "LDAPSearch did not produce any values."
 msgstr "Pesquisa LDAP não produziu valores."
+
+#: src/library/os/windows/insecure.c:189
+#, fuzzy
+msgid "Unable to set non-blocking mode."
+msgstr "Não foi possível mudar o socket para o modo blocante."
+
+#: src/library/os/windows/mainloop.c:378
+#, fuzzy
+msgid "Network connection failed"
+msgstr "Conexão falhou"
+
+#: src/library/os/windows/mainloop.c:403
+#, fuzzy
+msgid "Name resolution failed"
+msgstr "Operação falhou"
+
+#: src/library/os/windows/eventhandler.c:133
+#, fuzzy
+msgid "Internal error"
+msgstr "Erro interno"
+
+#: src/library/os/windows/eventhandler.c:134
+msgid "Requested connection is already on the watch list."
+msgstr "Conexão pedida já está na lista de controle"
+
+#: src/library/os/windows/eventhandler.c:165
+#, fuzzy
+msgid "Unexpected network error"
+msgstr "Erro inesperado"
+
+#: src/library/os/windows/eventhandler.c:166
+msgid "Unable to watch socket, WSAEventSelect has failed."
+msgstr "Incapaz de monitorar socket, WSAEventSelect falhou."
 
 #: src/library/actions/table.c:112
 msgid "_Reconnect"
@@ -1991,8 +2038,8 @@ msgstr ""
 msgid "Connected in TN3270E mode, 3270 mode"
 msgstr ""
 
-#: src/library/properties/signed.c:59 src/library/properties/signed.c:88
-#: src/library/properties/signed.c:108 src/library/telnet.c:1839
+#: src/library/properties/signed.c:59 src/library/properties/signed.c:87
+#: src/library/properties/signed.c:112 src/library/telnet.c:1839
 #: src/library/telnet.c:1859
 msgid "Unknown"
 msgstr "Desconhecido"
@@ -2049,51 +2096,51 @@ msgstr "Resolvendo"
 msgid "X Connecting"
 msgstr "Conectando"
 
-#: src/library/properties/signed.c:95
+#: src/library/properties/signed.c:99
 #, fuzzy
 msgid "No secure connection"
 msgstr "Conexão _Segura."
 
-#: src/library/properties/signed.c:96
+#: src/library/properties/signed.c:100
 #, fuzzy
 msgid "Connection secure with CA check"
 msgstr "A conexão é segura ?"
 
-#: src/library/properties/signed.c:97
+#: src/library/properties/signed.c:101
 msgid "Connection secure, no CA, self-signed or expired CRL"
 msgstr ""
 
-#: src/library/properties/signed.c:98
+#: src/library/properties/signed.c:102
 #, fuzzy
 msgid "Negotiating SSL"
 msgstr "Negociação SSL"
 
-#: src/library/properties/signed.c:99
+#: src/library/properties/signed.c:103
 msgid "Verifying SSL (Getting CRL)"
 msgstr ""
 
-#: src/library/properties/signed.c:100
+#: src/library/properties/signed.c:104
 msgid "Undefined"
 msgstr "Indefinido"
 
 #. Property name.
-#: src/library/properties/signed.c:129
+#: src/library/properties/signed.c:133
 msgid "Connection state"
 msgstr "Estado da conexão"
 
 #. Property name.
 #. Property group.
-#: src/library/properties/signed.c:138
+#: src/library/properties/signed.c:142
 msgid "Cursor address"
 msgstr "Endereço do cursor"
 
 #. Property name.
-#: src/library/properties/signed.c:146
+#: src/library/properties/signed.c:150
 msgid "Latest program message"
 msgstr "Última mensagem de programa"
 
 #. Property name.
-#: src/library/properties/signed.c:154
+#: src/library/properties/signed.c:158
 msgid "ID of the session security state"
 msgstr "Identificação do estado de segurança da sessão"
 
@@ -2335,14 +2382,14 @@ msgstr "A conexão é segura ?"
 #: src/library/connect.c:184
 #, c-format
 msgid "Unsupported scheme '%s' in URL %s"
-msgstr ""
+msgstr "Esquema não suportado '%s' na URL %s"
 
-#: src/library/connect.c:261
+#: src/library/connect.c:263
 #, fuzzy
 msgid "Unable to activate SSL connection"
 msgstr "Não foi possível obter o estado da conexão."
 
-#: src/library/connect.c:262
+#: src/library/connect.c:264
 msgid "The OpenSSL library is not available in this build"
 msgstr ""
 
@@ -2549,6 +2596,10 @@ msgstr ""
 msgid "Timer is enabled, usually activates when session is busy"
 msgstr ""
 
+#, fuzzy, c-format
+#~ msgid "Can't connect to %s"
+#~ msgstr "Não foi possível conectar a %s:%s"
+
 #, c-format
 #~ msgid "Windows error %d"
 #~ msgstr "Erro windows foi %d"
@@ -2630,9 +2681,6 @@ msgstr ""
 #, c-format
 #~ msgid "%s"
 #~ msgstr "%s"
-
-#~ msgid "Can't set socket to blocking mode."
-#~ msgstr "Não foi possível mudar o socket para o modo blocante."
 
 #~ msgid "Can't set socket to non blocking mode"
 #~ msgstr "Não foi possível setar o socket para o modo não blocante."
@@ -3582,9 +3630,6 @@ msgstr ""
 
 #~ msgid "Open"
 #~ msgstr "Abrir"
-
-#~ msgid "Operation failed"
-#~ msgstr "Operação falhou"
 
 #~ msgid "Operation has failed"
 #~ msgstr "Operação falhou"

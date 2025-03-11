@@ -51,14 +51,15 @@ src/library/os/windows/event_dispatcher.c
 src/library/os/windows/log.c
 src/library/os/windows/registry.c
 src/library/os/windows/util.c
-src/library/os/windows/mainloop.c
 src/library/os/windows/http.c
 src/library/os/windows/ldap.c
 src/library/os/windows/connect.c
-src/library/os/windows/insecure.c
 src/library/os/windows/resolv.c
 src/library/os/windows/popup.c
 src/library/os/windows/handle.c
+src/library/os/windows/insecure.c
+src/library/os/windows/mainloop.c
+src/library/os/windows/eventhandler.c
 src/library/actions/table.c
 src/library/actions/actions.c
 src/library/array.c

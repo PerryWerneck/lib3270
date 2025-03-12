@@ -167,16 +167,17 @@ Install
 
 	```shell
 	brew update
-	brew install xz binutils coreutils curl gettext libtool openssl pkgconfig meson ninja
+	brew install xz meson ninja curl gettext openssl pkgconfig
 	brew upgrade
 	```
 
-4. Configure, build and install
+4. Configure, build and install *REVISION PENDING*
 
 	```shell
 	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
-	./autogen.sh --prefix="$(brew --cellar)/lib3270/5.4" --with-libiconv-prefix=$(brew --prefix gettext)
-	make all && make install
+	meson setup --reconfigure --wipe .build
+	meson compile -C .build
+	meson install -C .build
 	brew link lib3270
 	```
 

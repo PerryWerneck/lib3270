@@ -101,7 +101,7 @@ int lib3270_loaded(void) {
 	ansictl.vrprnt  = parse_ctlchar("^R");
 	ansictl.vlnext  = parse_ctlchar("^V");
 
-#ifdef _WIN32
+#if defined(_WIN32)
 	{
 		char lpFilename[4096];
 
@@ -116,11 +116,13 @@ int lib3270_loaded(void) {
 		strncat(lpFilename,"locale",4095);
 		bindtextdomain(GETTEXT_PACKAGE,lpFilename);
 	}
-#else
+#elif defined(HAVE_LIBINTL)
 	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 #endif // _WIN32
 
+#if defined(HAVE_LIBINTL)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+#endif // HAVE_LIBINTL
 
 #ifdef HAVE_LIBCURL
 	trace("%s.curl_global_init",__FUNCTION__);

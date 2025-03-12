@@ -31,6 +31,9 @@
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
 
+#include <config.h>
+#include <string.h>
+
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif // HAVE_MALLOC_H
@@ -362,8 +365,10 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *h, const char *n) {
 
 	trace("%s(%s)",__FUNCTION__,str);
 
-	if(!(hostname && *hostname))
+	if(!(hostname && *hostname)) {
+		trace("Empty hostname, rejecting '%s'",str);
 		return 0;
+	}
 
 	srvc = h->network.module->service;
 

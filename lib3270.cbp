@@ -297,6 +297,7 @@
 		<Unit filename="src/include/macos/lib3270/os.h" />
 		<Unit filename="src/include/networking.h" />
 		<Unit filename="src/include/popupsc.h" />
+		<Unit filename="src/include/private/intl.h" />
 		<Unit filename="src/include/resources.h" />
 		<Unit filename="src/include/screen.h" />
 		<Unit filename="src/include/screenc.h" />

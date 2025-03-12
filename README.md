@@ -167,7 +167,7 @@ Install
 
 	```shell
 	brew update
-	brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
+	brew install xz binutils coreutils curl gettext libtool openssl pkgconfig meson ninja
 	brew upgrade
 	```
 

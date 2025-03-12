@@ -40,6 +40,10 @@
 #include <iconv.h>
 #include <string.h>
 
+#ifndef ICONV_CONST
+	#define ICONV_CONST
+#endif // ICONV_CONST
+
 struct _lib3270_iconv {
 	/// @brief Convert strings from host codepage to local codepage.
 	iconv_t local;
@@ -92,7 +96,12 @@ static char *convert(iconv_t *converter, const char * str, int length) {
 		size_t				  out		= (length << 1);
 		char				* ptr;
 		char				* outBuffer	= (char *) lib3270_malloc(out);
+
+#ifdef WINICONV_CONST
+		WINICONV_CONST char	* inBuffer	= (WINICONV_CONST char *) str;
+#else
 		ICONV_CONST char	* inBuffer	= (ICONV_CONST char *) str;
+#endif
 
 		memset(ptr=outBuffer,0,out);
 

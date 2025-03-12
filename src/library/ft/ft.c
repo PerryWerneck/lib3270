@@ -42,6 +42,7 @@
 #include <lib3270/log.h>
 #include <internals.h>
 #include <lib3270/trace.h>
+#include <private/intl.h>
 
 #include <errno.h>
 

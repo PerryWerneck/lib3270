@@ -18,7 +18,7 @@
  */
 
 /**
- * @file mainloop.c
+ * @file glib.c
  * @brief Implements the glib main loop handler for the application.
  *
  * This file contains the glib implementation of the main loop handler, which is responsible

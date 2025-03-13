@@ -382,7 +382,7 @@ static int net_connected(H3270 *hSession) {
 
 /*
 	if(hSession->ssl.host && hSession->ssl.state == LIB3270_SSL_UNDEFINED) {
-		if(lib3270_start_tls(hSession))
+		if(start_tls(hSession))
 			return -1;
 	}
 */
@@ -1052,12 +1052,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 	trace_dsn(hSession,"%s FOLLOWS %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 
 	hSession->ssl.host = 1;	// Set host type as SSL.
-	if(lib3270_start_tls(hSession)) {
-		connection_close(hSession,-1);
-		return;
-	}
-
-	// lib3270_notify_tls(hSession);
+	start_tls(hSession);
 
 }
 

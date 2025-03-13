@@ -43,9 +43,10 @@ typedef enum _LIB3270_NOTIFY {
 	LIB3270_NOTIFY_NETWORK_ERROR	= 0x0013,	///< @brief Network related messages (network-error)
 
 	// Security message types
-	LIB3270_NOTIFY_SECURITY_HIGH	= 0x0100,	///< @brief High security level (security-high).
-	LIB3270_NOTIFY_SECURITY_MEDIUM	= 0x0200,	///< @brief Medium security level (security-medium).
-	LIB3270_NOTIFY_SECURITY_LOW		= 0x0300,	///< @brief Low security level (security-low).
+	LIB3270_NOTIFY_SECURITY_NONE	= 0x0100,	///< @brief No TLS/SSL.
+	LIB3270_NOTIFY_SECURITY_LOW		= 0x0200,	///< @brief Low security level (security-low).
+	LIB3270_NOTIFY_SECURITY_MEDIUM	= 0x0300,	///< @brief Medium security level (security-medium).
+	LIB3270_NOTIFY_SECURITY_HIGH	= 0x0400,	///< @brief High security level (security-high).
 
 	// Dialog buttons.
 	LIB3270_NOTIFY_ALLOW_RETRY		= 0x1000,	///< @brief Connection related messages (allow 'Retry' button).
@@ -56,6 +57,9 @@ typedef enum _LIB3270_NOTIFY {
 	// Network related messages.
 	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x1023,	///< @brief Connection error (icon 'network-server', button 'retry').
 	LIB3270_NOTIFY_NETWORK_IO_ERROR	= 0x2013,	///< @brief Network I/O error (icon 'network-error', button 'reconnect').
+
+	// TLS/SSL related messages.
+	LIB3270_NOTIFY_NO_TLS			= 0x8103,	///< @brief No TLS/SSL support (security-low).
 
 } LIB3270_NOTIFY;
 

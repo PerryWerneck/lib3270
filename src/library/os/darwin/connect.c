@@ -239,7 +239,7 @@ static void net_connected(H3270 *hSession, int GNUC_UNUSED(fd), LIB3270_IO_FLAG 
 		return;
 	}
 
-	if(lib3270_start_tls(hSession)) {
+	if(start_tls(hSession)) {
 		connection_close(hSession,-1);
 		return;
 	}

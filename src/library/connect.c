@@ -218,72 +218,31 @@
 #endif //_WIN32
 
 	debug("%s(%d)",__FUNCTION__,sock);
-	
-	hSession->connection.sock = sock;
 
+	trace_dsn(
+		hSession,
+		"Connected to %s\n", 
+		hSession->connection.url
+	);
+	
 	if(hSession->connection.context) {
-		trace_network(hSession,"Connection established, cleaning network context\n");
+		trace_network(hSession,"Connection established, cleaning 'connect' context\n");
 		hSession->connection.context->finalize(hSession,hSession->connection.context);
 		hSession->connection.context = NULL;
 	}
 
-	trace_dsn(
-		hSession,
-		"Connected to %s%s.\n", 
-		hSession->connection.url,hSession->ssl.host ? " using SSL": ""
-	);
-
-	//if(lib3270_start_tls(hSession)) {
-	//	connection_close(hSession,-1);
-	//	return;
-	//}
-	set_blocking_mode(hSession,sock,1);	// Set blocking mode.
+	hSession->connection.sock = sock;
 
 	if(hSession->ssl.host) {
 
-	// TODO: Implement optional Windows Secure channel (https://learn.microsoft.com/en-us/windows/win32/secauthn/secure-channel)
-	// https://learn.microsoft.com/en-us/windows-server/security/tls/tls-ssl-schannel-ssp-overview
-#if defined(HAVE_OPENSSL)
-		// Negotiate SSL
-		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
-
-		// FIX-ME: Add ssl support.
-
-		close(sock);
-		connection_close(hSession,ENOTSUP);
-#else
-
-		close(sock);
-		connection_close(hSession,ENOTSUP);
-
-		static const LIB3270_POPUP popup = {
-			.name		= "openssl-not-available",
-			.type		= LIB3270_NOTIFY_CRITICAL,
-			.title		= N_("Connection error"),
-			.summary	= N_("Unable to activate SSL connection"),
-			.body		= N_("The OpenSSL library is not available in this build"),
-			.label		= N_("OK")
-		};
-
-		lib3270_popup(hSession, &popup, 0);
-
-#endif // HAVE_OPENSSL
-
-		return;
+		start_tls(hSession);
 
 	} else {
 
-		if(hSession->connection.context) {
-			hSession->connection.context->finalize(hSession,hSession->connection.context);
-			hSession->connection.context = NULL;
-		}
-
-		hSession->connection.context = setup_non_ssl_context(hSession);
+		trace_network(hSession,"Starting non-tls context\n");
+		hSession->connection.context = setup_non_tls_context(hSession);
 
 	}
-
-	setup_session(hSession);
-	set_connected_initial(hSession);
 
  }
 
@@ -319,84 +278,6 @@
 	}
 
 	return 1;
-}
-
-/*
-void lib3270_notify_tls(H3270 *hSession) {
-
-	// Negotiation complete is the connection secure?
-	if(hSession->ssl.message->type != LIB3270_NOTIFY_INFO) {
-		// Ask user what I can do!
-		if(popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,1) == ECANCELED) {
-			lib3270_disconnect(hSession);
-		}
-	}
-
-}
-*/
-
-int lib3270_start_tls(H3270 *hSession) {
-
-	debug("%s: NEED REFACTOR----------------------------------------------------------------",__FUNCTION__);
-/*
-
-	hSession->ssl.message = NULL;	// Reset message.
-	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
-
-	non_blocking(hSession,False);
-
-#pragma GCC diagnostic push
-#ifdef _WIN32
-#pragma GCC diagnostic ignored "-Wcast-function-type"
-#endif // _WIN32
-	int rc = lib3270_run_task(
-	             hSession,
-				 "StartTLS",
-	             (int(*)(H3270 *h, void *)) hSession->network.module->start_tls,
-	             NULL
-	         );
-#pragma GCC diagnostic pop
-
-	if(rc == ENOTSUP) {
-
-		// No support for TLS/SSL in the active network module, the connection is insecure
-		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-		return 0;
-
-	}
-
-	// The network module SHOULD set the status message.
-	if(!hSession->ssl.message) {
-
-		static const LIB3270_POPUP message = {
-			.type = LIB3270_NOTIFY_CRITICAL,
-			.summary = N_( "Can't determine the TLS/SSL state"),
-			.body = N_("The network module didn't set the TLS/SSL state message, this is not supposed to happen and can be a coding error")
-		};
-
-		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-		popup_translated(hSession,&message,0);
-		return EINVAL;
-
-	}
-
-	if(rc) {
-
-		// Negotiation has failed. Will disconnect
-		set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-
-		if(hSession->ssl.message) {
-			popup_translated(hSession,(const LIB3270_POPUP *) hSession->ssl.message,0);
-		}
-
-		return rc;
-	}
-
-	set_ssl_state(hSession,(hSession->ssl.message->type == LIB3270_NOTIFY_INFO ? LIB3270_SSL_SECURE : LIB3270_SSL_NEGOTIATED));
-	non_blocking(hSession,True);
-*/
-
-	return 0;
 }
 
 

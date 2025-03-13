@@ -91,8 +91,16 @@
  LIB3270_INTERNAL int connection_write_offline(H3270 *, const void * , size_t, LIB3270_NET_CONTEXT *);
  LIB3270_INTERNAL int connection_except_offline(H3270 *, LIB3270_NET_CONTEXT *);
 
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession);
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession);
  
+ ///
+ /// @brief Start TLS/SSL
+ /// @param hSession	Session handle.
+ ///
+ /// @return 0 if ok, non zero if failed.
+ /// @retval ENOTSUP no SSL support.
+ LIB3270_INTERNAL int start_tls(H3270 *hSession);
+
  /// @brief Set the popup body based on network error code.
  /// @param popup The popup to update.
  /// @param error The error code

@@ -441,6 +441,9 @@ if host_machine.system() == 'windows'
 
   app_conf.set_quoted('LIBEXT', '.dll')
   lib_src += win_src
+  lib_src += [
+    'src/library/tls/unavailable.c',
+  ]
 
 endif
 
@@ -454,7 +457,9 @@ if host_machine.system() == 'linux'
   app_conf.set_quoted('LIBEXT', '.so')
 
   lib_src += linux_src
-
+  lib_src += [
+    'src/library/tls/unavailable.c',
+  ]
 
 endif
 
@@ -466,6 +471,9 @@ if host_machine.system() == 'darwin'
   )
 
   lib_src += darwin_src
+  lib_src += [
+    'src/library/tls/unavailable.c',
+  ]
 
 endif
 

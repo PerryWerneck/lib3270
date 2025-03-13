@@ -66,7 +66,6 @@
 
  } Context;
 
- 
  static int disconnect(H3270 *hSession, Context *context) {
 
 	debug("%s",__FUNCTION__);

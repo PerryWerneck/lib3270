@@ -64,7 +64,6 @@ lib_extra = [
 ]
 
 lib_deps = [
-  libssl,
   dependency('liburiparser', method : 'pkg-config'),
 ]
 
@@ -457,9 +456,22 @@ if host_machine.system() == 'linux'
   app_conf.set_quoted('LIBEXT', '.so')
 
   lib_src += linux_src
-  lib_src += [
-    'src/library/tls/unavailable.c',
-  ]
+
+  if libssl.found()
+
+    app_conf.set('HAVE_OPENSSL', 1)
+
+    lib_src += [
+      'src/library/tls/openssl/init.c',
+    ]
+
+  else 
+
+    lib_src += [
+      'src/library/tls/unavailable.c',
+    ]
+
+  endif
 
 endif
 
@@ -471,9 +483,22 @@ if host_machine.system() == 'darwin'
   )
 
   lib_src += darwin_src
-  lib_src += [
-    'src/library/tls/unavailable.c',
-  ]
+
+  if libssl.found()
+
+    app_conf.set('HAVE_OPENSSL', 1)
+
+    lib_src += [
+      'src/library/tls/openssl/init.c',
+    ]
+
+  else 
+
+    lib_src += [
+      'src/library/tls/unavailable.c',
+    ]
+
+  endif
 
 endif
 

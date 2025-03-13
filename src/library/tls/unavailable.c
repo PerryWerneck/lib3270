@@ -33,11 +33,11 @@
  LIB3270_INTERNAL int start_tls(H3270 *hSession) {
 
 	LIB3270_POPUP popup = {
-		.name		= "openssl-not-available",
+		.name		= "tls-not-available",
 		.type		= LIB3270_NOTIFY_NO_TLS,
 		.title		= _("Connection error"),
 		.summary	= _("Unable to activate TLS/SSL"),
-		.body		= _("The OpenSSL library is not available"),
+		.body		= _("The lib3270 library was not built with TLS/SSL support."),
 		.label		= _("Ok")
 	};
 

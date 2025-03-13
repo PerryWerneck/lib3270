@@ -164,7 +164,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	return (int) sent;
  }
  
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_ssl_context(H3270 *hSession) {
+ LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession) {
 
 	debug("----------------------------------------- %s",__FUNCTION__);
 

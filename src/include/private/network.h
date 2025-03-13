@@ -86,8 +86,13 @@
  
  
  LIB3270_INTERNAL void setup_session(H3270 *hSession);
- LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on);
 
+ #ifdef _WIN32
+ LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, SOCKET sock, const unsigned char on);
+ #else
+ LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on);
+ #endif // _WIN32
+ 
  LIB3270_INTERNAL int connection_write_offline(H3270 *, const void * , size_t, LIB3270_NET_CONTEXT *);
  LIB3270_INTERNAL int connection_except_offline(H3270 *, LIB3270_NET_CONTEXT *);
 

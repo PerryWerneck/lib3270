@@ -29,6 +29,10 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
  #include <private/network.h>
+ #include <private/intl.h>
+ #include <private/trace.h>
+ #include <private/mainloop.h>
+ #include <private/session.h>
  #include <lib3270/memory.h>
  #include <fcntl.h>
  #include <private/intl.h>
@@ -172,7 +176,11 @@ int lib3270_socket_send_failed(H3270 *hSession) {
 }
 */
 
-int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
+#ifdef _WIN32
+LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, SOCKET sock, const unsigned char on) {
+#else
+LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
+#endif // _WIN32
 
 	if(sock < 0) {
 		return EINVAL;
@@ -181,17 +189,33 @@ int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
 #ifdef WIN32
 
 	WSASetLastError(0);
-	u_long iMode= on ? 1 : 0;
+
+	// Got socket, set it to non blocking.
+	// Set the socket I/O mode: In this case FIONBIO
+	// enables or disables the blocking mode for the 
+	// socket based on the numerical value of iMode.
+	// If iMode = 0, blocking is enabled; 
+	// If iMode != 0, non-blocking mode is enabled.	
+	// https://learn.microsoft.com/pt-br/windows/win32/api/winsock/nf-winsock-ioctlsocket	
+	u_long iMode= on ? 0 : 1;
 
 	if(ioctlsocket(sock,FIONBIO,&iMode)) {
-		lib3270_autoptr(char) msg = lib3270_win32_strerror(GetLastError());
-		lib3270_popup_dialog(	hSession,
-		                        LIB3270_NOTIFY_CONNECTION_ERROR,
-		                        _( "Connection error" ),
-		                        _( "ioctlsocket(FIONBIO) failed." ),
-		                        "%s", msg
-							);					
+
+		int error = WSAGetLastError();
+
+		static const LIB3270_POPUP popup = {
+			.name		= "ioctl",
+			.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+			.title		= N_("Network error"),
+			.summary	= N_("Unable to set non-blocking mode."),
+			.body		= "",
+			.label		= N_("OK")
+		};
+
+		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,error,(LPARAM) &popup);
+
 		return -1;
+
 	}
 
 #else
@@ -211,7 +235,7 @@ int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
 			.label		= _("OK")
 		};
 
-		lib3270_popup(hSession, &popup, 0);
+		lib3270_popup_async(hSession, &popup);
 
 		return error;
 	}
@@ -236,7 +260,7 @@ int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
 			.label		= _("OK")
 		};
 
-		lib3270_popup(hSession, &popup, 0);
+		lib3270_popup_async(hSession, &popup);
 
 		return error;
 
@@ -245,6 +269,7 @@ int set_blocking_mode(H3270 *hSession, int sock, const unsigned char on) {
 #endif
 
 	debug("Socket %d is now %s",sock,(on ? "Non Blocking" : "Blocking"));
+	trace_network(hSession,"Socket %d is now %s",sock,(on ? "Non Blocking" : "Blocking"));
 
 	return 0;
 

@@ -33,6 +33,8 @@
  #include <private/trace.h>
  #include <private/session.h>
  #include <private/mainloop.h>
+ #include <private/intl.h>
+ #include <private/trace.h>
  #include <lib3270/win32.h>
  #include <wininet.h>
 
@@ -232,9 +234,22 @@
 
 		{
 			lib3270_autoptr(char) message = lib3270_win32_strerror(error);
+
+			LIB3270_POPUP popup = {
+				.name		= "ioctl",
+				.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+				.title		= _("Network error"),
+				.summary	= _("Unable to set non-blocking mode."),
+				.body		= message,
+				.label		= _("OK")
+			};
+	
 			trace_network(context->hSession,"Failed to connect socket to %s: %s\n",host,message);
 			closesocket(sock);
 			sock = INVALID_SOCKET;
+
+			lib3270_popup_async(context->hSession,&popup);
+
 		}
 		error = 0; // Reset error for next address.
 

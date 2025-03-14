@@ -245,21 +245,64 @@
 
 			int code = SSL_get_error(context->ssl,connect_result);
 
-			lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-connect-%d",code);
-			lib3270_autoptr(char) summary = lib3270_strdup_printf("Fatal error %d in TLS/SSL handshake",code);
 			lib3270_autoptr(char) body = openssl_errors(context);
 	
 			LIB3270_POPUP popup = {
-				.name		= name,
-				.summary	= summary,
 				.body		= body,
 				.type		= LIB3270_NOTIFY_TLS_ERROR,
 				.title		= _("TLS/SSL error"),
 				.label		= _("OK")
 			};
-		
+
 			connection_close(context->hSession, -1);
-			lib3270_popup_async(context->hSession, &popup);
+
+			switch(code) {
+			case SSL_ERROR_SSL:
+				{
+					debug("%s","SSL_ERROR_SSL");
+
+					const char *mask = "ssl-error-%d";
+
+					lib3270_autoptr(char) name = lib3270_strdup_printf(mask,code);
+					popup.title = _("TLS/SSL failure");
+					popup.summary = _("A fatal error occurred during the TLS/SSL handshake process.");
+					popup.name = name;
+
+					lib3270_popup_async(context->hSession, &popup);
+				}
+				break;
+
+			case SSL_ERROR_SYSCALL:
+
+				debug("%s","SSL_ERROR_SYSCALL");
+				popup.title	= _("TLS/SSL system error");
+				popup.summary = _("A system I/O error occurred during the SSL handshake process.");
+
+				if(connect_result == -1) {
+
+					lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-syscall-%d",errno);
+					popup.name = name;
+					lib3270_popup_async(context->hSession, &popup);
+
+				} else {
+
+					lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-connect-syscall-%d",code);
+					popup.name = name;
+					lib3270_popup_async(context->hSession, &popup);
+
+				}
+				break;
+				
+			default:
+				{
+					lib3270_autoptr(char) summary = lib3270_strdup_printf("Fatal error %d in TLS/SSL handshake",code);
+					lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-connect-%d",code);
+					popup.name = name;
+					popup.summary = summary;
+					lib3270_popup_async(context->hSession, &popup);
+				}
+			}
+		
 
 		}
 

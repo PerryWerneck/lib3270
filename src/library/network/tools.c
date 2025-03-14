@@ -269,7 +269,7 @@ LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned
 #endif
 
 	debug("Socket %d is now %s",sock,(on ? "Non Blocking" : "Blocking"));
-	trace_network(hSession,"Socket %d is now %s",sock,(on ? "Non Blocking" : "Blocking"));
+	trace_network(hSession,"Socket %d is now %s\n",sock,(on ? "Non Blocking" : "Blocking"));
 
 	return 0;
 

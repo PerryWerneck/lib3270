@@ -99,6 +99,8 @@
 
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession);
  
+ LIB3270_INTERNAL void set_network_context(H3270 *hSession, LIB3270_NET_CONTEXT *context);
+
  ///
  /// @brief Start TLS/SSL
  /// @param hSession	Session handle.
@@ -115,7 +117,5 @@
  /// @brief Set SSL state for connection.
  /// @param session The TN3270 Session.
  /// @param state The new state for TLS/SSL
- LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
-
- // LIB3270_INTERNAL int non_blocking(H3270 *session, int on);
+ LIB3270_INTERNAL void set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 

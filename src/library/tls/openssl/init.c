@@ -54,14 +54,10 @@
 
 	context->state = 2;
 
-	if(context->tcp) {
-		BIO_free(context->tcp);
-		context->tcp = NULL;
-	}
-
 	if(context->ssl) {
 		SSL_free(context->ssl);
 		context->ssl = NULL;
+		context->tcp = NULL;
 	}
 
 	if(context->ctx) {
@@ -78,6 +74,11 @@
 
 	Context *context = lib3270_new(Context);
 	memset(context,0,sizeof(Context));
+	context->hSession = hSession;
+	context->parent.disconnect = (void *) disconnect;
+	context->parent.finalize = (void *) finalize;
+
+	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
 
 	// Initialize SSL
 	context->ctx = get_openssl_context(hSession);
@@ -137,12 +138,6 @@
 		pthread_mutex_unlock(&ssl_guard);
 	}
 
-	// Start negotiation thread.
-	context->hSession = hSession;
-	context->parent.disconnect = (void *) disconnect;
-	context->parent.finalize = (void *) finalize;
-	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
-
 	pthread_t thread;
 	if(pthread_create(&thread, NULL, (void *) ssl_thread, context)){
 
@@ -181,9 +176,19 @@
 	finalize(context->hSession,context);
 	lib3270_free(context);
  
-}
+ }
 
- static void ssl_thread_failed(Context *context, const char *message, int code) {
+ /*
+ char * openssl_get_error(Context *context, int code) {
+	if(code == -1) {
+		return lib3270_strdup(_("Unexpected OpenSSL error"));
+	}
+
+	return lib3270_strdup_printf("%s",ERR_reason_error_string(code));
+ }
+ */
+
+ static void openssl_failed(Context *context, const char *message, int code) {
 
 	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
 
@@ -206,11 +211,11 @@
 	}
 
 	connection_close(context->hSession, code ? code : -1);
-	context_free(context);
 
-	if(code) {
+	if(code != -1) {
+
 		lib3270_autoptr(char) summary = 
-			lib3270_strdup_printf(message,SSL_get_error(context->ssl, code));
+			lib3270_strdup_printf(message,ERR_reason_error_string(code));
 
 		popup.summary = summary;
 		trace_ssl(context->hSession,"TLS/SSL failed with error '%s'\n%s\n",popup.summary,popup.body);
@@ -234,8 +239,6 @@
 
  static void * ssl_thread(Context *context) {
 
-	int rc;
-
 	// Disable non-blocking mode.
 	if(set_blocking_mode(context->hSession,context->hSession->connection.sock,1)) {
 		context_free(context);
@@ -254,7 +257,12 @@
     // Pass the socket to the BIO interface, which OpenSSL uses to create the TLS session.
     context->tcp = BIO_new_socket(context->hSession->connection.sock, BIO_NOCLOSE);
     if(context->tcp == NULL) {
-		ssl_thread_failed(context,_("Unexpected error associating network socket with TLS/SSL context"),0);
+		openssl_failed(
+			context,
+			_("Unexpected error associating network socket with TLS/SSL context"),
+			-1
+		);
+		context_free(context);
 		pthread_mutex_unlock(&ssl_guard);
 		return 0;
 	}        
@@ -262,10 +270,45 @@
     SSL_set_bio(context->ssl, context->tcp, context->tcp);
 
 	// Establish the TLS session.
-    if ((rc = SSL_connect(context->ssl)) <= 0) {
-		ssl_thread_failed(context,"%s",rc);
-		pthread_mutex_unlock(&ssl_guard);
-		return 0;
+	{
+		int connect_result = SSL_connect(context->ssl);
+		debug("Connect result: %d",connect_result);
+
+		if(connect_result == 1) {
+
+			trace_ssl(context->hSession,"TLS/SSL connection established\n");
+
+		} else if(connect_result == 0) {
+
+			// The TLS/SSL handshake was not successful but was shut down controlled 
+			// and by the specifications of the TLS/SSL protocol. 
+			// Call SSL_get_error() with the return value ret to find out the reason.
+			int code = SSL_get_error(context->ssl,connect_result);
+
+			trace_ssl(context->hSession,"TLS/SSL connection was not successful (rc=%d)\n",code);
+
+			openssl_failed(
+				context,
+				_("The TLS/SSL handshake was not successful: %s"),
+				code
+			);
+
+		} else if(connect_result < 0) {
+
+			// The TLS/SSL handshake was not successful, because a fatal error occurred either at the protocol level or a connection failure occurred. 
+			// The shutdown was not clean. It can also occur at any time in the protocol sequence.
+			int code = SSL_get_error(context->ssl,connect_result);
+
+			trace_ssl(context->hSession,"The TLS/SSL handshake was not successful, because a fatal error occurred (rc=%d)\n",code);
+
+			openssl_failed(
+				context,
+				_("Fatal error in the TLS/SSL handshake: %s"),
+				code
+			);
+
+		}
+
 	}
 
 	if(context->state) {

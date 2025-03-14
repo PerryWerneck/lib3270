@@ -27,9 +27,10 @@
 
  /// @brief Connection context for OpenSSL connections.
  typedef struct {
+
+	LIB3270_NET_CONTEXT parent;
 	
 	char state;
-	LIB3270_NET_CONTEXT parent;
 	H3270 *hSession;
 	SSL_CTX *ctx;
 	SSL *ssl;

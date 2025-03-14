@@ -178,16 +178,20 @@
  
  }
 
- /*
  char * openssl_get_error(Context *context, int code) {
 	if(code == -1) {
 		return lib3270_strdup(_("Unexpected OpenSSL error"));
 	}
 
-	return lib3270_strdup_printf("%s",ERR_reason_error_string(code));
- }
- */
+	const char *error = ERR_reason_error_string(code);
+	if(error) {
+		return lib3270_strdup(error);
+	}
 
+	return lib3270_strdup_printf(_("Unexpected OpenSSL error %d"),code);
+
+ }
+ 
  static void openssl_failed(Context *context, const char *message, int code) {
 
 	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
@@ -215,7 +219,7 @@
 	if(code != -1) {
 
 		lib3270_autoptr(char) summary = 
-			lib3270_strdup_printf(message,ERR_reason_error_string(code));
+			lib3270_strdup_printf(message,openssl_get_error(context,code));
 
 		popup.summary = summary;
 		trace_ssl(context->hSession,"TLS/SSL failed with error '%s'\n%s\n",popup.summary,popup.body);

@@ -33,6 +33,8 @@
 
  #include <openssl/ssl.h>
  #include <openssl/x509v3.h>
+ #include <openssl/err.h>
+ #include <pthread.h>
 
  #define TLS_VERIFY_DEPTH 6
 
@@ -114,6 +116,9 @@
 		pthread_mutex_unlock(&ssl_guard);
 		return context;
 	}
+
+	ERR_load_crypto_strings();
+	SSL_load_error_strings();
 
 	context = SSL_CTX_new(TLS_client_method());
 	if(!context) {

@@ -1,56 +1,43 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-#error deprecated
  
- 
-/// @brief OpenSSL states.
+ #include <config.h>
+ #include <lib3270/defs.h>
+ #include <private/intl.h>
+ #include <private/network.h>
+ #include <private/openssl.h>
 
-#include "private.h"
-
-/*--[ Implement ]------------------------------------------------------------------------------------*/
-
-const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
+ LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_message_from_code(long code) {
 
 	static const struct {
 
-		long id;
+		long code;
 		LIB3270_SSL_MESSAGE message;
 
 	} messages[] = {
 
 		// http://www.openssl.org/docs/apps/verify.html
 		{
-			.id = X509_V_OK,
+			.code = X509_V_OK,
 			.message = {
 				.name = "X509_V_OK",
-				.type = LIB3270_NOTIFY_INFO,
+				.type = LIB3270_NOTIFY_SECURITY_HIGH,
 				.icon = "security-high",
 				.summary = N_( "Secure connection was successful." ),
 				.body = N_( "The connection is secure and the host identity was confirmed." )
@@ -58,10 +45,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT,
+			.code = X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Unable to get issuer certificate" ),
 				.body = N_( "The issuer certificate of a looked up certificate could not be found. This normally means the list of trusted certificates is not complete." )
@@ -69,14 +56,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_GET_CRL,
+			.code = X509_V_ERR_UNABLE_TO_GET_CRL,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_GET_CRL",
-#ifdef SSL_ENABLE_CRL_CHECK
-				.type = LIB3270_NOTIFY_SECURE,
-#else
-				.type = LIB3270_NOTIFY_INFO,
-#endif // SSL_ENABLE_CRL_CHECK
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Unable to get certificate CRL." ),
 				.body = N_( "The Certificate revocation list (CRL) of a certificate could not be found." ),
@@ -85,10 +68,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE,
+			.code = X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_DECRYPT_CERT_SIGNATURE",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Unable to decrypt certificate's signature" ),
 				.body = N_( "The certificate signature could not be decrypted. This means that the actual signature value could not be determined rather than it not matching the expected value, this is only meaningful for RSA keys." )
@@ -96,10 +79,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE,
+			.code = X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_DECRYPT_CRL_SIGNATURE",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Unable to decrypt CRL's signature" ),
 				.body = N_( "The CRL signature could not be decrypted: this means that the actual signature value could not be determined rather than it not matching the expected value. Unused." )
@@ -107,10 +90,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY,
+			.code = X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_DECODE_ISSUER_PUBLIC_KEY",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Unable to decode issuer public key" ),
 				.body = N_( "The public key in the certificate SubjectPublicKeyInfo could not be read." )
@@ -118,10 +101,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CERT_SIGNATURE_FAILURE,
+			.code = X509_V_ERR_CERT_SIGNATURE_FAILURE,
 			.message = {
 				.name = "X509_V_ERR_CERT_SIGNATURE_FAILURE",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Certificate signature failure" ),
 				.body = N_( "The signature of the certificate is invalid." )
@@ -129,10 +112,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CRL_SIGNATURE_FAILURE,
+			.code = X509_V_ERR_CRL_SIGNATURE_FAILURE,
 			.message = {
 				.name = "X509_V_ERR_CRL_SIGNATURE_FAILURE",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "CRL signature failure" ),
 				.body = N_( "The signature of the certificate is invalid." )
@@ -140,10 +123,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CERT_NOT_YET_VALID,
+			.code = X509_V_ERR_CERT_NOT_YET_VALID,
 			.message = {
 				.name = "X509_V_ERR_CERT_NOT_YET_VALID",
-				.type = LIB3270_NOTIFY_WARNING,
+				.type = LIB3270_NOTIFY_SECURITY_MEDIUM,
 				.icon = "security-medium",
 				.summary = N_( "Certificate is not yet valid" ),
 				.body = N_( "The certificate is not yet valid: the notBefore date is after the current time." )
@@ -151,10 +134,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CERT_HAS_EXPIRED,
+			.code = X509_V_ERR_CERT_HAS_EXPIRED,
 			.message = {
 				.name = "X509_V_ERR_CERT_HAS_EXPIRED",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_MEDIUM,
 				.icon = "security-medium",
 				.summary = N_( "Certificate has expired" ),
 				.body = N_( "The certificate has expired: that is the notAfter date is before the current time." )
@@ -162,10 +145,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CRL_NOT_YET_VALID,
+			.code = X509_V_ERR_CRL_NOT_YET_VALID,
 			.message = {
 				.name = "X509_V_ERR_CRL_NOT_YET_VALID",
-				.type = LIB3270_NOTIFY_WARNING,
+				.type = LIB3270_NOTIFY_SECURITY_MEDIUM,
 				.icon = "security-medium",
 				.summary = N_( "The CRL is not yet valid." ),
 				.body = N_( "The Certificate revocation list (CRL) is not yet valid." )
@@ -173,14 +156,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CRL_HAS_EXPIRED,
+			.code = X509_V_ERR_CRL_HAS_EXPIRED,
 			.message = {
 				.name = "X509_V_ERR_CRL_HAS_EXPIRED",
-#ifdef SSL_ENABLE_CRL_EXPIRATION_CHECK
-				.type = LIB3270_NOTIFY_SECURE,
-#else
-				.type = LIB3270_NOTIFY_INFO,
-#endif // SSL_ENABLE_CRL_EXPIRATION_CHECK
+				.type = LIB3270_NOTIFY_SECURITY_MEDIUM,
 				.icon = "security-medium",
 				.summary = N_( "The CRL has expired." ),
 				.body = N_( "The Certificate revocation list (CRL) has expired.")
@@ -188,10 +167,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD,
+			.code = X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD,
 			.message = {
 				.name = "X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Format error in certificate's notBefore field" ),
 				.body = N_( "The certificate notBefore field contains an invalid time." )
@@ -199,10 +178,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD,
+			.code = X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD,
 			.message = {
 				.name = "X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Format error in certificate's notAfter field" ),
 				.body = N_( "The certificate notAfter field contains an invalid time." )
@@ -210,10 +189,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD,
+			.code = X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD,
 			.message = {
 				.name = "X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Format error in CRL's lastUpdate field" ),
 				.body = N_( "The CRL lastUpdate field contains an invalid time." )
@@ -221,10 +200,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD,
+			.code = X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD,
 			.message = {
 				.name = "X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Format error in CRL's nextUpdate field" ),
 				.body = N_( "The CRL nextUpdate field contains an invalid time." )
@@ -232,7 +211,7 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_OUT_OF_MEM,
+			.code = X509_V_ERR_OUT_OF_MEM,
 			.message = {
 				.name = "X509_V_ERR_OUT_OF_MEM",
 				.type = LIB3270_NOTIFY_ERROR,
@@ -243,14 +222,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT,
+			.code = X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT,
 			.message = {
 				.name = "X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT",
-#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-				.type = LIB3270_NOTIFY_WARNING,
-#else
-				.type = LIB3270_NOTIFY_SECURE,
-#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+				.type = LIB3270_NOTIFY_SECURITY_MEDIUM,
 				.icon = "security-medium",
 				.summary = N_( "Self signed certificate" ),
 				.label = N_( "Continue" ),
@@ -259,14 +234,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN,
+			.code = X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN,
 			.message = {
 				.name = "X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN",
-#ifdef SSL_ENABLE_SELF_SIGNED_CERT_CHECK
-				.type = LIB3270_NOTIFY_INFO,
-#else
-				.type = LIB3270_NOTIFY_SECURE,
-#endif // SSL_ENABLE_SELF_SIGNED_CERT_CHECK
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.label = N_("Continue"),
 				.summary = N_( "Self signed certificate in certificate chain" ),
@@ -275,10 +246,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY,
+			.code = X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
-				.type = LIB3270_NOTIFY_WARNING,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Unable to get local issuer certificate" ),
 				.body = N_( "The issuer certificate could not be found: this occurs if the issuer certificate of an untrusted certificate cannot be found." )
@@ -286,10 +257,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE,
+			.code = X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE,
 			.message = {
 				.name = "X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Unable to verify the first certificate" ),
 				.body = N_( "No signatures could be verified because the chain contains only one certificate and it is not self signed." )
@@ -297,10 +268,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CERT_REVOKED,
+			.code = X509_V_ERR_CERT_REVOKED,
 			.message = {
 				.name = "X509_V_ERR_CERT_REVOKED",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Certificate revoked" ),
 				.body = N_( "The certificate has been revoked." )
@@ -308,10 +279,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_INVALID_CA,
+			.code = X509_V_ERR_INVALID_CA,
 			.message = {
 				.name = "X509_V_ERR_INVALID_CA",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Invalid CA certificate" ),
 				.body = N_( "A CA certificate is invalid. Either it is not a CA or its extensions are not consistent with the supplied purpose." )
@@ -319,10 +290,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_PATH_LENGTH_EXCEEDED,
+			.code = X509_V_ERR_PATH_LENGTH_EXCEEDED,
 			.message = {
 				.name = "X509_V_ERR_PATH_LENGTH_EXCEEDED",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Path length constraint exceeded" ),
 				.body = N_( "The basicConstraints pathlength parameter has been exceeded." ),
@@ -330,10 +301,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_INVALID_PURPOSE,
+			.code = X509_V_ERR_INVALID_PURPOSE,
 			.message = {
 				.name = "X509_V_ERR_INVALID_PURPOSE",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Unsupported certificate purpose" ),
 				.body = N_( "The supplied certificate cannot be used for the specified purpose." )
@@ -341,10 +312,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CERT_UNTRUSTED,
+			.code = X509_V_ERR_CERT_UNTRUSTED,
 			.message = {
 				.name = "X509_V_ERR_CERT_UNTRUSTED",
-				.type = LIB3270_NOTIFY_WARNING,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Certificate not trusted" ),
 				.body = N_( "The root CA is not marked as trusted for the specified purpose." )
@@ -352,10 +323,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_CERT_REJECTED,
+			.code = X509_V_ERR_CERT_REJECTED,
 			.message = {
 				.name = "X509_V_ERR_CERT_REJECTED",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Certificate rejected" ),
 				.body = N_( "The root CA is marked to reject the specified purpose." )
@@ -363,10 +334,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_SUBJECT_ISSUER_MISMATCH,
+			.code = X509_V_ERR_SUBJECT_ISSUER_MISMATCH,
 			.message = {
 				.name = "X509_V_ERR_SUBJECT_ISSUER_MISMATCH",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
 				.summary = N_( "Subject issuer mismatch" ),
 				.body = N_( "The current candidate issuer certificate was rejected because its subject name did not match the issuer name of the current certificate. Only displayed when the -issuer_checks option is set." )
@@ -374,10 +345,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_AKID_SKID_MISMATCH,
+			.code = X509_V_ERR_AKID_SKID_MISMATCH,
 			.message = {
 				.name = "X509_V_ERR_AKID_SKID_MISMATCH",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Authority and subject key identifier mismatch" ),
 				.body = N_( "The current candidate issuer certificate was rejected because its subject key identifier was present and did not match the authority key identifier current certificate. Only displayed when the -issuer_checks option is set." )
@@ -385,10 +356,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH,
+			.code = X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH,
 			.message = {
 				.name = "X509_V_ERR_AKID_ISSUER_SERIAL_MISMATCH",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Authority and issuer serial number mismatch" ),
 				.body = N_( "The current candidate issuer certificate was rejected because its issuer name and serial number was present and did not match the authority key identifier of the current certificate. Only displayed when the -issuer_checks option is set." )
@@ -396,10 +367,10 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 		},
 
 		{
-			.id = X509_V_ERR_KEYUSAGE_NO_CERTSIGN,
+			.code = X509_V_ERR_KEYUSAGE_NO_CERTSIGN,
 			.message = {
 				.name = "X509_V_ERR_KEYUSAGE_NO_CERTSIGN",
-				.type = LIB3270_NOTIFY_SECURE,
+				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "dialog-error",
 				.summary = N_( "Key usage does not include certificate signing" ),
 				.body = N_( "The current candidate issuer certificate was rejected because its keyUsage extension does not permit certificate signing." )
@@ -412,7 +383,7 @@ const LIB3270_SSL_MESSAGE * lib3270_openssl_message_from_id(long id) {
 
 	for(ix = 0; ix < (sizeof(messages)/sizeof(messages[0])); ix++) {
 
-		if(messages[ix].id == id)
+		if(messages[ix].code == code)
 			return &messages[ix].message;
 
 	}

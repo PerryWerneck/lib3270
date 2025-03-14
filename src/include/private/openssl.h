@@ -58,3 +58,8 @@
  LIB3270_INTERNAL char * openssl_errors(Context *context);
 
  LIB3270_INTERNAL void openssl_failed(Context *context, int code, const char *summary);
+
+ /// @brief Get descriptor from OpenSSL's error code.
+ /// @param code The OpenSSL error code.
+ /// @return The message descriptor if found, NULL if not found.
+ LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_message_from_code(long code);

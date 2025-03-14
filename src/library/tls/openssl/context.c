@@ -93,6 +93,7 @@
     int cert_error = X509_STORE_CTX_get_error(x_ctx);
     // X509 *current_cert = X509_STORE_CTX_get_current_cert(x_ctx);
 
+	debug("------------> cert_error=%d (%s) approve=%d",cert_error,X509_verify_cert_error_string(cert_error),approve);
 	((Context *) hSession->connection.context)->cert_error = cert_error;
 
 	trace_ssl(

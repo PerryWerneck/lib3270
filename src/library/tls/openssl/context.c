@@ -91,17 +91,29 @@
 	}
 
     int cert_error = X509_STORE_CTX_get_error(x_ctx);
-    // X509 *current_cert = X509_STORE_CTX_get_current_cert(x_ctx);
+	((Context *) hSession->connection.context)->cert_error = cert_error;
 
 	debug("------------> cert_error=%d (%s) approve=%d",cert_error,X509_verify_cert_error_string(cert_error),approve);
-	((Context *) hSession->connection.context)->cert_error = cert_error;
+
+	const LIB3270_SSL_MESSAGE *ssl_message = NULL;
+	if(cert_error) {
+		ssl_message = openssl_message_from_code(cert_error);
+	}
+
+	if(ssl_message) {
+		hSession->ssl.message = ssl_message;
+		debug("msg=%s (%s)",ssl_message->name,ssl_message->summary);
+
+		// TODO: Check if ssl_message->name is authorized by policy.
+
+	}
 
 	trace_ssl(
 		hSession,
 		"Certificate verify failed (reason = %d) (%s)\n", 
 			cert_error, 
 			X509_verify_cert_error_string(cert_error)
-	);
+	);	
 
 	return (approve);
  

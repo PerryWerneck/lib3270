@@ -70,6 +70,8 @@
 
  LIB3270_INTERNAL int start_tls(H3270 *hSession) {
 
+	hSession->ssl.message = NULL;
+	
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	Context *context = lib3270_new(Context);

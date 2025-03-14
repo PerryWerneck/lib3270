@@ -178,30 +178,8 @@
  
  }
 
- char * openssl_get_error(Context *context, int code) {
-	if(code == -1) {
-		return lib3270_strdup(_("Unexpected OpenSSL error"));
-	}
-
-	const char *error = ERR_reason_error_string(code);
-	if(error) {
-		return lib3270_strdup(error);
-	}
-
-	return lib3270_strdup_printf(_("Unexpected OpenSSL error %d"),code);
-
- }
- 
- static void openssl_failed(Context *context, const char *message, int code) {
-
-	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
-
-	LIB3270_POPUP popup = {
-		.name		= name,
-		.type		= LIB3270_NOTIFY_TLS_ERROR,
-		.title		= _("TLS/SSL error"),
-		.label		= _("OK")
-	};
+ static char * openssl_get_errors(Context *context) {
+	char *errors;
 
 	BIO * e = BIO_new(BIO_s_mem());
 	if(e) {
@@ -209,35 +187,31 @@
 		(void)BIO_flush(e);
 		BUF_MEM *bptr = NULL;
 		BIO_get_mem_ptr(e, &bptr);
-		popup.body = bptr->data;
+		errors = lib3270_strdup(bptr->data);
+		BIO_free_all(e);
 	} else {
-		popup.body = _("BIO_new failed");
+		errors = lib3270_strdup(_("BIO_new failed"));
 	}
+
+	return errors;
+ }
+
+ static void openssl_failed(Context *context, int code, const char *summary) {
+
+	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
+	lib3270_autoptr(char) body = openssl_get_errors(context);
+
+	LIB3270_POPUP popup = {
+		.name		= name,
+		.type		= LIB3270_NOTIFY_TLS_ERROR,
+		.title		= _("TLS/SSL error"),
+		.summary	= summary,
+		.body		= body,
+		.label		= _("OK")
+	};
 
 	connection_close(context->hSession, code ? code : -1);
-
-	if(code != -1) {
-
-		lib3270_autoptr(char) summary = 
-			lib3270_strdup_printf(message,openssl_get_error(context,code));
-
-		popup.summary = summary;
-		trace_ssl(context->hSession,"TLS/SSL failed with error '%s'\n%s\n",popup.summary,popup.body);
-
-		lib3270_popup_async(context->hSession, &popup);
-
-	} else {
-
-		popup.summary = message;
-		trace_ssl(context->hSession,"TLS/SSL failed with error '%s'\n%s\n",popup.summary,popup.body);
-
-		lib3270_popup_async(context->hSession, &popup);
-
-	}
-
-	if(e) {
-		BIO_free_all(e);
-	}
+	lib3270_popup_async(context->hSession, &popup);
 
  }
 
@@ -263,8 +237,8 @@
     if(context->tcp == NULL) {
 		openssl_failed(
 			context,
-			_("Unexpected error associating network socket with TLS/SSL context"),
-			-1
+			-1,
+			_("Unexpected error associating network socket with TLS/SSL context")
 		);
 		context_free(context);
 		pthread_mutex_unlock(&ssl_guard);
@@ -288,28 +262,39 @@
 			// and by the specifications of the TLS/SSL protocol. 
 			// Call SSL_get_error() with the return value ret to find out the reason.
 			int code = SSL_get_error(context->ssl,connect_result);
+			lib3270_autoptr(char) summary =
+				lib3270_strdup_printf(
+					_("The TLS/SSL handshake has failed with error %d"),
+					code
+				);
 
-			trace_ssl(context->hSession,"TLS/SSL connection was not successful (rc=%d)\n",code);
+			trace_ssl(context->hSession,"%s\n",summary);
 
 			openssl_failed(
 				context,
-				_("The TLS/SSL handshake was not successful: %s"),
-				code
+				code,
+				summary
 			);
 
 		} else if(connect_result < 0) {
 
-			// The TLS/SSL handshake was not successful, because a fatal error occurred either at the protocol level or a connection failure occurred. 
-			// The shutdown was not clean. It can also occur at any time in the protocol sequence.
-			int code = SSL_get_error(context->ssl,connect_result);
+			trace_ssl(context->hSession,"The TLS/SSL handshake was not successful, because a fatal error occurred (rc=%d)\n",connect_result);
 
-			trace_ssl(context->hSession,"The TLS/SSL handshake was not successful, because a fatal error occurred (rc=%d)\n",code);
-
-			openssl_failed(
-				context,
-				_("Fatal error in the TLS/SSL handshake: %s"),
-				code
-			);
+			lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-connect-%d",-connect_result);
+			lib3270_autoptr(char) summary = lib3270_strdup_printf("Fatal error %d in TLS/SSL handshake",-connect_result);
+			lib3270_autoptr(char) body = openssl_get_errors(context);
+	
+			LIB3270_POPUP popup = {
+				.name		= name,
+				.summary	= summary,
+				.body		= body,
+				.type		= LIB3270_NOTIFY_TLS_ERROR,
+				.title		= _("TLS/SSL error"),
+				.label		= _("OK")
+			};
+		
+			connection_close(context->hSession, -1);
+			lib3270_popup_async(context->hSession, &popup);
 
 		}
 

@@ -25,6 +25,12 @@
  #include <openssl/ssl.h>
  #include <pthread.h>
 
+ static inline void lib3270_autoptr_cleanup_BIO(BIO **ptr) {
+	if(*ptr)
+		BIO_free_all(*ptr);
+	*ptr = NULL;
+ }
+
  /// @brief Connection context for OpenSSL connections.
  typedef struct {
 
@@ -44,5 +50,11 @@
  LIB3270_INTERNAL pthread_mutex_t ssl_guard;
  LIB3270_INTERNAL int e_ctx_ssl_exdata_index;
 
- LIB3270_INTERNAL SSL_CTX * get_openssl_context(H3270 *hSession);
- LIB3270_INTERNAL char * get_openssl_errors(Context *context);
+ LIB3270_INTERNAL SSL_CTX * openssl_context(H3270 *hSession);
+
+ /// @brief Get string with the openssl error stack.
+ /// @param context Network context.
+ /// @return The error stack (release it with lib3270_free()).
+ LIB3270_INTERNAL char * openssl_errors(Context *context);
+
+ LIB3270_INTERNAL void openssl_failed(Context *context, int code, const char *summary);

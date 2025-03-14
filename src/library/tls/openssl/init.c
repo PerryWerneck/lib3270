@@ -81,7 +81,7 @@
 	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
 
 	// Initialize SSL
-	context->ctx = get_openssl_context(hSession);
+	context->ctx = openssl_context(hSession);
 	if(!context->ctx) {
 
 		LIB3270_POPUP popup = {
@@ -178,43 +178,6 @@
  
  }
 
- static char * openssl_get_errors(Context *context) {
-	char *errors;
-
-	BIO * e = BIO_new(BIO_s_mem());
-	if(e) {
-		ERR_print_errors(e);
-		(void)BIO_flush(e);
-		BUF_MEM *bptr = NULL;
-		BIO_get_mem_ptr(e, &bptr);
-		errors = lib3270_strdup(bptr->data);
-		BIO_free_all(e);
-	} else {
-		errors = lib3270_strdup(_("BIO_new failed"));
-	}
-
-	return errors;
- }
-
- static void openssl_failed(Context *context, int code, const char *summary) {
-
-	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
-	lib3270_autoptr(char) body = openssl_get_errors(context);
-
-	LIB3270_POPUP popup = {
-		.name		= name,
-		.type		= LIB3270_NOTIFY_TLS_ERROR,
-		.title		= _("TLS/SSL error"),
-		.summary	= summary,
-		.body		= body,
-		.label		= _("OK")
-	};
-
-	connection_close(context->hSession, code ? code : -1);
-	lib3270_popup_async(context->hSession, &popup);
-
- }
-
  static void * ssl_thread(Context *context) {
 
 	// Disable non-blocking mode.
@@ -280,9 +243,11 @@
 
 			trace_ssl(context->hSession,"The TLS/SSL handshake was not successful, because a fatal error occurred (rc=%d)\n",connect_result);
 
-			lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-connect-%d",-connect_result);
-			lib3270_autoptr(char) summary = lib3270_strdup_printf("Fatal error %d in TLS/SSL handshake",-connect_result);
-			lib3270_autoptr(char) body = openssl_get_errors(context);
+			int code = SSL_get_error(context->ssl,connect_result);
+
+			lib3270_autoptr(char) name = lib3270_strdup_printf("ssl-connect-%d",code);
+			lib3270_autoptr(char) summary = lib3270_strdup_printf("Fatal error %d in TLS/SSL handshake",code);
+			lib3270_autoptr(char) body = openssl_errors(context);
 	
 			LIB3270_POPUP popup = {
 				.name		= name,

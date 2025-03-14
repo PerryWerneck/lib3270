@@ -106,7 +106,7 @@
  
  }
 
- LIB3270_INTERNAL SSL_CTX * get_openssl_context(H3270 *hSession) {
+ LIB3270_INTERNAL SSL_CTX * openssl_context(H3270 *hSession) {
 
 	pthread_mutex_lock(&ssl_guard);
 

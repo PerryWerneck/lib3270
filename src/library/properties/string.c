@@ -37,6 +37,8 @@
 #include <lib3270/trace.h>
 #include <lib3270/memory.h>
 
+#include <uriparser/Uri.h>
+
 LIB3270_EXPORT const char * lib3270_get_termtype(const H3270 *hSession) {
 	return hSession->termtype;
 }
@@ -340,13 +342,34 @@ LIB3270_EXPORT const char ** lib3270_get_lunames(H3270 *hSession) {
 	return (const char **) hSession->lu.names;
 }
 
-/*
-LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h) {
-	return h->host.current;
-}
+LIB3270_EXPORT char * lib3270_get_server_name(const H3270 *hSession) {
 
-LIB3270_EXPORT const char * lib3270_service_get_name(const H3270 *h) {
-	return h->host.srvc;
-}
-*/
+	if(hSession->connection.url && *hSession->connection.url) {
 
+		UriUriA uri;
+		const char * errorPos;
+		if(uriParseSingleUriA(&uri, hSession->connection.url, &errorPos) != URI_SUCCESS) {
+			errno = EINVAL;
+			return NULL;	
+		}
+	
+		size_t szhost = (uri.hostText.afterLast-uri.hostText.first);
+		if(!szhost) {
+			uriFreeUriMembersA(&uri);
+			errno = EINVAL;
+			return NULL;	
+		}
+
+		char hostname[szhost+2];
+		strncpy(hostname,uri.hostText.first,szhost);
+		hostname[szhost] = 0;
+
+		uriFreeUriMembersA(&uri);
+
+		return lib3270_strdup(hostname);
+		
+	}
+
+	errno = ENODATA;
+	return NULL;
+}

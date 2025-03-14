@@ -120,7 +120,7 @@
 				.label		= _("OK")
 			};
 
-			lib3270_popup(hSession, &popup, 0);
+			lib3270_popup_async(hSession, &popup);
 			return;
 
 		} else if(error) {
@@ -144,7 +144,7 @@
 
 			set_popup_body(&popup,error);
 
-			lib3270_popup(hSession, &popup, 0);
+			lib3270_popup_async(hSession, &popup);
 			return;
 
 		}
@@ -152,41 +152,75 @@
 	}
 
 	// Check connection status with getpeername
-	struct sockaddr_storage addr;
-	socklen_t len = sizeof(addr);
-	if (getpeername(sock, (struct sockaddr *)&addr, &len) == -1) {
+	{
+		struct sockaddr_storage addr;
+		socklen_t len = sizeof(addr);
+		if (getpeername(sock, (struct sockaddr *)&addr, &len) == -1) {
 
-		int error = errno;
-		connection_close(hSession, error);
+			int error = errno;
+			connection_close(hSession, error);
 
-		lib3270_autoptr(char) summary =
-			lib3270_strdup_printf(
-				_("Failed to establish connection to %s"),
-				lib3270_get_url(hSession)
+			lib3270_autoptr(char) summary =
+				lib3270_strdup_printf(
+					_("Failed to establish connection to %s"),
+					lib3270_get_url(hSession)
+				);
+
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("Connection error"),
+				.summary	= summary,
+				.body		= "",
+				.label		= _("OK")
+			};
+
+			set_popup_body(&popup,error);
+
+			lib3270_popup_async(hSession, &popup);
+			return;
+		}
+
+		char host[NI_MAXHOST];
+		if (getnameinfo((struct sockaddr *) &addr, sizeof(addr), host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
+			trace_network(
+				hSession,
+				"Established connection to %s\n",
+				host
 			);
-
-		LIB3270_POPUP popup = {
-			.name		= "connect-error",
-			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
-			.title		= _("Connection error"),
-			.summary	= summary,
-			.body		= "",
-			.label		= _("OK")
-		};
-
-		set_popup_body(&popup,error);
-
-		lib3270_popup(hSession, &popup, 0);
-		return;
+		}
+	
 	}
 
-	char host[NI_MAXHOST];
-	if (getnameinfo((struct sockaddr *) &addr, sizeof(addr), host, sizeof(host), NULL, 0, NI_NUMERICHOST) == 0) {
-		trace_network(
-			hSession,
-			"Established connection to %s\n",
-			host
-		);
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_KEEP_ALIVE)) {
+
+		int oval = 1;
+		if(setsockopt(sock, SOL_SOCKET,SO_KEEPALIVE, (char *)&oval, sizeof(oval)) < 0) {
+	
+			int error = errno;
+			connection_close(hSession, error);
+
+			lib3270_autoptr(char) summary =
+				lib3270_strdup_printf(
+					_("Unexpected error activating keep alive for %s"),
+					lib3270_get_url(hSession)
+				);
+
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("Connection error"),
+				.summary	= summary,
+				.body		= "",
+				.label		= _("OK")
+			};
+
+			set_popup_body(&popup,error);
+
+			lib3270_popup_async(hSession, &popup);
+			return;
+		}
+		
 	}
 
 	set_connected_socket(hSession,sock);

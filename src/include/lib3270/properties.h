@@ -264,13 +264,13 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
  LIB3270_EXPORT const char * lib3270_get_product_name(void);
 
  //
- // @brief Get hostname for the connect/reconnect operations.
+ // @brief Get server name.
  //
- // @param h		Session handle.
+ // @param hSession	Session handle.
  //
- // @return Pointer to host id set (internal data, do not change it)
+ // @return The server's hostname (release it with lib3270_free) or NULL if not set.
  //
- LIB3270_EXPORT const char * lib3270_host_get_name(const H3270 *h);
+ LIB3270_EXPORT char * lib3270_get_server_name(const H3270 *hSession);
 
  //
  // @brief Get service or port for the connect/reconnect operations.

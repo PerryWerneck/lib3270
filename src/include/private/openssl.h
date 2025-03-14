@@ -28,11 +28,12 @@
  /// @brief Connection context for OpenSSL connections.
  typedef struct {
 	
+	char state;
 	LIB3270_NET_CONTEXT parent;
 	H3270 *hSession;
-	pthread_t thread;
 	SSL_CTX *ctx;
 	SSL *ssl;
+    BIO *tcp;
 	int cert_error;
 
  } Context;
@@ -43,3 +44,4 @@
  LIB3270_INTERNAL int e_ctx_ssl_exdata_index;
 
  LIB3270_INTERNAL SSL_CTX * get_openssl_context(H3270 *hSession);
+ LIB3270_INTERNAL char * get_openssl_errors(Context *context);

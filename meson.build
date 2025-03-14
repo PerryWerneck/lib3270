@@ -51,11 +51,9 @@ subdir('po')
 #
 # Dependencies
 #
-
-c = meson.get_compiler('c')
-libssl = dependency('libssl', required: false, version: '>=3.0.0')
-libintl = dependency('intl', required : false)
-libiconv = dependency('iconv', required : false)
+openssl = dependency('openssl', required: false, method: 'pkg-config', version: '>=3.0.0')
+libintl = dependency('intl', required: false)
+libiconv = dependency('iconv', required: false)
 gobject = dependency('gobject-2.0', required: false)
 
 lib_extra = [
@@ -65,6 +63,7 @@ lib_extra = [
 
 lib_deps = [
   dependency('liburiparser', method : 'pkg-config'),
+  openssl,
 ]
 
 #
@@ -81,8 +80,7 @@ endif
 #
 # Compiler flags
 #
-cc = meson.get_compiler('c')
-
+c = meson.get_compiler('c')
 compiler_flags = [
   '-ggdb3',
   '-ffat-lto-objects',
@@ -109,7 +107,7 @@ else
   ]
 endif
 
-add_project_arguments(cc.get_supported_arguments(compiler_flags), language: 'c')
+add_project_arguments(c.get_supported_arguments(compiler_flags), language: 'c')
 
 #
 # Configuration
@@ -148,23 +146,18 @@ if host_machine.system() != 'windows'
 
 endif
 
-if libssl.found()
-  app_conf.set('HAVE_LIBSSL', 1)
-endif
-
 if libiconv.found()
   app_conf.set('HAVE_ICONV', 1)
 endif
 
-app_conf.set('HAVE_STRPTIME', cc.has_function('strptime'))
-app_conf.set('HAVE_STRCASESTR', cc.has_function('strcasestr'))
-app_conf.set('HAVE_LOCALTIME_R', cc.has_function('localtime_r'))
+app_conf.set('HAVE_STRPTIME', c.has_function('strptime'))
+app_conf.set('HAVE_STRCASESTR', c.has_function('strcasestr'))
+app_conf.set('HAVE_LOCALTIME_R', c.has_function('localtime_r'))
 
-app_conf.set('HAVE_STRTOK_R', cc.has_function('strtok_r'))
-app_conf.set('HAVE_VASPRINTF', cc.has_function('vasprintf'))
+app_conf.set('HAVE_STRTOK_R', c.has_function('strtok_r'))
+app_conf.set('HAVE_VASPRINTF', c.has_function('vasprintf'))
 
 app_conf.set_quoted('PRODUCT_TITLE', product_title)
-app_conf.set_quoted('PRODUCT_TITLE',product_title)
 
 app_conf.set('PRODUCT_NAME',product_name)
 app_conf.set('PRODUCT_DOMAIN',product_domain)
@@ -181,9 +174,9 @@ app_conf.set('X3270_ANSI', 1)
 app_conf.set('X3270_APL', 1)
 app_conf.set('X3270_TRACE', 1)
 app_conf.set('X3270_FT', 1)
-app_conf.set('SSL_ENABLE_SELF_SIGNED_CERT_CHECK', 1)
-app_conf.set('SSL_ENABLE_CRL_CHECK', 1)
-app_conf.set('SSL_ENABLE_CRL_EXPIRATION_CHECK', 1)
+#app_conf.set('SSL_ENABLE_SELF_SIGNED_CERT_CHECK', 1)
+#app_conf.set('SSL_ENABLE_CRL_CHECK', 1)
+#app_conf.set('SSL_ENABLE_CRL_EXPIRATION_CHECK', 1)
 
 package_release = run_command('sh', '-c', datecmd + ' +%-y.%-m.%-d', check : true).stdout().strip()
 app_conf.set_quoted('PACKAGE_RELEASE',package_release)
@@ -431,12 +424,12 @@ endif
 # Check for OSs
 # https://mesonbuild.com/Reference-manual_builtin_host_machine.html
 
-if host_machine.system() == 'windows'
+includes_dir = include_directories(
+  'src/include',
+  'src/include/' + host_machine.system(),
+)
 
-  includes_dir = include_directories(
-    'src/include',
-    'src/include/windows',
-  )
+if host_machine.system() == 'windows'
 
   app_conf.set_quoted('LIBEXT', '.dll')
   lib_src += win_src
@@ -448,20 +441,16 @@ endif
 
 if host_machine.system() == 'linux'
 
-  includes_dir = include_directories(
-    'src/include',
-    'src/include/linux',
-  )
-
   app_conf.set_quoted('LIBEXT', '.so')
 
   lib_src += linux_src
 
-  if libssl.found()
+  if openssl.found()
 
     app_conf.set('HAVE_OPENSSL', 1)
 
     lib_src += [
+      'src/library/tls/openssl/context.c',
       'src/library/tls/openssl/init.c',
     ]
 
@@ -477,18 +466,14 @@ endif
 
 if host_machine.system() == 'darwin'
 
-  includes_dir = include_directories(
-    'src/include',
-    'src/include/darwin',
-  )
-
   lib_src += darwin_src
 
-  if libssl.found()
+  if openssl.found()
 
     app_conf.set('HAVE_OPENSSL', 1)
 
     lib_src += [
+      'src/library/tls/openssl/context.c',
       'src/library/tls/openssl/init.c',
     ]
 
@@ -638,14 +623,15 @@ if gobject.found()
     include_directories: includes_dir
   )
 
-  
-  #gnome.gtkdoc(
-  #  meson.project_name(),
-  #  src_dir: 'src/gobject',
-  #  install: true,
-  #  dependencies: [ gobject ],
-  #  include_directories: includes_dir
-  #)
+#  gnome = import('gnome')
+
+#  gnome.gtkdoc(
+#    meson.project_name(),
+#    src_dir: 'src/gobject',
+#    install: true,
+#    dependencies: [ gobject ],
+#    include_directories: includes_dir
+#  )
 
 #  gjs_private_gir = gnome.generate_gir(libgjs,
 #    includes: ['GObject-2.0', 'Gio-2.0'], sources: libgjs_private_sources,
@@ -655,8 +641,6 @@ if gobject.found()
 #gjs_private_typelib = gjs_private_gir[1]
 
 
-
-#  gnome = import('gnome')
 #  gnome.generate_gir(
 #    glib_shared,
 #    includes: ['GObject-2.0', 'Gio-2.0'], 

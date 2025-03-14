@@ -26,7 +26,7 @@
 #include <private/trace.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
-// #include <networking.h>
+#include <private/network.h>
 
 #ifdef HAVE_LIBSSL
 #include <openssl/ssl.h>

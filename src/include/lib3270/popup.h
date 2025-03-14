@@ -59,6 +59,7 @@ typedef enum _LIB3270_NOTIFY {
 	LIB3270_NOTIFY_NETWORK_IO_ERROR	= 0x2013,	///< @brief Network I/O error (icon 'network-error', button 'reconnect').
 
 	// TLS/SSL related messages.
+	LIB3270_NOTIFY_TLS_ERROR		= 0x1123,	///< @brief TLS/SSL connection error (icon 'network-server', button 'retry').
 	LIB3270_NOTIFY_NO_TLS			= 0x8103,	///< @brief No TLS/SSL support (security-low).
 
 } LIB3270_NOTIFY;
@@ -151,5 +152,3 @@ LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_POPUP(LIB3270_POPUP **ptr);
 #endif
 
 #endif // LIB3270_POPUP_INCLUDED
-
-

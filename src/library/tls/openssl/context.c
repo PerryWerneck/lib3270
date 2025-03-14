@@ -133,6 +133,8 @@
     //   it contains the X509 KeyUsage extension
     //
 	{
+		// https://linux.die.net/man/3/x509_verify_param_set_flags
+
 		X509_VERIFY_PARAM *vpm = X509_VERIFY_PARAM_new();
 		if (vpm == NULL) {
 			trace_ssl(hSession,"Failed to create X509 verify params\n");
@@ -146,6 +148,9 @@
 
 		X509_VERIFY_PARAM_set_purpose(vpm, X509_PURPOSE_SSL_SERVER);
 
+		// https://stackoverflow.com/questions/26218495/openssl-c-api-crl-check
+		// X509_VERIFY_PARAM_set_flags(vpm, X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL);
+	
 		SSL_CTX_set1_param(context, vpm);
 		X509_VERIFY_PARAM_free(vpm);
 	}
@@ -154,13 +159,8 @@
         e_ctx_ssl_exdata_index = SSL_get_ex_new_index(0, PACKAGE_NAME, NULL, NULL, NULL);    
     }
 
-    //
-    // This last config setting is not ctx based, but instead, global to the
-    // entire libcrypto library.  Need to ensure that CSR string attributes
-    // are added in ASCII printable format.
-    //
-    ASN1_STRING_set_default_mask(B_ASN1_PRINTABLE);
-
 	pthread_mutex_unlock(&ssl_guard);
+
+	return context;
 }
  

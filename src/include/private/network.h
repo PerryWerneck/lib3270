@@ -30,6 +30,7 @@
  #include <time.h>
  #include <lib3270/defs.h>
  #include <lib3270/popup.h>
+ #include <lib3270/ssl.h>
 
  #define NETWORK_BUFFER_LENGTH	16384
 
@@ -110,4 +111,11 @@
  /// @param popup The popup to update.
  /// @param error The error code
  LIB3270_INTERNAL void set_popup_body(LIB3270_POPUP *popup, int error);
- 
+
+ /// @brief Set SSL state for connection.
+ /// @param session The TN3270 Session.
+ /// @param state The new state for TLS/SSL
+ LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
+
+ // LIB3270_INTERNAL int non_blocking(H3270 *session, int on);
+

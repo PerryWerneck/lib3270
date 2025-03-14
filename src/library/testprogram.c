@@ -58,7 +58,7 @@
 
 	if(argc == 1) {
 
-		lib3270_set_url(hSession,"tn3270://127.0.0.1:3270");
+		lib3270_set_url(hSession,"tn3270s://127.0.0.1:22");
 	
 		lib3270_trace_open_file(hSession,"lib3270.trace");
 		lib3270_log_open_file(hSession,"lib3270.log",86400);

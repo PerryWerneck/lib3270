@@ -259,9 +259,7 @@ LIB3270_INTERNAL int 	do_select(H3270 *h, unsigned int start, unsigned int end, 
  */
 LIB3270_INTERNAL int lib3270_activate_auto_reconnect(H3270 *hSession, unsigned long msec);
 
-LIB3270_INTERNAL int	non_blocking(H3270 *session, Boolean on);
-
-LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
+// LIB3270_INTERNAL void	set_ssl_state(H3270 *session, LIB3270_SSL_STATE state);
 
 /// @brief Clear element at adress.
 LIB3270_INTERNAL void clear_chr(H3270 *hSession, int baddr);

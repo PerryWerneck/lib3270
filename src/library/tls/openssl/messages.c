@@ -37,6 +37,7 @@
 			.code = X509_V_OK,
 			.message = {
 				.name = "X509_V_OK",
+				.title = N_("The connection is secure"),
 				.type = LIB3270_NOTIFY_SECURITY_HIGH,
 				.icon = "security-high",
 				.summary = N_( "Secure connection was successful." ),
@@ -63,7 +64,6 @@
 				.icon = "security-low",
 				.summary = N_( "Unable to get certificate CRL." ),
 				.body = N_( "The Certificate revocation list (CRL) of a certificate could not be found." ),
-				.label = N_( "Continue" )
 			}
 		},
 
@@ -228,7 +228,6 @@
 				.type = LIB3270_NOTIFY_SECURITY_MEDIUM,
 				.icon = "security-medium",
 				.summary = N_( "Self signed certificate" ),
-				.label = N_( "Continue" ),
 				.body = N_( "The passed certificate is self signed and the same certificate cannot be found in the list of trusted certificates." )
 			}
 		},
@@ -239,7 +238,6 @@
 				.name = "X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN",
 				.type = LIB3270_NOTIFY_SECURITY_LOW,
 				.icon = "security-low",
-				.label = N_("Continue"),
 				.summary = N_( "Self signed certificate in certificate chain" ),
 				.body = N_( "The certificate chain could be built up using the untrusted certificates but the root could not be found locally." )
 			}
@@ -383,8 +381,9 @@
 
 	for(ix = 0; ix < (sizeof(messages)/sizeof(messages[0])); ix++) {
 
-		if(messages[ix].code == code)
+		if(messages[ix].code == code) {
 			return &messages[ix].message;
+		}
 
 	}
 

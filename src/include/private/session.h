@@ -422,12 +422,12 @@
 	LIB3270_LOG_CONTEXT *log;
 
 	struct {
-		unsigned int					  host			: 1;		///< @brief Non zero if host requires SSL.
-		unsigned int					  download_crl	: 1;		///< @brief Non zero to download CRL.
-		LIB3270_SSL_STATE				  state;
-		int 							  error;
-		const LIB3270_SSL_MESSAGE		* message;					///< @brief Pointer to SSL messages for current state.
-		unsigned short					  crl_preferred_protocol;	///< @brief The CRL Preferred protocol.
+		unsigned int			host			: 1;	///< @brief Non zero if host requires SSL.
+		unsigned int			download_crl	: 1;	///< @brief Non zero to download CRL.
+		LIB3270_SSL_STATE		state;
+		int 					error;
+		LIB3270_SSL_MESSAGE		message;				///< @brief SSL message for connection.
+		unsigned short			crl_preferred_protocol;	///< @brief The CRL Preferred protocol.
 	} ssl;
 
 	/// @brief Event Listeners.

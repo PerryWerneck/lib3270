@@ -42,12 +42,12 @@
  pthread_mutex_t ssl_guard = PTHREAD_MUTEX_INITIALIZER;
 
  ///
- /// @brief Callback function for SSL certificate verification
+ /// @brief Callback function for SSL certificate verification.
  ///
  /// This function is registered with SSL to be called during the verification
  /// of each certificate in the server's identity cert chain.
  ///
- /// @param ok		The status of this certificate from the SSL verify code.
+ /// @param approve	The status of this certificate from the SSL verify code.
  /// @param x_ctx	Ptr to the X509 certificate store structure  
  ///
  /// @return The potentially modified status after processing this certificate.
@@ -93,6 +93,13 @@
     int cert_error = X509_STORE_CTX_get_error(x_ctx);
 	((Context *) hSession->connection.context)->cert_error = cert_error;
 
+	trace_ssl(
+		hSession,
+		"Certificate verify failed (reason = %d) (%s)\n", 
+			cert_error, 
+			X509_verify_cert_error_string(cert_error)
+	);	
+
 	debug("------------> cert_error=%d (%s) approve=%d",cert_error,X509_verify_cert_error_string(cert_error),approve);
 
 	const LIB3270_SSL_MESSAGE *ssl_message = NULL;
@@ -101,19 +108,31 @@
 	}
 
 	if(ssl_message) {
-		hSession->ssl.message = ssl_message;
+
+		set_ssl_message(hSession,ssl_message);
+
 		debug("msg=%s (%s)",ssl_message->name,ssl_message->summary);
 
-		// TODO: Check if ssl_message->name is authorized by policy.
+		// Check if ssl_message->name is authorized by policy.
+		if(!hSession->cbk.check_policy(hSession,ssl_message->name,EINVAL)) {
+			trace_ssl(
+				hSession,
+				"Aproving '%s' by policy '%s'\n",
+					X509_verify_cert_error_string(cert_error),
+					ssl_message->name
+			);
+			approve = 1;
+		}
+
+	} else {
+
+		trace_ssl(
+			hSession,
+			"Cant find description for '%s', policy was not verified\n",
+				X509_verify_cert_error_string(cert_error)
+		);
 
 	}
-
-	trace_ssl(
-		hSession,
-		"Certificate verify failed (reason = %d) (%s)\n", 
-			cert_error, 
-			X509_verify_cert_error_string(cert_error)
-	);	
 
 	return (approve);
  

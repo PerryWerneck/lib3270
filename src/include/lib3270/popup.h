@@ -57,6 +57,7 @@ typedef enum _LIB3270_NOTIFY {
 	// Network related messages.
 	LIB3270_NOTIFY_CONNECTION_ERROR	= 0x1023,	///< @brief Connection error (icon 'network-server', button 'retry').
 	LIB3270_NOTIFY_NETWORK_IO_ERROR	= 0x2013,	///< @brief Network I/O error (icon 'network-error', button 'reconnect').
+	LIB3270_NOTIFY_DISCONNECTED		= 0x2013,	///< @brief Network disconnected (icon 'network-error', button 'reconnect').
 
 	// TLS/SSL related messages.
 	LIB3270_NOTIFY_TLS_ERROR		= 0x1123,	///< @brief TLS/SSL connection error (icon 'network-server', button 'retry').

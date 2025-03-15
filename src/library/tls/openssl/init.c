@@ -46,7 +46,14 @@
  static void * ssl_thread(Context *context);
 
  static int disconnect(H3270 *hSession, Context *context) {
+
 	context->state = 1;
+
+	if(hSession->connection.sock != -1) {
+		shutdown(hSession->connection.sock,SHUT_RDWR);
+		hSession->connection.sock = -1;
+	}
+
 	return 0;
  }
 
@@ -55,9 +62,11 @@
 	context->state = 2;
 
 	if(context->ssl) {
+		SSL_shutdown(context->ssl);
 		SSL_free(context->ssl);
 		context->ssl = NULL;
 		context->tcp = NULL;
+		hSession->connection.sock = -1;
 	}
 
 	if(context->ctx) {
@@ -70,8 +79,7 @@
 
  LIB3270_INTERNAL int start_tls(H3270 *hSession) {
 
-	hSession->ssl.message = NULL;
-	
+	set_ssl_message(hSession,NULL);
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	Context *context = lib3270_new(Context);
@@ -198,7 +206,7 @@
 	SSL_set_tlsext_host_name(context->ssl, server_name);
 
     // Pass the socket to the BIO interface, which OpenSSL uses to create the TLS session.
-    context->tcp = BIO_new_socket(context->hSession->connection.sock, BIO_NOCLOSE);
+    context->tcp = BIO_new_socket(context->hSession->connection.sock, BIO_CLOSE);
     if(context->tcp == NULL) {
 		openssl_failed(
 			context,
@@ -220,6 +228,14 @@
 		if(connect_result == 1) {
 
 			trace_ssl(context->hSession,"TLS/SSL connection established\n");
+			if(!context->hSession->ssl.message.name) {
+				set_ssl_message(context->hSession,openssl_message_from_code(X509_V_OK));
+			}
+
+		} else if(context->hSession->ssl.message.name) {
+
+			connection_close(context->hSession,-1);
+			lib3270_popup_async(context->hSession, (LIB3270_POPUP *) &context->hSession->ssl.message);
 
 		} else if(connect_result == 0) {
 
@@ -266,7 +282,6 @@
 					const char *mask = "ssl-error-%d";
 
 					lib3270_autoptr(char) name = lib3270_strdup_printf(mask,code);
-					popup.title = _("TLS/SSL failure");
 					popup.summary = _("A fatal error occurred during the TLS/SSL handshake process.");
 					popup.name = name;
 
@@ -305,28 +320,46 @@
 				}
 			}
 		
-
 		}
 
-	}
-
-	if(context->state) {
-		context_free(context);
-		pthread_mutex_unlock(&ssl_guard);
-		return 0;
 	}
 
     // Now that we've established a TLS session with the server,
 	// we need to verify that the FQDN in the server cert matches
     // the server name we used to establish the connection.
+
+	// TODO: Implement FQDN check.
 	// check_fqdn(context, server_name);
 
+	// Finalize
+	if(context->state) {
 
+		// Failed to establish the TLS session, so close the connection.
+		// This will also free the context.
+		if(context->hSession->connection.sock != -1) {
+			close(context->hSession->connection.sock);
+			context->hSession->connection.sock = -1;
+		}
+
+		finalize(context->hSession,context);
+		context_free(context);
+
+	} else {
+
+		// The TLS session was established successfully.
+		// Now we can go back to the main thread and start the network I/O.
+		context->hSession->post(
+			context,
+			(void(*)(H3270 *, void *)) openssl_success,
+			context,
+			sizeof(Context *)
+		);
+
+	}
 
 	// Cleanup
-	context_free(context);
 	pthread_mutex_unlock(&ssl_guard);
-
+	
 	return 0;
 
  }

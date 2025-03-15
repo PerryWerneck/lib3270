@@ -109,6 +109,9 @@ struct lib3270_session_callbacks {
 
 	void (*ring_bell)(H3270 *hSession, int id);
 
+	/// @brief Check for policy by name
+	/// @return 0 if the policy is allowed, non if the policy is denied.
+	int (*check_policy)(H3270 *hSession, const char *name, int default_value);
 };
 
 LIB3270_EXPORT int lib3270_getpeername(H3270 *hSession, struct sockaddr *addr, socklen_t *addrlen);

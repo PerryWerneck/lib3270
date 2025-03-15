@@ -189,14 +189,10 @@
 
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
-	static const LIB3270_SSL_MESSAGE message = {
-		.icon = "dialog-error",
-		.summary = N_( "The session is not secure" ),
-		.body = N_( "No TLS/SSL support on this session" )
-	};
+	hSession->ssl.message.icon = "dialog-error";
+	hSession->ssl.message.summary = _( "The session is not secure" );
+	hSession->ssl.message.body = _( "No TLS/SSL support on this session" );
 	
-	hSession->ssl.message = &message;
-
 	Context *context = lib3270_new(Context);
 	memset(context,0,sizeof(Context));
 

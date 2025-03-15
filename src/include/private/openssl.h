@@ -43,6 +43,11 @@
     BIO *tcp;
 	int cert_error;
 
+	struct {
+		void *except;
+		void *read;
+	} xio;
+
  } Context;
 
  #define SSL_EXDATA_INDEX_INVALID -1
@@ -57,8 +62,16 @@
  /// @return The error stack (release it with lib3270_free()).
  LIB3270_INTERNAL char * openssl_errors(Context *context);
 
+ /// @brief OpenSSL negotiation has failed.
+ /// @param context OpenSSL context.
+ /// @param code Error code.
+ /// @param summary Summary of the error.
  LIB3270_INTERNAL void openssl_failed(Context *context, int code, const char *summary);
 
+ /// @brief OpenSSL negotiation has succeeded, setup network I/O.
+ /// @param context OpenSSL context.
+ LIB3270_INTERNAL void openssl_success(H3270 *session, Context *context);
+ 
  /// @brief Get descriptor from OpenSSL's error code.
  /// @param code The OpenSSL error code.
  /// @return The message descriptor if found, NULL if not found.

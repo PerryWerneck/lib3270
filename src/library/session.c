@@ -168,15 +168,41 @@ static int print(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode)) {
 	return errno = ENOTSUP;
 }
 
-static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char GNUC_UNUSED(*filename)) {
-	lib3270_log_write(session, "save", "%s", "Saving is unavailable");
-	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't save" ), _( "Unable to save" ), "%s", strerror(ENOTSUP));
+static int save(H3270 *session, LIB3270_CONTENT_OPTION GNUC_UNUSED(mode), const char *filename) {
+
+	lib3270_log_write(session, "save", "Saving of '%s' is unavailable",filename);
+
+	lib3270_autoptr(char) summary = lib3270_strdup_printf( _("Cant save '%s'"),filename);
+	LIB3270_POPUP popup = {
+		.name		= "cant-save",
+		.type		= LIB3270_NOTIFY_INFO,
+		.title		= _("Unsupported call"),
+		.summary	= summary,
+		.body		= _("The save operation is not supported by this session."),
+		.label		= _("OK")
+	};
+
+	lib3270_popup(session,&popup,0);
+
 	return errno = ENOTSUP;
 }
 
 static int load(H3270 *session, const char GNUC_UNUSED(*filename)) {
-	lib3270_log_write(session, "load", "%s", "Loading from file is unavailable");
-	lib3270_popup_dialog(session, LIB3270_NOTIFY_WARNING, _( "Can't load" ), _( "Unable to load from file" ), "%s", strerror(ENOTSUP));
+
+	lib3270_log_write(session, "load", "loading of '%s' is unavailable",filename);
+
+	lib3270_autoptr(char) summary = lib3270_strdup_printf( _("Cant load '%s'"),filename);
+	LIB3270_POPUP popup = {
+		.name		= "cant-save",
+		.type		= LIB3270_NOTIFY_INFO,
+		.title		= _("Unsupported call"),
+		.summary	= summary,
+		.body		= _("The load operation is not supported by this session."),
+		.label		= _("OK")
+	};
+
+	lib3270_popup(session,&popup,0);
+	
 	return errno = ENOTSUP;
 }
 
@@ -192,6 +218,29 @@ static int reconnect_allowed(H3270 *session) {
 	// have occurred, allowing the session to attempt reconnection.
 	//
 	return 0;
+}
+
+///
+/// @brief Checks the policy for the given session and name.
+///
+/// This function evaluates the policy associated with the specified session
+/// and name to determine if it complies with the required rules or constraints.
+///
+/// @param hSession A pointer to the H3270 session structure.
+/// @param name A constant character pointer representing the name to check against the policy.
+/// @return 0 if the action was allowed, non zero if not.
+static int check_policy(H3270 *hSession, const char *name, int default_value) {
+
+	debug("%s(%s)",__FUNCTION__,name);
+
+#ifdef DEBUG
+	if(!strcasecmp(name,"X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT")) {
+		debug("%s: Allowing %s for testing",__FUNCTION__,name);
+		return 0;
+	}
+#endif // DEBUG
+
+	return default_value;
 }
 
 void lib3270_reset_callbacks(H3270 *hSession) {
@@ -230,6 +279,7 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 	hSession->cbk.action				= default_action;
 	hSession->cbk.word_selected			= nop_void;
 	hSession->cbk.reconnect_allowed		= reconnect_allowed;
+	hSession->cbk.check_policy			= check_policy;
 
 	#pragma GCC diagnostic pop
 

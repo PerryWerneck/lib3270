@@ -520,3 +520,21 @@ LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 GNUC_UNUSED(*hSession), 
 	close(fd);
 	return text;
 }
+
+LIB3270_INTERNAL void set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE *message) {
+
+	if(message) {
+		hSession->ssl.message.name = message->name;
+		hSession->ssl.message.icon = message->icon;
+		hSession->ssl.message.type = message->type;
+		hSession->ssl.message.title = (message->title && *message->title) ? dgettext(GETTEXT_PACKAGE,message->title) : _("SSL verification failed");
+		hSession->ssl.message.summary = dgettext(GETTEXT_PACKAGE,message->summary);
+		hSession->ssl.message.body = dgettext(GETTEXT_PACKAGE,message->body);
+		hSession->ssl.message.label = (message->label && *message->label) ? dgettext(GETTEXT_PACKAGE,message->label) : _("Ok");
+	} else {
+
+		memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
+
+	}
+
+}

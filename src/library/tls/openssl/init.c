@@ -26,6 +26,11 @@
  */
 
  #include <config.h>
+
+ #ifdef HAVE_UNISTD_H
+	#include <unistd.h>
+ #endif
+
  #include <lib3270/defs.h>
  #include <private/defs.h>
  #include <private/session.h>
@@ -349,7 +354,7 @@
 		// The TLS session was established successfully.
 		// Now we can go back to the main thread and start the network I/O.
 		context->hSession->post(
-			context,
+			context->hSession,
 			(void(*)(H3270 *, void *)) openssl_success,
 			context,
 			sizeof(Context *)

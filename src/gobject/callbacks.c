@@ -182,11 +182,11 @@
  	klass->model_changed = model_changed;
  	klass->ssl_changed = ssl_changed;
 	klass->set_timer = set_timer;
-	klass->changed = nop_void;
+	klass->changed = (void *) nop_void;
 	klass->selection_changed = selection_changed;
 	klass->message_changed = message_changed;
-	klass->display = nop_void;
-	klass->erase = nop_void;
+	klass->display = (void *) nop_void;
+	klass->erase = (void *) nop_void;
 	klass->ring_bell = ring_bell;
  }
 

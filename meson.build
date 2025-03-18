@@ -452,6 +452,7 @@ if host_machine.system() == 'linux'
     lib_src += [
       'src/library/tls/openssl/context.c',
       'src/library/tls/openssl/init.c',
+      'src/library/tls/openssl/connected.c',
       'src/library/tls/openssl/errors.c',
       'src/library/tls/openssl/messages.c',
     ]

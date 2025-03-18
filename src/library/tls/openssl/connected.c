@@ -37,6 +37,10 @@
  #include <private/openssl.h>
  #include <lib3270/memory.h>
 
+ #ifdef HAVE_UNISTD_H
+	#include <unistd.h>
+ #endif
+
  #include <openssl/ssl.h>
  #include <openssl/err.h>
  #include <openssl/bio.h>
@@ -88,7 +92,7 @@
 	size_t readbytes = 0;
 	int rc = SSL_read_ex(context->ssl,buffer,NETWORK_BUFFER_LENGTH,&readbytes);
 	if(rc == 1) {
-		debug("Recv %ld bytes",length);
+		debug("Recv %ld bytes",readbytes);
 		net_input(hSession, buffer, readbytes);   
 		return;
 	}
@@ -129,7 +133,7 @@
 			trace_ssl(hSession,"System error %d on secure connection\n%s",code,errors);
 
 			LIB3270_POPUP popup = {
-				.summary	= _("System error occurred during secure connection."),
+				.summary	= _("System error occurred while receiving data securely"),
 				.body		= strerror(code),
 				.type		= LIB3270_NOTIFY_NETWORK_IO_ERROR,
 				.title		= _("Network I/O error"),
@@ -165,50 +169,83 @@
 
  static int on_send(H3270 *hSession, const void *buffer, size_t length, Context *context) {
 
-	/*
-	int rc = SSL_write(hSession->network.context->con, (const char *) buffer, length);
-	if(rc > 0)
-		return rc;
+	int ssl_error = SSL_ERROR_WANT_WRITE;
 
-	// https://www.openssl.org/docs/man1.0.2/man3/SSL_get_error.html
-	int ssl_error = SSL_get_error(hSession->network.context->con, rc);
+	// https://docs.openssl.org/3.2/man3/SSL_write/
+	// When a write function call has to be repeated because SSL_get_error(3) 
+	// returned SSL_ERROR_WANT_READ or SSL_ERROR_WANT_WRITE, it must be repeated 
+	// with the same arguments. The data that was passed might have been 
+	// partially processed.
+	while(ssl_error == SSL_ERROR_WANT_READ || ssl_error == SSL_ERROR_WANT_WRITE) {
+		size_t written = 0;
+		int rc = SSL_write_ex(context->ssl, buffer, length, &written); 
+		if(rc == 1) {
+			return written;
+		}
+		ssl_error = SSL_get_error(context->ssl,rc);
+	}
+
 	switch(ssl_error) {
 	case SSL_ERROR_ZERO_RETURN:
+		{
+			lib3270_autoptr(char) errors = openssl_errors(context);
+			trace_ssl(hSession,"%s\n%s","The secure connection has been closed cleanly",errors);
 
-		trace_ssl(hSession,"%s","The secure connection has been closed cleanly");
+			LIB3270_POPUP popup = {
+				.summary	= _("Disconnected from host."),
+				.body		= _("The secure connection has been closed cleanly."),
+				.type		= LIB3270_NOTIFY_DISCONNECTED,
+				.title		= _("TLS/SSL error"),
+				.label		= _("OK")
+			};
 
-		lib3270_set_network_error(
-			hSession,
-		    _("Disconnected from host."),
-		    "%s",
-		    _("The secure connection has been closed cleanly.")
-		);
+			connection_close(context->hSession, -1);
 
-		return 0;
+			lib3270_popup(hSession,&popup,0);
 
-	case SSL_ERROR_WANT_READ:
-	case SSL_ERROR_WANT_X509_LOOKUP:
-		return -EWOULDBLOCK;	// Force a new loop.
+		}
+		return -ENOTCONN;
 
 	case SSL_ERROR_SYSCALL:
-		return lib3270_socket_send_failed(hSession);
+		{
+			int code = errno;
+			lib3270_autoptr(char) errors = openssl_errors(context);
+			trace_ssl(hSession,"System error %d on secure connection\n%s",code,errors);
+
+			LIB3270_POPUP popup = {
+				.summary	= _("System error occurred while sending data securely"),
+				.body		= strerror(code),
+				.type		= LIB3270_NOTIFY_NETWORK_IO_ERROR,
+				.title		= _("Network I/O error"),
+				.label		= _("OK")
+			};
+
+			connection_close(context->hSession, -1);
+
+			lib3270_popup(hSession,&popup,0);
+
+			return -code;
+		}
 
 	}
 
-	// Build error message.
-	char err_buf[120];
-	(void) ERR_error_string(ssl_error, err_buf);
-	trace_dsn(hSession,"RCVD SSL_write error %d (%s)\n", ssl_error, err_buf);
+	lib3270_autoptr(char) errors = openssl_errors(context);
 
-	lib3270_set_network_error(
-		hSession,
-		_("Error writing to host."),
-		_("The SSL error message was %s"),
-		err_buf
-	);
+	trace_dsn(hSession,"RCVD SSL_write error %d\n%s\n", ssl_error, errors);
+
+	LIB3270_POPUP popup = {
+		.summary	= _("Error occurred while sending data securely"),
+		.body		= errors,
+		.type		= LIB3270_NOTIFY_NETWORK_IO_ERROR,
+		.title		= _("Network I/O error"),
+		.label		= _("OK")
+	};
+
+	connection_close(context->hSession, -1);
+
+	lib3270_popup(hSession,&popup,0);
 
 	return -1;
-	*/
 
  }
 

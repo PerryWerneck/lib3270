@@ -234,9 +234,19 @@ static int check_policy(H3270 *hSession, const char *name, int default_value) {
 	debug("%s(%s)",__FUNCTION__,name);
 
 #ifdef DEBUG
-	if(!strcasecmp(name,"X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT")) {
-		debug("%s: Allowing %s for testing",__FUNCTION__,name);
-		return 0;
+	static const char *debug_names[] = {
+		"X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT",
+		"X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
+		"X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE"
+	};
+
+	size_t ix;
+
+	for(ix = 0; ix < (sizeof(debug_names)/sizeof(debug_names[0])); ix++) {
+		if(!strcasecmp(name,debug_names[ix])) {
+			debug("%s: Allowing %s for testing",__FUNCTION__,name);
+			return 0;
+		}
 	}
 #endif // DEBUG
 

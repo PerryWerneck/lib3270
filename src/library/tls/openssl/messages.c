@@ -371,6 +371,71 @@
 			.summary = N_( "Key usage does not include certificate signing" ),
 			.body = N_( "The current candidate issuer certificate was rejected because its keyUsage extension does not permit certificate signing." )
 		}
+	},
+
+	{
+		.code = -1,	
+		{
+			.name = "FQDN_MISMATCH",
+			.type = LIB3270_NOTIFY_SECURITY_LOW,
+			.icon = "security-low",
+			.summary = N_( "Fully Qualified Domain Name (FQDN) mismatch" ),
+			.body = N_( "The domain name in the SSL/TLS certificate does not match the host name requested." )
+		},
+		{
+			.name = "NO_PEER_CERTIFICATE",
+			.type = LIB3270_NOTIFY_SECURITY_LOW,
+			.icon = "dialog-error",
+			.summary = N_( "No peer certificate" ),
+			.body = N_( "Unable to get peer certificate for SSL/TLS connection." )
+		},
+	},
+
+	{
+		.code = -1,	
+		{
+			.name = "SUBJECT_ALT_NAME_MISMATCH",
+			.type = LIB3270_NOTIFY_SECURITY_LOW,
+			.icon = "security-low",
+			.summary = N_( "Hostname from TLS/SSL certificate does not match" ),
+			.body = N_( "The subjectAltName field in the TLS/SSL certificate does not match the requested hostname." )
+
+		},
+	},
+
+	{
+		.code = -1,	
+		{
+			.name = "SSL_ILLEGAL_CERT_NAME",
+			.type = LIB3270_NOTIFY_SECURITY_LOW,
+			.icon = "dialog-error",
+			.summary = N_( "The TLS/SSL certificate name is ilegal" ),
+			.body = N_( "There was a terminating zero before the end of TLS/SSL certificate name, this cannot match." )
+		},
+	},
+
+	{
+		.code = -1,	
+		{
+			.name = "NO_FQDN_FROM_PEER",
+			.type = LIB3270_NOTIFY_SECURITY_LOW,
+			.icon = "dialog-error",
+			.summary = N_( "Unable to obtain common name from peer certificate" ),
+			.body = N_( "The SSL/TLS certificate does not contains a common name." )
+
+		},
+	},
+
+	{
+		.code = -1,	
+		{
+			.name = "FQDN_HOSTNAME_MISMATCH",
+			.type = LIB3270_NOTIFY_SECURITY_LOW,
+			.icon = "security-low",
+			.summary = N_( "FQDN hostname mismatch in server certificate" ),
+			.body = N_( "The common name from SSL/TLS certificate does not match the target hostname." )
+
+		},
 	}
 
  };
@@ -378,6 +443,19 @@
  LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_message_from_code(long code) {
 
 	size_t ix;
+
+	if(code == -1) {
+
+		static const LIB3270_SSL_MESSAGE invalid = {
+			.name = "SSL_INVALID_CODE",
+			.type = LIB3270_NOTIFY_CRITICAL,
+			.icon = "dialog-error",
+			.summary = N_( "The SSL error code was invalid" ),
+			.body = N_( "Trying to get SSL message from invalid code '-1', this is an internal logic error" )
+		};
+
+		return &invalid;
+	}
 
 	for(ix = 0; ix < (sizeof(messages)/sizeof(messages[0])); ix++) {
 
@@ -392,33 +470,7 @@
 
  LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_message_from_name(const char *name) {
  
-	static LIB3270_SSL_MESSAGE named_messages[] = {
-		{
-			.name = "FQDN_MISMATCH",
-			.type = LIB3270_NOTIFY_SECURITY_LOW,
-			.icon = "dialog-error",
-			.summary = N_( "Fully Qualified Domain Name (FQDN) mismatch" ),
-			.body = N_( "The domain name in the SSL/TLS certificate does not match the host name requested." )
-		},
-		{
-			.name = "NO_PEER_CERTIFICATE",
-			.type = LIB3270_NOTIFY_SECURITY_LOW,
-			.icon = "dialog-error",
-			.summary = N_( "No peer certificate" ),
-			.body = N_( "Unable to get peer certificate for SSL/TLS connection." )
-		}
-
-	};
-
 	size_t ix;
-
-	for(ix = 0; ix < (sizeof(named_messages)/sizeof(named_messages[0])); ix++) {
-
-		if(!strcasecmp(named_messages[ix].name,name)) {
-			return &named_messages[ix];
-		}
-	
-	}
 
 	for(ix = 0; ix < (sizeof(messages)/sizeof(messages[0])); ix++) {
 
@@ -428,5 +480,13 @@
 
 	}
 
-	return NULL;
- }
+	static const LIB3270_SSL_MESSAGE invalid = {
+		.name = "SSL_INVALID_NAME",
+		.type = LIB3270_NOTIFY_CRITICAL,
+		.icon = "dialog-error",
+		.summary = N_( "The SSL error name was invalid" ),
+		.body = N_( "Trying to get SSL message using an invalid name, this is an internal logic error" )
+	};
+
+	return &invalid;
+}

@@ -20,6 +20,7 @@
  #include <config.h>
  #include <lib3270/defs.h>
  #include <private/openssl.h>
+ #include <private/intl.h>
  
  #include <arpa/inet.h>
  #include <openssl/x509v3.h>
@@ -53,8 +54,7 @@
 	// hostname. In this case, the iPAddress subjectAltName must be present
 	// in the certificate and must exactly match the IP in the URI.
 	//
-    int matched = -1;     /* -1 is no alternative match yet, 1 means match and 0
-                             means mismatch */
+    int matched = -1;     // -1 is no alternative match yet, 1 means match and 0 means mismatch
     size_t addrlen = 0;
 	STACK_OF(GENERAL_NAME) * altnames;
 	struct in6_addr addr_v6;
@@ -73,6 +73,7 @@
     X509_NAME *name; 
     ASN1_STRING *tmp;
     const GENERAL_NAME *check; 
+	const LIB3270_SSL_MESSAGE *message = NULL;
 
     //
     // Attempt to resolve host name to v4 address 
@@ -125,17 +126,18 @@
                 // "I checked the 0.9.6 and 0.9.8 sources before my patch and
                 // it always 0-terminates an IA5String."
                 //
-                if ((altlen == strnlen_s(altptr, EST_MAX_SERVERNAME_LEN)) &&
+                if ((altlen == strnlen_s(altptr, 255)) &&
                     // if this isn't true, there was an embedded zero in the name
                     // string and we cannot match it.
-                    est_client_cert_hostcheck(altptr, hostname)) {
+                    cert_hostcheck(altptr, hostname)) {
                     matched = 1;
                 } else{
                     matched = 0;
                 }
                 break;
 
-            case GEN_IPADD: // IP address comparison
+            case GEN_IPADD: 
+				// IP address comparison
                 // compare alternative IP address if the data chunk is the same size
             	// our server IP address is
 				trace_ssl(hSession,"Checking IP address against SAN\n");
@@ -169,14 +171,19 @@
     }
 
     if (matched == 1) {
-        // an alternative name matched the server hostname
+ 
+		// an alternative name matched the server hostname
         trace_ssl(hSession,"subjectAltName: %s matched\n", hostname);
-    } else if (matched == 0) {
-        // an alternative name field existed, but didn't match and then we MUST fail
+    
+	} else if (matched == 0) {
+
+		// an alternative name field existed, but didn't match and then we MUST fail
         trace_ssl(hSession,"subjectAltName does not match %s\n", hostname);
-        res = EST_ERR_FQDN_MISMATCH;
-    }else  {
-        // we have to look to the last occurrence of a commonName in the distinguished one to get the most significant one.
+		message = openssl_message_from_name("SUBJECT_ALT_NAME_MISMATCH");
+
+	} else  {
+
+		// we have to look to the last occurrence of a commonName in the distinguished one to get the most significant one.
         i = -1;
 
 		// The following is done because of a bug in 0.9.6b
@@ -221,11 +228,11 @@
 					// not a UTF8 name
                     j = ASN1_STRING_to_UTF8(&peer_CN, tmp);
                 }
-                if (peer_CN && (strnlen_s((char*)peer_CN, EST_MAX_SERVERNAME_LEN) != j)) {
-                    // there was a terminating zero before the end of string, this
-                    // cannot match and we return failure!
+                if (peer_CN && (strnlen_s((char*)peer_CN, 255) != j)) {
+                    // there was a terminating zero before the end of string, this cannot match and we return failure!
                     trace_ssl(hSession,"SSL: illegal cert name field\n");
-                    res = EST_ERR_FQDN_MISMATCH;
+    				message = openssl_message_from_name("SSL_ILLEGAL_CERT_NAME");
+			
                 }
             }
         }
@@ -239,29 +246,32 @@
         }
 		*/
 
-        if (res != EST_ERR_NONE) {
+        if (message) {
             // error already detected, pass through
 
 		} else if (!peer_CN) {
 
 			trace_ssl(hSession,"unable to obtain common name from peer certificate\n");
-            res = EST_ERR_FQDN_MISMATCH;
+			message = openssl_message_from_name("NO_FQDN_FROM_PEER");
 
 		} else if (!est_client_cert_hostcheck((const char*)peer_CN, hostname)) {
 
 			trace_ssl(hSession,"FQDN hostname mismatch in server certificate, '%s' does not match target host name '%s'\n", peer_CN, hostname);
-            res = EST_ERR_FQDN_MISMATCH;
+		
+			message = openssl_message_from_name("FQDN_HOSTNAME_MISMATCH");
 
 		} else  {
 
-			trace_ssl(hSession,"common name: %s (matched)", peer_CN);
-        }
+			trace_ssl(hSession,"common name: %s (matched)\n", peer_CN);
+
+		}
+
         if (peer_CN) {
             free(peer_CN);
         }
     }
 
-    return res;
+    return message;
 
  }
 

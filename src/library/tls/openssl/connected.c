@@ -285,7 +285,16 @@
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_send;
 
-	// set_ssl_state(session,LIB3270_SSL_SECURE);
+
+	debug("--------------> %s",SSL_state_string_long(context->ssl));
+	
+	/*
+	if(hSession->ssl.message.type != LIB3270_NOTIFY_SECURITY_HIGH) {
+		set_ssl_state(hSession,LIB3270_SSL_SECURE);
+	} else {
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+	}
+	*/
 
 	setup_session(hSession);
 	set_connected_initial(hSession);

@@ -104,9 +104,8 @@ LIB3270_EXPORT const char * lib3270_get_ssl_state_as_string(const H3270 * hSessi
 		N_("Undefined")
 	};
 
-	size_t value = (size_t) lib3270_get_ssl_state(hSession);
-	if(value < (sizeof(value)/sizeof(values[0]))) {
-		return dgettext(GETTEXT_PACKAGE,values[value]);
+	if(hSession->ssl.state < (sizeof(values)/sizeof(values[0]))) {
+		return dgettext(GETTEXT_PACKAGE,values[hSession->ssl.state]);
 	}
 
 	return _( "Unknown" );

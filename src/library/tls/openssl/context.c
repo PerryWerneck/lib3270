@@ -27,6 +27,7 @@
 
  #include <config.h>
  #include <lib3270/defs.h>
+ #include <lib3270/memory.h>
  #include <private/openssl.h>
  #include <private/trace.h>
  #include <private/session.h>
@@ -138,6 +139,72 @@
  
  }
 
+ static void info_callback(const SSL *ssl, int where, int ret) {
+
+	H3270 *hSession = (H3270 *) SSL_get_ex_data(ssl,e_ctx_ssl_exdata_index);
+	Context * context = (Context *) hSession->connection.context;
+
+	switch(where) {
+	case SSL_CB_CONNECT_LOOP:
+
+		trace_ssl(
+			hSession,
+			"SSL_connect: %s %s\n",
+			SSL_state_string(ssl), 
+			SSL_state_string_long(ssl
+		));
+
+		break;
+
+	case SSL_CB_CONNECT_EXIT:
+
+		trace_ssl(hSession,"%s: SSL_CB_CONNECT_EXIT\n",__FUNCTION__);
+
+		if (ret == 0) {
+
+			trace_ssl(hSession,"SSL_connect: failed in %s\n",SSL_state_string_long(ssl));
+
+		} else if (ret < 0) {
+
+			lib3270_autoptr(char) errors = openssl_errors(context);
+
+			trace_ssl(hSession,"SSL Connect error %d\n%s\n",
+				ret,
+				errors
+			);
+
+		}
+		break;
+
+	default:
+		trace_ssl(hSession,"SSL Current state is \"%s\"\n",SSL_state_string_long(ssl));
+	}
+
+	if(where & SSL_CB_EXIT) {
+		trace_ssl(hSession,"SSL_CB_EXIT ret=%d\n",ret);
+	}
+
+	if(where & SSL_CB_ALERT) {
+		trace_ssl(hSession,"SSL ALERT: %s\n",SSL_alert_type_string_long(ret));
+	}
+
+	if(where & SSL_CB_HANDSHAKE_DONE) {
+		trace_ssl(
+			hSession,
+			"%s: SSL_CB_HANDSHAKE_DONE state=%04x (%s)\n",
+				__FUNCTION__,
+				SSL_get_state(ssl),
+				SSL_state_string_long(ssl)
+			);
+
+		if(SSL_get_state(ssl) == TLS_ST_OK)
+			set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+		else
+			set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
+	}
+ 
+ }
+
  LIB3270_INTERNAL SSL_CTX * openssl_context(H3270 *hSession) {
 
 	pthread_mutex_lock(&ssl_guard);
@@ -158,6 +225,8 @@
 		pthread_mutex_unlock(&ssl_guard);
 		return NULL;
 	}
+
+	SSL_CTX_set_info_callback(context, info_callback);
 
 	// Make sure we're verifying the server
 	SSL_CTX_set_verify(context, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT, cert_verify_cb);

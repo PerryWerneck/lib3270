@@ -375,14 +375,18 @@
 
 	{
 		.code = -1,	
-		{
+		.message = {
 			.name = "FQDN_MISMATCH",
 			.type = LIB3270_NOTIFY_SECURITY_LOW,
 			.icon = "security-low",
 			.summary = N_( "Fully Qualified Domain Name (FQDN) mismatch" ),
 			.body = N_( "The domain name in the SSL/TLS certificate does not match the host name requested." )
 		},
-		{
+	},
+
+	{
+		.code = -1,	
+		.message = {
 			.name = "NO_PEER_CERTIFICATE",
 			.type = LIB3270_NOTIFY_SECURITY_LOW,
 			.icon = "dialog-error",
@@ -393,7 +397,7 @@
 
 	{
 		.code = -1,	
-		{
+		.message = {
 			.name = "SUBJECT_ALT_NAME_MISMATCH",
 			.type = LIB3270_NOTIFY_SECURITY_LOW,
 			.icon = "security-low",
@@ -405,7 +409,7 @@
 
 	{
 		.code = -1,	
-		{
+		.message = {
 			.name = "SSL_ILLEGAL_CERT_NAME",
 			.type = LIB3270_NOTIFY_SECURITY_LOW,
 			.icon = "dialog-error",
@@ -416,7 +420,7 @@
 
 	{
 		.code = -1,	
-		{
+		.message = {
 			.name = "NO_FQDN_FROM_PEER",
 			.type = LIB3270_NOTIFY_SECURITY_LOW,
 			.icon = "dialog-error",
@@ -428,7 +432,7 @@
 
 	{
 		.code = -1,	
-		{
+		.message = {
 			.name = "FQDN_HOSTNAME_MISMATCH",
 			.type = LIB3270_NOTIFY_SECURITY_LOW,
 			.icon = "security-low",

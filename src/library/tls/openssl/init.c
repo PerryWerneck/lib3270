@@ -361,11 +361,13 @@
 			set_ssl_message(context->hSession,ssl_message);
 
 			if(!context->hSession->cbk.check_policy(context->hSession,ssl_message->name,EINVAL)) {
+
 				trace_ssl(
 					context->hSession,
 					"Aproving by policy '%s'\n",
 						ssl_message->name
 				);
+				
 			} else {
 
 				LIB3270_POPUP popup = {

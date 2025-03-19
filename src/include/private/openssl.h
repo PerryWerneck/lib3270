@@ -31,6 +31,12 @@
 	*ptr = NULL;
  }
 
+ static inline void lib3270_autoptr_cleanup_X509(X509 **ptr) {
+	if(*ptr)
+		X509_free(*ptr);
+	*ptr = NULL;
+ }
+
  /// @brief Connection context for OpenSSL connections.
  typedef struct {
 

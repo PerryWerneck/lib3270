@@ -21,6 +21,7 @@
  #include <lib3270/defs.h>
  #include <private/openssl.h>
  #include <private/intl.h>
+ #include <private/trace.h>
  
  #include <arpa/inet.h>
  #include <openssl/x509v3.h>
@@ -61,7 +62,6 @@
     struct in_addr addr_v4;
     int addr_is_v4 = 0;
     int addr_is_v6 = 0;
-    int res = 0;
     int rv;
     int numalts;
     int i, j;
@@ -126,7 +126,7 @@
                 // "I checked the 0.9.6 and 0.9.8 sources before my patch and
                 // it always 0-terminates an IA5String."
                 //
-                if ((altlen == strnlen_s(altptr, 255)) &&
+                if ((altlen == strnlen(altptr, 255)) &&
                     // if this isn't true, there was an embedded zero in the name
                     // string and we cannot match it.
                     cert_hostcheck(altptr, hostname)) {
@@ -143,15 +143,9 @@
 				trace_ssl(hSession,"Checking IP address against SAN\n");
 
                 if (addr_is_v4) {
-                    safec_rc = memcmp_s(altptr, altlen, &addr_v4, altlen, &diff);
-                    if (safec_rc != EOK) {
-                    	EST_LOG_INFO("memcmp_s error 0x%xO with IPv4 address\n", safec_rc);
-                    }  
+                    diff = memcmp(altptr, &addr_v4, altlen);
                 } else if (addr_is_v6) {
-                    safec_rc = memcmp_s(altptr, altlen, &addr_v6, altlen, &diff);
-                    if (safec_rc != EOK) {
-                    	EST_LOG_INFO("memcmp_s error 0x%xO with IPv6 address\n", safec_rc);
-                    }  
+                    diff = memcmp(altptr, &addr_v6, altlen);
                 } else {
                 	//  Should never get here...so force matched to be 0
 	           		diff = -1; 
@@ -217,10 +211,7 @@
                     if (j >= 0) {
                         peer_CN = malloc(j + 1);
                         if (peer_CN) {
-			    			safec_rc = memcpy_s(peer_CN, j, (char *)ASN1_STRING_get0_data(tmp), j);
-                            if (safec_rc != EOK) {
-								trace_ssl(hSession,"memcpy_s error 0x%xO with ASN1 string\n", safec_rc);
-                            }
+			    			memcpy(peer_CN, (char *)ASN1_STRING_get0_data(tmp), j);
                             peer_CN[j] = '\0';
                         }
                     }
@@ -228,7 +219,7 @@
 					// not a UTF8 name
                     j = ASN1_STRING_to_UTF8(&peer_CN, tmp);
                 }
-                if (peer_CN && (strnlen_s((char*)peer_CN, 255) != j)) {
+                if (peer_CN && (strnlen((char*)peer_CN, 255) != j)) {
                     // there was a terminating zero before the end of string, this cannot match and we return failure!
                     trace_ssl(hSession,"SSL: illegal cert name field\n");
     				message = openssl_message_from_name("SSL_ILLEGAL_CERT_NAME");
@@ -254,7 +245,7 @@
 			trace_ssl(hSession,"unable to obtain common name from peer certificate\n");
 			message = openssl_message_from_name("NO_FQDN_FROM_PEER");
 
-		} else if (!est_client_cert_hostcheck((const char*)peer_CN, hostname)) {
+		} else if (!cert_hostcheck((const char*)peer_CN, hostname)) {
 
 			trace_ssl(hSession,"FQDN hostname mismatch in server certificate, '%s' does not match target host name '%s'\n", peer_CN, hostname);
 		

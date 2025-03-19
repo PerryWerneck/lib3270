@@ -101,8 +101,11 @@
  
  LIB3270_INTERNAL void set_network_context(H3270 *hSession, LIB3270_NET_CONTEXT *context);
 
- LIB3270_INTERNAL void set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE *message);
-
+ /// @brief Set SSL message for session.
+ /// @param hSession Session handle.
+ /// @param message The message to set.
+ /// @return 0 if the message was already set, 1 if the message was set.
+ LIB3270_INTERNAL int set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE *message);
 
  ///
  /// @brief Start TLS/SSL

@@ -274,8 +274,6 @@
 
  LIB3270_INTERNAL void openssl_success(H3270 *hSession, Context *context) {
 
-	set_blocking_mode(hSession,hSession->connection.sock,0);
-
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
 
@@ -285,17 +283,16 @@
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_send;
 
-
 	debug("--------------> %s",SSL_state_string_long(context->ssl));
-	
-	/*
-	if(hSession->ssl.message.type != LIB3270_NOTIFY_SECURITY_HIGH) {
+
+	if(!hSession->ssl.message.name) {
+		set_ssl_message(hSession,openssl_message_from_code(X509_V_OK));
 		set_ssl_state(hSession,LIB3270_SSL_SECURE);
 	} else {
 		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
 	}
-	*/
-
+	
+	set_blocking_mode(hSession,hSession->connection.sock,0);
 	setup_session(hSession);
 	set_connected_initial(hSession);
 

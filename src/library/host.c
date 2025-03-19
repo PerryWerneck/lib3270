@@ -168,6 +168,9 @@ int connection_close(H3270 *hSession, int failed) {
 		  failed
 	     );
 
+	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
+	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
+	
 	hSession->connection.write = connection_write_offline;
 	hSession->connection.except = connection_except_offline;
 
@@ -289,34 +292,6 @@ void notify_new_state(H3270 *hSession, LIB3270_STATE tx, int mode) {
 
 }
 
-/*
-static void update_url(H3270 *hSession) {
-	char * url =
-	    lib3270_strdup_printf(
-	        "%s://%s:%s",
-	        hSession->network.module->name,
-	        hSession->host.current,
-	        hSession->host.srvc
-	    );
-
-	if(hSession->host.url && !strcmp(hSession->host.url,url)) {
-		debug("%s: Same url, ignoring",__FUNCTION__);
-		lib3270_free(url);
-		return;
-	}
-
-	debug("URL %s -> %s",hSession->host.url,url);
-
-	trace_event(hSession,"Host URL was changed\nFrom: %s\nTo: %s\n",hSession->host.url,url);
-	lib3270_free(hSession->host.url);
-	hSession->host.url = url;
-	hSession->cbk.update_url(hSession, hSession->host.url);
-
-	hSession->network.module->reset(hSession);
-
-}
-*/
-
 LIB3270_EXPORT const char * lib3270_get_associated_luname(const H3270 *hSession) {
 	if(check_online_session(hSession))
 		return NULL;
@@ -379,7 +354,7 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *hSession, const char *url) {
 
 	FAIL_IF_ONLINE(hSession);
 
-	if(!url) {
+	if(!(url && *url)) {
 		url = lib3270_get_default_host(hSession);
 	}
 
@@ -402,12 +377,6 @@ LIB3270_EXPORT int lib3270_set_url(H3270 *hSession, const char *url) {
 
 	return 0;
 }
-
-/*
-LIB3270_EXPORT const char * lib3270_get_host(const H3270 *h) {
-	return h->host.url;
-}
-*/
 
 LIB3270_EXPORT int lib3270_has_active_script(const H3270 *h) {
 	return (h->oia.flag[LIB3270_FLAG_SCRIPT] != 0);

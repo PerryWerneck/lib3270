@@ -32,6 +32,7 @@
 #include <private/popup.h>
 #include <private/network.h>
 #include <lib3270/selection.h>
+#include <private/trace.h>
 #include <lib3270/log.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -521,9 +522,9 @@ LIB3270_INTERNAL char * lib3270_file_get_contents(H3270 GNUC_UNUSED(*hSession), 
 	return text;
 }
 
-LIB3270_INTERNAL void set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE *message) {
+LIB3270_INTERNAL int set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE *message) {
 
-	if(message) {
+	if(!hSession->ssl.message.name) {
 		hSession->ssl.message.name = message->name;
 		hSession->ssl.message.icon = message->icon;
 		hSession->ssl.message.type = message->type;
@@ -531,10 +532,9 @@ LIB3270_INTERNAL void set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE
 		hSession->ssl.message.summary = dgettext(GETTEXT_PACKAGE,message->summary);
 		hSession->ssl.message.body = dgettext(GETTEXT_PACKAGE,message->body);
 		hSession->ssl.message.label = (message->label && *message->label) ? dgettext(GETTEXT_PACKAGE,message->label) : _("Ok");
-	} else {
-
-		memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
-
+		return 1;
 	}
+
+	return 0;
 
 }

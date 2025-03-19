@@ -84,7 +84,7 @@
 
  LIB3270_INTERNAL int start_tls(H3270 *hSession) {
 
-	set_ssl_message(hSession,NULL);
+	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	Context *context = lib3270_new(Context);
@@ -329,12 +329,62 @@
 
 	}
 
-    // Now that we've established a TLS session with the server,
-	// we need to verify that the FQDN in the server cert matches
-    // the server name we used to establish the connection.
+	if(!context->state) {
 
-	// TODO: Implement FQDN check.
-	// check_fqdn(context, server_name);
+		// Now that we've established a TLS session with the server,
+		// we need to verify that the FQDN in the server cert matches
+		// the server name we used to establish the connection.
+
+		lib3270_autoptr(X509) cert = SSL_get_peer_certificate(context->ssl);
+		lib3270_autoptr(char) server_name = lib3270_get_server_name(context->hSession);
+		const LIB3270_SSL_MESSAGE *ssl_message = NULL;
+
+		if(cert && server_name && *server_name) {
+
+			ssl_message = openssl_check_fqdn(context->hSession,cert,server_name);
+
+    	} else {
+
+			// No Peer certificate
+			ssl_message = openssl_message_from_name("NO_PEER_CERTIFICATE");
+
+		}
+
+		if(ssl_message) {
+
+			trace_ssl(
+				context->hSession,
+				"%s\n",
+				ssl_message->summary
+			);
+
+			set_ssl_message(context->hSession,ssl_message);
+
+			if(!context->hSession->cbk.check_policy(context->hSession,ssl_message->name,EINVAL)) {
+				trace_ssl(
+					context->hSession,
+					"Aproving by policy '%s'\n",
+						ssl_message->name
+				);
+			} else {
+
+				LIB3270_POPUP popup = {
+					.title		= _("FQDN validation error"),
+					.summary	= ssl_message->summary,
+					.body		= ssl_message->body,
+					.type		= LIB3270_NOTIFY_TLS_ERROR,
+					.label		= _("OK")
+				};
+
+				connection_close(context->hSession, -1);
+				lib3270_popup_async(context->hSession, &popup);
+	
+			}
+	
+		}
+	}
+
+	// TODO: Check CRL
 
 	// Finalize
 	if(context->state) {

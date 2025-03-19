@@ -455,6 +455,7 @@ if host_machine.system() == 'linux'
       'src/library/tls/openssl/connected.c',
       'src/library/tls/openssl/errors.c',
       'src/library/tls/openssl/messages.c',
+      'src/library/tls/openssl/fqdn.c',
     ]
 
   else 

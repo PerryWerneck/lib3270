@@ -76,3 +76,11 @@
  /// @param code The OpenSSL error code.
  /// @return The message descriptor if found, NULL if not found.
  LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_message_from_code(long code);
+
+ LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_message_from_name(const char *name);
+
+ /// @brief CHeck if the hostname matches the certificate.
+ /// @param server_cert The certificate to check
+ /// @param hostname The hostname
+ /// @return 0 if the hostname matches the certificate, non-zero otherwise.
+ LIB3270_INTERNAL const LIB3270_SSL_MESSAGE * openssl_check_fqdn(H3270 *hSession, X509 *server_cert, const char *hostname);

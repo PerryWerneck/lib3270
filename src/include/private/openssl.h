@@ -51,7 +51,6 @@
 	char state;
 	H3270 *hSession;
 	SSL *ssl;
-    BIO *tcp;
 	int cert_error;
 
 	struct {

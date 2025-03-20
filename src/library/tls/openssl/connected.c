@@ -63,7 +63,6 @@
 		SSL_shutdown(context->ssl);
 		SSL_free(context->ssl);
 		context->ssl = NULL;
-		context->tcp = NULL;
 		hSession->connection.sock = -1;
 	}
 

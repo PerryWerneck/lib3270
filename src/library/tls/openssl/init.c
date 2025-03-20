@@ -70,7 +70,6 @@
 		SSL_shutdown(context->ssl);
 		SSL_free(context->ssl);
 		context->ssl = NULL;
-		context->tcp = NULL;
 		hSession->connection.sock = -1;
 	}
 
@@ -206,8 +205,8 @@
 	SSL_set_tlsext_host_name(context->ssl, server_name);
 
     // Pass the socket to the BIO interface, which OpenSSL uses to create the TLS session.
-    context->tcp = BIO_new_socket(context->hSession->connection.sock, BIO_CLOSE);
-    if(context->tcp == NULL) {
+    BIO *tcp = BIO_new_socket(context->hSession->connection.sock, BIO_CLOSE);
+    if(tcp == NULL) {
 		openssl_failed(
 			context,
 			-1,
@@ -218,7 +217,7 @@
 		return 0;
 	}        
 
-    SSL_set_bio(context->ssl, context->tcp, context->tcp);
+    SSL_set_bio(context->ssl, tcp, tcp);
 
 	// Establish the TLS session.
 	{

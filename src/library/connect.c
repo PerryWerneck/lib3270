@@ -211,6 +211,11 @@
 
  }
 
+ static void tls_complete(H3270 *hSession) {
+	setup_session(hSession);
+	set_connected_initial(hSession);
+ }
+
 #ifdef _WIN32
  void set_connected_socket(H3270 *hSession, SOCKET sock) {
 #else
@@ -235,7 +240,7 @@
 
 	if(hSession->ssl.host) {
 
-		start_tls(hSession);
+		start_tls(hSession,tls_complete);
 
 	} else {
 

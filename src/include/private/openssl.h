@@ -62,7 +62,7 @@
 
  /// @brief OpenSSL negotiation has succeeded, setup network I/O.
  /// @param context OpenSSL context.
- LIB3270_INTERNAL void openssl_success(H3270 *session, SSL *ssl);
+ LIB3270_INTERNAL void openssl_tls_complete(H3270 *session, SSL *ssl);
  
  /// @brief Get descriptor from OpenSSL's error code.
  /// @param code The OpenSSL error code.

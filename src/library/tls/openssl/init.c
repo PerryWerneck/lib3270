@@ -57,6 +57,8 @@
 	H3270 *hSession;
 	SSL *ssl;
 
+	void (*complete)(H3270 *hSession);
+
  } Context;
 
  static void * ssl_thread(Context *context);
@@ -83,7 +85,7 @@
 	return 0;
  }
 
- LIB3270_INTERNAL int start_tls(H3270 *hSession) {
+ LIB3270_INTERNAL int start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
 	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
@@ -91,6 +93,7 @@
 	Context *context = lib3270_new(Context);
 	memset(context,0,sizeof(Context));
 	context->hSession = hSession;
+	context->complete = complete;
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
 
@@ -192,6 +195,33 @@
 	finalize(context->hSession,context);
 	lib3270_free(context);
  
+ }
+
+ static void complete(H3270 *hSession, Context *context) {
+
+	debug("--------------> %s",SSL_state_string_long(context->ssl));
+
+	if(!hSession->ssl.message.name) {
+		set_ssl_message(hSession,openssl_message_from_code(X509_V_OK));
+		set_ssl_state(hSession,LIB3270_SSL_SECURE);
+	} else {
+		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
+	}
+
+	set_blocking_mode(hSession,hSession->connection.sock,0);
+	context->complete(hSession);
+
+	{
+		pthread_mutex_lock(&ssl_guard);
+
+		SSL_up_ref(context->ssl);
+		openssl_tls_complete(hSession,context->ssl);
+	
+		context_free(context);
+	
+		pthread_mutex_unlock(&ssl_guard);
+	}
+	
  }
 
  static void * ssl_thread(Context *context) {
@@ -399,26 +429,24 @@
 			context->hSession->connection.sock = -1;
 		}
 
+		context_free(context);
+		pthread_mutex_unlock(&ssl_guard);
+
 	} else {
 
 		// The TLS session was established successfully.
-		// Now we can go back to the main thread and start the network I/O.
-		SSL_up_ref(context->ssl);
+		// Now we can go back to the main thread, start the network I/O and free context.
+		pthread_mutex_unlock(&ssl_guard);
 
 		context->hSession->post(
 			context->hSession,
-			(void(*)(H3270 *, void *)) openssl_success,
-			context->ssl,
-			sizeof(SSL *)
+			(void(*)(H3270 *, void *)) complete,
+			context,
+			sizeof(Context *)
 		);
 
 	}
 
-	context_free(context);
-
-	// Cleanup
-	pthread_mutex_unlock(&ssl_guard);
-	
 	return 0;
 
  }

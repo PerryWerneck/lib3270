@@ -30,7 +30,7 @@
  #include <private/network.h>
  #include <private/intl.h>
 
- LIB3270_INTERNAL int start_tls(H3270 *hSession) {
+ LIB3270_INTERNAL int start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
 	LIB3270_POPUP popup = {
 		.name		= "tls-not-available",

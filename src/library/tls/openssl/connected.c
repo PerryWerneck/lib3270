@@ -280,7 +280,7 @@
 	return 0;
  }
 
- LIB3270_INTERNAL void openssl_success(H3270 *hSession, SSL *ssl) {
+ LIB3270_INTERNAL void openssl_tls_complete(H3270 *hSession, SSL *ssl) {
 
 	Context *context = lib3270_new(Context);
 
@@ -297,19 +297,6 @@
 	hSession->connection.write = (void *) on_send;
 
 	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
-
-	debug("--------------> %s",SSL_state_string_long(context->ssl));
-
-	if(!hSession->ssl.message.name) {
-		set_ssl_message(hSession,openssl_message_from_code(X509_V_OK));
-		set_ssl_state(hSession,LIB3270_SSL_SECURE);
-	} else {
-		set_ssl_state(hSession,LIB3270_SSL_NEGOTIATED);
-	}
 	
-	set_blocking_mode(hSession,hSession->connection.sock,0);
-	setup_session(hSession);
-	set_connected_initial(hSession);
-
  }
 

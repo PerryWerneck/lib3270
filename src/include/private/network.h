@@ -110,10 +110,11 @@
  ///
  /// @brief Start TLS/SSL
  /// @param hSession	Session handle.
+ /// @param complete	Callback to notify that TLS is complete.
  ///
  /// @return 0 if ok, non zero if failed.
  /// @retval ENOTSUP no SSL support.
- LIB3270_INTERNAL int start_tls(H3270 *hSession);
+ LIB3270_INTERNAL int start_tls(H3270 *hSession, void (*complete)(H3270 *hSession));
 
  /// @brief Set the popup body based on network error code.
  /// @param popup The popup to update.

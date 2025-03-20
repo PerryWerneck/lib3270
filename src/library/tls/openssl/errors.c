@@ -54,7 +54,7 @@
 	return (char *) text;
 }
 
- LIB3270_INTERNAL void openssl_failed(Context *context, int code, const char *summary) {
+ LIB3270_INTERNAL void openssl_failed(H3270 *hSession, int code, const char *summary) {
 
 	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
 	lib3270_autoptr(char) body = openssl_errors();
@@ -68,7 +68,7 @@
 		.label		= _("OK")
 	};
 
-	connection_close(context->hSession, code ? code : -1);
-	lib3270_popup_async(context->hSession, &popup);
+	connection_close(hSession, code ? code : -1);
+	lib3270_popup_async(hSession, &popup);
 
  }

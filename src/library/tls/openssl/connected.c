@@ -45,9 +45,23 @@
  #include <openssl/err.h>
  #include <openssl/bio.h>
 
- static int disconnect(H3270 *hSession, Context *context) {
+ /// @brief Connection context for OpenSSL connections.
+ typedef struct {
 
-	context->state = 3;
+	LIB3270_NET_CONTEXT parent;
+	
+	H3270 *hSession;
+	SSL *ssl;
+
+	struct {
+		void *except;
+		void *read;
+	} xio;
+
+
+ } Context;
+
+ static int disconnect(H3270 *hSession, Context *context) {
 
 	if(context->xio.read) {
 		hSession->poll.remove(hSession,context->xio.read);
@@ -266,7 +280,12 @@
 	return 0;
  }
 
- LIB3270_INTERNAL void openssl_success(H3270 *hSession, Context *context) {
+ LIB3270_INTERNAL void openssl_success(H3270 *hSession, SSL *ssl) {
+
+	Context *context = lib3270_new(Context);
+
+	context->ssl = ssl;
+	context->hSession = hSession;
 
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
@@ -276,6 +295,8 @@
 
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_send;
+
+	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
 
 	debug("--------------> %s",SSL_state_string_long(context->ssl));
 

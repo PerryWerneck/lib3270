@@ -86,12 +86,12 @@
 
 	}
 
+    int cert_error = X509_STORE_CTX_get_error(x_ctx);
+
 	if(approve) {
-		trace_ssl(hSession,"Certificate verified (state=%d)\n",((Context *) hSession->connection.context)->cert_error);
+		trace_ssl(hSession,"Certificate verified (state=%d)\n",cert_error);
         return (approve);
 	}
-
-    int cert_error = X509_STORE_CTX_get_error(x_ctx);
 
 	trace_ssl(
 		hSession,
@@ -109,9 +109,7 @@
 
 	if(ssl_message) {
 
-		if(set_ssl_message(hSession,ssl_message)) {
-			((Context *) hSession->connection.context)->cert_error = cert_error;
-		}
+		set_ssl_message(hSession,ssl_message);
 
 		debug("msg=%s (%s)",ssl_message->name,ssl_message->summary);
 

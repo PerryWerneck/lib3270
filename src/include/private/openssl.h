@@ -43,23 +43,6 @@
 	*ptr = NULL;
  }
 
- /// @brief Connection context for OpenSSL connections.
- typedef struct {
-
-	LIB3270_NET_CONTEXT parent;
-	
-	char state;
-	H3270 *hSession;
-	SSL *ssl;
-	int cert_error;
-
-	struct {
-		void *except;
-		void *read;
-	} xio;
-
- } Context;
-
  #define SSL_EXDATA_INDEX_INVALID -1
 
  LIB3270_INTERNAL pthread_mutex_t ssl_guard;
@@ -75,11 +58,11 @@
  /// @param context OpenSSL context.
  /// @param code Error code.
  /// @param summary Summary of the error.
- LIB3270_INTERNAL void openssl_failed(Context *context, int code, const char *summary);
+ LIB3270_INTERNAL void openssl_failed(H3270 *hSession, int code, const char *summary);
 
  /// @brief OpenSSL negotiation has succeeded, setup network I/O.
  /// @param context OpenSSL context.
- LIB3270_INTERNAL void openssl_success(H3270 *session, Context *context);
+ LIB3270_INTERNAL void openssl_success(H3270 *session, SSL *ssl);
  
  /// @brief Get descriptor from OpenSSL's error code.
  /// @param code The OpenSSL error code.

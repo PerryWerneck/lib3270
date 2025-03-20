@@ -48,16 +48,25 @@
  #include <openssl/ssl.h>
  #include <openssl/err.h>
 
+ /// @brief Connection context for OpenSSL connections.
+ typedef struct {
+
+	LIB3270_NET_CONTEXT parent;
+	
+	char state;
+	H3270 *hSession;
+	SSL *ssl;
+
+ } Context;
+
  static void * ssl_thread(Context *context);
 
  static int disconnect(H3270 *hSession, Context *context) {
 
 	context->state = 1;
 
-	if(hSession->connection.sock != -1) {
-		shutdown(hSession->connection.sock,SHUT_RDWR);
-		hSession->connection.sock = -1;
-	}
+	SSL_shutdown(context->ssl);
+	hSession->connection.sock = -1;
 
 	return 0;
  }
@@ -67,10 +76,8 @@
 	context->state = 2;
 
 	if(context->ssl) {
-		SSL_shutdown(context->ssl);
 		SSL_free(context->ssl);
 		context->ssl = NULL;
-		hSession->connection.sock = -1;
 	}
 
 	return 0;
@@ -208,7 +215,7 @@
     BIO *tcp = BIO_new_socket(context->hSession->connection.sock, BIO_CLOSE);
     if(tcp == NULL) {
 		openssl_failed(
-			context,
+			context->hSession,
 			-1,
 			_("Unexpected error associating network socket with TLS/SSL context")
 		);
@@ -251,7 +258,7 @@
 			trace_ssl(context->hSession,"%s\n",summary);
 
 			openssl_failed(
-				context,
+				context->hSession,
 				code,
 				summary
 			);
@@ -392,21 +399,22 @@
 			context->hSession->connection.sock = -1;
 		}
 
-		finalize(context->hSession,context);
-		context_free(context);
-
 	} else {
 
 		// The TLS session was established successfully.
 		// Now we can go back to the main thread and start the network I/O.
+		SSL_up_ref(context->ssl);
+
 		context->hSession->post(
 			context->hSession,
 			(void(*)(H3270 *, void *)) openssl_success,
-			context,
-			sizeof(Context *)
+			context->ssl,
+			sizeof(SSL *)
 		);
 
 	}
+
+	context_free(context);
 
 	// Cleanup
 	pthread_mutex_unlock(&ssl_guard);

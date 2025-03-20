@@ -237,7 +237,8 @@ static int check_policy(H3270 *hSession, const char *name, int default_value) {
 	static const char *debug_names[] = {
 		"X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT",
 		"X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
-		"X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE"
+		"X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+		"SUBJECT_ALT_NAME_MISMATCH",
 	};
 
 	size_t ix;

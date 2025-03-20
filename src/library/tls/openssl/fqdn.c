@@ -111,7 +111,7 @@
  //
  static int Curl_raw_equal(const char *first, const char *second) {
      while(*first && *second) {
-        if(Curl_raw_toupper(*first) != est_client_Curl_raw_toupper(*second)) {
+        if(Curl_raw_toupper(*first) != Curl_raw_toupper(*second)) {
             // get out of the loop as soon as they don't match
             break;
         }
@@ -155,8 +155,8 @@
  //
  #define HOST_NOMATCH 0
  #define HOST_MATCH   1
- 
- static int est_client_hostmatch(const char *hostname, const char *pattern) {
+
+ static int hostmatch(const char *hostname, const char *pattern) {
 
     const char *pattern_label_end, *pattern_wildcard, *hostname_label_end;
     int wildcard_enabled;
@@ -187,7 +187,7 @@
     }
 
     hostname_label_end = strchr(hostname, '.');
-    if(hostname_label_end == NULL || !est_client_Curl_raw_equal(pattern_label_end, hostname_label_end)) {
+    if(hostname_label_end == NULL || !Curl_raw_equal(pattern_label_end, hostname_label_end)) {
 	    return HOST_NOMATCH;
     }
 

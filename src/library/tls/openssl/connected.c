@@ -67,11 +67,6 @@
 		hSession->connection.sock = -1;
 	}
 
-	if(context->ctx) {
-		SSL_CTX_free(context->ctx);
-		context->ctx = NULL;
-	}
-
 	return 0;
  }
 
@@ -104,7 +99,7 @@
 	switch(ssl_error) {
 	case SSL_ERROR_ZERO_RETURN:
 		{
-			lib3270_autoptr(char) errors = openssl_errors(context);
+			lib3270_autoptr(char) errors = openssl_errors();
 			trace_ssl(hSession,"%s\n%s","The secure connection has been closed cleanly",errors);
 
 			LIB3270_POPUP popup = {
@@ -129,7 +124,7 @@
 	case SSL_ERROR_SYSCALL:
 		{
 			int code = errno;
-			lib3270_autoptr(char) errors = openssl_errors(context);
+			lib3270_autoptr(char) errors = openssl_errors();
 			trace_ssl(hSession,"System error %d on secure connection\n%s",code,errors);
 
 			LIB3270_POPUP popup = {
@@ -149,7 +144,7 @@
 
 	}
 
-	lib3270_autoptr(char) errors = openssl_errors(context);
+	lib3270_autoptr(char) errors = openssl_errors();
 
 	trace_dsn(hSession,"RCVD SSL_read error %d\n%s\n", ssl_error, errors);
 
@@ -188,7 +183,7 @@
 	switch(ssl_error) {
 	case SSL_ERROR_ZERO_RETURN:
 		{
-			lib3270_autoptr(char) errors = openssl_errors(context);
+			lib3270_autoptr(char) errors = openssl_errors();
 			trace_ssl(hSession,"%s\n%s","The secure connection has been closed cleanly",errors);
 
 			LIB3270_POPUP popup = {
@@ -209,7 +204,7 @@
 	case SSL_ERROR_SYSCALL:
 		{
 			int code = errno;
-			lib3270_autoptr(char) errors = openssl_errors(context);
+			lib3270_autoptr(char) errors = openssl_errors();
 			trace_ssl(hSession,"System error %d on secure connection\n%s",code,errors);
 
 			LIB3270_POPUP popup = {
@@ -229,7 +224,7 @@
 
 	}
 
-	lib3270_autoptr(char) errors = openssl_errors(context);
+	lib3270_autoptr(char) errors = openssl_errors();
 
 	trace_dsn(hSession,"RCVD SSL_write error %d\n%s\n", ssl_error, errors);
 

@@ -143,7 +143,6 @@
  static void info_callback(const SSL *ssl, int where, int ret) {
 
 	H3270 *hSession = (H3270 *) SSL_get_ex_data(ssl,e_ctx_ssl_exdata_index);
-	Context * context = (Context *) hSession->connection.context;
 
 	switch(where) {
 	case SSL_CB_CONNECT_LOOP:
@@ -167,7 +166,7 @@
 
 		} else if (ret < 0) {
 
-			lib3270_autoptr(char) errors = openssl_errors(context);
+			lib3270_autoptr(char) errors = openssl_errors();
 
 			trace_ssl(hSession,"SSL Connect error %d\n%s\n",
 				ret,

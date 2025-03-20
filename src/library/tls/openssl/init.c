@@ -74,11 +74,6 @@
 		hSession->connection.sock = -1;
 	}
 
-	if(context->ctx) {
-		SSL_CTX_free(context->ctx);
-		context->ctx = NULL;
-	}
-
 	return 0;
  }
 
@@ -96,8 +91,8 @@
 	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
 
 	// Initialize SSL
-	context->ctx = openssl_context(hSession);
-	if(!context->ctx) {
+	lib3270_autoptr(SSL_CTX) ctx = openssl_context(hSession);
+	if(!ctx) {
 
 		LIB3270_POPUP popup = {
 			.name		= "ssl-context-error",
@@ -121,7 +116,7 @@
 
 	{
 		pthread_mutex_lock(&ssl_guard);
-		context->ssl = SSL_new(context->ctx);
+		context->ssl = SSL_new(ctx);
 		pthread_mutex_unlock(&ssl_guard);
 	}
 
@@ -268,7 +263,7 @@
 
 			int code = SSL_get_error(context->ssl,connect_result);
 
-			lib3270_autoptr(char) body = openssl_errors(context);
+			lib3270_autoptr(char) body = openssl_errors();
 	
 			LIB3270_POPUP popup = {
 				.body		= body,

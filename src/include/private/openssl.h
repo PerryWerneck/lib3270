@@ -31,6 +31,12 @@
 	*ptr = NULL;
  }
 
+ static inline void lib3270_autoptr_cleanup_SSL_CTX(SSL_CTX **ptr) {
+	if(*ptr)
+		SSL_CTX_free(*ptr);
+	*ptr = NULL;
+ }
+
  static inline void lib3270_autoptr_cleanup_X509(X509 **ptr) {
 	if(*ptr)
 		X509_free(*ptr);
@@ -44,7 +50,6 @@
 	
 	char state;
 	H3270 *hSession;
-	SSL_CTX *ctx;
 	SSL *ssl;
     BIO *tcp;
 	int cert_error;
@@ -64,9 +69,8 @@
  LIB3270_INTERNAL SSL_CTX * openssl_context(H3270 *hSession);
 
  /// @brief Get string with the openssl error stack.
- /// @param context Network context.
  /// @return The error stack (release it with lib3270_free()).
- LIB3270_INTERNAL char * openssl_errors(Context *context);
+ LIB3270_INTERNAL char * openssl_errors();
 
  /// @brief OpenSSL negotiation has failed.
  /// @param context OpenSSL context.

@@ -33,7 +33,7 @@
  #include <private/openssl.h>
  #include <openssl/err.h>
  
- LIB3270_INTERNAL char * openssl_errors(Context *context) {
+ LIB3270_INTERNAL char * openssl_errors() {
 
 	lib3270_autoptr(BIO) out = BIO_new(BIO_s_mem());
 
@@ -57,7 +57,7 @@
  LIB3270_INTERNAL void openssl_failed(Context *context, int code, const char *summary) {
 
 	lib3270_autoptr(char) name = lib3270_strdup_printf("openssl-%d",code);
-	lib3270_autoptr(char) body = openssl_errors(context);
+	lib3270_autoptr(char) body = openssl_errors();
 
 	LIB3270_POPUP popup = {
 		.name		= name,

@@ -49,6 +49,12 @@
 	GObjectClass parent_class;
 
 	struct {
+		void *authority;
+		void *subject;
+	} polkit;
+	
+	struct {
+
 		size_t count;
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];
 		GParamSpec * specs[TN3270_SESSION_PROPERTY_COUNT];

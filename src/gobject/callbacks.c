@@ -31,6 +31,10 @@
  #include <private/mainloop.h>
  #include <errno.h>
 
+ #ifdef HAVE_POLKIT
+ 	#include <polkit/polkit.h>
+ #endif // HAVE_POLKIT
+ 
  /// @brief Callback called when a toggle property changes.
  static void handle_toggle_changed(H3270 *session, LIB3270_TOGGLE_ID id, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
  {
@@ -190,6 +194,50 @@
 	klass->ring_bell = ring_bell;
  }
 
+ static int check_policy(H3270 *hSession, const char *name, int default_value) {
+
+	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(hSession);
+	Tn3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
+
+#ifdef HAVE_POLKIT
+
+	g_autofree gchar *pname = g_strdup_printf("%s.%s",G_STRINGIFY(PRODUCT_DOMAIN),name);
+	for(gchar *p = pname; *p; p++) {
+		*p = g_ascii_tolower(*p);
+	}
+
+	if(klass->polkit.authority && klass->polkit.subject) {
+
+		PolkitAuthorizationResult *result =
+			polkit_authority_check_authorization_sync(
+				klass->polkit.authority,
+				klass->polkit.subject,
+				pname,
+				NULL,
+				POLKIT_CHECK_AUTHORIZATION_FLAGS_NONE,
+				NULL,
+				NULL
+			);
+
+		if(result) {
+			int authorization = EPERM;
+			if(polkit_authorization_result_get_is_authorized(result)) {
+				authorization = 0;
+			}
+			g_object_unref(result);
+			return authorization;
+		}
+
+	} else {
+
+		g_message("Unable to check '%s' policy, no authority available",pname);
+
+	}
+#endif // HAVE_POLKIT
+
+	return default_value;
+ }
+
  int tn3270_session_setup_callbacks(Tn3270SessionClass *klass, Tn3270SessionPrivate *self)
  {
 	struct lib3270_session_callbacks *cbk = lib3270_get_session_callbacks(self->handler,G_STRINGIFY(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
@@ -254,6 +302,7 @@
 	cbk->erase = handle_erase;
 	cbk->display = handle_display;
 	cbk->ring_bell = handle_ring_bell;
+	cbk->check_policy = check_policy;
 
 	return 0;
  }

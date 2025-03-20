@@ -55,6 +55,7 @@ openssl = dependency('openssl', required: false, method: 'pkg-config', version: 
 libintl = dependency('intl', required: false)
 libiconv = dependency('iconv', required: false)
 gobject = dependency('gobject-2.0', required: false)
+polkit = dependency('polkit-gobject-1', required: false)
 
 lib_extra = [
   libintl,
@@ -445,6 +446,12 @@ if host_machine.system() == 'linux'
 
   lib_src += linux_src
 
+  if polkit.found()
+
+    app_conf.set('HAVE_POLKIT', 1)
+
+  endif
+
   if openssl.found()
 
     app_conf.set('HAVE_OPENSSL', 1)
@@ -624,7 +631,7 @@ if gobject.found()
     version : libversion,
     soversion : libversion,
     link_with : [ dynamic ],
-    dependencies: lib_deps + lib_extra + [ gobject ],
+    dependencies: lib_deps + lib_extra + [ gobject, polkit ],
     include_directories: includes_dir
   )
 
@@ -666,7 +673,7 @@ if gobject.found()
     '3270-glib', 
     gobject_src + config_src + lib_src,
     install: true,
-    dependencies: lib_deps + [ gobject ],
+    dependencies: lib_deps + [ gobject, polkit ],
     include_directories: includes_dir
   )
 

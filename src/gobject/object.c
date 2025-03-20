@@ -37,6 +37,10 @@
  #include <lib3270/memory.h>
  #include <private/intl.h>
 
+ #ifdef HAVE_POLKIT
+ 	#include <polkit/polkit.h>
+ #endif // HAVE_POLKIT
+
  //
  // References:
  //
@@ -76,6 +80,9 @@
 		object_class->set_property = tn3270_session_set_property;
 		object_class->get_property = tn3270_session_get_property;
 	}
+
+	klass->polkit.authority = NULL;
+	klass->polkit.subject = NULL;
 
 	tn3270_session_class_setup_callbacks(klass);
 
@@ -263,6 +270,28 @@
 		self->handler = NULL;
 		return;
 	}
+
+	{
+		pid_t ppid = getppid();
+
+		if(ppid == 1) {
+
+			g_printerr("Parent process was reaped by init(1)\n");
+
+		} else {
+
+			if(!klass->polkit.authority) {
+				klass->polkit.authority = polkit_authority_get_sync(NULL,NULL);
+			}
+	
+			if(!klass->polkit.subject) {
+				klass->polkit.subject = polkit_unix_process_new_for_owner(ppid,0,-1);
+			}
+	
+		}
+
+	}
+
 
  }
 

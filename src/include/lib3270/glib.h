@@ -46,6 +46,7 @@
  };
  
  struct _Tn3270SessionClass {
+	
 	GObjectClass parent_class;
 
 	struct {

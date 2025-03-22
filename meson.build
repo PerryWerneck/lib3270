@@ -369,7 +369,8 @@ if host_machine.system() == 'windows'
       '-lwinhttp',
       '-lws2_32',
       '-lwtsapi32',
-      '-lcomdlg32' 
+      '-lcomdlg32',
+      '-lSecur32',
     ]
   )
 
@@ -433,9 +434,11 @@ includes_dir = include_directories(
 if host_machine.system() == 'windows'
 
   app_conf.set_quoted('LIBEXT', '.dll')
+  app_conf.set('SECURITY_WIN32',1)
+
   lib_src += win_src
   lib_src += [
-    'src/library/tls/unavailable.c',
+    'src/library/tls/wsc/start.c',
   ]
 
 endif
@@ -457,8 +460,8 @@ if host_machine.system() == 'linux'
     app_conf.set('HAVE_OPENSSL', 1)
 
     lib_src += [
+      'src/library/tls/openssl/start.c',
       'src/library/tls/openssl/context.c',
-      'src/library/tls/openssl/init.c',
       'src/library/tls/openssl/connected.c',
       'src/library/tls/openssl/errors.c',
       'src/library/tls/openssl/messages.c',
@@ -543,6 +546,8 @@ if host_machine.system() == 'windows'
       '-lws2_32',
       '-lwtsapi32',
       '-lcomdlg32',
+      '-lsecur32',
+      '-lcrypt32',
       '-Wl,--output-def,lib3270.def',
     ],
   )

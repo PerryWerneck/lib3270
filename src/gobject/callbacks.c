@@ -194,12 +194,11 @@
 	klass->ring_bell = ring_bell;
  }
 
+ #ifdef HAVE_POLKIT
  static int check_policy(H3270 *hSession, const char *name, int default_value) {
 
 	Tn3270Session *self = (Tn3270Session *) lib3270_get_user_data(hSession);
 	Tn3270SessionClass *klass = TN3270_SESSION_GET_CLASS(self);
-
-#ifdef HAVE_POLKIT
 
 	g_autofree gchar *pname = g_strdup_printf("%s.%s",G_STRINGIFY(PRODUCT_DOMAIN),name);
 	for(gchar *p = pname; *p; p++) {
@@ -233,10 +232,10 @@
 		g_message("Unable to check '%s' policy, no authority available",pname);
 
 	}
-#endif // HAVE_POLKIT
 
 	return default_value;
  }
+ #endif // HAVE_POLKIT
 
  int tn3270_session_setup_callbacks(Tn3270SessionClass *klass, Tn3270SessionPrivate *self)
  {
@@ -302,7 +301,10 @@
 	cbk->erase = handle_erase;
 	cbk->display = handle_display;
 	cbk->ring_bell = handle_ring_bell;
+
+#ifdef HAVE_POLKIT
 	cbk->check_policy = check_policy;
+#endif // HAVE_POLKIT
 
 	return 0;
  }

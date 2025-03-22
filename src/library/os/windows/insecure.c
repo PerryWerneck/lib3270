@@ -166,52 +166,18 @@ static int disconnect(H3270 *hSession, Context *context) {
  
  LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession) {
 
-	debug("----------------------------------------- %s",__FUNCTION__);
-
-	WSASetLastError(0);
-
-	// Set the socket I/O mode: In this case FIONBIO
-	// enables or disables the blocking mode for the 
-	// socket based on the numerical value of iMode.
-	// If iMode = 0, blocking is enabled; 
-	// If iMode != 0, non-blocking mode is enabled.
-	// https://learn.microsoft.com/pt-br/windows/win32/api/winsock/nf-winsock-ioctlsocket
-	u_long iMode= 1;
-
-	if(ioctlsocket(hSession->connection.sock,FIONBIO,&iMode)) {
-
-		int err = WSAGetLastError();
-
-		static const LIB3270_POPUP popup = {
-			.name		= "ioctl",
-			.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
-			.title		= N_("Connection error"),
-			.summary	= N_("Unable to set non-blocking mode."),
-			.body		= "",
-			.label		= N_("OK")
-		};
-
-		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,err,(LPARAM) &popup);
-		connection_close(hSession,err);
-		return NULL;
-	}
+	set_blocking_mode(hSession, hSession->connection.sock, 0);
 
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
-
-	static const LIB3270_SSL_MESSAGE message = {
-		.icon = "dialog-error",
-		.summary = N_( "The session is not secure" ),
-		.body = N_( "No TLS/SSL support on this session" )
-	};
-	hSession->ssl.message = &message;
+	hSession->ssl.message.icon = "dialog-error";
+	hSession->ssl.message.summary = _( "The session is not secure" );
+	hSession->ssl.message.body = _( "No TLS/SSL support on this session" );
 
 	Context *context = lib3270_malloc(sizeof(Context));
 	memset(context,0,sizeof(Context));
 
 	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
-
-	//context->read = hSession->poll.add(hSession,hSession->connection.sock,LIB3270_IO_FLAG_READ,(void *) on_input,context);
 
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;

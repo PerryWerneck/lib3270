@@ -271,6 +271,7 @@
 		return;
 	}
 
+#ifdef HAVE_POLKIT
 	{
 		pid_t ppid = getppid();
 
@@ -291,6 +292,7 @@
 		}
 
 	}
+#endif // HAVE_POLKIT
 
 
  }

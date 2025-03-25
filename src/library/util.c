@@ -186,8 +186,10 @@ LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr) {
 	else
 		ptr = malloc(sz);
 
-	if(!ptr)
+	if(!ptr) {
 		perror("calloc");
+		return NULL;
+	}
 
 	memset(ptr,0,sz);
 	return ptr;

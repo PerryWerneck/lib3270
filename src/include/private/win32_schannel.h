@@ -35,19 +35,6 @@
  #include <lib3270/defs.h>
  #include <private/session.h>
 
- /// @brief Connection context for WinSC connections.
- typedef struct {
-
-	LIB3270_NET_CONTEXT parent;
-	H3270 *hSession;
-	
-	SCHANNEL_CRED SchannelCred;
-	CredHandle hClientCreds;
-	
-	void (*complete)(H3270 *hSession);
-
- } Context;
-
  static inline void lib3270_autoptr_cleanup_CERT_CONTEXT(CERT_CONTEXT **ptr) {
 	if(*ptr)
 		CertFreeCertificateContext(*ptr);

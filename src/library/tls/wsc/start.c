@@ -78,10 +78,8 @@
 		return 0;
 	}
 
-	if(context->thread) {
-		CloseHandle(context->thread);
-		context->thread = NULL;	
-	}
+	HANDLE thread = context->thread;
+	context->thread = 0;
 
 	//if(context->hMyCertStore) {
 	//	CertCloseStore(context->hMyCertStore,0);
@@ -89,6 +87,13 @@
 	//}
 
 	lib3270_free(context);
+
+
+	// Close thread.
+	if(thread) {
+		CloseHandle(thread);
+	}
+
 	debug("WinSC context %p finalized\n",context);
 	
 	return 0;
@@ -137,7 +142,7 @@
 	);
 
 	if(Status != SEC_E_OK) {
-		trace_ssl(context->hSession, "Failed to acquire credentials handle. Error code: 0x%x\n", Status);
+		trace_ssl(context->hSession, "Failed to acquire credentials handle. Error code: 0x%x\n", (int) Status);
 		return Status;
 	}
 

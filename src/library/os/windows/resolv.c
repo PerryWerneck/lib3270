@@ -42,9 +42,8 @@
 
 	LIB3270_NET_CONTEXT parent;
 
+	int instances;
 	int enabled;
-	int finalized;
-	int running;
 
 	H3270 *hSession;
 	HANDLE thread;
@@ -70,9 +69,6 @@
 
  static void net_timeout(H3270 *hSession, Context *context) {
 
-	hSession->timer.remove(hSession,context->timer);
-	context->timer = NULL;
-
 	trace_network(
 		hSession,
 		"Hostname resolution to %s:%s has timed out, cancelling\n",
@@ -80,31 +76,37 @@
 		context->service
 	);
 	
-	context->enabled = 0;
+	cancel(hSession,context);
 	PostMessage(context->hSession->hwnd,WM_RESOLV_FAILED,ERROR_INTERNET_TIMEOUT,0);
 
  }
 
  static void finalize(H3270 *hSession, Context *context) {
 
-	// TODO: Check for WSAConnectByName
-	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsaconnectbynamea
+	if(--context->instances) {
+		debug("%s: Context %p has %d instances",__FUNCTION__,context,context->instances);
+		return;
+	}
 
 	debug("%s: Finalizing resolver context %p and thread %p",__FUNCTION__,context,context->thread);
 	
+	HANDLE thread = context->thread;
+	context->thread = 0;
+
+	// TODO: Check for WSAConnectByName
+	// https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsaconnectbynamea
+
 	if(context->timer) {
 		hSession->timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
 
-	if(context->running) {
-		context->enabled = 0;
-		context->finalized = 1;
-		trace_network(hSession,"Resolver thread still active, delaying context finalization\n");
-	} else {
-		debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
-		lib3270_free(context);
-		hSession->connection.context = NULL;
+	debug("%s: Cleaning resolver context %p",__FUNCTION__,context);
+	lib3270_free(context);
+	hSession->connection.context = NULL;
+
+	if(thread) {
+		CloseHandle(thread);
 	}
 
  }
@@ -113,7 +115,6 @@
 
 	Context *context = (Context *) lpParam;
 	HWND hwnd = context->hSession->hwnd;
-	HANDLE thread = context->thread;
 	UINT uMsg = WM_RESOLV_SUCCESS;	// The default is wait for connection
 
 	trace_network(context->hSession,"Resolving %s:%s\n",context->hostname,context->service);
@@ -144,11 +145,8 @@
 			// Context was canceled.
 			trace_network(context->hSession,"Hostname resolution to %s:%s was cancelled\n",context->hostname,context->service);
 		}
-		context->thread = NULL;
-		if(context->finalized) {
-			// Context was finalized.
-			lib3270_free(context);
-		}
+
+		finalize(context->hSession,context);
 		return 0;
 
 	}
@@ -258,33 +256,28 @@
 	// Release results.
 	freeaddrinfo(result);
 
-	if(!(context->enabled && context->hSession && context->hSession->hwnd)) {
+	if(!context->enabled) {
+		
 		// Context was canceled.
-		if(sock != INVALID_SOCKET) {
-			closesocket(sock);
-		}
 		trace_network(context->hSession,"Hostname resolution to %s:%s was cancelled\n",context->hostname,context->service);
+		finalize(context->hSession,context);
+
 	} else if(sock == INVALID_SOCKET) {
+
+		// Invalid socket.
 		PostMessage(hwnd,WM_RESOLV_FAILED,error ? error : WSAECONNREFUSED,0);
+
 	} else {
+
 		debug("Resolver complete with socket %llu",sock);
+
 		PostMessage(hwnd,uMsg,sock,sock);
+		finalize(context->hSession,context);
+
 	}
 
 	debug("%s: Resolver thread finished",__FUNCTION__);
 
-	if(context->timer) {
-		context->hSession->timer.remove(context->hSession,context->timer);
-		context->timer = NULL;
-	}
-
-	context->thread = NULL;
-	context->running = 0;
-	if(context->finalized) {
-		lib3270_free(context);
-	}
-
-	PostMessage(hwnd,WM_CLOSE_THREAD,0,(LPARAM) thread);
 	return 0;
 
  }
@@ -314,16 +307,39 @@
 	context->service = context->hostname + strlen(hostname) + 1;
 	strcpy(context->service,service);
 
+	// First instance.
+	context->instances = 1;
+
 	// Set disconnect handler
 	context->parent.disconnect = (void *) cancel;
 	context->parent.finalize = (void *) finalize;
 
 	// Call resolver in background
 	context->enabled = 1;
-	context->running = 1;
 	context->hSession = hSession;
 	context->timer = hSession->timer.add(hSession,timeout*1000,(void *) net_timeout,context);
+
+	context->instances++;
 	context->thread = CreateThread(NULL,0,resolver_thread,context,0,NULL);
+	if(!context->thread) {
+
+		context->instances--;
+		trace_ssl(hSession,"Failed to create resolver thread\n");
+
+		LIB3270_POPUP popup = {
+			.name		= "security-resolver-error",
+			.type		= LIB3270_NOTIFY_ERROR,
+			.title		= _("TLS/SSL error"),
+			.summary	= _("Failed to create resolver thread"),
+			.body		= _("Failed to create a thread to perform the host name resolution. Please check your system configuration."),
+			.label		= _("OK")
+		};
+
+		connection_close(hSession,-1);
+		lib3270_popup_async(hSession, &popup);
+
+		return NULL;
+	}
 
 	debug("Started resolver thread %p for %s:%s",context->thread,hostname,service);
 

@@ -32,6 +32,7 @@
  */
 
 #include <config.h>
+#include <lib3270/defs.h>
 #include <errno.h>
 #include <sys/types.h>
 

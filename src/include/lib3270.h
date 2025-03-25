@@ -41,9 +41,6 @@
 	#define ENOTCONN 126
 #endif // !ENOTCONN
 
-#define LIB3270_STRINGIZE(x) #x
-#define LIB3270_STRINGIZE_VALUE_OF(x) LIB3270_STRINGIZE(x)
-
 /**
  * @brief BIND definitions.
  */

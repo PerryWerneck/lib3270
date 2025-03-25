@@ -61,6 +61,9 @@
 	#define LIB3270_EXPORT
  #endif
 
+ #define LIB3270_STRINGIZE(x) #x
+ #define LIB3270_STRINGIZE_VALUE_OF(x) LIB3270_STRINGIZE(x)
+
  typedef struct _h3270		H3270;
  typedef struct _h3270ft	H3270FT;
 

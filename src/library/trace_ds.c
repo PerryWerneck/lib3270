@@ -153,12 +153,12 @@ void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) {
 
 	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 		char *text;
+
 		va_list args;
-
 		va_start(args, fmt);
-
-		/* print out remainder of message */
 		text = lib3270_vsprintf(fmt,args);
+		va_end(args);
+		
 		trace_ds_s(hSession, text, False);
 		lib3270_free(text);
 	}

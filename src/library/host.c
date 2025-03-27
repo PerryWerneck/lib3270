@@ -148,8 +148,7 @@ static void set_disconnected(H3270 *hSession) {
 
 	message_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
 
-	if(hSession->cbk.update_connect)
-		hSession->cbk.update_connect(hSession,0);
+	hSession->cbk.update_connect(hSession,0);
 
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 
@@ -292,8 +291,7 @@ void set_connected_initial(H3270 *hSession) {
 	hSession->starting	= 1;	// Enable autostart
 
 	notify_new_state(hSession, LIB3270_STATE_CONNECT, True);
-	if(hSession->cbk.update_connect)
-		hSession->cbk.update_connect(hSession,1);
+	hSession->cbk.update_connect(hSession,1);
 }
 
 /**

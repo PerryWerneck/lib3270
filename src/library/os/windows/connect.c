@@ -44,7 +44,7 @@
 
  static void net_connected(H3270 *hSession, SOCKET sock, Context *context) {
 
-	debug("%s: CONNECTED",__FUNCTION__);
+	debug("%s: Activity on socket %d, are we connected?",__FUNCTION__,(int) sock);
 
 	if(context->connected) {
 		win32_poll_remove(context->connected);
@@ -82,6 +82,7 @@
 	
 		} else if(err) {
 
+			debug("Connection failed: %d\n",err);
 			PostMessage(hSession->hwnd,WM_CONNECTION_FAILED,err,0);
 			connection_close(hSession,err);
 			return;

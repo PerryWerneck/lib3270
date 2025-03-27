@@ -264,6 +264,7 @@ void lib3270_reset_callbacks(H3270 *hSession) {
 
 	hSession->cbk.update_viewsize		= nop_void;
 	hSession->cbk.update 				= nop_void;
+	hSession->cbk.update_connect		= nop_void;
 	hSession->cbk.update_model			= nop_void;
 	hSession->cbk.update_toggle			= nop_void;
 	hSession->cbk.update_cursor			= nop_void;

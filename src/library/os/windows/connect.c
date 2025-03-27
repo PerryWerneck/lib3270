@@ -65,18 +65,17 @@
 
 		if(getsockopt(context->sock,SOL_SOCKET,SO_ERROR,(char *) &err,&len)) {
 
-			LIB3270_POPUP popup = {
+			static const LIB3270_POPUP popup = {
 				.name		= "connect-error",
 				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
-				.title		= _("Connection error"),
-				.summary	= _("Unable to get connection state."),
+				.title		= N_("Connection error"),
+				.summary	= N_("Unable to get connection state."),
 				.body		= "",
-				.label		= _("OK")
+				.label		= N_("OK")
 			};
 
 			err = WSAGetLastError(); 
 			popup_wsa_error(hSession,err,&popup);
-			connection_close(hSession,err);
 			return;
 	
 		} else if(err) {

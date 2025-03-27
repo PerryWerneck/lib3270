@@ -24,6 +24,8 @@
  *
  */
 
+ #error deprecated
+ 
  #include <config.h>
  #include <winsock2.h>
  #include <windows.h>

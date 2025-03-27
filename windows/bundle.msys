@@ -28,13 +28,11 @@ if [ "$?" == "0" ]; then
 	pacman \
 		-S --needed \
 		zip \
-		autoconf \
-		automake \
-		make \
-		libtool \
 		pkgconf \
 		gzip \
 		dos2unix \
+		${MINGW_PACKAGE_PREFIX}-uriparser \
+		${MINGW_PACKAGE_PREFIX}-meson \
 		${MINGW_PACKAGE_PREFIX}-gcc \
 		${MINGW_PACKAGE_PREFIX}-gettext \
 		${MINGW_PACKAGE_PREFIX}-openssl

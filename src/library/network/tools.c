@@ -212,7 +212,7 @@ LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned
 			.label		= N_("OK")
 		};
 
-		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,error,(LPARAM) &popup);
+		popup_wsa_error(hSession,error,&popup);
 
 		return -1;
 

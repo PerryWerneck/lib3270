@@ -56,6 +56,7 @@
 	
 	SCHANNEL_CRED SchannelCred;
 	CredHandle hClientCreds;
+	CtxtHandle hContext;
 	HANDLE thread;
 	
 	void (*complete)(H3270 *hSession);
@@ -150,17 +151,130 @@
 
  }
 
+ static DWORD ClientHandshakeLoop(Context *context) {
+
+ }
+
  static DWORD __stdcall PerformClientHandshake(LPVOID lpParam) {
+
+	debug("------------------[ %s ]------------------\n",__FUNCTION__);
+
 	Context *context = (Context *) lpParam;
 	trace_ssl(context->hSession, "Running TLS/SSL handshake\n");
-	
 
-	return 0;
+	lib3270_autoptr(char) server_name = lib3270_get_server_name(context->hSession);
+
+	PSecurityFunctionTable sspi = security_context();
+	
+	// https://gist.github.com/odzhan/1b5836c4c8b02d4d9cb9ec574432432c#file-tlsclient-cpp-L1153
+	SecBufferDesc   OutBuffer;
+    SecBuffer       OutBuffers[1];
+    DWORD           dwSSPIOutFlags, cbData;
+    TimeStamp       tsExpiry;
+    SECURITY_STATUS scRet;
+
+	DWORD dwSSPIFlags = 
+		ISC_REQ_SEQUENCE_DETECT
+		| ISC_REQ_REPLAY_DETECT     
+		| ISC_REQ_CONFIDENTIALITY   
+		| ISC_RET_EXTENDED_ERROR    
+		| ISC_REQ_ALLOCATE_MEMORY   
+		| ISC_REQ_STREAM;
+
+
+    //  Initiate a ClientHello message and generate a token.
+    OutBuffers[0].pvBuffer   = NULL;
+    OutBuffers[0].BufferType = SECBUFFER_TOKEN;
+    OutBuffers[0].cbBuffer   = 0;
+
+    OutBuffer.cBuffers  = 1;
+    OutBuffer.pBuffers  = OutBuffers;
+    OutBuffer.ulVersion = SECBUFFER_VERSION;
+
+    scRet = sspi->InitializeSecurityContext(  
+					&context->hClientCreds,
+					NULL,
+					server_name,
+					dwSSPIFlags,
+					0,
+					SECURITY_NATIVE_DREP,
+					NULL,
+					0,
+					&context->hContext,
+					&OutBuffer,
+					&dwSSPIOutFlags,
+					&tsExpiry 
+			);
+
+    if(scRet != SEC_I_CONTINUE_NEEDED) {
+
+		trace_ssl(
+			context->hSession,
+			"Error %d returned by InitializeSecurityContext (1)\n", scRet
+		);
+
+		lib3270_autoptr(char) body = lib3270_strdup_printf(
+			_( "InitializeSecurityContext failed with error %d" ),scRet);
+
+		LIB3270_POPUP popup = {
+			.name		= "InitializeSecurityContext-error",
+			.type		= LIB3270_NOTIFY_ERROR,
+			.title		= _("TLS/SSL error"),
+			.summary	= _("Failed to initialize security context"),
+			.body		= body,
+			.label		= _("OK")
+		};
+
+		if(context->hSession->connection.sock != INVALID_SOCKET) {
+			connection_close(context->hSession,-1);
+			lib3270_popup_async(context->hSession, &popup);
+		}
+	}
+
+    // Send response to server if there is one.
+    if(OutBuffers[0].cbBuffer != 0 && OutBuffers[0].pvBuffer != NULL)
+    {
+        cbData = send( context->hSession->connection.sock, OutBuffers[0].pvBuffer, OutBuffers[0].cbBuffer, 0 );
+        if( cbData == SOCKET_ERROR || cbData == 0 ) {
+			int error = WSAGetLastError();
+            trace_ssl(context->hSession,"Error %d sending data to server (1)\n",error);
+
+            sspi->FreeContextBuffer(OutBuffers[0].pvBuffer);
+            sspi->DeleteSecurityContext(&context->hContext);
+ 
+			if(context->hSession->connection.sock != INVALID_SOCKET) {
+
+				static const LIB3270_POPUP popup = {
+					.name		= "security-handshake-error",
+					.type		= LIB3270_NOTIFY_ERROR,
+					.title		= N_("TLS/SSL error"),
+					.summary	= N_("Security handshake error"),
+					.body		= "",
+					.label		= N_("OK")
+				};
+		
+				popup_wsa_error(context->hSession,error,&popup);
+
+			}
+	
+			return -1;
+		}
+
+        debug("%d bytes of handshake data sent\n", cbData);
+        sspi->FreeContextBuffer(OutBuffers[0].pvBuffer); // Free output buffer.
+        OutBuffers[0].pvBuffer = NULL;
+ 
+	}
+
+	return ClientHandshakeLoop(context);
+
  }
 
  LIB3270_INTERNAL int start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
 	debug("------------------[ %s ]------------------\n",__FUNCTION__);
+
+	set_blocking_mode(hSession,hSession->connection.sock,1);
 
 	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
@@ -168,17 +282,17 @@
 	PSecurityFunctionTable sspi = security_context();
 
 	if(!sspi) {
-		LIB3270_POPUP popup = {
+
+		static const LIB3270_POPUP popup = {
 			.name		= "security-interface-error",
 			.type		= LIB3270_NOTIFY_ERROR,
-			.title		= _("Security interface error"),
-			.summary	= _("Failed to initialize security interface"),
-			.body		= _("Failed to initialize the Windows security interface. Please check your system configuration."),
-			.label		= _("OK")
+			.title		= N_("Security interface error"),
+			.summary	= N_("Failed to initialize security interface"),
+			.body		= N_("Failed to initialize the Windows security interface. Please check your system configuration."),
+			.label		= N_("OK")
 		};
 
-		connection_close(hSession,-1);
-		lib3270_popup_async(hSession, &popup);
+		popup_disconnect(hSession,&popup);
 
 		return -1;
 
@@ -235,17 +349,16 @@
 		context->instances--;
 		trace_ssl(hSession,"Failed to create handshake thread\n");
 
-		LIB3270_POPUP popup = {
+		static const LIB3270_POPUP popup = {
 			.name		= "security-handshake-error",
 			.type		= LIB3270_NOTIFY_ERROR,
-			.title		= _("TLS/SSL error"),
-			.summary	= _("Failed to create handshake thread"),
-			.body		= _("Failed to create a thread to perform the TLS/SSL handshake. Please check your system configuration."),
-			.label		= _("OK")
+			.title		= N_("TLS/SSL error"),
+			.summary	= N_("Failed to create handshake thread"),
+			.body		= N_("Failed to create a thread to perform the TLS/SSL handshake. Please check your system configuration."),
+			.label		= N_("OK")
 		};
 
-		connection_close(hSession,-1);
-		lib3270_popup_async(hSession, &popup);
+		popup_disconnect(hSession,&popup);
 
 		return -1;
 	}

@@ -356,6 +356,23 @@
 			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
 			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
 
+			connection_close(hSession,(int) wParam);
+			lib3270_popup(hSession,&popup,0);
+
+		}
+		return 0;
+
+	case WM_POPUP_DISCONNECT:
+		{
+			LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
+				
+			popup.name = ((const LIB3270_POPUP *) lParam)->name;
+			popup.label = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->label);
+			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
+			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
+			popup.body = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->body);
+
+			connection_close(hSession,(int) wParam);
 			lib3270_popup(hSession,&popup,0);
 
 		}

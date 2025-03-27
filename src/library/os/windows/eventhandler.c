@@ -171,7 +171,6 @@
 		int err = WSAGetLastError(); 
 		debug("%s: WSAEventSelect failed with error %d (%s)",__FUNCTION__,err,popup.summary);
 
-		connection_close(hSession,err);
 		popup_wsa_error(hSession,err,&popup);
 	
 		WSACloseEvent(handler->event);

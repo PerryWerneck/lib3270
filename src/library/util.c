@@ -99,13 +99,6 @@ LIB3270_EXPORT char * lib3270_strdup_printf(const char *fmt, ...) {
 	return r;
 }
 
-LIB3270_INTERNAL void set_network_context(H3270 *hSession, LIB3270_NET_CONTEXT *context) {
-	if(hSession->connection.context) {
-		hSession->connection.context->finalize(hSession,hSession->connection.context);
-	}
-	hSession->connection.context = context;
-}
- 
 /**
  * @brief Common helper functions to insert strings, through a template, into a new  buffer.
  *

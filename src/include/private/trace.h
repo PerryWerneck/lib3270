@@ -27,10 +27,14 @@
 
  LIB3270_INTERNAL void trace_ansi_disc(H3270 *hSession);
  LIB3270_INTERNAL void trace_char(const H3270 *hSession, char c);
- LIB3270_INTERNAL void trace_ds(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+
+ /// @brief Trace a data stream message.
+ /// @return 1 if trace is enabled, 0 otherwise.
+ LIB3270_INTERNAL int trace_ds(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ 
  LIB3270_INTERNAL void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
  LIB3270_INTERNAL void trace_dsn(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
- LIB3270_INTERNAL void trace_ssl(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
+ LIB3270_INTERNAL int trace_ssl(const H3270 *hSession, const char *fmt, ...) LIB3270_GNUC_FORMAT(2, 3);
  LIB3270_INTERNAL void trace_screen(H3270 *hSession);
  LIB3270_INTERNAL void trace_data(const H3270 *hSession, const char *msg, const unsigned char *data, size_t datalen);
  LIB3270_INTERNAL void trace_event(const H3270 *hSession, const char *fmt, ...);

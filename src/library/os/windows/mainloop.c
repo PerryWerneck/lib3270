@@ -342,9 +342,18 @@
 		}
 		return 0;
 
+		case WM_POPUP_DISCONNECT:
+		{
+			connection_close(hSession,(int) wParam);
+			SendMessage(hwnd,WM_POPUP_MESSAGE,0,lParam);
+		}
+		return 0;
+
 	case WM_POPUP_WSA_ERROR:
 	case WM_POPUP_LAST_ERROR:
 		{
+			debug("%s: WM_POPUP_WSA_ERROR - %s",__FUNCTION__,((const LIB3270_POPUP *) lParam)->name);
+
 			LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
 			lib3270_autoptr(char) body = lib3270_win32_strerror((int) wParam);
 			lib3270_autoptr(char) name = lib3270_strdup_printf("%s-%d",((const LIB3270_POPUP *) lParam)->name,(int) wParam);
@@ -355,22 +364,6 @@
 			popup.label = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->label);
 			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
 			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
-
-			connection_close(hSession,(int) wParam);
-			lib3270_popup(hSession,&popup,0);
-
-		}
-		return 0;
-
-	case WM_POPUP_DISCONNECT:
-		{
-			LIB3270_POPUP popup = *((const LIB3270_POPUP *) lParam);
-				
-			popup.name = ((const LIB3270_POPUP *) lParam)->name;
-			popup.label = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->label);
-			popup.summary = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->summary);
-			popup.title = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->title);
-			popup.body = dgettext(GETTEXT_PACKAGE,((const LIB3270_POPUP *) lParam)->body);
 
 			connection_close(hSession,(int) wParam);
 			lib3270_popup(hSession,&popup,0);
@@ -495,6 +488,10 @@
 		}
 		return 0;
 
+	case WM_DISCONNECT_SESSION:
+		connection_close(hSession,(int) wParam);
+		break;
+
 	case WM_SOCKET_EVENT:
 		{
 			handler_t *handler = (handler_t *) lParam;
@@ -502,6 +499,7 @@
 			win32_poll_wake_up();
 		}
 		return 0;
+
 
 	}
 

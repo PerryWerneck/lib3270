@@ -41,14 +41,14 @@ LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 	/// @param hSession TN3270 session handle.
 	/// @param code Error code form WSAGetLastError().
 	/// @param popup Static const structure with popup description.
-	inline void popup_message(H3270 *hSession, const LIB3270_POPUP *popup) {
+	static inline void popup_message(H3270 *hSession, const LIB3270_POPUP *popup) {
 		PostMessage(hSession->hwnd,WM_POPUP_MESSAGE,0,(LPARAM) popup);
 	}
 
 	/// @brief Disconnect and show popup.
 	/// @param hSession TN3270 session handle.
 	/// @param popup Static const structure with popup description.
-	inline void popup_disconnect(H3270 *hSession, const LIB3270_POPUP *popup) {
+	static inline void popup_disconnect(H3270 *hSession, const LIB3270_POPUP *popup) {
 		PostMessage(hSession->hwnd,WM_POPUP_DISCONNECT,-1,(LPARAM) popup);
 	}
 
@@ -56,7 +56,7 @@ LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 	/// @param hSession TN3270 session handle.
 	/// @param code Error code form WSAGetLastError().
 	/// @param popup Static const structure with popup description.
-	inline void popup_last_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
+	static inline void popup_last_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
 		PostMessage(hSession->hwnd,WM_POPUP_LAST_ERROR,(WPARAM) code, (LPARAM) popup);
 	}
 
@@ -64,8 +64,8 @@ LIB3270_INTERNAL void Warning(H3270 *session, const char *fmt, ...);
 	/// @param hSession TN3270 session handle.
 	/// @param code Error code form WSAGetLastError().
 	/// @param popup Static const structure with popup description.
-	inline void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
-		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,code,(LPARAM) &popup);
+	static inline void popup_wsa_error(H3270 *hSession, int code, const LIB3270_POPUP *popup) {
+		PostMessage(hSession->hwnd,WM_POPUP_WSA_ERROR,code,(LPARAM) popup);
 	}
 
 #endif

@@ -132,6 +132,7 @@ int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *) {
 	return -ENOTCONN;
 }
 
+/*
 static void set_disconnected(H3270 *hSession) {
 
 	set_cstate(hSession,LIB3270_NOT_CONNECTED);
@@ -153,6 +154,17 @@ static void set_disconnected(H3270 *hSession) {
 	hSession->cbk.update_ssl(hSession,hSession->ssl.state);
 
 }
+*/
+
+LIB3270_INTERNAL void set_network_context(H3270 *hSession, LIB3270_NET_CONTEXT *context) {
+	if(hSession->connection.context) {
+		hSession->connection.context->finalize(hSession,hSession->connection.context);
+	}
+	hSession->connection.write = connection_write_offline;
+	hSession->connection.except = connection_except_offline;
+	hSession->connection.context = context;
+}
+ 
 
 /// @brief Disconnect from host.
 /// @param hSession The tn3270 session
@@ -171,17 +183,14 @@ int connection_close(H3270 *hSession, int failed) {
 	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
 	set_ssl_state(hSession,LIB3270_SSL_UNDEFINED);
 	
-	hSession->connection.write = connection_write_offline;
-	hSession->connection.except = connection_except_offline;
-
 	if(hSession->connection.context) {
 		int rc = hSession->connection.context->disconnect(hSession,hSession->connection.context);
 		if(rc) {
 			lib3270_log_write(hSession, "3270", "Network context disconnection returned %d", rc);
 		}
-		hSession->connection.context->finalize(hSession,hSession->connection.context);
-		hSession->connection.context = NULL;
 	}
+
+	set_network_context(hSession,NULL);
 
 	if (CONNECTED || HALF_CONNECTED) {
 
@@ -199,7 +208,22 @@ int connection_close(H3270 *hSession, int failed) {
 		if (IN_ANSI && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE))
 			trace_ansi_disc(hSession);
 
-		set_disconnected(hSession);
+		//
+		// set_disconnected
+		//
+		{
+			set_cstate(hSession,LIB3270_NOT_CONNECTED);
+			hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
+			hSession->kybdlock = LIB3270_KL_NOT_CONNECTED;
+			hSession->starting	= 0;
+			hSession->ever_3270 = 0;
+		
+			set_status(hSession,LIB3270_FLAG_UNDERA,False);
+			notify_new_state(hSession,LIB3270_STATE_CONNECT, False);
+			message_changed(hSession,LIB3270_MESSAGE_DISCONNECTED);
+
+			hSession->cbk.update_connect(hSession,0);
+		}
 
 		if(failed && hSession->connection.retry && lib3270_get_toggle(hSession,LIB3270_TOGGLE_RECONNECT))
 			lib3270_activate_auto_reconnect(hSession,hSession->connection.retry);

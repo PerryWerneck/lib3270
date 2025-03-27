@@ -55,7 +55,7 @@
 
  } Context;
 
- static int cancel(H3270 *hSession, Context *context) {	
+ static int disconnect(H3270 *hSession, Context *context) {	
 
 	if(context->timer) {
 		hSession->timer.remove(hSession,context->timer);
@@ -76,13 +76,19 @@
 		context->service
 	);
 	
-	cancel(hSession,context);
+	if(context->timer) {
+		hSession->timer.remove(hSession,context->timer);
+		context->timer = NULL;
+	}
+
 	PostMessage(context->hSession->hwnd,WM_RESOLV_FAILED,ERROR_INTERNET_TIMEOUT,0);
 
  }
 
  static void finalize(H3270 *hSession, Context *context) {
 
+	debug("%s --------------------------------------------------------------------",__FUNCTION__);
+	
 	if(--context->instances) {
 		debug("%s: Context %p has %d instances",__FUNCTION__,context,context->instances);
 		return;
@@ -182,7 +188,6 @@
 		sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 		if(sock == INVALID_SOCKET) {
 			lib3270_autoptr(char) error = lib3270_win32_strerror(WSAGetLastError());
-			debug("---> %s",error);
 			trace_network(
 				context->hSession,
 				"Cant get socket for '%s': %s\n",
@@ -237,7 +242,7 @@
 				.name		= "ioctl",
 				.type		= LIB3270_NOTIFY_NETWORK_ERROR,
 				.title		= _("Network error"),
-				.summary	= _("Unable to set non-blocking mode."),
+				.summary	= _("Error connecting to host."),
 				.body		= message,
 				.label		= _("OK")
 			};
@@ -260,6 +265,7 @@
 		
 		// Context was canceled.
 		trace_network(context->hSession,"Hostname resolution to %s:%s was cancelled\n",context->hostname,context->service);
+		closesocket(sock);
 		finalize(context->hSession,context);
 
 	} else if(sock == INVALID_SOCKET) {
@@ -269,14 +275,19 @@
 
 	} else {
 
+		if(context->timer) {
+			context->hSession->timer.remove(context->hSession,context->timer);
+			context->timer = NULL;
+		}
+	
 		debug("Resolver complete with socket %llu",sock);
 
 		PostMessage(hwnd,uMsg,sock,sock);
-		finalize(context->hSession,context);
 
 	}
 
-	debug("%s: Resolver thread finished",__FUNCTION__);
+	debug("%s: Resolver thread finished ---------------------------------------",__FUNCTION__);
+	finalize(context->hSession,context);
 
 	return 0;
 
@@ -311,7 +322,7 @@
 	context->instances = 1;
 
 	// Set disconnect handler
-	context->parent.disconnect = (void *) cancel;
+	context->parent.disconnect = (void *) disconnect;
 	context->parent.finalize = (void *) finalize;
 
 	// Call resolver in background

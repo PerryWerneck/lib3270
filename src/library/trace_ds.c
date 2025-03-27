@@ -54,9 +54,6 @@
 	#include <linux/limits.h>
 #endif // HAVE_LINUX_LIMITS_H
 
-/* Maximum size of a tracefile header. */
-// #define MAX_HEADER_SIZE		(10*1024)
-
 char * trace_filename(const H3270 *session, const char *template) {
 
 	char buffer[PATH_MAX+1];
@@ -78,9 +75,7 @@ char * trace_filename(const H3270 *session, const char *template) {
 
 }
 
-/**
- * @brief Write to the trace file.
- */
+/// @brief Write to the trace file.
 static void wtrace(const H3270 *hSession, const char *fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
@@ -88,14 +83,14 @@ static void wtrace(const H3270 *hSession, const char *fmt, ...) {
 	va_end(args);
 }
 
-/* display a (row,col) */
+/// @brief display a (row,col)
 const char * rcba(const H3270 *hSession, int baddr) {
 	static char buf[48];
 	(void) snprintf(buf, 48, "(%d,%d)", baddr/hSession->view.cols + 1, baddr%hSession->view.cols + 1);
 	return buf;
 }
 
-/* Data Stream trace print, handles line wraps */
+// Data Stream trace print, handles line wraps
 static void trace_ds_s(const H3270 *hSession, char *s, Boolean can_break) {
 
 	static int      dscnt = 0;
@@ -132,7 +127,7 @@ static void trace_ds_s(const H3270 *hSession, char *s, Boolean can_break) {
 	}
 }
 
-void trace_ds(const H3270 *hSession, const char *fmt, ...) {
+int trace_ds(const H3270 *hSession, const char *fmt, ...) {
 
 	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
 		char	* text;
@@ -145,8 +140,10 @@ void trace_ds(const H3270 *hSession, const char *fmt, ...) {
 		trace_ds_s(hSession,text, True);
 		va_end(args);
 		lib3270_free(text);
+		return 1;
 	}
 
+	return 0;
 }
 
 void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) {
@@ -164,9 +161,7 @@ void trace_ds_nb(const H3270 *hSession, const char *fmt, ...) {
 	}
 }
 
-/**
- * @brief Conditional data stream trace, without line splitting.
- */
+/// @brief Conditional data stream trace, without line splitting.
 void trace_dsn(const H3270 *hSession, const char *fmt, ...) {
 
 	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_DS_TRACE)) {
@@ -178,18 +173,17 @@ void trace_dsn(const H3270 *hSession, const char *fmt, ...) {
 	
 }
 
-/**
- * @brief Conditional ssl stream trace, without line splitting.
- */
-void trace_ssl(const H3270 *hSession, const char *fmt, ...) {
+/// @brief Conditional ssl stream trace, without line splitting.
+int trace_ssl(const H3270 *hSession, const char *fmt, ...) {
 
 	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE)) {
 		va_list args;
 		va_start(args, fmt);
 		hSession->trace->write(hSession,hSession->trace,fmt,args);
 		va_end(args);
+		return 1;
 	}
-
+	return 0;
 }
 
 void trace_network(const H3270 *hSession, const char *fmt, ...) {
@@ -253,15 +247,12 @@ void trace_char(const H3270 *hSession, char c) {
 }
 
 
-/**
- * Called when disconnecting in ANSI modeto finish off the trace file.
- *
- * Called when disconnecting in ANSI mode to finish off the trace file
- * and keep the next screen clear from re-recording the screen image.
- * (In a gross violation of data hiding and modularity, trace_skipping is
- * manipulated directly in ctlr_clear()).
- *
- */
+/// @brief Called when disconnecting in ANSI modet o finish off the trace file.
+///
+/// Called when disconnecting in ANSI mode to finish off the trace file
+/// and keep the next screen clear from re-recording the screen image.
+/// (In a gross violation of data hiding and modularity, trace_skipping is
+/// manipulated directly in ctlr_clear()).
 void trace_ansi_disc(H3270 *hSession) {
 
 	if(hSession->trace) {
@@ -292,7 +283,9 @@ void trace_data(const H3270 *hSession, const char *msg, const unsigned char *dat
 
 	memset(buffer,0,sizeof(buffer));
 
-	wtrace(hSession, "%s (%u bytes)\n", msg, (unsigned int) datalen);
+	if(msg && *msg) {
+		wtrace(hSession, "%s (%u bytes)\n", msg, (unsigned int) datalen);
+	}
 
 	for(ix = 0; ix < datalen; ix++) {
 		size_t col = (ix%15);

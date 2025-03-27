@@ -45,13 +45,13 @@
  #include <private/win32_schannel.h>
  #include <private/trace.h>
  #include <private/intl.h>
+ #include <private/popup.h>
 
  /// @brief Connection context for WinSC connections.
  typedef struct {
+	LIB3270_NET_CONTEXT parent;
 
 	int instances;
-
-	LIB3270_NET_CONTEXT parent;
 	H3270 *hSession;
 	
 	SCHANNEL_CRED SchannelCred;
@@ -62,6 +62,9 @@
 	void (*complete)(H3270 *hSession);
 
  } Context;
+
+ #define context_connected(context) (context->hSession->connection.sock != INVALID_SOCKET)
+ #define context_disconnect(context,code) PostMessage(context->hSession->hwnd,WM_DISCONNECT_SESSION,code,0);
 
  static int disconnect(H3270 *hSession, Context *context) {
 
@@ -88,7 +91,6 @@
 	//}
 
 	lib3270_free(context);
-
 
 	// Close thread.
 	if(thread) {
@@ -152,7 +154,9 @@
  }
 
  static DWORD ClientHandshakeLoop(Context *context) {
+	debug("------------------[ %s ]------------------\n",__FUNCTION__);
 
+	return 0;
  }
 
  static DWORD __stdcall PerformClientHandshake(LPVOID lpParam) {
@@ -210,39 +214,47 @@
 
 		trace_ssl(
 			context->hSession,
-			"Error %d returned by InitializeSecurityContext (1)\n", scRet
+			"Error %d returned by InitializeSecurityContext (1)\n", (int) scRet
 		);
 
-		lib3270_autoptr(char) body = lib3270_strdup_printf(
-			_( "InitializeSecurityContext failed with error %d" ),scRet);
+		if(context_connected(context)) {
 
-		LIB3270_POPUP popup = {
-			.name		= "InitializeSecurityContext-error",
-			.type		= LIB3270_NOTIFY_ERROR,
-			.title		= _("TLS/SSL error"),
-			.summary	= _("Failed to initialize security context"),
-			.body		= body,
-			.label		= _("OK")
-		};
-
-		if(context->hSession->connection.sock != INVALID_SOCKET) {
-			connection_close(context->hSession,-1);
+			lib3270_autoptr(char) body = lib3270_strdup_printf(
+				_( "InitializeSecurityContext failed with error %d" ), (int) scRet);
+	
+			LIB3270_POPUP popup = {
+				.name		= "InitializeSecurityContext-error",
+				.type		= LIB3270_NOTIFY_ERROR,
+				.title		= _("TLS/SSL error"),
+				.summary	= _("Failed to initialize security context"),
+				.body		= body,
+				.label		= _("OK")
+			};
+	
 			lib3270_popup_async(context->hSession, &popup);
+			context_disconnect(context,-1);
+
+		} else {
+
+			finalize(context->hSession,context);
+
 		}
+		return -1;
 	}
 
     // Send response to server if there is one.
     if(OutBuffers[0].cbBuffer != 0 && OutBuffers[0].pvBuffer != NULL)
     {
-        cbData = send( context->hSession->connection.sock, OutBuffers[0].pvBuffer, OutBuffers[0].cbBuffer, 0 );
+        cbData = send(context->hSession->connection.sock, OutBuffers[0].pvBuffer, OutBuffers[0].cbBuffer, 0 );
         if( cbData == SOCKET_ERROR || cbData == 0 ) {
+
 			int error = WSAGetLastError();
-            trace_ssl(context->hSession,"Error %d sending data to server (1)\n",error);
+            trace_ssl(context->hSession,"Error %d sending data to server\n",error);
 
             sspi->FreeContextBuffer(OutBuffers[0].pvBuffer);
             sspi->DeleteSecurityContext(&context->hContext);
  
-			if(context->hSession->connection.sock != INVALID_SOCKET) {
+			if(context_connected(context)) {
 
 				static const LIB3270_POPUP popup = {
 					.name		= "security-handshake-error",
@@ -253,19 +265,28 @@
 					.label		= N_("OK")
 				};
 		
+				debug("Sending error popup %s - %d\n",popup.name,(int) error);
 				popup_wsa_error(context->hSession,error,&popup);
 
+			} else {
+
+				finalize(context->hSession,context);
+				
 			}
 	
 			return -1;
 		}
 
-        debug("%d bytes of handshake data sent\n", cbData);
+		if(trace_ssl(context->hSession,"%d bytes of handshake data sent\n", (int) cbData)) {
+			trace_data(context->hSession,"",OutBuffers[0].pvBuffer,cbData);
+		}
+
         sspi->FreeContextBuffer(OutBuffers[0].pvBuffer); // Free output buffer.
         OutBuffers[0].pvBuffer = NULL;
  
 	}
 
+	debug("%s------------------------------------------",__FUNCTION__);
 	return ClientHandshakeLoop(context);
 
  }
@@ -274,9 +295,22 @@
 
 	debug("------------------[ %s ]------------------\n",__FUNCTION__);
 
-	set_blocking_mode(hSession,hSession->connection.sock,1);
+	Context *context = lib3270_new(Context);
+	memset(context,0,sizeof(Context));
+	context->instances = 1;
+	context->hSession = hSession;
+	context->complete = complete;
+	context->parent.disconnect = (void *) disconnect;
+	context->parent.finalize = (void *) finalize;
 
+	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
+	
 	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
+
+	if(set_blocking_mode(hSession,hSession->connection.sock,1)) {
+		return -1;
+	}
+
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	PSecurityFunctionTable sspi = security_context();
@@ -297,16 +331,6 @@
 		return -1;
 
 	}
-
-	Context *context = lib3270_new(Context);
-	memset(context,0,sizeof(Context));
-	context->instances = 1;
-	context->hSession = hSession;
-	context->complete = complete;
-	context->parent.disconnect = (void *) disconnect;
-	context->parent.finalize = (void *) finalize;
-
-	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
 
 	// Create credentials
 	{

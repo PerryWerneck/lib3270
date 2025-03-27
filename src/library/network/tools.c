@@ -34,6 +34,7 @@
  #include <private/mainloop.h>
  #include <private/session.h>
  #include <lib3270/memory.h>
+ #include <private/popup.h>
  #include <fcntl.h>
  #include <private/intl.h>
  #include <string.h>
@@ -212,6 +213,7 @@ LIB3270_INTERNAL int set_blocking_mode(H3270 *hSession, int sock, const unsigned
 			.label		= N_("OK")
 		};
 
+		debug("Sending error popup %p: %s-%d for socket %d\n",&popup,popup.name,(int) error, sock);
 		popup_wsa_error(hSession,error,&popup);
 
 		return -1;

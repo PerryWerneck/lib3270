@@ -75,6 +75,8 @@
 			};
 
 			err = WSAGetLastError(); 
+
+			debug("Sending error popup %s - %d\n",popup.name,(int) err);
 			popup_wsa_error(hSession,err,&popup);
 			return;
 	
@@ -168,16 +170,7 @@
  /// @param sock The socket
  LIB3270_INTERNAL void set_resolved(H3270 *hSession, SOCKET sock) {
 
-	debug("%s socket=%lu",__FUNCTION__,(unsigned long) sock);
-
-	if(hSession->connection.context) {
-		hSession->connection.context->finalize(hSession,hSession->connection.context);
-		hSession->connection.context = NULL;
-	}
-
-	hSession->ever_3270 = 0;
-	set_cstate(hSession, LIB3270_PENDING);
-	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, 1);
+	debug("%s socket=%lu ----------------------------------------------------",__FUNCTION__,(unsigned long) sock);
 
 	Context *context = lib3270_new(Context);
 	memset(context,0,sizeof(Context));
@@ -185,13 +178,16 @@
 	context->parent.disconnect = (void *) net_disconnect;
 	context->parent.finalize = (void *) net_finalize;
 	context->sock = sock;
+	set_network_context(hSession,(LIB3270_NET_CONTEXT *) context);
+
+	hSession->ever_3270 = 0;
+	set_cstate(hSession, LIB3270_PENDING);
+	notify_new_state(hSession, LIB3270_STATE_HALF_CONNECT, 1);
 
 	context->timer = hSession->timer.add(hSession,hSession->connection.timeout*1000,(void *) net_timeout,context);
-
-	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
-
 	context->connected = win32_poll_add(hSession,sock,FD_CONNECT|FD_WRITE,(void *) net_connected,context);
 
+	
 }
 
  

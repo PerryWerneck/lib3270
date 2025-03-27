@@ -152,6 +152,8 @@
 
  static int net_finalize(H3270 *hSession, Context *context) {
 
+	debug("-------------------------------------------------- %s",__FUNCTION__);
+	
 	if(context->connected) {
 		win32_poll_remove(context->connected);
 		context->connected = NULL;
@@ -161,6 +163,8 @@
 		hSession->timer.remove(hSession,context->timer);
 		context->timer = NULL;
 	}
+
+	debug("%s: Finalizing connect context %p",__FUNCTION__,context);
 
 	lib3270_free(context);
 	return 0;

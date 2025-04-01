@@ -68,6 +68,16 @@ static unsigned int lib3270_get_kybdlock_as_int(const H3270 *hSession) {
 	return (unsigned int) lib3270_get_keyboard_lock_state(hSession);
 }
 
+static unsigned int lib3270_get_auto_disconnect(const H3270 *hSession) {
+	return hSession->connection.auto_disconnect;
+}
+
+static int lib3270_set_auto_disconnect(H3270 *hSession, unsigned int timer) {
+	FAIL_IF_ONLINE(hSession);
+	hSession->connection.auto_disconnect = timer;
+	return 0;
+}
+
 const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 
 	static const LIB3270_UINT_PROPERTY properties[] = {
@@ -167,6 +177,13 @@ const LIB3270_UINT_PROPERTY * lib3270_get_unsigned_properties_list(void) {
 			.description = N_( "Keyboard lock status" ),														//  Property description.
 			.get = lib3270_get_kybdlock_as_int,																	//  Get value.
 			.set = NULL																							//  Set value.
+		},
+
+		{
+			.name = "auto_disconnect",																			//  Property name.
+			.description = N_( "Time, in minutes, to auto-disconnect" ),											//  Property description.
+			.get = lib3270_get_auto_disconnect,																	//  Get value.
+			.set = lib3270_set_auto_disconnect																	//  Set value.
 		},
 
 		{

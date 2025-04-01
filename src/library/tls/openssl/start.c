@@ -232,6 +232,50 @@
 		return 0;
 	}
 
+	if(context->hSession->connection.timeout) {
+		
+		struct timeval timeout;      
+		timeout.tv_sec = context->hSession->connection.timeout;
+		timeout.tv_usec = 0;		
+
+		if(setsockopt(context->hSession->connection.sock, SOL_SOCKET, SO_RCVTIMEO, &timeout,sizeof timeout) < 0)
+		{
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("Connection error"),
+				.summary	= _("Unable to set socket timeout"),
+				.body		= strerror(errno),
+				.label		= _("OK")
+			};
+		
+			lib3270_popup(context->hSession, &popup, 0);
+			connection_close(context->hSession,errno);
+			context_free(context);
+			return 0;
+		
+		}
+
+		if(setsockopt(context->hSession->connection.sock, SOL_SOCKET, SO_SNDTIMEO, &timeout,sizeof timeout) < 0)
+		{
+			LIB3270_POPUP popup = {
+				.name		= "connect-error",
+				.type		= LIB3270_NOTIFY_CONNECTION_ERROR,
+				.title		= _("Connection error"),
+				.summary	= _("Unable to set socket timeout"),
+				.body		= strerror(errno),
+				.label		= _("OK")
+			};
+		
+			lib3270_popup(context->hSession, &popup, 0);
+			connection_close(context->hSession,errno);
+			context_free(context);
+			return 0;
+		
+		}
+
+	}
+
 	// Protect openssl from concurrent access.
 	pthread_mutex_lock(&ssl_guard);
 

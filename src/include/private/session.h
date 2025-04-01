@@ -130,6 +130,7 @@
 
 		LIB3270_CSTATE		  state;			///< @brief Connection state.
 		unsigned int		  timeout;			///< @brief Connection timeout in seconds.
+		unsigned int 		  auto_disconnect;	///< @brief Auto-disconnect time in minutes.
 		unsigned int		  retry;			///< @brief Time to retry when connection ends with error (0 = none).
 
 		int (*write)(H3270 *hSession, const void *buffer, size_t length, LIB3270_NET_CONTEXT *context);

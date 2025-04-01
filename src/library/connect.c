@@ -211,9 +211,58 @@
 
  }
 
- static void tls_complete(H3270 *hSession) {
+ static void connection_complete(H3270 *hSession) {
+	
 	setup_session(hSession);
 	set_connected_initial(hSession);
+
+#ifdef _WIN32
+	{
+
+		// Set timeouts for windows sockets
+
+	}
+#else 
+	{
+
+		// Set timeouts for linux sockets
+
+		struct timeval timeout;      
+		timeout.tv_sec = hSession->connection.auto_disconnect * 60;
+		timeout.tv_usec = 0;
+
+		if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0) {
+			LIB3270_POPUP popup = {
+				.name		= "socket-timeout-failed",
+				.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+				.title		= _("Network I/O error"),
+				.summary	= _("Unable to set socket receive timeout"),
+				.body		= strerror(errno),
+				.label		= _("OK")
+			};
+			connection_close(hSession,errno);
+			lib3270_popup(hSession, &popup, 0);
+			return;
+		}
+
+		if (setsockopt(hSession->connection.sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
+			LIB3270_POPUP popup = {
+				.name		= "socket-timeout-failed",
+				.type		= LIB3270_NOTIFY_NETWORK_ERROR,
+				.title		= _("Network I/O error"),
+				.summary	= _("Unable to set socket send timeout"),
+				.body		= strerror(errno),
+				.label		= _("OK")
+			};
+			connection_close(hSession,errno);
+			lib3270_popup(hSession, &popup, 0);
+			return;
+		}
+
+	}
+#endif
+
+
  }
 
 #ifdef _WIN32
@@ -240,12 +289,13 @@
 
 	if(hSession->ssl.host) {
 
-		start_tls(hSession,tls_complete);
+		start_tls(hSession,connection_complete);
 
 	} else {
 
 		trace_network(hSession,"Starting non-tls context\n");
-		hSession->connection.context = setup_non_tls_context(hSession);
+		setup_non_tls_context(hSession);
+		connection_complete(hSession);
 
 	}
 

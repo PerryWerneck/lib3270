@@ -164,7 +164,7 @@ static int disconnect(H3270 *hSession, Context *context) {
 	return (int) sent;
  }
  
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession) {
+ LIB3270_INTERNAL void setup_non_tls_context(H3270 *hSession) {
 
 	set_blocking_mode(hSession, hSession->connection.sock, 0);
 
@@ -184,5 +184,6 @@ static int disconnect(H3270 *hSession, Context *context) {
 
 	context->recv = win32_poll_add(hSession,hSession->connection.sock,FD_READ,(void *) on_input,context);
 
-	return (LIB3270_NET_CONTEXT *) context;
- }
+	set_network_context(hSession, (LIB3270_NET_CONTEXT *) context);
+
+}

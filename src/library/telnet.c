@@ -431,19 +431,6 @@ static int net_connected(H3270 *hSession) {
 
 	check_linemode(hSession,True);
 
-	// write out the passthru hostname and port nubmer
-	/*
-	if (hSession->passthru_host)
-	{
-		unsigned char *buffer = (unsigned char *) xs_buffer("%s %d\r\n", hSession->hostname, hSession->current_port);
-		hSession->write(hSession, buffer, strlen((char *) buffer));
-		lib3270_free(buffer);
-		trace_ds(hSession,"SENT HOSTNAME %s:%d\n", hSession->hostname, hSession->current_port);
-	}
-	*/
-
-	// non_blocking(hSession,True);
-
 }
 
 ///

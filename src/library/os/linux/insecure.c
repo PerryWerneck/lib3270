@@ -185,7 +185,7 @@
 
  }
 
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession) {
+ LIB3270_INTERNAL void setup_non_tls_context(H3270 *hSession) {
 
 	set_ssl_state(hSession,LIB3270_SSL_UNSECURE);
 
@@ -205,8 +205,6 @@
 	hSession->connection.except = (void *) enable_exception;
 	hSession->connection.write = (void *) on_write;
 
-	setup_session(hSession);
-	set_connected_initial(hSession);
+	set_network_context(hSession, (LIB3270_NET_CONTEXT *) context);
 
-	return (LIB3270_NET_CONTEXT *) context;
- }
+}

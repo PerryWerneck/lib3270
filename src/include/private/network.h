@@ -97,7 +97,7 @@
  LIB3270_INTERNAL int connection_write_offline(H3270 *, const void * , size_t, LIB3270_NET_CONTEXT *);
  LIB3270_INTERNAL int connection_except_offline(H3270 *, LIB3270_NET_CONTEXT *);
 
- LIB3270_INTERNAL LIB3270_NET_CONTEXT * setup_non_tls_context(H3270 *hSession);
+ LIB3270_INTERNAL void setup_non_tls_context(H3270 *hSession);
  
  LIB3270_INTERNAL void set_network_context(H3270 *hSession, LIB3270_NET_CONTEXT *context);
 

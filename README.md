@@ -171,6 +171,13 @@ Install
 	brew upgrade
 	```
 
+3. Get lib3270 sources from git
+
+	```shell
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	cd lib3270
+	```
+
 4. Configure, build and install *REVISION PENDING*
 
 	```shell

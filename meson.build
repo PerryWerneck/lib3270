@@ -458,6 +458,7 @@ if host_machine.system() == 'darwin'
     subdir: 'lib3270'  
   )
 
+  lib_extra += [ dependency('CoreFoundation') ]
   lib_src += darwin_src
 
 endif

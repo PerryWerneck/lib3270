@@ -178,7 +178,7 @@ Install
 	cd lib3270
 	```
 
-4. Configure, build and install *REVISION PENDING*
+4. Configure, build and install
 
 	```shell
 	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"

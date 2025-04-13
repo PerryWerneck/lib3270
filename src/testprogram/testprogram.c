@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <locale.h>
+#include <libintl.h>
 
 #include <internals.h>
 #include <lib3270.h>

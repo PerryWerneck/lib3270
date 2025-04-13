@@ -56,7 +56,7 @@ jobs:
           export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
           meson setup .build       
           meson compile -C .build
-      - name: pack
+      - name: tar
         run: |
           DESTDIR=${PWD}/.bin/package meson install -C .build
           tar --create --xz --file=macos-lib3270.tar.xz --directory=${PWD}/.bin/package --verbose .

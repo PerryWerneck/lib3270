@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/lib3270
+          releases-only: true
       - name: Install Pre reqs
         run: |
           brew update
@@ -19,6 +24,21 @@ jobs:
       - name: build
         run: |
           export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
-          meson setup .build       
+          meson setup --prefix=/lib3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
-
+      - name: package
+        run: |
+          DESTDIR=${PWD}/.bin/package meson install -C .build
+          tar --create --xz --file=macos-lib3270.tar.xz --directory=${PWD}/.bin/package --verbose .
+      - name: upload
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.gettag.outputs.tag }}
+          artifacts: "macos-lib3270.tar.xz"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
+  

@@ -586,6 +586,7 @@ install_headers(
   'src/include/lib3270/ssl.h',
   'src/include/lib3270/toggle.h',
   'src/include/lib3270/trace.h',
+  'src/include/' + host_machine.system() + '/lib3270/os.h',
   subdir: 'lib3270'  
 )
 

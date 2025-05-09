@@ -42,7 +42,7 @@
 #include <lib3270/trace.h>
 #include <winhttp.h>
 #include <utilc.h>
-#include <lib3270/win32.h>
+#include <lib3270/os.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

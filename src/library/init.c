@@ -116,8 +116,21 @@ int lib3270_loaded(void) {
 		strncat(lpFilename,"locale",4095);
 		bindtextdomain(GETTEXT_PACKAGE,lpFilename);
 	}
-#elif defined(HAVE_LIBINTL)
+#elif defined(__APPLE__)
+
+	lib3270_autoptr(char) localedir = lib3270_build_data_filename("locale",NULL);
+	debug("LocaleDIR(%s)=%s",PACKAGE_NAME,localedir);
+	bindtextdomain(PACKAGE_NAME, localedir);
+	bind_textdomain_codeset(PACKAGE_NAME, "UTF-8");
+
+#elif defined(LOCALEDIR)
+
 	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+
+#else
+
+	#error "LOCALEDIR is not defined"
+
 #endif // _WIN32
 
 #if defined(HAVE_LIBINTL)

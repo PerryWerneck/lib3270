@@ -52,6 +52,8 @@
 #include <lib3270/log.h>
 #include <internals.h>
 
+#include <private/intl.h>
+
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 #endif // HAVE_SYSLOG

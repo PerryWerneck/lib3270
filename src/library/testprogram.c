@@ -141,12 +141,11 @@
 
 
 /*
+#include <config.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include <locale.h>
-
 #include <internals.h>
 #include <lib3270.h>
 #include <lib3270/actions.h>
@@ -156,6 +155,11 @@
 #include <lib3270/properties.h>
 #include <lib3270/charset.h>
 #include <stdio.h>
+#include <locale.h>
+
+#ifdef HAVE_LIBINTL
+	#include <libintl.h>
+#endif // HAVE_LIBINTL
 
 #ifdef _WIN32
 	#include <lib3270/win32.h>
@@ -188,7 +192,7 @@ int main(int argc, char *argv[]) {
 	setlocale( LC_ALL, "" );
 #endif
 
-	textdomain("lib3270");
+	// textdomain("lib3270");
 
 
 //	#pragma GCC diagnostic push

@@ -171,11 +171,18 @@ Install
 	brew upgrade
 	```
 
-4. Configure, build and install *REVISION PENDING*
+3. Get lib3270 sources from git
+
+	```shell
+	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
+	cd lib3270
+	```
+
+4. Configure, build and install
 
 	```shell
 	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
-	meson setup --reconfigure --wipe .build
+	meson setup --prefix=$(brew --prefix)/Cellar/lib3270/$(grep 'version:' meson.build | cut -d: -f2 | cut -d\' -f2) --reconfigure --wipe .build
 	meson compile -C .build
 	meson install -C .build
 	brew link lib3270

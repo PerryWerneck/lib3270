@@ -585,6 +585,18 @@ endif
 lib3270_dep = declare_dependency(
   link_with : dynamic,
   include_directories : includes_dir,
+  variables: [
+    'version_major=@0@'.format(pkg_major_version),
+    'version_minor=@0@'.format(pkg_minor_version),
+    'version_micro=@0@'.format(pkg_micro_version),
+    'product_name=@0@'.format(product_name),
+    'product_id=@0@.@1@'.format(product_domain,product_name),
+    'product_title=@0@'.format(product_title),
+    'product_version=@0@@1@'.format(pkg_major_version,pkg_minor_version),
+    'plugin_path=${libdir}/@0@/@1@.@2@/plugins/'.format(
+      product_name,pkg_major_version,pkg_minor_version,
+    )
+  ]
 ) 
 
 executable(

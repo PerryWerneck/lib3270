@@ -532,6 +532,29 @@ if host_machine.system() == 'windows'
     install_dir: get_option('libdir')
   )
 
+  static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
+
+elif host_machine.system() == 'darwin'
+
+  dynamic = shared_library(
+    '3270', 
+    config_src + lib_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    dependencies: lib_deps + lib_extra,
+    include_directories: includes_dir
+  )
+
 else
 
   dynamic = shared_library(
@@ -546,17 +569,23 @@ else
     include_directories: includes_dir
   )
 
+  static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
+
+
 endif
 
-static_library(
-  '3270', 
-  config_src + lib_src,
-  pic: true,
-  c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-  install: true,
-  dependencies: lib_deps,
-  include_directories: includes_dir
-)
+lib3270_dep = declare_dependency(
+  link_with : dynamic,
+  include_directories : includes_dir,
+) 
 
 executable(
   meson.project_name(),

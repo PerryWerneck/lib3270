@@ -206,7 +206,7 @@ if c.compiles('#include <syslog.h>', name : 'syslog.h')
   app_conf.set('HAVE_SYSLOG', 1)
 endif
 
-if c.compiles('#include <libintl.h>', name : 'libintl.h')
+if libintl.found()
   app_conf.set('HAVE_LIBINTL', 1)
 endif
 

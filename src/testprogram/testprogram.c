@@ -46,7 +46,7 @@
 #endif // HAVE_LIBINTL
 
 #ifdef _WIN32
-	#include <lib3270/win32.h>
+	#include <lib3270/os.h>
 #endif // _WIN32
 
 #define MAX_ARGS 10

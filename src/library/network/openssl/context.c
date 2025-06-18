@@ -38,7 +38,7 @@
 #ifdef _WIN32
 	#include <winsock2.h>
 	#include <windows.h>
-	#include <lib3270/win32.h>
+	#include <lib3270/os.h>
 #endif // _WIN32
 
 #include "private.h"

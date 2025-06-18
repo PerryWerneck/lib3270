@@ -206,14 +206,13 @@ if c.compiles('#include <syslog.h>', name : 'syslog.h')
   app_conf.set('HAVE_SYSLOG', 1)
 endif
 
-if c.has_function('dgettext', dependencies: libintl)
+if c.compiles('#include <libintl.h>', name : 'libintl.h')
   app_conf.set('HAVE_LIBINTL', 1)
 endif
 
 if c.compiles('#include <malloc.h>', name : 'malloc.h')
   app_conf.set('HAVE_MALLOC_H', 1)
 endif
-
 
 #
 # Sources
@@ -532,6 +531,29 @@ if host_machine.system() == 'windows'
     install_dir: get_option('libdir')
   )
 
+  static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
+
+elif host_machine.system() == 'darwin'
+
+  dynamic = shared_library(
+    '3270', 
+    config_src + lib_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    dependencies: lib_deps + lib_extra,
+    include_directories: includes_dir
+  )
+
 else
 
   dynamic = shared_library(
@@ -546,17 +568,24 @@ else
     include_directories: includes_dir
   )
 
+  static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
+
+
 endif
 
-static_library(
-  '3270', 
-  config_src + lib_src,
-  pic: true,
-  c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-  install: true,
-  dependencies: lib_deps,
-  include_directories: includes_dir
-)
+lib3270_dep = declare_dependency(
+  link_with : dynamic,
+  include_directories : includes_dir,
+  variables: pkg_variables,
+) 
 
 executable(
   meson.project_name(),
@@ -587,6 +616,7 @@ install_headers(
   'src/include/lib3270/ssl.h',
   'src/include/lib3270/toggle.h',
   'src/include/lib3270/trace.h',
+  'src/include/' + host_machine.system() + '/lib3270/os.h',
   subdir: 'lib3270'  
 )
 

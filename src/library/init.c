@@ -52,6 +52,8 @@
 #include <lib3270/log.h>
 #include <internals.h>
 
+#include <private/intl.h>
+
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 #endif // HAVE_SYSLOG
@@ -101,7 +103,7 @@ int lib3270_loaded(void) {
 	ansictl.vrprnt  = parse_ctlchar("^R");
 	ansictl.vlnext  = parse_ctlchar("^V");
 
-#if defined(_WIN32)
+#if defined(_WIN32) && defined(HAVE_LIBINTL)
 	{
 		char lpFilename[4096];
 
@@ -116,9 +118,17 @@ int lib3270_loaded(void) {
 		strncat(lpFilename,"locale",4095);
 		bindtextdomain(GETTEXT_PACKAGE,lpFilename);
 	}
-#elif defined(HAVE_LIBINTL)
+#elif defined(__APPLE__) && defined(HAVE_LIBINTL)
+	{
+		lib3270_autoptr(char) localedir = lib3270_build_data_filename("locale",NULL);
+		debug("LocaleDIR(%s)=%s",PACKAGE_NAME,localedir);
+		bindtextdomain(GETTEXT_PACKAGE, localedir);
+	}
+#elif defined(LOCALEDIR) && defined(HAVE_LIBINTL)
+
 	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
-#endif // _WIN32
+
+#endif // LOCALEDIR
 
 #if defined(HAVE_LIBINTL)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");

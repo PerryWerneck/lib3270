@@ -122,18 +122,13 @@ int lib3270_loaded(void) {
 	{
 		lib3270_autoptr(char) localedir = lib3270_build_data_filename("locale",NULL);
 		debug("LocaleDIR(%s)=%s",PACKAGE_NAME,localedir);
-		bindtextdomain(PACKAGE_NAME, localedir);
-		bind_textdomain_codeset(PACKAGE_NAME, "UTF-8");
+		bindtextdomain(GETTEXT_PACKAGE, localedir);
 	}
-#elif defined(LOCALEDIR)
+#elif defined(LOCALEDIR) && defined(HAVE_LIBINTL)
 
 	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 
-#else
-
-	#error "LOCALEDIR is not defined"
-
-#endif // _WIN32
+#endif // LOCALEDIR
 
 #if defined(HAVE_LIBINTL)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");

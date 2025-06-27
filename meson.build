@@ -206,7 +206,7 @@ if c.compiles('#include <syslog.h>', name : 'syslog.h')
   app_conf.set('HAVE_SYSLOG', 1)
 endif
 
-if c.compiles('#include <libintl.h>', name : 'libintl.h')
+if libintl.found()
   app_conf.set('HAVE_LIBINTL', 1)
 endif
 
@@ -531,7 +531,7 @@ if host_machine.system() == 'windows'
     install_dir: get_option('libdir')
   )
 
-  static_library(
+  static = static_library(
     '3270', 
     config_src + lib_src,
     pic: true,
@@ -554,6 +554,16 @@ elif host_machine.system() == 'darwin'
     include_directories: includes_dir
   )
 
+  static = static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
+
 else
 
   dynamic = shared_library(
@@ -568,7 +578,7 @@ else
     include_directories: includes_dir
   )
 
-  static_library(
+  static = static_library(
     '3270', 
     config_src + lib_src,
     pic: true,
@@ -578,11 +588,16 @@ else
     include_directories: includes_dir
   )
 
-
 endif
 
-lib3270_dep = declare_dependency(
+dynamic_library = declare_dependency(
   link_with : dynamic,
+  include_directories : includes_dir,
+  variables: pkg_variables,
+) 
+
+static_library = declare_dependency(
+  link_with : static,
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 

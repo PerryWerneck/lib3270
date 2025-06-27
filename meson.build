@@ -554,6 +554,16 @@ elif host_machine.system() == 'darwin'
     include_directories: includes_dir
   )
 
+  static = static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
+
 else
 
   dynamic = shared_library(

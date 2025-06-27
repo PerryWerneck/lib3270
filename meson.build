@@ -531,7 +531,7 @@ if host_machine.system() == 'windows'
     install_dir: get_option('libdir')
   )
 
-  static_library(
+  static = static_library(
     '3270', 
     config_src + lib_src,
     pic: true,
@@ -568,7 +568,7 @@ else
     include_directories: includes_dir
   )
 
-  static_library(
+  static = static_library(
     '3270', 
     config_src + lib_src,
     pic: true,
@@ -578,11 +578,16 @@ else
     include_directories: includes_dir
   )
 
-
 endif
 
-lib3270_dep = declare_dependency(
+dynamic_library = declare_dependency(
   link_with : dynamic,
+  include_directories : includes_dir,
+  variables: pkg_variables,
+) 
+
+static_library = declare_dependency(
+  link_with : static,
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 

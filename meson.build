@@ -212,14 +212,13 @@ if c.compiles('#include <syslog.h>', name : 'syslog.h')
   app_conf.set('HAVE_SYSLOG', 1)
 endif
 
-if c.has_function('dgettext', dependencies: libintl)
+if libintl.found()
   app_conf.set('HAVE_LIBINTL', 1)
 endif
 
 if c.compiles('#include <malloc.h>', name : 'malloc.h')
   app_conf.set('HAVE_MALLOC_H', 1)
 endif
-
 
 #
 # Sources
@@ -593,17 +592,38 @@ if host_machine.system() == 'windows'
     install_dir: get_option('libdir')
   )
 
-  executable(
-    meson.project_name(),
-    config_src + [ 'src/library/testprogram.c' ],
-    install: false,
-    link_with : [ dynamic ],
-    dependencies: lib_deps + libintl,
-    link_args: [
-      '-lws2_32',
-    ],
+  static = static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY' ],
+    install: true,
+    dependencies: lib_deps,
     include_directories: includes_dir
-  )  
+  )
+
+elif host_machine.system() == 'darwin'
+
+  dynamic = shared_library(
+    '3270', 
+    config_src + lib_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    dependencies: lib_deps + lib_extra,
+    include_directories: includes_dir
+  )
+
+  static = static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  )
 
 else
 
@@ -619,98 +639,36 @@ else
     include_directories: includes_dir
   )
 
-  executable(
-    meson.project_name(),
-    config_src + [ 'src/library/testprogram.c' ],
-    install: false,
-    link_with : [ dynamic ],
-    dependencies: lib_deps + libintl,
-    include_directories: includes_dir
-  )
-  
-endif
-
-if gobject.found()
-
-  #gir_dep = dependency('gobject-introspection-1.0', version: '>= 0.9.0')
-
-  configure_file(
-    input : 'gschema.xml.in',
-    output : meson.project_name() + '.gschema.xml',
-    configuration : app_conf
-  )
-
-  glib_shared = shared_library(
-    '3270-glib', 
-    gobject_src,
+  static = static_library(
+    '3270', 
+    config_src + lib_src,
+    pic: true,
+    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     install: true,
-    version : libversion,
-    soversion : libversion,
-    link_with : [ dynamic ],
-    dependencies: lib_deps + lib_extra + [ gobject, polkit ],
-    include_directories: includes_dir
-  )
-
-#  gnome = import('gnome')
-
-#  gnome.gtkdoc(
-#    meson.project_name(),
-#    src_dir: 'src/gobject',
-#    install: true,
-#    dependencies: [ gobject ],
-#    include_directories: includes_dir
-#  )
-
-#  gjs_private_gir = gnome.generate_gir(libgjs,
-#    includes: ['GObject-2.0', 'Gio-2.0'], sources: libgjs_private_sources,
-#    namespace: 'GjsPrivate', nsversion: '1.0', identifier_prefix: 'Gjs',
-#    symbol_prefix: 'gjs_', fatal_warnings: get_option('werror'), install: true,
-#    install_gir: false, install_dir_typelib: pkglibdir / 'girepository-1.0')
-#gjs_private_typelib = gjs_private_gir[1]
-
-
-#  gnome.generate_gir(
-#    glib_shared,
-#    includes: ['GObject-2.0', 'Gio-2.0'], 
-#    sources: gobject_src + [ 'src/include/lib3270/glib.h'],
-#    nsversion: '1.0',
-#    namespace: 'tn3270',
-#    symbol_prefix: 'tn3270_',
-#    identifier_prefix: 'tn3270',
-#    export_packages: ['libhello_string'],
-#    link_with: glib_shared,
-#    install: false,
-#    extra_args: [
-#    '--warn-all',
-#    ],
-# )
-
-  static_library(
-    '3270-glib', 
-    gobject_src + config_src + lib_src,
-    install: true,
-    dependencies: lib_deps + [ gobject, polkit ],
-    include_directories: includes_dir
-  )
-
-  executable(
-    meson.project_name() + '-gobject',
-    [ 'src/gobject/testprogram.c' ],
-    install: false,
-    link_with : [ glib_shared, dynamic ],
-    dependencies: lib_deps + [ gobject ],
+    dependencies: lib_deps,
     include_directories: includes_dir
   )
 
 endif
 
-static_library( 
-  '3270', 
-  config_src + lib_src,
-  pic: true,
-  c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-  install: true,
-  dependencies: lib_deps,
+dynamic_library = declare_dependency(
+  link_with : dynamic,
+  include_directories : includes_dir,
+  variables: pkg_variables,
+) 
+
+static_library = declare_dependency(
+  link_with : static,
+  include_directories : includes_dir,
+  variables: pkg_variables,
+) 
+
+executable(
+  meson.project_name(),
+  config_src + [ 'src/library/testprogram.c' ],
+  install: false,
+  link_with : [ dynamic ],
+  dependencies: lib_deps + libintl,
   include_directories: includes_dir
 )
 
@@ -733,6 +691,7 @@ install_headers(
   'src/include/lib3270/ssl.h',
   'src/include/lib3270/toggle.h',
   'src/include/lib3270/trace.h',
+  'src/include/' + host_machine.system() + '/lib3270/os.h',
   subdir: 'lib3270'  
 )
 

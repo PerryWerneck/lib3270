@@ -30,19 +30,51 @@
 #error deprecetaed
 
 /**
- * @brief TN3270 API windows definitions.
+ * @brief TN3270 WIN32 API definitions.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
-#ifndef LIB3270_OS_H_INCLUDED
 
-#define LIB3270_OS_H_INCLUDED 1
+#pragma once
 
 #include <winsock2.h>
 #include <windows.h>
+#include <lib3270.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 LIB3270_EXPORT void lib3270_autoptr_cleanup_HKEY(HKEY *hKey);
 
-#endif // LIB3270_OS_H_INCLUDED
+LIB3270_EXPORT const char	* lib3270_win32_strerror(int e);
+LIB3270_EXPORT const char	* lib3270_win32_local_charset(void);
+LIB3270_EXPORT LSTATUS		  lib3270_win32_create_regkey(LPCSTR lpSubKey, REGSAM samDesired, PHKEY phkResult);
+LIB3270_EXPORT DWORD		  lib3270_win32_get_dword(HKEY hKey, const char *name, DWORD def);
+LIB3270_EXPORT LSTATUS		  lib3270_win32_set_registry(LPCSTR module, LPCSTR keyname, LPCSTR value);
+LIB3270_EXPORT LSTATUS		  lib3270_win32_set_string(LPCSTR module, LPCSTR keyname, LPCSTR value);
+
+/**
+ * @brief Translate windows error code.
+ *
+ * @param lasterror	Windows error code (from GetLastError()).
+ *
+ * @return String with translated message (release it with lib3270_free).
+ *
+ */
+LIB3270_EXPORT char 		* lib3270_win32_translate_error_code(int lasterror);
+
+/**
+ * @brief Get lib3270's installation path.
+ *
+ * @return Full path for the lib3270 installation path (release it with lib3270_free)
+ *
+ */
+LIB3270_EXPORT char		* lib3270_get_installation_path();
+
+#ifdef __cplusplus
+}
+#endif
+

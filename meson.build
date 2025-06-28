@@ -51,7 +51,7 @@ subdir('po')
 #
 # Dependencies
 #
-openssl = dependency('openssl', required: false, method: 'pkg-config', version: '>=3.0.0')
+libssl = dependency('OpenSSL', required: false)
 libintl = dependency('intl', required: false)
 libiconv = dependency('iconv', required: false)
 gobject = dependency('gobject-2.0', required: false)
@@ -64,7 +64,7 @@ lib_extra = [
 
 lib_deps = [
   dependency('liburiparser', method : 'pkg-config'),
-  openssl,
+  libssl,
 ]
 
 #
@@ -452,7 +452,7 @@ if host_machine.system() == 'linux'
 
   endif
 
-  if openssl.found()
+  if libssl.found()
 
     app_conf.set('HAVE_OPENSSL', 1)
 
@@ -490,7 +490,7 @@ if host_machine.system() == 'darwin'
   lib_extra += [ dependency('appleframeworks', modules : 'CoreFoundation') ]
   lib_src += darwin_src
 
-  if openssl.found()
+  if libssl.found()
 
     app_conf.set('HAVE_OPENSSL', 1)
 
@@ -651,6 +651,17 @@ else
 
 endif
 
+glib_dynamic = shared_library(
+    '3270-glib', 
+    gobject_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    link_with : [ dynamic ],
+    dependencies: lib_deps + lib_extra + [ gobject, polkit ],
+    include_directories: includes_dir
+)
+
 dynamic_library = declare_dependency(
   link_with : dynamic,
   include_directories : includes_dir,
@@ -662,6 +673,23 @@ static_library = declare_dependency(
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 
+
+static_library(
+  '3270-glib', 
+  gobject_src + config_src + lib_src,
+  install: true,
+  dependencies: lib_deps + [ gobject, polkit ],
+  include_directories: includes_dir
+)
+
+executable(
+    meson.project_name() + '-gobject',
+    [ 'src/gobject/testprogram.c' ],
+    install: false,
+    link_with : [ glib_dynamic, dynamic ],
+    dependencies: lib_deps + [ gobject ],
+    include_directories: includes_dir
+)
 
 executable(
   meson.project_name(),

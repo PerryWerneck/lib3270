@@ -56,14 +56,15 @@ libintl = dependency('intl', required: false)
 libiconv = dependency('iconv', required: false)
 gobject = dependency('gobject-2.0', required: false)
 polkit = dependency('polkit-gobject-1', required: false)
+uriparser= dependency('liburiparser', method : 'pkg-config')
 
 lib_extra = [
   libintl,
   libiconv
 ]
 
-lib_deps = [
-  dependency('liburiparser', method : 'pkg-config'),
+pkgconfig_libs = [
+  uriparser,
   libssl,
 ]
 
@@ -140,7 +141,7 @@ if host_machine.system() != 'windows'
   )
 
   app_conf.set('HAVE_LIBCURL', 1)
-  lib_deps += [
+  pkgconfig_libs += [
     dependency('libcurl'),  
   ]
 
@@ -359,7 +360,7 @@ if host_machine.system() == 'windows'
     variables: pkg_variables,
     libraries: [ '-l3270.dll' ],
     requires_private: [ 
-      lib_deps 
+      pkgconfig_libs 
     ],
     libraries_private: [ 
       '-l3270',
@@ -376,7 +377,7 @@ if host_machine.system() == 'windows'
     description: project_description,
     variables: pkg_variables,
     requires: [
-      lib_deps
+      pkgconfig_libs
     ],
     libraries: [ 
       '-l3270',
@@ -403,8 +404,8 @@ else
     description: project_description,
     variables: pkg_variables,
     libraries: [ '-l3270' ],
-    requires_private: [ lib_deps ],
-    libraries_private: [ lib_deps ],
+    requires_private: [ pkgconfig_libs ],
+    libraries_private: [ pkgconfig_libs ],
   )
 
   pkg.generate(
@@ -412,7 +413,7 @@ else
     description: project_description,
     variables: pkg_variables,
     requires: [
-      lib_deps
+      pkgconfig_libs
     ],
     libraries: [ '-l:' + meson.project_name() + '.a' ]
   )
@@ -431,6 +432,7 @@ includes_dir = include_directories(
 if host_machine.system() == 'windows'
 
   app_conf.set_quoted('LIBEXT', '.dll')
+
   app_conf.set('SECURITY_WIN32',1)
 
   lib_src += win_src
@@ -438,44 +440,9 @@ if host_machine.system() == 'windows'
     'src/library/tls/wsc/start.c',
   ]
 
-endif
+elif host_machine.system() == 'darwin'
 
-if host_machine.system() == 'linux'
-
-  app_conf.set_quoted('LIBEXT', '.so')
-
-  lib_src += linux_src
-
-  if polkit.found()
-
-    app_conf.set('HAVE_POLKIT', 1)
-
-  endif
-
-  if libssl.found()
-
-    app_conf.set('HAVE_OPENSSL', 1)
-
-    lib_src += [
-      'src/library/tls/openssl/start.c',
-      'src/library/tls/openssl/context.c',
-      'src/library/tls/openssl/connected.c',
-      'src/library/tls/openssl/errors.c',
-      'src/library/tls/openssl/messages.c',
-      'src/library/tls/openssl/fqdn.c',
-    ]
-
-  else 
-
-    lib_src += [
-      'src/library/tls/unavailable.c',
-    ]
-
-  endif
-
-endif
-
-if host_machine.system() == 'darwin'
+  app_conf.set_quoted('LIBEXT', '.dylib')
 
   includes_dir = include_directories(
     'src/include',
@@ -490,23 +457,37 @@ if host_machine.system() == 'darwin'
   lib_extra += [ dependency('appleframeworks', modules : 'CoreFoundation') ]
   lib_src += darwin_src
 
-  if libssl.found()
+else 
 
-    app_conf.set('HAVE_OPENSSL', 1)
+  app_conf.set_quoted('LIBEXT', '.so')
+  lib_src += linux_src
 
-    lib_src += [
-      'src/library/tls/openssl/context.c',
-      'src/library/tls/openssl/init.c',
-      'src/library/tls/openssl/errors.c',
-    ]
+endif
 
-  else 
+if polkit.found()
 
-    lib_src += [
-      'src/library/tls/unavailable.c',
-    ]
+  app_conf.set('HAVE_POLKIT', 1)
 
-  endif
+endif
+
+if libssl.found()
+
+  app_conf.set('HAVE_OPENSSL', 1)
+
+  lib_src += [
+    'src/library/tls/openssl/start.c',
+    'src/library/tls/openssl/context.c',
+    'src/library/tls/openssl/connected.c',
+    'src/library/tls/openssl/errors.c',
+    'src/library/tls/openssl/messages.c',
+    'src/library/tls/openssl/fqdn.c',
+  ]
+
+else 
+
+  lib_src += [
+    'src/library/tls/unavailable.c',
+  ]
 
 endif
 
@@ -547,7 +528,7 @@ if host_machine.system() == 'windows'
     '3270', 
     config_src + lib_src + resources,
     install: true,
-    dependencies: lib_deps + lib_extra,
+    dependencies: pkgconfig_libs + lib_extra,
     include_directories: includes_dir,
     link_args: [
       '-lwinhttp',
@@ -598,7 +579,7 @@ if host_machine.system() == 'windows'
     pic: true,
     c_args: [ '-DSTATIC_LIBRARY' ],
     install: true,
-    dependencies: lib_deps,
+    dependencies: pkgconfig_libs,
     include_directories: includes_dir
   )
 
@@ -611,7 +592,7 @@ elif host_machine.system() == 'darwin'
     version : libversion,
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps + lib_extra,
+    dependencies: pkgconfig_libs + lib_extra,
     include_directories: includes_dir
   )
 
@@ -621,7 +602,7 @@ elif host_machine.system() == 'darwin'
     pic: true,
     c_args: [ '-DSTATIC_LIBRARY' ],
     install: true,
-    dependencies: lib_deps,
+    dependencies: pkgconfig_libs,
     include_directories: includes_dir
   )
 
@@ -635,7 +616,7 @@ else
     soversion : libversion,
     c_args: [ '-ffat-lto-objects' ],
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps + lib_extra,
+    dependencies: pkgconfig_libs + lib_extra,
     include_directories: includes_dir
   )
 
@@ -645,7 +626,7 @@ else
     pic: true,
     c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     install: true,
-    dependencies: lib_deps,
+    dependencies: pkgconfig_libs,
     include_directories: includes_dir
   )
 
@@ -658,7 +639,7 @@ glib_dynamic = shared_library(
     version : libversion,
     soversion : libversion,
     link_with : [ dynamic ],
-    dependencies: lib_deps + lib_extra + [ gobject, polkit ],
+    dependencies: pkgconfig_libs + lib_extra + [ gobject, polkit ],
     include_directories: includes_dir
 )
 
@@ -678,7 +659,7 @@ static_library(
   '3270-glib', 
   gobject_src + config_src + lib_src,
   install: true,
-  dependencies: lib_deps + [ gobject, polkit ],
+  dependencies: pkgconfig_libs + [ gobject, polkit ],
   include_directories: includes_dir
 )
 
@@ -687,7 +668,7 @@ executable(
     [ 'src/gobject/testprogram.c' ],
     install: false,
     link_with : [ glib_dynamic, dynamic ],
-    dependencies: lib_deps + [ gobject ],
+    dependencies: pkgconfig_libs + [ gobject ],
     include_directories: includes_dir
 )
 
@@ -696,7 +677,7 @@ executable(
   config_src + [ 'src/library/testprogram.c' ],
   install: false,
   link_with : [ dynamic ],
-  dependencies: lib_deps + libintl,
+  dependencies: pkgconfig_libs + libintl,
   include_directories: includes_dir
 )
 

@@ -52,11 +52,12 @@ subdir('po')
 #
 
 c = meson.get_compiler('c')
-libssl = dependency('libssl', required: false)
+libssl = dependency('OpenSSL', required: false)
 libintl = dependency('intl', required : false)
 libiconv = dependency('iconv', required : false)
 
 lib_extra = [
+  dependency('threads'),
   libintl,
   libiconv
 ]
@@ -84,7 +85,6 @@ cc = meson.get_compiler('c')
 
 compiler_flags = [
   '-ggdb3',
-  '-pthread',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
 ]

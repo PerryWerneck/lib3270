@@ -59,6 +59,7 @@ polkit = dependency('polkit-gobject-1', required: false)
 uriparser= dependency('liburiparser', method : 'pkg-config')
 
 lib_extra = [
+  dependency('threads'),
   libintl,
   libiconv
 ]
@@ -85,7 +86,6 @@ endif
 c = meson.get_compiler('c')
 compiler_flags = [
   '-ggdb3',
-  '-pthread',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
   '-DG_LOG_DOMAIN="tn3270"',

@@ -376,14 +376,14 @@ if host_machine.system() == 'windows'
     ]
   )
 
-  pkg.generate(
-    name: meson.project_name() + '-delayed',
-    description: project_description,
-    variables: pkg_variables,
-    libraries: [ 
-      '-l3270.delayed',
-    ]
-  )
+#  pkg.generate(
+#    name: meson.project_name() + '-delayed',
+#    description: project_description,
+#    variables: pkg_variables,
+#    libraries: [ 
+#      '-l3270.delayed',
+#    ]
+#  )
 
 else
 
@@ -514,22 +514,22 @@ if host_machine.system() == 'windows'
   endif
 
   # https://mesonbuild.com/Reference-manual_functions.html#custom_target
-  custom_target(
-    'delaylib',
-    depends: dynamic,
-    build_by_default: true,
-    command: [ 
-      dlltool,
-        '--input-def','lib3270.def',
-        '--dllname','lib3270.dll',
-        '--kill-at',
-        '--output-lib','lib3270.delayed.a' 
-      ],
-    output: 'lib3270.delayed.a',
-    install: true,
-    install_tag: 'devel',
-    install_dir: get_option('libdir')
-  )
+  #custom_target(
+  #  'delaylib',
+  #  depends: dynamic,
+  #  build_by_default: true,
+  #  command: [ 
+  #    dlltool,
+  #      '--input-def','lib3270.def',
+  #      '--dllname','lib3270.dll',
+  #      '--kill-at',
+  #      '--output-lib','lib3270.delayed.a' 
+  #    ],
+  #  output: 'lib3270.delayed.a',
+  #  install: true,
+  #  install_tag: 'devel',
+  #  install_dir: get_option('libdir')
+  #)
 
   static = static_library(
     '3270', 

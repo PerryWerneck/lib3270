@@ -54,6 +54,11 @@ subdir('po')
 c = meson.get_compiler('c')
 libintl = dependency('intl', required : false)
 libiconv = dependency('iconv', required : false)
+ 
+libssl = dependency('OpenSSL', required: false)
+if not libssl.found()
+  libssl = dependency('openssl', required: false)
+endif
 
 libssl = dependency('OpenSSL', required: false)
 if not libssl.found()

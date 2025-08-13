@@ -52,9 +52,13 @@ subdir('po')
 #
 
 c = meson.get_compiler('c')
-libssl = dependency('OpenSSL', required: false)
 libintl = dependency('intl', required : false)
 libiconv = dependency('iconv', required : false)
+
+libssl = dependency('OpenSSL', required: false)
+if not libssl.found()
+  libssl = dependency('openssl', required: false)
+endif
 
 lib_extra = [
   dependency('threads'),

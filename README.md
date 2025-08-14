@@ -27,26 +27,23 @@ You can download installation package for supported linux distributions in [Open
 
 2. Install the required libraries
 
-	* autoconf
-	* automake
-	* binutils
-	* coreutils
+  	* pkgconfig
+  	* gettext-devel
+  	* curl
+  	* meson
 	* gcc-c++
-	* gettext-devel
-	* m4
-	* pkgconfig
 	* openssl-devel
 	* dbus-1-devel
 	* xz
 
 	(This command can make it easy on SuSE: grep -i buildrequires rpm/lib3270.spec | cut -d: -f2 | sudo xargs zypper in )
 
-3. Configure and build
+3. Setup, build and install
 
 	```shell
-	./autogen.sh
-	make clean
-	make all
+	meson setup .build
+	meson compile -C .build
+	meson install -C .build
 	```
 
 ## Building for Windows
@@ -70,48 +67,23 @@ You can download installation package for supported linux distributions in [Open
 3. Install cross compilers
 
 	```shell
-	./lib3270/win/install-cross.sh --all (for 32 and 64 bits)
+	zypper in \
+		pkgconfig \
+		gettext-devel \
+		mingw64-libcurl-devel \
+		mingw64-cross-meson \
+		mingw64-libopenssl-devel \
+		mingw64-cross-gcc-c++
 	```
 
-3. Configure build
+3. Configure and build
 
 	```shell
-	./lib3270/win/win-configure.sh --64 (for 64 bits)
+	meson setup --cross-file /usr/lib/rpm/macros.d/meson-mingw64-cross-file.txt .build
+	meson compile -C .build
 	```
 
-4. Build
-
-	```shell
-	cd lib3270
-	make clean
-	make all
-	```
-### Windows native with MSYS2 (Using bundle script)
-
-1. Install and update MSYS2 
-
-	* Download and install [msys2](https://www.msys2.org/)
-	* Update msys:
-	
-	```shell
-	pacman -Syu
-	```
-	Afther this close and reopen mingw shell.
-
-2. Get lib3270 sources from git using the mingw shell
-
-	```shell
-	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
-	```
-
-3. Run bundle script
-
-	```shell
-	cd lib3270
-	./win/bundle.msys --pre-reqs --build
-	```
-
-### Windows native with MSYS2 (Manual)
+### Windows native with MSYS2
 
 1. Install and update MSYS2 
 
@@ -130,7 +102,15 @@ You can download installation package for supported linux distributions in [Open
 3. Install devel packages using pacman on mingw shell
 
 	```shell
-	pacman -S --needed zip dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool
+	pacman -S \
+		dos2unix \
+		mingw-w64-x86_64-gcc \
+		mingw-w64-x86_64-meson \
+		mingw-w64-x86_64-iconv \
+		pkgconf \
+		mingw-w64-x86_64-gettext \
+		gettext-devel \
+		mingw-w64-x86_64-openssl
 	```
 
 	Afther this close and reopen mingw shell.
@@ -141,18 +121,10 @@ You can download installation package for supported linux distributions in [Open
 	git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
 	```
 
-5. Build library using the mingw shell
+5. Build with packman
 
 	```shell
-	cd lib3270
-	./autogen.sh
-	make all
-	```
-
-6. Install
-
-	```shell
-	make install
+	makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
 	```
 
 ## Building for macOS
@@ -195,16 +167,3 @@ Uninstall
 	rm -fr "$(brew --cellar)/lib3270"
 	```
 	
-### Using jhbuild
-
-1. Install jhbuild
-
-	https://wiki.gnome.org/Projects/GTK/OSX/Building
-	
-2. build
-
-	```shell
-	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/lib3270/master/mac/lib3270.modules build lib3270
-	```
-
-

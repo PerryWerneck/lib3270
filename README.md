@@ -76,7 +76,7 @@ You can download installation package for supported linux distributions in [Open
 		mingw64-cross-gcc-c++
 	```
 
-3. Configure and build
+4. Configure and build
 
 	```shell
 	meson setup --cross-file /usr/lib/rpm/macros.d/meson-mingw64-cross-file.txt .build

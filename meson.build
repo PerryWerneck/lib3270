@@ -522,24 +522,6 @@ if host_machine.system() == 'windows'
     dlltool = find_program('dlltool', required: true)
   endif
 
-  # https://mesonbuild.com/Reference-manual_functions.html#custom_target
-  #custom_target(
-  #  'delaylib',
-  #  depends: dynamic,
-  #  build_by_default: true,
-  #  command: [ 
-  #    dlltool,
-  #      '--input-def','lib3270.def',
-  #      '--dllname','lib3270.dll',
-  #      '--kill-at',
-  #      '--output-lib','lib3270.delayed.a' 
-  #    ],
-  #  output: 'lib3270.delayed.a',
-  #  install: true,
-  #  install_tag: 'devel',
-  #  install_dir: get_option('libdir')
-  #)
-
   static = static_library(
     '3270', 
     config_src + lib_src,
@@ -549,6 +531,28 @@ if host_machine.system() == 'windows'
     dependencies: lib_deps,
     include_directories: includes_dir
   )
+
+  # https://mesonbuild.com/Reference-manual_functions.html#custom_target
+  delayed_library = declare_dependency(
+    link_with : custom_target(
+      'delaylib',
+      depends: dynamic,
+      build_by_default: true,
+      command: [ 
+        dlltool,
+          '--input-def','lib3270.def',
+          '--dllname','lib3270.dll',
+          '--kill-at',
+          '--output-lib','lib3270.delayed.a' 
+        ],
+      output: 'lib3270.delayed.a',
+      install: true,
+      install_tag: 'devel',
+      install_dir: get_option('libdir')
+    ),
+    include_directories : includes_dir,
+    variables: pkg_variables,
+  ) 
 
 elif host_machine.system() == 'darwin'
 

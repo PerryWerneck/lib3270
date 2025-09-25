@@ -345,8 +345,11 @@ pkg_variables = [
   'product_domain=@0@'.format(product_domain),
   'schema_path=@0@'.format(product_path),
 
-  'plugin_path=${libdir}/@0@/@1@.@2@/plugins/'.format(
-    product_name,pkg_major_version,pkg_minor_version,
+  'plugin_path=@0@/@0@/@1@.@2@/plugins/'.format(
+      get_option('libdir'),
+      product_name,
+      pkg_major_version,
+      pkg_minor_version,
   ),
   'module_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
 

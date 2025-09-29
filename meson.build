@@ -540,6 +540,12 @@ if host_machine.system() == 'windows'
     pic: true,
     c_args: [ '-DSTATIC_LIBRARY' ],
     install: true,
+    link_args: [
+      '-lwinhttp',
+      '-lws2_32',
+      '-lwtsapi32',
+      '-lcomdlg32',
+    ],
     dependencies: lib_deps,
     include_directories: includes_dir
   )

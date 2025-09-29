@@ -373,6 +373,13 @@ if host_machine.system() == 'windows'
   )
 
   pkg.generate(
+    name: meson.project_name() + '-delayed',
+    description: project_description,
+    variables: pkg_variables,
+    libraries: [ '-l3270.delayed' ]
+  )
+
+  pkg.generate(
     name: meson.project_name() + '-static',
     description: project_description,
     variables: pkg_variables,
@@ -386,6 +393,8 @@ if host_machine.system() == 'windows'
       '-lwtsapi32',
       '-lcomdlg32' 
     ]
+
+
   )
 
 #  pkg.generate(

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-12 11:05-0300\n"
+"POT-Creation-Date: 2025-09-29 13:29-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -1139,13 +1139,13 @@ msgstr "Divergência nos números de série da autoridade e emissor "
 msgid ""
 "The current candidate issuer certificate was rejected because its issuer "
 "name and serial number was present and did not match the authority key "
-"identifier of the current certificate. Only displayed when the -"
-"issuer_checks option is set."
+"identifier of the current certificate. Only displayed when the "
+"-issuer_checks option is set."
 msgstr ""
 "The current candidate issuer certificate was rejected because its issuer "
 "name and serial number was present and did not match the authority key "
-"identifier of the current certificate. Only displayed when the -"
-"issuer_checks option is set."
+"identifier of the current certificate. Only displayed when the "
+"-issuer_checks option is set."
 
 #: src/library/network/openssl/messages.c:401
 msgid "Key usage does not include certificate signing"
@@ -2192,132 +2192,33 @@ msgstr "Reconectar automaticamente"
 msgid "Automatically reconnect to the host if it ever disconnects"
 msgstr "Reconecta automaticamente caso o servidor desconecte"
 
-#: src/library/ctlr.c:171 src/library/ctlr.c:181 src/library/ctlr.c:192
-#: src/library/ctlr.c:203
-msgid "Invalid oversize"
-msgstr "Valor inválido para 'oversize'"
+#: src/library/connect.c:167
+msgid "Can't determine the TLS/SSL state"
+msgstr "Não foi possível determinar o estado TLS/SSL"
 
-#: src/library/ctlr.c:172
-msgid "The oversize values are invalid."
-msgstr "Os valores para 'oversize' não são válidos."
+#: src/library/connect.c:168
+msgid ""
+"The network module didn't set the TLS/SSL state message, this is not "
+"supposed to happen and can be a coding error"
+msgstr ""
+"O módulo de rede não definiu uma mensagem para o estado TLS/SSL, isso não "
+"deveria acontecer e pode ser um erro de codificação"
 
-#: src/library/ctlr.c:173
-#, c-format
-msgid "%dx%d is negative or zero"
-msgstr "%dx%d é negativa ou zero"
+#: src/library/options.c:42
+msgid "IBM S/390"
+msgstr "IBM S/390"
 
-#: src/library/ctlr.c:182
-msgid "The oversize values are too big."
-msgstr "Os valores do 'oversize' são muito grandes."
+#: src/library/options.c:48
+msgid "IBM AS/400"
+msgstr "IBM AS/400"
 
-#: src/library/ctlr.c:183
-#, c-format
-msgid "%dx%d screen size is bigger than the maximum size"
-msgstr "Tela %dx%d é maior que o tamanho máximo"
+#: src/library/options.c:54
+msgid "Other (TSO)"
+msgstr "Outro (TSO)"
 
-#: src/library/ctlr.c:193
-msgid "The oversize width is too small."
-msgstr "A largura do 'oversize' é muito pequena."
-
-#: src/library/ctlr.c:194
-#, c-format
-msgid "The width %d is less than model %d columns (%d)"
-msgstr "A largura %d é menor que a do modelo %d (%d)"
-
-#: src/library/ctlr.c:204
-msgid "The oversize height is too small."
-msgstr "A altura definida para 'oversize' é muito pequena."
-
-#: src/library/ctlr.c:205
-#, c-format
-msgid "The height %d is less than model %d rows (%d)"
-msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
-
-#. unknown 3270 command
-#: src/library/ctlr.c:402
-#, c-format
-msgid "Unknown 3270 Data Stream command: 0x%X"
-msgstr "Unknown 3270 Data Stream command: 0x%X"
-
-#: src/library/rpq.c:222
-msgid "RPQ Error"
-msgstr "Erro RPQ"
-
-#: src/library/rpq.c:223
-msgid "Unsupported RPQ term"
-msgstr "Unsupported RPQ term"
-
-#: src/library/rpq.c:224
-#, c-format
-msgid "RPQ term %d is unknown"
-msgstr "Termo RPM %d não foi reconhecido"
-
-#: src/library/rpq.c:229
-#, c-format
-msgid "RPQ %s term omitted due to insufficient space"
-msgstr "Termo RPQ %s omitido por falta de espaço"
-
-#: src/library/rpq.c:338
-#, c-format
-msgid "RPQ %s term override ignored"
-msgstr "RPQ %s term override ignored"
-
-#: src/library/rpq.c:350
-#, c-format
-msgid "RPQ term \"%s\" is unrecognized"
-msgstr "Termo RPQ desconhecido: \"%s\" "
-
-#: src/library/rpq.c:403 src/library/rpq.c:412
-msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
-msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
-
-#: src/library/rpq.c:424
-msgid "RPQ: Unable to determine workstation local time"
-msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
-
-#: src/library/rpq.c:434 src/library/rpq.c:444
-msgid "RPQ: Unable to determine workstation UTC time"
-msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
-
-#: src/library/rpq.c:465
-msgid "RPQ timezone exceeds 12 hour UTC offset"
-msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
-
-#: src/library/rpq.c:520
-msgid "RPQ USER term has non-hex character"
-msgstr "Termo RPQ USER tem caractere não hexadecimal"
-
-#: src/library/rpq.c:526
-#, c-format
-msgid "RPQ USER term truncated after %d bytes"
-msgstr "Termo RPQ USER truncado depois de %d bytes"
-
-#: src/library/rpq.c:545
-msgid "RPQ USER term has odd number of hex digits"
-msgstr "RPQ USER term has odd number of hex digits"
-
-#: src/library/rpq.c:570
-#, c-format
-msgid "RPQ USER term truncated after %d characters"
-msgstr "Termo RPQ USER truncado depois de %d caracteres"
-
-#: src/library/rpq.c:642 src/library/rpq.c:712
-#, c-format
-msgid "RPQ ADDRESS term has unrecognized family %u"
-msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
-
-#: src/library/rpq.c:650 src/library/rpq.c:679 src/library/rpq.c:719
-msgid "RPQ ADDRESS term incomplete due to space limit"
-msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
-
-#: src/library/rpq.c:655
-#, c-format
-msgid "RPQ: can't resolve '%s': %s"
-msgstr "RPQ: Não foi possível resolver '%s': %s"
-
-#: src/library/rpq.c:668
-msgid "RPQ: gethostbyname error"
-msgstr "RPQ: Erro em gethostbyname"
+#: src/library/options.c:60
+msgid "Other (VM/CMS)"
+msgstr "Outro (VM/CMS)"
 
 #: src/library/session.c:164
 msgid "Can't print"
@@ -2457,17 +2358,57 @@ msgstr "Saindo"
 msgid "Charset"
 msgstr "Tabela de caracteres"
 
-#: src/library/connect.c:167
-msgid "Can't determine the TLS/SSL state"
-msgstr "Não foi possível determinar o estado TLS/SSL"
+#: src/library/util.c:270
+#, c-format
+msgid "The system error was '%s' (rc=%d)"
+msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
-#: src/library/connect.c:168
-msgid ""
-"The network module didn't set the TLS/SSL state message, this is not "
-"supposed to happen and can be a coding error"
-msgstr ""
-"O módulo de rede não definiu uma mensagem para o estado TLS/SSL, isso não "
-"deveria acontecer e pode ser um erro de codificação"
+#: src/library/ctlr.c:171 src/library/ctlr.c:181 src/library/ctlr.c:192
+#: src/library/ctlr.c:203
+msgid "Invalid oversize"
+msgstr "Valor inválido para 'oversize'"
+
+#: src/library/ctlr.c:172
+msgid "The oversize values are invalid."
+msgstr "Os valores para 'oversize' não são válidos."
+
+#: src/library/ctlr.c:173
+#, c-format
+msgid "%dx%d is negative or zero"
+msgstr "%dx%d é negativa ou zero"
+
+#: src/library/ctlr.c:182
+msgid "The oversize values are too big."
+msgstr "Os valores do 'oversize' são muito grandes."
+
+#: src/library/ctlr.c:183
+#, c-format
+msgid "%dx%d screen size is bigger than the maximum size"
+msgstr "Tela %dx%d é maior que o tamanho máximo"
+
+#: src/library/ctlr.c:193
+msgid "The oversize width is too small."
+msgstr "A largura do 'oversize' é muito pequena."
+
+#: src/library/ctlr.c:194
+#, c-format
+msgid "The width %d is less than model %d columns (%d)"
+msgstr "A largura %d é menor que a do modelo %d (%d)"
+
+#: src/library/ctlr.c:204
+msgid "The oversize height is too small."
+msgstr "A altura definida para 'oversize' é muito pequena."
+
+#: src/library/ctlr.c:205
+#, c-format
+msgid "The height %d is less than model %d rows (%d)"
+msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
+
+#. unknown 3270 command
+#: src/library/ctlr.c:402
+#, c-format
+msgid "Unknown 3270 Data Stream command: 0x%X"
+msgstr "Unknown 3270 Data Stream command: 0x%X"
 
 #: src/library/paste.c:373
 msgid "Action failed"
@@ -2485,26 +2426,85 @@ msgstr "Teclado está bloqueado"
 msgid "Unexpected error"
 msgstr "Erro inesperado"
 
-#: src/library/util.c:270
+#: src/library/rpq.c:222
+msgid "RPQ Error"
+msgstr "Erro RPQ"
+
+#: src/library/rpq.c:223
+msgid "Unsupported RPQ term"
+msgstr "Unsupported RPQ term"
+
+#: src/library/rpq.c:224
 #, c-format
-msgid "The system error was '%s' (rc=%d)"
-msgstr "O erro do sistema foi \"%s\" (rc=%d)"
+msgid "RPQ term %d is unknown"
+msgstr "Termo RPM %d não foi reconhecido"
 
-#: src/library/options.c:42
-msgid "IBM S/390"
-msgstr "IBM S/390"
+#: src/library/rpq.c:229
+#, c-format
+msgid "RPQ %s term omitted due to insufficient space"
+msgstr "Termo RPQ %s omitido por falta de espaço"
 
-#: src/library/options.c:48
-msgid "IBM AS/400"
-msgstr "IBM AS/400"
+#: src/library/rpq.c:338
+#, c-format
+msgid "RPQ %s term override ignored"
+msgstr "RPQ %s term override ignored"
 
-#: src/library/options.c:54
-msgid "Other (TSO)"
-msgstr "Outro (TSO)"
+#: src/library/rpq.c:350
+#, c-format
+msgid "RPQ term \"%s\" is unrecognized"
+msgstr "Termo RPQ desconhecido: \"%s\" "
 
-#: src/library/options.c:60
-msgid "Other (VM/CMS)"
-msgstr "Outro (VM/CMS)"
+#: src/library/rpq.c:403 src/library/rpq.c:412
+msgid "RPQ TIMEZONE term is invalid - use +/-hhmm"
+msgstr "Termo RPQ TIMEZONE é invalido - usar +/-hhmm"
+
+#: src/library/rpq.c:424
+msgid "RPQ: Unable to determine workstation local time"
+msgstr "RPQ: Incapaz de determinar a hora local da estação de trabalho"
+
+#: src/library/rpq.c:434 src/library/rpq.c:444
+msgid "RPQ: Unable to determine workstation UTC time"
+msgstr "RPQ: Incapaz de determinar a hora UTC da estação de trabalho"
+
+#: src/library/rpq.c:465
+msgid "RPQ timezone exceeds 12 hour UTC offset"
+msgstr "RPQ timezone excede as 12 horas de deslocamento da UTC"
+
+#: src/library/rpq.c:520
+msgid "RPQ USER term has non-hex character"
+msgstr "Termo RPQ USER tem caractere não hexadecimal"
+
+#: src/library/rpq.c:526
+#, c-format
+msgid "RPQ USER term truncated after %d bytes"
+msgstr "Termo RPQ USER truncado depois de %d bytes"
+
+#: src/library/rpq.c:545
+msgid "RPQ USER term has odd number of hex digits"
+msgstr "RPQ USER term has odd number of hex digits"
+
+#: src/library/rpq.c:570
+#, c-format
+msgid "RPQ USER term truncated after %d characters"
+msgstr "Termo RPQ USER truncado depois de %d caracteres"
+
+#: src/library/rpq.c:642 src/library/rpq.c:712
+#, c-format
+msgid "RPQ ADDRESS term has unrecognized family %u"
+msgstr "Família %u não reconhecida no termo RPQ ADDRESS"
+
+#: src/library/rpq.c:650 src/library/rpq.c:679 src/library/rpq.c:719
+msgid "RPQ ADDRESS term incomplete due to space limit"
+msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
+
+#: src/library/rpq.c:655
+#, c-format
+msgid "RPQ: can't resolve '%s': %s"
+msgstr "RPQ: Não foi possível resolver '%s': %s"
+
+#: src/library/rpq.c:668
+msgid "RPQ: gethostbyname error"
+msgstr "RPQ: Erro em gethostbyname"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."

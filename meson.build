@@ -534,21 +534,25 @@ if host_machine.system() == 'windows'
     dlltool = find_program('dlltool', required: true)
   endif
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY' ],
-    install: true,
+  static_library = declare_dependency(
+      link_with : static_library(
+      '3270', 
+      config_src + lib_src,
+      pic: true,
+      c_args: [ '-DSTATIC_LIBRARY' ],
+      install: true,
+      dependencies: lib_deps,
+      include_directories: includes_dir
+    ),
+    include_directories : includes_dir,
+    variables: pkg_variables,
     link_args: [
       '-lwinhttp',
       '-lws2_32',
       '-lwtsapi32',
       '-lcomdlg32',
     ],
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+  ) 
 
   # https://mesonbuild.com/Reference-manual_functions.html#custom_target
   delayed_library = declare_dependency(
@@ -585,15 +589,19 @@ elif host_machine.system() == 'darwin'
     include_directories: includes_dir
   )
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY' ],
-    install: true,
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+  static_library = declare_dependency(
+      link_with : static_library(
+      '3270', 
+      config_src + lib_src,
+      pic: true,
+      c_args: [ '-DSTATIC_LIBRARY' ],
+      install: true,
+      dependencies: lib_deps,
+      include_directories: includes_dir
+    ),
+    include_directories : includes_dir,
+    variables: pkg_variables,
+  ) 
 
 else
 
@@ -609,26 +617,24 @@ else
     include_directories: includes_dir
   )
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-    install: true,
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+  static_library = declare_dependency(
+    link_with : static_library(
+      '3270', 
+      config_src + lib_src,
+      pic: true,
+      c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+      install: true,
+      dependencies: lib_deps,
+      include_directories: includes_dir
+    ),
+  include_directories : includes_dir,
+  variables: pkg_variables,
+  ) 
 
 endif
 
 dynamic_library = declare_dependency(
   link_with : dynamic,
-  include_directories : includes_dir,
-  variables: pkg_variables,
-) 
-
-static_library = declare_dependency(
-  link_with : static,
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 

@@ -353,7 +353,8 @@ pkg_variables = [
   'library_name=lib3270',
   'product_id=br.app.@0@'.format(product_name),
 
-  'plugin_path=@0@/@0@/@1@.@2@/plugins/'.format(
+  'plugin_path=@0@/@1@/@2@/@3@.@4@/plugins/'.format(
+      get_option('prefix'),
       get_option('libdir'),
       product_name,
       pkg_major_version,
@@ -373,6 +374,13 @@ if host_machine.system() == 'windows'
   )
 
   pkg.generate(
+    name: meson.project_name() + '-delayed',
+    description: project_description,
+    variables: pkg_variables,
+    libraries: [ '-l3270.delayed' ]
+  )
+
+  pkg.generate(
     name: meson.project_name() + '-static',
     description: project_description,
     variables: pkg_variables,
@@ -386,6 +394,8 @@ if host_machine.system() == 'windows'
       '-lwtsapi32',
       '-lcomdlg32' 
     ]
+
+
   )
 
 #  pkg.generate(
@@ -525,33 +535,47 @@ if host_machine.system() == 'windows'
     dlltool = find_program('dlltool', required: true)
   endif
 
-  # https://mesonbuild.com/Reference-manual_functions.html#custom_target
-  #custom_target(
-  #  'delaylib',
-  #  depends: dynamic,
-  #  build_by_default: true,
-  #  command: [ 
-  #    dlltool,
-  #      '--input-def','lib3270.def',
-  #      '--dllname','lib3270.dll',
-  #      '--kill-at',
-  #      '--output-lib','lib3270.delayed.a' 
-  #    ],
-  #  output: 'lib3270.delayed.a',
-  #  install: true,
-  #  install_tag: 'devel',
-  #  install_dir: get_option('libdir')
-  #)
+  static_library = declare_dependency(
+      link_with : static_library(
+      '3270', 
+      config_src + lib_src,
+      pic: true,
+      c_args: [ '-DSTATIC_LIBRARY' ],
+      install: true,
+      dependencies: lib_deps,
+      include_directories: includes_dir
+    ),
+    include_directories : includes_dir,
+    variables: pkg_variables,
+    link_args: [
+      '-lwinhttp',
+      '-lws2_32',
+      '-lwtsapi32',
+      '-lcomdlg32',
+    ],
+  ) 
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY' ],
-    install: true,
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+  # https://mesonbuild.com/Reference-manual_functions.html#custom_target
+  delayed_library = declare_dependency(
+    link_with : custom_target(
+      'delaylib',
+      depends: dynamic,
+      build_by_default: true,
+      command: [ 
+        dlltool,
+          '--input-def','lib3270.def',
+          '--dllname','lib3270.dll',
+          '--kill-at',
+          '--output-lib','lib3270.delayed.a' 
+        ],
+      output: 'lib3270.delayed.a',
+      install: true,
+      install_tag: 'devel',
+      install_dir: get_option('libdir')
+    ),
+    include_directories : includes_dir,
+    variables: pkg_variables,
+  ) 
 
 elif host_machine.system() == 'darwin'
 
@@ -566,15 +590,19 @@ elif host_machine.system() == 'darwin'
     include_directories: includes_dir
   )
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY' ],
-    install: true,
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+  static_library = declare_dependency(
+      link_with : static_library(
+      '3270', 
+      config_src + lib_src,
+      pic: true,
+      c_args: [ '-DSTATIC_LIBRARY' ],
+      install: true,
+      dependencies: lib_deps,
+      include_directories: includes_dir
+    ),
+    include_directories : includes_dir,
+    variables: pkg_variables,
+  ) 
 
 else
 
@@ -590,26 +618,24 @@ else
     include_directories: includes_dir
   )
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-    install: true,
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+  static_library = declare_dependency(
+    link_with : static_library(
+      '3270', 
+      config_src + lib_src,
+      pic: true,
+      c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+      install: true,
+      dependencies: lib_deps,
+      include_directories: includes_dir
+    ),
+  include_directories : includes_dir,
+  variables: pkg_variables,
+  ) 
 
 endif
 
 dynamic_library = declare_dependency(
   link_with : dynamic,
-  include_directories : includes_dir,
-  variables: pkg_variables,
-) 
-
-static_library = declare_dependency(
-  link_with : static,
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 

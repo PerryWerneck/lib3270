@@ -57,8 +57,8 @@ jobs:
 
     - name: Install Packages
       run: |
-        echo 'deb https://download.opensuse.org/repositories/home:/PerryWerneck:/udjat/xUbuntu_24.04/ /' | sudo tee /etc/apt/sources.list.d/home:PerryWerneck:udjat.list
-        curl -fsSL https://download.opensuse.org/repositories/home:/PerryWerneck:/udjat/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_PerryWerneck_udjat.gpg > /dev/null
+        echo 'deb http://download.opensuse.org/repositories/home:/PerryWerneck:/pw3270/xUbuntu_24.04/ /' | sudo tee /etc/apt/sources.list.d/home:PerryWerneck:pw3270.list
+        curl -fsSL https://download.opensuse.org/repositories/home:PerryWerneck:pw3270/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_PerryWerneck_pw3270.gpg > /dev/null
         sudo apt-get update
         sudo apt-get install --yes meson pkg-config python3-dev pkg-config gettext libssl-dev libcurl4-openssl-dev libglib2.0-dev
 

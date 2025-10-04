@@ -353,7 +353,8 @@ pkg_variables = [
   'library_name=lib3270',
   'product_id=br.app.@0@'.format(product_name),
 
-  'plugin_path=@0@/@0@/@1@.@2@/plugins/'.format(
+  'plugin_path=@0@/@1@/@2@/@3@.@4@/plugins/'.format(
+      get_option('prefix'),
       get_option('libdir'),
       product_name,
       pkg_major_version,

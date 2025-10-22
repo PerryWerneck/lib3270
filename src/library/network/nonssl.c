@@ -30,7 +30,7 @@
  #include <private/network.h>
  #include <private/intl.h>
  #include <private/trace.h>
-#include <lib3270/popup.h>
+ #include <lib3270/popup.h>
  
  int nonssl_start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
@@ -50,12 +50,11 @@
 
  }
 
- int nonssl_setup(H3270 *hSession, void (*complete)(H3270 *hSession)) {
+ int nonssl_setup(H3270 *hSession) {
 
 	hSession->ssl.host = 0;
 	hSession->ssl.start = nonssl_start_tls;
 	trace_dsn(hSession,"TLS/SSL is disabled\n");
-	complete(hSession);
 	
 	return 0;
  }

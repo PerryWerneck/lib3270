@@ -429,6 +429,10 @@
 		int 					error;
 		LIB3270_SSL_MESSAGE		message;				///< @brief SSL message for connection.
 		unsigned short			crl_preferred_protocol;	///< @brief The CRL Preferred protocol.
+
+		// Function to start TLS/SSL connection.
+		int (*start)(H3270 *hSession, void (*complete)(H3270 *hSession));
+		
 	} ssl;
 
 	/// @brief Event Listeners.

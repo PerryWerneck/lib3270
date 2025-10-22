@@ -20,7 +20,7 @@
 project(
 	'lib3270', 
 	['c'],
-	version: '5.6.0',
+	version: '6.0.0',
 	license: 'GPL-3.0-or-later',
 )
 
@@ -285,6 +285,7 @@ lib_src += [
   'src/library/selection/selection.c',
   'src/library/network/state.c',
   'src/library/network/tools.c',
+  'src/library/network/nonssl.c',
   'src/library/os/' + host_machine.system() + '/resolv.c',
   'src/library/os/' + host_machine.system() + '/connect.c',
   'src/library/os/' + host_machine.system() + '/insecure.c',
@@ -484,12 +485,6 @@ if libssl.found()
     'src/library/tls/openssl/errors.c',
     'src/library/tls/openssl/messages.c',
     'src/library/tls/openssl/fqdn.c',
-  ]
-
-else 
-
-  lib_src += [
-    'src/library/tls/unavailable.c',
   ]
 
 endif

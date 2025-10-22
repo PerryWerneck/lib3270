@@ -47,6 +47,7 @@
  #include <pthread.h>
  #include <openssl/ssl.h>
  #include <openssl/err.h>
+ #include <openssl/opensslv.h>
 
  /// @brief Connection context for OpenSSL connections.
  typedef struct {
@@ -85,7 +86,16 @@
 	return 0;
  }
 
- LIB3270_INTERNAL int start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
+ LIB3270_INTERNAL int openssl_setup(H3270 *hSession) {
+
+	hSession->ssl.host = 1;
+	hSession->ssl.start = openssl_start_tls;
+	trace_dsn(hSession,"TLS/SSL is enabled using OpenSSL " OPENSSL_VERSION_STR "\n");
+
+	return 0;
+ }
+
+ LIB3270_INTERNAL int openssl_start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
 	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);

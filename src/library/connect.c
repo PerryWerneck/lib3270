@@ -47,6 +47,11 @@
 #include <private/util.h>
 
 #include <private/network.h>
+#include <private/nonssl.h>
+
+#ifdef HAVE_OPENSSL
+	#include <private/openssl.h>
+#endif // HAVE_OPENSSL
 
 #include <uriparser/Uri.h>
 
@@ -155,42 +160,55 @@
 			seconds
 	);
 
-	if(!strcasecmp(scheme,"tn3270s")) {
+	// Setup connection
+	{
+		int rc = 0;
 
-		// Use SSL
-		hSession->ssl.host = 1;
-		trace_dsn(hSession,"TLS/SSL is enabled\n");
+		if(!strcasecmp(scheme,"tn3270")) {
 
-	} else if(!strcasecmp(scheme,"tn3270")) {
+			// Dont use SSL
+			nonssl_setup(hSession);
 
-		// Dont use SSL
-		hSession->ssl.host = 0;
-		trace_dsn(hSession,"TLS/SSL is disabled\n");
+	#ifdef HAVE_OPENSSL
+		} else if(!strcasecmp(scheme,"tn3270s")) {
 
-	} else {
+			rc = openssl_setup(hSession);
 
-		static const LIB3270_POPUP failed = {
-			.name		= "invalid-scheme",
-			.type		= LIB3270_NOTIFY_CRITICAL,
-			.title		= N_("Connection error"),
-			.summary	= N_("Invalid connection scheme"),
-			.body		= "",
-			.label		= N_("OK")
-		};
+	#endif // HAVE_OPENSSL
+		} else {
 
-		lib3270_autoptr(LIB3270_POPUP) popup =
-		    lib3270_popup_clone_printf(
-		        &failed,
-				_("Unsupported scheme '%s' in URL %s"),
-		        scheme,
-		        hSession->connection.url
-		    );
+			rc = ENOTSUP;
+		
+		}
 
-		lib3270_popup(hSession, popup, 0);
-		connection_close(hSession,ENOTSUP);
-		return ENOTSUP;
+		if(rc) {
+			
+			static const LIB3270_POPUP failed = {
+				.name		= "scheme-init-failed",
+				.type		= LIB3270_NOTIFY_CRITICAL,
+				.title		= N_("Connection error"),
+				.summary	= N_("Connection scheme initialization failed"),
+				.body		= "",
+				.label		= N_("OK")
+			};
+
+			lib3270_autoptr(LIB3270_POPUP) popup =
+				lib3270_popup_clone_printf(
+					&failed,
+					_("Initialization scheme '%s' in URL %s failed with error '%s'"),
+					scheme,
+					hSession->connection.url,
+					strerror(rc)
+				);
+
+			lib3270_popup(hSession, popup, 0);
+			connection_close(hSession,rc);
+			return rc;
+
+		}
 
 	}
+
 
 	hSession->cbk.cursor(hSession,LIB3270_POINTER_LOCKED & 0x03);
 	notify_new_state(hSession, LIB3270_STATE_RESOLVING, 1);
@@ -289,7 +307,7 @@
 
 	if(hSession->ssl.host) {
 
-		start_tls(hSession,connection_complete);
+		hSession->ssl.start(hSession,connection_complete);
 
 	} else {
 

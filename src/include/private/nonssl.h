@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2025 Banco do Brasil S.A.
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,33 +17,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * Contatos:
- *
- * perry.werneck@gmail.com      (Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com     (Erico Mascarenhas Mendonça)
- *
- */
+ #pragma once
 
  #include <config.h>
- #include <private/session.h>
+ #include <lib3270/defs.h>
  #include <private/network.h>
- #include <private/intl.h>
 
- LIB3270_INTERNAL int start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
+ /// @brief Setup non SSL session
+ /// @param hSession The TN3270 session.
+ /// @return 0 if suceeded, non zero if failed
+ /// @retval ENOTSUP OpenSSL support is not available.
+ LIB3270_INTERNAL int nonssl_setup(H3270 *hSession);
 
-	LIB3270_POPUP popup = {
-		.name		= "tls-not-available",
-		.type		= LIB3270_NOTIFY_NO_TLS,
-		.title		= _("Connection error"),
-		.summary	= _("Unable to activate TLS/SSL"),
-		.body		= _("The lib3270 library was not built with TLS/SSL support."),
-		.label		= _("Ok")
-	};
+ /// @brief Start TLS/SSL negotiation on the given session.
+ /// @param hSession The TN3270 session.
+ /// @param complete Callback to be called when negotiation is complete.
+ /// @return 0 if suceeded, non zero if failed
+ LIB3270_INTERNAL int nonssl_start_tls(H3270 *hSession, void (*complete)(H3270 *hSession));
 
-	connection_close(hSession,ENOTSUP);
-	lib3270_popup(hSession, &popup, 0);
-
-	return errno = ENOTSUP;
-
- }

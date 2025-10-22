@@ -48,6 +48,18 @@
  LIB3270_INTERNAL pthread_mutex_t ssl_guard;
  LIB3270_INTERNAL int e_ctx_ssl_exdata_index;
 
+ /// @brief Setup OpenSSL in the session
+ /// @param hSession The TN3270 session.
+ /// @return 0 if suceeded, non zero if failed
+ /// @retval ENOTSUP OpenSSL support is not available.
+ LIB3270_INTERNAL int openssl_setup(H3270 *hSession);
+
+ /// @brief Start TLS/SSL negotiation on the given session.
+ /// @param hSession The TN3270 session.
+ /// @param complete Callback to be called when negotiation is complete.
+ /// @return 0 if suceeded, non zero if failed
+ LIB3270_INTERNAL int openssl_start_tls(H3270 *hSession, void (*complete)(H3270 *hSession));
+
  LIB3270_INTERNAL SSL_CTX * openssl_context(H3270 *hSession);
 
  /// @brief Get string with the openssl error stack.

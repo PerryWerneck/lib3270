@@ -1031,7 +1031,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 
 	// Make sure the option is FOLLOWS.
 	if (len < 2 || sbbuf[1] != TLS_FOLLOWS) {
-		/* Trace the junk. */
+		// Trace the junk.
 		trace_dsn(hSession,"%s ? %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 		popup_an_error(hSession,_( "TLS negotiation failure"));
 		trace_dsn(hSession,"SENT disconnect\n");
@@ -1043,7 +1043,7 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 	trace_dsn(hSession,"%s FOLLOWS %s\n", opt(TELOPT_STARTTLS), cmd(SE));
 
 	hSession->ssl.host = 1;	// Set host type as SSL.
-	start_tls(hSession,tls_complete);
+	hSession->ssl.start(hSession,tls_complete);
 
 }
 

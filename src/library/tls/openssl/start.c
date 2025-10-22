@@ -98,6 +98,8 @@
  LIB3270_INTERNAL int openssl_start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
 	memset(&hSession->ssl.message,0,sizeof(hSession->ssl.message));
+
+	hSession->ssl.host = 1;	// Set host type as SSL.
 	set_ssl_state(hSession,LIB3270_SSL_NEGOTIATING);
 
 	Context *context = lib3270_new(Context);

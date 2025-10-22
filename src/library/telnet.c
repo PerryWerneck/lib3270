@@ -1041,8 +1041,6 @@ static void continue_tls(H3270 *hSession, unsigned char *sbbuf, int len) {
 
 	// Trace what we got.
 	trace_dsn(hSession,"%s FOLLOWS %s\n", opt(TELOPT_STARTTLS), cmd(SE));
-
-	hSession->ssl.host = 1;	// Set host type as SSL.
 	hSession->ssl.start(hSession,tls_complete);
 
 }

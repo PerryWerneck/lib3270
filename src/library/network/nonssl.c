@@ -31,7 +31,13 @@
  #include <private/intl.h>
  #include <private/trace.h>
  #include <lib3270/popup.h>
- 
+
+ #ifdef HAVE_OPENSSL
+
+ #include <private/openssl.h>
+
+ #else
+
  int nonssl_start_tls(H3270 *hSession, void (*complete)(H3270 *hSession)) {
 
 	LIB3270_POPUP popup = {
@@ -49,11 +55,17 @@
 	return errno = ENOTSUP;
 
  }
-
+ 
+ #endif // HAVE_OPENSSL		
+ 
  int nonssl_setup(H3270 *hSession) {
 
 	hSession->ssl.host = 0;
+#ifdef HAVE_OPENSSL
+	hSession->ssl.start = openssl_start_tls;
+#else
 	hSession->ssl.start = nonssl_start_tls;
+#endif // HAVE_OPENSSL
 	trace_dsn(hSession,"TLS/SSL is disabled\n");
 	
 	return 0;

@@ -117,6 +117,12 @@ void lib3270_session_free(H3270 *h) {
 		h->lu.names = NULL;
 	}
 
+	// Finalize charset
+	if(h->charset.context && h->charset.finalize) {
+		h->charset.finalize(h, h->charset.context);
+		h->charset.context = NULL;
+	}
+
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;
 

@@ -81,7 +81,7 @@ LIB3270_EXPORT void lib3270_reset_charset(H3270 *hSession, const char * host, co
 	}
 
 	hSession->charset.cgcsgid = cgcsgid;
-	lib3270_set_iso_8859_1_charset(hSession);
+	set_iso_8859_1_charset(hSession);
 
 }
 

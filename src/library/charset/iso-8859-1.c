@@ -22,11 +22,18 @@
 #include <config.h>
 #include <string.h>
 #include <lib3270/memory.h>
+#include <lib3270/charset.h>
 #include <private/session.h>
 #include <private/charset.h>
 #include <private/trace.h>
 #include <X11keysym.h>
 #include <stdint.h>
+
+struct _lib3270_charset_context {
+	unsigned short ebc2asc[256];
+	unsigned short asc2ebc[256];
+	unsigned short asc2uc[256];
+};
 
 static const unsigned short ebc2asc[256] = {
 	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 00
@@ -62,6 +69,43 @@ static const unsigned short ebc2asc[256] = {
 	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,	// f0
 	0x38, 0x39, 0xb3, 0xdb, 0xdc, 0xd9, 0xda, 0x20	// f8
 };
+
+/*
+const char * ebc2iso8859[256] = {
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 00
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 08
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 10
+	"\x20", "\x20", "\x20", "\x20", "\x2a", "\x20", "\x3b", "\x20",	// 18
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 20
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 28
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 30
+	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 38
+	"\x20", "\x20", "\xe2", "\xe4", "\xe0", "\xe1", "\xe3", "\xe5",	// 40
+	"\xe7", "\xf1", "\xa2", "\x2e", "\x3c", "\x28", "\x2b", "\x7c",	// 48
+	"\x26", "\xe9", "\xea", "\xeb", "\xe8", "\xed", "\xee", "\xef",	// 50
+	"\xec", "\xdf", "\x21", "\x24", "\x2a", "\x29", "\x3b", "\xac",	// 58
+	"\x2d", "\x2f", "\xc2", "\xc4", "\xc0", "\xc1", "\xc3", "\xc5",	// 60
+	"\xc7", "\xd1", "\xa6", "\x2c", "\x25", "\x5f", "\x3e", "\x3f",	// 68
+	"\xf8", "\xc9", "\xca", "\xcb", "\xc8", "\xcd", "\xce", "\xcf",	// 70
+	"\xcc", "\x60", "\x3a", "\x23", "\x40", "\x27", "\x3d", "\x22",	// 78
+	"\xd8", "\x61", "\x62", "\x63", "\x64", "\x65", "\x66", "\x67",	// 80
+	"\x68", "\x69", "\xab", "\xbb", "\xf0", "\xfd", "\xfe", "\xb1",	// 88
+	"\xb0", "\x6a", "\x6b", "\x6c", "\x6d", "\x6e", "\x6f", "\x70",	// 90
+	"\x71", "\x72", "\xaa", "\xba", "\xe6", "\xb8", "\xc6", "\xa4",	// 98
+	"\xb5", "\x7e", "\x73", "\x74", "\x75", "\x76", "\x77", "\x78",	// a0
+	"\x79", "\x7a", "\xa1", "\xbf", "\xd0", "\xdd", "\xde", "\xae",	// a8
+	"\x5e", "\xa3", "\xa5", "\xb7", "\xa9", "\xa7", "\xb6", "\xbc",	// b0
+	"\xbd", "\xbe", "\x5b", "\x5d", "\xaf", "\xa8", "\xb4", "\xd7",	// b8
+	"\x7b", "\x41", "\x42", "\x43", "\x44", "\x45", "\x46", "\x47",	// c0
+	"\x48", "\x49", "\xad", "\xf4", "\xf6", "\xf2", "\xf3", "\xf5",	// c8
+	"\x7d", "\x4a", "\x4b", "\x4c", "\x4d", "\x4e", "\x4f", "\x50",	// d0
+	"\x51", "\x52", "\xb9", "\xfb", "\xfc", "\xf9", "\xfa", "\xff",	// d8
+	"\x5c", "\xf7", "\x53", "\x54", "\x55", "\x56", "\x57", "\x58",	// e0
+	"\x59", "\x5a", "\xb2", "\xd4", "\xd6", "\xd2", "\xd3", "\xd5",	// e8
+	"\x30", "\x31", "\x32", "\x33", "\x34", "\x35", "\x36", "\x37",	// f0
+	"\x38", "\x39", "\xb3", "\xdb", "\xdc", "\xd9", "\xda", "\x20",	// f8
+};
+*/
 
 static const unsigned short asc2ebc[256] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// 00
@@ -131,9 +175,42 @@ static void copy_charset(const unsigned short *from, unsigned short *to) {
 		to[f+UT_OFFSET] = from[f];
 }
 
-LIB3270_INTERNAL int lib3270_set_iso_8859_1_charset(H3270 *hSession) {
+static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
+	lib3270_free(context);
+	session->charset.context = NULL;
+}
+
+static const unsigned short iso2ebc(H3270 *session, const char *asc) {
+
+}
+
+static const unsigned short iso2uc(H3270 *session, const char *asc) {
+
+}
+
+static const char * ebc2iso(H3270 *session, unsigned short ebc) {
+	
+}
+
+LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	int f;
+
+	hSession->charset.context = lib3270_new(struct _lib3270_charset_context);
+
+	hSession->charset.asc2ebc = iso2ebc;
+	hSession->charset.asc2uc = iso2uc;
+	hSession->charset.ebc2asc = ebc2iso;
+	hSession->charset.finalize = finalize;
+
+	printf("\n\n");
+	for(f = 0; f < 256; f++) {
+		if((f%8) == 0) {
+			printf("\t// %02x\n",f-8);
+		}
+		printf("\"\\x%02x\", ",ebc2asc[f]);
+	}
+	printf("\n\n");
 
 	if(!(hSession->charset.host && *hSession->charset.host)) {
 		lib3270_replace(hSession->charset.host,"us");
@@ -141,13 +218,13 @@ LIB3270_INTERNAL int lib3270_set_iso_8859_1_charset(H3270 *hSession) {
 
 	lib3270_replace(hSession->charset.display,"ISO-8859-1");
 
-	memcpy(hSession->charset.ebc2asc, ebc2asc, sizeof(hSession->charset.ebc2asc));
-	memcpy(hSession->charset.asc2ebc, asc2ebc, sizeof(hSession->charset.asc2ebc));
+	memcpy(hSession->charset.context->ebc2asc, ebc2asc, sizeof(hSession->charset.context->ebc2asc));
+	memcpy(hSession->charset.context->asc2ebc, asc2ebc, sizeof(hSession->charset.context->asc2ebc));
 
 	for(f=0; f<UT_OFFSET; f++)
-		hSession->charset.asc2uc[f] = f;
+		hSession->charset.context->asc2uc[f] = f;
 
-	copy_charset(asc2uc,hSession->charset.asc2uc);
+	copy_charset(asc2uc,hSession->charset.context->asc2uc);
 
 	for(f=0; internal_remaps[f].name != NULL; f++) {
 

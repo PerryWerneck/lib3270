@@ -30,7 +30,6 @@
  #include <lib3270.h>
  #include <lib3270/toggle.h>
  #include <lib3270/session.h>
- #include <lib3270/charset.h>
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
  #include <sys/time.h>
@@ -52,7 +51,8 @@
 
  typedef struct _lib3270_timer_context LIB3270_TIMER_CONTEXT;
  typedef struct _lib3270_poll_context LIB3270_POLL_CONTEXT;
-
+ typedef struct _lib3270_charset_context LIB3270_CHARSET_CONTEXT;
+ 
  struct lib3270_text {
 	unsigned char  chr;		///< @brief ASCII character code
 	unsigned short attr;	///< @brief Converted character attribute (color & etc)
@@ -68,6 +68,22 @@
 	unsigned char cs;		///< @brief character set (GE flag, or 0..2)
 	unsigned char ic;		///< @brief input control (DBCS)
 	unsigned char db;		///< @brief DBCS state
+ };
+
+ struct lib3270_charset {
+
+	char			* host;			///< @brief Host charset name
+	char			* display;		///< @brief Display charset name
+	unsigned long	  cgcsgid;		///< @brief CGCSGID code
+
+ 	LIB3270_CHARSET_CONTEXT * context;
+
+	const unsigned short (*asc2ebc)(H3270 *session, const char *asc);
+	const unsigned short (*asc2uc)(H3270 *session, const char *asc);
+	const char * (*ebc2asc)(H3270 *session, unsigned short ebc);
+
+	void (*finalize)(H3270 *session, LIB3270_CHARSET_CONTEXT * context);
+
  };
 
  struct _h3270 {

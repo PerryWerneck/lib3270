@@ -26,18 +26,6 @@ extern "C" {
 #define LIB3270_DEFAULT_CGEN			0x02b90000
 #define LIB3270_DEFAULT_CSET			0x00000025
 
-struct lib3270_charset {
-	char			* host;
-	char			* display;
-	unsigned long	  cgcsgid;
-
-	// Translation tables
-	unsigned short		  ebc2asc[256];
-	unsigned short 		  asc2ebc[256];
-	unsigned short		  asc2uc[256];
-
-};
-
 typedef enum {
 	CS_ONLY,
 	FT_ONLY,

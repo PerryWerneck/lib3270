@@ -59,12 +59,7 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name) {
 		lib3270_replace(hSession->charset.host, "us");
 	}
 
-	if(hSession->charset.context && hSession->charset.finalize) {
-		hSession->charset.finalize(hSession, hSession->charset.context);
-		hSession->charset.context = NULL;
-	}
-
-	return set_iso_8859_1_charset(hSession);
+	return reload_charset_tables(hSession);
 
 }
 
@@ -83,12 +78,7 @@ LIB3270_EXPORT int lib3270_set_display_charset(H3270 *hSession, const char *name
 		return errno = ENOENT;
 	}
 
-	if(hSession->charset.context && hSession->charset.finalize) {
-		hSession->charset.finalize(hSession, hSession->charset.context);
-		hSession->charset.context = NULL;
-	}
-
-	return set_iso_8859_1_charset(hSession);
+	return reload_charset_tables(hSession);
 
 }
 

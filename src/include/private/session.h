@@ -79,9 +79,12 @@
  	LIB3270_CHARSET_CONTEXT * context;
 
 	const unsigned char (*asc2ebc)(const LIB3270_CHARSET_CONTEXT *context, const char *asc);
+
+	// FIXME: Is this used?
 	const unsigned short (*asc2uc)(const LIB3270_CHARSET_CONTEXT *context, const char *asc);
+	
 	const char * (*ebc2asc)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
-	int (*remap)(H3270 *session, unsigned short ebc, unsigned short iso, int scope, unsigned char one_way);
+	int (*remap)(H3270 *session, unsigned short ebc, const char *iso, int scope, unsigned char one_way);
 	void (*finalize)(H3270 *session, LIB3270_CHARSET_CONTEXT * context);
 
  };

@@ -199,8 +199,7 @@ static unsigned short calc_attrs(H3270 *session, int baddr, int fa_addr, int fa)
 		a = get_color_pair(fg, bg);
 	}
 
-	/* Compute the display attributes. */
-
+	// Compute the display attributes.
 	if (session->ea_buf[baddr].gr)
 		gr = session->ea_buf[baddr].gr;
 	else if (session->ea_buf[fa_addr].gr)

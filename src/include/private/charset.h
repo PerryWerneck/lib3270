@@ -43,3 +43,7 @@
  /// @retval EINVAL Unable to set iso-8859-1 charset.
  LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession);
 
+ /// @brief Reload charset tables.
+ /// @param hSession The session handle.
+ LIB3270_INTERNAL int reload_charset_tables(H3270 *hSession);
+

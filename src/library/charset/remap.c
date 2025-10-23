@@ -35,7 +35,7 @@
 #include <string.h>
 #include <stdio.h>
 
-LIB3270_EXPORT int lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way) {
+LIB3270_EXPORT int lib3270_remap_char(H3270 *hSession, unsigned short ebc, const char *iso, lib3270_remap_scope scope, unsigned char one_way) {
 	if(hSession->charset.remap) {
 		return hSession->charset.remap(hSession, ebc, iso, scope, one_way);
 	}

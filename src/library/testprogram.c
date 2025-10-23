@@ -34,6 +34,8 @@
  #include <lib3270/contents.h>
  #include <lib3270/charset.h>
 
+ #include <private/session.h>
+
  static int test_charset(H3270 *hSession) {
 
 	//
@@ -42,6 +44,11 @@
 	{
 		const char * charset = lib3270_get_display_charset(hSession);
 		printf("Display charset is '%s'\n",charset);
+
+		{
+			auto ptr = ebc2asc(hSession,251);
+			printf("----> %s\n",ptr);
+		}
 
 		lib3270_testpattern(hSession);
 

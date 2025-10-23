@@ -30,51 +30,14 @@
 #include <stdint.h>
 
 struct _lib3270_charset_context {
-	char * ebc2asc[256];
+	size_t ebc2asc[256];			///< Offset of remmapped EBCDIC to ASCII strings.
 	unsigned char asc2ebc[256];
 	unsigned char asc2uc[256];
 
 	// Allways the last members
-	size_t len;
-	char *remaps;
+	size_t buflen;
+	char *buffer;
 };
-
-/*
-static const unsigned short ebc2asc[256] = {
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 00
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 08
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 10
-	0x20, 0x20, 0x20, 0x20, 0x2a, 0x20, 0x3b, 0x20,	// 18
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 20
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 28
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 30
-	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 38
-	0x20, 0x20, 0xe2, 0xe4, 0xe0, 0xe1, 0xe3, 0xe5,	// 40
-	0xe7, 0xf1, 0xa2, 0x2e, 0x3c, 0x28, 0x2b, 0x7c,	// 48
-	0x26, 0xe9, 0xea, 0xeb, 0xe8, 0xed, 0xee, 0xef,	// 50
-	0xec, 0xdf, 0x21, 0x24, 0x2a, 0x29, 0x3b, 0xac,	// 58
-	0x2d, 0x2f, 0xc2, 0xc4, 0xc0, 0xc1, 0xc3, 0xc5,	// 60
-	0xc7, 0xd1, 0xa6, 0x2c, 0x25, 0x5f, 0x3e, 0x3f,	// 68
-	0xf8, 0xc9, 0xca, 0xcb, 0xc8, 0xcd, 0xce, 0xcf,	// 70
-	0xcc, 0x60, 0x3a, 0x23, 0x40, 0x27, 0x3d, 0x22,	// 78
-	0xd8, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,	// 80
-	0x68, 0x69, 0xab, 0xbb, 0xf0, 0xfd, 0xfe, 0xb1,	// 88
-	0xb0, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70,	// 90
-	0x71, 0x72, 0xaa, 0xba, 0xe6, 0xb8, 0xc6, 0xa4,	// 98
-	0xb5, 0x7e, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,	// a0
-	0x79, 0x7a, 0xa1, 0xbf, 0xd0, 0xdd, 0xde, 0xae,	// a8
-	0x5e, 0xa3, 0xa5, 0xb7, 0xa9, 0xa7, 0xb6, 0xbc,	// b0
-	0xbd, 0xbe, 0x5b, 0x5d, 0xaf, 0xa8, 0xb4, 0xd7,	// b8
-	0x7b, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,	// c0
-	0x48, 0x49, 0xad, 0xf4, 0xf6, 0xf2, 0xf3, 0xf5,	// c8
-	0x7d, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50,	// d0
-	0x51, 0x52, 0xb9, 0xfb, 0xfc, 0xf9, 0xfa, 0xff,	// d8
-	0x5c, 0xf7, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,	// e0
-	0x59, 0x5a, 0xb2, 0xd4, 0xd6, 0xd2, 0xd3, 0xd5,	// e8
-	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,	// f0
-	0x38, 0x39, 0xb3, 0xdb, 0xdc, 0xd9, 0xda, 0x20	// f8
-};
-*/
 
 const char * ebc2iso[256] = {
 	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 00
@@ -180,41 +143,49 @@ static inline void copy_charset(const unsigned char *from, unsigned char *to) {
 }
 
 static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
-	if(context->remaps) {
-		lib3270_free(context->remaps);
+	if(context->buffer) {
+		lib3270_free(context->buffer);
 	}
 	lib3270_free(context);
 	session->charset.context = NULL;
 }
 
 static const unsigned char to_ebc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
-	return context->asc2ebc[(size_t) *asc];
+	return context->asc2ebc[(size_t) (*asc & 0xFF)];
 }
 
 static const unsigned short to_uc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
-	return context->asc2uc[(size_t) *asc];
+	return context->asc2uc[(size_t) (*asc & 0xFF)];
 }
 
 static const char * to_asc(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc) {
-	return context->ebc2asc[(size_t) (ebc & 0xFF) ];
-}
 
-static char * append(struct _lib3270_charset_context *context, const char *str) {
+	size_t offset = (size_t) (ebc & 0xFF); 
 
-	size_t new_len = context->len + strlen(str)+1;
-	
-	if(context->remaps) {
-		context->remaps = lib3270_realloc(context->remaps, new_len);
-	} else {
-		context->remaps = lib3270_malloc(new_len);
+	// Check for remapped characters first
+	if(context->ebc2asc[offset] != (size_t) -1) {
+		return context->buffer + context->ebc2asc[offset];
 	}
 
-	char *ret = context->remaps + context->len;
-	strcpy(ret, str);
+	// No remap, return default mapping
+	return ebc2iso[offset];
 
-	context->len = new_len;
+}
 
-	return ret;
+static size_t append(struct _lib3270_charset_context *context, const char *str) {
+
+	size_t offset = context->buflen;
+	context->buflen = context->buflen + strlen(str)+1;
+	
+	if(context->buffer) {
+		context->buffer = lib3270_realloc(context->buffer, context->buflen);
+	} else {
+		context->buffer = lib3270_malloc(context->buflen);
+	}
+
+	strcpy(context->buffer + offset, str);
+
+	return offset;
 }
 
 static int do_remap(H3270 *session, unsigned short ebc, const char *iso, int scope, unsigned char one_way) {
@@ -253,7 +224,7 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 	int f;
 
 	hSession->charset.context = lib3270_new(struct _lib3270_charset_context);
-	hSession->charset.context->len = 0;
+	hSession->charset.context->buflen = 0;
 
 	hSession->charset.asc2ebc = to_ebc;
 	hSession->charset.asc2uc = to_uc;
@@ -267,14 +238,11 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	lib3270_replace(hSession->charset.display,"ISO-8859-1");
 
-	// Build translation table for session.
-	{
-		for(size_t ix = 0; ix <= (sizeof(ebc2iso)/sizeof(ebc2iso[0])); ix++) {
-			hSession->charset.context->ebc2asc[ix] = ebc2iso[ix];
-		}
-	}
-
 	memcpy(hSession->charset.context->asc2ebc, iso2ebc, sizeof(hSession->charset.context->asc2ebc));
+
+	for(size_t ix = 0; ix < 256; ix++) {
+		hSession->charset.context->ebc2asc[ix] = (size_t) -1;
+	}
 
 	for(f=0; f<UT_OFFSET; f++)
 		hSession->charset.context->asc2uc[f] = f;

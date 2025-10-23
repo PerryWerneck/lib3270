@@ -68,6 +68,20 @@
 			printf("%03d %05d |%s|\n",row,baddr,text);
 
 		}
+
+		/*
+		{
+			lib3270_autoptr(char) text = lib3270_iconv_from_host(iconv, "\xf7", -1);
+
+			if(text) {
+				printf("Converted text: [%s]\n",text);
+			} else {
+				printf("Conversion failed!\n");
+			}
+
+		}
+		*/
+
 	}
 
 	//

@@ -164,7 +164,7 @@ retry:
 		}
 
 		/* Translate to a quadrant index. */
-		ixp = strchr(alphas, hSession->charset.ebc2asc(hSession,c));
+		ixp = strstr(alphas, ebc2asc(hSession,c));
 		if (ixp == (char *)NULL) {
 			/* Try a different quadrant. */
 			// oq = quadrant;
@@ -191,7 +191,7 @@ retry:
 		if (ft->unix_text && (c == '\r' || c == 0x1a))
 			continue;
 		else if (ft->ascii_flag && ft->remap_flag)
-			c = ft->charset.ebc2asc[c];
+			c = ft_ebc2int(ft,c);
 
 		*ob++ = c;
 	}
@@ -225,14 +225,14 @@ static int download_convert(H3270FT *ft, unsigned const char *buf, unsigned len,
 
 		/* Translate. */
 		if (ft->ascii_flag && ft->remap_flag)
-			c = ft->charset.asc2ebc[c];
+			c = ft_int2ebc(ft,c);
 
 		/* Quadrant already defined. */
 		if (ft->quadrant >= 0) {
 			ixp = (unsigned char *)memchr(conv[ft->quadrant].xlate, c, NE);
 			if (ixp != (unsigned char *)NULL) {
 				ix = ixp - conv[ft->quadrant].xlate;
-				*ob++ = hSession->charset.asc2ebc[(int)alphas[ix]];
+				*ob++ = int2ebc(hSession,(int)alphas[ix]);
 				continue;
 			}
 		}
@@ -249,7 +249,7 @@ static int download_convert(H3270FT *ft, unsigned const char *buf, unsigned len,
 				continue;
 			ix = ixp - conv[ft->quadrant].xlate;
 			*ob++ = conv[ft->quadrant].selector;
-			*ob++ = hSession->charset.asc2ebc[(int)alphas[ix]];
+			*ob++ = int2ebc(hSession,(int)alphas[ix]);
 			break;
 		}
 		if (ft->quadrant >= NQ) {
@@ -334,7 +334,7 @@ static void cut_control_code(H3270 *hSession) {
 			bp = buf = lib3270_malloc(81);
 
 			for (i = 0; i < 80; i++)
-				*bp++ = hSession->charset.ebc2asc[hSession->ea_buf[O_CC_MESSAGE + i].cc];
+				*bp++ = ebc2asc(hSession,hSession->ea_buf[O_CC_MESSAGE + i].cc)[0];
 
 			*bp-- = '\0';
 
@@ -413,9 +413,9 @@ static void cut_data_request(H3270 *hSession) {
 	for (i = 0; i < count; i++)
 		cs ^= hSession->ea_buf[O_UP_DATA + i].cc;
 
-	ctlr_add(hSession,O_UP_CSUM, hSession->charset.asc2ebc[(int)table6[cs & 0x3f]], 0);
-	ctlr_add(hSession,O_UP_LEN, hSession->charset.asc2ebc[(int)table6[(count >> 6) & 0x3f]], 0);
-	ctlr_add(hSession,O_UP_LEN+1, hSession->charset.asc2ebc[(int)table6[count & 0x3f]], 0);
+	ctlr_add(hSession,O_UP_CSUM, int2ebc(hSession,(int)table6[cs & 0x3f]), 0);
+	ctlr_add(hSession,O_UP_LEN, int2ebc(hSession,(int)table6[(count >> 6) & 0x3f]), 0);
+	ctlr_add(hSession,O_UP_LEN+1, int2ebc(hSession,(int)table6[count & 0x3f]), 0);
 
 	/* XXX: Change the data field attribute so it doesn't display. */
 	attr = hSession->ea_buf[O_DR_SF].fa;
@@ -444,7 +444,7 @@ static void  cut_retransmit(H3270 *hSession) {
 static unsigned from6(H3270 *hSession, unsigned char c) {
 	char *p;
 
-	c = hSession->charset.ebc2asc[c];
+	c = ebc2asc(hSession,c)[0];
 	p = strchr(table6, c);
 	if (p == CN)
 		return 0;

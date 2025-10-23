@@ -141,6 +141,23 @@ struct _h3270ft {
 
 };
 
+inline const unsigned char ft_int2ebc(struct _h3270ft *ft, const int v) {
+	char asc[2] = { (char)(v & 0xFF), '\0' };
+	return ft->charset.asc2ebc(ft->charset.context, asc);
+}
+
+inline const unsigned char ft_asc2ebc(struct _h3270ft *ft, const char *asc) {
+	return ft->charset.asc2ebc(ft->charset.context, asc);
+}
+
+inline const char * ft_ebc2asc(struct _h3270ft *ft, unsigned short ebc) {
+	return ft->charset.ebc2asc(ft->charset.context, ebc);
+}
+
+inline const int ft_ebc2int(struct _h3270ft *ft, unsigned short ebc) {
+	return ft->charset.ebc2asc(ft->charset.context, ebc)[0];
+}
+
 typedef struct _lib3270_ft_message {
 	const char		* id;					///< @brief Message ID.
 	unsigned char	  failed;				///< @brief Non zero if this message indicates a failure.

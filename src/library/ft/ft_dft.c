@@ -383,7 +383,7 @@ static void dft_get_request(H3270 *hSession) {
 				int i = numread;
 
 				while (i) {
-					*s = ft_asc2ebc(ft,s);
+					*s = ft_asc2ebc(ft,(char *) s);
 					s++;
 					i--;
 				}

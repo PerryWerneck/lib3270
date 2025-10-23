@@ -468,25 +468,25 @@
 
  };
 
- inline const unsigned char int2ebc(H3270 *session, const int v) {
+ __attribute__((always_inline)) inline const unsigned char int2ebc(H3270 *session, const int v) {
 	char asc[2] = { (char)(v & 0xFF), '\0' };
 	return session->charset.asc2ebc(session->charset.context, asc);
  }
 
- inline const unsigned char asc2ebc(H3270 *session, const char *asc) {
+ __attribute__((always_inline)) inline const unsigned char asc2ebc(H3270 *session, const char *asc) {
 	return session->charset.asc2ebc(session->charset.context, asc);
  }
 
- inline	const unsigned short asc2uc(H3270 *session, const char *asc) {
+ __attribute__((always_inline)) inline	const unsigned short asc2uc(H3270 *session, const char *asc) {
 	return session->charset.asc2uc(session->charset.context, asc);
  }
 
- inline const unsigned char int2uc(H3270 *session, const int v) {
+ __attribute__((always_inline)) inline const unsigned char int2uc(H3270 *session, const int v) {
 	char asc[2] = { (char)(v & 0xFF), '\0' };
 	return session->charset.asc2uc(session->charset.context, asc);
  }
 
- inline const char * ebc2asc(H3270 *session, unsigned short ebc) {
+ __attribute__((always_inline)) inline const char * ebc2asc(H3270 *session, unsigned short ebc) {
 	return session->charset.ebc2asc(session->charset.context, ebc);
  }
 

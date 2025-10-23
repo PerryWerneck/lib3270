@@ -30,6 +30,7 @@
 #endif // _WIN32
 
 #include <internals.h>
+#include <private/session.h>
 #include <lib3270/toggle.h>
 #include <lib3270/memory.h>
 
@@ -49,7 +50,6 @@
 #include "screenc.h"
 #include "telnetc.h"
 #include <private/trace.h>
-//#include "utf8c.h"
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/

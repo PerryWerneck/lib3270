@@ -20,7 +20,7 @@
 
 #if defined(X3270_FT) /*[*/
 
-#include <lib3270/filetransfer.h>
+#include <private/filetransfer.h>
 
 //	#define CHECK_FT_HANDLE(x) if(!x) x = ftsession;
 

@@ -38,7 +38,7 @@
 
 #include <config.h>
 #include <lib3270.h>
-#include <lib3270/filetransfer.h>
+#include <private/filetransfer.h>
 #include <lib3270/memory.h>
 #include <lib3270/log.h>
 

@@ -30,7 +30,7 @@
 #include <stdint.h>
 
 struct _lib3270_charset_context {
-	const char * ebc2asc[256];
+	char * ebc2asc[256];
 	unsigned short asc2ebc[256];
 	unsigned short asc2uc[256];
 };
@@ -107,7 +107,7 @@ const char * ebc2iso8859[256] = {
 	"\x38", "\x39", "\xb3", "\xdb", "\xdc", "\xd9", "\xda", "\x20",	// f8
 };
 
-static const unsigned short asc2ebc[256] = {
+static const unsigned char iso2ebc[256] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// 00
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// 08
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// 10
@@ -142,7 +142,7 @@ static const unsigned short asc2ebc[256] = {
 	0x70, 0xdd, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf	// f8
 };
 
-static const unsigned short asc2uc[UT_SIZE] = {
+static const unsigned short iso2uc[UT_SIZE] = {
 		  0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,	// 40
 	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,	// 48
 	0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,	// 50
@@ -180,16 +180,45 @@ static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
 	session->charset.context = NULL;
 }
 
-static const unsigned short iso2ebc(H3270 *hSession, const char *asc) {
-	return hSession->charset.context->asc2ebc[*asc];
+static const unsigned char to_ebc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
+	return context->asc2ebc[(size_t) *asc];
 }
 
-static const unsigned short iso2uc(H3270 *hSession, const char *asc) {
-	return hSession->charset.context->asc2uc[*asc];
+static const unsigned short to_uc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
+	return context->asc2uc[(size_t) *asc];
 }
 
-static const char * ebc2iso(H3270 *hSession, unsigned short ebc) {
-	return hSession->charset.context->ebc2asc[ebc & 0xFF];
+static const char * to_asc(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc) {
+	return context->ebc2asc[(size_t) (ebc & 0xFF) ];
+}
+
+static int do_remap(H3270 *session, unsigned short ebc, unsigned short iso, int scope, unsigned char one_way) {
+
+	// Ignore mappings of EBCDIC control codes and the space character.
+	if (ebc <= 0x40) {
+		return EINVAL;
+	}
+
+	// If they want to map to a NULL or a blank, make it a one-way blank.
+	if (iso == 0x0)
+		iso = 0x20;
+
+	if (iso == 0x20)
+		one_way = 1;
+
+	if (iso <= 0xff) {
+		if (scope == BOTH || scope == CS_ONLY) {
+			if (ebc > 0x40) {
+				session->charset.context->ebc2asc[ebc][0] = iso & 0xFF;
+				if (!one_way)
+					session->charset.context->asc2ebc[iso] = ebc;
+			}
+		}
+
+	}
+
+	return 0;
+
 }
 
 LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
@@ -198,9 +227,10 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	hSession->charset.context = lib3270_new(struct _lib3270_charset_context);
 
-	hSession->charset.asc2ebc = iso2ebc;
-	hSession->charset.asc2uc = iso2uc;
-	hSession->charset.ebc2asc = ebc2iso;
+	hSession->charset.asc2ebc = to_ebc;
+	hSession->charset.asc2uc = to_uc;
+	hSession->charset.ebc2asc = to_asc;
+	hSession->charset.remap = do_remap;
 	hSession->charset.finalize = finalize;
 
 	/*
@@ -221,12 +251,12 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 	lib3270_replace(hSession->charset.display,"ISO-8859-1");
 
 	memcpy(hSession->charset.context->ebc2asc, ebc2iso8859, sizeof(hSession->charset.context->ebc2asc));
-	memcpy(hSession->charset.context->asc2ebc, asc2ebc, sizeof(hSession->charset.context->asc2ebc));
+	memcpy(hSession->charset.context->asc2ebc, iso2ebc, sizeof(hSession->charset.context->asc2ebc));
 
 	for(f=0; f<UT_OFFSET; f++)
 		hSession->charset.context->asc2uc[f] = f;
 
-	copy_charset(asc2uc,hSession->charset.context->asc2uc);
+	copy_charset(iso2uc,hSession->charset.context->asc2uc);
 
 	/*
 	for(f=0; internal_remaps[f].name != NULL; f++) {

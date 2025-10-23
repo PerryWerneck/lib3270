@@ -18,14 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LIB3270_FILETRANSFER_INCLUDED
+#pragma once
 
-#define LIB3270_FILETRANSFER_INCLUDED 1
 #include <stdio.h>
 #include <sys/time.h>
-#include <lib3270/charset.h>
+#include <private/session.h>
 
 typedef enum _lib3270_FT_OPTION {
+
 	LIB3270_FT_OPTION_SEND 					= 0x0000,
 
 	LIB3270_FT_OPTION_RECEIVE				= 0x0001,
@@ -87,6 +87,7 @@ struct lib3270_ft_callbacks {
  *
  */
 struct _h3270ft {
+	
 	struct lib3270_ft_callbacks	  cbk;				///< @brief Callback table - Always the first one.
 
 	unsigned int				  ft_last_cr	: 1;	///< @brief CR was last char in local file
@@ -237,6 +238,3 @@ LIB3270_EXPORT int							  lib3270_reset_ft_callbacks(H3270 *hSession);
  *
  */
 LIB3270_EXPORT const LIB3270_FT_MESSAGE * lib3270_translate_ft_message(const char *msg);
-
-
-#endif // LIB3270_FILETRANSFER_INCLUDED

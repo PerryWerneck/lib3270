@@ -42,7 +42,7 @@
 #endif // WIN32
 
 #include <lib3270.h>
-#include <lib3270/filetransfer.h>
+#include <private/filetransfer.h>
 #include <lib3270/memory.h>
 #include <internals.h>
 

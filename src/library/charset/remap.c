@@ -26,48 +26,20 @@
  *
  */
 
-/**
- *	@file charset/remap.c
- *
- *	@brief
- */
-
-#include <internals.h>
+#include <config.h>
 #include <lib3270/charset.h>
 #include <lib3270/log.h>
 #include <lib3270/trace.h>
+#include <private/session.h>
 #include <X11keysym.h>
 #include <string.h>
 #include <stdio.h>
 
-/*---[ Implement ]------------------------------------------------------------------------------------------------------------*/
-
-///
-/// @brief Process a single character definition.
-///
-LIB3270_EXPORT void lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way) {
-	//	unsigned char cg;
-
-	// Ignore mappings of EBCDIC control codes and the space character.
-	if (ebc <= 0x40)
-		return;
-
-	// If they want to map to a NULL or a blank, make it a one-way blank.
-	if (iso == 0x0)
-		iso = 0x20;
-	if (iso == 0x20)
-		one_way = True;
-
-	if (iso <= 0xff) {
-		if (scope == BOTH || scope == CS_ONLY) {
-			if (ebc > 0x40) {
-				hSession->charset.ebc2asc[ebc] = iso;
-				if (!one_way)
-					hSession->charset.asc2ebc[iso] = ebc;
-			}
-		}
-
+LIB3270_EXPORT int lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way) {
+	if(hSession->charset.remap) {
+		return hSession->charset.remap(hSession, ebc, iso, scope, one_way);
 	}
+	return ENOTSUP;
 }
 
 LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id) {

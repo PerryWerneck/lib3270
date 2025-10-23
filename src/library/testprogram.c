@@ -39,26 +39,35 @@
 	//
 	// First dump using the default charset
 	//
-	const char * charset = lib3270_get_display_charset(hSession);
-	printf("Display charset is '%s'\n",charset);
+	{
+		const char * charset = lib3270_get_display_charset(hSession);
+		printf("Display charset is '%s'\n",charset);
 
-	lib3270_testpattern(hSession);
+		lib3270_testpattern(hSession);
 
-	unsigned int cols = lib3270_get_width(hSession);
-	char buffer[cols*4];
+		unsigned int cols = lib3270_get_width(hSession);
+		char buffer[cols*4];
 
-	lib3270_autoptr(LIB3270_ICONV) iconv = lib3270_iconv_new(charset,"UTF-8");
+		lib3270_autoptr(LIB3270_ICONV) iconv = lib3270_iconv_new(charset,"UTF-8");
 
-	for(unsigned int row = 0; row < lib3270_get_height(hSession); row++) {
+		for(unsigned int row = 0; row < lib3270_get_height(hSession); row++) {
 
-		memset(buffer,0,cols*4);
-		int baddr = lib3270_translate_to_address(hSession,row+1,1);
+			memset(buffer,0,cols*4);
+			int baddr = lib3270_translate_to_address(hSession,row+1,1);
 
-		lib3270_autoptr(char) line = lib3270_get_string_at_address(hSession,baddr,cols,0);
-		lib3270_autoptr(char) text = lib3270_iconv_from_host(iconv, line, cols);
+			lib3270_autoptr(char) line = lib3270_get_string_at_address(hSession,baddr,cols,0);
+			lib3270_autoptr(char) text = lib3270_iconv_from_host(iconv, line, cols);
 
-		printf("%03d %05d |%s|\n",row,baddr,text);
+			printf("%03d %05d |%s|\n",row,baddr,text);
 
+		}
+	}
+
+	//
+	// Then do the same using internal conversion to UTF-8
+	//
+	{
+		// lib3270_set_display_charset(hSession,"UTF-8");
 	}
 
 	return 0;

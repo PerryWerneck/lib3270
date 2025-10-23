@@ -1,37 +1,23 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como charset.h e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LIB3270_CHARSET_H_INCLUDED
-
-#define LIB3270_CHARSET_H_INCLUDED 1
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,7 +34,6 @@ struct lib3270_charset {
 	// Translation tables
 	unsigned short		  ebc2asc[256];
 	unsigned short 		  asc2ebc[256];
-
 	unsigned short		  asc2uc[256];
 
 };
@@ -59,21 +44,23 @@ typedef enum {
 	BOTH
 } lib3270_remap_scope;
 
-/**
- * @brief Set host charset.
- *
- * @param hSession	Session Handle.
- * @param name		Charset name (us, bracket, cp500) or NULL to lib3270's default.
- *
- * @return 0 if ok, error code if not.
- *
- * @retval EINVAL	Invalid charset name.
- *
- */
+/// @brief Set host charset.
+/// @param hSession	Session Handle.
+/// @param name		Charset name (us, bracket, cp500) or NULL to lib3270's default.
+/// @return 0 if ok, error code if not.
+/// @retval EINVAL	Invalid charset name.
 LIB3270_EXPORT int			  lib3270_set_host_charset(H3270 *hSession, const char *name);
 
 LIB3270_EXPORT const char	* lib3270_get_host_charset(const H3270 *hSession);
-LIB3270_EXPORT void 		  lib3270_reset_charset(H3270 *hSession, const char * host, const char * display, unsigned long cgcsgid);
+
+/// @brief Set display charset.
+/// @param hSession The session handle.
+/// @param name The charset name (ISO-8859-1) or NULL to lib3270's default.
+/// @return 0 if ok, error code if not.
+/// @retval ENOENT Invalid charset name.
+LIB3270_EXPORT int			  lib3270_set_display_charset(H3270 *hSession, const char *name);
+
+LIB3270_EXPORT const char	* lib3270_get_display_charset(const H3270 *hSession);
 
 LIB3270_EXPORT void			  lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way);
 LIB3270_EXPORT const char	* lib3270_ebc2asc(H3270 *hSession, unsigned char *buffer, int sz);
@@ -92,6 +79,8 @@ LIB3270_EXPORT unsigned short lib3270_translate_char(const char *id);
 
 typedef struct _lib3270_iconv LIB3270_ICONV;
 
+LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_ICONV(LIB3270_ICONV **iconv);
+ 
 ///
 /// @brief Create a new ICONV wrapper.
 ///
@@ -115,5 +104,3 @@ LIB3270_EXPORT char * lib3270_iconv_to_host(LIB3270_ICONV *conv, const char *str
 #ifdef __cplusplus
 }
 #endif
-
-#endif // LIB3270_CHARSET_H_INCLUDED

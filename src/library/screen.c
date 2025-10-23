@@ -403,7 +403,6 @@ LIB3270_EXPORT int lib3270_get_cursor_position(const H3270 *hSession, unsigned s
  *
  */
 LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col) {
-	FAIL_IF_NOT_ONLINE(hSession);
 
 	row--;
 	col--;

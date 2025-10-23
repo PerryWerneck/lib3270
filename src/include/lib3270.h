@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <errno.h>
 #include <lib3270/defs.h>
+#include <lib3270/contents.h>
 
 #ifdef _WIN32
 	#include <winsock2.h>
@@ -925,70 +926,6 @@ LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession);
 LIB3270_EXPORT int lib3270_get_has_copy(const H3270 *hSession);
 
 LIB3270_EXPORT void lib3270_set_has_copy(H3270 *hSession, int has_copy);
-
-
-/**
- * @brief Get all text inside the terminal.
- *
- * @param h			Session Handle.
- * @param offset	Start position (-1 to current cursor position).
- * @param len		Text length or -1 to all text.
- * @param lf		Line break char (0 to disable line breaks).
- *
- * @return Contents at position if available, or NULL if error (sets errno). Release it with lib3270_free()
- *
- * @exception ENOTCONN	Not connected to host.
- * @exception EOVERFLOW	Invalid offset.
- *
- */
-LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf);
-
-/**
- * @brief Get text at requested position
- *
- * @param h			Session Handle.
- * @param row		Desired row.
- * @param col		Desired col.
- * @param len		Text length or -1 to all text.
- * @param lf		Line break char (0 to disable line breaks).
- *
- * @return Contents at position if available, or NULL if error (sets errno). Release it with lib3270_free()
- *
- * @exception ENOTCONN	Not connected to host.
- * @exception EOVERFLOW	Invalid position.
- *
- */
-LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf);
-
-/**
- * @brief Check for text at requested position
- *
- * @param h			Session Handle.
- * @param row		Desired row.
- * @param col		Desired col.
- * @param text		Text to check.
- * @param lf		Line break char (0 to disable line breaks).
- *
- * @return Test result from strcmp
- *
- */
-LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf);
-
-LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf);
-
-/**
- * @brief Get contents of the field at position.
- *
- * @param h			Session Handle.
- * @param baddr		Reference position.
- *
- * @return NULL if failed (sets errno), contents of the entire field if suceeds (release it with lib3270_free()).
- *
- * @exception ENOTCONN	Not connected to host.
- * @exception EOVERFLOW	Invalid position.
- *
- */
-LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *h, int baddr);
 
 /**
  * @brief Find the next unprotected field.

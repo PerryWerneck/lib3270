@@ -26,6 +26,56 @@
  */
  
  #include <config.h>
+ #include <stdio.h>
+ #include <iconv.h>
+ #include <lib3270/session.h>
+ #include <lib3270/actions.h>
+ #include <lib3270/memory.h>
+ #include <lib3270/contents.h>
+ #include <lib3270/charset.h>
+
+ static int test_charset(H3270 *hSession) {
+
+	//
+	// First dump using the default charset
+	//
+	const char * charset = lib3270_get_display_charset(hSession);
+	printf("Display charset is '%s'\n",charset);
+
+	lib3270_testpattern(hSession);
+
+	unsigned int cols = lib3270_get_width(hSession);
+	char buffer[cols*4];
+
+	lib3270_autoptr(LIB3270_ICONV) iconv = lib3270_iconv_new(charset,"UTF-8");
+
+	for(unsigned int row = 0; row < lib3270_get_height(hSession); row++) {
+
+		memset(buffer,0,cols*4);
+		int baddr = lib3270_translate_to_address(hSession,row+1,1);
+
+		lib3270_autoptr(char) line = lib3270_get_string_at_address(hSession,baddr,cols,0);
+		lib3270_autoptr(char) text = lib3270_iconv_from_host(iconv, line, cols);
+
+		printf("%03d %05d |%s|\n",row,baddr,text);
+
+	}
+
+	return 0;
+ }
+
+ int main(int argc, const char *argv[]) {
+
+	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
+
+	test_charset(hSession);
+
+	return 0;
+ }
+
+
+ /*
+ #include <config.h>
  #include <lib3270/defs.h>
  #include <lib3270.h>
  #include <lib3270/session.h>
@@ -138,6 +188,7 @@
 	return 0;
 
  }
+*/
 
 
 /*

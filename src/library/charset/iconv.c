@@ -87,6 +87,11 @@ void lib3270_iconv_free(LIB3270_ICONV *conv) {
 	lib3270_free(conv);
 }
 
+LIB3270_EXPORT void lib3270_autoptr_cleanup_LIB3270_ICONV(LIB3270_ICONV **iconv) {
+	lib3270_iconv_free(*iconv);
+	*iconv = NULL;
+}
+
 static char *convert(iconv_t *converter, const char * str, int length) {
 	if(length < 0)
 		length = (int) strlen(str);

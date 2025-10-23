@@ -246,10 +246,12 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	int    maxlen;
 	char * ptr;
 
+#ifndef DEBUG
 	if(!lib3270_is_connected(h)) {
 		errno = ENOTCONN;
 		return NULL;
 	}
+#endif // !DEBUG
 
 	if(offset < 0)
 		offset = lib3270_get_cursor_address(h);

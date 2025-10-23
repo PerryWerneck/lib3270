@@ -31,8 +31,8 @@
 
 struct _lib3270_charset_context {
 	char * ebc2asc[256];
-	unsigned short asc2ebc[256];
-	unsigned short asc2uc[256];
+	unsigned char asc2ebc[256];
+	unsigned char asc2uc[256];
 };
 
 /*
@@ -142,7 +142,7 @@ static const unsigned char iso2ebc[256] = {
 	0x70, 0xdd, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf	// f8
 };
 
-static const unsigned short iso2uc[UT_SIZE] = {
+static const unsigned char iso2uc[UT_SIZE] = {
 		  0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,	// 40
 	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,	// 48
 	0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,	// 50
@@ -169,7 +169,7 @@ static const unsigned short iso2uc[UT_SIZE] = {
 	0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde		// f8
 };
 
-static inline void copy_charset(const unsigned short *from, unsigned short *to) {
+static inline void copy_charset(const unsigned char *from, unsigned char *to) {
 	int f;
 	for(f=0; f < UT_SIZE; f++)
 		to[f+UT_OFFSET] = from[f];

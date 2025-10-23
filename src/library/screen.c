@@ -329,9 +329,9 @@ void screen_update(H3270 *session, int bstart, int bend) {
 				addch(session,baddr,session->ea_buf[baddr].cc,attr|LIB3270_ATTR_CG,&first,&last);
 			} else {
 				if(lib3270_get_toggle(session,LIB3270_TOGGLE_MONOCASE))
-					addch(session,baddr,int2uc(session,ebc2asc(session,session->ea_buf[baddr].cc)),attr,&first,&last);
+					addch(session,baddr,int2uc(session,ebc2asc(session,session->ea_buf[baddr].cc)[0]),attr,&first,&last);
 				else
-					addch(session,baddr,ebc2asc(session,session->ea_buf[baddr].cc),attr,&first,&last);
+					addch(session,baddr,ebc2asc(session,session->ea_buf[baddr].cc)[0],attr,&first,&last);
 			}
 		}
 	}

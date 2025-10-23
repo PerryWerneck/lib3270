@@ -30,11 +30,12 @@
 #include <stdint.h>
 
 struct _lib3270_charset_context {
-	unsigned short ebc2asc[256];
+	const char * ebc2asc[256];
 	unsigned short asc2ebc[256];
 	unsigned short asc2uc[256];
 };
 
+/*
 static const unsigned short ebc2asc[256] = {
 	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 00
 	0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,	// 08
@@ -69,8 +70,8 @@ static const unsigned short ebc2asc[256] = {
 	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,	// f0
 	0x38, 0x39, 0xb3, 0xdb, 0xdc, 0xd9, 0xda, 0x20	// f8
 };
+*/
 
-/*
 const char * ebc2iso8859[256] = {
 	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 00
 	"\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20", "\x20",	// 08
@@ -105,7 +106,6 @@ const char * ebc2iso8859[256] = {
 	"\x30", "\x31", "\x32", "\x33", "\x34", "\x35", "\x36", "\x37",	// f0
 	"\x38", "\x39", "\xb3", "\xdb", "\xdc", "\xd9", "\xda", "\x20",	// f8
 };
-*/
 
 static const unsigned short asc2ebc[256] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,	// 00
@@ -169,7 +169,7 @@ static const unsigned short asc2uc[UT_SIZE] = {
 	0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde		// f8
 };
 
-static void copy_charset(const unsigned short *from, unsigned short *to) {
+static inline void copy_charset(const unsigned short *from, unsigned short *to) {
 	int f;
 	for(f=0; f < UT_SIZE; f++)
 		to[f+UT_OFFSET] = from[f];
@@ -180,16 +180,16 @@ static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
 	session->charset.context = NULL;
 }
 
-static const unsigned short iso2ebc(H3270 *session, const char *asc) {
-
+static const unsigned short iso2ebc(H3270 *hSession, const char *asc) {
+	return hSession->charset.context->asc2ebc[*asc];
 }
 
-static const unsigned short iso2uc(H3270 *session, const char *asc) {
-
+static const unsigned short iso2uc(H3270 *hSession, const char *asc) {
+	return hSession->charset.context->asc2uc[*asc];
 }
 
-static const char * ebc2iso(H3270 *session, unsigned short ebc) {
-	
+static const char * ebc2iso(H3270 *hSession, unsigned short ebc) {
+	return hSession->charset.context->ebc2asc[ebc & 0xFF];
 }
 
 LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
@@ -203,6 +203,7 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 	hSession->charset.ebc2asc = ebc2iso;
 	hSession->charset.finalize = finalize;
 
+	/*
 	printf("\n\n");
 	for(f = 0; f < 256; f++) {
 		if((f%8) == 0) {
@@ -211,6 +212,7 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 		printf("\"\\x%02x\", ",ebc2asc[f]);
 	}
 	printf("\n\n");
+	*/
 
 	if(!(hSession->charset.host && *hSession->charset.host)) {
 		lib3270_replace(hSession->charset.host,"us");
@@ -218,7 +220,7 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	lib3270_replace(hSession->charset.display,"ISO-8859-1");
 
-	memcpy(hSession->charset.context->ebc2asc, ebc2asc, sizeof(hSession->charset.context->ebc2asc));
+	memcpy(hSession->charset.context->ebc2asc, ebc2iso8859, sizeof(hSession->charset.context->ebc2asc));
 	memcpy(hSession->charset.context->asc2ebc, asc2ebc, sizeof(hSession->charset.context->asc2ebc));
 
 	for(f=0; f<UT_OFFSET; f++)
@@ -226,6 +228,7 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	copy_charset(asc2uc,hSession->charset.context->asc2uc);
 
+	/*
 	for(f=0; internal_remaps[f].name != NULL; f++) {
 
 		if(!strcasecmp(hSession->charset.host,internal_remaps[f].name)) {
@@ -251,6 +254,7 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 		}
 	}
+	*/
 
 	return errno = EINVAL;
 }

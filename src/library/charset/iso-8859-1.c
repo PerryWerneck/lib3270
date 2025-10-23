@@ -188,12 +188,6 @@ static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
 }
 
 static const unsigned char to_ebc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
-
-	printf("------------------------------------------------------------\n");
-	printf("to_ebc: asc=0x%02x\n", (unsigned char) *asc);
-	printf("to_ebc: ebc=0x%02x\n", context->asc2ebc[(size_t) *asc]);
-	fflush(stdout);
-
 	return context->asc2ebc[(size_t) *asc];
 }
 

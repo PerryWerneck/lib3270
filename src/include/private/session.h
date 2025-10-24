@@ -79,11 +79,12 @@
  	LIB3270_CHARSET_CONTEXT * context;
 
 	const unsigned char (*asc2ebc)(const LIB3270_CHARSET_CONTEXT *context, const char *asc);
+	const char * (*ebc2asc)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
+	const char * (*ebc2cg)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
 
 	// FIXME: Is this used?
-	const unsigned short (*asc2uc)(const LIB3270_CHARSET_CONTEXT *context, const char *asc);
+	const char * (*ebc2uc)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
 	
-	const char * (*ebc2asc)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
 	int (*remap)(H3270 *session, unsigned short ebc, const char *iso, int scope, unsigned char one_way);
 	void (*finalize)(H3270 *session, LIB3270_CHARSET_CONTEXT * context);
 
@@ -480,16 +481,14 @@
 	return session->charset.asc2ebc(session->charset.context, asc);
  }
 
- __attribute__((always_inline)) inline	const unsigned short asc2uc(H3270 *session, const char *asc) {
-	return session->charset.asc2uc(session->charset.context, asc);
- }
-
- __attribute__((always_inline)) inline const unsigned char int2uc(H3270 *session, const int v) {
-	char asc[2] = { (char)(v & 0xFF), '\0' };
-	return session->charset.asc2uc(session->charset.context, asc);
+ __attribute__((always_inline)) inline const char * ebc2uc(H3270 *session, unsigned short ebc) {
+	return session->charset.ebc2uc(session->charset.context, ebc);
  }
 
  __attribute__((always_inline)) inline const char * ebc2asc(H3270 *session, unsigned short ebc) {
 	return session->charset.ebc2asc(session->charset.context, ebc);
  }
 
+ __attribute__((always_inline)) inline const char * ebc2cg(H3270 *session, unsigned short ebc) {
+	return session->charset.ebc2cg(session->charset.context, ebc);
+ }

@@ -74,23 +74,23 @@ static unsigned short color_from_fa(H3270 *hSession, unsigned char fa);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void addch(H3270 *session, int baddr, unsigned char c, unsigned short attr, int *first, int *last) {
+static void addch(H3270 *session, int baddr, const char *asc, unsigned short attr, int *first, int *last) {
 	// If set to keep selection adjust corresponding flag based on the current state
 	if(lib3270_get_toggle(session,LIB3270_TOGGLE_KEEP_SELECTED))
 		attr |= (session->text[baddr].attr & LIB3270_ATTR_SELECTED);
 
-	if(session->text[baddr].chr == c && session->text[baddr].attr == attr)
+	if(session->text[baddr].chr == asc[0] && session->text[baddr].attr == attr)
 		return;
 
 	if(*first < 0)
 		*first = baddr;
 	*last = baddr;
 
-	/* Converted char has changed, update it */
-	session->text[baddr].chr  = c;
+	// Converted char has changed, update it
+	session->text[baddr].chr  = asc[0];
 	session->text[baddr].attr = attr;
 
-	session->cbk.update(session,baddr,c,attr,baddr == session->cursor_addr);
+	session->cbk.update(session,baddr,asc[0],attr,baddr == session->cursor_addr);
 }
 
 LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, unsigned int baddr) {
@@ -310,10 +310,10 @@ void screen_update(H3270 *session, int bstart, int bend) {
 			fa_addr = baddr;
 			fa = session->ea_buf[baddr].fa;
 			a = calc_attrs(session, baddr, baddr, fa);
-			addch(session,baddr,' ',(attr = COLOR_GREEN)|LIB3270_ATTR_MARKER,&first,&last);
+			addch(session,baddr," ",(attr = COLOR_GREEN)|LIB3270_ATTR_MARKER,&first,&last);
 		} else if (FA_IS_ZERO(fa)) {
 			// Blank.
-			addch(session,baddr,' ',attr=a,&first,&last);
+			addch(session,baddr," ",attr=a,&first,&last);
 		} else {
 			// Normal text.
 			if (!(session->ea_buf[baddr].gr || session->ea_buf[baddr].fg || session->ea_buf[baddr].bg)) {
@@ -323,14 +323,15 @@ void screen_update(H3270 *session, int bstart, int bend) {
 			}
 
 			if (session->ea_buf[baddr].cs == CS_LINEDRAW) {
-				addch(session,baddr,session->ea_buf[baddr].cc,attr,&first,&last);
+				char asc[] = { session->ea_buf[baddr].cc, '\0' };
+				addch(session,baddr,asc,attr,&first,&last);
 			} else if (session->ea_buf[baddr].cs == CS_APL || (session->ea_buf[baddr].cs & CS_GE)) {
-				addch(session,baddr,session->ea_buf[baddr].cc,attr|LIB3270_ATTR_CG,&first,&last);
+				addch(session,baddr,ebc2cg(session,session->ea_buf[baddr].cc),attr|LIB3270_ATTR_CG,&first,&last);
 			} else {
 				if(lib3270_get_toggle(session,LIB3270_TOGGLE_MONOCASE))
-					addch(session,baddr,int2uc(session,ebc2asc(session,session->ea_buf[baddr].cc)[0]),attr,&first,&last);
+					addch(session,baddr,ebc2uc(session,session->ea_buf[baddr].cc),attr,&first,&last);
 				else
-					addch(session,baddr,ebc2asc(session,session->ea_buf[baddr].cc)[0],attr,&first,&last);
+					addch(session,baddr,ebc2asc(session,session->ea_buf[baddr].cc),attr,&first,&last);
 			}
 		}
 	}

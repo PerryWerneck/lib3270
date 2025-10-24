@@ -32,7 +32,6 @@
 struct _lib3270_charset_context {
 	size_t ebc2asc[256];			///< Offset of remmapped EBCDIC to ASCII strings.
 	unsigned char asc2ebc[256];
-	unsigned char asc2uc[256];
 
 	// Allways the last members
 	size_t buflen;
@@ -109,6 +108,7 @@ static const unsigned char iso2ebc[256] = {
 	0x70, 0xdd, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf	// f8
 };
 
+/*
 static const unsigned char iso2uc[UT_SIZE] = {
 		  0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,	// 40
 	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,	// 48
@@ -135,12 +135,15 @@ static const unsigned char iso2uc[UT_SIZE] = {
 	0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xf7,	// f0
 	0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde		// f8
 };
+*/
 
+/*
 static inline void copy_charset(const unsigned char *from, unsigned char *to) {
 	int f;
 	for(f=0; f < UT_SIZE; f++)
 		to[f+UT_OFFSET] = from[f];
 }
+*/
 
 static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
 	if(context->buffer) {
@@ -152,10 +155,6 @@ static void finalize(H3270 *session, LIB3270_CHARSET_CONTEXT * context) {
 
 static const unsigned char to_ebc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
 	return context->asc2ebc[(size_t) (*asc & 0xFF)];
-}
-
-static const unsigned short to_uc(const LIB3270_CHARSET_CONTEXT *context, const char *asc) {
-	return context->asc2uc[(size_t) (*asc & 0xFF)];
 }
 
 static const char * to_asc(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc) {
@@ -170,6 +169,67 @@ static const char * to_asc(const LIB3270_CHARSET_CONTEXT *context, unsigned shor
 	// No remap, return default mapping
 	return ebc2iso[offset];
 
+}
+
+static const char * to_uc(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc) {
+
+	// FIXME: Detect if ebc in the UT range and use proper mapping.
+
+	return to_asc(context, ebc);
+}
+
+static const char * to_cg(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc) {
+
+	// https://www.charset.org/charsets/iso-8859-1
+
+	static const struct {
+		unsigned short ebc;
+		const char *chr;
+	} chars[] = {
+
+		{ 0x8c, " " }, // CG 0xf7, less or equal "≤"
+		{ 0xae, " " }, // CG 0xd9, greater or equal "≥"
+		{ 0xbe, " " }, // CG 0x3e, not equal "≠"
+		{ 0xad, "[" }, // "["
+		{ 0xbd, "]" }, // "]"
+		{ 0xc6, " " }, // CG 0xa5, left tee
+		{ 0xd3, " " }, // CG 0xab, plus
+		{ 0xa2, " " }, // CG 0x92, horizontal line
+		{ 0xc7, " " }, // CG 0xa6, bottom tee
+		{ 0xd7, " " }, // CG 0xaf, top tee
+		{ 0xd6, " " }, // CG 0xae, right tee
+		{ 0xc5, " " }, // CG 0xa4, UL corner
+		{ 0xd5, " " }, // CG 0xad, UR corner
+		{ 0x85, " " }, // CG 0x184, vertical line
+		{ 0xc4, " " }, // CG 0xa3, LL corner
+		{ 0xd4, " " }, // CG 0xac, LR corner
+
+		{ 0xf0, " " }, // 0-9 Superscript
+		{ 0xf1, " " },
+		{ 0xf2, " " },
+		{ 0xf3, " " },
+		{ 0xf4, " " },
+		{ 0xf5, " " },
+		{ 0xf6, " " },
+		{ 0xf7, " " },
+		{ 0xf8, " " },
+		{ 0xf9, " " },
+
+		{ 0xe1, " " }, // 1-3 subscript
+		{ 0xe2, " " },
+		{ 0xe3, " " },
+
+		{ 0xb8, "\xf7" }, // Division Sign ÷
+
+	};
+
+	for(size_t ix = 0; ix < sizeof(chars)/sizeof(chars[0]); ix++) {
+		if(chars[ix].ebc == ebc) {
+			return chars[ix].chr;
+		}
+	}
+
+	return " ";
 }
 
 static size_t append(struct _lib3270_charset_context *context, const char *str) {
@@ -221,14 +281,13 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	debug("%s: Initializing ISO-8859-1",__FUNCTION__);
 	
-	int f;
-
 	hSession->charset.context = lib3270_new(struct _lib3270_charset_context);
 	hSession->charset.context->buflen = 0;
 
 	hSession->charset.asc2ebc = to_ebc;
-	hSession->charset.asc2uc = to_uc;
+	hSession->charset.ebc2uc = to_uc;
 	hSession->charset.ebc2asc = to_asc;
+	hSession->charset.ebc2cg = to_cg;
 	hSession->charset.remap = do_remap;
 	hSession->charset.finalize = finalize;
 
@@ -240,14 +299,16 @@ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession) {
 
 	memcpy(hSession->charset.context->asc2ebc, iso2ebc, sizeof(hSession->charset.context->asc2ebc));
 
+	// Clear remap table.
 	for(size_t ix = 0; ix < 256; ix++) {
 		hSession->charset.context->ebc2asc[ix] = (size_t) -1;
 	}
 
+	/*
 	for(f=0; f<UT_OFFSET; f++)
 		hSession->charset.context->asc2uc[f] = f;
-
 	copy_charset(iso2uc,hSession->charset.context->asc2uc);
+	*/
 
 	return 0;
 }

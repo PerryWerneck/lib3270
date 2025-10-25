@@ -40,8 +40,7 @@ LIB3270_EXPORT int lib3270_unselect(H3270 *hSession) {
 		for(a = 0; a < ((int) (hSession->view.rows * hSession->view.cols)); a++) {
 			if(hSession->text[a].attr & LIB3270_ATTR_SELECTED) {
 				hSession->text[a].attr &= ~LIB3270_ATTR_SELECTED;
-				if(hSession->cbk.update)
-					hSession->cbk.update(hSession,a,hSession->text[a].chr,hSession->text[a].attr,a == hSession->cursor_addr);
+				screen_update_addr(hSession,a);
 			}
 		}
 

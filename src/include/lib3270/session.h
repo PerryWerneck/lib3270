@@ -69,12 +69,12 @@ struct lib3270_session_callbacks {
 
 	/// @brief The screen size has changed.
 	void (*update_viewsize)(H3270 *session, unsigned short rows, unsigned short cols);
-	void (*update)(H3270 *session, int baddr, unsigned char c, unsigned short attr, unsigned char cursor);
+	void (*update)(H3270 *session, int baddr, unsigned short ebc, const char *asc, unsigned short attr, unsigned char cursor);
 	void (*changed)(H3270 *session, int offset, int len);
 	void (*display)(H3270 *session);
 	void (*set_width)(H3270 *session, int width);
 
-	void (*update_cursor)(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
+	void (*update_cursor)(H3270 *session, unsigned short row, unsigned short col, const char *asc, unsigned short attr);
 	void (*update_oia)(H3270 *session, LIB3270_FLAG id, unsigned char on);
 	void (*update_toggle)(H3270 *session, LIB3270_TOGGLE_ID ix, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name);
 	void (*update_luname)(H3270 *session, const char *name);

@@ -33,6 +33,7 @@
 #include <lib3270/log.h>
 #include <lib3270/memory.h>
 #include <private/3270ds.h>
+#include <private/screen.h>
 #include "kybdc.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -81,7 +82,7 @@ static void update_selected_rectangle(H3270 *session) {
 		for(col = 0; col < ((int) session->view.cols); col++) {
 			if(!(row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && (session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 				session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
-				session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+				screen_update_addr(session,baddr);
 			}
 			baddr++;
 		}
@@ -93,7 +94,7 @@ static void update_selected_rectangle(H3270 *session) {
 		for(col = 0; col < ((int) session->view.cols); col++) {
 			if((row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && !(session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 				session->text[baddr].attr |= LIB3270_ATTR_SELECTED;
-				session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+				screen_update_addr(session,baddr);
 			}
 			baddr++;
 		}
@@ -111,14 +112,14 @@ static void update_selected_region(H3270 *session) {
 	for(baddr = 0; baddr < begin; baddr++) {
 		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 			session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
-			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+			screen_update_addr(session,baddr);
 		}
 	}
 
 	for(baddr = end+1; baddr < len; baddr++) {
 		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 			session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
-			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+			screen_update_addr(session,baddr);
 		}
 	}
 
@@ -126,7 +127,7 @@ static void update_selected_region(H3270 *session) {
 	for(baddr = begin; baddr <= end; baddr++) {
 		if(!(session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 			session->text[baddr].attr |= LIB3270_ATTR_SELECTED;
-			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+			screen_update_addr(session,baddr);
 		}
 	}
 

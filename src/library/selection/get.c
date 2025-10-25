@@ -39,16 +39,13 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 void clear_chr(H3270 *hSession, int baddr) {
-	hSession->text[baddr].chr = ' ';
 
+	hSession->text[baddr].chr = " ";
 	hSession->ea_buf[baddr].cc = EBC_null;
 	hSession->ea_buf[baddr].cs = 0;
 
-	hSession->cbk.update(	hSession,
-	                        baddr,
-	                        hSession->text[baddr].chr,
-	                        hSession->text[baddr].attr,
-	                        baddr == hSession->cursor_addr );
+	screen_update_addr(hSession,baddr);
+
 }
 
 LIB3270_EXPORT char * lib3270_get_selected_text(H3270 *hSession, char tok, LIB3270_SELECTION_OPTIONS options) {

@@ -36,7 +36,6 @@
 #include <internals.h>
 #include <signal.h>
 #include <private/3270ds.h>
-//#include "resources.h"
 #include <private/ctlr.h>
 #include <private/host.h>
 #include "kybdc.h"
@@ -74,23 +73,23 @@ static unsigned short color_from_fa(H3270 *hSession, unsigned char fa);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void addch(H3270 *session, int baddr, const char *asc, unsigned short attr, int *first, int *last) {
+static void addch(H3270 *session, int baddr, unsigned short ebc, const char *asc, unsigned short attr, int *first, int *last) {
 	// If set to keep selection adjust corresponding flag based on the current state
 	if(lib3270_get_toggle(session,LIB3270_TOGGLE_KEEP_SELECTED))
 		attr |= (session->text[baddr].attr & LIB3270_ATTR_SELECTED);
 
-	if(session->text[baddr].chr == asc[0] && session->text[baddr].attr == attr)
+	// If the same character and attribute is already present, do nothing
+	if(session->text[baddr].attr == attr || !strcmp(session->text[baddr].chr,asc))
 		return;
 
 	if(*first < 0)
 		*first = baddr;
 	*last = baddr;
 
-	// Converted char has changed, update it
-	session->text[baddr].chr  = asc[0];
+	session->text[baddr].chr  = asc;
 	session->text[baddr].attr = attr;
 
-	session->cbk.update(session,baddr,asc[0],attr,baddr == session->cursor_addr);
+	screen_update_addr(session,baddr);
 }
 
 LIB3270_EXPORT LIB3270_ATTR lib3270_get_attribute_at_address(H3270 *hSession, unsigned int baddr) {
@@ -116,6 +115,7 @@ LIB3270_EXPORT int lib3270_is_selected(H3270 *hSession, unsigned int baddr) {
 	return (hSession->text[baddr].attr & LIB3270_ATTR_SELECTED) != 0;
 }
 
+/*
 LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, unsigned int baddr, unsigned char *c, unsigned short *attr) {
 	FAIL_IF_NOT_ONLINE(hSession);
 
@@ -129,6 +129,7 @@ LIB3270_EXPORT int lib3270_get_element(H3270 *hSession, unsigned int baddr, unsi
 
 	return 0;
 }
+*/
 
 /**
  * Initialize the screen.
@@ -258,7 +259,7 @@ void update_model_info(H3270 *hSession, unsigned int model, unsigned int cols, u
 	hSession->max.rows  	= rows;
 	hSession->model_num	= model;
 
-	/* Update the model name. */
+	// Update the model name. 
 	(void) sprintf(hSession->model_name, "327%c-%d%s",hSession->m3279 ? '9' : '8',hSession->model_num,hSession->extended ? "-E" : "");
 
 	if (hSession->termname != CN)
@@ -273,6 +274,7 @@ void update_model_info(H3270 *hSession, unsigned int model, unsigned int cols, u
 	hSession->cbk.update_model(hSession, hSession->model_name,hSession->model_num,rows,cols);
 }
 
+/*
 LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr) {
 	int baddr;
 	int len;
@@ -289,8 +291,12 @@ LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned 
 
 	return 0;
 }
+*/
 
-/* Display what's in the buffer. */
+/// @brief Display what's in the buffer.
+/// @param session The session handle.
+/// @param bstart The starting buffer address.
+/// @param bend The ending buffer address.
 void screen_update(H3270 *session, int bstart, int bend) {
 	int				baddr;
 	unsigned short	a;
@@ -310,10 +316,10 @@ void screen_update(H3270 *session, int bstart, int bend) {
 			fa_addr = baddr;
 			fa = session->ea_buf[baddr].fa;
 			a = calc_attrs(session, baddr, baddr, fa);
-			addch(session,baddr," ",(attr = COLOR_GREEN)|LIB3270_ATTR_MARKER,&first,&last);
+			addch(session,baddr,0x00," ",(attr = COLOR_GREEN)|LIB3270_ATTR_MARKER,&first,&last);
 		} else if (FA_IS_ZERO(fa)) {
 			// Blank.
-			addch(session,baddr," ",attr=a,&first,&last);
+			addch(session,baddr,0x00," ",attr=a,&first,&last);
 		} else {
 			// Normal text.
 			if (!(session->ea_buf[baddr].gr || session->ea_buf[baddr].fg || session->ea_buf[baddr].bg)) {
@@ -323,15 +329,18 @@ void screen_update(H3270 *session, int bstart, int bend) {
 			}
 
 			if (session->ea_buf[baddr].cs == CS_LINEDRAW) {
-				char asc[] = { session->ea_buf[baddr].cc, '\0' };
-				addch(session,baddr,asc,attr,&first,&last);
+
+				addch(session,baddr,session->ea_buf[baddr].cc," ",attr|LIB3270_ATTR_LINEDRAW,&first,&last);
+
 			} else if (session->ea_buf[baddr].cs == CS_APL || (session->ea_buf[baddr].cs & CS_GE)) {
-				addch(session,baddr,ebc2cg(session,session->ea_buf[baddr].cc),attr|LIB3270_ATTR_CG,&first,&last);
+
+				addch(session,baddr,session->ea_buf[baddr].cc,ebc2cg(session,session->ea_buf[baddr].cc),attr|LIB3270_ATTR_CG,&first,&last);
+
 			} else {
 				if(lib3270_get_toggle(session,LIB3270_TOGGLE_MONOCASE))
-					addch(session,baddr,ebc2uc(session,session->ea_buf[baddr].cc),attr,&first,&last);
+					addch(session,baddr,session->ea_buf[baddr].cc,ebc2uc(session,session->ea_buf[baddr].cc),attr,&first,&last);
 				else
-					addch(session,baddr,ebc2asc(session,session->ea_buf[baddr].cc),attr,&first,&last);
+					addch(session,baddr,session->ea_buf[baddr].cc,ebc2asc(session,session->ea_buf[baddr].cc),attr,&first,&last);
 			}
 		}
 	}
@@ -649,44 +658,60 @@ LIB3270_EXPORT int lib3270_testpattern(H3270 *hSession) {
 
 	// http://www.prycroft6.com.au/misc/3270eds.html
 	// http://www.prycroft6.com.au/graphics/sym0and1.gif
+	// https://en.wikipedia.org/wiki/List_of_Unicode_characters
 	static const unsigned char cg_pat[] = {
 		0x8c, // CG 0xf7, less or equal "≤"
 		0xae, // CG 0xd9, greater or equal "≥"
 		0xbe, // CG 0x3e, not equal "≠"
 		0xad, // "["
 		0xbd, // "]"
-		0xc6, // CG 0xa5, left tee
-		0xd3, // CG 0xab, plus
-		0xa2, // CG 0x92, horizontal line
-		0xc7, // CG 0xa6, bottom tee
-		0xd7, // CG 0xaf, top tee
-		0xd6, // CG 0xae, right tee
-		0xc5, // CG 0xa4, UL corner
-		0xd5, // CG 0xad, UR corner
-		0x85, // CG 0x184, vertical line
-		0xc4, // CG 0xa3, LL corner
-		0xd4, // CG 0xac, LR corner
+		0xc6, // CG 0xa5, left tee ┣
+		0xd3, // CG 0xab, plus ╋
+		0xa2, // CG 0x92, horizontal line ━
+		0xc7, // CG 0xa6, bottom tee ┻
+		0xd7, // CG 0xaf, top tee ┳
+		0xd6, // CG 0xae, right tee ┫
+		0xc5, // CG 0xa4, UL corner ┏
+		0xd5, // CG 0xad, UR corner ┓
+		0x85, // CG 0x184, vertical line ┃
+		0xc4, // CG 0xa3, LL corner ┗
+		0xd4, // CG 0xac, LR corner ┛
 
-		0xf0, // 0-9 Superscript
-		0xf1,
-		0xf2,
-		0xf3,
-		0xf4,
-		0xf5,
-		0xf6,
-		0xf7,
-		0xf8,
-		0xf9,
+		// 0-9 Superscript
+		0xf0, // ⁰
+		0xf1, // ¹ 
+		0xf2, // ²
+		0xf3, // ³
+		0xf4, // ⁴
+		0xf5, // ⁵
+		0xf6, // ⁶
+		0xf7, // ⁷
+		0xf8, // ⁸
+		0xf9, // ⁹
 
-		0xe1, // 1-3 subscript
-		0xe2,
-		0xe3,
+		// 1-3 subscript
+		0xe1, // ₀
+		0xe2, // ₁
+		0xe3, // ₂
 
 		0xb8, // Division Sign ÷
 
 		0x00
 
 	};
+
+	/*
+	// Line drawing characters
+	static const unsigned char ld_pat[] = {
+		0x6C, // (┌)
+		0x6B, // (┐) 
+		0x6D, // (└)
+		0x6A, // (┘)
+		0x71, // (─)
+		0x78, // (│)
+		0x6E, // (┼)
+	};
+	*/
 
 	static const struct _pat {
 		unsigned char cs;

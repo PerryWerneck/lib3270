@@ -32,7 +32,7 @@
 #include <internals.h>
 #include <string.h>
 #include <lib3270.h>
-#include <private/filetransfer.h>
+#include <lib3270/filetransfer.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

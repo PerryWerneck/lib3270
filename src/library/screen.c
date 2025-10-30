@@ -79,7 +79,7 @@ static void addch(H3270 *session, int baddr, unsigned short ebc, const char *asc
 		attr |= (session->text[baddr].attr & LIB3270_ATTR_SELECTED);
 
 	// If the same character and attribute is already present, do nothing
-	if(session->text[baddr].attr == attr || !strcmp(session->text[baddr].chr,asc))
+	if(session->text[baddr].attr == attr && session->text[baddr].chr == asc)
 		return;
 
 	if(*first < 0)

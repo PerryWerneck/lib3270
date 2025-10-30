@@ -262,6 +262,7 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	string_buffer sb = { NULL, 0 };
 
 	while(len > 0) {
+		// debug("Getting char at %d '%s' (len=%d)",offset,h->text[offset].chr,len);
 		string_buffer_append(&sb,h->text[offset].chr);
 		offset++;
 		len--;

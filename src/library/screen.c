@@ -144,11 +144,11 @@ int screen_init(H3270 *session) {
 	lib3270_register_schange(session,LIB3270_STATE_3270_MODE, status_3270_mode,0);
 //	lib3270_register_schange(session,LIB3270_STATE_PRINTER, status_printer,0);
 
-	/* Set up the controller. */
+	// Set up the controller.
 	ctlr_init(session,-1);
 	ctlr_model_changed(session);
 
-	/* Finish screen initialization. */
+	// Finish screen initialization.
 	session->cbk.suspend(session);
 
 	return 0;
@@ -400,17 +400,6 @@ LIB3270_EXPORT int lib3270_get_cursor_position(const H3270 *hSession, unsigned s
 	return 0;
 }
 
-
-/**
- * @brief Converts row/col in a buffer address.
- *
- * @param hSession	TN3270 Session.
- * @param row		Row inside the screen.
- * @param col		Col inside the screen.
- *
- * @return Current address or -1 if invalid (sets errno).
- *
- */
 LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col) {
 
 	row--;

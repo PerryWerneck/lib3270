@@ -495,18 +495,12 @@ LIB3270_EXPORT const char * lib3270_state_get_name(const LIB3270_STATE state);
  */
 LIB3270_EXPORT int lib3270_emulate_input(H3270 *session, const char *s, int len, int pasting);
 
-/**
- * @brief Converts row/col in a buffer address.
- *
- * @param hSession	TN3270 Session.
- * @param row		Row inside the screen.
- * @param col		Col inside the screen.
- *
- * @return Current address or negative if invalid (sets errno).
- *
- * @retval -EOVERFLOW	The coordinates are out of the screen.
- *
- */
+/// @brief Converts row/col in a buffer address.
+/// @param hSession	Session handle.
+/// @param row		Row inside the screen.
+/// @param col		Col inside the screen.
+/// @return Current address or negative if invalid (sets errno).
+/// @retval -EOVERFLOW	The coordinates are out of the screen.
 LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col);
 
 /**

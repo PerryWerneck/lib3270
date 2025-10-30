@@ -560,9 +560,6 @@ LIB3270_INTERNAL void string_buffer_append(string_buffer *sb, const char *text) 
 	} else {
 		sb->buf = lib3270_realloc(sb->buf, sb->len + textlen + 1);
 		strcpy(sb->buf + sb->len, text);
-		sb->len += textlen;	
+		sb->len += textlen;
 	}
-	sb->buf = lib3270_realloc(sb->buf, sb->len + textlen + 1);
-	strcpy(sb->buf + sb->len, text);
-	sb->len += textlen;
 }

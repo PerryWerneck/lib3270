@@ -533,3 +533,36 @@ LIB3270_INTERNAL int set_ssl_message(H3270 *hSession, const LIB3270_SSL_MESSAGE 
 	return 0;
 
 }
+
+LIB3270_INTERNAL char * append_string(char * dst, const char * src) {
+
+	if(!dst) {
+		return lib3270_strdup(src);
+	}
+
+	if(src && *src) {
+		size_t dst_len = strlen(dst);
+		size_t src_len = strlen(src);
+
+		dst = lib3270_realloc(dst,dst_len + src_len + 1);
+		strcpy(&dst[dst_len],src);
+	}
+
+	return dst;
+}
+
+LIB3270_INTERNAL void string_buffer_append(string_buffer *sb, const char *text) {
+	size_t textlen = strlen(text);
+	if(!sb->buf) {
+		sb->buf = lib3270_malloc(textlen + 1);
+		strcpy(sb->buf, text);
+		sb->len = textlen;
+	} else {
+		sb->buf = lib3270_realloc(sb->buf, sb->len + textlen + 1);
+		strcpy(sb->buf + sb->len, text);
+		sb->len += textlen;	
+	}
+	sb->buf = lib3270_realloc(sb->buf, sb->len + textlen + 1);
+	strcpy(sb->buf + sb->len, text);
+	sb->len += textlen;
+}

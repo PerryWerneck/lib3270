@@ -21,8 +21,8 @@
 
  #include <lib3270/defs.h>
 
- /// @brief Get all text inside the terminal.
- /// @param h			Session Handle.
+ /// @brief Get text inside the terminal.
+ /// @param h		Session Handle.
  /// @param offset	Start position (-1 to current cursor position).
  /// @param len		Text length or -1 to all text.
  /// @param lf		Line break char (0 to disable line breaks).
@@ -30,7 +30,7 @@
  /// @exception ENOTCONN	Not connected to host.
  /// @exception EOVERFLOW	Invalid offset.
  ///
- LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf);
+ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, const char *lf);
 
  /// @brief Get text at requested position
  /// @param h			Session Handle.
@@ -41,7 +41,7 @@
  /// @return Contents at position if available, or NULL if error (sets errno). Release it with lib3270_free()
  /// @exception ENOTCONN	Not connected to host.
  /// @exception EOVERFLOW	Invalid position.
- LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf);
+ LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, const char *lf);
 
  /// @brief Check for text at requested position
  /// @param h			Session Handle.
@@ -50,9 +50,9 @@
  /// @param text		Text to check.
  /// @param lf		Line break char (0 to disable line breaks).
  /// @return Test result from strcmp
- LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf);
+ LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, const char *lf);
 
- LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf);
+ LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, const char *lf);
 
  /// @brief Get contents of the field at position.
  /// @param h			Session Handle.

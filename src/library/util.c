@@ -174,10 +174,11 @@ LIB3270_EXPORT void * lib3270_realloc(void *p, int len) {
 LIB3270_EXPORT void * lib3270_calloc(int elsize, int nelem, void *ptr) {
 	size_t sz = ((size_t) nelem) * ((size_t) elsize);
 
-	if(ptr)
+	if(ptr) {
 		ptr = realloc(ptr,sz);
-	else
+	} else {
 		ptr = malloc(sz);
+	}
 
 	if(!ptr) {
 		perror("calloc");

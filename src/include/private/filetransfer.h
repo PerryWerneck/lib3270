@@ -137,26 +137,19 @@ struct _h3270ft {
 	unsigned char			  xlate_buf[LIB3270_XLATE_NBUF];	///< buffer
 
 	// Charset
-	struct lib3270_charset	  charset;
+	struct {
+		char			* host;
+		char			* display;
+		unsigned long	  cgcsgid;
+
+		// Translation tables
+		unsigned short		  ebc2asc[256];
+		unsigned short 		  asc2ebc[256];
+		// unsigned short		  asc2uc[256];
+
+	} charset
 
 };
-
-__attribute__((always_inline)) inline const unsigned char ft_int2ebc(struct _h3270ft *ft, const int v) {
-	char asc[2] = { (char)(v & 0xFF), '\0' };
-	return ft->charset.asc2ebc(ft->charset.context, asc);
-}
-
-__attribute__((always_inline)) inline const unsigned char ft_asc2ebc(struct _h3270ft *ft, const char *asc) {
-	return ft->charset.asc2ebc(ft->charset.context, asc);
-}
-
-__attribute__((always_inline)) inline const char * ft_ebc2asc(struct _h3270ft *ft, unsigned short ebc) {
-	return ft->charset.ebc2asc(ft->charset.context, ebc);
-}
-
-__attribute__((always_inline)) inline const int ft_ebc2int(struct _h3270ft *ft, unsigned short ebc) {
-	return ft->charset.ebc2asc(ft->charset.context, ebc)[0];
-}
 
 typedef struct _lib3270_ft_message {
 	const char		* id;					///< @brief Message ID.

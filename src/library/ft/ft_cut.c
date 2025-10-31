@@ -1,32 +1,21 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob o nome G3270.
+ * Copyright 1995, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 by Paul Mattes.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como ft_cut.c e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -47,6 +36,7 @@
 
 #include <private/3270ds.h>
 #include <private/ctlr.h>
+#include <private/charset.h>
 #include "ft_cutc.h"
 #include "ft_cut_ds.h"
 #include "ftc.h"
@@ -174,7 +164,7 @@ retry:
 		}
 
 		/* Translate to a quadrant index. */
-		ixp = strchr(alphas, hSession->charset.ebc2asc[c]);
+		ixp = strchr(alphas, ebc2asc(hSession,c)[0]);
 		if (ixp == (char *)NULL) {
 			/* Try a different quadrant. */
 			// oq = quadrant;
@@ -242,7 +232,7 @@ static int download_convert(H3270FT *ft, unsigned const char *buf, unsigned len,
 			ixp = (unsigned char *)memchr(conv[ft->quadrant].xlate, c, NE);
 			if (ixp != (unsigned char *)NULL) {
 				ix = ixp - conv[ft->quadrant].xlate;
-				*ob++ = hSession->charset.asc2ebc[(int)alphas[ix]];
+				*ob++ = int2ebc(hSession,(int)alphas[ix]);
 				continue;
 			}
 		}
@@ -259,7 +249,7 @@ static int download_convert(H3270FT *ft, unsigned const char *buf, unsigned len,
 				continue;
 			ix = ixp - conv[ft->quadrant].xlate;
 			*ob++ = conv[ft->quadrant].selector;
-			*ob++ = hSession->charset.asc2ebc[(int)alphas[ix]];
+			*ob++ = int2ebc(hSession,(int)alphas[ix]);
 			break;
 		}
 		if (ft->quadrant >= NQ) {
@@ -344,7 +334,7 @@ static void cut_control_code(H3270 *hSession) {
 			bp = buf = lib3270_malloc(81);
 
 			for (i = 0; i < 80; i++)
-				*bp++ = hSession->charset.ebc2asc[hSession->ea_buf[O_CC_MESSAGE + i].cc];
+				*bp++ = ebc2asc(hSession,hSession->ea_buf[O_CC_MESSAGE + i].cc)[0];
 
 			*bp-- = '\0';
 
@@ -423,9 +413,9 @@ static void cut_data_request(H3270 *hSession) {
 	for (i = 0; i < count; i++)
 		cs ^= hSession->ea_buf[O_UP_DATA + i].cc;
 
-	ctlr_add(hSession,O_UP_CSUM, hSession->charset.asc2ebc[(int)table6[cs & 0x3f]], 0);
-	ctlr_add(hSession,O_UP_LEN, hSession->charset.asc2ebc[(int)table6[(count >> 6) & 0x3f]], 0);
-	ctlr_add(hSession,O_UP_LEN+1, hSession->charset.asc2ebc[(int)table6[count & 0x3f]], 0);
+	ctlr_add(hSession,O_UP_CSUM, int2ebc(hSession,(int)table6[cs & 0x3f]), 0);
+	ctlr_add(hSession,O_UP_LEN, int2ebc(hSession,(int)table6[(count >> 6) & 0x3f]), 0);
+	ctlr_add(hSession,O_UP_LEN+1, int2ebc(hSession,(int)table6[count & 0x3f]), 0);
 
 	/* XXX: Change the data field attribute so it doesn't display. */
 	attr = hSession->ea_buf[O_DR_SF].fa;
@@ -454,7 +444,7 @@ static void  cut_retransmit(H3270 *hSession) {
 static unsigned from6(H3270 *hSession, unsigned char c) {
 	char *p;
 
-	c = hSession->charset.ebc2asc[c];
+	c = ebc2asc(hSession,c)[0];
 	p = strchr(table6, c);
 	if (p == CN)
 		return 0;

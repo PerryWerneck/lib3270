@@ -65,13 +65,13 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name) {
 
 LIB3270_EXPORT int lib3270_set_display_charset(H3270 *hSession, const char *name) {
 
-	if(name && *name && hSession->charset.display && *hSession->charset.display && !strcasecmp(name,hSession->charset.display)) {
-		debug("Display charset is already \"%s\", returning",hSession->charset.host);
-		return 0;
-	}
-
 	if(!(name && *name)) {
 		name = "ISO-8859-1";
+	}
+
+	if(hSession->charset.display && *hSession->charset.display && !strcasecmp(name,hSession->charset.display)) {
+		debug("Display charset is already \"%s\", returning",hSession->charset.display);
+		return 0;
 	}
 
 	if(strcasecmp(name,"ISO-8859-1")) {

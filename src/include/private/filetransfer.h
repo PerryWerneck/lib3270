@@ -147,7 +147,7 @@ struct _h3270ft {
 		unsigned short 		  asc2ebc[256];
 		// unsigned short		  asc2uc[256];
 
-	} charset
+	} charset;
 
 };
 

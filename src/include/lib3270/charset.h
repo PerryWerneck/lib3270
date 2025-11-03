@@ -18,6 +18,7 @@
  */
 
 #pragma once
+#include <lib3270/defs.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,18 +26,6 @@ extern "C" {
 
 #define LIB3270_DEFAULT_CGEN			0x02b90000
 #define LIB3270_DEFAULT_CSET			0x00000025
-
-struct lib3270_charset {
-	char			* host;
-	char			* display;
-	unsigned long	  cgcsgid;
-
-	// Translation tables
-	unsigned short		  ebc2asc[256];
-	unsigned short 		  asc2ebc[256];
-	unsigned short		  asc2uc[256];
-
-};
 
 typedef enum {
 	CS_ONLY,
@@ -62,9 +51,10 @@ LIB3270_EXPORT int			  lib3270_set_display_charset(H3270 *hSession, const char *
 
 LIB3270_EXPORT const char	* lib3270_get_display_charset(const H3270 *hSession);
 
-LIB3270_EXPORT void			  lib3270_remap_char(H3270 *hSession, unsigned short ebc, unsigned short iso, lib3270_remap_scope scope, unsigned char one_way);
-LIB3270_EXPORT const char	* lib3270_ebc2asc(H3270 *hSession, unsigned char *buffer, int sz);
-LIB3270_EXPORT const char	* lib3270_asc2ebc(H3270 *hSession, unsigned char *buffer, int sz);
+LIB3270_EXPORT int			  lib3270_remap_char(H3270 *hSession, unsigned short ebc, const char *iso, lib3270_remap_scope scope, unsigned char one_way);
+
+LIB3270_DEPRECATED(LIB3270_EXPORT const char	* lib3270_ebc2asc(H3270 *hSession, unsigned char *buffer, int sz));
+LIB3270_DEPRECATED(LIB3270_EXPORT const char	* lib3270_asc2ebc(H3270 *hSession, unsigned char *buffer, int sz));
 
 /**
  * @brief Get character code from string definition.

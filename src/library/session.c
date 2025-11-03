@@ -29,6 +29,7 @@
 #include <lib3270/defs.h>
 #include <lib3270/popup.h>
 #include <lib3270/memory.h>
+#include <lib3270/charset.h>
 
 #include <private/defs.h>
 #include <private/session.h>
@@ -117,10 +118,15 @@ void lib3270_session_free(H3270 *h) {
 		h->lu.names = NULL;
 	}
 
+	// Finalize charset
+	if(h->charset.context && h->charset.finalize) {
+		h->charset.finalize(h, h->charset.context);
+		h->charset.context = NULL;
+	}
+
 	// Release memory
 	#define release_pointer(x) lib3270_free(x); x = NULL;
 
-	// release_pointer(h->charset.display);
 	release_pointer(h->paste_buffer);
 
 	release_pointer(h->ibuf);

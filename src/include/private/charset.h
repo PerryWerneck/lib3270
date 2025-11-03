@@ -29,6 +29,7 @@
  } remap;
 
  const LIB3270_INTERNAL remap internal_remaps[];
+ const LIB3270_INTERNAL char * ebc2iso8859[256];
 
  // EBCDIC-to-Unicode translation tables.
  // Each table maps EBCDIC codes X'41' through X'FE' to UCS-2.
@@ -40,5 +41,9 @@
  /// @param hSession The session handle.
  /// @return 0 on success, error code on failure (sets errno).
  /// @retval EINVAL Unable to set iso-8859-1 charset.
- LIB3270_INTERNAL int lib3270_set_iso_8859_1_charset(H3270 *hSession);
+ LIB3270_INTERNAL int set_iso_8859_1_charset(H3270 *hSession);
+
+ /// @brief Reload charset tables.
+ /// @param hSession The session handle.
+ LIB3270_INTERNAL int reload_charset_tables(H3270 *hSession);
 

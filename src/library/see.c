@@ -88,8 +88,8 @@ const char *see_ebc(H3270 *hSession, unsigned char ch) {
 		return "SO";
 	}
 
-	if (hSession->charset.ebc2asc[ch])
-		(void) sprintf(buf,"%c", hSession->charset.ebc2asc[ch]);
+	if(ebc2asc(hSession,ch))
+		(void) sprintf(buf,"%s", ebc2asc(hSession,ch));
 	else
 		(void) sprintf(buf, "\\%o", ch);
 

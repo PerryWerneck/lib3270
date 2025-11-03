@@ -68,6 +68,7 @@ struct ta;
 #include "screenc.h"
 #include <private/screen.h>
 #include <private/status.h>
+#include <private/session.h>
 #include "telnetc.h"
 #include <private/toggle.h>
 #include <private/trace.h>
@@ -919,7 +920,7 @@ int key_ACharacter(H3270 *hSession, unsigned char c, enum keytype keytype, enum 
 			trace_event(hSession,"  dropped (control char)\n");
 			return errno = EINVAL;
 		}
-		(void) key_Character(hSession, (int) hSession->charset.asc2ebc[c], keytype == KT_GE, False, skipped);
+		(void) key_Character(hSession, (int) int2ebc(hSession,c), keytype == KT_GE, False, skipped);
 	}
 #if defined(X3270_ANSI) /*[*/
 	else if (IN_ANSI) {

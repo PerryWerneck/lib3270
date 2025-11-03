@@ -26,7 +26,7 @@
  */
 
 #include <internals.h>
-#include <lib3270/filetransfer.h>
+#include <private/filetransfer.h>
 #include <lib3270/trace.h>
 
 #include <errno.h>

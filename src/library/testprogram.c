@@ -34,26 +34,26 @@
  #include <lib3270/contents.h>
  #include <lib3270/charset.h>
 
- static int test_charset(H3270 *hSession) {
+ #include <private/session.h>
 
-	//
-	// First dump using the default charset
-	//
-	const char * charset = lib3270_get_display_charset(hSession);
-	printf("Display charset is '%s'\n",charset);
+ static int test_charset(H3270 *hSession, const char *charset) {
+
+	printf("\n------------------------- Testing charset: %s\n",charset);
+	int rc = lib3270_set_display_charset(hSession,charset);
+	if(rc) {
+		printf("lib3270_set_display_charset(%s) failed with rc=%d\n",charset,rc);
+		return rc;
+	}
 
 	lib3270_testpattern(hSession);
 
 	unsigned int cols = lib3270_get_width(hSession);
-	char buffer[cols*4];
 
 	lib3270_autoptr(LIB3270_ICONV) iconv = lib3270_iconv_new(charset,"UTF-8");
 
 	for(unsigned int row = 0; row < lib3270_get_height(hSession); row++) {
 
-		memset(buffer,0,cols*4);
 		int baddr = lib3270_translate_to_address(hSession,row+1,1);
-
 		lib3270_autoptr(char) line = lib3270_get_string_at_address(hSession,baddr,cols,0);
 		lib3270_autoptr(char) text = lib3270_iconv_from_host(iconv, line, cols);
 
@@ -62,13 +62,14 @@
 	}
 
 	return 0;
- }
+
+}
 
  int main(int argc, const char *argv[]) {
 
 	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
 
-	test_charset(hSession);
+	test_charset(hSession,"ISO-8859-1");
 
 	return 0;
  }

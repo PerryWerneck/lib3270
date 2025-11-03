@@ -90,7 +90,10 @@ typedef enum _lib3270_attr {
 
 	LIB3270_ATTR_COLOR					= 0x000F,
 
-	LIB3270_ATTR_INVERT					= 0x0080,
+	LIB3270_ATTR_INVERT					= 0x0010,
+	LIB3270_ATTR_SELECTED				= 0x0020,
+	LIB3270_ATTR_MARKER					= 0x0040,
+	LIB3270_ATTR_BACKGROUND_INTENSITY	= 0x0080,
 
 	LIB3270_ATTR_FIELD					= 0x0100,
 	LIB3270_ATTR_BLINK					= 0x0200,
@@ -98,9 +101,7 @@ typedef enum _lib3270_attr {
 	LIB3270_ATTR_INTENSIFY				= 0x0800,
 
 	LIB3270_ATTR_CG						= 0x1000,
-	LIB3270_ATTR_MARKER					= 0x2000,
-	LIB3270_ATTR_BACKGROUND_INTENSITY	= 0x4000,
-	LIB3270_ATTR_SELECTED				= 0x8000
+	LIB3270_ATTR_LINEDRAW				= 0x2000,
 
 } LIB3270_ATTR;
 
@@ -494,18 +495,12 @@ LIB3270_EXPORT const char * lib3270_state_get_name(const LIB3270_STATE state);
  */
 LIB3270_EXPORT int lib3270_emulate_input(H3270 *session, const char *s, int len, int pasting);
 
-/**
- * @brief Converts row/col in a buffer address.
- *
- * @param hSession	TN3270 Session.
- * @param row		Row inside the screen.
- * @param col		Col inside the screen.
- *
- * @return Current address or negative if invalid (sets errno).
- *
- * @retval -EOVERFLOW	The coordinates are out of the screen.
- *
- */
+/// @brief Converts row/col in a buffer address.
+/// @param hSession	Session handle.
+/// @param row		Row inside the screen.
+/// @param col		Col inside the screen.
+/// @return Current address or negative if invalid (sets errno).
+/// @retval -EOVERFLOW	The coordinates are out of the screen.
 LIB3270_EXPORT int lib3270_translate_to_address(const H3270 *hSession, unsigned int row, unsigned int col);
 
 /**
@@ -745,7 +740,7 @@ LIB3270_EXPORT int lib3270_load(H3270 *hSession, const char *filename);
  * @param attr	Pointer to buffer which will receive the chars attributes.
  *
  */
-LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr);
+// LIB3270_EXPORT int lib3270_get_contents(H3270 *h, int first, int last, unsigned char *chr, unsigned short *attr);
 
 /**
  * @brief Get program message.
@@ -1036,7 +1031,7 @@ LIB3270_EXPORT int lib3270_field_length(H3270 *h, int baddr);
  * @return 0 if ok, -1 if fails (sets errno).
  *
  */
-LIB3270_EXPORT int lib3270_get_element(H3270 *h, unsigned int baddr, unsigned char *c, unsigned short *attr);
+// LIB3270_EXPORT int lib3270_get_element(H3270 *h, unsigned int baddr, unsigned char *c, unsigned short *attr);
 
 /**
  * @brief Check if the informed addr is marked as selected.

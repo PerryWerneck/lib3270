@@ -347,7 +347,7 @@ pkg_variables = [
   'product_domain=@0@'.format(product_domain),
   'schema_path=@0@'.format(product_path),
 
-  'plugin_path=@0@/@0@/@1@.@2@/plugins/'.format(
+  'plugin_path=@0@/@1@/@2@.@3@/plugins/'.format(
       get_option('libdir'),
       product_name,
       pkg_major_version,
@@ -687,7 +687,7 @@ install_headers(
 install_headers(
   'src/include/lib3270/actions.h',
   'src/include/lib3270/charset.h',
-  'src/include/lib3270/filetransfer.h',
+  'src/include/private/filetransfer.h',
   'src/include/lib3270/memory.h',
   'src/include/lib3270.h',
   'src/include/lib3270/keyboard.h',

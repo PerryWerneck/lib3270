@@ -18,3 +18,15 @@
    ...
    fun:getaddrinfo_a
 }
+
+{
+   original_x3270_code
+   Memcheck:Addr1
+   fun:calc_attrs
+   fun:screen_update
+   fun:screen_disp
+   fun:lib3270_testpattern
+   fun:test_charset
+   fun:main
+}
+

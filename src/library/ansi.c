@@ -30,6 +30,7 @@
 #endif // _WIN32
 
 #include <internals.h>
+#include <private/session.h>
 #include <lib3270/toggle.h>
 #include <lib3270/memory.h>
 
@@ -49,7 +50,6 @@
 #include "screenc.h"
 #include "telnetc.h"
 #include <private/trace.h>
-//#include "utf8c.h"
 #if defined(X3270_DBCS) /*[*/
 #include "widec.h"
 #endif /*]*/
@@ -1040,16 +1040,16 @@ ansi_printing(H3270 *hSession, int GNUC_UNUSED(ig1), int GNUC_UNUSED(ig2)) {
 		if (hSession->ansi_ch >= 0x5f && hSession->ansi_ch <= 0x7e)
 			ctlr_add(hSession,hSession->cursor_addr, (unsigned char)(hSession->ansi_ch - 0x5f),CS_LINEDRAW);
 		else
-			ctlr_add(hSession,hSession->cursor_addr, hSession->charset.asc2ebc[hSession->ansi_ch], CS_BASE);
+			ctlr_add(hSession,hSession->cursor_addr, int2ebc(hSession,hSession->ansi_ch), CS_BASE);
 		break;
 	case CSD_UK:	/* UK "A" */
 		if (hSession->ansi_ch == '#')
 			ctlr_add(hSession,hSession->cursor_addr, 0x1e, CS_LINEDRAW);
 		else
-			ctlr_add(hSession,hSession->cursor_addr, hSession->charset.asc2ebc[hSession->ansi_ch], CS_BASE);
+			ctlr_add(hSession,hSession->cursor_addr, int2ebc(hSession,hSession->ansi_ch), CS_BASE);
 		break;
 	case CSD_US:	/* US "B" */
-		ebc_ch = hSession->charset.asc2ebc[hSession->ansi_ch];
+		ebc_ch = int2ebc(hSession,hSession->ansi_ch);
 #if defined(X3270_DBCS) /*[*/
 		d = ctlr_dbcs_state(cursor_addr);
 		if (dbcs) {

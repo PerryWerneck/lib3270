@@ -30,7 +30,6 @@
  #include <lib3270.h>
  #include <lib3270/toggle.h>
  #include <lib3270/session.h>
- #include <lib3270/charset.h>
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
  #include <sys/time.h>
@@ -52,9 +51,10 @@
 
  typedef struct _lib3270_timer_context LIB3270_TIMER_CONTEXT;
  typedef struct _lib3270_poll_context LIB3270_POLL_CONTEXT;
-
+ typedef struct _lib3270_charset_context LIB3270_CHARSET_CONTEXT;
+ 
  struct lib3270_text {
-	unsigned char  chr;		///< @brief ASCII character code
+	const char *chr;		///< @brief ASCII character
 	unsigned short attr;	///< @brief Converted character attribute (color & etc)
  };
 
@@ -68,6 +68,26 @@
 	unsigned char cs;		///< @brief character set (GE flag, or 0..2)
 	unsigned char ic;		///< @brief input control (DBCS)
 	unsigned char db;		///< @brief DBCS state
+ };
+
+ struct lib3270_charset {
+
+	char			* host;				///< @brief Host charset name
+	char			* display;			///< @brief Display charset name
+	unsigned long	  cgcsgid;			///< @brief CGCSGID code
+
+ 	LIB3270_CHARSET_CONTEXT * context;	///< @brief Charset context.
+
+	const unsigned char (*asc2ebc)(const LIB3270_CHARSET_CONTEXT *context, const char *asc);
+	const char * (*ebc2asc)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
+	const char * (*ebc2cg)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
+
+	// FIXME: Is this really necessary?
+	const char * (*ebc2uc)(const LIB3270_CHARSET_CONTEXT *context, unsigned short ebc);
+	
+	int (*remap)(H3270 *session, unsigned short ebc, const char *iso, int scope, unsigned char one_way);
+	void (*finalize)(H3270 *session, LIB3270_CHARSET_CONTEXT * context);
+
  };
 
  struct _h3270 {
@@ -430,7 +450,7 @@
 		LIB3270_SSL_MESSAGE		message;				///< @brief SSL message for connection.
 		unsigned short			crl_preferred_protocol;	///< @brief The CRL Preferred protocol.
 
-		// Function to start TLS/SSL connection.
+		// Callback to start TLS/SSL connection.
 		int (*start)(H3270 *hSession, void (*complete)(H3270 *hSession));
 		
 	} ssl;
@@ -450,4 +470,59 @@
 
 	unsigned int tasks;
 
-};
+ };
+
+ /// @brief Convert integer to EBCDIC character code.
+ /// @param session The session handle
+ /// @param v The integer value for ascii character code.
+ /// @return The EBCDIC character code. 
+ __attribute__((always_inline)) inline const unsigned char int2ebc(H3270 *session, const int v) {
+	char asc[2] = { (char)(v & 0xFF), '\0' };
+	return session->charset.asc2ebc(session->charset.context, asc);
+ }
+
+ /// @brief Convert ASCII string to EBCDIC character code.
+ /// @param session The session handle
+ /// @param asc The ascii string.
+ /// @return The EBCDIC character code.
+ __attribute__((always_inline)) inline const unsigned char asc2ebc(H3270 *session, const char *asc) {
+	return session->charset.asc2ebc(session->charset.context, asc);
+ }
+
+ /// @brief Convert EBCDIC character code to upercase string.
+ /// @param session The session handle
+ /// @param ebc The EBCDIC character code.
+ /// @return Pointer to the ASCII uppercase string.
+ __attribute__((always_inline)) inline const char * ebc2uc(H3270 *session, unsigned short ebc) {
+	return session->charset.ebc2uc(session->charset.context, ebc);
+ }
+
+ /// @brief Convert EBCDIC character code to ASCII string.
+ /// @param session The session handle
+ /// @param ebc The EBCDIC character code.
+ /// @return Pointer to the ASCII string.
+ __attribute__((always_inline)) inline const char * ebc2asc(H3270 *session, unsigned short ebc) {
+	return session->charset.ebc2asc(session->charset.context, ebc);
+ }
+
+ /// @brief Convert EBCDIC character code to CGCSGID string.
+ /// @param session The session handle
+ /// @param ebc The EBCDIC character code.
+ /// @return Pointer to the ASCII string.
+ __attribute__((always_inline)) inline const char * ebc2cg(H3270 *session, unsigned short ebc) {
+	return session->charset.ebc2cg(session->charset.context, ebc);
+ }
+
+ /// @brief Notify the screen that the character at given address has changed.
+ /// @param hSession The session handle.
+ /// @param baddr The address of the character that has changed.
+ __attribute__((always_inline)) inline void screen_update_addr(H3270 *hSession, int baddr) {
+	hSession->cbk.update(
+		hSession,
+		baddr,
+		hSession->ea_buf[baddr].cs,
+		hSession->text[baddr].chr,
+		hSession->text[baddr].attr,
+		baddr == hSession->cursor_addr
+	);
+ }

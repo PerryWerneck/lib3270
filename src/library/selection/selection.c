@@ -33,6 +33,8 @@
 #include <lib3270/log.h>
 #include <lib3270/memory.h>
 #include <private/3270ds.h>
+#include <private/screen.h>
+#include <private/util.h>
 #include "kybdc.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -81,7 +83,7 @@ static void update_selected_rectangle(H3270 *session) {
 		for(col = 0; col < ((int) session->view.cols); col++) {
 			if(!(row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && (session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 				session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
-				session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+				screen_update_addr(session,baddr);
 			}
 			baddr++;
 		}
@@ -93,7 +95,7 @@ static void update_selected_rectangle(H3270 *session) {
 		for(col = 0; col < ((int) session->view.cols); col++) {
 			if((row >= p[0].row && row <= p[1].row && col >= p[0].col && col <= p[1].col) && !(session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 				session->text[baddr].attr |= LIB3270_ATTR_SELECTED;
-				session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+				screen_update_addr(session,baddr);
 			}
 			baddr++;
 		}
@@ -111,14 +113,14 @@ static void update_selected_region(H3270 *session) {
 	for(baddr = 0; baddr < begin; baddr++) {
 		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 			session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
-			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+			screen_update_addr(session,baddr);
 		}
 	}
 
 	for(baddr = end+1; baddr < len; baddr++) {
 		if(session->text[baddr].attr & LIB3270_ATTR_SELECTED) {
 			session->text[baddr].attr &= ~LIB3270_ATTR_SELECTED;
-			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+			screen_update_addr(session,baddr);
 		}
 	}
 
@@ -126,7 +128,7 @@ static void update_selected_region(H3270 *session) {
 	for(baddr = begin; baddr <= end; baddr++) {
 		if(!(session->text[baddr].attr & LIB3270_ATTR_SELECTED)) {
 			session->text[baddr].attr |= LIB3270_ATTR_SELECTED;
-			session->cbk.update(session,baddr,session->text[baddr].chr,session->text[baddr].attr,baddr == session->cursor_addr);
+			screen_update_addr(session,baddr);
 		}
 	}
 
@@ -214,9 +216,9 @@ LIB3270_EXPORT unsigned char lib3270_get_selection_flags(H3270 *hSession, int ba
 }
 
 LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, unsigned char all) {
-	char *	text;
+
+	char *	text = NULL;
 	int 	maxlen;
-	int		sz = 0;
 	int		baddr;
 
 	if(check_online_session(h))
@@ -227,24 +229,20 @@ LIB3270_EXPORT char * lib3270_get_region(H3270 *h, int start_pos, int end_pos, u
 	if(start_pos < 0 || start_pos > maxlen || end_pos < 0 || end_pos > maxlen || end_pos < start_pos)
 		return NULL;
 
-	text = lib3270_malloc(maxlen);
-
 	for(baddr=start_pos; baddr<end_pos; baddr++) {
+
 		if(all || h->text[baddr].attr & LIB3270_ATTR_SELECTED)
-			text[sz++] = (h->text[baddr].attr & LIB3270_ATTR_CG) ? ' ' : h->text[baddr].chr;
+			text = append_string(text,h->text[baddr].chr);
 
-		if((baddr%h->view.cols) == 0 && sz > 0)
-			text[sz++] = '\n';
+		if((baddr%h->view.cols) == 0 && text && text[0])
+			text = append_string(text,"\n");
 	}
-	text[sz++] = 0;
 
-	return lib3270_realloc(text,sz);
+	return text;
+
 }
 
-LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, char lf) {
-	char * buffer;
-	int    maxlen;
-	char * ptr;
+LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int len, const char *lf) {
 
 #ifndef DEBUG
 	if(!lib3270_is_connected(h)) {
@@ -256,47 +254,29 @@ LIB3270_EXPORT char * lib3270_get_string_at_address(H3270 *h, int offset, int le
 	if(offset < 0)
 		offset = lib3270_get_cursor_address(h);
 
-	maxlen = (h->view.rows * (h->view.cols+ (lf ? 1 : 0) )) - offset;
-	if(maxlen <= 0 || offset < 0) {
+	if(offset > (h->view.rows * h->view.cols)) {
 		errno = EOVERFLOW;
 		return NULL;
 	}
 
-	if(len < 0 || len > maxlen)
-		len = maxlen;
-
-	buffer	= lib3270_malloc(len+1);
-	ptr		= buffer;
-
-	memset(buffer,0,len+1);
-
-	// debug("len=%d buffer=%p",len,buffer);
+	string_buffer sb = { NULL, 0 };
 
 	while(len > 0) {
-		if(h->text[offset].attr & LIB3270_ATTR_CG)
-			*ptr = ' ';
-		else if(h->text[offset].chr)
-			*ptr = h->text[offset].chr;
-		else
-			*ptr = ' ';
-
-		ptr++;
+		// debug("Getting char at %d '%s' (len=%d)",offset,h->text[offset].chr,len);
+		string_buffer_append(&sb,h->text[offset].chr);
 		offset++;
 		len--;
 
 		if(lf && (offset%h->view.cols) == 0 && len > 0) {
-			*(ptr++) = lf;
+			string_buffer_append(&sb,lf);
 			len--;
 		}
 	}
-//	debug("len=%d buffer=%p pos=%d",len,buffer,ptr-buffer);
 
-	*ptr = 0;
-
-	return buffer;
+	return sb.buf;
 }
 
-LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, char lf) {
+LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned int col, int len, const char *lf) {
 
 	int baddr = lib3270_translate_to_address(h,row,col);
 	if(baddr < 0)
@@ -305,7 +285,7 @@ LIB3270_EXPORT char * lib3270_get_string_at(H3270 *h, unsigned int row, unsigned
 	return lib3270_get_string_at_address(h, baddr, len, lf);
 }
 
-LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, char lf) {
+LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned int col, const char *text, const char *lf) {
 	int baddr = lib3270_translate_to_address(h,row,col);
 	if(baddr < 0)
 		return -1;
@@ -313,7 +293,7 @@ LIB3270_EXPORT int lib3270_cmp_string_at(H3270 *h, unsigned int row, unsigned in
 	return lib3270_cmp_string_at_address(h,baddr,text,lf);
 }
 
-LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, char lf) {
+LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char *text, const char *lf) {
 	int		  rc;
 	size_t	  sz		= strlen(text);
 	char	* contents;
@@ -329,15 +309,6 @@ LIB3270_EXPORT int lib3270_cmp_string_at_address(H3270 *h, int baddr, const char
 	return rc;
 }
 
-
-/**
- * Get field contents
- *
- * @param session	Session handle
- * @param baddr		Field addr
- *
- * @return String with the field contents (release it with lib3270_free()
- */
 LIB3270_EXPORT char * lib3270_get_field_string_at(H3270 *session, int baddr) {
 	int first = lib3270_field_addr(session,baddr);
 
@@ -355,9 +326,9 @@ LIB3270_EXPORT int lib3270_get_has_selection(const H3270 *hSession) {
 	return hSession->selected ? 1 : 0;
 }
 
-LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession) {
-	return lib3270_get_has_selection(hSession);
-}
+//LIB3270_EXPORT int lib3270_has_selection(const H3270 *hSession) {
+//	return lib3270_get_has_selection(hSession);
+//}
 
 LIB3270_EXPORT int lib3270_get_has_copy(const H3270 *hSession) {
 	errno = 0;
@@ -371,8 +342,6 @@ LIB3270_EXPORT void lib3270_set_has_copy(H3270 *hSession, int has_copy) {
 	hSession->has_copy = has_copy ? 1 : 0;
 	lib3270_action_group_notify(hSession,LIB3270_ACTION_GROUP_COPY);
 }
-
-
 
 LIB3270_EXPORT int lib3270_get_selection_rectangle(H3270 *hSession, unsigned int *row, unsigned int *col, unsigned int *width, unsigned int *height) {
 	unsigned int r, c, minRow, minCol, maxRow, maxCol, baddr, count;

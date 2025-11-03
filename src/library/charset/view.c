@@ -68,7 +68,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 		hSession->ea_buf[baddr+s].fg = hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_GRAY;
 		hSession->ea_buf[baddr+s].bg = hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr+s].cs = hSession->ea_buf[baddr].cs = 0;
-		hSession->ea_buf[baddr+s].cc = hSession->ea_buf[baddr].cc = hSession->charset.asc2ebc[(int) hChars[f]];
+		hSession->ea_buf[baddr+s].cc = hSession->ea_buf[baddr].cc = asc2ebc(hSession,hChars+f);
 		hSession->ea_buf[baddr+s].gr = hSession->ea_buf[baddr].gr = 0;
 	}
 
@@ -78,7 +78,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 		hSession->ea_buf[baddr+s].fg = hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_GRAY;
 		hSession->ea_buf[baddr+s].bg = hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr+s].cs = hSession->ea_buf[baddr].cs = 0;
-		hSession->ea_buf[baddr+s].cc = hSession->ea_buf[baddr].cc = hSession->charset.asc2ebc[(int) hChars[f]];
+		hSession->ea_buf[baddr+s].cc = hSession->ea_buf[baddr].cc = asc2ebc(hSession,hChars+f);
 		hSession->ea_buf[baddr+s].gr = hSession->ea_buf[baddr].gr = 0;
 		baddr += hSession->max.cols;
 	}
@@ -102,7 +102,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 		hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_WHITE;
 		hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr].cs = 0;
-		hSession->ea_buf[baddr].cc = hSession->charset.asc2ebc[(int) *ptr];
+		hSession->ea_buf[baddr].cc = asc2ebc(hSession,ptr);
 		hSession->ea_buf[baddr].gr = 0;
 		baddr++;
 	}
@@ -112,7 +112,7 @@ LIB3270_EXPORT int lib3270_charsettable(H3270 *hSession) {
 		hSession->ea_buf[baddr].fg = LIB3270_ATTR_COLOR_YELLOW;
 		hSession->ea_buf[baddr].bg = LIB3270_ATTR_COLOR_BLACK;
 		hSession->ea_buf[baddr].cs = 0;
-		hSession->ea_buf[baddr].cc = hSession->charset.asc2ebc[(int) *ptr];
+		hSession->ea_buf[baddr].cc = asc2ebc(hSession,ptr);
 		hSession->ea_buf[baddr].gr = 0;
 		baddr++;
 	}

@@ -1369,7 +1369,7 @@ static void process_bind(H3270 *hSession, unsigned char *buf, int buflen) {
 	if (namelen > BIND_PLU_NAME_MAX)
 		namelen = BIND_PLU_NAME_MAX;
 	for (i = 0; i < namelen; i++) {
-		hSession->plu_name[i] = hSession->charset.ebc2asc[buf[BIND_OFF_PLU_NAME + i]];
+		hSession->plu_name[i] = ebc2asc(hSession,buf[BIND_OFF_PLU_NAME + i])[0];
 	}
 }
 #endif /*]*/
@@ -2079,7 +2079,7 @@ void trace_netdata(H3270 *hSession, char direction, unsigned const char *buf, in
 		for (offset = 0; offset < len; offset++) {
 			unsigned char text[4];
 
-			text[0] = hSession->charset.ebc2asc[buf[offset]];
+			text[0] = ebc2asc(hSession,buf[offset])[0];
 			l1[col] = (text[0] >= ' ' ? text[0] : '.');
 
 			snprintf((char *) text,4,"%02x",buf[offset]);

@@ -59,26 +59,26 @@ LIB3270_EXPORT int lib3270_set_host_charset(H3270 *hSession, const char *name) {
 		lib3270_replace(hSession->charset.host, "us");
 	}
 
-	return lib3270_set_iso_8859_1_charset(hSession);
+	return reload_charset_tables(hSession);
 
 }
 
 LIB3270_EXPORT int lib3270_set_display_charset(H3270 *hSession, const char *name) {
 
-	if(name && *name && hSession->charset.display && *hSession->charset.display && !strcasecmp(name,hSession->charset.display)) {
-		debug("Display charset is already \"%s\", returning",hSession->charset.host);
-		return 0;
-	}
-
 	if(!(name && *name)) {
 		name = "ISO-8859-1";
+	}
+
+	if(hSession->charset.display && *hSession->charset.display && !strcasecmp(name,hSession->charset.display)) {
+		debug("Display charset is already \"%s\", returning",hSession->charset.display);
+		return 0;
 	}
 
 	if(strcasecmp(name,"ISO-8859-1")) {
 		return errno = ENOENT;
 	}
 
-	return lib3270_set_iso_8859_1_charset(hSession);
+	return reload_charset_tables(hSession);
 
 }
 

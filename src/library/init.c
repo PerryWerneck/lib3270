@@ -42,6 +42,7 @@
 #endif // HAVE_LIBCURL
 
 #include <lib3270.h>
+#include <lib3270/memory.h>
 
 #ifdef _WIN32
 #include <winsock2.h>

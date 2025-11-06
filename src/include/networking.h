@@ -209,7 +209,7 @@ LIB3270_INTERNAL int	  lib3270_network_connect(H3270 *hSession, LIB3270_NETWORK_
  */
 // LIB3270_INTERNAL int lib3270_socket_send_failed(H3270 *hSession);
 
-// LIB3270_INTERNAL int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on);
+LIB3270_INTERNAL int lib3270_socket_set_non_blocking(H3270 *hSession, int sock, const unsigned char on);
 
 /**
  * @breif Select the network context from URL.

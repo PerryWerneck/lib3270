@@ -127,7 +127,7 @@ int connection_write_offline(H3270 *hSession, const void *a , size_t v, LIB3270_
 	return -ENOTCONN;
 }
 
-int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *) {
+int connection_except_offline(H3270 *hSession, LIB3270_NET_CONTEXT *c) {
 	lib3270_log_write(hSession,"3270","Attempt to activate exception handler on a disconnected session");
 	return -ENOTCONN;
 }

@@ -49,6 +49,7 @@
 #include <lib3270/toggle.h>
 #include <private/session.h>
 #include <lib3270/trace.h>
+#include <limits.h>
 
 #ifdef HAVE_LINUX_LIMITS_H
 	#include <linux/limits.h>
@@ -326,12 +327,12 @@ struct trace_file_context {
 	FILE *fp;
 };
 
- static void write_file(const H3270 *, struct trace_file_context *context, const char *fmt, va_list args) {
+ static void write_file(const H3270 *hSession, struct trace_file_context *context, const char *fmt, va_list args) {
 	vfprintf(context->fp,fmt,args);
 	fflush(context->fp);
  }
 
- static void finalize_file(const H3270 *session, struct trace_file_context *context) {
+ static void finalize_file(const H3270 *hSession, struct trace_file_context *context) {
 	fclose(context->fp);
 	lib3270_free(context);
  }

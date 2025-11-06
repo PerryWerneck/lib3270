@@ -29,6 +29,7 @@
 
 #include "private.h"
 #include <private/util.h>
+#include <lib3270/memory.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

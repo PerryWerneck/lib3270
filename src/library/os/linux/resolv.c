@@ -93,7 +93,7 @@
 		context->list[0] = NULL;
 	}
 
-	debug("%s: DISCONNECT rc=%d",__FUNCTION__,rc);
+	debug("%s: rc=%d",__FUNCTION__,rc);
 
 	return rc;
  }
@@ -195,6 +195,7 @@
 
 				failed(hSession,context);
 				lib3270_popup(hSession, &popup, 0);
+				return;
 
 			} else {
 
@@ -235,12 +236,16 @@
 						continue;
 					} else if(connect_socket(hSession, sock, ai->ai_addr, ai->ai_addrlen) == 0) {
 						// Connect socket suceeded, the context was replaced, release it.
+						debug("%s: Connected socket %d",__FUNCTION__,sock);
 						freeaddrinfo(req->ar_result);
 						req->ar_result = NULL;	
+						close(context->sock);
+						context->sock = -1;
 						finalize(hSession,context);
 						return;
 					} else {
 						// Socket was rejected, close it.
+						debug("%s: Connect socket %d failed: %s",__FUNCTION__,sock,strerror(errno));
 						close(sock);
 					}
 
@@ -333,6 +338,8 @@
 
 	// Setup DNS search
 	context->list[0] = malloc(sizeof(struct gaicb));
+	memset(context->list[0],0,sizeof(struct gaicb));
+
 	context->list[0]->ar_name = context->hostname;
 	context->list[0]->ar_service = context->service;
 
@@ -375,7 +382,7 @@
 	}
 
 	context->timer = hSession->timer.add(hSession,timeout*1000,(void *) net_timeout,context);
-	context->resolved = hSession->poll.add(hSession,context->sock,LIB3270_IO_FLAG_READ,(void *) net_response,context);
+	context->resolved = hSession->poll.add(hSession,context->sock,LIB3270_IO_FLAG_READ,(void *) net_response, context);
 
 	return (LIB3270_NET_CONTEXT *) context;
  }

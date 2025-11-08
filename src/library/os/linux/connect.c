@@ -289,6 +289,8 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	if(connect(sock,addr,addrlen) && errno != EINPROGRESS) {
 
 		int error = errno;
+		debug("%s: connect() failed: %s",__FUNCTION__,strerror(error));
+
 		close(sock);
 
 		trace_network(
@@ -296,7 +298,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 			"Connection failed: %s\n",
 			strerror(error)
 		);
-
+		
 		return error;
 	}
 
@@ -352,7 +354,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 	Context *context = lib3270_malloc(sizeof(Context));
 	memset(context,0,sizeof(Context));
 
-	context->sock = -1;
+	context->sock = -1;	// It's no connected yet.
 	context->parent.disconnect = (void *) net_disconnect;
 	context->parent.finalize = (void *) net_finalize;
 
@@ -362,6 +364,7 @@ static int net_disconnect(H3270 *hSession, Context *context) {
 
 	hSession->connection.context = (LIB3270_NET_CONTEXT *) context;
 
+	debug("%s: Socket %d is connected, waiting...",__FUNCTION__,sock);
 	return 0;
 
  }

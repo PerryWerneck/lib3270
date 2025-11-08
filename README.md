@@ -167,7 +167,7 @@ Install
 
 	```shell
 	brew update
-	brew install xz meson ninja curl gettext openssl pkgconfig
+	brew install xz meson ninja curl gettext openssl pkgconfig uriparser
 	brew upgrade
 	```
 
@@ -182,7 +182,7 @@ Install
 
 	```shell
 	export PKG_CONFIG_PATH="$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix openssl)/lib/pkgconfig"
-	meson setup --prefix=$(brew --prefix)/Cellar/lib3270/$(grep 'version:' meson.build | cut -d: -f2 | cut -d\' -f2) --reconfigure --wipe .build
+	meson setup --prefix=$(brew --prefix)/Cellar/lib3270/$(grep 'version:' meson.build | head -n 1 | cut -d: -f2 | cut -d\' -f2) .build
 	meson compile -C .build
 	meson install -C .build
 	brew link lib3270
@@ -196,6 +196,8 @@ Uninstall
 	```
 	
 ### Using jhbuild
+
+[DEPRECATED]
 
 1. Install jhbuild
 

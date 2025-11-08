@@ -37,6 +37,13 @@
 
 LIB3270_EXPORT void lib3270_popup_async(H3270 *hSession, const LIB3270_POPUP *popup) {
 
+#ifdef DEBUG 
+	debug("%s: type=0x%04X title='%s' summary='%s' body='%s'",__FUNCTION__,popup->type,
+		popup->title ? popup->title : "",
+		popup->summary ? popup->summary : "",
+		popup->body ? popup->body : "");
+#endif // DEBUG
+
 	if(hSession->trace && lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE)) {
 
 		trace_event(hSession,"%s",popup->name);

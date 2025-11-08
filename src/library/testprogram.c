@@ -36,6 +36,30 @@
 
  #include <private/session.h>
 
+ static char enabled = 1;
+
+ static void run(H3270 *hSession) {
+#ifdef _WIN32
+	BOOL bRet;
+	MSG msg;
+	while( (bRet = GetMessage( &msg, NULL, 0, 0 )) != 0) { 
+		if (bRet == -1) {
+			exit(-1);
+		} else {
+			TranslateMessage(&msg); 
+			DispatchMessage(&msg); 
+		}
+	} 
+#else
+	while(enabled) {
+		if(lib3270_mainloop_run(hSession,1) < 0) {
+			break;
+		}
+	}
+#endif
+
+ }
+
  static int test_charset(H3270 *hSession, const char *charset) {
 
 	printf("\n------------------------- Testing charset: %s\n",charset);
@@ -63,13 +87,44 @@
 
 	return 0;
 
-}
+ }
+
+ static int test_connect(H3270 *hSession, const char *host) {
+
+	lib3270_set_url(hSession,host);
+	int rc = lib3270_connect(hSession,30);
+
+ 	if(rc) {
+		printf("lib3270_connect(%s) failed with rc=%d\n",host,rc);
+		return rc;
+	}
+
+	run(hSession);
+
+	return 0;
+ }
 
  int main(int argc, const char *argv[]) {
 
-	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
+#ifdef _WIN32
+	{
+		WSADATA WSAData;
+		WSAStartup(MAKEWORD(2,2), &WSAData);
+	}
+#endif // _WIN32
 
-	test_charset(hSession,"ISO-8859-1");
+	lib3270_autoptr(H3270) hSession = lib3270_session_new("2",0);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,1);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,1);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,1);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,1);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,1);
+
+	lib3270_trace_open_file(hSession,"lib3270.trace");
+	lib3270_log_open_file(hSession,"lib3270.log",86400);
+
+	// test_charset(hSession,"ISO-8859-1");
+	test_connect(hSession,"tn3270://_not_found_:3270");
 
 	return 0;
  }
@@ -166,24 +221,6 @@
 		signal(SIGHUP,handle_signal);
 #endif // HAVE_SIGNAL_H
    
-#ifdef _WIN32
-	BOOL bRet;
-	MSG msg;
-	while( (bRet = GetMessage( &msg, NULL, 0, 0 )) != 0) { 
-		if (bRet == -1) {
-			exit(-1);
-		} else {
-			TranslateMessage(&msg); 
-			DispatchMessage(&msg); 
-		}
-	} 
-#else
-	while(enabled) {
-		if(lib3270_mainloop_run(hSession,1) < 0) {
-			break;
-		}
-	}
-#endif
 
 	debug("Exiting %s",argv[0]);
 	return 0;

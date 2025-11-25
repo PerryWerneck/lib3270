@@ -22,6 +22,7 @@ project(
 	['c'],
 	version: '6.0.0',
 	license: 'GPL-3.0-or-later',
+        default_options : [ 'buildtype=release' ],
 )
 
 project_description = 'TN3270 client library'

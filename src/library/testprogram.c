@@ -250,10 +250,6 @@
 	#include <libintl.h>
 #endif // HAVE_LIBINTL
 
-#ifdef _WIN32
-	#include <lib3270/os.h>
-#endif // _WIN32
-
 #define MAX_ARGS 10
 
 const char *trace_file = "test.trace";

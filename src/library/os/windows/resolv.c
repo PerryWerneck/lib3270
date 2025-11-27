@@ -35,7 +35,6 @@
  #include <private/mainloop.h>
  #include <private/intl.h>
  #include <private/trace.h>
- #include <lib3270/win32.h>
  #include <wininet.h>
 
  typedef struct {

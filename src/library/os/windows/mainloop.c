@@ -29,12 +29,12 @@
  #include <lib3270/trace.h>
  #include <lib3270/memory.h>
  #include <lib3270/log.h>
- #include <lib3270/win32.h>
  #include <private/mainloop.h>
  #include <private/session.h>
  #include <private/intl.h>
  #include <private/popup.h>
  #include <private/win32_poll.h>
+ #include <lib3270/os.h>
  
  #include <winsock2.h>
  #include <windows.h>

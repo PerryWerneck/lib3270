@@ -23,39 +23,19 @@
  #include <lib3270/defs.h>
  #include <lib3270.h>
 
-	/**
-	 * @brief I/O Controller.
-	 *
-	 * GUI unblocking I/O calls, used to replace the lib3270´s internal ones.
-	 *
-	 */ /*
-	typedef struct lib3270_io_controller {
-
-		void	* (*AddTimer)(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
-		void	  (*RemoveTimer)(H3270 *session, void *timer);
-
-		void	* (*add_poll)(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
-		void	  (*remove_poll)(H3270 *session, void *id);
-		void	  (*set_poll_state)(H3270 *session, void *id, int enabled);
-
-		int		  (*Wait)(H3270 *hSession, int seconds);
-		int		  (*event_dispatcher)(H3270 *session, int wait);
-		void	  (*ring_bell)(H3270 *session);
-		int		  (*run_task)(H3270 *session, const char *name, int(*callback)(H3270 *, void *), void *parm);
-
-		/// @brief Async popup dialog.
-		/// @param hSession	Session handle.
-		/// @param popup		Popup descriptor.
-		void	  (*popup)(H3270 *hSession, const LIB3270_POPUP *popup);
-		
-	} LIB3270_IO_CONTROLLER;
-	 */
-
-
 #ifdef _WIN32
 
 	#include <winsock2.h>
 	#include <windows.h>
+
+	typedef enum {
+		LIB3270_IO_FLAG_READ		= POLLRDNORM,
+		LIB3270_IO_FLAG_WRITE		= POLLWRNORM,
+		LIB3270_IO_FLAG_EXCEPTION	= POLLPRI,
+		LIB3270_IO_FLAG_ERROR		= POLLERR|POLLNVAL,
+		LIB3270_IO_FLAG_HUP			= POLLHUP,
+		LIB3270_IO_FLAG_NVAL		= POLLNVAL,
+	} LIB3270_IO_FLAG;
 
 	enum MessageTypes {
 		WM_ADD_TIMER				= WM_USER+102,
@@ -81,11 +61,11 @@
 
  	/// @brief Create win32 object window for the session
  	/// @param hSession The session to be associated with the object window.
- 	LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession);
+ 	// LIB3270_INTERNAL void win32_mainloop_new(H3270 *hSession);
 
 	/// @brief Destroy win32 object window for the session
 	/// @param hSession The session to be dissociated from the object window.
-	LIB3270_INTERNAL void win32_mainloop_free(H3270 *hSession);
+	// LIB3270_INTERNAL void win32_mainloop_free(H3270 *hSession);
 
 #else
 

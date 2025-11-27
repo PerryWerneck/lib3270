@@ -70,9 +70,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#if defined(_WIN32)
-#include <lib3270/os.h>
-#else
+#if !defined(_WIN32)
 #include <netdb.h>
 #endif
 

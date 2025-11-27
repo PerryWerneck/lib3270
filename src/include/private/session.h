@@ -109,9 +109,17 @@
 		LIB3270_TIMER_CONTEXT * context;
 	} timer;
 
-#ifndef _WIN32
-
 	/// @brief Network I/O handlers.
+#ifdef _WIN32
+
+	struct {
+		void *	(*add)(H3270 *session, int sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
+		void	(*remove)(H3270 *session, void *id);
+		void	(*finalize)(H3270 *session, LIB3270_POLL_CONTEXT * context);
+		LIB3270_POLL_CONTEXT * context;
+	} poll;
+
+#else
 	struct {
 		void *	(*add)(H3270 *session, int sock, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata );
 		void	(*remove)(H3270 *session, void *id);

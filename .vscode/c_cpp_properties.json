@@ -34,7 +34,20 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "macos-clang-x64",
-        }        
+        },
+        {
+            "name": "MinGW Cross-Compile Windows",
+            "compilerPath": "/usr/bin/x86_64-w64-mingw32-c++", // **Update this path**
+            "intelliSenseMode": "windows-gcc-x64", // Or appropriate mode for your target
+            "includePath": [
+                "${workspaceFolder}/**",
+                // Add specific paths if needed, e.g.,
+                // "/usr/share/mingw-w64/include" 
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        }              
     ],
     "version": 4
 }

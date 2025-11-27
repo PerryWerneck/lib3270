@@ -23,7 +23,10 @@
  #include <private/intl.h>
  #include <private/trace.h>
  
+ #ifndef _WIN32
  #include <arpa/inet.h>
+ #endif // _WIN32
+
  #include <openssl/x509v3.h>
  #include <openssl/asn1.h>
  #include <openssl/ssl.h>

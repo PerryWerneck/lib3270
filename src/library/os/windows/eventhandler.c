@@ -21,7 +21,6 @@
  #include <lib3270/defs.h>
  #include <lib3270/trace.h>
  #include <lib3270/memory.h>
- #include <windows/lib3270/win32.h>
  #include <private/linkedlist.h>
  #include <private/win32_poll.h>
  #include <private/mainloop.h>

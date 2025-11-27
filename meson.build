@@ -442,9 +442,9 @@ if host_machine.system() == 'windows'
   app_conf.set('SECURITY_WIN32',1)
 
   lib_src += win_src
-  lib_src += [
-    'src/library/tls/wsc/start.c',
-  ]
+  #lib_src += [
+  #  'src/library/tls/wsc/start.c',
+  #]
 
 elif host_machine.system() == 'darwin'
 

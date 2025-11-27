@@ -3,7 +3,10 @@
 		"memory.h": "c",
 		"mainloop.h": "c",
 		"intl.h": "c",
-		"dispatch.h": "c"
+		"dispatch.h": "c",
+		"linkedlist.h": "c",
+		"popup.h": "c",
+		"session.h": "c"
 	},
 	"C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
 	"C_Cpp.default.compileCommands": "/home/perry/project/pw3270/lib3270/.build/compile_commands.json",

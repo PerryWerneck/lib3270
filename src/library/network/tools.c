@@ -39,10 +39,6 @@
  #include <private/intl.h>
  #include <string.h>
 
- #ifdef _WIN32
-	#include <lib3270/win32.h>
- #endif // _WIN32
-
  LIB3270_INTERNAL void set_popup_body(LIB3270_POPUP *popup, int error) {
 
  	switch(error) {

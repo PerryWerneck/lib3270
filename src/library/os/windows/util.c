@@ -35,6 +35,7 @@
 #include <config.h>
 #include <lib3270/defs.h>
 #include <lib3270/memory.h>
+#include <lib3270/os.h>
 #include <lmcons.h>
 #include <internals.h>
 #include <io.h>
@@ -56,7 +57,6 @@
 #endif // ICONV_CONST
 
 #include <lib3270/log.h>
-#include <lib3270/os.h>
 
 #define my_isspace(c)	isspace((unsigned char)c)
 

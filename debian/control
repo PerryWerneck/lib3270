@@ -16,7 +16,7 @@ Package: lib3270-dev
 Architecture: any
 Provides: lib3270-dev (= ${binary:Version})
 Section: libdevel
-Depends: ${misc:Depends}, pkg-config, lib3270 (= ${binary:Version})
+Depends: ${misc:Depends}, pkg-config, lib3270 (= ${binary:Version}), libssl-dev
 Description: TN3270 Access library development files.
  TN3270 access library originally designed as part of the pw3270 application.
 

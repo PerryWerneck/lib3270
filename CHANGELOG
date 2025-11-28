@@ -1,4 +1,75 @@
 -------------------------------------------------------------------
+Fri Nov 28 12:09:50 UTC 2025 - perry.werneck@gmail.com
+
+- Update to version 5.5.0+git20251125:
+  * Fixing meson defaults.
+
+-------------------------------------------------------------------
+Sat Oct 04 14:14:00 UTC 2025 - perry.werneck@gmail.com
+
+- Update to version 5.5.0+git20251004:
+  * Installing pkg-config for win32 delayed library.
+  * Removing 'publish' badge since it's no longer needed.
+  * Fixing read.me
+  * Fixing codeql workflow
+  * Removing old bundle scripts (doesnt work anymore), updating build instructions on readme.
+  * Fixing build on SLE-15-SP5
+  * Updating translation.
+  * Fixing ssl & threads dependencies.
+  * Better usage as submodule.
+  * Better dependency names.
+  * Fixing intl detection.
+  * Fixing macos build.
+  * Fixing libintl check.
+  * Exporting dependency variables.
+  * Fixing c options.
+  * Fixing tumbleweed builds.
+  * Debugging intl on macos.
+  * Better handling of os includes.
+  * Changing windows branch to avoid conflicts, updating workflow.
+  * Fixing macos localedir
+  * Fixing double publishing for macos.
+  * Fixing macos package.
+  * Debugging macos action.
+
+-------------------------------------------------------------------
+Sat May 03 14:06:04 UTC 2025 - perry.werneck@gmail.com
+
+- Update to version 5.5.0+git20250413:
+  * Merging macos
+  * Debugging publish workflow.
+  * Fixing apple frameworks dependency.
+  * Fixing win32 action
+  * Revising macos build instructions.
+  * Debugging macos build issue.
+
+-------------------------------------------------------------------
+Thu Feb 27 16:28:06 UTC 2025 - Perry Werneck <perry.werneck@gmail.com>
+
+- Removing requirement for fixed meson version.
+
+-------------------------------------------------------------------
+Thu Jan 23 20:49:41 UTC 2025 - perry.werneck@gmail.com
+
+- Update to version 5.5.0+git20250123:
+  * Publishing updated version 5.5.0
+  * Applying meson build fixes from #59 conversation.
+  * Fixing windows dll properties.
+  * Adding delayed library for windows apps.
+  * Build windows app with meson.
+  * Refactoring deb packages.
+  * Fixing libssl dependency.
+  * Fixing pkg-config file.
+  * Refactoring codeql workflow.
+  * Fixing os includes.
+  * Fixing package build.
+  * Removing old workflows.
+  * Updating po
+  * Reorganizing OS based sources.
+  * Changing to meson build system.
+  * Updating package control files, splitting intl methods to private include.
+
+-------------------------------------------------------------------
 Sat Aug 17 16:00:46 UTC 2024 - perry.werneck@gmail.com
 
 - Update to version 5.4+git20240817:

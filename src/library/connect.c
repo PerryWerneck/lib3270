@@ -45,6 +45,7 @@
 #include <private/intl.h>
 #include <private/trace.h>
 #include <private/util.h>
+#include <string.h>
 
 #include <private/network.h>
 #include <private/nonssl.h>

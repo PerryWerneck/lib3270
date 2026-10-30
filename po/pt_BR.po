@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-22 13:27-0300\n"
+"POT-Creation-Date: 2026-10-30 11:36-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -371,11 +371,134 @@ msgstr "Program Action 2"
 msgid "Program Action 3"
 msgstr "Program Action 3"
 
-#: src/library/ft/ftmessages.c:45
+#: src/library/ft/ft.c:89
+msgid "No transfer in progress"
+msgstr "Nenhuma transferência em andamento"
+
+#: src/library/ft/ft.c:90
+msgid "Ack received, data flowing"
+msgstr "Confirmação recebida, transferindo dados"
+
+#: src/library/ft/ft.c:91
+msgid "Awaiting chance to send an abort"
+msgstr "Aguardando para enviar pedido de cancelamento"
+
+#: src/library/ft/ft.c:92
+msgid "Abort sent; awaiting response"
+msgstr "Cancelamento enviado; aguardando resposta"
+
+#: src/library/ft/ft.c:141
+msgid "Cancelled by user"
+msgstr "Cancelado pelo usuário"
+
+#. Nao tem destino para a mensagem, apresenta
+#: src/library/ft/ft.c:182
+msgid "Request failed"
+msgstr "Requisição falhou"
+
+#: src/library/ft/ft.c:182
+msgid "Can't start file transfer."
+msgstr "Não foi possível iniciar transferência de arquivo."
+
+#: src/library/ft/ft.c:235 src/library/tls/openssl/connected.c:119
+#: src/library/tls/openssl/connected.c:203
+msgid "Disconnected from host."
+msgstr "Desconectado do servidor."
+
+#: src/library/ft/ft.c:238
+msgid "File transfer is already active in this session."
+msgstr "Transferência de arquivos já está ativa nesta sessão."
+
+#: src/library/ft/ft.c:242
+msgid "The remote file name is invalid."
+msgstr "O nome do arquivo remoto não é válido."
+
+#: src/library/ft/ft.c:379
+msgid "Can't get file size"
+msgstr "Não foi possível obter o tamanho do arquivo"
+
+#: src/library/ft/ft.c:466
+msgid "Unable to send file-transfer request"
+msgstr "Não foi possível enviar a requisição de transferência de arquivo"
+
+#: src/library/ft/ft.c:475
+msgid "Waiting for GET response"
+msgstr "Aguardando resposta do pedido de download"
+
+#: src/library/ft/ft.c:477
+msgid "Waiting for PUT response"
+msgstr "Aguardando resposta do pedido de upload"
+
+#: src/library/ft/ft.c:514
+msgid "Transfer complete"
+msgstr "Transferência completa"
+
+#: src/library/ft/ft.c:518
+msgid "Transfer failed"
+msgstr "Transferência falhou"
+
+#: src/library/ft/ft.c:596
+msgid "Aborting..."
+msgstr "Cancelando..."
+
+#: src/library/ft/ft.c:604
+msgid "Host disconnected, transfer cancelled"
+msgstr "Servidor desconectou, transferência cancelada"
+
+#: src/library/ft/ft.c:610
+msgid "Not in 3270 mode, transfer cancelled"
+msgstr "Não está no modo 3270, transferência cancelada"
+
+#: src/library/ft/ft_cut.c:154 src/library/ft/ft_cut.c:162
+msgid "Data conversion error"
+msgstr "Erro na conversão de dados"
+
+#: src/library/ft/ft_cut.c:288
+msgid "Unknown frame type from host"
+msgstr "Servidor enviou tipo de frame desconhecido"
+
+#: src/library/ft/ft_cut.c:351
+msgid "Transfer cancelled by host"
+msgstr "Transferência cancelada pelo host"
+
+#: src/library/ft/ft_cut.c:359
+msgid "Unknown FT control code from host"
+msgstr "Servidor enviou código de controle FT desconhecido"
+
+#: src/library/ft/ft_cut.c:378 src/library/ft/ft_cut.c:466
+#: src/library/ft/ft_dft.c:203 src/library/ft/ft_dft.c:334
+msgid "Transfer cancelled by user"
+msgstr "Transferência cancelada pelo usuário"
+
+#. Abort the transfer.
+#: src/library/ft/ft_cut.c:399 src/library/ft/ft_dft.c:403
+#, c-format
+msgid "Error \"%s\" reading from local file (rc=%d)"
+msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
+
+#: src/library/ft/ft_cut.c:438
+msgid "Transmission error"
+msgstr "Erro de transmissão"
+
+#: src/library/ft/ft_cut.c:475
+msgid "Illegal frame length"
+msgstr "Comprimento de frame inválido"
+
+#. write failed
+#: src/library/ft/ft_cut.c:495 src/library/ft/ft_dft.c:296
+#, c-format
+msgid "Error \"%s\" writing to local file (rc=%d)"
+msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
+
+#: src/library/ft/ft_dft.c:151
+msgid "Uknown DFT Open type from host"
+msgstr "Host enviou código de abertura DFT desconhecido"
+
+#: src/library/ft/ftmessages.c:35
 msgid "Error in file transfer: file transfer canceled"
 msgstr "Erro na transferência do arquivo, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:46
+#: src/library/ft/ftmessages.c:36
 msgid ""
 "An error occurred in the file transfer, which may be an error in the data "
 "being transferred, or an unidentified system error."
@@ -383,19 +506,19 @@ msgstr ""
 "Um erro ocorreu na transferência de arquivos, pode ser um erro nos dados "
 "sendo transferidos ou um erro de sistema não identificado."
 
-#: src/library/ft/ftmessages.c:52
+#: src/library/ft/ftmessages.c:42
 msgid "File transfer complete"
 msgstr "Transferência completa"
 
-#: src/library/ft/ftmessages.c:53
+#: src/library/ft/ftmessages.c:43
 msgid "The file transfer operation has been successfully completed."
 msgstr "A transferência de arquivos terminou com sucesso."
 
-#: src/library/ft/ftmessages.c:59
+#: src/library/ft/ftmessages.c:49
 msgid "File transfer complete with records segmented"
 msgstr "Transferência completa com registros segmentados"
 
-#: src/library/ft/ftmessages.c:60
+#: src/library/ft/ftmessages.c:50
 msgid ""
 "The file transfer operation has been completed, and any record greater than "
 "the logical record length (LRECL) of the file being appended has been "
@@ -404,43 +527,43 @@ msgstr ""
 "A transferência de arquivos foi concluída e qualquer registro maior que o "
 "comprimento definido foi dividido e se transformou em vários registros."
 
-#: src/library/ft/ftmessages.c:66
+#: src/library/ft/ftmessages.c:56
 msgid "Personal computer filespec incorrect: file transfer canceled"
 msgstr "Especificação de arquivo PC incorreta: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:67
+#: src/library/ft/ftmessages.c:57
 msgid "An error exists in the PC's file name."
 msgstr "Existe um erro no nome do arquivo do PC."
 
-#: src/library/ft/ftmessages.c:73
+#: src/library/ft/ftmessages.c:63
 msgid "Command incomplete: file transfer canceled"
 msgstr "Comando incompleto, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:74
+#: src/library/ft/ftmessages.c:64
 msgid ""
 "You did not enter the required parameters after a SEND or RECEIVE command."
 msgstr ""
 "Você não entrou os parametros necessários para um comando ENVIAR/RECEBER."
 
-#: src/library/ft/ftmessages.c:80
+#: src/library/ft/ftmessages.c:70
 msgid "Error writing file to host: file transfer canceled"
 msgstr "Erro ao gravar arquivo no host, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:81 src/library/ft/ftmessages.c:88
+#: src/library/ft/ftmessages.c:71 src/library/ft/ftmessages.c:78
 msgid ""
 "The host program has detected an error in the file data during a RECEIVE "
 "operation."
 msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 
-#: src/library/ft/ftmessages.c:87
+#: src/library/ft/ftmessages.c:77
 msgid "Error reading file from host: file transfer canceled"
 msgstr "Erro ao ler arquivo do host: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:94
+#: src/library/ft/ftmessages.c:84
 msgid "Required host storage unavailable: file transfer canceled"
 msgstr "Armazenamento necessário indisponível: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:95
+#: src/library/ft/ftmessages.c:85
 msgid ""
 "You need 30 KB of main storage (not disk space) on the host for the file "
 "transfer, in addition to the host requirement."
@@ -448,35 +571,35 @@ msgstr ""
 "Você precisa de 30 KB de armazenamento principal (não espaço em disco) no "
 "host para a transferência de arquivo, além do requerido pelo host."
 
-#: src/library/ft/ftmessages.c:101
+#: src/library/ft/ftmessages.c:91
 msgid "Incorrect request code: file transfer canceled"
 msgstr "Código de requisição incorreto, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:102
+#: src/library/ft/ftmessages.c:92
 msgid "An invalid SEND or RECEIVE parameter was sent to the host."
 msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 
-#: src/library/ft/ftmessages.c:138
+#: src/library/ft/ftmessages.c:128
 msgid "Incorrect option specified: file transfer canceled"
 msgstr "Opção incorreta, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:139
+#: src/library/ft/ftmessages.c:129
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
-#: src/library/ft/ftmessages.c:145
+#: src/library/ft/ftmessages.c:135
 msgid "Error while reading or writing to host disk: file transfer canceled"
 msgstr "Erro ao ler ou gravar no host: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:146
+#: src/library/ft/ftmessages.c:136
 msgid "There is not enough space available for data on the host."
 msgstr "Não existe espaço suficiente no host para os dados."
 
-#: src/library/ft/ftmessages.c:152
+#: src/library/ft/ftmessages.c:142
 msgid "Invalid option xxxxxxxx: file transfer canceled"
 msgstr "Opção xxxxxxxx inválida: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:153
+#: src/library/ft/ftmessages.c:143
 msgid ""
 "You selected an option that is either not recognized, is specified as a "
 "positional keyword, or has an associated value that is incorrect."
@@ -484,11 +607,11 @@ msgstr ""
 "Você selecionou uma opção que, ou não foi reconhecida, foi especificada como "
 "uma palavra-chave posicional ou não tem um valor associado."
 
-#: src/library/ft/ftmessages.c:159
+#: src/library/ft/ftmessages.c:149
 msgid "Invalid option xxxxxxxx with RECEIVE: file transfer canceled"
 msgstr "Opção xxxxxxxx inválida com RECEIVE: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:160
+#: src/library/ft/ftmessages.c:150
 msgid ""
 "You selected an option that is not valid with RECEIVE, but can be used with "
 "SEND."
@@ -496,11 +619,11 @@ msgstr ""
 "Você selecionou uma opção que não é válida para recebimento de arquivos, "
 "porém, pode ser usada para envio."
 
-#: src/library/ft/ftmessages.c:166
+#: src/library/ft/ftmessages.c:156
 msgid "Invalid option xxxxxxxx with APPEND: file transfer canceled"
 msgstr "Opção xxxxxxxx não e valida com APPEND: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:167
+#: src/library/ft/ftmessages.c:157
 msgid ""
 "You selected an option that is not valid with APPEND, but otherwise may be "
 "used."
@@ -508,35 +631,35 @@ msgstr ""
 "Você selecionou uma opção que não é válida com \"Adicionar\", porém, pode "
 "ser usada."
 
-#: src/library/ft/ftmessages.c:173
+#: src/library/ft/ftmessages.c:163
 msgid "Invalid option xxxxxxxx without SPACE: file transfer canceled"
 msgstr "Opção xxxxxxxx inválida sem SPACE: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:174
+#: src/library/ft/ftmessages.c:164
 msgid ""
 "You selected an option that can only be used if SPACE is also specified."
 msgstr ""
 "Você selecionou uma opção que só pode ser usada se \"ESPAÇO\" também for "
 "específicado."
 
-#: src/library/ft/ftmessages.c:180
+#: src/library/ft/ftmessages.c:170
 msgid "Invalid option xxxxxxxx with PDS: file transfer canceled"
 msgstr "Opção xxxxxxxx inválida com PDS: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:181
+#: src/library/ft/ftmessages.c:171
 msgid ""
 "You selected an option that is invalid with a host-partitioned data set."
 msgstr ""
 "Você selecionou uma opção que é inválida para um dataset particionado pelo "
 "host."
 
-#: src/library/ft/ftmessages.c:187
+#: src/library/ft/ftmessages.c:177
 msgid "Only one of TRACKS, CYLINDERS, AVBLOCK allowed: file transfer canceled"
 msgstr ""
 "Permitida apenas uma opção dentre TRACKS, CYLINDERS, AVBLOCK: Transferência "
 "cancelada"
 
-#: src/library/ft/ftmessages.c:188
+#: src/library/ft/ftmessages.c:178
 msgid ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
@@ -544,20 +667,20 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/library/ft/ftmessages.c:194
+#: src/library/ft/ftmessages.c:184
 msgid "CMS file not found: file transfer canceled"
 msgstr "Arquivo CMS não encontrado, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:195
+#: src/library/ft/ftmessages.c:185
 msgid "You did not specify an existing CMS file for RECEIVE."
 msgstr ""
 "Você não especificou um arquivo CMS existente para a operação de recebimento."
 
-#: src/library/ft/ftmessages.c:201
+#: src/library/ft/ftmessages.c:191
 msgid "CMS disk is read-only: file transfer canceled"
 msgstr "Disco CMS apenas para leitura, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:202
+#: src/library/ft/ftmessages.c:192
 msgid ""
 "You specified a CMS file mode for the SEND key that does not allow write "
 "access."
@@ -565,21 +688,21 @@ msgstr ""
 "Você especificou modo de arquivo CMS para um envio que não permite acesso de "
 "gravação."
 
-#: src/library/ft/ftmessages.c:208
+#: src/library/ft/ftmessages.c:198
 msgid "CMS disk is not accessed: file transfer canceled"
 msgstr "Disco CMS não está acessível, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:209
+#: src/library/ft/ftmessages.c:199
 msgid "You specified a CMS file mode that is not in the CMS search order."
 msgstr ""
 "Você especificou um modo de arquivo CMS que não está na ordem de pesquisa "
 "CMS."
 
-#: src/library/ft/ftmessages.c:215
+#: src/library/ft/ftmessages.c:205
 msgid "CMS disk is full: file transfer canceled"
 msgstr "Disco CMS está lotado, transferência cancelada"
 
-#: src/library/ft/ftmessages.c:216
+#: src/library/ft/ftmessages.c:206
 msgid ""
 "The CMS disk is full, or the maximum number of files on the minidisk (3400) "
 "has been reached, or the maximum number of data blocks per file (16060) has "
@@ -589,201 +712,101 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/library/ft/ftmessages.c:222
+#: src/library/ft/ftmessages.c:212
 msgid "Host program error code xxxxxxxxxx: file transfer canceled"
 msgstr "Erro código xxxxxxxxxx no aplicativo do host: Transferência cancelada"
 
-#: src/library/ft/ftmessages.c:223
+#: src/library/ft/ftmessages.c:213
 msgid "This is a host program error."
 msgstr "Este é um erro no programa do host."
 
-#: src/library/ft/ft.c:100
-msgid "No transfer in progress"
-msgstr "Nenhuma transferência em andamento"
-
-#: src/library/ft/ft.c:101
-msgid "Ack received, data flowing"
-msgstr "Confirmação recebida, transferindo dados"
-
-#: src/library/ft/ft.c:102
-msgid "Awaiting chance to send an abort"
-msgstr "Aguardando para enviar pedido de cancelamento"
-
-#: src/library/ft/ft.c:103
-msgid "Abort sent; awaiting response"
-msgstr "Cancelamento enviado; aguardando resposta"
-
-#: src/library/ft/ft.c:152
-msgid "Cancelled by user"
-msgstr "Cancelado pelo usuário"
-
-#. Nao tem destino para a mensagem, apresenta
-#: src/library/ft/ft.c:193
-msgid "Request failed"
-msgstr "Requisição falhou"
-
-#: src/library/ft/ft.c:193
-msgid "Can't start file transfer."
-msgstr "Não foi possível iniciar transferência de arquivo."
-
-#: src/library/ft/ft.c:245 src/library/tls/openssl/connected.c:119
-#: src/library/tls/openssl/connected.c:203
-msgid "Disconnected from host."
-msgstr "Desconectado do servidor."
-
-#: src/library/ft/ft.c:248
-msgid "File transfer is already active in this session."
-msgstr "Transferência de arquivos já está ativa nesta sessão."
-
-#: src/library/ft/ft.c:252
-msgid "The remote file name is invalid."
-msgstr "O nome do arquivo remoto não é válido."
-
-#: src/library/ft/ft.c:385
-msgid "Can't get file size"
-msgstr "Não foi possível obter o tamanho do arquivo"
-
-#: src/library/ft/ft.c:472
-msgid "Unable to send file-transfer request"
-msgstr "Não foi possível enviar a requisição de transferência de arquivo"
-
-#: src/library/ft/ft.c:481
-msgid "Waiting for GET response"
-msgstr "Aguardando resposta do pedido de download"
-
-#: src/library/ft/ft.c:483
-msgid "Waiting for PUT response"
-msgstr "Aguardando resposta do pedido de upload"
-
-#: src/library/ft/ft.c:520
-msgid "Transfer complete"
-msgstr "Transferência completa"
-
-#: src/library/ft/ft.c:524
-msgid "Transfer failed"
-msgstr "Transferência falhou"
-
-#: src/library/ft/ft.c:602
-msgid "Aborting..."
-msgstr "Cancelando..."
-
-#: src/library/ft/ft.c:610
-msgid "Host disconnected, transfer cancelled"
-msgstr "Servidor desconectou, transferência cancelada"
-
-#: src/library/ft/ft.c:616
-msgid "Not in 3270 mode, transfer cancelled"
-msgstr "Não está no modo 3270, transferência cancelada"
-
-#: src/library/ft/ft_cut.c:164 src/library/ft/ft_cut.c:172
-msgid "Data conversion error"
-msgstr "Erro na conversão de dados"
-
-#: src/library/ft/ft_cut.c:298
-msgid "Unknown frame type from host"
-msgstr "Servidor enviou tipo de frame desconhecido"
-
-#: src/library/ft/ft_cut.c:361
-msgid "Transfer cancelled by host"
-msgstr "Transferência cancelada pelo host"
-
-#: src/library/ft/ft_cut.c:369
-msgid "Unknown FT control code from host"
-msgstr "Servidor enviou código de controle FT desconhecido"
-
-#: src/library/ft/ft_cut.c:388 src/library/ft/ft_cut.c:476
-#: src/library/ft/ft_dft.c:214 src/library/ft/ft_dft.c:345
-msgid "Transfer cancelled by user"
-msgstr "Transferência cancelada pelo usuário"
-
-#. Abort the transfer.
-#: src/library/ft/ft_cut.c:409 src/library/ft/ft_dft.c:414
-#, c-format
-msgid "Error \"%s\" reading from local file (rc=%d)"
-msgstr "Erro \"%s\" lendo arquivo local (rc=%d)"
-
-#: src/library/ft/ft_cut.c:448
-msgid "Transmission error"
-msgstr "Erro de transmissão"
-
-#: src/library/ft/ft_cut.c:485
-msgid "Illegal frame length"
-msgstr "Comprimento de frame inválido"
-
-#. write failed
-#: src/library/ft/ft_cut.c:505 src/library/ft/ft_dft.c:307
-#, c-format
-msgid "Error \"%s\" writing to local file (rc=%d)"
-msgstr "Erro \"%s\" gravando arquivo local (rc=%d)"
-
-#: src/library/ft/ft_dft.c:162
-msgid "Uknown DFT Open type from host"
-msgstr "Host enviou código de abertura DFT desconhecido"
-
-#: src/library/keyboard/kybd.c:268
+#: src/library/keyboard/kybd.c:269
 #, c-format
 msgid "Unexpected type %d in typeahead queue"
 msgstr "Tipo inesperado %d na fila de teclado"
 
-#: src/library/keyboard/kybd.c:1569
+#: src/library/keyboard/kybd.c:1570
 #, c-format
 msgid "Unknown PA key %d"
 msgstr "PA %d desconhecida"
 
-#: src/library/keyboard/kybd.c:1582
+#: src/library/keyboard/kybd.c:1583
 #, c-format
 msgid "Unknown PF key %d"
 msgstr "PF %d desconhecida"
 
-#: src/library/keyboard/kybd.c:1783
+#: src/library/keyboard/kybd.c:1784
 #, c-format
 msgid "%s: Bell not supported"
 msgstr "%s: Alerta sonoro não suportado"
 
-#: src/library/keyboard/kybd.c:1834
+#: src/library/keyboard/kybd.c:1835
 #, c-format
 msgid "%s: Vertical tab not supported"
 msgstr "%s: Tabulação vertical não é suportada"
 
-#: src/library/keyboard/kybd.c:1881
+#: src/library/keyboard/kybd.c:1882
 #, c-format
 msgid "%s: Unknown character after \\p"
 msgstr "%s: Caractere desconhecido depois de \\p"
 
-#: src/library/keyboard/kybd.c:1892
+#: src/library/keyboard/kybd.c:1893
 #, c-format
 msgid "%s: Unknown character after \\pf"
 msgstr "%s: Caractere desconhecido depois de \\pf"
 
-#: src/library/keyboard/kybd.c:1909
+#: src/library/keyboard/kybd.c:1910
 #, c-format
 msgid "%s: Unknown character after \\pa"
 msgstr "%s: Caractere desconhecido depois de \\pa"
 
-#: src/library/keyboard/kybd.c:1928
+#: src/library/keyboard/kybd.c:1929
 #, c-format
 msgid "%s: Missing hex digits after \\x"
 msgstr "%s: Faltando dígitos hexadecimais após \\x"
+
+#: src/library/network/nonssl.c:46 src/library/os/darwin/resolv.c:97
+#: src/library/os/linux/connect.c:74 src/library/os/linux/connect.c:117
+#: src/library/os/linux/connect.c:139 src/library/os/linux/connect.c:172
+#: src/library/os/linux/connect.c:212 src/library/os/linux/connect.c:238
+#: src/library/os/linux/connect.c:316 src/library/os/linux/connect.c:332
+#: src/library/os/windows/connect.c:71 src/library/connect.c:190
+#: src/library/tls/openssl/start.c:258 src/library/tls/openssl/start.c:276
+msgid "Connection error"
+msgstr "Erro de conexão"
+
+#: src/library/network/nonssl.c:47
+#, fuzzy
+msgid "Unable to activate TLS/SSL"
+msgstr "Incapaz de salvar"
+
+#: src/library/network/nonssl.c:48
+msgid "The lib3270 library was not built with TLS/SSL support."
+msgstr ""
+
+#: src/library/network/nonssl.c:49 src/library/util.c:530
+msgid "Ok"
+msgstr ""
 
 #: src/library/network/state.c:66
 msgid "The connection is insecure"
 msgstr "A conexão não é segura"
 
-#: src/library/network/tools.c:50
+#: src/library/network/tools.c:46
 msgid ""
 "The connection timed out. This usually indicates that the remote server is "
 "not responding. Please check the server status or network configuration and "
 "try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:54
+#: src/library/network/tools.c:50
 msgid ""
 "The connection was closed by the host. This usually indicates that the "
 "remote server has terminated the connection unexpectedly. Please check the "
 "server status or network configuration and try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:58
+#: src/library/network/tools.c:54
 msgid ""
 "The connection was reset by the remote server. This typically happens when "
 "the server forcefully closes the connection, possibly due to a timeout, "
@@ -791,86 +814,122 @@ msgid ""
 "network connectivity, then try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:62
+#: src/library/network/tools.c:58
 msgid ""
 "The remote server refused the connection. This usually indicates that the "
 "server is not accepting connections on the specified port. Please verify the "
 "server status and network configuration, then try reconnecting."
 msgstr ""
 
-#: src/library/network/tools.c:210 src/library/os/darwin/event_dispatcher.c:132
-#: src/library/os/linux/mainloop.c:254
-#: src/library/os/windows/event_dispatcher.c:138
-#: src/library/os/windows/resolv.c:244 src/library/telnet.c:302
+#: src/library/network/tools.c:206 src/library/os/darwin/event_dispatcher.c:132
+#: src/library/os/darwin/mainloop.c:254 src/library/os/linux/mainloop.c:254
+#: src/library/os/windows/event_dispatcher.c:127
+#: src/library/os/windows/resolv.c:243 src/library/telnet.c:300
 msgid "Network error"
 msgstr "Erro de rede"
 
-#: src/library/network/tools.c:211
+#: src/library/network/tools.c:207
 #, fuzzy
 msgid "Unable to set non-blocking mode."
 msgstr "Não foi possível mudar o socket para o modo blocante."
 
-#: src/library/network/tools.c:213 src/library/network/tools.c:237
-#: src/library/network/tools.c:262 src/library/os/linux/connect.c:77
+#: src/library/network/tools.c:209 src/library/network/tools.c:233
+#: src/library/network/tools.c:258 src/library/os/darwin/insecure.c:117
+#: src/library/os/darwin/insecure.c:172 src/library/os/darwin/resolv.c:100
+#: src/library/os/darwin/resolv.c:197 src/library/os/darwin/resolv.c:223
+#: src/library/os/darwin/resolv.c:247 src/library/os/linux/connect.c:77
 #: src/library/os/linux/connect.c:120 src/library/os/linux/connect.c:142
 #: src/library/os/linux/connect.c:175 src/library/os/linux/connect.c:215
 #: src/library/os/linux/connect.c:241 src/library/os/linux/insecure.c:117
 #: src/library/os/linux/insecure.c:172 src/library/os/linux/resolv.c:142
 #: src/library/os/linux/resolv.c:158 src/library/os/linux/resolv.c:193
-#: src/library/os/linux/resolv.c:281 src/library/os/linux/resolv.c:294
-#: src/library/os/linux/resolv.c:368 src/library/os/windows/connect.c:74
-#: src/library/os/windows/eventhandler.c:136
-#: src/library/os/windows/eventhandler.c:168
+#: src/library/os/linux/resolv.c:286 src/library/os/linux/resolv.c:299
+#: src/library/os/linux/resolv.c:375 src/library/os/windows/connect.c:74
+#: src/library/os/windows/eventhandler.c:135
+#: src/library/os/windows/eventhandler.c:167
 #: src/library/os/windows/mainloop.c:391 src/library/os/windows/mainloop.c:416
 #: src/library/os/windows/mainloop.c:436 src/library/os/windows/mainloop.c:454
-#: src/library/os/windows/resolv.c:247 src/library/os/windows/resolv.c:346
-#: src/library/tls/openssl/connected.c:123
+#: src/library/os/windows/resolv.c:246 src/library/os/windows/resolv.c:345
+#: src/library/connect.c:193 src/library/connect.c:260
+#: src/library/connect.c:274 src/library/session.c:188
+#: src/library/session.c:207 src/library/tls/openssl/connected.c:123
 #: src/library/tls/openssl/connected.c:148
 #: src/library/tls/openssl/connected.c:169
 #: src/library/tls/openssl/connected.c:207
 #: src/library/tls/openssl/connected.c:228
 #: src/library/tls/openssl/connected.c:249 src/library/tls/openssl/errors.c:68
-#: src/library/tls/openssl/start.c:112 src/library/tls/openssl/start.c:140
-#: src/library/tls/openssl/start.c:171 src/library/tls/openssl/start.c:249
-#: src/library/tls/openssl/start.c:267 src/library/tls/openssl/start.c:352
-#: src/library/tls/openssl/start.c:453 src/library/tls/wsc/start.c:231
+#: src/library/tls/openssl/start.c:124 src/library/tls/openssl/start.c:152
+#: src/library/tls/openssl/start.c:183 src/library/tls/openssl/start.c:261
+#: src/library/tls/openssl/start.c:279 src/library/tls/openssl/start.c:364
+#: src/library/tls/openssl/start.c:465 src/library/tls/wsc/start.c:231
 #: src/library/tls/wsc/start.c:265 src/library/tls/wsc/start.c:326
 #: src/library/tls/wsc/start.c:358 src/library/tls/wsc/start.c:382
-#: src/library/connect.c:178 src/library/connect.c:241
-#: src/library/connect.c:255 src/library/session.c:182
-#: src/library/session.c:201
 msgid "OK"
 msgstr ""
 
-#: src/library/network/tools.c:234 src/library/network/tools.c:259
+#: src/library/network/tools.c:230 src/library/network/tools.c:255
 #, fuzzy
 msgid "System error"
 msgstr "Erro de interpretação"
 
-#: src/library/network/tools.c:235
+#: src/library/network/tools.c:231
 msgid "fcntl() error when getting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
-#: src/library/network/tools.c:260
+#: src/library/network/tools.c:256
 #, fuzzy
 msgid "fcntl() error when setting socket state."
 msgstr "erro fcntl() ao obter estado do socket."
 
-#: src/library/os/darwin/curl.c:171 src/library/os/linux/curl.c:165
+#: src/library/os/darwin/curl.c:172 src/library/os/linux/curl.c:165
 msgid "Can't initialize curl operation"
 msgstr "Erro ao inicializar operação CURL"
 
 #. Can't get contents
-#: src/library/os/darwin/download.c:55 src/library/os/linux/download.c:57
+#: src/library/os/darwin/download.c:56 src/library/os/linux/download.c:57
 #: src/library/os/windows/download.c:64
 msgid "No handler for URL scheme."
 msgstr "Nenhum manipulador para o esquema de URL"
 
 #: src/library/os/darwin/event_dispatcher.c:133
-#: src/library/os/linux/mainloop.c:255
-#: src/library/os/windows/event_dispatcher.c:139
+#: src/library/os/darwin/mainloop.c:255 src/library/os/linux/mainloop.c:255
+#: src/library/os/windows/event_dispatcher.c:128
 msgid "Select() failed when processing for events."
 msgstr "Select() falhou ao processar eventos."
+
+#: src/library/os/darwin/insecure.c:114 src/library/os/darwin/insecure.c:169
+#: src/library/os/linux/insecure.c:114 src/library/os/linux/insecure.c:169
+#: src/library/os/windows/mainloop.c:433 src/library/os/windows/mainloop.c:451
+#: src/library/connect.c:257 src/library/connect.c:271
+#: src/library/tls/openssl/connected.c:147
+#: src/library/tls/openssl/connected.c:168
+#: src/library/tls/openssl/connected.c:227
+#: src/library/tls/openssl/connected.c:248
+#, fuzzy
+msgid "Network I/O error"
+msgstr "Erro de rede"
+
+#: src/library/os/darwin/insecure.c:115 src/library/os/linux/insecure.c:115
+#: src/library/os/windows/mainloop.c:434
+#, fuzzy
+msgid "Failed to receive data from the host"
+msgstr "Erro recebendo dados do servidor"
+
+#: src/library/os/darwin/insecure.c:170 src/library/os/linux/insecure.c:170
+#: src/library/os/windows/mainloop.c:452
+#, fuzzy
+msgid "Failed to send data to the host"
+msgstr "Erro ao enviar dados para o servidor"
+
+#: src/library/os/darwin/insecure.c:193 src/library/os/linux/insecure.c:193
+#: src/library/os/windows/insecure.c:173
+msgid "The session is not secure"
+msgstr "A sessão não é segura"
+
+#: src/library/os/darwin/insecure.c:194 src/library/os/linux/insecure.c:194
+#: src/library/os/windows/insecure.c:174
+msgid "No TLS/SSL support on this session"
+msgstr "Sem suporte TLS/SSL nessa sessão"
 
 #: src/library/os/darwin/ldap.c:82 src/library/os/darwin/ldap.c:91
 #: src/library/os/linux/ldap.c:84 src/library/os/linux/ldap.c:93
@@ -893,20 +952,43 @@ msgstr "Pesquisa LDAP não produziu valores."
 msgid "Can't decode certificate revocation list"
 msgstr "Não foi possível decodificar a lista de certificados revogados"
 
-#: src/library/os/linux/connect.c:74 src/library/os/linux/connect.c:117
-#: src/library/os/linux/connect.c:139 src/library/os/linux/connect.c:172
-#: src/library/os/linux/connect.c:212 src/library/os/linux/connect.c:238
-#: src/library/os/linux/connect.c:314 src/library/os/linux/connect.c:330
-#: src/library/os/windows/connect.c:71 src/library/tls/openssl/start.c:246
-#: src/library/tls/openssl/start.c:264 src/library/tls/unavailable.c:38
-#: src/library/connect.c:175
-msgid "Connection error"
-msgstr "Erro de conexão"
-
-#: src/library/os/linux/connect.c:75 src/library/os/linux/connect.c:239
+#: src/library/os/darwin/resolv.c:98 src/library/os/linux/connect.c:75
+#: src/library/os/linux/connect.c:239
 #, fuzzy
 msgid "Unable to connect to host"
 msgstr "Não é possível conectar em servidores seguros"
+
+#: src/library/os/darwin/resolv.c:194 src/library/os/darwin/resolv.c:220
+#: src/library/os/darwin/resolv.c:244
+#, fuzzy
+msgid "DNS Resolver error"
+msgstr "Erro no socket"
+
+#: src/library/os/darwin/resolv.c:195
+#, fuzzy
+msgid "Failed to create resolver context"
+msgstr "Erro ao inicializar contexto TLS/SSL"
+
+#: src/library/os/darwin/resolv.c:196
+msgid ""
+"Failed to create a context to perform the host name resolution. Please check "
+"your system configuration."
+msgstr ""
+
+#: src/library/os/darwin/resolv.c:221
+#, fuzzy
+msgid "Failed to setup resolver client"
+msgstr "Incapaz de colar texto"
+
+#: src/library/os/darwin/resolv.c:222 src/library/os/darwin/resolv.c:246
+msgid ""
+"Failed to perform the host name resolution. Please check your system "
+"configuration."
+msgstr ""
+
+#: src/library/os/darwin/resolv.c:245
+msgid "Failed to start CFHost info resolution."
+msgstr ""
 
 #: src/library/os/linux/connect.c:118 src/library/os/windows/connect.c:72
 msgid "Unable to get connection state."
@@ -923,60 +1005,31 @@ msgstr "Não foi possível obter o estado da conexão."
 msgid "Unexpected error activating keep alive for %s"
 msgstr "Erro inesperado gravando socket"
 
-#: src/library/os/linux/connect.c:315
+#: src/library/os/linux/connect.c:317
 msgid "setsockopt(SO_OOBINLINE) has failed"
 msgstr "setsockopt(SO_OOBINLINE) falhou"
 
-#: src/library/os/linux/connect.c:326
+#: src/library/os/linux/connect.c:328
 #, c-format
 msgid "Can't %s network keep-alive"
 msgstr "Não foi possível %s opção \"keep-alive\""
 
-#: src/library/os/linux/connect.c:326
+#: src/library/os/linux/connect.c:328
 msgid "enable"
 msgstr "habilitar"
 
-#: src/library/os/linux/connect.c:326
+#: src/library/os/linux/connect.c:328
 msgid "disable"
 msgstr "desabilitar"
 
-#: src/library/os/linux/connect.c:342
+#: src/library/os/linux/connect.c:344
 #, c-format
 msgid "setsockopt(%s)"
 msgstr "setsockopt(%s)"
 
-#: src/library/os/linux/insecure.c:114 src/library/os/linux/insecure.c:169
-#: src/library/os/windows/mainloop.c:433 src/library/os/windows/mainloop.c:451
-#: src/library/tls/openssl/connected.c:147
-#: src/library/tls/openssl/connected.c:168
-#: src/library/tls/openssl/connected.c:227
-#: src/library/tls/openssl/connected.c:248 src/library/connect.c:238
-#: src/library/connect.c:252
-#, fuzzy
-msgid "Network I/O error"
-msgstr "Erro de rede"
-
-#: src/library/os/linux/insecure.c:115 src/library/os/windows/mainloop.c:434
-#, fuzzy
-msgid "Failed to receive data from the host"
-msgstr "Erro recebendo dados do servidor"
-
-#: src/library/os/linux/insecure.c:170 src/library/os/windows/mainloop.c:452
-#, fuzzy
-msgid "Failed to send data to the host"
-msgstr "Erro ao enviar dados para o servidor"
-
-#: src/library/os/linux/insecure.c:193 src/library/os/windows/insecure.c:173
-msgid "The session is not secure"
-msgstr "A sessão não é segura"
-
-#: src/library/os/linux/insecure.c:194 src/library/os/windows/insecure.c:174
-msgid "No TLS/SSL support on this session"
-msgstr "Sem suporte TLS/SSL nessa sessão"
-
 #: src/library/os/linux/resolv.c:139 src/library/os/linux/resolv.c:155
-#: src/library/os/linux/resolv.c:190 src/library/os/linux/resolv.c:278
-#: src/library/os/linux/resolv.c:291 src/library/os/linux/resolv.c:365
+#: src/library/os/linux/resolv.c:190 src/library/os/linux/resolv.c:283
+#: src/library/os/linux/resolv.c:296 src/library/os/linux/resolv.c:372
 #, fuzzy
 msgid "DNS error"
 msgstr "Erro no socket"
@@ -996,59 +1049,59 @@ msgstr ""
 msgid "Received signal with unexpected si_code '%d' while connecting to %s"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:279
+#: src/library/os/linux/resolv.c:284
 msgid "Unexpected response to cancel request"
 msgstr ""
 
-#: src/library/os/linux/resolv.c:292 src/library/os/linux/resolv.c:366
+#: src/library/os/linux/resolv.c:297 src/library/os/linux/resolv.c:373
 #, fuzzy
 msgid "Unable to resolve host name"
 msgstr "Não consegui encontrar o host selecionado."
 
-#: src/library/os/windows/eventhandler.c:133
-#: src/library/tls/openssl/start.c:109 src/library/tls/openssl/start.c:137
-#: src/library/tls/openssl/start.c:168
+#: src/library/os/windows/eventhandler.c:132
+#: src/library/tls/openssl/start.c:121 src/library/tls/openssl/start.c:149
+#: src/library/tls/openssl/start.c:180
 msgid "Internal error"
 msgstr "Erro interno"
 
-#: src/library/os/windows/eventhandler.c:134
+#: src/library/os/windows/eventhandler.c:133
 msgid "Requested connection is already on the watch list."
 msgstr ""
 
-#: src/library/os/windows/eventhandler.c:165
+#: src/library/os/windows/eventhandler.c:164
 #, fuzzy
 msgid "Unexpected network error"
 msgstr "Erro inesperado"
 
-#: src/library/os/windows/eventhandler.c:166
+#: src/library/os/windows/eventhandler.c:165
 msgid "Unable to watch socket, WSAEventSelect has failed."
 msgstr ""
 
-#: src/library/os/windows/http.c:101
+#: src/library/os/windows/http.c:99
 msgid "Can't open HTTP session"
 msgstr "Não foi possível abrir sessão HTTP"
 
-#: src/library/os/windows/http.c:112
+#: src/library/os/windows/http.c:110
 msgid "Can't connect to HTTP server."
 msgstr "Não foi possível conectar ao servidor HTTP"
 
-#: src/library/os/windows/http.c:123
+#: src/library/os/windows/http.c:121
 msgid "Can't create HTTP request."
 msgstr "Não foi possível criar requisição HTTP"
 
-#: src/library/os/windows/http.c:136
+#: src/library/os/windows/http.c:134
 msgid "Can't send HTTP request."
 msgstr "Não posso enviar requisição HTTP"
 
-#: src/library/os/windows/http.c:147
+#: src/library/os/windows/http.c:145
 msgid "Error receiving HTTP response."
 msgstr "Erro recebendo resposta HTTP."
 
-#: src/library/os/windows/http.c:159
+#: src/library/os/windows/http.c:157
 msgid "Empty response from HTTP server."
 msgstr "Recebi resposta vazia do servidor HTTP"
 
-#: src/library/os/windows/http.c:175
+#: src/library/os/windows/http.c:173
 msgid "Can't read HTTP response size."
 msgstr "Não posso obter tamanho da resposta HTTP"
 
@@ -1082,25 +1135,25 @@ msgstr "Conexão falhou"
 msgid "Name resolution failed"
 msgstr "Operação falhou"
 
-#: src/library/os/windows/resolv.c:245
+#: src/library/os/windows/resolv.c:244
 #, fuzzy
 msgid "Error connecting to host."
 msgstr "Erro enviando para o servidor"
 
-#: src/library/os/windows/resolv.c:343 src/library/tls/openssl/connected.c:122
+#: src/library/os/windows/resolv.c:342 src/library/tls/openssl/connected.c:122
 #: src/library/tls/openssl/connected.c:206 src/library/tls/openssl/errors.c:65
-#: src/library/tls/openssl/start.c:351 src/library/tls/wsc/start.c:228
+#: src/library/tls/openssl/start.c:363 src/library/tls/wsc/start.c:228
 #: src/library/tls/wsc/start.c:262 src/library/tls/wsc/start.c:355
 #: src/library/tls/wsc/start.c:379
 #, fuzzy
 msgid "TLS/SSL error"
 msgstr "Erro SSL"
 
-#: src/library/os/windows/resolv.c:344
+#: src/library/os/windows/resolv.c:343
 msgid "Failed to create resolver thread"
 msgstr ""
 
-#: src/library/os/windows/resolv.c:345
+#: src/library/os/windows/resolv.c:344
 msgid ""
 "Failed to create a thread to perform the host name resolution. Please check "
 "your system configuration."
@@ -1254,8 +1307,8 @@ msgid "Connected in TN3270E mode, 3270 mode"
 msgstr ""
 
 #: src/library/properties/signed.c:59 src/library/properties/signed.c:87
-#: src/library/properties/signed.c:111 src/library/telnet.c:1825
-#: src/library/telnet.c:1845
+#: src/library/properties/signed.c:111 src/library/telnet.c:1821
+#: src/library/telnet.c:1841
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -1855,6 +1908,72 @@ msgstr "Reconectar automaticamente"
 msgid "Automatically reconnect to the host if it ever disconnects"
 msgstr "Reconecta automaticamente caso o servidor desconecte"
 
+#: src/library/connect.c:191
+msgid "Connection scheme initialization failed"
+msgstr ""
+
+#: src/library/connect.c:199
+#, c-format
+msgid "Initialization scheme '%s' in URL %s failed with error '%s'"
+msgstr ""
+
+#: src/library/connect.c:258
+#, fuzzy
+msgid "Unable to set socket receive timeout"
+msgstr "Não foi possível obter emissor do certificado"
+
+#: src/library/connect.c:272
+#, fuzzy
+msgid "Unable to set socket send timeout"
+msgstr "Incapaz de colar texto"
+
+#: src/library/ctlr.c:170 src/library/ctlr.c:180 src/library/ctlr.c:191
+#: src/library/ctlr.c:202
+msgid "Invalid oversize"
+msgstr "Valor inválido para 'oversize'"
+
+#: src/library/ctlr.c:171
+msgid "The oversize values are invalid."
+msgstr "Os valores para 'oversize' não são válidos."
+
+#: src/library/ctlr.c:172
+#, c-format
+msgid "%dx%d is negative or zero"
+msgstr "%dx%d é negativa ou zero"
+
+#: src/library/ctlr.c:181
+msgid "The oversize values are too big."
+msgstr "Os valores do 'oversize' são muito grandes."
+
+#: src/library/ctlr.c:182
+#, c-format
+msgid "%dx%d screen size is bigger than the maximum size"
+msgstr "Tela %dx%d é maior que o tamanho máximo"
+
+#: src/library/ctlr.c:192
+msgid "The oversize width is too small."
+msgstr "A largura do 'oversize' é muito pequena."
+
+#: src/library/ctlr.c:193
+#, c-format
+msgid "The width %d is less than model %d columns (%d)"
+msgstr "A largura %d é menor que a do modelo %d (%d)"
+
+#: src/library/ctlr.c:203
+msgid "The oversize height is too small."
+msgstr "A altura definida para 'oversize' é muito pequena."
+
+#: src/library/ctlr.c:204
+#, c-format
+msgid "The height %d is less than model %d rows (%d)"
+msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
+
+#. unknown 3270 command
+#: src/library/ctlr.c:398
+#, c-format
+msgid "Unknown 3270 Data Stream command: 0x%X"
+msgstr "Unknown 3270 Data Stream command: 0x%X"
+
 #: src/library/options.c:46
 msgid "IBM S/390"
 msgstr "IBM S/390"
@@ -1977,33 +2096,64 @@ msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 msgid "RPQ ADDRESS term incomplete: getsockname failed"
 msgstr "Termo RPQ ADDRESS incompleto devido ao limite de espaço"
 
-#: src/library/telnet.c:764
+#: src/library/session.c:173
+msgid "Can't print"
+msgstr "Não é possível imprimir"
+
+#: src/library/session.c:173
+msgid "Unable to print"
+msgstr "Incapaz de imprimir"
+
+#: src/library/session.c:181
+#, fuzzy, c-format
+msgid "Cant save '%s'"
+msgstr "Não foi possível salvar arquivo %s"
+
+#: src/library/session.c:185 src/library/session.c:204
+#, fuzzy
+msgid "Unsupported call"
+msgstr "Unsupported RPQ term"
+
+#: src/library/session.c:187
+msgid "The save operation is not supported by this session."
+msgstr ""
+
+#: src/library/session.c:200
+#, fuzzy, c-format
+msgid "Cant load '%s'"
+msgstr "Não foi possível carregar %s"
+
+#: src/library/session.c:206
+msgid "The load operation is not supported by this session."
+msgstr ""
+
+#: src/library/telnet.c:762
 msgid "Warning"
 msgstr "Alerta"
 
-#: src/library/telnet.c:765
+#: src/library/telnet.c:763
 msgid "EOR received when not in 3270 mode, ignored."
 msgstr "EOR recebido fora do modo 3270, ignorado."
 
 #. None of the LUs worked.
-#: src/library/telnet.c:965
+#: src/library/telnet.c:963
 msgid "Cannot connect to specified LU"
 msgstr "Não foi possível conectar na LU pedida"
 
-#: src/library/telnet.c:1036
+#: src/library/telnet.c:1034
 msgid "TLS negotiation failure"
 msgstr "Negociação TLS falhou"
 
-#: src/library/telnet.c:1200
+#: src/library/telnet.c:1196
 msgid "Host rejected device type or request type"
 msgstr "Servidor rejeitou o tipo de dispositivo ou requisição"
 
 #. No more LUs to try.  Give up.
-#: src/library/telnet.c:1210
+#: src/library/telnet.c:1206
 msgid "Host rejected resource(s)"
 msgstr "Servidor rejeitou recurso(s)"
 
-#: src/library/telnet.c:1212
+#: src/library/telnet.c:1208
 msgid "Device type rejected"
 msgstr "Tipo de dispositivo rejeitado"
 
@@ -2011,83 +2161,83 @@ msgstr "Tipo de dispositivo rejeitado"
 #. * They've added something.  Abandon
 #. * TN3270E, they're brain dead.
 #.
-#: src/library/telnet.c:1270
+#: src/library/telnet.c:1266
 msgid "Host illegally added function(s)"
 msgstr "Host illegally added function(s)"
 
-#: src/library/telnet.c:1812
+#: src/library/telnet.c:1808
 msgid "Unconnected"
 msgstr "Não conectado"
 
-#: src/library/telnet.c:1813 src/library/telnet.c:1833
+#: src/library/telnet.c:1809 src/library/telnet.c:1829
 msgid "Connecting"
 msgstr "Conectando"
 
-#: src/library/telnet.c:1814
+#: src/library/telnet.c:1810
 msgid "Pending"
 msgstr "Pendente"
 
-#: src/library/telnet.c:1815
+#: src/library/telnet.c:1811
 msgid "Connected initial"
 msgstr "Connected initial"
 
-#: src/library/telnet.c:1816
+#: src/library/telnet.c:1812
 msgid "TN3270 NVT"
 msgstr "TN3270 NVT"
 
-#: src/library/telnet.c:1817
+#: src/library/telnet.c:1813
 msgid "TN3270 3270"
 msgstr "TN3270 3270"
 
-#: src/library/telnet.c:1818
+#: src/library/telnet.c:1814
 msgid "TN3270E"
 msgstr "TN3270E"
 
-#: src/library/telnet.c:1819
+#: src/library/telnet.c:1815
 msgid "TN3270E NVT"
 msgstr "TN3270E NVT"
 
-#: src/library/telnet.c:1820
+#: src/library/telnet.c:1816
 msgid "TN3270E SSCP-LU"
 msgstr "TN3270E SSCP-LU"
 
-#: src/library/telnet.c:1821
+#: src/library/telnet.c:1817
 msgid "TN3270E 3270"
 msgstr "TN3270E 3270"
 
-#: src/library/telnet.c:1832
+#: src/library/telnet.c:1828
 msgid "Resolving"
 msgstr "Resolvendo"
 
-#: src/library/telnet.c:1834
+#: src/library/telnet.c:1830
 msgid "Half connect"
 msgstr "Half connect"
 
-#: src/library/telnet.c:1835
+#: src/library/telnet.c:1831
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/library/telnet.c:1836
+#: src/library/telnet.c:1832
 msgid "3270 Mode"
 msgstr "Modo 3270"
 
-#: src/library/telnet.c:1837
+#: src/library/telnet.c:1833
 msgid "Line mode"
 msgstr "Line mode"
 
-#: src/library/telnet.c:1838
+#: src/library/telnet.c:1834
 msgid "Remodel"
 msgstr "Remodel"
 
-#: src/library/telnet.c:1839
+#: src/library/telnet.c:1835
 msgid "Printer"
 msgstr "Impressão"
 
-#: src/library/telnet.c:1840
+#: src/library/telnet.c:1836
 msgid "Exiting"
 msgstr "Saindo"
 
-#: src/library/telnet.c:1841
+#: src/library/telnet.c:1837
 msgid "Charset"
 msgstr "Tabela de caracteres"
 
@@ -2529,74 +2679,61 @@ msgid ""
 "error"
 msgstr ""
 
-#: src/library/tls/openssl/start.c:110
+#: src/library/tls/openssl/start.c:122
 #, fuzzy
 msgid "Error creating SSL context"
 msgstr "Erro lendo do servidor"
 
-#: src/library/tls/openssl/start.c:111
+#: src/library/tls/openssl/start.c:123
 #, fuzzy
 msgid "Unexpected error getting global SSL context"
 msgstr "Erro inesperado gravando socket"
 
-#: src/library/tls/openssl/start.c:138
+#: src/library/tls/openssl/start.c:150
 #, fuzzy
 msgid "Error creating SSL connection"
 msgstr "Conexão _Segura."
 
-#: src/library/tls/openssl/start.c:139
+#: src/library/tls/openssl/start.c:151
 #, fuzzy
 msgid "Unexpected error on SSL_new()"
 msgstr "Erro inesperado na inicialização do sistema de segurança"
 
-#: src/library/tls/openssl/start.c:169
+#: src/library/tls/openssl/start.c:181
 #, fuzzy
 msgid "Error creating SSL negotiation thread"
 msgstr "Trace da negociação SSL"
 
-#: src/library/tls/openssl/start.c:247 src/library/tls/openssl/start.c:265
+#: src/library/tls/openssl/start.c:259 src/library/tls/openssl/start.c:277
 #, fuzzy
 msgid "Unable to set socket timeout"
 msgstr "Incapaz de colar texto"
 
-#: src/library/tls/openssl/start.c:294
+#: src/library/tls/openssl/start.c:306
 #, fuzzy
 msgid "Unexpected error associating network socket with TLS/SSL context"
 msgstr "Erro inesperado gravando socket"
 
-#: src/library/tls/openssl/start.c:328
+#: src/library/tls/openssl/start.c:340
 #, c-format
 msgid "The TLS/SSL handshake has failed with error %d"
 msgstr ""
 
-#: src/library/tls/openssl/start.c:365
+#: src/library/tls/openssl/start.c:377
 msgid "A fatal error occurred during the TLS/SSL handshake process."
 msgstr ""
 
-#: src/library/tls/openssl/start.c:375
+#: src/library/tls/openssl/start.c:387
 #, fuzzy
 msgid "TLS/SSL system error"
 msgstr "O erro do sistema operacional foi \"%s\""
 
-#: src/library/tls/openssl/start.c:376
+#: src/library/tls/openssl/start.c:388
 msgid "A system I/O error occurred during the SSL handshake process."
 msgstr ""
 
-#: src/library/tls/openssl/start.c:449
+#: src/library/tls/openssl/start.c:461
 msgid "FQDN validation error"
-msgstr ""
-
-#: src/library/tls/unavailable.c:39
-#, fuzzy
-msgid "Unable to activate TLS/SSL"
-msgstr "Incapaz de salvar"
-
-#: src/library/tls/unavailable.c:40
-msgid "The lib3270 library was not built with TLS/SSL support."
-msgstr ""
-
-#: src/library/tls/unavailable.c:41 src/library/util.c:529
-msgid "Ok"
 msgstr ""
 
 #: src/library/tls/wsc/start.c:223
@@ -2653,113 +2790,15 @@ msgid ""
 "your system configuration."
 msgstr ""
 
-#: src/library/util.c:272
+#: src/library/util.c:273
 #, c-format
 msgid "The system error was '%s' (rc=%d)"
 msgstr "O erro do sistema foi \"%s\" (rc=%d)"
 
-#: src/library/util.c:526
+#: src/library/util.c:527
 #, fuzzy
 msgid "SSL verification failed"
 msgstr "Negociação SSL falhou"
-
-#: src/library/connect.c:176
-#, fuzzy
-msgid "Invalid connection scheme"
-msgstr "A conexão é segura ?"
-
-#: src/library/connect.c:184
-#, c-format
-msgid "Unsupported scheme '%s' in URL %s"
-msgstr ""
-
-#: src/library/connect.c:239
-#, fuzzy
-msgid "Unable to set socket receive timeout"
-msgstr "Não foi possível obter emissor do certificado"
-
-#: src/library/connect.c:253
-#, fuzzy
-msgid "Unable to set socket send timeout"
-msgstr "Incapaz de colar texto"
-
-#: src/library/session.c:167
-msgid "Can't print"
-msgstr "Não é possível imprimir"
-
-#: src/library/session.c:167
-msgid "Unable to print"
-msgstr "Incapaz de imprimir"
-
-#: src/library/session.c:175
-#, fuzzy, c-format
-msgid "Cant save '%s'"
-msgstr "Não foi possível salvar arquivo %s"
-
-#: src/library/session.c:179 src/library/session.c:198
-#, fuzzy
-msgid "Unsupported call"
-msgstr "Unsupported RPQ term"
-
-#: src/library/session.c:181
-msgid "The save operation is not supported by this session."
-msgstr ""
-
-#: src/library/session.c:194
-#, fuzzy, c-format
-msgid "Cant load '%s'"
-msgstr "Não foi possível carregar %s"
-
-#: src/library/session.c:200
-msgid "The load operation is not supported by this session."
-msgstr ""
-
-#: src/library/ctlr.c:170 src/library/ctlr.c:180 src/library/ctlr.c:191
-#: src/library/ctlr.c:202
-msgid "Invalid oversize"
-msgstr "Valor inválido para 'oversize'"
-
-#: src/library/ctlr.c:171
-msgid "The oversize values are invalid."
-msgstr "Os valores para 'oversize' não são válidos."
-
-#: src/library/ctlr.c:172
-#, c-format
-msgid "%dx%d is negative or zero"
-msgstr "%dx%d é negativa ou zero"
-
-#: src/library/ctlr.c:181
-msgid "The oversize values are too big."
-msgstr "Os valores do 'oversize' são muito grandes."
-
-#: src/library/ctlr.c:182
-#, c-format
-msgid "%dx%d screen size is bigger than the maximum size"
-msgstr "Tela %dx%d é maior que o tamanho máximo"
-
-#: src/library/ctlr.c:192
-msgid "The oversize width is too small."
-msgstr "A largura do 'oversize' é muito pequena."
-
-#: src/library/ctlr.c:193
-#, c-format
-msgid "The width %d is less than model %d columns (%d)"
-msgstr "A largura %d é menor que a do modelo %d (%d)"
-
-#: src/library/ctlr.c:203
-msgid "The oversize height is too small."
-msgstr "A altura definida para 'oversize' é muito pequena."
-
-#: src/library/ctlr.c:204
-#, c-format
-msgid "The height %d is less than model %d rows (%d)"
-msgstr "A altura %d é menor que o número de linhas do modelo %d (%d)"
-
-#. unknown 3270 command
-#: src/library/ctlr.c:398
-#, c-format
-msgid "Unknown 3270 Data Stream command: 0x%X"
-msgstr "Unknown 3270 Data Stream command: 0x%X"
 
 #: src/gobject/callbacks.c:250 src/gobject/callbacks.c:270
 #, fuzzy
@@ -2786,6 +2825,10 @@ msgstr ""
 #: src/gobject/object.c:96
 msgid "Timer is enabled, usually activates when session is busy"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Invalid connection scheme"
+#~ msgstr "A conexão é segura ?"
 
 #~ msgid "Cant open custom certificate directory."
 #~ msgstr "Não foi possível abrir o diretório de certificados personalizados"

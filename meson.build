@@ -22,7 +22,10 @@ project(
 	['c'],
 	version: '6.0.0',
 	license: 'GPL-3.0-or-later',
-        default_options : [ 'buildtype=release' ],
+	default_options : [
+    'buildtype=release', 
+    'default_library=both',
+  ],
 )
 
 project_description = 'TN3270 client library'
@@ -378,30 +381,14 @@ if host_machine.system() == 'windows'
     ]
   )
 
-  pkg.generate(
-    name: meson.project_name() + '-static',
-    description: project_description,
-    variables: pkg_variables,
-    requires: [
-      pkgconfig_libs
-    ],
-    libraries: [ 
-      '-l3270',
-      '-lwinhttp',
-      '-lws2_32',
-      '-lwtsapi32',
-      '-lcomdlg32' 
-    ]
-  )
-
-  pkg.generate(
-    name: meson.project_name() + '-delayed',
-    description: project_description,
-    variables: pkg_variables,
-    libraries: [ 
-      '-l3270.delayed',
-    ]
-  )
+  # pkg.generate(
+  #   name: meson.project_name() + '-delayed',
+  #   description: project_description,
+  #   variables: pkg_variables,
+  #   libraries: [ 
+  #     '-l3270.delayed',
+  #   ]
+  # )
 
 else
 
@@ -414,16 +401,15 @@ else
     libraries_private: [ pkgconfig_libs ],
   )
 
-  pkg.generate(
-    name: meson.project_name() + '-static',
-    description: project_description,
-    variables: pkg_variables,
-    requires: [
-      pkgconfig_libs
-    ],
-    libraries: [ '-l:' + meson.project_name() + '.a' ]
-  )
-
+  # pkg.generate(
+  #   name: meson.project_name() + '-static',
+  #   description: project_description,
+  #   variables: pkg_variables,
+  #   requires: [
+  #     pkgconfig_libs
+  #   ],
+  #   libraries: [ '-l:' + meson.project_name() + '.a' ]
+  # )
 
 endif
 
@@ -501,32 +487,21 @@ config_src = [
   )
 ]
 
-#hotdoc = import('hotdoc')
-#hotdoc.generate_doc(
-#  meson.project_name(),
-#  project_version: meson.project_version(),
-#  sitemap: 'sitemap.txt',
-#  index: 'index.md',
-#  c_sources: lib_src,
-#  c_smart_index: true,
-#  install: true,
-#)
-
 if host_machine.system() == 'windows'
 
   # https://mesonbuild.com/Windows-module.html
-  windows = import('windows')
-  resources = windows.compile_resources(
-    configure_file(
-      input : 'src/library/os/windows/resources.rc.in',
-      output : 'resources.rc',
-      configuration : app_conf
-    )
-  )
+  # windows = import('windows')
+  # resources = windows.compile_resources(
+  #   configure_file(
+  #     input : 'src/library/os/windows/resources.rc.in',
+  #     output : 'resources.rc',
+  #     configuration : app_conf
+  #   )
+  # )
 
-  dynamic = shared_library(
+  lib3270 = library(
     '3270', 
-    config_src + lib_src + resources,
+    config_src + lib_src,
     install: true,
     dependencies: pkgconfig_libs + lib_extra,
     include_directories: includes_dir,
@@ -545,47 +520,19 @@ if host_machine.system() == 'windows'
   # https://baltig.polito.it/s346827/qemu/-/blob/36025b9c539f2c25f77bd985adc47825b9e9c4f4/plugins/meson.build
   # https://github.com/mesonbuild/meson/issues/5093
   #
-  if meson.is_cross_build()
-    dlltool = find_program(
-      '@0@/bin/dlltool'.format(
-        meson.get_external_property('root')
-      )
-    )
-  else
-    dlltool = find_program('dlltool', required: true)
-  endif
-
-  # https://mesonbuild.com/Reference-manual_functions.html#custom_target
-  custom_target(
-    'delaylib',
-    depends: dynamic,
-    build_by_default: true,
-    command: [ 
-      dlltool,
-        '--input-def','lib3270.def',
-        '--dllname','lib3270.dll',
-        '--kill-at',
-        '--output-lib','lib3270.delayed.a' 
-      ],
-    output: 'lib3270.delayed.a',
-    install: true,
-    install_tag: 'devel',
-    install_dir: get_option('libdir')
-  )
-
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY' ],
-    install: true,
-    dependencies: pkgconfig_libs,
-    include_directories: includes_dir
-  )
+  # if meson.is_cross_build()
+  #   dlltool = find_program(
+  #     '@0@/bin/dlltool'.format(
+  #       meson.get_external_property('root')
+  #     )
+  #   )
+  # else
+  #   dlltool = find_program('dlltool', required: true)
+  # endif
 
 elif host_machine.system() == 'darwin'
 
-  dynamic = shared_library(
+  lib3270 = library(
     '3270', 
     config_src + lib_src,
     install: true,
@@ -596,19 +543,9 @@ elif host_machine.system() == 'darwin'
     include_directories: includes_dir
   )
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY' ],
-    install: true,
-    dependencies: pkgconfig_libs,
-    include_directories: includes_dir
-  )
-
 else
 
-  dynamic = shared_library(
+  lib3270 = library(
     '3270', 
     config_src + lib_src,
     install: true,
@@ -620,54 +557,36 @@ else
     include_directories: includes_dir
   )
 
-  static = static_library(
-    '3270', 
-    config_src + lib_src,
-    pic: true,
-    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-    install: true,
-    dependencies: pkgconfig_libs,
-    include_directories: includes_dir
-  )
-
 endif
 
-glib_dynamic = shared_library(
+lib3270_glib = library(
     '3270-glib', 
     gobject_src,
     install: true,
     version : libversion,
     soversion : libversion,
-    link_with : [ dynamic ],
+    link_with : [ lib3270 ],
     dependencies: pkgconfig_libs + lib_extra + [ gobject, polkit ],
     include_directories: includes_dir
 )
 
-dynamic_library = declare_dependency(
-  link_with : dynamic,
+lib3270_dep = declare_dependency(
+  link_with : lib3270,
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 
 
-static_library = declare_dependency(
-  link_with : static,
+lib3270_glib_dep = declare_dependency(
+  link_with : lib3270_glib,
   include_directories : includes_dir,
   variables: pkg_variables,
 ) 
-
-static_library(
-  '3270-glib', 
-  gobject_src + config_src + lib_src,
-  install: true,
-  dependencies: pkgconfig_libs + [ gobject, polkit ],
-  include_directories: includes_dir
-)
 
 executable(
     meson.project_name() + '-gobject',
     [ 'src/gobject/testprogram.c' ],
     install: false,
-    link_with : [ glib_dynamic, dynamic ],
+    link_with : [ lib3270_glib, lib3270 ],
     dependencies: pkgconfig_libs + [ gobject ],
     include_directories: includes_dir
 )
@@ -676,7 +595,7 @@ executable(
   meson.project_name(),
   config_src + [ 'src/library/testprogram.c' ],
   install: false,
-  link_with : [ dynamic ],
+  link_with : [ lib3270 ],
   dependencies: pkgconfig_libs + libintl,
   include_directories: includes_dir
 )

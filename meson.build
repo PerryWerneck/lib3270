@@ -29,10 +29,11 @@ project(
 )
 
 project_description = 'TN3270 client library'
-product_name = 'pw3270'
-product_domain = 'br.app.@0@'.format(product_name)
-product_path = '/br/app/@0@'.format(product_name)
-product_title = 'TN3270 Access library'
+library_name = get_option('library_name')
+product_name = get_option('product_name')
+product_domain = get_option('product_domain')
+product_title = get_option('product_title')
+product_path = '/@0@'.format(product_domain.replace('.', '/'))
 
 lib_src = []
 
@@ -60,7 +61,10 @@ libintl = dependency('intl', required: false)
 libiconv = dependency('iconv', required: false)
 gobject = dependency('gobject-2.0', required: false)
 polkit = dependency('polkit-gobject-1', required: false)
-uriparser= dependency('liburiparser', method : 'pkg-config')
+
+pkgconfig_libs = [
+  libssl,
+]
 
 lib_extra = [
   dependency('threads'),
@@ -68,10 +72,40 @@ lib_extra = [
   libiconv
 ]
 
-pkgconfig_libs = [
-  uriparser,
-  libssl,
-]
+uriparser = dependency(
+  'liburiparser', 
+  required: false,
+)
+
+if uriparser.found()
+
+  pkgconfig_libs += [ uriparser ]
+
+else 
+
+  # Import Meson's CMake interpreter
+  cmake = import('cmake')
+
+  # Configure the CMake project with explicit build options
+  uriparser_opts = cmake.subproject_options()
+  uriparser_opts.add_cmake_defines({
+    'URIPARSER_BUILD_TESTS': 'OFF',
+    'URIPARSER_BUILD_DOCS': 'OFF',
+    'URIPARSER_SHARED_LIBS': 'OFF',
+    'URIPARSER_BUILD_TOOLS': 'OFF',
+    'CMAKE_POSITION_INDEPENDENT_CODE': 'ON',
+  })
+
+  # Initialize subproject and pull the target
+  uriparser_sub = cmake.subproject(
+    'uriparser', 
+    options: uriparser_opts
+  )
+  
+  uriparser = uriparser_sub.dependency('uriparser')
+  lib_extra += [ uriparser ]
+
+endif
 
 #
 # Setup time based properties
@@ -338,20 +372,16 @@ pkg_variables = [
   'version_micro=@0@'.format(pkg_micro_version),
 
   'product_name=@0@'.format(product_name),
-  'product_id=@0@.@1@'.format(product_domain,product_name),
+  'product_domain=@0@'.format(product_domain),
   'product_title=@0@'.format(product_title),
   'product_version=@0@@1@'.format(pkg_major_version,pkg_minor_version),
-
   'build_id=@0@'.format(rpq_timestamp_value),
-
-  'package_name=lib3270-@0@_@1@'.format(pkg_major_version,pkg_minor_version),
-  
   'sdk_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
-  'library_name=lib3270',
+  'library_name=@0@'.format(library_name),
   'product_domain=@0@'.format(product_domain),
   'schema_path=@0@'.format(product_path),
 
-  'plugin_path=@0@/@1@/@2@.@3@/plugins/'.format(
+  'plugin_path=/@0@/@1@/@2@.@3@/plugins/'.format(
       get_option('libdir'),
       product_name,
       pkg_major_version,
@@ -367,12 +397,12 @@ if host_machine.system() == 'windows'
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    libraries: [ '-l3270.dll' ],
+    libraries: [ '-l@0@.dll'.format(library_name) ],
     requires_private: [ 
       pkgconfig_libs 
     ],
     libraries_private: [ 
-      '-l3270',
+      '-l@0@'.format(library_name),
       '-lwinhttp',
       '-lws2_32',
       '-lwtsapi32',
@@ -396,7 +426,7 @@ else
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    libraries: [ '-l3270' ],
+    libraries: [ '-l@0@'.format(library_name) ],
     requires_private: [ pkgconfig_libs ],
     libraries_private: [ pkgconfig_libs ],
   )
@@ -500,7 +530,7 @@ if host_machine.system() == 'windows'
   # )
 
   lib3270 = library(
-    '3270', 
+    library_name, 
     config_src + lib_src,
     install: true,
     dependencies: pkgconfig_libs + lib_extra,
@@ -533,7 +563,7 @@ if host_machine.system() == 'windows'
 elif host_machine.system() == 'darwin'
 
   lib3270 = library(
-    '3270', 
+    library_name, 
     config_src + lib_src,
     install: true,
     version : libversion,
@@ -546,7 +576,7 @@ elif host_machine.system() == 'darwin'
 else
 
   lib3270 = library(
-    '3270', 
+    library_name, 
     config_src + lib_src,
     install: true,
     version : libversion,
@@ -560,7 +590,7 @@ else
 endif
 
 lib3270_glib = library(
-    '3270-glib', 
+    '@0@-glib'.format(library_name), 
     gobject_src,
     install: true,
     version : libversion,

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 11:36-0300\n"
+"POT-Creation-Date: 2026-11-09 21:24-0300\n"
 "PO-Revision-Date: 2023-04-21 08:40-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -2822,7 +2822,7 @@ msgstr ""
 msgid "Unexpected callback table, the release %s of %s is invalid"
 msgstr ""
 
-#: src/gobject/object.c:96
+#: src/gobject/object.c:111
 msgid "Timer is enabled, usually activates when session is busy"
 msgstr ""
 

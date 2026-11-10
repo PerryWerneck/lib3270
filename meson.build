@@ -649,7 +649,26 @@ install_headers(
   'src/include/lib3270/ssl.h',
   'src/include/lib3270/toggle.h',
   'src/include/lib3270/trace.h',
+  'src/include/lib3270/glib.h',
   'src/include/' + host_machine.system() + '/lib3270/os.h',
   subdir: 'lib3270'  
 )
+
+#
+# gtk-doc
+#
+gtk_doc = get_option('gtk_doc')
+if gtk_doc.enabled() and not gobject.found()
+  error('gtk-doc requires gobject-2.0')
+endif
+if gtk_doc.enabled() and get_option('default_library') == 'static'
+  error('gtk-doc requires a shared library')
+endif
+
+if gtk_doc.allowed() and gobject.found() and get_option('default_library') != 'static'
+  gtkdoc_scan = find_program('gtkdoc-scan', required: gtk_doc)
+  if gtkdoc_scan.found()
+    subdir('docs/reference')
+  endif
+endif
 

@@ -2,4 +2,5 @@ option('product_name', type: 'string', value: 'pw3270', description: 'pw3270')
 option('product_domain', type: 'string', value: 'br.app.pw3270', description: 'The product domain')
 option('product_title', type: 'string', value: 'IBM 3270 Terminal emulator', description: 'The product title')
 option('library_name', type: 'string', value: '3270', description: 'The library name')
+option('gtk_doc', type: 'feature', value: 'auto', description: 'Build API documentation with gtk-doc')
 

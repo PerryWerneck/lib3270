@@ -18,11 +18,26 @@
  */
 
 /**
- * SECTION: tn3270-session
- * @short_description: A tn3270 session object
+ * SECTION:tn3270-session
+ * @short_description: A TN3270 session object
+ * @title: Tn3270Session
+ * @see_also: tn3270_session_new(), tn3270_session_connect()
+ * @stability: Stable
  *
- * A tn3270 session object representing a connection to a tn3270 server.
- * 
+ * #Tn3270Session is a #GObject wrapping one lib3270 session. Create it with
+ * tn3270_session_new() and open the host connection with
+ * tn3270_session_connect(). tn3270_session_get_h3270() returns the underlying
+ * lib3270 handle.
+ *
+ * Session state is published as #GObject properties. That includes the
+ * lib3270 toggles, the boolean, integer and string properties, and the
+ * built-in connection, LU, URL, model, TLS, selection, program-message and
+ * paste properties.
+ *
+ * Subclasses follow screen and state changes by overriding the virtual
+ * methods in #Tn3270SessionClass. Chain up to the parent for every method
+ * that publishes a property, otherwise the corresponding notification is not
+ * emitted.
  */
 
  #include <config.h>
@@ -57,7 +72,7 @@
  
  /// @brief Internal properties
  enum Properties {
-	SESSION_PROPERTY_TIMER,
+	SESSION_PROPERTY_TIMER = 1,
 
 	SESSION_PROPERTY_CUSTOM
  };

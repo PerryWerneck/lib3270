@@ -1,0 +1,19 @@
+<SECTION>
+<FILE>tn3270-session</FILE>
+<TITLE>Tn3270Session</TITLE>
+Tn3270Session
+Tn3270SessionClass
+Tn3270SessionProperties
+tn3270_session_new
+tn3270_session_get_h3270
+tn3270_session_connect
+tn3270_session_disconnect
+<SUBSECTION Standard>
+TN3270_TYPE_SESSION
+TN3270_SESSION
+TN3270_IS_SESSION
+TN3270_SESSION_CLASS
+TN3270_IS_SESSION_CLASS
+TN3270_SESSION_GET_CLASS
+tn3270_session_get_type
+</SECTION>

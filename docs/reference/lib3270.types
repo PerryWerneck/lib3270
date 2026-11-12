@@ -1,0 +1,3 @@
+#include <lib3270/glib.h>
+
+tn3270_session_get_type

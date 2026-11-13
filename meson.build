@@ -23,6 +23,7 @@ project(
 	version: '6.0.0',
 	license: 'GPL-3.0-or-later',
 	default_options : [
+    'c_std=c11',
     'buildtype=release', 
     'default_library=both',
   ],
@@ -125,6 +126,7 @@ c = meson.get_compiler('c')
 compiler_flags = [
   '-ggdb3',
   '-DHAVE_CONFIG_H=1',
+  '-D_DEFAULT_SOURCE',
   '-DBUILD_DATE='+time_epoch,
   '-DG_LOG_DOMAIN="tn3270"',
 ]

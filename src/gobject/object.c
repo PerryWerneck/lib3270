@@ -41,6 +41,7 @@
  */
 
  #include <config.h>
+ #include <strings.h>
  #include <private/gobject.h>
  #include <lib3270.h>
  #include <lib3270/properties.h>

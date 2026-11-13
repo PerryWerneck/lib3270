@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+#include <strings.h>
 #include <lib3270/defs.h>
 #include <lib3270/popup.h>
 #include <lib3270/memory.h>

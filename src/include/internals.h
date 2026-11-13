@@ -71,6 +71,9 @@
 #include <stdio.h>				/* Unix standard I/O library */
 #include <ctype.h>				/* Character classes */
 #include <string.h>				/* String manipulations */
+#ifndef _MSC_VER
+#include <strings.h>			/* strcasecmp() */
+#endif
 #include <sys/types.h>			/* Basic system data types */
 #include <time.h>				/* C library time functions */
 #include "localdefs.h"			/* {s,tcl,c}3270-specific defines */

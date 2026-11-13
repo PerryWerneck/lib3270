@@ -31,6 +31,7 @@
 #include <private/defs.h>
 
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <private/screen.h>

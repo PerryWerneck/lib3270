@@ -33,6 +33,7 @@
 #include <private/session.h>
 #include <X11keysym.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 
 LIB3270_EXPORT int lib3270_remap_char(H3270 *hSession, unsigned short ebc, const char *iso, lib3270_remap_scope scope, unsigned char one_way) {

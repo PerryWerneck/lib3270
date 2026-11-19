@@ -415,7 +415,7 @@ char * unescape(const char *text) {
 	char 		* outString = lib3270_malloc(sz+1);
 	char		* dst = outString;
 	const char	* src = text;
-	char 		* ptr = strchr(src,'%');
+	const char 	* ptr = strchr(src,'%');
 
 	memset(outString,0,sz+1);
 

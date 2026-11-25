@@ -17,9 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LIB3270_SESSION_H_INCLUDED
-
-#define LIB3270_SESSION_H_INCLUDED 1
+#pragma once
 
 #if defined(_WIN32) || defined(_MSC_VER)
 #include <winsock2.h>
@@ -32,6 +30,10 @@
 #include <lib3270/popup.h>
 #include <lib3270/toggle.h>
 #include <lib3270/ssl.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct _lib3270_log_context {
 	const char *filename;
@@ -129,6 +131,8 @@ LIB3270_EXPORT int lib3270_getsockname(H3270 *hSession, struct sockaddr *addr, s
  */
 LIB3270_EXPORT struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz);
 
-#endif // LIB3270_SESSION_H_INCLUDED
+#ifdef __cplusplus
+}
+#endif
 
 

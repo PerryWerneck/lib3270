@@ -75,6 +75,7 @@
 	char			* host;				///< @brief Host charset name
 	char			* display;			///< @brief Display charset name
 	unsigned long	  cgcsgid;			///< @brief CGCSGID code
+	unsigned short	  msgtype;
 
  	LIB3270_CHARSET_CONTEXT * context;	///< @brief Charset context.
 

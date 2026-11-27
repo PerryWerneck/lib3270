@@ -60,37 +60,115 @@ LIB3270_EXPORT const char * lib3270_get_connection_state_as_string(const H3270 *
 
 }
 
-LIB3270_EXPORT const char * lib3270_message_as_string(LIB3270_MESSAGE message) {
+LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *hSession) {
 
-	static const char * values[] = {
-		"",
-		N_( "X System" ),
-		N_( "X Wait" ),
-		N_( "X Connected" ),
-		N_( "X Not Connected" ),
-		N_( "X" ),
-		N_( "X -f" ),
-		N_( "X Protected" ),
-		N_( "X Numeric" ),
-		N_( "X Overflow" ),
-		N_( "X Inhibit" ),
-		N_( "X" ),
-		N_( "X" ),
-		N_( "X Resolving" ),
-		N_( "X Connecting" )
+	// HTML Entities: &#10060; or &#x274C;
+
+	static const struct {
+		const char *standard;
+		const char *utf;
+		const char *html;
+	} values[] = {
+		{
+			"",
+			"",
+			""
+		},
+		{
+			N_( "X System" ),
+			N_( "❌ System" ),
+			N_( "&#10060; System" )
+		},
+		{
+			N_( "X Wait" ),
+			N_( "❌ Wait" ),
+			N_( "&#10060; Wait" )
+		},
+		{
+			N_( "X Connected" ),
+			N_( "❌ Connected" ),
+			N_( "&#10060; Connected" )
+		},
+		{
+			N_( "X Not Connected" ),
+			N_( "❌ Not Connected" ),
+			N_( "&#10060; Not Connected" )
+		},
+		{
+			N_( "X" ),
+			N_( "❌" ),
+			N_( "&#10060;" )
+		},
+		{
+			N_( "X -f" ),
+			N_( "❌ -f" ),
+			N_( "&#10060; -f" )
+		},
+		{
+			N_( "X Protected" ),
+			N_( "❌ Protected" ),
+			N_( "&#10060; Protected" )
+		},
+		{
+			N_( "X Numeric" ),
+			N_( "❌ Numeric" ),
+			N_( "&#10060; Numeric" )
+		},
+		{
+			N_( "X Overflow" ),
+			N_( "❌ Overflow" ),
+			N_( "&#10060; Overflow" )
+		},
+		{
+			N_( "X Inhibit" ),
+			N_( "❌ Inhibit" ),
+			N_( "&#10060; Inhibit" )
+		},
+		{
+			N_( "X" ),
+			N_( "❌" ),
+			N_( "&#10060;" )
+		},
+		{
+			N_( "X" ),
+			N_( "❌" ),
+			N_( "&#10060;" )
+		},
+		{
+			N_( "X Resolving" ),
+			N_( "❌ Resolving" ),
+			N_( "&#10060;" )
+		},
+		{
+			N_( "X Connecting" )
+			N_( "❌ Connecting" )
+			N_( "&#10060; Connecting" )
+		}
 	};
 
-	if( ((size_t) message) < (sizeof(values)/sizeof(values[0]))) {
-		return dgettext(GETTEXT_PACKAGE,values[message]);
+	size_t message = (size_t) lib3270_get_program_message(hSession);
+	if( message < (sizeof(values)/sizeof(values[0]))) {
+		const char *msg = "";
+
+		switch(hSession->charset.msgtype) {
+		case 0:
+			msg = values[message].standard;
+			break;
+		case 1:
+			msg = values[message].utf;
+			break;
+		case 2:
+			msg = values[message].html;
+			break;
+
+		default:
+			msg = N_("Unexpected charset type");
+		}
+
+		return dgettext(GETTEXT_PACKAGE,msg);
 	}
 
-	return _( "Unknown" );
-
-}
-
-
-LIB3270_EXPORT const char * lib3270_get_program_message_as_string(const H3270 *hSession) {
-	return lib3270_message_as_string(lib3270_get_program_message(hSession));
+	return _("Unknown");
 }
 
 LIB3270_EXPORT const char * lib3270_get_ssl_state_as_string(const H3270 * hSession) {

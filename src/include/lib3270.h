@@ -160,8 +160,6 @@ typedef enum _LIB3270_MESSAGE {
  
 } LIB3270_MESSAGE;
 
-LIB3270_EXPORT const char * lib3270_message_as_string(LIB3270_MESSAGE message);
-
 /**
  * @brief Pointer modes.
  *

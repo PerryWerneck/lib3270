@@ -495,6 +495,10 @@ LIB3270_EXPORT char lib3270_get_session_id(H3270 *hSession) {
 	return hSession->id;
 }
 
+LIB3270_EXPORT void lib3270_set_message_type(H3270 *hSession, LIB3270_MSG_TYPE type) {
+	hSession->charset.msgtype = type;
+}
+
 struct lib3270_session_callbacks * lib3270_get_session_callbacks(H3270 *hSession, const char *revision, unsigned short sz) {
 
 	#define REQUIRED_REVISION "20211118"

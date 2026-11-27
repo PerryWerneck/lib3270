@@ -571,7 +571,7 @@ void message_changed(H3270 *hSession, LIB3270_MESSAGE id) {
 	    hSession,
 	    "Status changed to %d (%s).\n",
 		(int) id,
-	    lib3270_message_as_string(id)
+	    lib3270_get_program_message_as_string(hSession)
 	);
 
 	hSession->oia.status = id;

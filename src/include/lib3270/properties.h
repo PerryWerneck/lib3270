@@ -310,6 +310,14 @@ LIB3270_EXPORT const LIB3270_STRING_PROPERTY * lib3270_get_string_properties_lis
  LIB3270_EXPORT const char * lib3270_get_termtype(const H3270 *hSession);
  LIB3270_EXPORT const char * lib3270_get_termname(const H3270 *hSession);
 
+ typedef enum _lib3270_msg_type {
+	LIB3270_CHARSET_ANSI,
+	LIB3270_CHARSET_UTF8,
+	LIB3270_CHARSET_HTML
+ } LIB3270_MSG_TYPE;
+
+ LIB3270_EXPORT void          lib3270_set_message_type(H3270 *hSession, LIB3270_MSG_TYPE type);
+
  #ifdef __cplusplus
  }
  #endif
